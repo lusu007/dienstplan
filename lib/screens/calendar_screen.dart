@@ -7,7 +7,7 @@ import '../widgets/schedule_list.dart';
 import '../screens/settings_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:dienstplan/l10n/app_localizations.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});

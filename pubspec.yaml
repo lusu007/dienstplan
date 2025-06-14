@@ -40,31 +40,31 @@ dependencies:
   path: ^1.9.0
   # UI Components
   table_calendar: ^3.0.9
-  flutter_local_notifications: ^16.3.2
+  flutter_local_notifications: ^19.2.1
   # Utils
-  intl: ^0.18.1
+  intl: ^0.20.2
   shared_preferences: ^2.2.2
   collection: ^1.18.0
   logging: ^1.2.0
   path_provider: ^2.1.2
-  package_info_plus: ^5.0.1
-  device_info_plus: ^9.0.3
+  package_info_plus: ^8.3.0
+  device_info_plus: ^11.4.0
   flutter_riverpod: ^2.4.9
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^3.0.0
   json_annotation: ^4.8.1
   logger: ^2.0.2
   uuid: ^4.5.1
-  get_it: ^7.6.4
-  auto_route: ^7.8.4
+  get_it: ^8.0.3
+  auto_route: ^10.1.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^5.4.4
   build_runner: ^2.4.8
-  freezed: ^2.4.6
+  freezed: ^3.0.6
   json_serializable: ^6.7.1
-  auto_route_generator: ^7.3.2
+  auto_route_generator: ^10.2.3
   sqflite_common_ffi: ^2.3.2+1
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -72,7 +72,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

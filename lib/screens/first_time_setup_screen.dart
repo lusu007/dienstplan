@@ -5,7 +5,7 @@ import '../providers/schedule_provider.dart';
 import '../services/schedule_config_service.dart';
 import '../utils/logger.dart';
 import 'calendar_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:dienstplan/l10n/app_localizations.dart';
 import '../services/language_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
