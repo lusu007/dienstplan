@@ -1,0 +1,159 @@
+{
+    "version": "1.0",
+    "meta": {
+      "name": "BePo Dienstplan Polizei Bremen",
+      "created_by": "Lukas",
+      "description": "Wöchentlicher Rotationsplan für Züge der Bereitschaftspolizei inkl. Sonderlagen",
+      "start_week_day": "Monday",
+      "start_date": "2025-06-30",
+      "days": [
+        "Mo",
+        "Di",
+        "Mi",
+        "Do",
+        "Fr",
+        "Sa",
+        "So"
+      ]
+    },
+    "duty_types": {
+      "F": {
+        "label": "Frühdienst",
+        "start_time": "05:30",
+        "end_time": "13:30"
+      },
+      "S": {
+        "label": "Spätdienst",
+        "start_time": "13:30",
+        "end_time": "21:30"
+      },
+      "N": {
+        "label": "Nachtdienst",
+        "start_time": "21:30",
+        "end_time": "05:30"
+      },
+      "A-Tag": {
+        "label": "Ausbildungstag",
+        "all_day": true
+      },
+      "Regio": {
+        "label": "Regiobereitschaft",
+        "all_day": true
+      },
+      "SL 1": {
+        "label": "Sonderlage Stufe 1",
+        "all_day": true
+      },
+      "SL 2": {
+        "label": "Sonderlage Stufe 2",
+        "all_day": true
+      },
+      "SL 3": {
+        "label": "Sonderlage Stufe 3",
+        "all_day": true
+      },
+      "-": {
+        "label": "Frei",
+        "all_day": true
+      }
+    },
+    "rhythms": {
+      "bepo_standard": {
+        "length_weeks": 6,
+        "pattern": [
+          [
+            "-",
+            "A-Tag",
+            "A-Tag",
+            "S",
+            "S",
+            "SL 3",
+            "SL 3"
+          ],
+          [
+            "Regio",
+            "Regio",
+            "Regio",
+            "Regio",
+            "Regio",
+            "SL 1",
+            "SL 1"
+          ],
+          [
+            "N",
+            "N",
+            "N",
+            "N",
+            "-",
+            "-",
+            "-"
+          ],
+          [
+            "F",
+            "F",
+            "F",
+            "SL 2",
+            "SL 2",
+            "SL 2",
+            "SL 2"
+          ],
+          [
+            "S",
+            "S",
+            "S",
+            "-",
+            "N",
+            "N",
+            "N"
+          ],
+          [
+            "-",
+            "-",
+            "-",
+            "F",
+            "F",
+            "F",
+            "F"
+          ]        
+        ]
+      }
+    },
+    "dienstgruppen": [
+      {
+        "id": "VKZ",
+        "name": "Verkehrszug",
+        "rhythm": "bepo_standard",
+        "offset_weeks": 0
+      },
+      {
+        "id": "OST",
+        "name": "Ostzug",
+        "rhythm": "bepo_standard",
+        "offset_weeks": 6
+      },
+      {
+        "id": "SUD",
+        "name": "Südzug",
+        "rhythm": "bepo_standard",
+        "offset_weeks": 5
+      },
+      {
+        "id": "MW1",
+        "name": "MitteWest 1",
+        "rhythm": "bepo_standard",
+        "offset_weeks": 4
+      },
+      {
+        "id": "MW2",
+        "name": "MitteWest 2",
+        "rhythm": "bepo_standard",
+        "offset_weeks": 2
+      },
+      {
+        "id": "NOR",
+        "name": "Nordzug",
+        "rhythm": "bepo_standard",
+        "offset_weeks": 3
+      }
+    ]
+  }

@@ -1,0 +1,321 @@
+import 'package:flutter/foundation.dart';
+import 'package:table_calendar/table_calendar.dart';
+import '../models/schedule.dart';
+import '../models/duty_schedule_config.dart';
+import '../services/database_service.dart';
+import '../services/schedule_config_service.dart';
+import '../utils/logger.dart';
+
+class ScheduleProvider extends ChangeNotifier {
+  final DatabaseService _databaseService = DatabaseService();
+  final ScheduleConfigService _configService;
+
+  List<DutyScheduleConfig> _configs = [];
+  DutyScheduleConfig? _activeConfig;
+  List<String> _dutyGroups = [];
+  String? _selectedDutyGroup;
+  DateTime? _selectedDay;
+  DateTime? _focusedDay;
+  List<Schedule> _schedules = [];
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+
+  ScheduleProvider(this._configService);
+
+  // Getters
+  List<DutyScheduleConfig> get configs => _configs;
+  DutyScheduleConfig? get activeConfig => _activeConfig;
+  List<String> get dutyGroups => _dutyGroups;
+  String? get selectedDutyGroup => _selectedDutyGroup;
+  DateTime? get selectedDay => _selectedDay;
+  DateTime? get focusedDay => _focusedDay;
+  List<Schedule> get schedules => _schedules;
+  CalendarFormat get calendarFormat => _calendarFormat;
+
+  // Initialize the provider
+  Future<void> initialize() async {
+    try {
+      AppLogger.i('initialize() called');
+      AppLogger.i('Initializing ScheduleProvider');
+      AppLogger.i('Loading schedule configurations');
+      AppLogger.i('Loading settings');
+      AppLogger.i('Loading active config');
+      await _configService.initialize();
+      await _loadConfigs();
+      await _loadSettings();
+
+      AppLogger.i(
+          'Checking for default config: ${_configService.hasDefaultConfig}');
+      if (_configService.hasDefaultConfig) {
+        AppLogger.i(
+            'Setting active config to default: ${_configService.defaultConfig?.name}');
+        await setActiveConfig(_configService.defaultConfig!);
+      } else if (_configs.isNotEmpty && _activeConfig == null) {
+        AppLogger.i(
+            'No default config, using first config: ${_configs.first.name}');
+        await setActiveConfig(_configs.first);
+      }
+
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error initializing ScheduleProvider', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Load configurations
+  Future<void> _loadConfigs() async {
+    try {
+      _configs = await _configService.configs;
+      AppLogger.i(
+          'ScheduleProvider: _loadConfigs loaded: ${_configs.length} configs');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error loading configs', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Load settings
+  Future<void> _loadSettings() async {
+    try {
+      final settings = await _databaseService.loadSettings();
+      if (settings != null) {
+        _calendarFormat = CalendarFormat.values.firstWhere(
+          (format) => format.toString() == settings['calendar_format'],
+          orElse: () => CalendarFormat.month,
+        );
+        _focusedDay = settings['focused_day'] as DateTime;
+        _selectedDay = settings['selected_day'] as DateTime;
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e('Error loading settings', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Save settings
+  Future<void> _saveSettings() async {
+    try {
+      await _databaseService.saveSettings(
+        calendarFormat: _calendarFormat.toString(),
+        focusedDay: _focusedDay ?? DateTime.now(),
+        selectedDay: _selectedDay ?? DateTime.now(),
+      );
+    } catch (e, stackTrace) {
+      AppLogger.e('Error saving settings', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Set active configuration
+  Future<void> setActiveConfig(DutyScheduleConfig config) async {
+    _activeConfig = config;
+    await _saveSettings();
+
+    // Generate and save schedules for the new config
+    final schedules = await _configService.generateSchedulesForConfig(config);
+    await _databaseService.saveSchedules(schedules);
+
+    await loadSchedules();
+    notifyListeners();
+  }
+
+  /// Berechnet den Diensttyp für ein bestimmtes Datum
+  String? _calculateDutyType({
+    required DateTime date,
+    required DutyScheduleConfig config,
+    required DutyGroup dutyGroup,
+    required Rhythm rhythm,
+    required int startWeekday,
+  }) {
+    // Berechne delta_days = (targetDate - startDate).days
+    final deltaDays = date.difference(config.startDate).inDays;
+
+    // Berechne week_index = (delta_days // 7 - offset_weeks) % length_weeks
+    final weeksSinceStart = deltaDays ~/ 7;
+    final weekIndex = mod(
+        weeksSinceStart - dutyGroup.offsetWeeks.toInt(), rhythm.lengthWeeks);
+
+    // Berechne day_index = delta_days % 7
+    final dayIndex = mod(deltaDays, 7);
+
+    // Debug-Logging für DG 3 und DG 5
+    if ((dutyGroup.name == 'Dienstgruppe 3' &&
+            date.day == 24 &&
+            date.month == 8) ||
+        (dutyGroup.name == 'Dienstgruppe 5' &&
+            date.day == 2 &&
+            date.month == 6)) {
+      AppLogger.i('${dutyGroup.name} on ${date.day}.${date.month}:');
+      AppLogger.i('Delta days: $deltaDays');
+      AppLogger.i('Week offset: ${dutyGroup.offsetWeeks}');
+      AppLogger.i('Rhythm length: ${rhythm.lengthWeeks}');
+      AppLogger.i('Calculated week index: $weekIndex');
+      AppLogger.i('Day index: $dayIndex');
+    }
+
+    // Hole den Diensttyp aus dem Rhythmusmuster
+    if (weekIndex >= 0 &&
+        weekIndex < rhythm.pattern.length &&
+        dayIndex >= 0 &&
+        dayIndex < rhythm.pattern[weekIndex].length) {
+      final dutyType = rhythm.pattern[weekIndex][dayIndex];
+
+      // Debug-Logging für den berechneten Diensttyp
+      if ((dutyGroup.name == 'Dienstgruppe 3' &&
+              date.day == 24 &&
+              date.month == 8) ||
+          (dutyGroup.name == 'Dienstgruppe 5' &&
+              date.day == 2 &&
+              date.month == 6)) {
+        AppLogger.i('Calculated duty type: $dutyType');
+      }
+
+      return dutyType;
+    }
+
+    return null;
+  }
+
+  // Helper methods for date calculations
+  int _calculateStartWeek(
+      DateTime startDate, String startWeekDay, double offsetWeeks) {
+    final weekDay = _getWeekDayNumber(startWeekDay);
+    final daysToAdd = (weekDay - startDate.weekday + 7) % 7;
+    final adjustedStartDate = startDate.add(Duration(days: daysToAdd));
+    return adjustedStartDate.difference(DateTime(1970, 1, 1)).inDays ~/ 7;
+  }
+
+  DateTime _calculateStartDate(
+      int startWeek, int weekIndex, double offsetWeeks) {
+    final totalWeeks = startWeek + weekIndex + offsetWeeks.toInt();
+    return DateTime(1970, 1, 1).add(Duration(days: totalWeeks * 7));
+  }
+
+  int _getWeekDayNumber(String weekDay) {
+    switch (weekDay.toLowerCase()) {
+      case 'monday':
+        return DateTime.monday;
+      case 'tuesday':
+        return DateTime.tuesday;
+      case 'wednesday':
+        return DateTime.wednesday;
+      case 'thursday':
+        return DateTime.thursday;
+      case 'friday':
+        return DateTime.friday;
+      case 'saturday':
+        return DateTime.saturday;
+      case 'sunday':
+        return DateTime.sunday;
+      default:
+        return DateTime.monday;
+    }
+  }
+
+  // Load schedules for the selected day
+  Future<void> loadSchedules() async {
+    try {
+      _schedules = await _databaseService.loadSchedules();
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error loading schedules', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Save schedules
+  Future<void> saveSchedules() async {
+    try {
+      await _databaseService.saveSchedules(_schedules);
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error saving schedules', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Set selected date
+  Future<void> setSelectedDate(DateTime date) async {
+    _selectedDay = date;
+    await loadSchedules();
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  // Set selected day (alias for setSelectedDate)
+  Future<void> setSelectedDay(DateTime day) async {
+    await setSelectedDate(day);
+  }
+
+  // Set focused day
+  Future<void> setFocusedDay(DateTime date) async {
+    _focusedDay = date;
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  // Set selected duty group
+  Future<void> setSelectedDutyGroup(String? group) async {
+    _selectedDutyGroup = group;
+    await loadSchedules();
+    notifyListeners();
+  }
+
+  // Set calendar format
+  Future<void> setCalendarFormat(CalendarFormat format) async {
+    _calendarFormat = format;
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  // Reset the provider
+  Future<void> reset() async {
+    try {
+      if (_activeConfig == null) {
+        AppLogger.e('Cannot reset: No active config');
+        return;
+      }
+      await _databaseService.clearDutySchedule(_activeConfig!.name);
+      _schedules = [];
+      _selectedDutyGroup = null;
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error resetting schedule provider', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  // Get duty type information
+  Future<DutyType?> getDutyType(String serviceId) async {
+    try {
+      if (_activeConfig == null) return null;
+      return _activeConfig!.dutyTypes[serviceId];
+    } catch (e, stackTrace) {
+      AppLogger.e('Error getting duty type', e, stackTrace);
+      return null;
+    }
+  }
+
+  // Get service display name
+  Future<String> getServiceDisplayName(String serviceId) async {
+    try {
+      if (_activeConfig == null) return serviceId;
+      final dutyType = _activeConfig!.dutyTypes[serviceId];
+      if (dutyType == null) return serviceId;
+      return dutyType.label;
+    } catch (e, stackTrace) {
+      AppLogger.e('Error getting service display name', e, stackTrace);
+      return serviceId;
+    }
+  }
+
+  int mod(int n, int m) => ((n % m) + m) % m;
+
+  // Implement _calculateWeekIndex
+  int _calculateWeekIndex(DateTime date, int weeksLength) {
+    final now = DateTime.now();
+    final startDate = DateTime(now.year, now.month, now.day);
+    final daysSinceStart = date.difference(startDate).inDays;
+    return weeksLength == 0 ? 0 : (daysSinceStart ~/ 7) % weeksLength;
+  }
+}

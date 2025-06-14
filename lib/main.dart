@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'screens/calendar_screen.dart';
+import 'screens/first_time_setup_screen.dart';
+import 'providers/schedule_provider.dart';
+import 'services/schedule_config_service.dart';
+import 'services/language_service.dart';
+import 'utils/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'services/database_service.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize logger first
+  await AppLogger.initialize();
+  AppLogger.i('Starting Dienstplan application');
+
+  final prefs = await SharedPreferences.getInstance();
+  final databaseService = DatabaseService();
+  final scheduleConfigService = ScheduleConfigService(prefs);
+  final languageService = LanguageService();
+
+  await databaseService.init();
+  await scheduleConfigService.initialize();
+  await languageService.initialize();
+
+  runApp(MyApp(
+    scheduleConfigService: scheduleConfigService,
+    languageService: languageService,
+  ));
+}
+
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
+  @override
+  State<AppInitializer> createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  bool _isLoading = true;
+  bool _needsSetup = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInitialSetup();
+  }
+
+  Future<void> _checkInitialSetup() async {
+    try {
+      AppLogger.i('Checking initial setup');
+      final scheduleConfigService = context.read<ScheduleConfigService>();
+      await scheduleConfigService.initialize();
+      final hasDefaultConfig = scheduleConfigService.hasDefaultConfig;
+      AppLogger.i('Has default config: $hasDefaultConfig');
+      setState(() {
+        _isLoading = false;
+        _needsSetup = !hasDefaultConfig;
+      });
+      AppLogger.i('Setup needed: $_needsSetup');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error checking initial setup', e, stackTrace);
+      setState(() {
+        _isLoading = false;
+        _needsSetup = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    if (_needsSetup) {
+      return const FirstTimeSetupScreen();
+    }
+
+    return const CalendarScreen();
+  }
+}
+
+class MyApp extends StatefulWidget {
+  final ScheduleConfigService scheduleConfigService;
+  final LanguageService languageService;
+
+  const MyApp({
+    Key? key,
+    required this.scheduleConfigService,
+    required this.languageService,
+  }) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late ScheduleProvider _scheduleProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeScheduleProvider();
+  }
+
+  Future<void> _initializeScheduleProvider() async {
+    _scheduleProvider = ScheduleProvider(widget.scheduleConfigService);
+    await _scheduleProvider.initialize();
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: _scheduleProvider),
+        ChangeNotifierProvider(create: (_) => widget.scheduleConfigService),
+        ChangeNotifierProvider(create: (_) => widget.languageService),
+      ],
+      child: Consumer<LanguageService>(
+        builder: (context, languageService, _) {
+          return MaterialApp(
+            title: 'Dienstplan',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              useMaterial3: true,
+            ),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: languageService.currentLocale,
+            home: const AppInitializer(),
+          );
+        },
+      ),
+    );
+  }
+}

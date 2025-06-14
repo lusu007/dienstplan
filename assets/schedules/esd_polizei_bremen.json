@@ -1,0 +1,128 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "ESD Polizei Bremen",
+    "created_by": "Lukas",
+    "description": "5-wöchiger Rotationsplan mit ZD-Woche als Einstieg",
+    "start_week_day": "Monday",
+    "start_date": "2025-06-30",
+    "days": [
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa",
+      "So"
+    ]
+  },
+  "duty_types": {
+    "F": {
+      "label": "Frühdienst",
+      "start_time": "05:30",
+      "end_time": "13:30"
+    },
+    "S": {
+      "label": "Spätdienst",
+      "start_time": "13:30",
+      "end_time": "21:30"
+    },
+    "N": {
+      "label": "Nachtdienst",
+      "start_time": "21:30",
+      "end_time": "05:30"
+    },
+    "ZD": {
+      "label": "Zusatzdienst",
+      "all_day": true
+    },
+    "-": {
+      "label": "Frei",
+      "all_day": true
+    }
+  },
+  "rhythms": {
+    "5wochen_standard": {
+      "length_weeks": 5,
+      "pattern": [
+        [
+          "-",
+          "ZD",
+          "ZD",
+          "-",
+          "ZD",
+          "-",
+          "-"
+        ],
+        [
+          "N",
+          "N",
+          "-",
+          "-",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "S",
+          "S",
+          "N",
+          "N",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "F",
+          "F",
+          "S",
+          "S",
+          "N",
+          "N",
+          "N"
+        ],
+        [
+          "-",
+          "-",
+          "F",
+          "F",
+          "S",
+          "S",
+          "S"
+        ]
+      ]
+    }
+  },
+  "dienstgruppen": [
+    {
+      "id": "DG1",
+      "name": "Dienstgruppe 1",
+      "rhythm": "5wochen_standard",
+      "offset_weeks": 1
+    },
+    {
+      "id": "DG2",
+      "name": "Dienstgruppe 2",
+      "rhythm": "5wochen_standard",
+      "offset_weeks": 0
+    },
+    {
+      "id": "DG3",
+      "name": "Dienstgruppe 3",
+      "rhythm": "5wochen_standard",
+      "offset_weeks": 4
+    },
+    {
+      "id": "DG4",
+      "name": "Dienstgruppe 4",
+      "rhythm": "5wochen_standard",
+      "offset_weeks": 3
+    },
+    {
+      "id": "DG5",
+      "name": "Dienstgruppe 5",
+      "rhythm": "5wochen_standard",
+      "offset_weeks": 2
+    }
+  ]
+}

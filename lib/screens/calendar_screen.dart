@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
+import '../providers/schedule_provider.dart';
+import '../services/language_service.dart';
+import '../widgets/schedule_list.dart';
+import '../screens/settings_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({super.key});
+
+  @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends State<CalendarScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late String _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _controller.forward();
+    _locale = 'de_DE'; // Default locale
+    initializeDateFormatting(_locale, null);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final languageService = Provider.of<LanguageService>(context);
+    final appLocale = languageService.currentLocale.languageCode;
+    if (appLocale != _locale) {
+      setState(() {
+        _locale = appLocale;
+        initializeDateFormatting(_locale, null);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Consumer2<ScheduleProvider, LanguageService>(
+      builder: (context, scheduleProvider, languageService, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              l10n.dutySchedule,
+              style: const TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: Column(
+            children: [
+              TableCalendar(
+                firstDay: DateTime.utc(2024, 1, 1),
+                lastDay: DateTime.utc(2030, 12, 31),
+                focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
+                calendarFormat: scheduleProvider.calendarFormat,
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                selectedDayPredicate: (day) {
+                  return isSameDay(scheduleProvider.selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  scheduleProvider.setSelectedDay(selectedDay);
+                  scheduleProvider.setFocusedDay(focusedDay);
+                },
+                onFormatChanged: (format) {
+                  scheduleProvider.setCalendarFormat(format);
+                },
+                onPageChanged: (focusedDay) {
+                  scheduleProvider.setFocusedDay(focusedDay);
+                },
+                calendarStyle: CalendarStyle(
+                  selectedDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: true,
+                  titleCentered: true,
+                  formatButtonShowsNext: false,
+                  formatButtonDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  formatButtonTextStyle: const TextStyle(color: Colors.white),
+                ),
+                locale: _locale,
+              ),
+              Expanded(
+                child: ScheduleList(
+                  schedules: scheduleProvider.schedules,
+                  dutyGroups: scheduleProvider.dutyGroups,
+                  selectedDutyGroup: scheduleProvider.selectedDutyGroup,
+                  onDutyGroupSelected: (group) {
+                    scheduleProvider.setSelectedDutyGroup(group);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
