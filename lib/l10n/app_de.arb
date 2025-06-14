@@ -55,5 +55,16 @@
   "resetData": "Daten zurücksetzen",
   "resetDataConfirmation": "Möchten Sie wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
   "resetDataSuccess": "Daten wurden zurückgesetzt",
-  "reset": "Zurücksetzen"
+  "reset": "Zurücksetzen",
+  "services": "Dienste",
+  "servicesOnDate": "am {date}",
+  "@servicesOnDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "noServicesForDay": "Keine Dienste für diesen Tag",
+  "allDay": "Ganztägig"
 } 

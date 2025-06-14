@@ -55,5 +55,16 @@
   "resetData": "Reset Data",
   "resetDataConfirmation": "Are you sure you want to reset all data? This cannot be undone.",
   "resetDataSuccess": "Data has been reset",
-  "reset": "Reset"
+  "reset": "Reset",
+  "services": "Services",
+  "servicesOnDate": "on {date}",
+  "@servicesOnDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "noServicesForDay": "No services for this day",
+  "allDay": "All day"
 } 

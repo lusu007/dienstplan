@@ -6,6 +6,7 @@ import '../services/language_service.dart';
 import '../widgets/schedule_list.dart';
 import '../screens/settings_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -121,6 +122,26 @@ class _CalendarScreenState extends State<CalendarScreen>
                   formatButtonTextStyle: const TextStyle(color: Colors.white),
                 ),
                 locale: _locale,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.services,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Text(
+                      scheduleProvider.selectedDay != null
+                          ? l10n.servicesOnDate(DateFormat('dd.MM.yyyy')
+                              .format(scheduleProvider.selectedDay!))
+                          : l10n.noServicesForDay,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: ScheduleList(

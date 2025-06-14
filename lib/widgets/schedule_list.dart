@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/schedule_provider.dart';
 import '../models/schedule.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScheduleList extends StatefulWidget {
   final List<Schedule> schedules;
@@ -124,96 +125,68 @@ class _ScheduleListState extends State<ScheduleList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final filteredSchedules = _filterSchedules();
     final sortedSchedules = _sortSchedulesByTime(filteredSchedules);
     final provider = Provider.of<ScheduleProvider>(context);
 
     if (sortedSchedules.isEmpty) {
-      return Column(
-        children: [
-          // Schedule List
-          Expanded(
-            child: sortedSchedules.isEmpty
-                ? const Center(
-                    child: Text('Keine Dienste für diesen Tag'),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: sortedSchedules.length,
-                    itemBuilder: (context, index) {
-                      final schedule = sortedSchedules[index];
-                      final isSelected =
-                          widget.selectedDutyGroup == schedule.dutyGroupName;
-                      final dutyType =
-                          provider.activeConfig?.dutyTypes[schedule.service];
-                      final serviceName = dutyType?.label ?? schedule.service;
-                      final serviceTime = dutyType?.allDay == true
-                          ? 'Ganztägig'
-                          : '${dutyType?.startTime ?? ''} - ${dutyType?.endTime ?? ''}';
-
-                      return ListTile(
-                        title: Text(serviceName),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(schedule.dutyGroupName),
-                            Text(serviceTime),
-                          ],
-                        ),
-                        selected: isSelected,
-                        onTap: () {
-                          widget.onDutyGroupSelected(
-                              isSelected ? null : schedule.dutyGroupName);
-                        },
-                      );
-                    },
-                  ),
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        children: [
-          // Schedule List
-          Expanded(
-            child: sortedSchedules.isEmpty
-                ? const Center(
-                    child: Text('Keine Dienste für diesen Tag'),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: sortedSchedules.length,
-                    itemBuilder: (context, index) {
-                      final schedule = sortedSchedules[index];
-                      final isSelected =
-                          widget.selectedDutyGroup == schedule.dutyGroupName;
-                      final dutyType =
-                          provider.activeConfig?.dutyTypes[schedule.service];
-                      final serviceName = dutyType?.label ?? schedule.service;
-                      final serviceTime = dutyType?.allDay == true
-                          ? 'Ganztägig'
-                          : '${dutyType?.startTime ?? ''} - ${dutyType?.endTime ?? ''}';
-
-                      return ListTile(
-                        title: Text(serviceName),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(schedule.dutyGroupName),
-                            Text(serviceTime),
-                          ],
-                        ),
-                        selected: isSelected,
-                        onTap: () {
-                          widget.onDutyGroupSelected(
-                              isSelected ? null : schedule.dutyGroupName);
-                        },
-                      );
-                    },
-                  ),
-          ),
-        ],
+      return Center(
+        child: Text(l10n.noServicesForDay),
       );
     }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: sortedSchedules.length,
+      itemBuilder: (context, index) {
+        final schedule = sortedSchedules[index];
+        final isSelected = widget.selectedDutyGroup == schedule.dutyGroupName;
+        final dutyType = provider.activeConfig?.dutyTypes[schedule.service];
+        final serviceName = dutyType?.label ?? schedule.service;
+        final serviceTime = dutyType?.allDay == true
+            ? l10n.allDay
+            : '${dutyType?.startTime ?? ''} - ${dutyType?.endTime ?? ''}';
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: InkWell(
+            onTap: () {
+              widget.onDutyGroupSelected(
+                  isSelected ? null : schedule.dutyGroupName);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          serviceName,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          schedule.dutyGroupName,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    serviceTime,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
