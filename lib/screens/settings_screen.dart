@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../providers/schedule_provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import '../services/language_service.dart';
+import '../screens/first_time_setup_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -150,6 +151,11 @@ class SettingsScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(l10n.resetDataSuccess),
+                  ),
+                );
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const FirstTimeSetupScreen(),
                   ),
                 );
               }

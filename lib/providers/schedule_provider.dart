@@ -185,13 +185,20 @@ class ScheduleProvider extends ChangeNotifier {
   // Reset the provider
   Future<void> reset() async {
     try {
-      if (_activeConfig == null) {
-        AppLogger.e('Cannot reset: No active config');
-        return;
-      }
-      await _databaseService.clearDutySchedule(_activeConfig!.name);
+      // Clear all data from the database
+      await _databaseService.clearDatabase();
+      
+      // Reset all state variables
       _schedules = [];
       _selectedDutyGroup = null;
+      _activeConfig = null;
+      _selectedDay = DateTime.now();
+      _focusedDay = DateTime.now();
+      _calendarFormat = CalendarFormat.month;
+      
+      // Clear settings
+      await _saveSettings();
+      
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error resetting schedule provider', e, stackTrace);
