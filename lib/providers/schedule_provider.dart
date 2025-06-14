@@ -55,6 +55,8 @@ class ScheduleProvider extends ChangeNotifier {
         await setActiveConfig(_configs.first);
       }
 
+      // Always load schedules after initialization
+      await loadSchedules();
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error initializing ScheduleProvider', e, stackTrace);
@@ -85,6 +87,11 @@ class ScheduleProvider extends ChangeNotifier {
         );
         _focusedDay = settings['focused_day'] as DateTime;
         _selectedDay = settings['selected_day'] as DateTime;
+      } else {
+        // Set default values if no settings exist
+        _calendarFormat = CalendarFormat.month;
+        _focusedDay = DateTime.now();
+        _selectedDay = DateTime.now();
       }
     } catch (e, stackTrace) {
       AppLogger.e('Error loading settings', e, stackTrace);
