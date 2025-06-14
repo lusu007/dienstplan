@@ -1,7 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as p;
-import 'package:intl/intl.dart';
 
 class CustomFileOutput extends LogOutput {
   final String directory;
@@ -12,7 +13,6 @@ class CustomFileOutput extends LogOutput {
   final LogPrinter printer;
   File? _currentFile;
   int _currentFileSize = 0;
-  final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
   bool _hasError = false;
 
   CustomFileOutput({
@@ -25,7 +25,7 @@ class CustomFileOutput extends LogOutput {
   }) : printer = printer ?? SimplePrinter(printTime: true, colors: false);
 
   @override
-  void output(OutputEvent event) async {
+  Future<void> output(OutputEvent event) async {
     if (_hasError) return;
 
     try {
@@ -39,7 +39,7 @@ class CustomFileOutput extends LogOutput {
         return;
       }
 
-      final logMessage = event.lines.join('\n') + '\n';
+      final logMessage = '${event.lines.join('\n')}\n';
       await _currentFile!.writeAsString(logMessage, mode: FileMode.append);
       _currentFileSize += logMessage.length;
     } catch (e) {
@@ -51,7 +51,7 @@ class CustomFileOutput extends LogOutput {
   Future<void> _rotateFile() async {
     try {
       final dir = Directory(directory);
-      if (!await dir.exists()) {
+      if (!dir.existsSync()) {
         await dir.create(recursive: true);
       }
 
@@ -84,11 +84,11 @@ class CustomFileOutput extends LogOutput {
     try {
       final now = DateTime.now();
       final dir = Directory(directory);
-      if (!await dir.exists()) return;
+      if (!dir.existsSync()) return;
 
       for (final file in dir.listSync()) {
         if (file is File) {
-          final stat = await file.stat();
+          final stat = file.statSync();
           if (now.difference(stat.modified) > retention) {
             await file.delete();
           }

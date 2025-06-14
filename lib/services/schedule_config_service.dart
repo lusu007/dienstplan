@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import '../models/schedule.dart';
 import '../models/duty_schedule_config.dart';
-import '../models/duty_type.dart';
 import '../utils/logger.dart';
 
 class ScheduleConfigService extends ChangeNotifier {
@@ -27,7 +26,7 @@ class ScheduleConfigService extends ChangeNotifier {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       _configsPath = Directory(path.join(appDir.path, _configDirName));
-      if (!await _configsPath.exists()) {
+      if (!_configsPath.existsSync()) {
         await _configsPath.create(recursive: true);
       }
       await _loadConfigs();
@@ -144,7 +143,7 @@ class ScheduleConfigService extends ChangeNotifier {
           AppLogger.i('${dutyGroup.name} on ${date.day}.${date.month}:');
           AppLogger.i('Delta days: $deltaDays');
           AppLogger.i(
-              'Week index calculation: (${deltaDays} ~/ 7) - ${dutyGroup.offsetWeeks} = ${deltaDays ~/ 7 - dutyGroup.offsetWeeks.toInt()}');
+              'Week index calculation: ($deltaDays ~/ 7) - ${dutyGroup.offsetWeeks} = ${deltaDays ~/ 7 - dutyGroup.offsetWeeks.toInt()}');
           AppLogger.i('Week index: $weekIndex');
           AppLogger.i('Day index: $dayIndex');
         }

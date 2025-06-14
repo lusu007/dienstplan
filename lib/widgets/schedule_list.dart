@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/schedule_provider.dart';
 import '../models/schedule.dart';
-import '../models/duty_schedule_config.dart';
-import '../utils/logger.dart';
-import 'dart:math' as math;
 
 class ScheduleList extends StatefulWidget {
   final List<Schedule> schedules;
@@ -43,8 +40,9 @@ class _ScheduleListState extends State<ScheduleList> {
         final timeA = dutyTypeA.startTime;
         final timeB = dutyTypeB.startTime;
 
-        if (timeA == null || timeB == null || timeA.isEmpty || timeB.isEmpty)
+        if (timeA == null || timeB == null || timeA.isEmpty || timeB.isEmpty) {
           return 0;
+        }
 
         // Parse times to compare them properly
         final timeAParts = timeA.split(':');
@@ -75,12 +73,12 @@ class _ScheduleListState extends State<ScheduleList> {
     // First filter by date and active config
     final filteredSchedules = schedules.where((schedule) {
       // Filter by date (exact match for year, month, and day)
-      final isSameDay = schedule.date.year == selectedDay!.year &&
-          schedule.date.month == selectedDay!.month &&
-          schedule.date.day == selectedDay!.day;
+      final isSameDay = schedule.date.year == selectedDay.year &&
+          schedule.date.month == selectedDay.month &&
+          schedule.date.day == selectedDay.day;
 
       // Filter by active configuration
-      final isActiveConfig = schedule.configName == activeConfig!.meta.name;
+      final isActiveConfig = schedule.configName == activeConfig.meta.name;
 
       return isSameDay && isActiveConfig;
     }).toList();
@@ -108,8 +106,8 @@ class _ScheduleListState extends State<ScheduleList> {
       }
 
       // Then sort by start time
-      final dutyTypeA = activeConfig!.dutyTypes[a.service];
-      final dutyTypeB = activeConfig!.dutyTypes[b.service];
+      final dutyTypeA = activeConfig.dutyTypes[a.service];
+      final dutyTypeB = activeConfig.dutyTypes[b.service];
 
       if (dutyTypeA != null && dutyTypeB != null) {
         if (dutyTypeA.startTime != null && dutyTypeB.startTime != null) {

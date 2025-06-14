@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../providers/schedule_provider.dart';
-import '../utils/logger.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/language_service.dart';
 

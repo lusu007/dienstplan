@@ -7,7 +7,6 @@ import '../utils/logger.dart';
 import 'calendar_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/language_service.dart';
-import '../services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstTimeSetupScreen extends StatefulWidget {
@@ -22,7 +21,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   DutyScheduleConfig? _selectedConfig;
   bool _isLoading = true;
   late final ScheduleConfigService _configService;
-  late final DatabaseService _databaseService;
   late final SharedPreferences _prefs;
 
   @override
@@ -33,7 +31,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
 
   Future<void> _initializeServices() async {
     _prefs = await SharedPreferences.getInstance();
-    _databaseService = DatabaseService();
     _configService = ScheduleConfigService(_prefs);
     _loadConfigs();
   }
@@ -41,7 +38,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   Future<void> _loadConfigs() async {
     try {
       await _configService.initialize();
-      final configs = await _configService.configs;
+      final configs = _configService.configs;
       setState(() {
         _configs = configs;
         _isLoading = false;

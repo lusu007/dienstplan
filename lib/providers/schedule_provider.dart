@@ -12,7 +12,7 @@ class ScheduleProvider extends ChangeNotifier {
 
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _activeConfig;
-  List<String> _dutyGroups = [];
+  final List<String> _dutyGroups = [];
   String? _selectedDutyGroup;
   DateTime? _selectedDay;
   DateTime? _focusedDay;
@@ -65,7 +65,7 @@ class ScheduleProvider extends ChangeNotifier {
   // Load configurations
   Future<void> _loadConfigs() async {
     try {
-      _configs = await _configService.configs;
+      _configs = _configService.configs;
       AppLogger.i(
           'ScheduleProvider: _loadConfigs loaded: ${_configs.length} configs');
     } catch (e, stackTrace) {
@@ -117,99 +117,6 @@ class ScheduleProvider extends ChangeNotifier {
 
     await loadSchedules();
     notifyListeners();
-  }
-
-  /// Berechnet den Diensttyp für ein bestimmtes Datum
-  String? _calculateDutyType({
-    required DateTime date,
-    required DutyScheduleConfig config,
-    required DutyGroup dutyGroup,
-    required Rhythm rhythm,
-    required int startWeekday,
-  }) {
-    // Berechne delta_days = (targetDate - startDate).days
-    final deltaDays = date.difference(config.startDate).inDays;
-
-    // Berechne week_index = (delta_days // 7 - offset_weeks) % length_weeks
-    final weeksSinceStart = deltaDays ~/ 7;
-    final weekIndex = mod(
-        weeksSinceStart - dutyGroup.offsetWeeks.toInt(), rhythm.lengthWeeks);
-
-    // Berechne day_index = delta_days % 7
-    final dayIndex = mod(deltaDays, 7);
-
-    // Debug-Logging für DG 3 und DG 5
-    if ((dutyGroup.name == 'Dienstgruppe 3' &&
-            date.day == 24 &&
-            date.month == 8) ||
-        (dutyGroup.name == 'Dienstgruppe 5' &&
-            date.day == 2 &&
-            date.month == 6)) {
-      AppLogger.i('${dutyGroup.name} on ${date.day}.${date.month}:');
-      AppLogger.i('Delta days: $deltaDays');
-      AppLogger.i('Week offset: ${dutyGroup.offsetWeeks}');
-      AppLogger.i('Rhythm length: ${rhythm.lengthWeeks}');
-      AppLogger.i('Calculated week index: $weekIndex');
-      AppLogger.i('Day index: $dayIndex');
-    }
-
-    // Hole den Diensttyp aus dem Rhythmusmuster
-    if (weekIndex >= 0 &&
-        weekIndex < rhythm.pattern.length &&
-        dayIndex >= 0 &&
-        dayIndex < rhythm.pattern[weekIndex].length) {
-      final dutyType = rhythm.pattern[weekIndex][dayIndex];
-
-      // Debug-Logging für den berechneten Diensttyp
-      if ((dutyGroup.name == 'Dienstgruppe 3' &&
-              date.day == 24 &&
-              date.month == 8) ||
-          (dutyGroup.name == 'Dienstgruppe 5' &&
-              date.day == 2 &&
-              date.month == 6)) {
-        AppLogger.i('Calculated duty type: $dutyType');
-      }
-
-      return dutyType;
-    }
-
-    return null;
-  }
-
-  // Helper methods for date calculations
-  int _calculateStartWeek(
-      DateTime startDate, String startWeekDay, double offsetWeeks) {
-    final weekDay = _getWeekDayNumber(startWeekDay);
-    final daysToAdd = (weekDay - startDate.weekday + 7) % 7;
-    final adjustedStartDate = startDate.add(Duration(days: daysToAdd));
-    return adjustedStartDate.difference(DateTime(1970, 1, 1)).inDays ~/ 7;
-  }
-
-  DateTime _calculateStartDate(
-      int startWeek, int weekIndex, double offsetWeeks) {
-    final totalWeeks = startWeek + weekIndex + offsetWeeks.toInt();
-    return DateTime(1970, 1, 1).add(Duration(days: totalWeeks * 7));
-  }
-
-  int _getWeekDayNumber(String weekDay) {
-    switch (weekDay.toLowerCase()) {
-      case 'monday':
-        return DateTime.monday;
-      case 'tuesday':
-        return DateTime.tuesday;
-      case 'wednesday':
-        return DateTime.wednesday;
-      case 'thursday':
-        return DateTime.thursday;
-      case 'friday':
-        return DateTime.friday;
-      case 'saturday':
-        return DateTime.saturday;
-      case 'sunday':
-        return DateTime.sunday;
-      default:
-        return DateTime.monday;
-    }
   }
 
   // Load schedules for the selected day
@@ -310,12 +217,4 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   int mod(int n, int m) => ((n % m) + m) % m;
-
-  // Implement _calculateWeekIndex
-  int _calculateWeekIndex(DateTime date, int weeksLength) {
-    final now = DateTime.now();
-    final startDate = DateTime(now.year, now.month, now.day);
-    final daysSinceStart = date.difference(startDate).inDays;
-    return weeksLength == 0 ? 0 : (daysSinceStart ~/ 7) % weeksLength;
-  }
 }

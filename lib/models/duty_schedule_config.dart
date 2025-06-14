@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class DutyScheduleConfig {
   final String version;
   final Meta meta;

@@ -5,7 +5,6 @@ import '../providers/schedule_provider.dart';
 import '../services/language_service.dart';
 import '../widgets/schedule_list.dart';
 import '../screens/settings_screen.dart';
-import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

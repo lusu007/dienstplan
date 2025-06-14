@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -12,7 +14,7 @@ class AppLogger {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       _logDir = Directory(path.join(appDir.path, _logDirName));
-      if (!await _logDir!.exists()) {
+      if (!_logDir!.existsSync()) {
         await _logDir!.create(recursive: true);
       }
       await _rotateLogs();
