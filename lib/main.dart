@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
-import 'screens/calendar_screen.dart';
-import 'screens/first_time_setup_screen.dart';
-import 'providers/schedule_provider.dart';
-import 'services/schedule_config_service.dart';
-import 'services/language_service.dart';
-import 'utils/logger.dart';
+import 'package:dienstplan/screens/calendar_screen.dart';
+import 'package:dienstplan/screens/first_time_setup_screen.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
+import 'package:dienstplan/services/schedule_config_service.dart';
+import 'package:dienstplan/services/language_service.dart';
+import 'package:dienstplan/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'services/database_service.dart';
+import 'package:dienstplan/services/database_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,10 +94,10 @@ class MyApp extends StatefulWidget {
   final LanguageService languageService;
 
   const MyApp({
-    Key? key,
+    super.key,
     required this.scheduleConfigService,
     required this.languageService,
-  }) : super(key: key);
+  });
 
   @override
   State<MyApp> createState() => _MyAppState();

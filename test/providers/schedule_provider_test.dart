@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
-import 'package:dienstplan/services/schedule_config_service.dart';
 import 'package:dienstplan/models/duty_schedule_config.dart';
 import '../mocks/schedule_provider_test.mocks.dart';
 
@@ -71,8 +70,7 @@ void main() {
 
 /// Testable subclass of ScheduleProvider that overrides DB and settings methods for isolation in tests.
 class TestableScheduleProvider extends ScheduleProvider {
-  TestableScheduleProvider(ScheduleConfigService configService)
-      : super(configService);
+  TestableScheduleProvider(super.configService);
 
   @override
   Future<void> loadSchedules() async {

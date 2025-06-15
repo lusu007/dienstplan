@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/duty_schedule_config.dart';
-import '../providers/schedule_provider.dart';
-import '../services/schedule_config_service.dart';
-import '../utils/logger.dart';
+import 'package:dienstplan/models/duty_schedule_config.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
+import 'package:dienstplan/services/schedule_config_service.dart';
+import 'package:dienstplan/utils/logger.dart';
 import 'calendar_screen.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
-import '../services/language_service.dart';
+import 'package:dienstplan/services/language_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstTimeSetupScreen extends StatefulWidget {

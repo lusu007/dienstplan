@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../models/schedule.dart';
-import '../models/duty_schedule_config.dart';
-import '../utils/logger.dart';
+import 'package:dienstplan/models/schedule.dart';
+import 'package:dienstplan/models/duty_schedule_config.dart';
+import 'package:dienstplan/utils/logger.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../providers/schedule_provider.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
-import '../services/language_service.dart';
-import '../screens/first_time_setup_screen.dart';
+import 'package:dienstplan/services/language_service.dart';
+import 'package:dienstplan/screens/first_time_setup_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -66,8 +66,6 @@ class SettingsScreen extends StatelessWidget {
         return l10n.calendarFormatTwoWeeks;
       case CalendarFormat.week:
         return l10n.calendarFormatWeek;
-      default:
-        return l10n.calendarFormatMonth;
     }
   }
 

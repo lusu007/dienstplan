@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../providers/schedule_provider.dart';
-import '../services/language_service.dart';
-import '../widgets/schedule_list.dart';
-import '../screens/settings_screen.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
+import 'package:dienstplan/services/language_service.dart';
+import 'package:dienstplan/widgets/schedule_list.dart';
+import 'package:dienstplan/screens/settings_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
@@ -106,8 +106,7 @@ class _CalendarScreenState extends State<CalendarScreen>
                     shape: BoxShape.circle,
                   ),
                   todayDecoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                    color: Theme.of(context).colorScheme.primary.withAlpha(128),
                     shape: BoxShape.circle,
                   ),
                 ),

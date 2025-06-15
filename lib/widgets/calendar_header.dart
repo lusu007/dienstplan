@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../providers/schedule_provider.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
 
 class CalendarHeader extends StatelessWidget {
   final DateTime focusedDay;
@@ -101,8 +101,6 @@ class CalendarHeader extends StatelessWidget {
         return date.subtract(const Duration(days: 7));
       case CalendarFormat.twoWeeks:
         return date.subtract(const Duration(days: 14));
-      default:
-        return date;
     }
   }
 
@@ -114,8 +112,6 @@ class CalendarHeader extends StatelessWidget {
         return date.add(const Duration(days: 7));
       case CalendarFormat.twoWeeks:
         return date.add(const Duration(days: 14));
-      default:
-        return date;
     }
   }
 }

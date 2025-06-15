@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../models/schedule.dart';
-import '../models/duty_schedule_config.dart';
-import '../services/database_service.dart';
-import '../services/schedule_config_service.dart';
-import '../utils/logger.dart';
+import 'package:dienstplan/models/schedule.dart';
+import 'package:dienstplan/models/duty_schedule_config.dart';
+import 'package:dienstplan/services/database_service.dart';
+import 'package:dienstplan/services/schedule_config_service.dart';
+import 'package:dienstplan/utils/logger.dart';
 
 class ScheduleProvider extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
@@ -187,7 +187,7 @@ class ScheduleProvider extends ChangeNotifier {
     try {
       // Clear all data from the database
       await _databaseService.clearDatabase();
-      
+
       // Reset all state variables
       _schedules = [];
       _selectedDutyGroup = null;
@@ -195,10 +195,10 @@ class ScheduleProvider extends ChangeNotifier {
       _selectedDay = DateTime.now();
       _focusedDay = DateTime.now();
       _calendarFormat = CalendarFormat.month;
-      
+
       // Clear settings
       await _saveSettings();
-      
+
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error resetting schedule provider', e, stackTrace);

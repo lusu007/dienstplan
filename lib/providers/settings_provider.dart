@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../services/database_service.dart';
-import '../utils/logger.dart';
+import 'package:dienstplan/services/database_service.dart';
+import 'package:dienstplan/utils/logger.dart';
 
 class SettingsProvider extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();

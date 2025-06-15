@@ -3,7 +3,7 @@
   "meta": {
     "name": "ESD Polizei Bremen",
     "created_by": "Lukas",
-    "description": "5-wöchiger Rotationsplan mit ZD-Woche als Einstieg",
+    "description": "5-wöchiger Rotationsplan für den Einsatz- und Streifendienst",
     "start_week_day": "Monday",
     "start_date": "2025-06-30",
     "days": [

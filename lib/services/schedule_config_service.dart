@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
-import '../models/schedule.dart';
-import '../models/duty_schedule_config.dart';
-import '../utils/logger.dart';
+import 'package:dienstplan/models/schedule.dart';
+import 'package:dienstplan/models/duty_schedule_config.dart';
+import 'package:dienstplan/utils/logger.dart';
 
 class ScheduleConfigService extends ChangeNotifier {
   final SharedPreferences _prefs;
