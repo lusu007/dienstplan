@@ -120,15 +120,23 @@ class ScheduleProvider extends ChangeNotifier {
 
   // Set active configuration
   Future<void> setActiveConfig(DutyScheduleConfig config) async {
-    _activeConfig = config;
-    await _saveSettings();
+    try {
+      _activeConfig = config;
+      await _saveSettings();
 
-    // Generate and save schedules for the new config
-    final schedules = await _configService.generateSchedulesForConfig(config);
-    await _databaseService.saveSchedules(schedules);
+      // Generate and save schedules for the new config
+      AppLogger.i('Generating schedules for config: ${config.name}');
+      final schedules = await _configService.generateSchedulesForConfig(config);
 
-    await loadSchedules();
-    notifyListeners();
+      // Save schedules in batches
+      await _databaseService.saveSchedules(schedules);
+
+      await loadSchedules();
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error setting active config', e, stackTrace);
+      rethrow;
+    }
   }
 
   // Load schedules for the selected day

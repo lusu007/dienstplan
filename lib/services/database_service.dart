@@ -122,27 +122,39 @@ class DatabaseService {
     try {
       AppLogger.i('Saving ${schedules.length} schedules to database');
       final db = await database;
-      final batch = db.batch();
+      const batchSize = 1000; // Process 1000 schedules at a time
 
-      for (final schedule in schedules) {
-        batch.insert(
-          'schedules',
-          {
-            'id': '${schedule.date.toIso8601String()}_${schedule.dutyGroupId}',
-            'date': schedule.date.toIso8601String(),
-            'service': schedule.service,
-            'duty_group_id': schedule.dutyGroupId,
-            'duty_group_name': schedule.dutyGroupName,
-            'duty_type_id': schedule.dutyTypeId,
-            'is_all_day': schedule.isAllDay ? 1 : 0,
-            'config_name': schedule.configName,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
+      for (var i = 0; i < schedules.length; i += batchSize) {
+        final end = (i + batchSize < schedules.length)
+            ? i + batchSize
+            : schedules.length;
+        final batch = db.batch();
+
+        for (var j = i; j < end; j++) {
+          final schedule = schedules[j];
+          batch.insert(
+            'schedules',
+            {
+              'id':
+                  '${schedule.date.toIso8601String()}_${schedule.dutyGroupId}',
+              'date': schedule.date.toIso8601String(),
+              'service': schedule.service,
+              'duty_group_id': schedule.dutyGroupId,
+              'duty_group_name': schedule.dutyGroupName,
+              'duty_type_id': schedule.dutyTypeId,
+              'is_all_day': schedule.isAllDay ? 1 : 0,
+              'config_name': schedule.configName,
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+
+        await batch.commit();
+        AppLogger.i(
+            'Saved batch ${i ~/ batchSize + 1} of ${(schedules.length / batchSize).ceil()}');
       }
 
-      await batch.commit();
-      AppLogger.i('Schedules saved successfully');
+      AppLogger.i('All schedules saved successfully');
     } catch (e, stackTrace) {
       AppLogger.e('Error saving schedules', e, stackTrace);
       rethrow;
