@@ -22,6 +22,8 @@ class ScheduleProvider extends ChangeNotifier {
   // Cache for loaded schedules
   final Map<String, List<Schedule>> _scheduleCache = {};
   static const int _cacheDays = 62; // Cache two months of schedules
+  DateTime? _lastGeneratedStartDate;
+  DateTime? _lastGeneratedEndDate;
 
   ScheduleProvider(this._configService);
 
@@ -124,9 +126,23 @@ class ScheduleProvider extends ChangeNotifier {
       _activeConfig = config;
       await _saveSettings();
 
-      // Generate and save schedules for the new config
-      AppLogger.i('Generating schedules for config: ${config.name}');
-      final schedules = await _configService.generateSchedulesForConfig(config);
+      // Calculate initial date range to generate (1 year before and after current date)
+      final now = DateTime.now();
+      final startDate = DateTime(now.year - 1, now.month, now.day);
+      final endDate = DateTime(now.year + 1, now.month, now.day);
+
+      _lastGeneratedStartDate = startDate;
+      _lastGeneratedEndDate = endDate;
+
+      // Generate and save schedules for the initial date range
+      AppLogger.i('Generating initial schedules for config: ${config.name}');
+      AppLogger.i(
+          'Generating schedules from ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+      final schedules = await _configService.generateSchedulesForConfig(
+        config,
+        startDate: startDate,
+        endDate: endDate,
+      );
 
       // Save schedules in batches
       await _databaseService.saveSchedules(schedules);
@@ -168,6 +184,36 @@ class ScheduleProvider extends ChangeNotifier {
       final endDate = selectedMonthEnd.isAfter(focusedMonthEnd)
           ? selectedMonthEnd
           : focusedMonthEnd;
+
+      // Check if we need to generate more schedules
+      if (_lastGeneratedStartDate == null ||
+          _lastGeneratedEndDate == null ||
+          startDate.isBefore(_lastGeneratedStartDate!) ||
+          endDate.isAfter(_lastGeneratedEndDate!)) {
+        // Calculate new date range to generate
+        final newStartDate =
+            startDate.isBefore(_lastGeneratedStartDate ?? startDate)
+                ? startDate
+                : _lastGeneratedStartDate!;
+        final newEndDate = endDate.isAfter(_lastGeneratedEndDate ?? endDate)
+            ? endDate
+            : _lastGeneratedEndDate!;
+
+        AppLogger.i(
+            'Generating additional schedules from ${newStartDate.toIso8601String()} to ${newEndDate.toIso8601String()}');
+        final newSchedules = await _configService.generateSchedulesForConfig(
+          _activeConfig!,
+          startDate: newStartDate,
+          endDate: newEndDate,
+        );
+
+        // Save new schedules
+        await _databaseService.saveSchedules(newSchedules);
+
+        // Update generated date range
+        _lastGeneratedStartDate = newStartDate;
+        _lastGeneratedEndDate = newEndDate;
+      }
 
       // Check if we have the data in cache
       final cacheKey =
@@ -232,6 +278,7 @@ class ScheduleProvider extends ChangeNotifier {
   // Set selected date
   Future<void> setSelectedDate(DateTime date) async {
     _selectedDay = date;
+    _focusedDay = date; // Update focused day as well
     await loadSchedules(); // Reload schedules when selected day changes
     await _saveSettings();
     notifyListeners();
@@ -244,6 +291,10 @@ class ScheduleProvider extends ChangeNotifier {
 
   // Set focused day
   Future<void> setFocusedDay(DateTime date) async {
+    if (_focusedDay?.year == date.year && _focusedDay?.month == date.month) {
+      // Only update focused day if month/year changed
+      return;
+    }
     _focusedDay = date;
     await loadSchedules(); // Reload schedules when focused day changes
     await _saveSettings();

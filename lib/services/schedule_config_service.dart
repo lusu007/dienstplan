@@ -114,14 +114,27 @@ class ScheduleConfigService extends ChangeNotifier {
       (a ~/ b) - ((a % b != 0 && a.isNegative) ? 1 : 0);
 
   Future<List<Schedule>> generateSchedulesForConfig(
-      DutyScheduleConfig config) async {
+    DutyScheduleConfig config, {
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
     AppLogger.i('Generating schedules for config: ${config.name}');
     final schedules = <Schedule>[];
-    final startDate = config.startDate;
+
+    // Use provided date range or default to config's start date
+    final effectiveStartDate = startDate ?? config.startDate;
+    final effectiveEndDate =
+        endDate ?? config.startDate.add(const Duration(days: 27375));
+
+    // Calculate the number of days to generate
+    final daysToGenerate =
+        effectiveEndDate.difference(effectiveStartDate).inDays;
+    AppLogger.i(
+        'Generating schedules for $daysToGenerate days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}');
 
     // Generate schedules for each day
-    for (var i = -2555; i < 27375; i++) {
-      final date = startDate.add(Duration(days: i));
+    for (var i = 0; i < daysToGenerate; i++) {
+      final date = effectiveStartDate.add(Duration(days: i));
 
       // Generate schedules for each duty group
       for (final dutyGroup in config.dutyGroups) {
@@ -131,10 +144,9 @@ class ScheduleConfigService extends ChangeNotifier {
           continue;
         }
 
-        final deltaDays = date.difference(startDate).inDays;
+        final deltaDays = date.difference(config.startDate).inDays;
         final rawWeekIndex =
             floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
-        // Ensure weekIndex is positive by adding rhythm.lengthWeeks before taking modulo
         final weekIndex =
             ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
                 rhythm.lengthWeeks;
