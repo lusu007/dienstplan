@@ -19,6 +19,10 @@ class ScheduleProvider extends ChangeNotifier {
   List<Schedule> _schedules = [];
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
+  // Cache for loaded schedules
+  final Map<String, List<Schedule>> _scheduleCache = {};
+  static const int _cacheDays = 62; // Cache two months of schedules
+
   ScheduleProvider(this._configService);
 
   // Getters
@@ -131,11 +135,78 @@ class ScheduleProvider extends ChangeNotifier {
   // Load schedules for the selected day
   Future<void> loadSchedules() async {
     try {
-      _schedules = await _databaseService.loadSchedules();
+      if (_activeConfig == null) {
+        _schedules = [];
+        notifyListeners();
+        return;
+      }
+
+      // Calculate date ranges for both selected and focused months
+      final selectedMonthStart = _selectedDay != null
+          ? DateTime(_selectedDay!.year, _selectedDay!.month, 1)
+          : DateTime.now();
+      final selectedMonthEnd =
+          DateTime(selectedMonthStart.year, selectedMonthStart.month + 1, 0);
+
+      final focusedMonthStart = _focusedDay != null
+          ? DateTime(_focusedDay!.year, _focusedDay!.month, 1)
+          : DateTime.now();
+      final focusedMonthEnd =
+          DateTime(focusedMonthStart.year, focusedMonthStart.month + 1, 0);
+
+      // Determine the overall date range to load
+      final startDate = selectedMonthStart.isBefore(focusedMonthStart)
+          ? selectedMonthStart
+          : focusedMonthStart;
+      final endDate = selectedMonthEnd.isAfter(focusedMonthEnd)
+          ? selectedMonthEnd
+          : focusedMonthEnd;
+
+      // Check if we have the data in cache
+      final cacheKey =
+          '${startDate.toIso8601String()}_${endDate.toIso8601String()}_${_activeConfig!.meta.name}';
+      if (_scheduleCache.containsKey(cacheKey)) {
+        _schedules = _scheduleCache[cacheKey]!;
+        notifyListeners();
+        return;
+      }
+
+      // Load from database if not in cache
+      _schedules = await _databaseService.loadSchedulesForDateRange(
+        startDate,
+        endDate,
+        configName: _activeConfig!.meta.name,
+      );
+
+      // Update cache
+      _scheduleCache[cacheKey] = _schedules;
+
+      // Clean up old cache entries
+      _cleanupCache();
+
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error loading schedules', e, stackTrace);
       rethrow;
+    }
+  }
+
+  void _cleanupCache() {
+    final now = DateTime.now();
+    final keysToRemove = _scheduleCache.keys.where((key) {
+      final parts = key.split('_');
+      if (parts.length < 2) return true;
+
+      try {
+        final startDate = DateTime.parse(parts[0]);
+        return startDate.isBefore(now.subtract(Duration(days: _cacheDays)));
+      } catch (e) {
+        return true;
+      }
+    }).toList();
+
+    for (final key in keysToRemove) {
+      _scheduleCache.remove(key);
     }
   }
 
@@ -153,7 +224,7 @@ class ScheduleProvider extends ChangeNotifier {
   // Set selected date
   Future<void> setSelectedDate(DateTime date) async {
     _selectedDay = date;
-    await loadSchedules();
+    await loadSchedules(); // Reload schedules when selected day changes
     await _saveSettings();
     notifyListeners();
   }
@@ -166,6 +237,7 @@ class ScheduleProvider extends ChangeNotifier {
   // Set focused day
   Future<void> setFocusedDay(DateTime date) async {
     _focusedDay = date;
+    await loadSchedules(); // Reload schedules when focused day changes
     await _saveSettings();
     notifyListeners();
   }
@@ -192,18 +264,16 @@ class ScheduleProvider extends ChangeNotifier {
 
       // Reset all state variables
       _schedules = [];
+      _scheduleCache.clear();
       _selectedDutyGroup = null;
       _activeConfig = null;
       _selectedDay = DateTime.now();
       _focusedDay = DateTime.now();
       _calendarFormat = CalendarFormat.month;
 
-      // Clear settings
-      await _saveSettings();
-
       notifyListeners();
     } catch (e, stackTrace) {
-      AppLogger.e('Error resetting schedule provider', e, stackTrace);
+      AppLogger.e('Error resetting provider', e, stackTrace);
       rethrow;
     }
   }

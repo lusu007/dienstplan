@@ -262,4 +262,42 @@ class DatabaseService {
       rethrow;
     }
   }
+
+  Future<List<Schedule>> loadSchedulesForDateRange(
+      DateTime startDate, DateTime endDate,
+      {String? configName}) async {
+    try {
+      AppLogger.i(
+          'Loading schedules from database for date range: $startDate to $endDate');
+      final db = await database;
+
+      String whereClause = 'date BETWEEN ? AND ?';
+      List<dynamic> whereArgs = [
+        startDate.toIso8601String(),
+        endDate.toIso8601String(),
+      ];
+
+      if (configName != null) {
+        whereClause += ' AND config_name = ?';
+        whereArgs.add(configName);
+      }
+
+      final List<Map<String, dynamic>> maps = await db.query(
+        'schedules',
+        where: whereClause,
+        whereArgs: whereArgs,
+      );
+
+      final schedules = List<Schedule>.generate(maps.length, (i) {
+        return Schedule.fromMap(maps[i]);
+      });
+
+      AppLogger.i(
+          'Loaded ${schedules.length} schedules from database for date range');
+      return schedules;
+    } catch (e, stackTrace) {
+      AppLogger.e('Error loading schedules for date range', e, stackTrace);
+      rethrow;
+    }
+  }
 }

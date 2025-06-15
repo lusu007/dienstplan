@@ -140,7 +140,7 @@ class ScheduleConfigService extends ChangeNotifier {
         final dayIndex = (deltaDays % 7 + 7) % 7;
 
         // Debug logging for specific dates
-        if (date.day == 31 && date.month == 7) {
+        if (date.day == 30 && date.month == 3) {
           AppLogger.i('${dutyGroup.name} on ${date.day}.${date.month}:');
           AppLogger.i('Delta days: $deltaDays');
           AppLogger.i(
