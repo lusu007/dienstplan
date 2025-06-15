@@ -272,7 +272,7 @@ class DatabaseService {
       final db = await database;
 
       String whereClause = 'date BETWEEN ? AND ?';
-      List<dynamic> whereArgs = [
+      final List<dynamic> whereArgs = [
         startDate.toIso8601String(),
         endDate.toIso8601String(),
       ];

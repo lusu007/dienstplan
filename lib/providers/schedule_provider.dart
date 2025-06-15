@@ -199,7 +199,8 @@ class ScheduleProvider extends ChangeNotifier {
 
       try {
         final startDate = DateTime.parse(parts[0]);
-        return startDate.isBefore(now.subtract(Duration(days: _cacheDays)));
+        return startDate
+            .isBefore(now.subtract(const Duration(days: _cacheDays)));
       } catch (e) {
         return true;
       }
