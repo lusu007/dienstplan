@@ -6,13 +6,6 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "dart"
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-    versioning-strategy: auto
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -20,9 +13,3 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "github-actions"
-    commit-message:
-      prefix: "ci"
-      include: "scope" 
