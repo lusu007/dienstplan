@@ -110,6 +110,9 @@ class ScheduleConfigService extends ChangeNotifier {
     }
   }
 
+  int floorDiv(int a, int b) =>
+      (a ~/ b) - ((a % b != 0 && a.isNegative) ? 1 : 0);
+
   Future<List<Schedule>> generateSchedulesForConfig(
       DutyScheduleConfig config) async {
     AppLogger.i('Generating schedules for config: ${config.name}');
@@ -128,15 +131,13 @@ class ScheduleConfigService extends ChangeNotifier {
           continue;
         }
 
-        // Calculate delta_days = (targetDate - startDate).days
         final deltaDays = date.difference(startDate).inDays;
-
-        // Calculate week_index = (delta_days // 7 - offset_weeks) % length_weeks
-        final weekIndex = ((deltaDays ~/ 7) - dutyGroup.offsetWeeks.toInt()) %
-            rhythm.lengthWeeks;
-
-        // Calculate day_index = delta_days % 7
-        final dayIndex = deltaDays % 7;
+        final rawWeekIndex =
+            floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
+        final weekIndex =
+            ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
+                rhythm.lengthWeeks;
+        final dayIndex = (deltaDays % 7 + 7) % 7;
 
         // Debug logging for specific dates
         if (date.day == 31 && date.month == 7) {
