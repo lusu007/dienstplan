@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/schedule_provider.dart';
-import '../models/schedule.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
+import 'package:dienstplan/models/schedule.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 
 class ScheduleList extends StatefulWidget {
@@ -125,7 +125,7 @@ class _ScheduleListState extends State<ScheduleList> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final filteredSchedules = _filterSchedules();
     final sortedSchedules = _sortSchedulesByTime(filteredSchedules);
     final provider = Provider.of<ScheduleProvider>(context);

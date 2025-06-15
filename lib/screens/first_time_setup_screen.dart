@@ -78,7 +78,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final languageService = context.watch<LanguageService>();
     return Scaffold(
       appBar: AppBar(

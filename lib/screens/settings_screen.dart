@@ -11,7 +11,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final languageService = context.watch<LanguageService>();
     final scheduleProvider = context.watch<ScheduleProvider>();
 
@@ -71,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
 
   void _showCalendarFormatDialog(
       BuildContext context, ScheduleProvider provider) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -108,7 +108,7 @@ class SettingsScreen extends StatelessWidget {
 
   void _showDutyScheduleDialog(
       BuildContext context, ScheduleProvider provider) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -130,7 +130,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showResetDialog(BuildContext context, ScheduleProvider provider) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -166,7 +166,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showLanguageDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final languageService = context.read<LanguageService>();
 
     showDialog(

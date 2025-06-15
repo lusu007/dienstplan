@@ -55,7 +55,7 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     return Consumer2<ScheduleProvider, LanguageService>(
       builder: (context, scheduleProvider, languageService, child) {
         return Scaffold(
