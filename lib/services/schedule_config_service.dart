@@ -120,7 +120,7 @@ class ScheduleConfigService extends ChangeNotifier {
     final startDate = config.startDate;
 
     // Generate schedules for each day
-    for (var i = -365; i < 365; i++) {
+    for (var i = -2555; i < 27375; i++) {
       final date = startDate.add(Duration(days: i));
 
       // Generate schedules for each duty group
@@ -134,20 +134,11 @@ class ScheduleConfigService extends ChangeNotifier {
         final deltaDays = date.difference(startDate).inDays;
         final rawWeekIndex =
             floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
+        // Ensure weekIndex is positive by adding rhythm.lengthWeeks before taking modulo
         final weekIndex =
             ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
                 rhythm.lengthWeeks;
-        final dayIndex = (deltaDays % 7 + 7) % 7;
-
-        // Debug logging for specific dates
-        if (date.day == 30 && date.month == 3) {
-          AppLogger.i('${dutyGroup.name} on ${date.day}.${date.month}:');
-          AppLogger.i('Delta days: $deltaDays');
-          AppLogger.i(
-              'Week index calculation: ($deltaDays ~/ 7) - ${dutyGroup.offsetWeeks} = ${deltaDays ~/ 7 - dutyGroup.offsetWeeks.toInt()}');
-          AppLogger.i('Week index: $weekIndex');
-          AppLogger.i('Day index: $dayIndex');
-        }
+        final dayIndex = ((deltaDays % 7) + 7) % 7;
 
         if (weekIndex >= 0 &&
             weekIndex < rhythm.pattern.length &&

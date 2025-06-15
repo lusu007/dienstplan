@@ -82,8 +82,8 @@ class _CalendarScreenState extends State<CalendarScreen>
           body: Column(
             children: [
               TableCalendar(
-                firstDay: DateTime.utc(2024, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
+                firstDay: DateTime.utc(2018, 1, 1),
+                lastDay: DateTime.utc(2100, 12, 31),
                 focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
                 calendarFormat: scheduleProvider.calendarFormat,
                 startingDayOfWeek: StartingDayOfWeek.monday,

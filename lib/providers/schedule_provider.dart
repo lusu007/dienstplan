@@ -38,13 +38,12 @@ class ScheduleProvider extends ChangeNotifier {
   // Initialize the provider
   Future<void> initialize() async {
     try {
-      AppLogger.i('initialize() called');
       AppLogger.i('Initializing ScheduleProvider');
+      await _configService.initialize();
       AppLogger.i('Loading schedule configurations');
+      await _loadConfigs();
       AppLogger.i('Loading settings');
       AppLogger.i('Loading active config');
-      await _configService.initialize();
-      await _loadConfigs();
       await _loadSettings();
 
       AppLogger.i(
