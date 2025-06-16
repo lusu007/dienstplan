@@ -85,11 +85,6 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/images/logo.png"
   adaptive_icon_padding: true
   adaptive_icon_monochrome: "assets/images/logo.png"
-  web:
-    generate: true
-    image_path: "assets/images/logo.png"
-    background_color: "#FFFFFF"
-    theme_color: "#FFFFFF"
 
 flutter_native_splash:
   color: "#FFFFFF"
