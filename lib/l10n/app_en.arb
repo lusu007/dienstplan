@@ -1,64 +1,240 @@
 {
+  "@@locale": "en",
   "appTitle": "Duty Schedule",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
   "settings": "Settings",
+  "@settings": {
+    "description": "Title for the settings screen"
+  },
   "language": "Language",
+  "@language": {
+    "description": "Label for language selection"
+  },
   "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Title for language selection screen"
+  },
   "german": "German",
+  "@german": {
+    "description": "German language option"
+  },
   "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
   "dutySchedule": "Duty Schedule",
+  "@dutySchedule": {
+    "description": "Title for duty schedule"
+  },
   "selectDutySchedule": "Select Duty Schedule",
+  "@selectDutySchedule": {
+    "description": "Title for duty schedule selection screen"
+  },
   "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
   "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
   "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
   "edit": "Edit",
+  "@edit": {
+    "description": "Edit button text"
+  },
   "add": "Add",
+  "@add": {
+    "description": "Add button text"
+  },
   "error": "Error",
+  "@error": {
+    "description": "Error message title"
+  },
   "success": "Success",
+  "@success": {
+    "description": "Success message title"
+  },
   "loading": "Loading...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
   "noDutySchedules": "No duty schedules available",
+  "@noDutySchedules": {
+    "description": "Message shown when no duty schedules are available"
+  },
   "createNewDutySchedule": "Create New Duty Schedule",
+  "@createNewDutySchedule": {
+    "description": "Title for creating a new duty schedule"
+  },
   "dutyScheduleName": "Duty Schedule Name",
+  "@dutyScheduleName": {
+    "description": "Label for duty schedule name field"
+  },
   "dutyScheduleDescription": "Description",
+  "@dutyScheduleDescription": {
+    "description": "Label for duty schedule description field"
+  },
   "dutyScheduleStartDate": "Start Date",
+  "@dutyScheduleStartDate": {
+    "description": "Label for duty schedule start date field"
+  },
   "dutyScheduleStartWeekDay": "Start Week Day",
+  "@dutyScheduleStartWeekDay": {
+    "description": "Label for duty schedule start week day field"
+  },
   "dutyScheduleDays": "Days",
+  "@dutyScheduleDays": {
+    "description": "Label for duty schedule days field"
+  },
   "dutyScheduleDutyTypes": "Duty Types",
+  "@dutyScheduleDutyTypes": {
+    "description": "Label for duty schedule duty types field"
+  },
   "dutyScheduleRhythms": "Rhythms",
+  "@dutyScheduleRhythms": {
+    "description": "Label for duty schedule rhythms field"
+  },
   "dutyScheduleGroups": "Duty Groups",
+  "@dutyScheduleGroups": {
+    "description": "Label for duty schedule groups field"
+  },
   "dutyTypeLabel": "Label",
+  "@dutyTypeLabel": {
+    "description": "Label for duty type name field"
+  },
   "dutyTypeStartTime": "Start Time",
+  "@dutyTypeStartTime": {
+    "description": "Label for duty type start time field"
+  },
   "dutyTypeEndTime": "End Time",
+  "@dutyTypeEndTime": {
+    "description": "Label for duty type end time field"
+  },
   "dutyTypeAllDay": "All Day",
+  "@dutyTypeAllDay": {
+    "description": "Label for duty type all day checkbox"
+  },
   "rhythmLengthWeeks": "Length in Weeks",
+  "@rhythmLengthWeeks": {
+    "description": "Label for rhythm length in weeks field"
+  },
   "rhythmPattern": "Pattern",
+  "@rhythmPattern": {
+    "description": "Label for rhythm pattern field"
+  },
   "groupName": "Name",
+  "@groupName": {
+    "description": "Label for group name field"
+  },
   "groupRhythm": "Rhythm",
+  "@groupRhythm": {
+    "description": "Label for group rhythm field"
+  },
   "groupOffsetWeeks": "Offset in Weeks",
+  "@groupOffsetWeeks": {
+    "description": "Label for group offset in weeks field"
+  },
   "firstTimeSetup": "First Time Setup",
+  "@firstTimeSetup": {
+    "description": "Title for first time setup screen"
+  },
   "selectDefaultDutySchedule": "Select Default Duty Schedule",
+  "@selectDefaultDutySchedule": {
+    "description": "Title for selecting default duty schedule"
+  },
   "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Continue button text"
+  },
   "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message title"
+  },
   "welcomeMessage": "Please select a default duty schedule.",
+  "@welcomeMessage": {
+    "description": "Welcome message text"
+  },
   "settingsSaved": "Settings saved",
+  "@settingsSaved": {
+    "description": "Message shown when settings are saved successfully"
+  },
   "settingsSaveError": "Error saving settings",
+  "@settingsSaveError": {
+    "description": "Error message when settings save fails"
+  },
   "dutyScheduleSaved": "Duty schedule saved",
+  "@dutyScheduleSaved": {
+    "description": "Message shown when duty schedule is saved successfully"
+  },
   "dutyScheduleSaveError": "Error saving duty schedule",
+  "@dutyScheduleSaveError": {
+    "description": "Error message when duty schedule save fails"
+  },
   "dutyScheduleDeleted": "Duty schedule deleted",
+  "@dutyScheduleDeleted": {
+    "description": "Message shown when duty schedule is deleted successfully"
+  },
   "dutyScheduleDeleteError": "Error deleting duty schedule",
+  "@dutyScheduleDeleteError": {
+    "description": "Error message when duty schedule deletion fails"
+  },
   "confirmDelete": "Are you sure you want to delete this duty schedule?",
+  "@confirmDelete": {
+    "description": "Confirmation message for deleting a duty schedule"
+  },
   "yes": "Yes",
+  "@yes": {
+    "description": "Yes button text"
+  },
   "no": "No",
+  "@no": {
+    "description": "No button text"
+  },
   "calendarFormat": "Calendar Format",
+  "@calendarFormat": {
+    "description": "Label for calendar format selection"
+  },
   "calendarFormatMonth": "Month",
+  "@calendarFormatMonth": {
+    "description": "Month calendar format option"
+  },
   "calendarFormatTwoWeeks": "Two Weeks",
+  "@calendarFormatTwoWeeks": {
+    "description": "Two weeks calendar format option"
+  },
   "calendarFormatWeek": "Week",
+  "@calendarFormatWeek": {
+    "description": "Week calendar format option"
+  },
   "resetData": "Reset Data",
+  "@resetData": {
+    "description": "Title for reset data option"
+  },
   "resetDataConfirmation": "Are you sure you want to reset all data? This cannot be undone.",
+  "@resetDataConfirmation": {
+    "description": "Confirmation message for resetting data"
+  },
   "resetDataSuccess": "Data has been reset",
+  "@resetDataSuccess": {
+    "description": "Message shown when data is reset successfully"
+  },
   "reset": "Reset",
+  "@reset": {
+    "description": "Reset button text"
+  },
   "services": "Services",
+  "@services": {
+    "description": "Title for services screen"
+  },
   "servicesOnDate": "on {date}",
   "@servicesOnDate": {
+    "description": "Services on specific date",
     "placeholders": {
       "date": {
         "type": "String"
@@ -66,6 +242,15 @@
     }
   },
   "noServicesForDay": "No services for this day",
+  "@noServicesForDay": {
+    "description": "Message shown when no services are available for a day"
+  },
   "allDay": "All day",
-  "licenses": "Licenses"
+  "@allDay": {
+    "description": "Label for all-day service"
+  },
+  "licenses": "Licenses",
+  "@licenses": {
+    "description": "Title for the licenses screen"
+  }
 } 

@@ -1,64 +1,240 @@
 {
+  "@@locale": "de",
   "appTitle": "Dienstplan",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
   "settings": "Einstellungen",
+  "@settings": {
+    "description": "Title for the settings screen"
+  },
   "language": "Sprache",
+  "@language": {
+    "description": "Label for language selection"
+  },
   "selectLanguage": "Sprache auswählen",
+  "@selectLanguage": {
+    "description": "Title for language selection screen"
+  },
   "german": "Deutsch",
+  "@german": {
+    "description": "German language option"
+  },
   "english": "Englisch",
+  "@english": {
+    "description": "English language option"
+  },
   "dutySchedule": "Dienstplan",
+  "@dutySchedule": {
+    "description": "Title for duty schedule"
+  },
   "selectDutySchedule": "Dienstplan auswählen",
+  "@selectDutySchedule": {
+    "description": "Title for duty schedule selection screen"
+  },
   "save": "Speichern",
+  "@save": {
+    "description": "Save button text"
+  },
   "cancel": "Abbrechen",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
   "delete": "Löschen",
+  "@delete": {
+    "description": "Delete button text"
+  },
   "edit": "Bearbeiten",
+  "@edit": {
+    "description": "Edit button text"
+  },
   "add": "Hinzufügen",
+  "@add": {
+    "description": "Add button text"
+  },
   "error": "Fehler",
+  "@error": {
+    "description": "Error message title"
+  },
   "success": "Erfolg",
+  "@success": {
+    "description": "Success message title"
+  },
   "loading": "Laden...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
   "noDutySchedules": "Keine Dienstpläne verfügbar",
+  "@noDutySchedules": {
+    "description": "Message shown when no duty schedules are available"
+  },
   "createNewDutySchedule": "Neuen Dienstplan erstellen",
+  "@createNewDutySchedule": {
+    "description": "Title for creating a new duty schedule"
+  },
   "dutyScheduleName": "Name des Dienstplans",
+  "@dutyScheduleName": {
+    "description": "Label for duty schedule name field"
+  },
   "dutyScheduleDescription": "Beschreibung",
+  "@dutyScheduleDescription": {
+    "description": "Label for duty schedule description field"
+  },
   "dutyScheduleStartDate": "Startdatum",
+  "@dutyScheduleStartDate": {
+    "description": "Label for duty schedule start date field"
+  },
   "dutyScheduleStartWeekDay": "Startwochentag",
+  "@dutyScheduleStartWeekDay": {
+    "description": "Label for duty schedule start week day field"
+  },
   "dutyScheduleDays": "Tage",
+  "@dutyScheduleDays": {
+    "description": "Label for duty schedule days field"
+  },
   "dutyScheduleDutyTypes": "Diensttypen",
+  "@dutyScheduleDutyTypes": {
+    "description": "Label for duty schedule duty types field"
+  },
   "dutyScheduleRhythms": "Rhythmen",
+  "@dutyScheduleRhythms": {
+    "description": "Label for duty schedule rhythms field"
+  },
   "dutyScheduleGroups": "Dienstgruppen",
+  "@dutyScheduleGroups": {
+    "description": "Label for duty schedule groups field"
+  },
   "dutyTypeLabel": "Bezeichnung",
+  "@dutyTypeLabel": {
+    "description": "Label for duty type name field"
+  },
   "dutyTypeStartTime": "Startzeit",
+  "@dutyTypeStartTime": {
+    "description": "Label for duty type start time field"
+  },
   "dutyTypeEndTime": "Endzeit",
+  "@dutyTypeEndTime": {
+    "description": "Label for duty type end time field"
+  },
   "dutyTypeAllDay": "Ganztägig",
+  "@dutyTypeAllDay": {
+    "description": "Label for duty type all day checkbox"
+  },
   "rhythmLengthWeeks": "Länge in Wochen",
+  "@rhythmLengthWeeks": {
+    "description": "Label for rhythm length in weeks field"
+  },
   "rhythmPattern": "Muster",
+  "@rhythmPattern": {
+    "description": "Label for rhythm pattern field"
+  },
   "groupName": "Name",
+  "@groupName": {
+    "description": "Label for group name field"
+  },
   "groupRhythm": "Rhythmus",
+  "@groupRhythm": {
+    "description": "Label for group rhythm field"
+  },
   "groupOffsetWeeks": "Versatz in Wochen",
+  "@groupOffsetWeeks": {
+    "description": "Label for group offset in weeks field"
+  },
   "firstTimeSetup": "Erste Einrichtung",
+  "@firstTimeSetup": {
+    "description": "Title for first time setup screen"
+  },
   "selectDefaultDutySchedule": "Standard-Dienstplan auswählen",
+  "@selectDefaultDutySchedule": {
+    "description": "Title for selecting default duty schedule"
+  },
   "continueButton": "Weiter",
+  "@continueButton": {
+    "description": "Continue button text"
+  },
   "welcome": "Willkommen",
+  "@welcome": {
+    "description": "Welcome message title"
+  },
   "welcomeMessage": "Bitte wählen Sie einen Standard-Dienstplan aus.",
+  "@welcomeMessage": {
+    "description": "Welcome message text"
+  },
   "settingsSaved": "Einstellungen gespeichert",
+  "@settingsSaved": {
+    "description": "Message shown when settings are saved successfully"
+  },
   "settingsSaveError": "Fehler beim Speichern der Einstellungen",
+  "@settingsSaveError": {
+    "description": "Error message when settings save fails"
+  },
   "dutyScheduleSaved": "Dienstplan gespeichert",
+  "@dutyScheduleSaved": {
+    "description": "Message shown when duty schedule is saved successfully"
+  },
   "dutyScheduleSaveError": "Fehler beim Speichern des Dienstplans",
+  "@dutyScheduleSaveError": {
+    "description": "Error message when duty schedule save fails"
+  },
   "dutyScheduleDeleted": "Dienstplan gelöscht",
+  "@dutyScheduleDeleted": {
+    "description": "Message shown when duty schedule is deleted successfully"
+  },
   "dutyScheduleDeleteError": "Fehler beim Löschen des Dienstplans",
+  "@dutyScheduleDeleteError": {
+    "description": "Error message when duty schedule deletion fails"
+  },
   "confirmDelete": "Möchten Sie diesen Dienstplan wirklich löschen?",
+  "@confirmDelete": {
+    "description": "Confirmation message for deleting a duty schedule"
+  },
   "yes": "Ja",
+  "@yes": {
+    "description": "Yes button text"
+  },
   "no": "Nein",
+  "@no": {
+    "description": "No button text"
+  },
   "calendarFormat": "Kalenderformat",
+  "@calendarFormat": {
+    "description": "Label for calendar format selection"
+  },
   "calendarFormatMonth": "Monat",
+  "@calendarFormatMonth": {
+    "description": "Month calendar format option"
+  },
   "calendarFormatTwoWeeks": "Zwei Wochen",
+  "@calendarFormatTwoWeeks": {
+    "description": "Two weeks calendar format option"
+  },
   "calendarFormatWeek": "Woche",
+  "@calendarFormatWeek": {
+    "description": "Week calendar format option"
+  },
   "resetData": "Daten zurücksetzen",
+  "@resetData": {
+    "description": "Title for reset data option"
+  },
   "resetDataConfirmation": "Möchten Sie wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
+  "@resetDataConfirmation": {
+    "description": "Confirmation message for resetting data"
+  },
   "resetDataSuccess": "Daten wurden zurückgesetzt",
+  "@resetDataSuccess": {
+    "description": "Message shown when data is reset successfully"
+  },
   "reset": "Zurücksetzen",
+  "@reset": {
+    "description": "Reset button text"
+  },
   "services": "Dienste",
+  "@services": {
+    "description": "Title for services screen"
+  },
   "servicesOnDate": "am {date}",
   "@servicesOnDate": {
+    "description": "Services on specific date",
     "placeholders": {
       "date": {
         "type": "String"
@@ -66,6 +242,15 @@
     }
   },
   "noServicesForDay": "Keine Dienste für diesen Tag",
+  "@noServicesForDay": {
+    "description": "Message shown when no services are available for a day"
+  },
   "allDay": "Ganztägig",
-  "licenses": "Lizenzen"
+  "@allDay": {
+    "description": "Label for all-day service"
+  },
+  "licenses": "Lizenzen",
+  "@licenses": {
+    "description": "Title for the licenses screen"
+  }
 } 
