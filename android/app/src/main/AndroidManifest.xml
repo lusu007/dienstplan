@@ -10,7 +10,7 @@
     <application
         android:label="Dienstplan"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon"
+        android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"
         android:description="@string/app_description">
         <activity
