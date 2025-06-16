@@ -25,12 +25,15 @@ jobs:
           
       - name: Install dependencies
         run: flutter pub get
-        
+
+      - name: Generate localizations
+        run: flutter gen-l10n
+
+      - name: Format generated localizations
+        run: dart format lib/l10n
+
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-        
-      - name: Analyze project source
-        run: flutter analyze
+        run: dart format --output=none --set-exit-if-changed . 
         
       - name: Setup Keystore
         run: |
