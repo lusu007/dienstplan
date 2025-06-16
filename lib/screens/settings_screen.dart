@@ -29,10 +29,10 @@ class SettingsScreen extends StatelessWidget {
                   ? l10n.german
                   : l10n.english,
             ),
-            trailing: const Icon(Icons.arrow_forward_ios),
+            leading: const Icon(Icons.language),
             onTap: () => _showLanguageDialog(context),
           ),
-          const SizedBox(height: 16),
+          const Divider(),
           ListTile(
             title: Text(l10n.dutySchedule),
             subtitle: Text(scheduleProvider.activeConfig?.meta.name ??
