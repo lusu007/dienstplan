@@ -2,25 +2,7 @@
     "bump-minor-pre-major": true,
     "include-component-in-tag": false,
     "release-type": "dart",
-    "changelog-path": "CHANGELOG.md",
-    "changelog-sections": [
-      "feat",
-      "fix",
-      "docs",
-      "style",
-      "refactor",
-      "perf",
-      "test",
-      "build",
-      "ci",
-      "chore",
-      "revert"
-    ],
     "packages": {
-      ".": {
-        "release-type": "dart",
-        "package-name": "dienstplan",
-        "changelog-path": "CHANGELOG.md"
-      }
+      ".": {}
     }
   }
