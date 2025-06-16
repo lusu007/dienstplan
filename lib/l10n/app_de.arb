@@ -66,5 +66,6 @@
     }
   },
   "noServicesForDay": "Keine Dienste für diesen Tag",
-  "allDay": "Ganztägig"
+  "allDay": "Ganztägig",
+  "licenses": "Lizenzen"
 } 

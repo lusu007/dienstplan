@@ -5,6 +5,7 @@ import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/services/language_service.dart';
 import 'package:dienstplan/screens/first_time_setup_screen.dart';
+import 'package:flutter/material.dart' show showLicensePage;
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -46,6 +47,15 @@ class SettingsScreen extends StatelessWidget {
                 _getCalendarFormatName(scheduleProvider.calendarFormat, l10n)),
             leading: const Icon(Icons.view_week),
             onTap: () => _showCalendarFormatDialog(context, scheduleProvider),
+          ),
+          const Divider(),
+          ListTile(
+            title: Text(l10n.licenses),
+            leading: const Icon(Icons.description),
+            onTap: () => showLicensePage(
+              context: context,
+              applicationName: 'Dienstplan',
+            ),
           ),
           const Divider(),
           ListTile(

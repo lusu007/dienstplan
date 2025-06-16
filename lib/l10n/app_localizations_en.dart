@@ -194,4 +194,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allDay => 'All day';
+
+  @override
+  String get licenses => 'Licenses';
 }

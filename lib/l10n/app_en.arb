@@ -66,5 +66,6 @@
     }
   },
   "noServicesForDay": "No services for this day",
-  "allDay": "All day"
+  "allDay": "All day",
+  "licenses": "Licenses"
 } 
