@@ -197,4 +197,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
+
+  @override
+  String get previousPeriod => 'Previous period';
+
+  @override
+  String get nextPeriod => 'Next period';
+
+  @override
+  String get today => 'Today';
 }

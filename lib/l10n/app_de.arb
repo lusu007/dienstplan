@@ -202,15 +202,15 @@
   },
   "calendarFormatMonth": "Monat",
   "@calendarFormatMonth": {
-    "description": "Month calendar format option"
+    "description": "Label for month view in calendar format selector"
   },
   "calendarFormatTwoWeeks": "Zwei Wochen",
   "@calendarFormatTwoWeeks": {
-    "description": "Two weeks calendar format option"
+    "description": "Label for two weeks view in calendar format selector"
   },
   "calendarFormatWeek": "Woche",
   "@calendarFormatWeek": {
-    "description": "Week calendar format option"
+    "description": "Label for week view in calendar format selector"
   },
   "resetData": "Daten zurücksetzen",
   "@resetData": {
@@ -252,5 +252,17 @@
   "licenses": "Lizenzen",
   "@licenses": {
     "description": "Title for the licenses screen"
-  }
+  },
+  "@previousPeriod": {
+    "description": "Tooltip for the previous period navigation button"
+  },
+  "previousPeriod": "Vorheriger Zeitraum",
+  "@nextPeriod": {
+    "description": "Tooltip for the next period navigation button"
+  },
+  "nextPeriod": "Nächster Zeitraum",
+  "@today": {
+    "description": "Tooltip for the today button"
+  },
+  "today": "Heute"
 } 

@@ -197,4 +197,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licenses => 'Lizenzen';
+
+  @override
+  String get previousPeriod => 'Vorheriger Zeitraum';
+
+  @override
+  String get nextPeriod => 'Nächster Zeitraum';
+
+  @override
+  String get today => 'Heute';
 }

@@ -398,19 +398,19 @@ abstract class AppLocalizations {
   /// **'Calendar Format'**
   String get calendarFormat;
 
-  /// Month calendar format option
+  /// Label for month view in calendar format selector
   ///
   /// In en, this message translates to:
   /// **'Month'**
   String get calendarFormatMonth;
 
-  /// Two weeks calendar format option
+  /// Label for two weeks view in calendar format selector
   ///
   /// In en, this message translates to:
   /// **'Two Weeks'**
   String get calendarFormatTwoWeeks;
 
-  /// Week calendar format option
+  /// Label for week view in calendar format selector
   ///
   /// In en, this message translates to:
   /// **'Week'**
@@ -469,6 +469,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
+
+  /// Tooltip for the previous period navigation button
+  ///
+  /// In en, this message translates to:
+  /// **'Previous period'**
+  String get previousPeriod;
+
+  /// Tooltip for the next period navigation button
+  ///
+  /// In en, this message translates to:
+  /// **'Next period'**
+  String get nextPeriod;
+
+  /// Tooltip for the today button
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
 }
 
 class _AppLocalizationsDelegate

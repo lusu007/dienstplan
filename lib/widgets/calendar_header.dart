@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
+import 'package:dienstplan/l10n/app_localizations.dart';
 
 class CalendarHeader extends StatelessWidget {
   final DateTime focusedDay;
@@ -19,99 +20,66 @@ class CalendarHeader extends StatelessWidget {
     required this.onTodayPressed,
   });
 
+  String _getFormatText(CalendarFormat format, AppLocalizations l10n) {
+    switch (format) {
+      case CalendarFormat.month:
+        return l10n.calendarFormatMonth;
+      case CalendarFormat.week:
+        return l10n.calendarFormatWeek;
+      case CalendarFormat.twoWeeks:
+        return l10n.calendarFormatTwoWeeks;
+    }
+  }
+
+  Icon _getFormatIcon(CalendarFormat format) {
+    switch (format) {
+      case CalendarFormat.month:
+        return const Icon(Icons.calendar_month);
+      case CalendarFormat.week:
+        return const Icon(Icons.view_week);
+      case CalendarFormat.twoWeeks:
+        return const Icon(Icons.view_agenda);
+    }
+  }
+
+  CalendarFormat _getNextFormat(CalendarFormat format) {
+    switch (format) {
+      case CalendarFormat.month:
+        return CalendarFormat.week;
+      case CalendarFormat.week:
+        return CalendarFormat.twoWeeks;
+      case CalendarFormat.twoWeeks:
+        return CalendarFormat.month;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Consumer<ScheduleProvider>(
       builder: (context, scheduleProvider, child) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Left navigation arrow
-              IconButton(
-                icon: const Icon(Icons.chevron_left),
+              TextButton.icon(
                 onPressed: () {
-                  final newFocusedDay =
-                      _getPreviousPeriod(focusedDay, calendarFormat);
-                  onDaySelected(newFocusedDay);
+                  onFormatChanged(_getNextFormat(calendarFormat));
                 },
-                tooltip: 'Vorheriger Zeitraum',
+                icon: _getFormatIcon(calendarFormat),
+                label: Text(_getFormatText(calendarFormat, l10n)),
               ),
-              // Center section with format buttons and today button
-              Row(
-                children: [
-                  // Format buttons
-                  SegmentedButton<CalendarFormat>(
-                    segments: const [
-                      ButtonSegment<CalendarFormat>(
-                        value: CalendarFormat.month,
-                        label: Text('Monat'),
-                        icon: Icon(Icons.calendar_month),
-                      ),
-                      ButtonSegment<CalendarFormat>(
-                        value: CalendarFormat.week,
-                        label: Text('Woche'),
-                        icon: Icon(Icons.view_week),
-                      ),
-                      ButtonSegment<CalendarFormat>(
-                        value: CalendarFormat.twoWeeks,
-                        label: Text('2 Wochen'),
-                        icon: Icon(Icons.view_agenda),
-                      ),
-                    ],
-                    selected: {calendarFormat},
-                    onSelectionChanged: (Set<CalendarFormat> selected) {
-                      if (selected.isNotEmpty) {
-                        onFormatChanged(selected.first);
-                      }
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  // Today button
-                  IconButton(
-                    icon: const Icon(Icons.today),
-                    onPressed: onTodayPressed,
-                    tooltip: 'Heute',
-                  ),
-                ],
-              ),
-              // Right navigation arrow
+              const SizedBox(width: 8),
               IconButton(
-                icon: const Icon(Icons.chevron_right),
-                onPressed: () {
-                  final newFocusedDay =
-                      _getNextPeriod(focusedDay, calendarFormat);
-                  onDaySelected(newFocusedDay);
-                },
-                tooltip: 'Nächster Zeitraum',
+                icon: const Icon(Icons.today),
+                onPressed: onTodayPressed,
+                tooltip: l10n.today,
               ),
             ],
           ),
         );
       },
     );
-  }
-
-  DateTime _getPreviousPeriod(DateTime date, CalendarFormat format) {
-    switch (format) {
-      case CalendarFormat.month:
-        return DateTime(date.year, date.month - 1, 1);
-      case CalendarFormat.week:
-        return date.subtract(const Duration(days: 7));
-      case CalendarFormat.twoWeeks:
-        return date.subtract(const Duration(days: 14));
-    }
-  }
-
-  DateTime _getNextPeriod(DateTime date, CalendarFormat format) {
-    switch (format) {
-      case CalendarFormat.month:
-        return DateTime(date.year, date.month + 1, 1);
-      case CalendarFormat.week:
-        return date.add(const Duration(days: 7));
-      case CalendarFormat.twoWeeks:
-        return date.add(const Duration(days: 14));
-    }
   }
 }

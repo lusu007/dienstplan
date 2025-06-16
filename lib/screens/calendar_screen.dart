@@ -8,6 +8,7 @@ import 'package:dienstplan/screens/settings_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
+import 'package:dienstplan/widgets/calendar_header.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -81,6 +82,21 @@ class _CalendarScreenState extends State<CalendarScreen>
           ),
           body: Column(
             children: [
+              CalendarHeader(
+                focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
+                calendarFormat: scheduleProvider.calendarFormat,
+                onFormatChanged: (format) {
+                  scheduleProvider.setCalendarFormat(format);
+                },
+                onDaySelected: (focusedDay) {
+                  scheduleProvider.setFocusedDay(focusedDay);
+                },
+                onTodayPressed: () {
+                  final now = DateTime.now();
+                  scheduleProvider.setSelectedDay(now);
+                  scheduleProvider.setFocusedDay(now);
+                },
+              ),
               TableCalendar(
                 firstDay: DateTime.utc(2018, 1, 1),
                 lastDay: DateTime.utc(2100, 12, 31),
@@ -110,15 +126,9 @@ class _CalendarScreenState extends State<CalendarScreen>
                     shape: BoxShape.circle,
                   ),
                 ),
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: true,
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
                   titleCentered: true,
-                  formatButtonShowsNext: false,
-                  formatButtonDecoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  formatButtonTextStyle: const TextStyle(color: Colors.white),
                 ),
                 locale: _locale,
               ),
