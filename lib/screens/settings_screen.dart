@@ -5,7 +5,6 @@ import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/services/language_service.dart';
 import 'package:dienstplan/screens/first_time_setup_screen.dart';
-import 'package:flutter/material.dart' show showLicensePage;
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
