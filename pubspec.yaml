@@ -1,5 +1,5 @@
 name: dienstplan
-description: "A Flutter application for managing and displaying duty schedules for police officers. Features include calendar view, duty group management, and offline access to schedules."
+description: "Polizei Dienstplan App - Die einfache Lösung zur Einsicht von Dienstplänen. Features: Übersichtlicher Kalender, Offline-Zugriff, Dienstgruppen-Ansicht. Optimiert für Polizeibeamte."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -121,6 +121,8 @@ flutter_launcher_icons:
   image_path: "assets/images/logo.png"
   min_sdk_android: 21
   remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo.png"
   web:
     generate: true
     image_path: "assets/images/logo.png"
@@ -138,3 +140,8 @@ flutter_native_splash:
     icon_background_color: "#FFFFFF"
     image_dark: assets/images/logo.png
     icon_background_color_dark: "#FFFFFF"
+  fullscreen: true
+  android_gravity: center
+  ios_content_mode: center
+  image_dark: assets/images/logo.png
+  color_dark: "#FFFFFF"

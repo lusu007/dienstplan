@@ -98,373 +98,373 @@ abstract class AppLocalizations {
     Locale('en')
   ];
 
-  /// No description provided for @appTitle.
+  /// The title of the application
   ///
   /// In en, this message translates to:
   /// **'Duty Schedule'**
   String get appTitle;
 
-  /// No description provided for @settings.
+  /// Title for the settings screen
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @language.
+  /// Label for language selection
   ///
   /// In en, this message translates to:
   /// **'Language'**
   String get language;
 
-  /// No description provided for @selectLanguage.
+  /// Title for language selection screen
   ///
   /// In en, this message translates to:
   /// **'Select Language'**
   String get selectLanguage;
 
-  /// No description provided for @german.
+  /// German language option
   ///
   /// In en, this message translates to:
   /// **'German'**
   String get german;
 
-  /// No description provided for @english.
+  /// English language option
   ///
   /// In en, this message translates to:
   /// **'English'**
   String get english;
 
-  /// No description provided for @dutySchedule.
+  /// Title for duty schedule
   ///
   /// In en, this message translates to:
   /// **'Duty Schedule'**
   String get dutySchedule;
 
-  /// No description provided for @selectDutySchedule.
+  /// Title for duty schedule selection screen
   ///
   /// In en, this message translates to:
   /// **'Select Duty Schedule'**
   String get selectDutySchedule;
 
-  /// No description provided for @save.
+  /// Save button text
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
 
-  /// No description provided for @cancel.
+  /// Cancel button text
   ///
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
 
-  /// No description provided for @delete.
+  /// Delete button text
   ///
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
 
-  /// No description provided for @edit.
+  /// Edit button text
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
 
-  /// No description provided for @add.
+  /// Add button text
   ///
   /// In en, this message translates to:
   /// **'Add'**
   String get add;
 
-  /// No description provided for @error.
+  /// Error message title
   ///
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
 
-  /// No description provided for @success.
+  /// Success message title
   ///
   /// In en, this message translates to:
   /// **'Success'**
   String get success;
 
-  /// No description provided for @loading.
+  /// Loading indicator text
   ///
   /// In en, this message translates to:
   /// **'Loading...'**
   String get loading;
 
-  /// No description provided for @noDutySchedules.
+  /// Message shown when no duty schedules are available
   ///
   /// In en, this message translates to:
   /// **'No duty schedules available'**
   String get noDutySchedules;
 
-  /// No description provided for @createNewDutySchedule.
+  /// Title for creating a new duty schedule
   ///
   /// In en, this message translates to:
   /// **'Create New Duty Schedule'**
   String get createNewDutySchedule;
 
-  /// No description provided for @dutyScheduleName.
+  /// Label for duty schedule name field
   ///
   /// In en, this message translates to:
   /// **'Duty Schedule Name'**
   String get dutyScheduleName;
 
-  /// No description provided for @dutyScheduleDescription.
+  /// Label for duty schedule description field
   ///
   /// In en, this message translates to:
   /// **'Description'**
   String get dutyScheduleDescription;
 
-  /// No description provided for @dutyScheduleStartDate.
+  /// Label for duty schedule start date field
   ///
   /// In en, this message translates to:
   /// **'Start Date'**
   String get dutyScheduleStartDate;
 
-  /// No description provided for @dutyScheduleStartWeekDay.
+  /// Label for duty schedule start week day field
   ///
   /// In en, this message translates to:
   /// **'Start Week Day'**
   String get dutyScheduleStartWeekDay;
 
-  /// No description provided for @dutyScheduleDays.
+  /// Label for duty schedule days field
   ///
   /// In en, this message translates to:
   /// **'Days'**
   String get dutyScheduleDays;
 
-  /// No description provided for @dutyScheduleDutyTypes.
+  /// Label for duty schedule duty types field
   ///
   /// In en, this message translates to:
   /// **'Duty Types'**
   String get dutyScheduleDutyTypes;
 
-  /// No description provided for @dutyScheduleRhythms.
+  /// Label for duty schedule rhythms field
   ///
   /// In en, this message translates to:
   /// **'Rhythms'**
   String get dutyScheduleRhythms;
 
-  /// No description provided for @dutyScheduleGroups.
+  /// Label for duty schedule groups field
   ///
   /// In en, this message translates to:
   /// **'Duty Groups'**
   String get dutyScheduleGroups;
 
-  /// No description provided for @dutyTypeLabel.
+  /// Label for duty type name field
   ///
   /// In en, this message translates to:
   /// **'Label'**
   String get dutyTypeLabel;
 
-  /// No description provided for @dutyTypeStartTime.
+  /// Label for duty type start time field
   ///
   /// In en, this message translates to:
   /// **'Start Time'**
   String get dutyTypeStartTime;
 
-  /// No description provided for @dutyTypeEndTime.
+  /// Label for duty type end time field
   ///
   /// In en, this message translates to:
   /// **'End Time'**
   String get dutyTypeEndTime;
 
-  /// No description provided for @dutyTypeAllDay.
+  /// Label for duty type all day checkbox
   ///
   /// In en, this message translates to:
   /// **'All Day'**
   String get dutyTypeAllDay;
 
-  /// No description provided for @rhythmLengthWeeks.
+  /// Label for rhythm length in weeks field
   ///
   /// In en, this message translates to:
   /// **'Length in Weeks'**
   String get rhythmLengthWeeks;
 
-  /// No description provided for @rhythmPattern.
+  /// Label for rhythm pattern field
   ///
   /// In en, this message translates to:
   /// **'Pattern'**
   String get rhythmPattern;
 
-  /// No description provided for @groupName.
+  /// Label for group name field
   ///
   /// In en, this message translates to:
   /// **'Name'**
   String get groupName;
 
-  /// No description provided for @groupRhythm.
+  /// Label for group rhythm field
   ///
   /// In en, this message translates to:
   /// **'Rhythm'**
   String get groupRhythm;
 
-  /// No description provided for @groupOffsetWeeks.
+  /// Label for group offset in weeks field
   ///
   /// In en, this message translates to:
   /// **'Offset in Weeks'**
   String get groupOffsetWeeks;
 
-  /// No description provided for @firstTimeSetup.
+  /// Title for first time setup screen
   ///
   /// In en, this message translates to:
   /// **'First Time Setup'**
   String get firstTimeSetup;
 
-  /// No description provided for @selectDefaultDutySchedule.
+  /// Title for selecting default duty schedule
   ///
   /// In en, this message translates to:
   /// **'Select Default Duty Schedule'**
   String get selectDefaultDutySchedule;
 
-  /// No description provided for @continueButton.
+  /// Continue button text
   ///
   /// In en, this message translates to:
   /// **'Continue'**
   String get continueButton;
 
-  /// No description provided for @welcome.
+  /// Welcome message title
   ///
   /// In en, this message translates to:
   /// **'Welcome'**
   String get welcome;
 
-  /// No description provided for @welcomeMessage.
+  /// Welcome message text
   ///
   /// In en, this message translates to:
   /// **'Please select a default duty schedule.'**
   String get welcomeMessage;
 
-  /// No description provided for @settingsSaved.
+  /// Message shown when settings are saved successfully
   ///
   /// In en, this message translates to:
   /// **'Settings saved'**
   String get settingsSaved;
 
-  /// No description provided for @settingsSaveError.
+  /// Error message when settings save fails
   ///
   /// In en, this message translates to:
   /// **'Error saving settings'**
   String get settingsSaveError;
 
-  /// No description provided for @dutyScheduleSaved.
+  /// Message shown when duty schedule is saved successfully
   ///
   /// In en, this message translates to:
   /// **'Duty schedule saved'**
   String get dutyScheduleSaved;
 
-  /// No description provided for @dutyScheduleSaveError.
+  /// Error message when duty schedule save fails
   ///
   /// In en, this message translates to:
   /// **'Error saving duty schedule'**
   String get dutyScheduleSaveError;
 
-  /// No description provided for @dutyScheduleDeleted.
+  /// Message shown when duty schedule is deleted successfully
   ///
   /// In en, this message translates to:
   /// **'Duty schedule deleted'**
   String get dutyScheduleDeleted;
 
-  /// No description provided for @dutyScheduleDeleteError.
+  /// Error message when duty schedule deletion fails
   ///
   /// In en, this message translates to:
   /// **'Error deleting duty schedule'**
   String get dutyScheduleDeleteError;
 
-  /// No description provided for @confirmDelete.
+  /// Confirmation message for deleting a duty schedule
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this duty schedule?'**
   String get confirmDelete;
 
-  /// No description provided for @yes.
+  /// Yes button text
   ///
   /// In en, this message translates to:
   /// **'Yes'**
   String get yes;
 
-  /// No description provided for @no.
+  /// No button text
   ///
   /// In en, this message translates to:
   /// **'No'**
   String get no;
 
-  /// No description provided for @calendarFormat.
+  /// Label for calendar format selection
   ///
   /// In en, this message translates to:
   /// **'Calendar Format'**
   String get calendarFormat;
 
-  /// No description provided for @calendarFormatMonth.
+  /// Month calendar format option
   ///
   /// In en, this message translates to:
   /// **'Month'**
   String get calendarFormatMonth;
 
-  /// No description provided for @calendarFormatTwoWeeks.
+  /// Two weeks calendar format option
   ///
   /// In en, this message translates to:
   /// **'Two Weeks'**
   String get calendarFormatTwoWeeks;
 
-  /// No description provided for @calendarFormatWeek.
+  /// Week calendar format option
   ///
   /// In en, this message translates to:
   /// **'Week'**
   String get calendarFormatWeek;
 
-  /// No description provided for @resetData.
+  /// Title for reset data option
   ///
   /// In en, this message translates to:
   /// **'Reset Data'**
   String get resetData;
 
-  /// No description provided for @resetDataConfirmation.
+  /// Confirmation message for resetting data
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to reset all data? This cannot be undone.'**
   String get resetDataConfirmation;
 
-  /// No description provided for @resetDataSuccess.
+  /// Message shown when data is reset successfully
   ///
   /// In en, this message translates to:
   /// **'Data has been reset'**
   String get resetDataSuccess;
 
-  /// No description provided for @reset.
+  /// Reset button text
   ///
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
 
-  /// No description provided for @services.
+  /// Title for services screen
   ///
   /// In en, this message translates to:
   /// **'Services'**
   String get services;
 
-  /// No description provided for @servicesOnDate.
+  /// Services on specific date
   ///
   /// In en, this message translates to:
   /// **'on {date}'**
   String servicesOnDate(String date);
 
-  /// No description provided for @noServicesForDay.
+  /// Message shown when no services are available for a day
   ///
   /// In en, this message translates to:
   /// **'No services for this day'**
   String get noServicesForDay;
 
-  /// No description provided for @allDay.
+  /// Label for all-day service
   ///
   /// In en, this message translates to:
   /// **'All day'**
   String get allDay;
 
-  /// No description provided for @licenses.
+  /// Title for the licenses screen
   ///
   /// In en, this message translates to:
   /// **'Licenses'**

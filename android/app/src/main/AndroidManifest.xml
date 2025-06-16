@@ -1,9 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.scelus.dienstplan">
+    <!-- Internet permission for initial data download -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Storage permissions for offline data -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <!-- For Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    
     <application
         android:label="Dienstplan"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:description="@string/app_description">
         <activity
             android:name=".MainActivity"
             android:exported="true"
