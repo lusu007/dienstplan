@@ -26,12 +26,12 @@ jobs:
         with:
           flutter-version: '3.32.4'
           channel: 'stable'
+      - name: 📦 Install dependencies
+        run: flutter pub get
       - name: 📦 Generate localizations
         run: flutter gen-l10n
       - name: 📦 Format generated localizations
         run: dart format lib/l10n
-      - name: 📦 Install dependencies
-        run: flutter pub get
       - name: 🔍 Analyze project source
         run: flutter analyze
       - name: ✨ Verify formatting
