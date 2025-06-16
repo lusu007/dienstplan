@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   lint:
+    name: 🧹 Lint project
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout code
