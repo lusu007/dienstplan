@@ -1,0 +1,38 @@
+name: 🧹 Lint project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      - name: 🚀 Cache pub dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+      - name: 📱 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+          channel: 'stable'
+      - name: 📦 Generate localizations
+        run: flutter gen-l10n
+      - name: 📦 Format generated localizations
+        run: dart format lib/l10n
+      - name: 📦 Install dependencies
+        run: flutter pub get
+      - name: 🔍 Analyze project source
+        run: flutter analyze
+      - name: ✨ Verify formatting
+        run: dart format --output=none --set-exit-if-changed .

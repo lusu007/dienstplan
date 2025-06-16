@@ -1,4 +1,4 @@
-name: Release
+name: 🚀 Release Android App
 
 on:
   push:
@@ -11,35 +11,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Java
+      - name: 🚀 Cache pub deps
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: temurin
           java-version: '17'
           
-      - name: Setup Flutter
+      - name: 📱 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.32.4'
           channel: 'stable'
           
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: flutter pub get
 
-      - name: Generate localizations
-        run: flutter gen-l10n
-
-      - name: Format generated localizations
-        run: dart format lib/l10n
-
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed . 
-        
-      - name: Setup Keystore
+      - name: 🔑 Setup Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
           
-      - name: Build APK
+      - name: 📱 Build APK
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -47,7 +45,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build apk --release
         
-      - name: Build App Bundle
+      - name: 📦 Build App Bundle
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -55,19 +53,15 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build appbundle --release
         
-      - name: Upload APK
+      - name: ⬆️ Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: release-files
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
           
-      - name: Upload App Bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
-          
-      - name: Create Release
+      - name: 🏷️ Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
@@ -78,7 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy to Play Store
+      - name: 🔏 Sign Release
         uses: r0adkll/sign-android-release@v1
         id: sign
         with:
@@ -88,7 +82,7 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: Upload to Play Store
+      - name: 🏪 Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
