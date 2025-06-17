@@ -3,6 +3,10 @@
     "include-component-in-tag": false,
     "release-type": "dart",
     "packages": {
-      ".": {}
+      ".": {
+        "changelog-path": "CHANGELOG.md",
+        "release-type": "dart",
+        "package-name": "dienstplan"
+      }
     }
   }
