@@ -493,6 +493,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Generating schedules...'**
   String get generatingSchedules;
+
+  /// Title for the about dialog
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// Description text shown in the about dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.'**
+  String get aboutDescription;
 }
 
 class _AppLocalizationsDelegate

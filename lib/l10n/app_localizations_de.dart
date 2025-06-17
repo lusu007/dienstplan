@@ -209,4 +209,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get generatingSchedules => 'Dienste werden generiert...';
+
+  @override
+  String get about => 'Über';
+
+  @override
+  String get aboutDescription =>
+      'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizeidienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt den Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.';
 }

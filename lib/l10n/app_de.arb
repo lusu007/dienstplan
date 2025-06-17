@@ -268,5 +268,13 @@
   "@today": {
     "description": "Tooltip for the today button"
   },
-  "today": "Heute"
+  "today": "Heute",
+  "about": "Über",
+  "@about": {
+    "description": "Title for the about dialog"
+  },
+  "aboutDescription": "Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizeidienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt den Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.",
+  "@aboutDescription": {
+    "description": "Description text shown in the about dialog"
+  }
 } 
