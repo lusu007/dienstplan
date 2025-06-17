@@ -268,5 +268,13 @@
   "generatingSchedules": "Generating schedules...",
   "@generatingSchedules": {
     "description": "Text shown while generating schedules"
+  },
+  "about": "About",
+  "@about": {
+    "description": "Title for the about dialog"
+  },
+  "aboutDescription": "Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.",
+  "@aboutDescription": {
+    "description": "Description text shown in the about dialog"
   }
 } 

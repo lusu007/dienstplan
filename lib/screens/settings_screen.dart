@@ -5,6 +5,8 @@ import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/services/language_service.dart';
 import 'package:dienstplan/screens/first_time_setup_screen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -49,12 +51,47 @@ class SettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            title: Text(l10n.licenses),
-            leading: const Icon(Icons.description),
-            onTap: () => showLicensePage(
-              context: context,
-              applicationName: 'Dienstplan',
-            ),
+            title: Text(l10n.about),
+            leading: const Icon(Icons.info_outline),
+            onTap: () async {
+              final packageInfo = await PackageInfo.fromPlatform();
+              if (context.mounted) {
+                showAboutDialog(
+                  context: context,
+                  applicationName: 'Dienstplan',
+                  applicationVersion: packageInfo.version,
+                  applicationIcon: Image.asset(
+                    'assets/images/logo.png',
+                    width: 50,
+                    height: 50,
+                  ),
+                  applicationLegalese: '© ${DateTime.now().year} Lukas Jost',
+                  children: [
+                    const SizedBox(height: 16),
+                    Text(l10n.aboutDescription),
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () async {
+                        final Uri emailLaunchUri = Uri(
+                          scheme: 'mailto',
+                          path: 'hi@scelus.io',
+                        );
+                        if (await canLaunchUrl(emailLaunchUri)) {
+                          await launchUrl(emailLaunchUri);
+                        }
+                      },
+                      child: const Text(
+                        'hi@scelus.io',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
           ),
           const Divider(),
           ListTile(

@@ -209,4 +209,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generatingSchedules => 'Generating schedules...';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get aboutDescription =>
+      'Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.';
 }
