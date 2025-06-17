@@ -1,7 +1,7 @@
 {
     "version": "1.0",
     "meta": {
-      "name": "BePo Dienstplan Polizei Bremen",
+      "name": "Bereitschaftspolizei",
       "created_by": "Lukas",
       "description": "Rotationsplan für die Züge der Bereitschaftspolizei inkl. Sonderlagen",
       "start_week_day": "Monday",
