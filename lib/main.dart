@@ -131,8 +131,20 @@ class _MyAppState extends State<MyApp> {
           return MaterialApp(
             title: 'Dienstplan',
             theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF005B8C),
+                primary: const Color(0xFF005B8C),
+              ),
               useMaterial3: true,
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Color(0xFF005B8C),
+                titleTextStyle: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+                iconTheme: IconThemeData(color: Colors.white),
+              ),
             ),
             localizationsDelegates: const [
               AppLocalizations.delegate,
