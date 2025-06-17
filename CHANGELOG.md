@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/lusu007/dienstplan/compare/v0.0.2...v0.1.0) (2025-06-17)
+
+
+### Features
+
+* Loading circle on generation ([#8](https://github.com/lusu007/dienstplan/issues/8)) ([4538128](https://github.com/lusu007/dienstplan/commit/4538128b57f0c9abd6de2e72faf61e4dc711fc8e))
+
 ## [0.0.2](https://github.com/lusu007/dienstplan/compare/v0.0.1...v0.0.2) (2025-06-17)
 
 
