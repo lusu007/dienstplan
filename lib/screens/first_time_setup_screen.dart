@@ -58,7 +58,8 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
       final scheduleProvider =
           Provider.of<ScheduleProvider>(context, listen: false);
       await _configService.setDefaultConfig(_selectedConfig!);
-      await scheduleProvider.setActiveConfig(_selectedConfig!);
+      await scheduleProvider.setActiveConfig(_selectedConfig!,
+          generateSchedules: true);
 
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
