@@ -60,73 +60,30 @@ class _ScheduleListState extends State<ScheduleList> {
       });
   }
 
-  List<Schedule> _filterSchedules() {
+  List<Schedule> _filterSchedules(List<Schedule> schedules) {
     final provider = Provider.of<ScheduleProvider>(context, listen: false);
     final selectedDay = provider.selectedDay;
     final activeConfig = provider.activeConfig;
-    final selectedDutyGroup = widget.selectedDutyGroup;
-    final schedules = widget.schedules;
 
     if (selectedDay == null || activeConfig == null) {
       return [];
     }
 
-    // First filter by date and active config
     final filteredSchedules = schedules.where((schedule) {
-      // Filter by date (exact match for year, month, and day)
       final isSameDay = schedule.date.year == selectedDay.year &&
           schedule.date.month == selectedDay.month &&
           schedule.date.day == selectedDay.day;
-
-      // Filter by active configuration
       final isActiveConfig = schedule.configName == activeConfig.meta.name;
-
       return isSameDay && isActiveConfig;
     }).toList();
 
-    // Remove duplicates by keeping only the first schedule for each duty group
-    final uniqueSchedules = <String, Schedule>{};
-    for (final schedule in filteredSchedules) {
-      if (!uniqueSchedules.containsKey(schedule.dutyGroupId)) {
-        uniqueSchedules[schedule.dutyGroupId] = schedule;
-      }
-    }
-
-    // Convert back to list and filter by selected duty group if needed
-    var result = uniqueSchedules.values.toList();
-    if (selectedDutyGroup != null) {
-      result =
-          result.where((s) => s.dutyGroupName == selectedDutyGroup).toList();
-    }
-
-    // Sort schedules
-    result.sort((a, b) {
-      // First sort by all-day status
-      if (a.isAllDay != b.isAllDay) {
-        return a.isAllDay ? 1 : -1;
-      }
-
-      // Then sort by start time
-      final dutyTypeA = activeConfig.dutyTypes[a.service];
-      final dutyTypeB = activeConfig.dutyTypes[b.service];
-
-      if (dutyTypeA != null && dutyTypeB != null) {
-        if (dutyTypeA.startTime != null && dutyTypeB.startTime != null) {
-          return dutyTypeA.startTime!.compareTo(dutyTypeB.startTime!);
-        }
-      }
-
-      // Finally sort by service name
-      return a.service.compareTo(b.service);
-    });
-
-    return result;
+    return filteredSchedules;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final filteredSchedules = _filterSchedules();
+    final filteredSchedules = _filterSchedules(widget.schedules);
     final sortedSchedules = _sortSchedulesByTime(filteredSchedules);
     final provider = Provider.of<ScheduleProvider>(context);
 

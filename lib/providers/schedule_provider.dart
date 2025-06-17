@@ -19,15 +19,13 @@ class ScheduleProvider extends ChangeNotifier {
   List<Schedule> _schedules = [];
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
-  // Cache for loaded schedules
   final Map<String, List<Schedule>> _scheduleCache = {};
-  static const int _cacheDays = 62; // Cache two months of schedules
+  static const int _cacheDays = 62;
   DateTime? _lastGeneratedStartDate;
   DateTime? _lastGeneratedEndDate;
 
   ScheduleProvider(this._configService);
 
-  // Getters
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get activeConfig => _activeConfig;
   List<String> get dutyGroups => _dutyGroups;
@@ -37,7 +35,6 @@ class ScheduleProvider extends ChangeNotifier {
   List<Schedule> get schedules => _schedules;
   CalendarFormat get calendarFormat => _calendarFormat;
 
-  // Initialize the provider
   Future<void> initialize() async {
     try {
       AppLogger.i('Initializing ScheduleProvider');
@@ -52,9 +49,7 @@ class ScheduleProvider extends ChangeNotifier {
           'Checking for default config: ${_configService.hasDefaultConfig}');
       if (_configService.hasDefaultConfig) {
         AppLogger.i(
-          'Setting active config to default: '
-          '${_configService.defaultConfig?.name}',
-        );
+            'Setting active config to default: ${_configService.defaultConfig?.name}');
         await setActiveConfig(_configService.defaultConfig!);
       } else if (_configs.isNotEmpty && _activeConfig == null) {
         AppLogger.i(
@@ -62,7 +57,6 @@ class ScheduleProvider extends ChangeNotifier {
         await setActiveConfig(_configs.first);
       }
 
-      // Always load schedules after initialization
       await loadSchedules();
       notifyListeners();
     } catch (e, stackTrace) {
@@ -71,7 +65,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Load configurations
   Future<void> _loadConfigs() async {
     try {
       _configs = _configService.configs;
@@ -83,7 +76,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Load settings
   Future<void> _loadSettings() async {
     try {
       final settings = await _databaseService.loadSettings();
@@ -95,7 +87,6 @@ class ScheduleProvider extends ChangeNotifier {
         _focusedDay = settings['focused_day'] as DateTime;
         _selectedDay = settings['selected_day'] as DateTime;
       } else {
-        // Set default values if no settings exist
         _calendarFormat = CalendarFormat.month;
         _focusedDay = DateTime.now();
         _selectedDay = DateTime.now();
@@ -106,7 +97,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Save settings
   Future<void> _saveSettings() async {
     try {
       await _databaseService.saveSettings(
@@ -120,13 +110,11 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Set active configuration
   Future<void> setActiveConfig(DutyScheduleConfig config) async {
     try {
       _activeConfig = config;
       await _saveSettings();
 
-      // Calculate initial date range to generate (1 year before and after current date)
       final now = DateTime.now();
       final startDate = DateTime(now.year - 1, now.month, now.day);
       final endDate = DateTime(now.year + 1, now.month, now.day);
@@ -134,7 +122,6 @@ class ScheduleProvider extends ChangeNotifier {
       _lastGeneratedStartDate = startDate;
       _lastGeneratedEndDate = endDate;
 
-      // Generate and save schedules for the initial date range
       AppLogger.i('Generating initial schedules for config: ${config.name}');
       AppLogger.i(
           'Generating schedules from ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
@@ -144,7 +131,6 @@ class ScheduleProvider extends ChangeNotifier {
         endDate: endDate,
       );
 
-      // Save schedules in batches
       await _databaseService.saveSchedules(schedules);
 
       await loadSchedules();
@@ -155,7 +141,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Load schedules for the selected day
   Future<void> loadSchedules() async {
     try {
       if (_activeConfig == null) {
@@ -164,33 +149,49 @@ class ScheduleProvider extends ChangeNotifier {
         return;
       }
 
-      // Calculate date ranges for both selected and focused months
+      final now = DateTime.now();
       final selectedMonthStart = _selectedDay != null
           ? DateTime(_selectedDay!.year, _selectedDay!.month, 1)
-          : DateTime.now();
-      final selectedMonthEnd =
-          DateTime(selectedMonthStart.year, selectedMonthStart.month + 1, 0);
+          : DateTime(now.year, now.month, 1);
+      final selectedMonthEnd = _selectedDay != null
+          ? DateTime(_selectedDay!.year, _selectedDay!.month + 1, 0)
+          : DateTime(now.year, now.month + 1, 0);
 
       final focusedMonthStart = _focusedDay != null
           ? DateTime(_focusedDay!.year, _focusedDay!.month, 1)
-          : DateTime.now();
+          : DateTime(now.year, now.month, 1);
       final focusedMonthEnd =
           DateTime(focusedMonthStart.year, focusedMonthStart.month + 1, 0);
 
-      // Determine the overall date range to load
-      final startDate = selectedMonthStart.isBefore(focusedMonthStart)
-          ? selectedMonthStart
-          : focusedMonthStart;
-      final endDate = selectedMonthEnd.isAfter(focusedMonthEnd)
-          ? selectedMonthEnd
-          : focusedMonthEnd;
+      // Calculate the first day of the first week of the focused month
+      final firstDayOfWeek = focusedMonthStart.weekday;
+      final firstWeekStart =
+          focusedMonthStart.subtract(Duration(days: firstDayOfWeek - 1));
 
-      // Check if we need to generate more schedules
+      // If we're in the current month, use the entire month as the date range
+      final startDate =
+          _selectedDay?.month == now.month && _selectedDay?.year == now.year
+              ? selectedMonthStart
+              : selectedMonthStart.isBefore(firstWeekStart)
+                  ? selectedMonthStart
+                  : firstWeekStart;
+      final endDate =
+          _selectedDay?.month == now.month && _selectedDay?.year == now.year
+              ? selectedMonthEnd
+              : selectedMonthEnd.isAfter(focusedMonthEnd)
+                  ? selectedMonthEnd
+                  : focusedMonthEnd;
+
+      AppLogger.i(
+          'Loading schedules for date range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+      AppLogger.i(
+          'Selected day: ${_selectedDay?.toIso8601String()}, Focused day: ${_focusedDay?.toIso8601String()}');
+      AppLogger.i('First week start: ${firstWeekStart.toIso8601String()}');
+
       if (_lastGeneratedStartDate == null ||
           _lastGeneratedEndDate == null ||
           startDate.isBefore(_lastGeneratedStartDate!) ||
           endDate.isAfter(_lastGeneratedEndDate!)) {
-        // Calculate new date range to generate
         final newStartDate =
             startDate.isBefore(_lastGeneratedStartDate ?? startDate)
                 ? startDate
@@ -207,34 +208,31 @@ class ScheduleProvider extends ChangeNotifier {
           endDate: newEndDate,
         );
 
-        // Save new schedules
         await _databaseService.saveSchedules(newSchedules);
 
-        // Update generated date range
         _lastGeneratedStartDate = newStartDate;
         _lastGeneratedEndDate = newEndDate;
       }
 
-      // Check if we have the data in cache
+      final startKey = DateTime(startDate.year, startDate.month, startDate.day);
+      final endKey = DateTime(endDate.year, endDate.month, endDate.day);
       final cacheKey =
-          '${startDate.toIso8601String()}_${endDate.toIso8601String()}_${_activeConfig!.meta.name}';
+          '${startKey.toIso8601String()}_${endKey.toIso8601String()}_${_activeConfig!.meta.name}';
+
       if (_scheduleCache.containsKey(cacheKey)) {
         _schedules = _scheduleCache[cacheKey]!;
         notifyListeners();
         return;
       }
 
-      // Load from database if not in cache
       _schedules = await _databaseService.loadSchedulesForDateRange(
         startDate,
         endDate,
         configName: _activeConfig!.meta.name,
       );
 
-      // Update cache
       _scheduleCache[cacheKey] = _schedules;
 
-      // Clean up old cache entries
       _cleanupCache();
 
       notifyListeners();
@@ -264,7 +262,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Save schedules
   Future<void> saveSchedules() async {
     try {
       await _databaseService.saveSchedules(_schedules);
@@ -275,53 +272,44 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Set selected date
   Future<void> setSelectedDate(DateTime date) async {
     _selectedDay = date;
-    _focusedDay = date; // Update focused day as well
-    await loadSchedules(); // Reload schedules when selected day changes
+    _focusedDay = date;
+    await loadSchedules();
     await _saveSettings();
     notifyListeners();
   }
 
-  // Set selected day (alias for setSelectedDate)
   Future<void> setSelectedDay(DateTime day) async {
     await setSelectedDate(day);
   }
 
-  // Set focused day
   Future<void> setFocusedDay(DateTime date) async {
     if (_focusedDay?.year == date.year && _focusedDay?.month == date.month) {
-      // Only update focused day if month/year changed
       return;
     }
     _focusedDay = date;
-    await loadSchedules(); // Reload schedules when focused day changes
+    await loadSchedules();
     await _saveSettings();
     notifyListeners();
   }
 
-  // Set selected duty group
   Future<void> setSelectedDutyGroup(String? group) async {
     _selectedDutyGroup = group;
     await loadSchedules();
     notifyListeners();
   }
 
-  // Set calendar format
   Future<void> setCalendarFormat(CalendarFormat format) async {
     _calendarFormat = format;
     await _saveSettings();
     notifyListeners();
   }
 
-  // Reset the provider
   Future<void> reset() async {
     try {
-      // Clear all data from the database
       await _databaseService.clearDatabase();
 
-      // Reset all state variables
       _schedules = [];
       _scheduleCache.clear();
       _selectedDutyGroup = null;
@@ -337,7 +325,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Get duty type information
   Future<DutyType?> getDutyType(String serviceId) async {
     try {
       if (_activeConfig == null) return null;
@@ -348,7 +335,6 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  // Get service display name
   Future<String> getServiceDisplayName(String serviceId) async {
     try {
       if (_activeConfig == null) return serviceId;

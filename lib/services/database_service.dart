@@ -129,29 +129,37 @@ class DatabaseService {
             ? i + batchSize
             : schedules.length;
         final batch = db.batch();
+        final currentBatch = schedules.sublist(i, end);
 
-        for (var j = i; j < end; j++) {
-          final schedule = schedules[j];
-          batch.insert(
-            'schedules',
-            {
-              'id':
-                  '${schedule.date.toIso8601String()}_${schedule.dutyGroupId}',
-              'date': schedule.date.toIso8601String(),
-              'service': schedule.service,
-              'duty_group_id': schedule.dutyGroupId,
-              'duty_group_name': schedule.dutyGroupName,
-              'duty_type_id': schedule.dutyTypeId,
-              'is_all_day': schedule.isAllDay ? 1 : 0,
-              'config_name': schedule.configName,
-            },
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          );
+        for (final schedule in currentBatch) {
+          try {
+            batch.insert(
+              'schedules',
+              {
+                'id':
+                    '${schedule.date.toIso8601String()}_${schedule.dutyGroupId}',
+                'date': schedule.date.toIso8601String(),
+                'service': schedule.service,
+                'duty_group_id': schedule.dutyGroupId,
+                'duty_group_name': schedule.dutyGroupName,
+                'duty_type_id': schedule.dutyTypeId,
+                'is_all_day': schedule.isAllDay ? 1 : 0,
+                'config_name': schedule.configName,
+              },
+              conflictAlgorithm: ConflictAlgorithm.replace,
+            );
+          } catch (e) {
+            AppLogger.e('Error inserting schedule: ${schedule.toString()}', e);
+            rethrow;
+          }
         }
 
-        await batch.commit();
-        AppLogger.i(
-            'Saved batch ${i ~/ batchSize + 1} of ${(schedules.length / batchSize).ceil()}');
+        try {
+          await batch.commit();
+        } catch (e) {
+          AppLogger.e('Error committing batch ${i ~/ batchSize + 1}', e);
+          rethrow;
+        }
       }
 
       AppLogger.i('All schedules saved successfully');

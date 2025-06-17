@@ -110,8 +110,13 @@ class ScheduleConfigService extends ChangeNotifier {
     }
   }
 
-  int floorDiv(int a, int b) =>
-      (a ~/ b) - ((a % b != 0 && a.isNegative) ? 1 : 0);
+  int floorDiv(int a, int b) {
+    // Ensure positive division for negative numbers
+    if (a < 0) {
+      return -((-a + b - 1) ~/ b);
+    }
+    return a ~/ b;
+  }
 
   Future<List<Schedule>> generateSchedulesForConfig(
     DutyScheduleConfig config, {
@@ -121,22 +126,22 @@ class ScheduleConfigService extends ChangeNotifier {
     AppLogger.i('Generating schedules for config: ${config.name}');
     final schedules = <Schedule>[];
 
-    // Use provided date range or default to config's start date
     final effectiveStartDate = startDate ?? config.startDate;
     final effectiveEndDate =
         endDate ?? config.startDate.add(const Duration(days: 27375));
 
-    // Calculate the number of days to generate
     final daysToGenerate =
         effectiveEndDate.difference(effectiveStartDate).inDays;
     AppLogger.i(
-        'Generating schedules for $daysToGenerate days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}');
+        'Generating schedules for ${daysToGenerate + 1} days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}');
 
-    // Generate schedules for each day
-    for (var i = 0; i < daysToGenerate; i++) {
+    for (var i = 0; i <= daysToGenerate; i++) {
       final date = effectiveStartDate.add(Duration(days: i));
+      // Use local timezone dates consistently
+      final normalizedDate = DateTime(date.year, date.month, date.day);
+      final normalizedStartDate = DateTime(
+          config.startDate.year, config.startDate.month, config.startDate.day);
 
-      // Generate schedules for each duty group
       for (final dutyGroup in config.dutyGroups) {
         final rhythm = config.rhythms[dutyGroup.rhythm];
         if (rhythm == null) {
@@ -144,7 +149,7 @@ class ScheduleConfigService extends ChangeNotifier {
           continue;
         }
 
-        final deltaDays = date.difference(config.startDate).inDays;
+        final deltaDays = normalizedDate.difference(normalizedStartDate).inDays;
         final rawWeekIndex =
             floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
         final weekIndex =
@@ -165,7 +170,7 @@ class ScheduleConfigService extends ChangeNotifier {
           }
 
           final schedule = Schedule(
-            date: date,
+            date: normalizedDate,
             configName: config.name,
             dutyGroupId: dutyGroup.id,
             dutyGroupName: dutyGroup.name,
@@ -175,12 +180,19 @@ class ScheduleConfigService extends ChangeNotifier {
           );
 
           schedules.add(schedule);
+        } else if (date.year == 2025 && date.month == 6 && date.day == 30) {
+          AppLogger.w(
+              'Invalid indices for 2025-06-30: weekIndex=$weekIndex, dayIndex=$dayIndex');
         }
       }
     }
 
     AppLogger.i('Generated ${schedules.length} schedules for ${config.name}');
     return schedules;
+  }
+
+  bool isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   Future<void> setDefaultConfig(DutyScheduleConfig config) async {
