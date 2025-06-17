@@ -20,6 +20,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _selectedConfig;
   bool _isLoading = true;
+  bool _isGeneratingSchedules = false;
   late final ScheduleConfigService _configService;
   late final SharedPreferences _prefs;
 
@@ -55,6 +56,10 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     if (_selectedConfig == null) return;
 
     try {
+      setState(() {
+        _isGeneratingSchedules = true;
+      });
+
       final scheduleProvider =
           Provider.of<ScheduleProvider>(context, listen: false);
       await _configService.setDefaultConfig(_selectedConfig!);
@@ -68,6 +73,9 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     } catch (e, stackTrace) {
       AppLogger.e('Error saving default config', e, stackTrace);
       if (!mounted) return;
+      setState(() {
+        _isGeneratingSchedules = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error saving default configuration'),
@@ -137,11 +145,13 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                             subtitle: Text(config.meta.description),
                             value: config,
                             groupValue: _selectedConfig,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedConfig = value;
-                              });
-                            },
+                            onChanged: _isGeneratingSchedules
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      _selectedConfig = value;
+                                    });
+                                  },
                           ),
                         );
                       },
@@ -149,9 +159,25 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed:
-                        _selectedConfig == null ? null : _saveDefaultConfig,
-                    child: Text(l10n.continueButton),
+                    onPressed: _selectedConfig == null || _isGeneratingSchedules
+                        ? null
+                        : _saveDefaultConfig,
+                    child: _isGeneratingSchedules
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(l10n.generatingSchedules),
+                            ],
+                          )
+                        : Text(l10n.continueButton),
                   ),
                 ],
               ),

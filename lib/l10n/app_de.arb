@@ -152,6 +152,10 @@
   "@continueButton": {
     "description": "Continue button text"
   },
+  "generatingSchedules": "Dienste werden generiert...",
+  "@generatingSchedules": {
+    "description": "Text shown while generating schedules"
+  },
   "welcome": "Willkommen",
   "@welcome": {
     "description": "Welcome message title"

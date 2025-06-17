@@ -206,4 +206,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get today => 'Heute';
+
+  @override
+  String get generatingSchedules => 'Dienste werden generiert...';
 }
