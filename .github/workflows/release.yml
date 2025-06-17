@@ -54,13 +54,19 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build appbundle --release --build-number=${{ github.run_number }}
         
-      - name: ⬆️ Upload Build Artifacts
+      - name: ⬆️ Upload App APK
         uses: actions/upload-artifact@v4
         with:
-          name: release-files
-          path: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 3
+
+      - name: ⬆️ Upload App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 3
 
       - name: 🔏 Sign Release
         uses: r0adkll/sign-android-release@v1
