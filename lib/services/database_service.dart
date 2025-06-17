@@ -64,7 +64,6 @@ class DatabaseService {
     try {
       AppLogger.i('Opening database connection');
       await database;
-      AppLogger.i('Database tables created successfully');
     } catch (e, stackTrace) {
       AppLogger.e('Error initializing database', e, stackTrace);
       rethrow;

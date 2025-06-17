@@ -74,7 +74,9 @@ class _ScheduleListState extends State<ScheduleList> {
           schedule.date.month == selectedDay.month &&
           schedule.date.day == selectedDay.day;
       final isActiveConfig = schedule.configName == activeConfig.meta.name;
-      return isSameDay && isActiveConfig;
+      final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
+          schedule.dutyGroupName == widget.selectedDutyGroup;
+      return isSameDay && isActiveConfig && isSelectedDutyGroup;
     }).toList();
 
     return filteredSchedules;

@@ -39,7 +39,6 @@ class ScheduleProvider extends ChangeNotifier {
     try {
       AppLogger.i('Initializing ScheduleProvider');
       await _configService.initialize();
-      AppLogger.i('Loading schedule configurations');
       await _loadConfigs();
       AppLogger.i('Loading settings');
       AppLogger.i('Loading active config');
@@ -50,14 +49,15 @@ class ScheduleProvider extends ChangeNotifier {
       if (_configService.hasDefaultConfig) {
         AppLogger.i(
             'Setting active config to default: ${_configService.defaultConfig?.name}');
-        await setActiveConfig(_configService.defaultConfig!);
+        _activeConfig = _configService.defaultConfig;
+        await _saveSettings();
       } else if (_configs.isNotEmpty && _activeConfig == null) {
         AppLogger.i(
             'No default config, using first config: ${_configs.first.name}');
-        await setActiveConfig(_configs.first);
+        _activeConfig = _configs.first;
+        await _saveSettings();
       }
 
-      await loadSchedules();
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error initializing ScheduleProvider', e, stackTrace);
@@ -110,29 +110,31 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> setActiveConfig(DutyScheduleConfig config) async {
+  Future<void> setActiveConfig(DutyScheduleConfig config,
+      {bool generateSchedules = true}) async {
     try {
+      if (generateSchedules) {
+        final now = DateTime.now();
+        final startDate = DateTime(now.year - 1, now.month, now.day);
+        final endDate = DateTime(now.year + 1, now.month, now.day);
+
+        _lastGeneratedStartDate = startDate;
+        _lastGeneratedEndDate = endDate;
+
+        AppLogger.i('Generating initial schedules for config: ${config.name}');
+        AppLogger.i(
+            'Generating schedules from ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+        final schedules = await _configService.generateSchedulesForConfig(
+          config,
+          startDate: startDate,
+          endDate: endDate,
+        );
+
+        await _databaseService.saveSchedules(schedules);
+      }
+
       _activeConfig = config;
       await _saveSettings();
-
-      final now = DateTime.now();
-      final startDate = DateTime(now.year - 1, now.month, now.day);
-      final endDate = DateTime(now.year + 1, now.month, now.day);
-
-      _lastGeneratedStartDate = startDate;
-      _lastGeneratedEndDate = endDate;
-
-      AppLogger.i('Generating initial schedules for config: ${config.name}');
-      AppLogger.i(
-          'Generating schedules from ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
-      final schedules = await _configService.generateSchedulesForConfig(
-        config,
-        startDate: startDate,
-        endDate: endDate,
-      );
-
-      await _databaseService.saveSchedules(schedules);
-
       await loadSchedules();
       notifyListeners();
     } catch (e, stackTrace) {

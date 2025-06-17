@@ -264,5 +264,9 @@
   "@today": {
     "description": "Tooltip for the today button"
   },
-  "today": "Today"
+  "today": "Today",
+  "generatingSchedules": "Generating schedules...",
+  "@generatingSchedules": {
+    "description": "Text shown while generating schedules"
+  }
 } 
