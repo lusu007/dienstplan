@@ -290,10 +290,16 @@ class DatabaseService {
           'Loading schedules from database for date range: $startDate to $endDate');
       final db = await database;
 
+      // Normalize dates to UTC midnight
+      final normalizedStartDate =
+          DateTime.utc(startDate.year, startDate.month, startDate.day);
+      final normalizedEndDate =
+          DateTime.utc(endDate.year, endDate.month, endDate.day);
+
       String whereClause = 'date BETWEEN ? AND ?';
       final List<dynamic> whereArgs = [
-        startDate.toIso8601String(),
-        endDate.toIso8601String(),
+        normalizedStartDate.toIso8601String(),
+        normalizedEndDate.toIso8601String(),
       ];
 
       if (configName != null) {
