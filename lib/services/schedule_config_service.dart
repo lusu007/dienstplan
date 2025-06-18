@@ -41,9 +41,15 @@ class ScheduleConfigService extends ChangeNotifier {
       AppLogger.i('Loading schedule configurations');
       final configs = await _loadConfigFiles();
       _configs = configs;
-      _defaultConfig = await _loadDefaultConfig();
       AppLogger.i('Loaded ${_configs.length} schedule configurations');
-      AppLogger.i('Default config: ${_defaultConfig?.name ?? 'none'}');
+
+      // Only try to load default config if we have configs
+      if (_configs.isNotEmpty) {
+        _defaultConfig = await _loadDefaultConfig();
+        AppLogger.i('Default config: ${_defaultConfig?.name ?? 'none'}');
+      } else {
+        AppLogger.w('No configs loaded, skipping default config');
+      }
     } catch (e, stackTrace) {
       AppLogger.e('Error loading schedule configurations', e, stackTrace);
       rethrow;
