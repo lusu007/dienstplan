@@ -1,3 +1,5 @@
+import 'package:dienstplan/models/duty_type.dart';
+
 class DutyScheduleConfig {
   final String version;
   final Meta meta;
@@ -101,38 +103,6 @@ class Rhythm {
     return {
       'length_weeks': lengthWeeks,
       'pattern': pattern,
-    };
-  }
-}
-
-class DutyType {
-  final String label;
-  final String? startTime;
-  final String? endTime;
-  final bool allDay;
-
-  DutyType({
-    required this.label,
-    this.startTime,
-    this.endTime,
-    this.allDay = false,
-  });
-
-  factory DutyType.fromMap(Map<String, dynamic> map) {
-    return DutyType(
-      label: map['label'] as String,
-      startTime: map['start_time'] as String?,
-      endTime: map['end_time'] as String?,
-      allDay: map['all_day'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'label': label,
-      if (startTime != null) 'start_time': startTime,
-      if (endTime != null) 'end_time': endTime,
-      if (allDay) 'all_day': allDay,
     };
   }
 }

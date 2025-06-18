@@ -6,16 +6,16 @@ import 'package:dienstplan/l10n/app_localizations.dart';
 
 class ScheduleList extends StatefulWidget {
   final List<Schedule> schedules;
-  final List<String> dutyGroups;
+  final List<String>? dutyGroups;
   final String? selectedDutyGroup;
-  final Function(String?) onDutyGroupSelected;
+  final Function(String?)? onDutyGroupSelected;
 
   const ScheduleList({
     super.key,
     required this.schedules,
-    required this.dutyGroups,
-    required this.selectedDutyGroup,
-    required this.onDutyGroupSelected,
+    this.dutyGroups,
+    this.selectedDutyGroup,
+    this.onDutyGroupSelected,
   });
 
   @override
@@ -100,10 +100,9 @@ class _ScheduleListState extends State<ScheduleList> {
       itemCount: sortedSchedules.length,
       itemBuilder: (context, index) {
         final schedule = sortedSchedules[index];
-        final isSelected = widget.selectedDutyGroup == schedule.dutyGroupName;
         final dutyType = provider.activeConfig?.dutyTypes[schedule.service];
         final serviceName = dutyType?.label ?? schedule.service;
-        final serviceTime = dutyType?.allDay == true
+        final serviceTime = dutyType?.isAllDay == true
             ? l10n.allDay
             : '${dutyType?.startTime ?? ''} - ${dutyType?.endTime ?? ''}';
 
@@ -111,8 +110,12 @@ class _ScheduleListState extends State<ScheduleList> {
           margin: const EdgeInsets.only(bottom: 8),
           child: InkWell(
             onTap: () {
-              widget.onDutyGroupSelected(
-                  isSelected ? null : schedule.dutyGroupName);
+              if (widget.onDutyGroupSelected != null) {
+                final isSelected =
+                    widget.selectedDutyGroup == schedule.dutyGroupName;
+                widget.onDutyGroupSelected!(
+                    isSelected ? null : schedule.dutyGroupName);
+              }
             },
             child: Padding(
               padding: const EdgeInsets.all(16),

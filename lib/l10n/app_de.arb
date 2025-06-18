@@ -152,7 +152,7 @@
   "@continueButton": {
     "description": "Continue button text"
   },
-  "generatingSchedules": "Dienste werden generiert...",
+  "generatingSchedules": "Generiere",
   "@generatingSchedules": {
     "description": "Text shown while generating schedules"
   },
@@ -273,8 +273,40 @@
   "@about": {
     "description": "Title for the about dialog"
   },
-  "aboutDescription": "Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizeidienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt den Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.",
+  "aboutDescription": "Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.",
   "@aboutDescription": {
     "description": "Description text shown in the about dialog"
+  },
+  "selectDutyGroup": "Wählen Sie Ihre Dienstgruppe",
+  "@selectDutyGroup": {
+    "description": "Title for duty group selection step"
+  },
+  "selectDutyGroupMessage": "Wählen Sie die Dienstgruppe, zu der Sie gehören:",
+  "@selectDutyGroupMessage": {
+    "description": "Message for duty group selection step"
+  },
+  "back": "Zurück",
+  "@back": {
+    "description": "Back button text"
+  },
+  "errorSavingDefaultConfig": "Fehler beim Speichern der Standard-Konfiguration",
+  "@errorSavingDefaultConfig": {
+    "description": "Error message when saving default configuration fails"
+  },
+  "preferredDutyGroup": "Bevorzugte Dienstgruppe",
+  "@preferredDutyGroup": {
+    "description": "Label for preferred duty group setting"
+  },
+  "selectPreferredDutyGroup": "Bevorzugte Dienstgruppe auswählen",
+  "@selectPreferredDutyGroup": {
+    "description": "Title for preferred duty group selection dialog"
+  },
+  "preferredDutyGroupDescription": "Diese Dienstgruppe wird für zukünftige Funktionen verwendet",
+  "@preferredDutyGroupDescription": {
+    "description": "Description for preferred duty group setting"
+  },
+  "noPreferredDutyGroup": "Keine bevorzugte Dienstgruppe gesetzt",
+  "@noPreferredDutyGroup": {
+    "description": "Text shown when no preferred duty group is set"
   }
 } 

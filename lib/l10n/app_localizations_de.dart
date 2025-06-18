@@ -208,12 +208,39 @@ class AppLocalizationsDe extends AppLocalizations {
   String get today => 'Heute';
 
   @override
-  String get generatingSchedules => 'Dienste werden generiert...';
+  String get generatingSchedules => 'Generiere';
 
   @override
   String get about => 'Über';
 
   @override
   String get aboutDescription =>
-      'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizeidienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt den Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.';
+      'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.';
+
+  @override
+  String get selectDutyGroup => 'Wählen Sie Ihre Dienstgruppe';
+
+  @override
+  String get selectDutyGroupMessage =>
+      'Wählen Sie die Dienstgruppe, zu der Sie gehören:';
+
+  @override
+  String get back => 'Zurück';
+
+  @override
+  String get errorSavingDefaultConfig =>
+      'Fehler beim Speichern der Standard-Konfiguration';
+
+  @override
+  String get preferredDutyGroup => 'Bevorzugte Dienstgruppe';
+
+  @override
+  String get selectPreferredDutyGroup => 'Bevorzugte Dienstgruppe auswählen';
+
+  @override
+  String get preferredDutyGroupDescription =>
+      'Diese Dienstgruppe wird für zukünftige Funktionen verwendet';
+
+  @override
+  String get noPreferredDutyGroup => 'Keine bevorzugte Dienstgruppe gesetzt';
 }

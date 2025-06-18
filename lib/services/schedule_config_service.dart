@@ -182,7 +182,7 @@ class ScheduleConfigService extends ChangeNotifier {
             dutyGroupName: dutyGroup.name,
             service: dutyTypeId,
             dutyTypeId: dutyTypeId,
-            isAllDay: dutyType.allDay,
+            isAllDay: dutyType.isAllDay,
           );
 
           schedules.add(schedule);

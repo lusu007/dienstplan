@@ -51,6 +51,16 @@ class SettingsScreen extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
+            title: Text(l10n.preferredDutyGroup),
+            subtitle: Text(
+              scheduleProvider.preferredDutyGroup ?? l10n.noPreferredDutyGroup,
+            ),
+            leading: const Icon(Icons.favorite),
+            onTap: () =>
+                _showPreferredDutyGroupDialog(context, scheduleProvider),
+          ),
+          const Divider(),
+          ListTile(
             title: Text(l10n.about),
             leading: const Icon(Icons.info_outline),
             onTap: () async {
@@ -238,6 +248,71 @@ class SettingsScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showPreferredDutyGroupDialog(
+      BuildContext context, ScheduleProvider provider) {
+    final l10n = AppLocalizations.of(context);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.selectPreferredDutyGroup),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 400, // Fixed height to prevent dialog from being too tall
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text(l10n.noPreferredDutyGroup),
+                        leading: Icon(
+                          provider.preferredDutyGroup == null
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                          color: provider.preferredDutyGroup == null
+                              ? Theme.of(context).primaryColor
+                              : null,
+                        ),
+                        onTap: () {
+                          provider.preferredDutyGroup = null;
+                          Navigator.pop(context);
+                        },
+                      ),
+                      const Divider(),
+                      ...provider.dutyGroups.map((group) => ListTile(
+                            title: Text(group),
+                            leading: Icon(
+                              provider.preferredDutyGroup == group
+                                  ? Icons.check_circle
+                                  : Icons.radio_button_unchecked,
+                              color: provider.preferredDutyGroup == group
+                                  ? Theme.of(context).primaryColor
+                                  : null,
+                            ),
+                            onTap: () {
+                              provider.preferredDutyGroup = group;
+                              Navigator.pop(context);
+                            },
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel),
+          ),
+        ],
       ),
     );
   }

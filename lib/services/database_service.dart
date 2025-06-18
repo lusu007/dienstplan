@@ -1,7 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:dienstplan/models/schedule.dart';
-import 'package:dienstplan/models/duty_schedule_config.dart';
+import 'package:dienstplan/models/duty_type.dart';
+import 'package:dienstplan/models/settings.dart';
 import 'package:dienstplan/utils/logger.dart';
 
 class DatabaseService {
@@ -17,7 +18,7 @@ class DatabaseService {
     AppLogger.i('Opening database connection at: $dbPath');
     _database = await openDatabase(
       dbPath,
-      version: 1,
+      version: 3,
       onCreate: (db, version) async {
         AppLogger.i('Creating database tables');
         await db.execute('''
@@ -51,7 +52,9 @@ class DatabaseService {
             calendar_format TEXT NOT NULL,
             focused_day TEXT NOT NULL,
             selected_day TEXT NOT NULL,
-            language TEXT
+            language TEXT,
+            selected_duty_group TEXT,
+            preferred_duty_group TEXT
           )
         ''');
 
@@ -77,6 +80,32 @@ class DatabaseService {
         ''');
 
         AppLogger.i('Database tables and indexes created successfully');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        AppLogger.i(
+            'Upgrading database from version $oldVersion to $newVersion');
+
+        if (oldVersion < 2) {
+          // Add selected_duty_group column to settings table
+          try {
+            await db.execute(
+                'ALTER TABLE settings ADD COLUMN selected_duty_group TEXT');
+            AppLogger.i('Added selected_duty_group column to settings table');
+          } catch (e) {
+            AppLogger.w('Column selected_duty_group might already exist: $e');
+          }
+        }
+
+        if (oldVersion < 3) {
+          // Add preferred_duty_group column to settings table
+          try {
+            await db.execute(
+                'ALTER TABLE settings ADD COLUMN preferred_duty_group TEXT');
+            AppLogger.i('Added preferred_duty_group column to settings table');
+          } catch (e) {
+            AppLogger.w('Column preferred_duty_group might already exist: $e');
+          }
+        }
       },
     );
     return _database!;
@@ -104,9 +133,9 @@ class DatabaseService {
           'duty_types',
           {
             'config_name': configName,
-            'service_id': entry.key,
+            'id': entry.key,
             'label': entry.value.label,
-            'all_day': entry.value.allDay ? 1 : 0,
+            'all_day': entry.value.isAllDay ? 1 : 0,
             'start_time': entry.value.startTime,
             'end_time': entry.value.endTime,
           },
@@ -206,26 +235,15 @@ class DatabaseService {
     }
   }
 
-  Future<void> saveSettings({
-    required String calendarFormat,
-    required DateTime focusedDay,
-    required DateTime selectedDay,
-    String? language,
-  }) async {
-    AppLogger.i(
-        'Saving settings: format=$calendarFormat, focused=$focusedDay, selected=$selectedDay, language=$language');
+  Future<void> saveSettings(Settings settings) async {
+    AppLogger.i('Saving settings: $settings');
     final db = await database;
     await db.delete('settings');
-    await db.insert('settings', {
-      'calendar_format': calendarFormat,
-      'focused_day': focusedDay.toIso8601String(),
-      'selected_day': selectedDay.toIso8601String(),
-      if (language != null) 'language': language,
-    });
+    await db.insert('settings', settings.toMap());
     AppLogger.i('Settings saved successfully');
   }
 
-  Future<Map<String, dynamic>?> loadSettings() async {
+  Future<Settings?> loadSettings() async {
     AppLogger.i('Loading settings');
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('settings');
@@ -235,13 +253,7 @@ class DatabaseService {
       return null;
     }
 
-    final map = maps.first;
-    final settings = {
-      'calendar_format': map['calendar_format'] as String,
-      'focused_day': DateTime.parse(map['focused_day'] as String),
-      'selected_day': DateTime.parse(map['selected_day'] as String),
-      if (map['language'] != null) 'language': map['language'] as String,
-    };
+    final settings = Settings.fromMap(maps.first);
     AppLogger.i('Settings loaded: $settings');
     return settings;
   }
@@ -293,7 +305,7 @@ class DatabaseService {
 
       final dutyTypes = <String, DutyType>{};
       for (final map in maps) {
-        dutyTypes[map['service_id'] as String] = DutyType.fromMap(map);
+        dutyTypes[map['id'] as String] = DutyType.fromMap(map);
       }
 
       AppLogger.i('Loaded ${dutyTypes.length} duty types');
