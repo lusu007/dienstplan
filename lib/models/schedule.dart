@@ -18,8 +18,14 @@ class Schedule {
   });
 
   factory Schedule.fromMap(Map<String, dynamic> map) {
+    final dateStr = map['date'] as String;
+    final dateParts = dateStr.split('T')[0].split('-');
     return Schedule(
-      date: DateTime.parse(map['date'] as String),
+      date: DateTime.utc(
+        int.parse(dateParts[0]),
+        int.parse(dateParts[1]),
+        int.parse(dateParts[2]),
+      ),
       service: map['service'] as String,
       dutyGroupId: map['duty_group_id'] as String,
       dutyTypeId: map['duty_type_id'] as String,
@@ -31,7 +37,7 @@ class Schedule {
 
   Map<String, dynamic> toMap() {
     return {
-      'date': date.toIso8601String(),
+      'date': date.toUtc().toIso8601String(),
       'service': service,
       'duty_group_id': dutyGroupId,
       'duty_type_id': dutyTypeId,
@@ -43,6 +49,6 @@ class Schedule {
 
   @override
   String toString() {
-    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName)';
+    return 'Schedule(date: ${date.toUtc().toIso8601String()}, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName)';
   }
 }

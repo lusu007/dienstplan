@@ -137,9 +137,9 @@ class ScheduleConfigService extends ChangeNotifier {
 
     for (var i = 0; i <= daysToGenerate; i++) {
       final date = effectiveStartDate.add(Duration(days: i));
-      // Use local timezone dates consistently
-      final normalizedDate = DateTime(date.year, date.month, date.day);
-      final normalizedStartDate = DateTime(
+      // Use UTC dates consistently
+      final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+      final normalizedStartDate = DateTime.utc(
           config.startDate.year, config.startDate.month, config.startDate.day);
 
       for (final dutyGroup in config.dutyGroups) {
