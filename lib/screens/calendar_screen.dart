@@ -66,6 +66,7 @@ class _CalendarScreenState extends State<CalendarScreen>
               style: const TextStyle(color: Colors.white),
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
+            automaticallyImplyLeading: false,
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings, color: Colors.white),
