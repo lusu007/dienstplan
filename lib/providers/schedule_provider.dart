@@ -49,13 +49,12 @@ class ScheduleProvider extends ChangeNotifier {
       if (_configService.hasDefaultConfig) {
         AppLogger.i(
             'Setting active config to default: ${_configService.defaultConfig?.name}');
-        _activeConfig = _configService.defaultConfig;
-        await _saveSettings();
+        await setActiveConfig(_configService.defaultConfig!,
+            generateSchedules: true);
       } else if (_configs.isNotEmpty && _activeConfig == null) {
         AppLogger.i(
             'No default config, using first config: ${_configs.first.name}');
-        _activeConfig = _configs.first;
-        await _saveSettings();
+        await setActiveConfig(_configs.first, generateSchedules: true);
       }
 
       notifyListeners();
@@ -146,6 +145,7 @@ class ScheduleProvider extends ChangeNotifier {
   Future<void> loadSchedules() async {
     try {
       if (_activeConfig == null) {
+        AppLogger.w('No active config available, skipping schedule load');
         _schedules = [];
         notifyListeners();
         return;
