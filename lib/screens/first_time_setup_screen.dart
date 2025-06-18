@@ -90,7 +90,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     final l10n = AppLocalizations.of(context);
     final languageService = context.watch<LanguageService>();
     const mainColor = Color(0xFF005B8C);
-    const disabledBlue = Color(0xFF1578AD); // Helleres Blau für disabled
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dienstplan'),
@@ -230,46 +229,40 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                       width: double.infinity,
                       child: SizedBox(
                         height: 56,
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: mainColor,
-                                  foregroundColor: Colors.white,
-                                  disabledBackgroundColor: disabledBlue,
-                                  disabledForegroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  minimumSize: const Size.fromHeight(56),
-                                  textStyle: const TextStyle(fontSize: 20),
-                                ),
-                                onPressed: _selectedConfig == null ||
-                                        _isGeneratingSchedules
-                                    ? null
-                                    : _saveDefaultConfig,
-                                child: _isGeneratingSchedules
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(l10n.generatingSchedules),
-                                        ],
-                                      )
-                                    : Text(l10n.continueButton),
-                              ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: mainColor,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                          ],
+                            minimumSize: const Size.fromHeight(56),
+                            textStyle: const TextStyle(fontSize: 20),
+                          ),
+                          onPressed: _selectedConfig == null
+                              ? null
+                              : () {
+                                  if (!_isGeneratingSchedules) {
+                                    _saveDefaultConfig();
+                                  }
+                                },
+                          child: _isGeneratingSchedules
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(l10n.generatingSchedules),
+                                  ],
+                                )
+                              : Text(l10n.continueButton),
                         ),
                       ),
                     ),
