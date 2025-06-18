@@ -54,7 +54,29 @@ class DatabaseService {
             language TEXT
           )
         ''');
-        AppLogger.i('Database tables created successfully');
+
+        AppLogger.i('Creating database indexes');
+        await db.execute('''
+          CREATE INDEX idx_schedules_date 
+          ON schedules(date);
+        ''');
+
+        await db.execute('''
+          CREATE INDEX idx_schedules_config 
+          ON schedules(config_name);
+        ''');
+
+        await db.execute('''
+          CREATE INDEX idx_schedules_date_config 
+          ON schedules(date, config_name);
+        ''');
+
+        await db.execute('''
+          CREATE INDEX idx_duty_types_config 
+          ON duty_types(config_name);
+        ''');
+
+        AppLogger.i('Database tables and indexes created successfully');
       },
     );
     return _database!;
