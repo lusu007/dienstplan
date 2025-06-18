@@ -51,10 +51,6 @@ class ScheduleProvider extends ChangeNotifier {
             'Setting active config to default: ${_configService.defaultConfig?.name}');
         await setActiveConfig(_configService.defaultConfig!,
             generateSchedules: true);
-      } else if (_configs.isNotEmpty && _activeConfig == null) {
-        AppLogger.i(
-            'No default config, using first config: ${_configs.first.name}');
-        await setActiveConfig(_configs.first, generateSchedules: true);
       }
 
       notifyListeners();
