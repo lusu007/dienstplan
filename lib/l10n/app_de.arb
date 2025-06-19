@@ -255,7 +255,11 @@
   },
   "licenses": "Lizenzen",
   "@licenses": {
-    "description": "Title for the licenses screen"
+    "description": "Title for licenses option"
+  },
+  "disclaimer": "Haftungsausschluss",
+  "@disclaimer": {
+    "description": "Title for disclaimer option"
   },
   "@previousPeriod": {
     "description": "Tooltip for the previous period navigation button"
@@ -312,5 +316,17 @@
   "noPreferredDutyGroup": "Keine bevorzugte Dienstgruppe gesetzt",
   "@noPreferredDutyGroup": {
     "description": "Text shown when no preferred duty group is set"
+  },
+  "general": "Allgemein",
+  "@general": {
+    "description": "Title for general settings section"
+  },
+  "legal": "Rechtliches",
+  "@legal": {
+    "description": "Title for legal section"
+  },
+  "privacyPolicy": "Datenschutzerklärung",
+  "@privacyPolicy": {
+    "description": "Title for privacy policy option"
   }
 } 

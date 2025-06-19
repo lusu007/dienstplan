@@ -247,4 +247,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noPreferredDutyGroup => 'Keine bevorzugte Dienstgruppe gesetzt';
+
+  @override
+  String get general => 'Allgemein';
+
+  @override
+  String get legal => 'Rechtliches';
+
+  @override
+  String get privacyPolicy => 'Datenschutzerklärung';
+
+  @override
+  String get disclaimer => 'Haftungsausschluss';
 }

@@ -312,5 +312,21 @@
   "noPreferredDutyGroup": "No preferred duty group set",
   "@noPreferredDutyGroup": {
     "description": "Text shown when no preferred duty group is set"
+  },
+  "general": "General",
+  "@general": {
+    "description": "Title for general settings section"
+  },
+  "legal": "Legal",
+  "@legal": {
+    "description": "Title for legal section"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Title for privacy policy option"
+  },
+  "disclaimer": "Disclaimer",
+  "@disclaimer": {
+    "description": "Title for disclaimer option"
   }
 } 

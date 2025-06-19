@@ -245,4 +245,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPreferredDutyGroup => 'No preferred duty group set';
+
+  @override
+  String get general => 'General';
+
+  @override
+  String get legal => 'Legal';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get disclaimer => 'Disclaimer';
 }

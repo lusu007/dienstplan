@@ -559,6 +559,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No preferred duty group set'**
   String get noPreferredDutyGroup;
+
+  /// Title for general settings section
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
+  /// Title for legal section
+  ///
+  /// In en, this message translates to:
+  /// **'Legal'**
+  String get legal;
+
+  /// Title for privacy policy option
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// Title for disclaimer option
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer'**
+  String get disclaimer;
 }
 
 class _AppLocalizationsDelegate
