@@ -325,26 +325,24 @@ class SettingsScreen extends StatelessWidget {
                         child: Text(l10n.aboutDisclaimer),
                       ),
                       actions: [
-                        SizedBox(
-                          width: double.infinity,
+                        Align(
+                          alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: SizedBox(
-                              height: 56,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF005B8C),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  minimumSize: const Size.fromHeight(56),
-                                  textStyle: const TextStyle(fontSize: 20),
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF005B8C),
+                                side:
+                                    const BorderSide(color: Color(0xFF005B8C)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(l10n.cancel),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 12),
+                                textStyle: const TextStyle(fontSize: 16),
                               ),
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(l10n.close),
                             ),
                           ),
                         ),
@@ -461,49 +459,154 @@ class SettingsScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              title: Text(l10n.calendarFormatMonth),
-              onTap: () {
-                provider.setCalendarFormat(CalendarFormat.month);
-                Navigator.pop(context);
-              },
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: provider.calendarFormat == CalendarFormat.month
+                    ? mainColor.withValues(alpha: 0.1)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: provider.calendarFormat == CalendarFormat.month
+                      ? mainColor
+                      : Colors.grey.shade300,
+                  width:
+                      provider.calendarFormat == CalendarFormat.month ? 2 : 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: Icon(
+                  provider.calendarFormat == CalendarFormat.month
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: provider.calendarFormat == CalendarFormat.month
+                      ? mainColor
+                      : Colors.grey,
+                  size: 28,
+                ),
+                title: Text(
+                  l10n.calendarFormatMonth,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: provider.calendarFormat == CalendarFormat.month
+                        ? mainColor
+                        : Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  provider.setCalendarFormat(CalendarFormat.month);
+                  Navigator.pop(context);
+                },
+              ),
             ),
-            ListTile(
-              title: Text(l10n.calendarFormatTwoWeeks),
-              onTap: () {
-                provider.setCalendarFormat(CalendarFormat.twoWeeks);
-                Navigator.pop(context);
-              },
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: provider.calendarFormat == CalendarFormat.twoWeeks
+                    ? mainColor.withValues(alpha: 0.1)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: provider.calendarFormat == CalendarFormat.twoWeeks
+                      ? mainColor
+                      : Colors.grey.shade300,
+                  width: provider.calendarFormat == CalendarFormat.twoWeeks
+                      ? 2
+                      : 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: Icon(
+                  provider.calendarFormat == CalendarFormat.twoWeeks
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: provider.calendarFormat == CalendarFormat.twoWeeks
+                      ? mainColor
+                      : Colors.grey,
+                  size: 28,
+                ),
+                title: Text(
+                  l10n.calendarFormatTwoWeeks,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: provider.calendarFormat == CalendarFormat.twoWeeks
+                        ? mainColor
+                        : Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  provider.setCalendarFormat(CalendarFormat.twoWeeks);
+                  Navigator.pop(context);
+                },
+              ),
             ),
-            ListTile(
-              title: Text(l10n.calendarFormatWeek),
-              onTap: () {
-                provider.setCalendarFormat(CalendarFormat.week);
-                Navigator.pop(context);
-              },
+            Container(
+              decoration: BoxDecoration(
+                color: provider.calendarFormat == CalendarFormat.week
+                    ? mainColor.withValues(alpha: 0.1)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: provider.calendarFormat == CalendarFormat.week
+                      ? mainColor
+                      : Colors.grey.shade300,
+                  width: provider.calendarFormat == CalendarFormat.week ? 2 : 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: Icon(
+                  provider.calendarFormat == CalendarFormat.week
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: provider.calendarFormat == CalendarFormat.week
+                      ? mainColor
+                      : Colors.grey,
+                  size: 28,
+                ),
+                title: Text(
+                  l10n.calendarFormatWeek,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: provider.calendarFormat == CalendarFormat.week
+                        ? mainColor
+                        : Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  provider.setCalendarFormat(CalendarFormat.week);
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ],
         ),
         actions: [
-          SizedBox(
-            width: double.infinity,
+          Align(
+            alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: const TextStyle(fontSize: 20),
+              padding: const EdgeInsets.only(left: 16.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: mainColor,
+                  side: const BorderSide(color: mainColor),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(l10n.cancel),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 16),
                 ),
+                onPressed: () => Navigator.pop(context),
+                child: Text(l10n.close),
               ),
             ),
           ),
@@ -523,35 +626,88 @@ class SettingsScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...provider.configs.map((config) => ListTile(
-                  title: Text(config.meta.name),
-                  onTap: () {
-                    provider.setActiveConfig(config);
-                    Navigator.pop(context);
-                  },
+            ...provider.configs.map((config) => Container(
+                  margin: EdgeInsets.only(
+                    bottom: provider.configs.last == config ? 0 : 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: provider.activeConfig?.meta.name == config.meta.name
+                        ? mainColor.withValues(alpha: 0.1)
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color:
+                          provider.activeConfig?.meta.name == config.meta.name
+                              ? mainColor
+                              : Colors.grey.shade300,
+                      width:
+                          provider.activeConfig?.meta.name == config.meta.name
+                              ? 2
+                              : 1,
+                    ),
+                  ),
+                  child: ListTile(
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    leading: Icon(
+                      provider.activeConfig?.meta.name == config.meta.name
+                          ? Icons.check_circle
+                          : Icons.radio_button_unchecked,
+                      color:
+                          provider.activeConfig?.meta.name == config.meta.name
+                              ? mainColor
+                              : Colors.grey,
+                      size: 28,
+                    ),
+                    title: Text(
+                      config.meta.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color:
+                            provider.activeConfig?.meta.name == config.meta.name
+                                ? mainColor
+                                : Colors.black,
+                      ),
+                    ),
+                    subtitle: config.meta.description.isNotEmpty
+                        ? Text(
+                            config.meta.description,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: provider.activeConfig?.meta.name ==
+                                      config.meta.name
+                                  ? mainColor.withValues(alpha: 0.8)
+                                  : Colors.black54,
+                            ),
+                          )
+                        : null,
+                    onTap: () {
+                      provider.setActiveConfig(config);
+                      Navigator.pop(context);
+                    },
+                  ),
                 )),
           ],
         ),
         actions: [
-          SizedBox(
-            width: double.infinity,
+          Align(
+            alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: const TextStyle(fontSize: 20),
+              padding: const EdgeInsets.only(left: 16.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: mainColor,
+                  side: const BorderSide(color: mainColor),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(l10n.cancel),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 16),
                 ),
+                onPressed: () => Navigator.pop(context),
+                child: Text(l10n.close),
               ),
             ),
           ),
@@ -572,55 +728,51 @@ class SettingsScreen extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: SizedBox(
-                  height: 56,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: mainColor,
-                      side: const BorderSide(color: mainColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      minimumSize: const Size.fromHeight(56),
-                      textStyle: const TextStyle(fontSize: 20),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: mainColor,
+                    side: const BorderSide(color: mainColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(l10n.cancel),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l10n.cancel),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: SizedBox(
-                  height: 56,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: mainColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      minimumSize: const Size.fromHeight(56),
-                      textStyle: const TextStyle(fontSize: 20),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mainColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      await provider.reset();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(l10n.resetDataSuccess),
-                          ),
-                        );
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const FirstTimeSetupScreen(),
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(l10n.reset),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    textStyle: const TextStyle(fontSize: 16),
                   ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await provider.reset();
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(l10n.resetDataSuccess),
+                        ),
+                      );
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const FirstTimeSetupScreen(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(l10n.reset),
                 ),
               ),
             ],
@@ -642,43 +794,111 @@ class SettingsScreen extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              title: Text(l10n.german),
-              onTap: () {
-                languageService.setLanguage('de');
-                Navigator.pop(context);
-              },
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: languageService.currentLocale.languageCode == 'de'
+                    ? mainColor.withValues(alpha: 0.1)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: languageService.currentLocale.languageCode == 'de'
+                      ? mainColor
+                      : Colors.grey.shade300,
+                  width: languageService.currentLocale.languageCode == 'de'
+                      ? 2
+                      : 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: Icon(
+                  languageService.currentLocale.languageCode == 'de'
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: languageService.currentLocale.languageCode == 'de'
+                      ? mainColor
+                      : Colors.grey,
+                  size: 28,
+                ),
+                title: Text(
+                  l10n.german,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: languageService.currentLocale.languageCode == 'de'
+                        ? mainColor
+                        : Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  languageService.setLanguage('de');
+                  Navigator.pop(context);
+                },
+              ),
             ),
-            ListTile(
-              title: Text(l10n.english),
-              onTap: () {
-                languageService.setLanguage('en');
-                Navigator.pop(context);
-              },
+            Container(
+              decoration: BoxDecoration(
+                color: languageService.currentLocale.languageCode == 'en'
+                    ? mainColor.withValues(alpha: 0.1)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: languageService.currentLocale.languageCode == 'en'
+                      ? mainColor
+                      : Colors.grey.shade300,
+                  width: languageService.currentLocale.languageCode == 'en'
+                      ? 2
+                      : 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                leading: Icon(
+                  languageService.currentLocale.languageCode == 'en'
+                      ? Icons.check_circle
+                      : Icons.radio_button_unchecked,
+                  color: languageService.currentLocale.languageCode == 'en'
+                      ? mainColor
+                      : Colors.grey,
+                  size: 28,
+                ),
+                title: Text(
+                  l10n.english,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: languageService.currentLocale.languageCode == 'en'
+                        ? mainColor
+                        : Colors.black,
+                  ),
+                ),
+                onTap: () {
+                  languageService.setLanguage('en');
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ],
         ),
         actions: [
-          SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(l10n.cancel),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: mainColor,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                textStyle: const TextStyle(fontSize: 16),
               ),
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
             ),
           ),
         ],
@@ -696,7 +916,7 @@ class SettingsScreen extends StatelessWidget {
         title: Text(l10n.selectPreferredDutyGroup),
         content: SizedBox(
           width: double.maxFinite,
-          height: 400, // Fixed height to prevent dialog from being too tall
+          height: 300, // Fixed height to keep dialog compact
           child: Column(
             children: [
               Expanded(
@@ -704,37 +924,91 @@ class SettingsScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ListTile(
-                        title: Text(l10n.noPreferredDutyGroup),
-                        leading: Icon(
-                          provider.preferredDutyGroup == null
-                              ? Icons.check_circle
-                              : Icons.radio_button_unchecked,
-                          color: provider.preferredDutyGroup == null
-                              ? Theme.of(context).primaryColor
-                              : null,
-                        ),
-                        onTap: () {
-                          provider.preferredDutyGroup = null;
-                          Navigator.pop(context);
-                        },
-                      ),
-                      const Divider(),
-                      ...provider.dutyGroups.map((group) => ListTile(
-                            title: Text(group),
-                            leading: Icon(
-                              provider.preferredDutyGroup == group
-                                  ? Icons.check_circle
-                                  : Icons.radio_button_unchecked,
+                      ...provider.dutyGroups.map((group) => Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            decoration: BoxDecoration(
                               color: provider.preferredDutyGroup == group
-                                  ? Theme.of(context).primaryColor
-                                  : null,
+                                  ? mainColor.withValues(alpha: 0.1)
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: provider.preferredDutyGroup == group
+                                    ? mainColor
+                                    : Colors.grey.shade300,
+                                width: provider.preferredDutyGroup == group
+                                    ? 2
+                                    : 1,
+                              ),
                             ),
-                            onTap: () {
-                              provider.preferredDutyGroup = group;
-                              Navigator.pop(context);
-                            },
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              leading: Icon(
+                                provider.preferredDutyGroup == group
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                color: provider.preferredDutyGroup == group
+                                    ? mainColor
+                                    : Colors.grey,
+                                size: 28,
+                              ),
+                              title: Text(
+                                group,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: provider.preferredDutyGroup == group
+                                      ? mainColor
+                                      : Colors.black,
+                                ),
+                              ),
+                              onTap: () {
+                                provider.preferredDutyGroup = group;
+                                Navigator.pop(context);
+                              },
+                            ),
                           )),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: provider.preferredDutyGroup == null
+                              ? mainColor.withValues(alpha: 0.1)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: provider.preferredDutyGroup == null
+                                ? mainColor
+                                : Colors.grey.shade300,
+                            width: provider.preferredDutyGroup == null ? 2 : 1,
+                          ),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          leading: Icon(
+                            provider.preferredDutyGroup == null
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: provider.preferredDutyGroup == null
+                                ? mainColor
+                                : Colors.grey,
+                            size: 28,
+                          ),
+                          title: Text(
+                            l10n.noPreferredDutyGroup,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: provider.preferredDutyGroup == null
+                                  ? mainColor
+                                  : Colors.black,
+                            ),
+                          ),
+                          onTap: () {
+                            provider.preferredDutyGroup = null;
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -743,25 +1017,23 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          SizedBox(
-            width: double.infinity,
+          Align(
+            alignment: Alignment.centerLeft,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: const TextStyle(fontSize: 20),
+              padding: const EdgeInsets.only(left: 16.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: mainColor,
+                  side: const BorderSide(color: mainColor),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(l10n.cancel),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 16),
                 ),
+                onPressed: () => Navigator.pop(context),
+                child: Text(l10n.close),
               ),
             ),
           ),

@@ -40,6 +40,10 @@
   "@cancel": {
     "description": "Cancel button text"
   },
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
   "delete": "Delete",
   "@delete": {
     "description": "Delete button text"
