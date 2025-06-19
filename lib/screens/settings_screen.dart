@@ -48,42 +48,6 @@ class SettingsScreen extends StatelessWidget {
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 minVerticalPadding: 20,
-                leading: const Icon(Icons.language,
-                    color: Color(0xFF005B8C), size: 40),
-                title: Text(
-                  l10n.language,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                subtitle: Text(
-                  languageService.currentLocale.languageCode == 'de'
-                      ? l10n.german
-                      : l10n.english,
-                  style: const TextStyle(fontSize: 15, color: Colors.black87),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                selectedTileColor: Colors.transparent,
-                onTap: () => _showLanguageDialog(context),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                  width: 1,
-                ),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                minVerticalPadding: 20,
                 leading: const Icon(Icons.calendar_today,
                     color: Color(0xFF005B8C), size: 40),
                 title: Text(
@@ -104,6 +68,42 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 selectedTileColor: Colors.transparent,
                 onTap: () => _showDutyScheduleDialog(context, scheduleProvider),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.favorite,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.preferredDutyGroup,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                subtitle: Text(
+                  scheduleProvider.preferredDutyGroup ??
+                      l10n.noPreferredDutyGroup,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () =>
+                    _showPreferredDutyGroupDialog(context, scheduleProvider),
               ),
             ),
             Container(
@@ -154,10 +154,10 @@ class SettingsScreen extends StatelessWidget {
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 minVerticalPadding: 20,
-                leading: const Icon(Icons.favorite,
+                leading: const Icon(Icons.language,
                     color: Color(0xFF005B8C), size: 40),
                 title: Text(
-                  l10n.preferredDutyGroup,
+                  l10n.language,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -165,16 +165,16 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  scheduleProvider.preferredDutyGroup ??
-                      l10n.noPreferredDutyGroup,
+                  languageService.currentLocale.languageCode == 'de'
+                      ? l10n.german
+                      : l10n.english,
                   style: const TextStyle(fontSize: 15, color: Colors.black87),
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 selectedTileColor: Colors.transparent,
-                onTap: () =>
-                    _showPreferredDutyGroupDialog(context, scheduleProvider),
+                onTap: () => _showLanguageDialog(context),
               ),
             ),
             Container(
