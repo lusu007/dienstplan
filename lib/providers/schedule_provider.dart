@@ -163,6 +163,9 @@ class ScheduleProvider extends ChangeNotifier {
 
       _activeConfig = config;
 
+      // Reset preferred duty group when switching to a new configuration
+      _preferredDutyGroup = null;
+
       // Load duty types from database to ensure they're available
       final loadedDutyTypes = await _databaseService.loadDutyTypes(config.name);
       if (loadedDutyTypes.isNotEmpty) {

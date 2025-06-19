@@ -247,6 +247,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPreferredDutyGroup => 'No preferred duty group set';
 
   @override
+  String get noPreferredDutyGroupDescription =>
+      'No duty group abbreviations will be shown on the calendar';
+
+  @override
   String get general => 'General';
 
   @override

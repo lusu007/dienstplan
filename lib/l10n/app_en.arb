@@ -311,7 +311,11 @@
   },
   "noPreferredDutyGroup": "No preferred duty group set",
   "@noPreferredDutyGroup": {
-    "description": "Text shown when no preferred duty group is set"
+    "description": "Text shown when no preferred duty group is selected"
+  },
+  "noPreferredDutyGroupDescription": "No duty group abbreviations will be shown on the calendar",
+  "@noPreferredDutyGroupDescription": {
+    "description": "Description for no preferred duty group option"
   },
   "general": "General",
   "@general": {

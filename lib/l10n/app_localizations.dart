@@ -554,11 +554,17 @@ abstract class AppLocalizations {
   /// **'This duty group will be used for future functionality'**
   String get preferredDutyGroupDescription;
 
-  /// Text shown when no preferred duty group is set
+  /// Text shown when no preferred duty group is selected
   ///
   /// In en, this message translates to:
   /// **'No preferred duty group set'**
   String get noPreferredDutyGroup;
+
+  /// Description for no preferred duty group option
+  ///
+  /// In en, this message translates to:
+  /// **'No duty group abbreviations will be shown on the calendar'**
+  String get noPreferredDutyGroupDescription;
 
   /// Title for general settings section
   ///
