@@ -23,6 +23,16 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          // Allgemein (General) Section
+          ListTile(
+            title: Text(
+              l10n.general,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
+            ),
+          ),
           ListTile(
             title: Text(l10n.language),
             subtitle: Text(
@@ -60,6 +70,22 @@ class SettingsScreen extends StatelessWidget {
                 _showPreferredDutyGroupDialog(context, scheduleProvider),
           ),
           const Divider(),
+          ListTile(
+            title: Text(l10n.resetData),
+            leading: const Icon(Icons.delete_forever),
+            onTap: () => _showResetDialog(context, scheduleProvider),
+          ),
+          const Divider(),
+          // Rechtliches (Legal) Section
+          ListTile(
+            title: Text(
+              l10n.legal,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
+            ),
+          ),
           ListTile(
             title: Text(l10n.about),
             leading: const Icon(Icons.info_outline),
@@ -105,11 +131,55 @@ class SettingsScreen extends StatelessWidget {
               }
             },
           ),
-          const Divider(),
           ListTile(
-            title: Text(l10n.resetData),
-            leading: const Icon(Icons.delete_forever),
-            onTap: () => _showResetDialog(context, scheduleProvider),
+            title: Text(l10n.disclaimer),
+            leading: const Icon(Icons.warning_outlined),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(l10n.disclaimer),
+                  content: SingleChildScrollView(
+                    child: Text(l10n.aboutDisclaimer),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(l10n.cancel),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(l10n.privacyPolicy),
+            leading: const Icon(Icons.privacy_tip_outlined),
+            onTap: () async {
+              final Uri privacyPolicyUri =
+                  Uri.parse('https://assets.scelus.io/datenschutz.html');
+              if (await canLaunchUrl(privacyPolicyUri)) {
+                await launchUrl(privacyPolicyUri,
+                    mode: LaunchMode.externalApplication);
+              }
+            },
+          ),
+          ListTile(
+            title: Text(l10n.licenses),
+            leading: const Icon(Icons.description_outlined),
+            onTap: () {
+              showLicensePage(
+                context: context,
+                applicationName: 'Dienstplan',
+                applicationVersion: '1.0.0',
+                applicationIcon: Image.asset(
+                  'assets/images/logo.png',
+                  width: 50,
+                  height: 50,
+                ),
+                applicationLegalese: '© ${DateTime.now().year} Lukas Jost',
+              );
+            },
           ),
         ],
       ),
