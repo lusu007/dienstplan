@@ -307,7 +307,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   minVerticalPadding: 20,
-                  leading: Icon(Icons.group, color: mainColor, size: 40),
+                  leading: const Icon(Icons.group, color: mainColor, size: 40),
                   title: Text(
                     group.name,
                     style: const TextStyle(
