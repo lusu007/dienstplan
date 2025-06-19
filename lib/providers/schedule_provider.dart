@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/models/schedule.dart';
 import 'package:dienstplan/models/duty_schedule_config.dart';
@@ -7,6 +8,7 @@ import 'package:dienstplan/models/settings.dart';
 import 'package:dienstplan/services/database_service.dart';
 import 'package:dienstplan/services/schedule_config_service.dart';
 import 'package:dienstplan/utils/logger.dart';
+import 'dart:async';
 
 class ScheduleProvider extends ChangeNotifier {
   final DatabaseService _databaseService = DatabaseService();
@@ -20,11 +22,19 @@ class ScheduleProvider extends ChangeNotifier {
   DateTime? _focusedDay;
   List<Schedule> _schedules = [];
   CalendarFormat _calendarFormat = CalendarFormat.month;
+  bool _isLoadingSchedules = false;
+  bool _isReloadingCalendarView = false;
 
   final Map<String, List<Schedule>> _scheduleCache = {};
   static const int _cacheDays = 62;
   DateTime? _lastGeneratedStartDate;
   DateTime? _lastGeneratedEndDate;
+
+  // Track dates that are currently being processed to prevent duplicates
+  final Set<String> _processingDates = {};
+
+  // Debounce timer for loadSchedules calls
+  Timer? _loadSchedulesDebounceTimer;
 
   ScheduleProvider(this._configService);
 
@@ -38,6 +48,7 @@ class ScheduleProvider extends ChangeNotifier {
   DateTime? get focusedDay => _focusedDay;
   List<Schedule> get schedules => _schedules;
   CalendarFormat get calendarFormat => _calendarFormat;
+  bool get isLoadingSchedules => _isLoadingSchedules;
 
   set selectedDutyGroup(String? value) {
     _selectedDutyGroup = value;
@@ -179,13 +190,29 @@ class ScheduleProvider extends ChangeNotifier {
         return;
       }
 
+      // Cancel any pending debounced call
+      _loadSchedulesDebounceTimer?.cancel();
+
+      // Debounce the loadSchedules call to prevent rapid successive calls
+      _loadSchedulesDebounceTimer =
+          Timer(const Duration(milliseconds: 100), () async {
+        await _performLoadSchedules();
+      });
+    } catch (e, stackTrace) {
+      AppLogger.e('Error in loadSchedules', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _performLoadSchedules() async {
+    try {
+      if (_activeConfig == null) return;
+
+      // Set loading state
+      _isLoadingSchedules = true;
+      notifyListeners();
+
       final now = DateTime.now();
-      final selectedMonthStart = _selectedDay != null
-          ? DateTime(_selectedDay!.year, _selectedDay!.month, 1)
-          : DateTime(now.year, now.month, 1);
-      final selectedMonthEnd = _selectedDay != null
-          ? DateTime(_selectedDay!.year, _selectedDay!.month + 1, 0)
-          : DateTime(now.year, now.month + 1, 0);
 
       final focusedMonthStart = _focusedDay != null
           ? DateTime(_focusedDay!.year, _focusedDay!.month, 1)
@@ -198,37 +225,44 @@ class ScheduleProvider extends ChangeNotifier {
       final firstWeekStart =
           focusedMonthStart.subtract(Duration(days: firstDayOfWeek - 1));
 
-      // If we're in the current month, use the entire month as the date range
-      final startDate =
-          _selectedDay?.month == now.month && _selectedDay?.year == now.year
-              ? selectedMonthStart
-              : selectedMonthStart.isBefore(firstWeekStart)
-                  ? selectedMonthStart
-                  : firstWeekStart;
-      final endDate =
-          _selectedDay?.month == now.month && _selectedDay?.year == now.year
-              ? selectedMonthEnd
-              : selectedMonthEnd.isAfter(focusedMonthEnd)
-                  ? selectedMonthEnd
-                  : focusedMonthEnd;
+      // Calculate the last day of the last week of the focused month
+      final lastDayOfWeek = focusedMonthEnd.weekday;
+      final lastWeekEnd =
+          focusedMonthEnd.add(Duration(days: 7 - lastDayOfWeek));
+
+      // Always load the full calendar view including outside days
+      final startDate = firstWeekStart;
+      final endDate = lastWeekEnd;
+
+      // If there's a selected day outside the calendar view, extend the range to include it
+      final effectiveStartDate =
+          _selectedDay != null && _selectedDay!.isBefore(startDate)
+              ? _selectedDay!
+              : startDate;
+      final effectiveEndDate =
+          _selectedDay != null && _selectedDay!.isAfter(endDate)
+              ? _selectedDay!
+              : endDate;
 
       AppLogger.i(
-          'Loading schedules for date range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+          'Loading schedules for date range: ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}');
       AppLogger.i(
           'Selected day: ${_selectedDay?.toIso8601String()}, Focused day: ${_focusedDay?.toIso8601String()}');
       AppLogger.i('First week start: ${firstWeekStart.toIso8601String()}');
+      AppLogger.i('Last week end: ${lastWeekEnd.toIso8601String()}');
 
       if (_lastGeneratedStartDate == null ||
           _lastGeneratedEndDate == null ||
-          startDate.isBefore(_lastGeneratedStartDate!) ||
-          endDate.isAfter(_lastGeneratedEndDate!)) {
-        final newStartDate =
-            startDate.isBefore(_lastGeneratedStartDate ?? startDate)
-                ? startDate
-                : _lastGeneratedStartDate!;
-        final newEndDate = endDate.isAfter(_lastGeneratedEndDate ?? endDate)
-            ? endDate
-            : _lastGeneratedEndDate!;
+          effectiveStartDate.isBefore(_lastGeneratedStartDate!) ||
+          effectiveEndDate.isAfter(_lastGeneratedEndDate!)) {
+        final newStartDate = effectiveStartDate
+                .isBefore(_lastGeneratedStartDate ?? effectiveStartDate)
+            ? effectiveStartDate
+            : _lastGeneratedStartDate!;
+        final newEndDate =
+            effectiveEndDate.isAfter(_lastGeneratedEndDate ?? effectiveEndDate)
+                ? effectiveEndDate
+                : _lastGeneratedEndDate!;
 
         AppLogger.i(
             'Generating additional schedules from ${newStartDate.toIso8601String()} to ${newEndDate.toIso8601String()}');
@@ -244,30 +278,56 @@ class ScheduleProvider extends ChangeNotifier {
         _lastGeneratedEndDate = newEndDate;
       }
 
-      final startKey = DateTime(startDate.year, startDate.month, startDate.day);
-      final endKey = DateTime(endDate.year, endDate.month, endDate.day);
+      final startKey = DateTime(effectiveStartDate.year,
+          effectiveStartDate.month, effectiveStartDate.day);
+      final endKey = DateTime(
+          effectiveEndDate.year, effectiveEndDate.month, effectiveEndDate.day);
       final cacheKey =
           '${startKey.toIso8601String()}_${endKey.toIso8601String()}_${_activeConfig!.meta.name}';
 
       if (_scheduleCache.containsKey(cacheKey)) {
         _schedules = _scheduleCache[cacheKey]!;
+        _isLoadingSchedules = false;
         notifyListeners();
         return;
       }
 
-      _schedules = await _databaseService.loadSchedulesForDateRange(
-        startDate,
-        endDate,
+      // Load new schedules from database
+      final newSchedules = await _databaseService.loadSchedulesForDateRange(
+        effectiveStartDate,
+        effectiveEndDate,
         configName: _activeConfig!.meta.name,
       );
+
+      // Merge with existing schedules to prevent duty abbreviations from disappearing
+      final existingSchedules = List<Schedule>.from(_schedules);
+
+      // Remove any existing schedules that are in the new range to avoid duplicates
+      existingSchedules.removeWhere((schedule) {
+        final scheduleDate = DateTime(
+            schedule.date.year, schedule.date.month, schedule.date.day);
+        return scheduleDate.isAfter(
+                effectiveStartDate.subtract(const Duration(days: 1))) &&
+            scheduleDate
+                .isBefore(effectiveEndDate.add(const Duration(days: 1)));
+      });
+
+      // Add the new schedules
+      existingSchedules.addAll(newSchedules);
+
+      // Update the schedules list
+      _schedules = existingSchedules;
 
       _scheduleCache[cacheKey] = _schedules;
 
       _cleanupCache();
 
+      _isLoadingSchedules = false;
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error loading schedules', e, stackTrace);
+      _isLoadingSchedules = false;
+      notifyListeners();
       rethrow;
     }
   }
@@ -311,7 +371,49 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   Future<void> setSelectedDay(DateTime day) async {
-    await setSelectedDate(day);
+    _selectedDay = day;
+    _focusedDay = day;
+
+    // Check if we need to generate schedules for the selected day
+    if (_activeConfig != null) {
+      final selectedDayStart = DateTime(day.year, day.month, day.day);
+
+      // If the selected day is outside our current generation range, generate schedules for it
+      if (_lastGeneratedStartDate == null ||
+          _lastGeneratedEndDate == null ||
+          selectedDayStart.isBefore(_lastGeneratedStartDate!) ||
+          selectedDayStart.isAfter(_lastGeneratedEndDate!)) {
+        AppLogger.i(
+            'Selected day outside current generation range, generating schedules for: ${selectedDayStart.toIso8601String()}');
+
+        // Generate schedules for a range that includes the selected day
+        final generateStartDate =
+            selectedDayStart.subtract(const Duration(days: 7));
+        final generateEndDate = selectedDayStart.add(const Duration(days: 7));
+
+        final newSchedules = await _configService.generateSchedulesForConfig(
+          _activeConfig!,
+          startDate: generateStartDate,
+          endDate: generateEndDate,
+        );
+
+        await _databaseService.saveSchedules(newSchedules);
+
+        // Update generation range
+        if (_lastGeneratedStartDate == null ||
+            generateStartDate.isBefore(_lastGeneratedStartDate!)) {
+          _lastGeneratedStartDate = generateStartDate;
+        }
+        if (_lastGeneratedEndDate == null ||
+            generateEndDate.isAfter(_lastGeneratedEndDate!)) {
+          _lastGeneratedEndDate = generateEndDate;
+        }
+      }
+    }
+
+    await loadSchedules();
+    await saveSettings();
+    notifyListeners();
   }
 
   Future<void> setFocusedDay(DateTime date) async {
@@ -384,5 +486,221 @@ class ScheduleProvider extends ChangeNotifier {
     }
   }
 
+  String? getDutyAbbreviationForDate(
+      DateTime date, String? preferredDutyGroup) {
+    try {
+      if (preferredDutyGroup == null || _activeConfig == null) return null;
+
+      // Don't trigger generation if we're already loading schedules or reloading calendar view
+      if (_isLoadingSchedules || _isReloadingCalendarView) {
+        AppLogger.d(
+            'Skipping duty abbreviation lookup - loading in progress. Date: ${date.toIso8601String()}, Loading: $_isLoadingSchedules, Reloading: $_isReloadingCalendarView');
+        return null;
+      }
+
+      // Find schedule for the specific date and preferred duty group
+      final schedule = _schedules.firstWhere(
+        (s) =>
+            s.date.year == date.year &&
+            s.date.month == date.month &&
+            s.date.day == date.day &&
+            s.dutyGroupName == preferredDutyGroup,
+        orElse: () => Schedule(
+          date: date,
+          service: '',
+          dutyGroupId: '',
+          dutyTypeId: '',
+          dutyGroupName: '',
+          configName: '',
+        ),
+      );
+
+      if (schedule.service.isEmpty) {
+        AppLogger.d(
+            'No schedule found for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup. Total schedules: ${_schedules.length}');
+        // If no schedule found, trigger loading for this date range after build
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          _ensureSchedulesForDate(date);
+        });
+        return null;
+      }
+
+      // The duty_type_id is already the abbreviation from the JSON
+      final dutyTypeId = schedule.dutyTypeId;
+
+      // Only return empty string for free days ("-")
+      if (dutyTypeId == '-') {
+        return ''; // Don't show anything for free days
+      }
+
+      AppLogger.d(
+          'Found duty abbreviation: $dutyTypeId for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup');
+
+      // Return the duty type ID directly as the abbreviation
+      return dutyTypeId;
+    } catch (e, stackTrace) {
+      AppLogger.e('Error getting duty abbreviation for date', e, stackTrace);
+      return null;
+    }
+  }
+
+  void _ensureSchedulesForDate(DateTime date) {
+    // Check if we need to generate schedules for this date
+    if (_activeConfig == null) return;
+
+    final dateKey = '${date.year}-${date.month}-${date.day}';
+
+    // Prevent duplicate processing
+    if (_processingDates.contains(dateKey)) return;
+
+    final dateStart = DateTime(date.year, date.month, date.day);
+
+    if (_lastGeneratedStartDate == null ||
+        _lastGeneratedEndDate == null ||
+        dateStart.isBefore(_lastGeneratedStartDate!) ||
+        dateStart.isAfter(_lastGeneratedEndDate!)) {
+      // Mark this date as being processed
+      _processingDates.add(dateKey);
+
+      // Trigger generation for this date range
+      _generateSchedulesForDate(date);
+    }
+  }
+
+  Future<void> _generateSchedulesForDate(DateTime date) async {
+    try {
+      if (_activeConfig == null) return;
+
+      AppLogger.i('Generating schedules for date: ${date.toIso8601String()}');
+
+      // Set loading state
+      _isLoadingSchedules = true;
+      notifyListeners();
+
+      // Generate schedules for a range that includes the date
+      final generateStartDate = date.subtract(const Duration(days: 7));
+      final generateEndDate = date.add(const Duration(days: 7));
+
+      final newSchedules = await _configService.generateSchedulesForConfig(
+        _activeConfig!,
+        startDate: generateStartDate,
+        endDate: generateEndDate,
+      );
+
+      await _databaseService.saveSchedules(newSchedules);
+
+      // Update generation range
+      if (_lastGeneratedStartDate == null ||
+          generateStartDate.isBefore(_lastGeneratedStartDate!)) {
+        _lastGeneratedStartDate = generateStartDate;
+      }
+      if (_lastGeneratedEndDate == null ||
+          generateEndDate.isAfter(_lastGeneratedEndDate!)) {
+        _lastGeneratedEndDate = generateEndDate;
+      }
+
+      // Reload schedules for the current calendar view to include the newly generated ones
+      await _reloadCurrentCalendarView();
+
+      // Clear loading state
+      _isLoadingSchedules = false;
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error generating schedules for date', e, stackTrace);
+      _isLoadingSchedules = false;
+      notifyListeners();
+    } finally {
+      // Remove from processing set
+      final dateKey = '${date.year}-${date.month}-${date.day}';
+      _processingDates.remove(dateKey);
+    }
+  }
+
+  Future<void> _reloadCurrentCalendarView() async {
+    try {
+      if (_activeConfig == null || _isReloadingCalendarView) return;
+
+      _isReloadingCalendarView = true;
+
+      final now = DateTime.now();
+      final focusedMonthStart = _focusedDay != null
+          ? DateTime(_focusedDay!.year, _focusedDay!.month, 1)
+          : DateTime(now.year, now.month, 1);
+      final focusedMonthEnd =
+          DateTime(focusedMonthStart.year, focusedMonthStart.month + 1, 0);
+
+      // Calculate the first day of the first week of the focused month
+      final firstDayOfWeek = focusedMonthStart.weekday;
+      final firstWeekStart =
+          focusedMonthStart.subtract(Duration(days: firstDayOfWeek - 1));
+
+      // Calculate the last day of the last week of the focused month
+      final lastDayOfWeek = focusedMonthEnd.weekday;
+      final lastWeekEnd =
+          focusedMonthEnd.add(Duration(days: 7 - lastDayOfWeek));
+
+      // Always load the full calendar view including outside days
+      final startDate = firstWeekStart;
+      final endDate = lastWeekEnd;
+
+      // If there's a selected day outside the calendar view, extend the range to include it
+      final effectiveStartDate =
+          _selectedDay != null && _selectedDay!.isBefore(startDate)
+              ? _selectedDay!
+              : startDate;
+      final effectiveEndDate =
+          _selectedDay != null && _selectedDay!.isAfter(endDate)
+              ? _selectedDay!
+              : endDate;
+
+      final startKey = DateTime(effectiveStartDate.year,
+          effectiveStartDate.month, effectiveStartDate.day);
+      final endKey = DateTime(
+          effectiveEndDate.year, effectiveEndDate.month, effectiveEndDate.day);
+      final cacheKey =
+          '${startKey.toIso8601String()}_${endKey.toIso8601String()}_${_activeConfig!.meta.name}';
+
+      // Load new schedules from database
+      final newSchedules = await _databaseService.loadSchedulesForDateRange(
+        effectiveStartDate,
+        effectiveEndDate,
+        configName: _activeConfig!.meta.name,
+      );
+
+      // Merge new schedules with existing ones to prevent duty abbreviations from disappearing
+      final existingSchedules = List<Schedule>.from(_schedules);
+
+      // Remove any existing schedules that are in the new range to avoid duplicates
+      existingSchedules.removeWhere((schedule) {
+        final scheduleDate = DateTime(
+            schedule.date.year, schedule.date.month, schedule.date.day);
+        return scheduleDate.isAfter(
+                effectiveStartDate.subtract(const Duration(days: 1))) &&
+            scheduleDate
+                .isBefore(effectiveEndDate.add(const Duration(days: 1)));
+      });
+
+      // Add the new schedules
+      existingSchedules.addAll(newSchedules);
+
+      // Update the schedules list
+      _schedules = existingSchedules;
+
+      // Update the cache
+      _scheduleCache[cacheKey] = _schedules;
+      _cleanupCache();
+    } catch (e, stackTrace) {
+      AppLogger.e('Error reloading current calendar view', e, stackTrace);
+    } finally {
+      _isReloadingCalendarView = false;
+    }
+  }
+
   int mod(int n, int m) => ((n % m) + m) % m;
+
+  @override
+  void dispose() {
+    _loadSchedulesDebounceTimer?.cancel();
+    super.dispose();
+  }
 }
