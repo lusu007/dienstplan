@@ -265,7 +265,7 @@
     "description": "Tooltip for the today button"
   },
   "today": "Today",
-  "generatingSchedules": "Generating schedules...",
+  "generatingSchedules": "Generating",
   "@generatingSchedules": {
     "description": "Text shown while generating schedules"
   },
@@ -276,5 +276,37 @@
   "aboutDescription": "Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.",
   "@aboutDescription": {
     "description": "Description text shown in the about dialog"
+  },
+  "selectDutyGroup": "Select Your Duty Group",
+  "@selectDutyGroup": {
+    "description": "Title for duty group selection step"
+  },
+  "selectDutyGroupMessage": "Choose the duty group you belong to:",
+  "@selectDutyGroupMessage": {
+    "description": "Message for duty group selection step"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Back button text"
+  },
+  "errorSavingDefaultConfig": "Error saving default configuration",
+  "@errorSavingDefaultConfig": {
+    "description": "Error message when saving default configuration fails"
+  },
+  "preferredDutyGroup": "Preferred Duty Group",
+  "@preferredDutyGroup": {
+    "description": "Label for preferred duty group setting"
+  },
+  "selectPreferredDutyGroup": "Select Preferred Duty Group",
+  "@selectPreferredDutyGroup": {
+    "description": "Title for preferred duty group selection dialog"
+  },
+  "preferredDutyGroupDescription": "This duty group will be used for future functionality",
+  "@preferredDutyGroupDescription": {
+    "description": "Description for preferred duty group setting"
+  },
+  "noPreferredDutyGroup": "No preferred duty group set",
+  "@noPreferredDutyGroup": {
+    "description": "Text shown when no preferred duty group is set"
   }
 } 

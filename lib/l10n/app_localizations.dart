@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// Text shown while generating schedules
   ///
   /// In en, this message translates to:
-  /// **'Generating schedules...'**
+  /// **'Generating'**
   String get generatingSchedules;
 
   /// Title for the about dialog
@@ -505,6 +505,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.'**
   String get aboutDescription;
+
+  /// Title for duty group selection step
+  ///
+  /// In en, this message translates to:
+  /// **'Select Your Duty Group'**
+  String get selectDutyGroup;
+
+  /// Message for duty group selection step
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the duty group you belong to:'**
+  String get selectDutyGroupMessage;
+
+  /// Back button text
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// Error message when saving default configuration fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error saving default configuration'**
+  String get errorSavingDefaultConfig;
+
+  /// Label for preferred duty group setting
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Duty Group'**
+  String get preferredDutyGroup;
+
+  /// Title for preferred duty group selection dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Select Preferred Duty Group'**
+  String get selectPreferredDutyGroup;
+
+  /// Description for preferred duty group setting
+  ///
+  /// In en, this message translates to:
+  /// **'This duty group will be used for future functionality'**
+  String get preferredDutyGroupDescription;
+
+  /// Text shown when no preferred duty group is set
+  ///
+  /// In en, this message translates to:
+  /// **'No preferred duty group set'**
+  String get noPreferredDutyGroup;
 }
 
 class _AppLocalizationsDelegate

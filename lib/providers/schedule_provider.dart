@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/models/schedule.dart';
 import 'package:dienstplan/models/duty_schedule_config.dart';
+import 'package:dienstplan/models/duty_type.dart';
+import 'package:dienstplan/models/settings.dart';
 import 'package:dienstplan/services/database_service.dart';
 import 'package:dienstplan/services/schedule_config_service.dart';
 import 'package:dienstplan/utils/logger.dart';
@@ -12,8 +14,8 @@ class ScheduleProvider extends ChangeNotifier {
 
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _activeConfig;
-  final List<String> _dutyGroups = [];
   String? _selectedDutyGroup;
+  String? _preferredDutyGroup;
   DateTime? _selectedDay;
   DateTime? _focusedDay;
   List<Schedule> _schedules = [];
@@ -28,12 +30,26 @@ class ScheduleProvider extends ChangeNotifier {
 
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get activeConfig => _activeConfig;
-  List<String> get dutyGroups => _dutyGroups;
+  List<String> get dutyGroups =>
+      _activeConfig?.dutyGroups.map((group) => group.name).toList() ?? [];
   String? get selectedDutyGroup => _selectedDutyGroup;
+  String? get preferredDutyGroup => _preferredDutyGroup;
   DateTime? get selectedDay => _selectedDay;
   DateTime? get focusedDay => _focusedDay;
   List<Schedule> get schedules => _schedules;
   CalendarFormat get calendarFormat => _calendarFormat;
+
+  set selectedDutyGroup(String? value) {
+    _selectedDutyGroup = value;
+    saveSettings();
+    notifyListeners();
+  }
+
+  set preferredDutyGroup(String? value) {
+    _preferredDutyGroup = value;
+    saveSettings();
+    notifyListeners();
+  }
 
   Future<void> initialize() async {
     try {
@@ -50,7 +66,7 @@ class ScheduleProvider extends ChangeNotifier {
         AppLogger.i(
             'Setting active config to default: ${_configService.defaultConfig?.name}');
         await setActiveConfig(_configService.defaultConfig!,
-            generateSchedules: true);
+            generateSchedules: true, saveSettingsAfter: false);
       }
 
       notifyListeners();
@@ -75,38 +91,41 @@ class ScheduleProvider extends ChangeNotifier {
     try {
       final settings = await _databaseService.loadSettings();
       if (settings != null) {
-        _calendarFormat = CalendarFormat.values.firstWhere(
-          (format) => format.toString() == settings['calendar_format'],
-          orElse: () => CalendarFormat.month,
-        );
-        _focusedDay = settings['focused_day'] as DateTime;
-        _selectedDay = settings['selected_day'] as DateTime;
+        _calendarFormat = settings.calendarFormat;
+        _selectedDutyGroup = settings.selectedDutyGroup;
+        _preferredDutyGroup = settings.preferredDutyGroup;
+        _focusedDay = settings.focusedDay;
+        _selectedDay = settings.selectedDay;
       } else {
         _calendarFormat = CalendarFormat.month;
         _focusedDay = DateTime.now();
         _selectedDay = DateTime.now();
+        _selectedDutyGroup = null;
+        _preferredDutyGroup = null;
       }
+      notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error loading settings', e, stackTrace);
-      rethrow;
     }
   }
 
-  Future<void> _saveSettings() async {
+  Future<void> saveSettings() async {
     try {
-      await _databaseService.saveSettings(
-        calendarFormat: _calendarFormat.toString(),
+      final settings = Settings(
+        calendarFormat: _calendarFormat,
         focusedDay: _focusedDay ?? DateTime.now(),
         selectedDay: _selectedDay ?? DateTime.now(),
+        selectedDutyGroup: _selectedDutyGroup,
+        preferredDutyGroup: _preferredDutyGroup,
       );
+      await _databaseService.saveSettings(settings);
     } catch (e, stackTrace) {
       AppLogger.e('Error saving settings', e, stackTrace);
-      rethrow;
     }
   }
 
   Future<void> setActiveConfig(DutyScheduleConfig config,
-      {bool generateSchedules = true}) async {
+      {bool generateSchedules = true, bool saveSettingsAfter = true}) async {
     try {
       if (generateSchedules) {
         final now = DateTime.now();
@@ -126,10 +145,23 @@ class ScheduleProvider extends ChangeNotifier {
         );
 
         await _databaseService.saveSchedules(schedules);
+
+        // Save duty types to database
+        await _databaseService.saveDutyTypes(config.name, config.dutyTypes);
       }
 
       _activeConfig = config;
-      await _saveSettings();
+
+      // Load duty types from database to ensure they're available
+      final loadedDutyTypes = await _databaseService.loadDutyTypes(config.name);
+      if (loadedDutyTypes.isNotEmpty) {
+        _activeConfig!.dutyTypes.clear();
+        _activeConfig!.dutyTypes.addAll(loadedDutyTypes);
+      }
+
+      if (saveSettingsAfter) {
+        await saveSettings();
+      }
       await loadSchedules();
       notifyListeners();
     } catch (e, stackTrace) {
@@ -274,7 +306,7 @@ class ScheduleProvider extends ChangeNotifier {
     _selectedDay = date;
     _focusedDay = date;
     await loadSchedules();
-    await _saveSettings();
+    await saveSettings();
     notifyListeners();
   }
 
@@ -288,7 +320,7 @@ class ScheduleProvider extends ChangeNotifier {
     }
     _focusedDay = date;
     await loadSchedules();
-    await _saveSettings();
+    await saveSettings();
     notifyListeners();
   }
 
@@ -300,7 +332,7 @@ class ScheduleProvider extends ChangeNotifier {
 
   Future<void> setCalendarFormat(CalendarFormat format) async {
     _calendarFormat = format;
-    await _saveSettings();
+    await saveSettings();
     notifyListeners();
   }
 
@@ -326,7 +358,14 @@ class ScheduleProvider extends ChangeNotifier {
   Future<DutyType?> getDutyType(String serviceId) async {
     try {
       if (_activeConfig == null) return null;
-      return _activeConfig!.dutyTypes[serviceId];
+
+      // First try to get from memory
+      final dutyType = _activeConfig!.dutyTypes[serviceId];
+      if (dutyType != null) return dutyType;
+
+      // If not in memory, try to load from database
+      return await _databaseService.loadDutyType(
+          serviceId, _activeConfig!.name);
     } catch (e, stackTrace) {
       AppLogger.e('Error getting duty type', e, stackTrace);
       return null;

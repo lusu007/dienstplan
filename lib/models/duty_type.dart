@@ -21,11 +21,22 @@ class DutyType {
   }
 
   factory DutyType.fromMap(Map<String, dynamic> map) {
+    final allDayValue = map['all_day'];
+    final bool isAllDay;
+
+    if (allDayValue is bool) {
+      isAllDay = allDayValue;
+    } else if (allDayValue is int) {
+      isAllDay = allDayValue == 1;
+    } else {
+      isAllDay = false;
+    }
+
     return DutyType(
       label: map['label'] as String,
       startTime: map['start_time'] as String?,
       endTime: map['end_time'] as String?,
-      isAllDay: map['all_day'] as bool? ?? false,
+      isAllDay: isAllDay,
     );
   }
 
