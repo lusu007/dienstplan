@@ -218,6 +218,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.';
 
   @override
+  String get aboutDisclaimer =>
+      'Haftungsausschluss: Diese App ist kein offizielles Produkt einer Behörde oder staatlichen Einrichtung. Die Dienstplan App ist ein inoffizielles Hilfsmittel, das unabhängig entwickelt wurde und steht in keinerlei Verbindung zur Polizei oder anderen staatlichen Stellen.';
+
+  @override
   String get selectDutyGroup => 'Wählen Sie Ihre Dienstgruppe';
 
   @override

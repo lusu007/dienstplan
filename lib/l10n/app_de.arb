@@ -277,6 +277,10 @@
   "@aboutDescription": {
     "description": "Description text shown in the about dialog"
   },
+  "aboutDisclaimer": "Haftungsausschluss: Diese App ist kein offizielles Produkt einer Behörde oder staatlichen Einrichtung. Die Dienstplan App ist ein inoffizielles Hilfsmittel, das unabhängig entwickelt wurde und steht in keinerlei Verbindung zur Polizei oder anderen staatlichen Stellen.",
+  "@aboutDisclaimer": {
+    "description": "Disclaimer text shown in the about dialog"
+  },
   "selectDutyGroup": "Wählen Sie Ihre Dienstgruppe",
   "@selectDutyGroup": {
     "description": "Title for duty group selection step"
