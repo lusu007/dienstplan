@@ -170,7 +170,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
           }
           final bool isSelected = _selectedConfig == config;
           return Container(
-            margin: const EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: 8),
             decoration: BoxDecoration(
               color: isSelected ? mainColor.withAlpha(20) : Colors.white,
               borderRadius: BorderRadius.circular(16),

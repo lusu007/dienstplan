@@ -21,167 +21,420 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.settings),
       ),
-      body: ListView(
-        children: [
-          // Allgemein (General) Section
-          ListTile(
-            title: Text(
-              l10n.general,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: ListView(
+          children: [
+            // Allgemein (General) Section
+            ListTile(
+              title: Text(
+                l10n.general,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.language,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.language,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
+                ),
+                subtitle: Text(
+                  languageService.currentLocale.languageCode == 'de'
+                      ? l10n.german
+                      : l10n.english,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () => _showLanguageDialog(context),
+              ),
             ),
-          ),
-          ListTile(
-            title: Text(l10n.language),
-            subtitle: Text(
-              languageService.currentLocale.languageCode == 'de'
-                  ? l10n.german
-                  : l10n.english,
-            ),
-            leading: const Icon(Icons.language),
-            onTap: () => _showLanguageDialog(context),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(l10n.dutySchedule),
-            subtitle: Text(scheduleProvider.activeConfig?.meta.name ??
-                l10n.noDutySchedules),
-            leading: const Icon(Icons.calendar_today),
-            onTap: () => _showDutyScheduleDialog(context, scheduleProvider),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(l10n.calendarFormat),
-            subtitle: Text(
-                _getCalendarFormatName(scheduleProvider.calendarFormat, l10n)),
-            leading: const Icon(Icons.view_week),
-            onTap: () => _showCalendarFormatDialog(context, scheduleProvider),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(l10n.preferredDutyGroup),
-            subtitle: Text(
-              scheduleProvider.preferredDutyGroup ?? l10n.noPreferredDutyGroup,
-            ),
-            leading: const Icon(Icons.favorite),
-            onTap: () =>
-                _showPreferredDutyGroupDialog(context, scheduleProvider),
-          ),
-          const Divider(),
-          ListTile(
-            title: Text(l10n.resetData),
-            leading: const Icon(Icons.delete_forever),
-            onTap: () => _showResetDialog(context, scheduleProvider),
-          ),
-          const Divider(),
-          // Rechtliches (Legal) Section
-          ListTile(
-            title: Text(
-              l10n.legal,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.calendar_today,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.dutySchedule,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
+                ),
+                subtitle: Text(
+                  scheduleProvider.activeConfig?.meta.name ??
+                      l10n.noDutySchedules,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () => _showDutyScheduleDialog(context, scheduleProvider),
+              ),
             ),
-          ),
-          ListTile(
-            title: Text(l10n.about),
-            leading: const Icon(Icons.info_outline),
-            onTap: () async {
-              final packageInfo = await PackageInfo.fromPlatform();
-              if (context.mounted) {
-                showAboutDialog(
-                  context: context,
-                  applicationName: 'Dienstplan',
-                  applicationVersion: packageInfo.version,
-                  applicationIcon: Image.asset(
-                    'assets/images/logo.png',
-                    width: 50,
-                    height: 50,
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.view_week,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.calendarFormat,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
-                  applicationLegalese: '© ${DateTime.now().year} Lukas Jost',
-                  children: [
-                    const SizedBox(height: 16),
-                    Text(l10n.aboutDescription),
-                    const SizedBox(height: 16),
-                    Text(l10n.aboutDisclaimer),
-                    const SizedBox(height: 16),
-                    GestureDetector(
-                      onTap: () async {
-                        final Uri emailLaunchUri = Uri(
-                          scheme: 'mailto',
-                          path: 'hi@scelus.io',
-                        );
-                        if (await canLaunchUrl(emailLaunchUri)) {
-                          await launchUrl(emailLaunchUri);
-                        }
-                      },
-                      child: const Text(
-                        'hi@scelus.io',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
+                ),
+                subtitle: Text(
+                  _getCalendarFormatName(scheduleProvider.calendarFormat, l10n),
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () =>
+                    _showCalendarFormatDialog(context, scheduleProvider),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.favorite,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.preferredDutyGroup,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                subtitle: Text(
+                  scheduleProvider.preferredDutyGroup ??
+                      l10n.noPreferredDutyGroup,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () =>
+                    _showPreferredDutyGroupDialog(context, scheduleProvider),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.delete_forever,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.resetData,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () => _showResetDialog(context, scheduleProvider),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Rechtliches (Legal) Section
+            ListTile(
+              title: Text(
+                l10n.legal,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.info_outline,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.about,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () async {
+                  final packageInfo = await PackageInfo.fromPlatform();
+                  if (context.mounted) {
+                    showAboutDialog(
+                      context: context,
+                      applicationName: 'Dienstplan',
+                      applicationVersion: packageInfo.version,
+                      applicationIcon: Image.asset(
+                        'assets/images/logo.png',
+                        width: 50,
+                        height: 50,
                       ),
-                    ),
-                  ],
-                );
-              }
-            },
-          ),
-          ListTile(
-            title: Text(l10n.disclaimer),
-            leading: const Icon(Icons.warning_outlined),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(l10n.disclaimer),
-                  content: SingleChildScrollView(
-                    child: Text(l10n.aboutDisclaimer),
+                      applicationLegalese:
+                          '© ${DateTime.now().year} Lukas Jost',
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(l10n.aboutDescription),
+                        const SizedBox(height: 16),
+                        Text(l10n.aboutDisclaimer),
+                        const SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: () async {
+                            final Uri emailLaunchUri = Uri(
+                              scheme: 'mailto',
+                              path: 'hi@scelus.io',
+                            );
+                            if (await canLaunchUrl(emailLaunchUri)) {
+                              await launchUrl(emailLaunchUri);
+                            }
+                          },
+                          child: const Text(
+                            'hi@scelus.io',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.warning_outlined,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.disclaimer,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(l10n.cancel),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(l10n.disclaimer),
+                      content: SingleChildScrollView(
+                        child: Text(l10n.aboutDisclaimer),
+                      ),
+                      actions: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: SizedBox(
+                              height: 56,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF005B8C),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  minimumSize: const Size.fromHeight(56),
+                                  textStyle: const TextStyle(fontSize: 20),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(l10n.cancel),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  );
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
                 ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text(l10n.privacyPolicy),
-            leading: const Icon(Icons.privacy_tip_outlined),
-            onTap: () async {
-              final Uri privacyPolicyUri =
-                  Uri.parse('https://assets.scelus.io/datenschutz.html');
-              if (await canLaunchUrl(privacyPolicyUri)) {
-                await launchUrl(privacyPolicyUri,
-                    mode: LaunchMode.externalApplication);
-              }
-            },
-          ),
-          ListTile(
-            title: Text(l10n.licenses),
-            leading: const Icon(Icons.description_outlined),
-            onTap: () {
-              showLicensePage(
-                context: context,
-                applicationName: 'Dienstplan',
-                applicationVersion: '1.0.0',
-                applicationIcon: Image.asset(
-                  'assets/images/logo.png',
-                  width: 50,
-                  height: 50,
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.privacy_tip_outlined,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.privacyPolicy,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
                 ),
-                applicationLegalese: '© ${DateTime.now().year} Lukas Jost',
-              );
-            },
-          ),
-        ],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () async {
+                  final Uri privacyPolicyUri =
+                      Uri.parse('https://assets.scelus.io/datenschutz.html');
+                  if (await canLaunchUrl(privacyPolicyUri)) {
+                    await launchUrl(privacyPolicyUri,
+                        mode: LaunchMode.externalApplication);
+                  }
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                minVerticalPadding: 20,
+                leading: const Icon(Icons.description_outlined,
+                    color: Color(0xFF005B8C), size: 40),
+                title: Text(
+                  l10n.licenses,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                selectedTileColor: Colors.transparent,
+                onTap: () {
+                  showLicensePage(
+                    context: context,
+                    applicationName: 'Dienstplan',
+                    applicationVersion: '1.0.0',
+                    applicationIcon: Image.asset(
+                      'assets/images/logo.png',
+                      width: 50,
+                      height: 50,
+                    ),
+                    applicationLegalese: '© ${DateTime.now().year} Lukas Jost',
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -200,6 +453,7 @@ class SettingsScreen extends StatelessWidget {
   void _showCalendarFormatDialog(
       BuildContext context, ScheduleProvider provider) {
     final l10n = AppLocalizations.of(context);
+    const mainColor = Color(0xFF005B8C);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -230,6 +484,30 @@ class SettingsScreen extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mainColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    minimumSize: const Size.fromHeight(56),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -237,6 +515,7 @@ class SettingsScreen extends StatelessWidget {
   void _showDutyScheduleDialog(
       BuildContext context, ScheduleProvider provider) {
     final l10n = AppLocalizations.of(context);
+    const mainColor = Color(0xFF005B8C);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -253,40 +532,98 @@ class SettingsScreen extends StatelessWidget {
                 )),
           ],
         ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mainColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    minimumSize: const Size.fromHeight(56),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   void _showResetDialog(BuildContext context, ScheduleProvider provider) {
     final l10n = AppLocalizations.of(context);
+    const mainColor = Color(0xFF005B8C);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.resetData),
         content: Text(l10n.resetDataConfirmation),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await provider.reset();
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.resetDataSuccess),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 56,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: mainColor,
+                      side: const BorderSide(color: mainColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      minimumSize: const Size.fromHeight(56),
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n.cancel),
                   ),
-                );
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const FirstTimeSetupScreen(),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: SizedBox(
+                  height: 56,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      minimumSize: const Size.fromHeight(56),
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await provider.reset();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.resetDataSuccess),
+                          ),
+                        );
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const FirstTimeSetupScreen(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text(l10n.reset),
                   ),
-                );
-              }
-            },
-            child: Text(l10n.reset),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -296,6 +633,7 @@ class SettingsScreen extends StatelessWidget {
   void _showLanguageDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final languageService = context.read<LanguageService>();
+    const mainColor = Color(0xFF005B8C);
 
     showDialog(
       context: context,
@@ -320,6 +658,30 @@ class SettingsScreen extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mainColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    minimumSize: const Size.fromHeight(56),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -327,6 +689,7 @@ class SettingsScreen extends StatelessWidget {
   void _showPreferredDutyGroupDialog(
       BuildContext context, ScheduleProvider provider) {
     final l10n = AppLocalizations.of(context);
+    const mainColor = Color(0xFF005B8C);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -380,9 +743,27 @@ class SettingsScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
+          SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: mainColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    minimumSize: const Size.fromHeight(56),
+                    textStyle: const TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(l10n.cancel),
+                ),
+              ),
+            ),
           ),
         ],
       ),
