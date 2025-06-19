@@ -80,6 +80,8 @@ class SettingsScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text(l10n.aboutDescription),
                     const SizedBox(height: 16),
+                    Text(l10n.aboutDisclaimer),
+                    const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () async {
                         final Uri emailLaunchUri = Uri(

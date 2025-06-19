@@ -277,6 +277,10 @@
   "@aboutDescription": {
     "description": "Description text shown in the about dialog"
   },
+  "aboutDisclaimer": "Disclaimer: This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.",
+  "@aboutDisclaimer": {
+    "description": "Disclaimer text shown in the about dialog"
+  },
   "selectDutyGroup": "Select Your Duty Group",
   "@selectDutyGroup": {
     "description": "Title for duty group selection step"

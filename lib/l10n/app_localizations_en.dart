@@ -218,6 +218,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.';
 
   @override
+  String get aboutDisclaimer =>
+      'Disclaimer: This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.';
+
+  @override
   String get selectDutyGroup => 'Select Your Duty Group';
 
   @override
