@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/widgets/calendar_day_builder.dart';
+import 'package:dienstplan/widgets/calendar/calendar_day_builder.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
 
 class CalendarBuildersHelper {

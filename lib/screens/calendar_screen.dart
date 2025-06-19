@@ -3,14 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/services/language_service.dart';
-import 'package:dienstplan/widgets/schedule_list.dart';
+import 'package:dienstplan/widgets/layout/schedule_list.dart';
 import 'package:dienstplan/screens/settings_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
-import 'package:dienstplan/widgets/calendar_header.dart';
-import 'package:dienstplan/widgets/calendar_builders.dart';
-import 'package:dienstplan/widgets/calendar_config.dart';
-import 'package:dienstplan/widgets/services_section.dart';
+import 'package:dienstplan/widgets/calendar/calendar_header.dart';
+import 'package:dienstplan/widgets/calendar/calendar_builders.dart';
+import 'package:dienstplan/widgets/calendar/calendar_config.dart';
+import 'package:dienstplan/widgets/calendar/services_section.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});

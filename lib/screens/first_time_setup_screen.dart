@@ -7,6 +7,12 @@ import 'package:dienstplan/utils/logger.dart';
 import 'calendar_screen.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/services/language_service.dart';
+import 'package:dienstplan/widgets/forms/step_indicator.dart';
+import 'package:dienstplan/widgets/forms/selection_card.dart';
+import 'package:dienstplan/widgets/forms/action_button.dart';
+import 'package:dienstplan/widgets/forms/language_selector_button.dart';
+import 'package:dienstplan/constants/app_colors.dart';
+import 'package:dienstplan/utils/app_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstTimeSetupScreen extends StatefulWidget {
@@ -111,39 +117,8 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     }
   }
 
-  Widget _buildStepIndicator() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: 4,
-            decoration: BoxDecoration(
-              color: _currentStep >= 1
-                  ? const Color(0xFF005B8C)
-                  : Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Container(
-            height: 4,
-            decoration: BoxDecoration(
-              color: _currentStep >= 2
-                  ? const Color(0xFF005B8C)
-                  : Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildStep1Content() {
     final l10n = AppLocalizations.of(context);
-    const mainColor = Color(0xFF005B8C);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -159,95 +134,29 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
         const SizedBox(height: 16),
         Text(
           l10n.welcomeMessage,
-          style: const TextStyle(
-            fontSize: 18,
-          ),
+          style: const TextStyle(fontSize: 18),
         ),
         const SizedBox(height: 32),
         ..._configs.map((config) {
-          IconData icon;
-          if (config.meta.name.toLowerCase().contains('bepo')) {
-            icon = Icons.shield;
-          } else {
-            icon = Icons.directions_car;
-          }
-          final bool isSelected = _selectedConfig == config;
-          return Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: isSelected ? mainColor.withAlpha(20) : Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: isSelected ? mainColor : Colors.grey.shade300,
-                width: isSelected ? 2.5 : 1,
-              ),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: mainColor.withAlpha(46),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : [],
-            ),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-              minVerticalPadding: 20,
-              leading: Icon(icon, color: mainColor, size: 40),
-              title: Text(
-                config.meta.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.black,
-                ),
-              ),
-              subtitle: Text(
-                config.meta.description,
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
-              ),
-              trailing: SizedBox(
-                width: 32,
-                child: Icon(
-                  isSelected
-                      ? Icons.check_circle
-                      : Icons.radio_button_unchecked,
-                  color: mainColor,
-                  size: 28,
-                ),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              selectedTileColor: Colors.transparent,
-              onTap: () {
-                setState(() {
-                  _selectedConfig = config;
-                });
-              },
-            ),
+          final IconData icon = _getConfigIcon(config);
+          return SelectionCard(
+            title: config.meta.name,
+            subtitle: config.meta.description,
+            leadingIcon: icon,
+            isSelected: _selectedConfig == config,
+            onTap: () {
+              setState(() {
+                _selectedConfig = config;
+              });
+            },
+            mainColor: AppColors.primary,
           );
         }),
         const Spacer(),
-        SizedBox(
-          width: double.infinity,
-          child: SizedBox(
-            height: 56,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: mainColor,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                minimumSize: const Size.fromHeight(56),
-                textStyle: const TextStyle(fontSize: 20),
-              ),
-              onPressed: _selectedConfig == null ? null : _nextStep,
-              child: Text(l10n.continueButton),
-            ),
-          ),
+        ActionButton(
+          text: l10n.continueButton,
+          onPressed: _selectedConfig == null ? null : _nextStep,
+          mainColor: AppColors.primary,
         ),
         const SizedBox(height: 16),
       ],
@@ -256,7 +165,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
 
   Widget _buildStep2Content() {
     final l10n = AppLocalizations.of(context);
-    const mainColor = Color(0xFF005B8C);
 
     if (_selectedConfig == null) return const SizedBox.shrink();
 
@@ -276,9 +184,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
         const SizedBox(height: 16),
         Text(
           l10n.selectDutyGroupMessage,
-          style: const TextStyle(
-            fontSize: 18,
-          ),
+          style: const TextStyle(fontSize: 18),
         ),
         const SizedBox(height: 32),
         Flexible(
@@ -290,122 +196,34 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
               // Regular duty groups first
               if (index < dutyGroups.length) {
                 final group = dutyGroups[index];
-                final bool isSelected = _selectedDutyGroup == group.name;
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color: isSelected ? mainColor.withAlpha(20) : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: isSelected ? mainColor : Colors.grey.shade300,
-                      width: isSelected ? 2.5 : 1,
-                    ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: mainColor.withAlpha(46),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : [],
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                    minVerticalPadding: 20,
-                    leading:
-                        const Icon(Icons.group, color: mainColor, size: 40),
-                    title: Text(
-                      group.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                    ),
-                    trailing: SizedBox(
-                      width: 32,
-                      child: Icon(
-                        isSelected
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
-                        color: mainColor,
-                        size: 28,
-                      ),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    selectedTileColor: Colors.transparent,
-                    onTap: () {
-                      setState(() {
-                        _selectedDutyGroup = group.name;
-                        _hasMadeDutyGroupSelection = true;
-                      });
-                    },
-                  ),
+                return SelectionCard(
+                  title: group.name,
+                  leadingIcon: Icons.group,
+                  isSelected: _selectedDutyGroup == group.name,
+                  onTap: () {
+                    setState(() {
+                      _selectedDutyGroup = group.name;
+                      _hasMadeDutyGroupSelection = true;
+                    });
+                  },
+                  mainColor: AppColors.primary,
                 );
               }
 
               // Last item is "no preferred duty group"
-              final bool isSelected =
-                  _selectedDutyGroup == null && _hasMadeDutyGroupSelection;
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                  color: isSelected ? mainColor.withAlpha(20) : Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isSelected ? mainColor : Colors.grey.shade300,
-                    width: isSelected ? 2.5 : 1,
-                  ),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: mainColor.withAlpha(46),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : [],
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                  minVerticalPadding: 20,
-                  leading: const Icon(Icons.clear, color: mainColor, size: 40),
-                  title: Text(
-                    l10n.noPreferredDutyGroup,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                  subtitle: Text(
-                    l10n.noPreferredDutyGroupDescription,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
-                  ),
-                  trailing: SizedBox(
-                    width: 32,
-                    child: Icon(
-                      isSelected
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked,
-                      color: mainColor,
-                      size: 28,
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  selectedTileColor: Colors.transparent,
-                  onTap: () {
-                    setState(() {
-                      _selectedDutyGroup = null;
-                      _hasMadeDutyGroupSelection = true;
-                    });
-                  },
-                ),
+              return SelectionCard(
+                title: l10n.noPreferredDutyGroup,
+                subtitle: l10n.noPreferredDutyGroupDescription,
+                leadingIcon: Icons.clear,
+                isSelected:
+                    _selectedDutyGroup == null && _hasMadeDutyGroupSelection,
+                onTap: () {
+                  setState(() {
+                    _selectedDutyGroup = null;
+                    _hasMadeDutyGroupSelection = true;
+                  });
+                },
+                mainColor: AppColors.primary,
               );
             },
           ),
@@ -414,68 +232,27 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
         Row(
           children: [
             Expanded(
-              child: SizedBox(
-                height: 56,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: mainColor,
-                    side: const BorderSide(color: mainColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: _previousStep,
-                  child: Text(l10n.back),
-                ),
+              child: ActionButton(
+                text: l10n.back,
+                onPressed: _previousStep,
+                isPrimary: false,
+                mainColor: AppColors.primary,
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: SizedBox(
-                height: 56,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    minimumSize: const Size.fromHeight(56),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                  onPressed: !_hasMadeDutyGroupSelection
-                      ? null
-                      : () {
-                          if (!_isGeneratingSchedules) {
-                            _saveDefaultConfig();
-                          }
-                        },
-                  child: _isGeneratingSchedules
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                l10n.generatingSchedules,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text(l10n.continueButton),
-                ),
+              child: ActionButton(
+                text: l10n.continueButton,
+                onPressed: !_hasMadeDutyGroupSelection
+                    ? null
+                    : () {
+                        if (!_isGeneratingSchedules) {
+                          _saveDefaultConfig();
+                        }
+                      },
+                isLoading: _isGeneratingSchedules,
+                loadingText: l10n.generatingSchedules,
+                mainColor: AppColors.primary,
               ),
             ),
           ],
@@ -485,46 +262,28 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     );
   }
 
+  IconData _getConfigIcon(DutyScheduleConfig config) {
+    if (config.meta.name.toLowerCase().contains('bepo')) {
+      return Icons.shield;
+    } else {
+      return Icons.directions_car;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final languageService = context.watch<LanguageService>();
-    const mainColor = Color(0xFF005B8C);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dienstplan'),
-        backgroundColor: mainColor,
+        title: const Text(AppInfo.appName),
+        backgroundColor: AppColors.primary,
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: _isGeneratingSchedules
-                  ? null
-                  : () {
-                      const locales = LanguageService.supportedLocales;
-                      final currentIndex =
-                          locales.indexOf(languageService.currentLocale);
-                      final nextIndex = (currentIndex + 1) % locales.length;
-                      languageService
-                          .setLanguage(locales[nextIndex].languageCode);
-                    },
-              child: Text(
-                languageService.currentLocale.languageCode == 'de'
-                    ? l10n.german
-                    : l10n.english,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-            ),
+          LanguageSelectorButton(
+            languageService: languageService,
+            disabled: _isGeneratingSchedules,
           ),
         ],
       ),
@@ -536,7 +295,11 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildStepIndicator(),
+                    StepIndicator(
+                      currentStep: _currentStep,
+                      totalSteps: 2,
+                      activeColor: AppColors.primary,
+                    ),
                     const SizedBox(height: 24),
                     Expanded(
                       child: _currentStep == 1
