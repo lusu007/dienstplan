@@ -249,6 +249,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noPreferredDutyGroup => 'Keine bevorzugte Dienstgruppe gesetzt';
 
   @override
+  String get noPreferredDutyGroupDescription =>
+      'Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt';
+
+  @override
   String get general => 'Allgemein';
 
   @override

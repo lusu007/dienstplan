@@ -20,6 +20,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _selectedConfig;
   String? _selectedDutyGroup;
+  bool _hasMadeDutyGroupSelection = false;
   int _currentStep = 1;
   bool _isLoading = true;
   bool _isGeneratingSchedules = false;
@@ -58,6 +59,8 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     if (_selectedConfig != null) {
       setState(() {
         _currentStep = 2;
+        _selectedDutyGroup = null;
+        _hasMadeDutyGroupSelection = false;
       });
     }
   }
@@ -70,7 +73,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   }
 
   Future<void> _saveDefaultConfig() async {
-    if (_selectedConfig == null || _selectedDutyGroup == null) return;
+    if (_selectedConfig == null) return;
 
     try {
       setState(() {
@@ -80,13 +83,13 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
       final scheduleProvider =
           Provider.of<ScheduleProvider>(context, listen: false);
 
-      // Save the preferred duty group from setup (for future functionality)
-      scheduleProvider.preferredDutyGroup = _selectedDutyGroup;
-
-      // Then set the default config and generate schedules
+      // First set the default config and generate schedules
       await _configService.setDefaultConfig(_selectedConfig!);
       await scheduleProvider.setActiveConfig(_selectedConfig!,
           generateSchedules: true);
+
+      // Then save the preferred duty group from setup (can be null for "no preferred")
+      scheduleProvider.preferredDutyGroup = _selectedDutyGroup;
 
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
@@ -281,10 +284,72 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
         Flexible(
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: dutyGroups.length,
+            itemCount: dutyGroups.length +
+                1, // +1 for "no preferred duty group" option
             itemBuilder: (context, index) {
-              final group = dutyGroups[index];
-              final bool isSelected = _selectedDutyGroup == group.name;
+              // Regular duty groups first
+              if (index < dutyGroups.length) {
+                final group = dutyGroups[index];
+                final bool isSelected = _selectedDutyGroup == group.name;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? mainColor.withAlpha(20) : Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected ? mainColor : Colors.grey.shade300,
+                      width: isSelected ? 2.5 : 1,
+                    ),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: mainColor.withAlpha(46),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : [],
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    minVerticalPadding: 20,
+                    leading:
+                        const Icon(Icons.group, color: mainColor, size: 40),
+                    title: Text(
+                      group.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                    ),
+                    trailing: SizedBox(
+                      width: 32,
+                      child: Icon(
+                        isSelected
+                            ? Icons.check_circle
+                            : Icons.radio_button_unchecked,
+                        color: mainColor,
+                        size: 28,
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    selectedTileColor: Colors.transparent,
+                    onTap: () {
+                      setState(() {
+                        _selectedDutyGroup = group.name;
+                        _hasMadeDutyGroupSelection = true;
+                      });
+                    },
+                  ),
+                );
+              }
+
+              // Last item is "no preferred duty group"
+              final bool isSelected =
+                  _selectedDutyGroup == null && _hasMadeDutyGroupSelection;
               return Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
@@ -307,14 +372,18 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   minVerticalPadding: 20,
-                  leading: const Icon(Icons.group, color: mainColor, size: 40),
+                  leading: const Icon(Icons.clear, color: mainColor, size: 40),
                   title: Text(
-                    group.name,
+                    l10n.noPreferredDutyGroup,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       color: Colors.black,
                     ),
+                  ),
+                  subtitle: Text(
+                    l10n.noPreferredDutyGroupDescription,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
                   ),
                   trailing: SizedBox(
                     width: 32,
@@ -332,7 +401,8 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                   selectedTileColor: Colors.transparent,
                   onTap: () {
                     setState(() {
-                      _selectedDutyGroup = group.name;
+                      _selectedDutyGroup = null;
+                      _hasMadeDutyGroupSelection = true;
                     });
                   },
                 ),
@@ -375,7 +445,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                     minimumSize: const Size.fromHeight(56),
                     textStyle: const TextStyle(fontSize: 20),
                   ),
-                  onPressed: _selectedDutyGroup == null
+                  onPressed: !_hasMadeDutyGroupSelection
                       ? null
                       : () {
                           if (!_isGeneratingSchedules) {

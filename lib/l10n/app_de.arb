@@ -315,7 +315,11 @@
   },
   "noPreferredDutyGroup": "Keine bevorzugte Dienstgruppe gesetzt",
   "@noPreferredDutyGroup": {
-    "description": "Text shown when no preferred duty group is set"
+    "description": "Text shown when no preferred duty group is selected"
+  },
+  "noPreferredDutyGroupDescription": "Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt",
+  "@noPreferredDutyGroupDescription": {
+    "description": "Description for no preferred duty group option"
   },
   "general": "Allgemein",
   "@general": {
