@@ -30,6 +30,49 @@ A modern, cross-platform mobile application designed specifically for police off
 - **🚫 No Cloud Sync**: Your schedule data never leaves your device
 - **📊 No Analytics**: No tracking or data collection
 
+### Advanced Features
+- **Multiple Rhythms**: Support for different rotation patterns
+- **Flexible Duty Types**: Custom duty types with labels and flags
+- **Week Offsets**: Different groups can start at different weeks
+- **All-Day Duties**: Special handling for full-day assignments
+- **Version Control**: Schema versioning for compatibility
+- **Custom Icons**: Visual identification of schedules in the UI
+
+### Available Icons
+The `icon` field in the meta section supports various icon names:
+
+#### **Police & Security**
+- `shield`, `security`, `police`, `badge`
+
+#### **Vehicles**
+- `car`, `directions_car`, `vehicle`, `motorcycle`, `bike`
+
+#### **Emergency & Medical**
+- `emergency`, `medical`, `ambulance`, `fire`
+
+#### **Communication**
+- `phone`, `radio`, `message`
+
+#### **Time & Schedule**
+- `schedule`, `time`, `calendar`, `clock`
+
+#### **Location & Navigation**
+- `location`, `map`, `navigation`, `gps`
+
+#### **General**
+- `star`, `favorite`, `check`, `warning`, `info`, `settings`, `group`, `person`, `people`, `team`
+
+#### **Movement & Activity**
+- `directions`, `route`, `traffic`, `patrol`, `walk`, `run`, `exercise`
+
+#### **Equipment & Tools**
+- `tool`, `equipment`, `gear`, `device`
+
+#### **Weather & Environment**
+- `weather`, `sun`, `rain`, `storm`
+
+If no icon is specified or an invalid icon name is used, a default schedule icon will be displayed.
+
 ---
 
 ## 📦 Installation
@@ -71,7 +114,8 @@ Duty schedules are defined using JSON configuration files in `assets/schedules/`
     "description": "Example rotation schedule for demonstration",
     "start_week_day": "Monday",
     "start_date": "2024-01-01",
-    "days": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+    "days": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+    "icon": "shield"
   },
   "duty_types": {
     "F": {
@@ -124,6 +168,7 @@ Duty schedules are defined using JSON configuration files in `assets/schedules/`
 - **`start_week_day`**: First day of the week (e.g., "Monday")
 - **`start_date`**: Reference date for schedule calculations
 - **`days`**: Array of day abbreviations
+- **`icon`**: Icon identifier for the schedule
 
 #### **Duty Types (`duty_types`)**
 - **`id`**: Short identifier (e.g., "F", "S", "N")

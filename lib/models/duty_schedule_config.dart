@@ -117,6 +117,7 @@ class Meta {
   final DateTime startDate;
   final String startWeekDay;
   final List<String> days;
+  final String? icon;
 
   Meta({
     required this.name,
@@ -124,6 +125,7 @@ class Meta {
     required this.startDate,
     required this.startWeekDay,
     required this.days,
+    this.icon,
   });
 
   factory Meta.fromMap(Map<String, dynamic> map) {
@@ -133,6 +135,7 @@ class Meta {
       startDate: DateTime.parse(map['start_date'] as String),
       startWeekDay: map['start_week_day'] as String,
       days: List<String>.from(map['days'] as List),
+      icon: map['icon'] as String?,
     );
   }
 
@@ -143,6 +146,7 @@ class Meta {
       'start_date': startDate.toIso8601String(),
       'start_week_day': startWeekDay,
       'days': days,
+      if (icon != null) 'icon': icon,
     };
   }
 }
