@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.2.0](https://github.com/lusu007/dienstplan/compare/v0.1.0...v0.2.0) (2025-07-05)
+
+
+### Features
+
+* Add a preferred duty group system ([#20](https://github.com/lusu007/dienstplan/issues/20)) ([3b66b08](https://github.com/lusu007/dienstplan/commit/3b66b08d2aaf53aec13a71c7dfcf3f3195d032d7))
+* Add about dialog ([#11](https://github.com/lusu007/dienstplan/issues/11)) ([ad080a3](https://github.com/lusu007/dienstplan/commit/ad080a305fa404d1be2d99b4ab77941ea8178023))
+* Add disclaimer to about screen ([#21](https://github.com/lusu007/dienstplan/issues/21)) ([936c37b](https://github.com/lusu007/dienstplan/commit/936c37bdfd4cb2a16b806b1055d3ed5b89244f10))
+* Implement database indexes ([#16](https://github.com/lusu007/dienstplan/issues/16)) ([c29214d](https://github.com/lusu007/dienstplan/commit/c29214d4900d51b6b1bb935eafa3b625f922b23f))
+* Improve settings screen design and spacing ([#23](https://github.com/lusu007/dienstplan/issues/23)) ([96be883](https://github.com/lusu007/dienstplan/commit/96be88384087daafa2eb6296082f6d998e81d2ac))
+* Make is possible to select no preferred duty group ([#25](https://github.com/lusu007/dienstplan/issues/25)) ([6cd4591](https://github.com/lusu007/dienstplan/commit/6cd4591d6ea13982114040c1a7642731776dec61))
+* Make it possible to define duty order in schedules schema ([#31](https://github.com/lusu007/dienstplan/issues/31)) ([c5136e6](https://github.com/lusu007/dienstplan/commit/c5136e6fca1c9258a11bfce6f6fffaa385dd64ac))
+* Redesign first time setup screen ([#13](https://github.com/lusu007/dienstplan/issues/13)) ([2a1191d](https://github.com/lusu007/dienstplan/commit/2a1191d79ba48038df11dd5ae7b9eece14349ebf))
+* Redesign the dialogs on settings screen ([#27](https://github.com/lusu007/dienstplan/issues/27)) ([4ca60d3](https://github.com/lusu007/dienstplan/commit/4ca60d33cffd68bfd3336c48267a689cf5185c61))
+* Restructure settings screen ([#22](https://github.com/lusu007/dienstplan/issues/22)) ([b468710](https://github.com/lusu007/dienstplan/commit/b468710704269e2ccbf66919b0629b15c03ed5ef))
+* Show duties of preferred duty group in calendar ([#24](https://github.com/lusu007/dienstplan/issues/24)) ([5dea194](https://github.com/lusu007/dienstplan/commit/5dea194788fe62d0a2f2c0b0f4023952fef7dc92))
+
+
+### Bug Fixes
+
+* Continue button is disabled when generating schedules ([#18](https://github.com/lusu007/dienstplan/issues/18)) ([f0cd924](https://github.com/lusu007/dienstplan/commit/f0cd924dadfd8c65b3ad6d9914f58e5d989d8d43))
+* Correctly save and load preferred duty group on app restarts ([#30](https://github.com/lusu007/dienstplan/issues/30)) ([9a3748a](https://github.com/lusu007/dienstplan/commit/9a3748a65710dca3cf5d1be4fa2ab117e48352b5))
+* Do not load default config when first setup is not completed ([#17](https://github.com/lusu007/dienstplan/issues/17)) ([d30fe2a](https://github.com/lusu007/dienstplan/commit/d30fe2a80db46108d8a2ad3ee30b8bdd192039ba))
+* Dont show back button on calendar screen ([#19](https://github.com/lusu007/dienstplan/issues/19)) ([f0d33bc](https://github.com/lusu007/dienstplan/commit/f0d33bcd03cb786cc4a43f72f09b5e85dfa89c03))
+* Duties are offset by one day ([#14](https://github.com/lusu007/dienstplan/issues/14)) ([7e98991](https://github.com/lusu007/dienstplan/commit/7e989910c4c069e54b9af3adf4d47464b748e6ce))
+* Load duties after restart ([#15](https://github.com/lusu007/dienstplan/issues/15)) ([94dda7f](https://github.com/lusu007/dienstplan/commit/94dda7f46b827ef5d1a22c612471429454df6041))
+* Make components more resuable ([#28](https://github.com/lusu007/dienstplan/issues/28)) ([1e32fcc](https://github.com/lusu007/dienstplan/commit/1e32fcc118de541672e1cd2a97b652f4c41bf6c4))
+* Make disclaimer more precise ([#32](https://github.com/lusu007/dienstplan/issues/32)) ([b440eae](https://github.com/lusu007/dienstplan/commit/b440eaecd083ef1e2b4ab80a4644e3027f1de9d4))
+* Reorder general settings ([#26](https://github.com/lusu007/dienstplan/issues/26)) ([06f441f](https://github.com/lusu007/dienstplan/commit/06f441fe5d6dd41697a65b68f1694193c197398c))
+
 ## [0.1.0](https://github.com/lusu007/dienstplan/compare/v0.0.2...v0.1.0) (2025-06-17)
 
 
