@@ -56,10 +56,15 @@ class CalendarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+    final responsivePadding = isLandscape ? 8.0 : 16.0;
+
     return Consumer<ScheduleProvider>(
       builder: (context, scheduleProvider, child) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: responsivePadding, vertical: 4.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -68,11 +73,19 @@ class CalendarHeader extends StatelessWidget {
                   onFormatChanged(_getNextFormat(calendarFormat));
                 },
                 icon: _getFormatIcon(calendarFormat),
-                label: Text(_getFormatText(calendarFormat, l10n)),
+                label: Text(
+                  _getFormatText(calendarFormat, l10n),
+                  style: TextStyle(
+                    fontSize: isLandscape ? 14.0 : null,
+                  ),
+                ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: isLandscape ? 4.0 : 8.0),
               IconButton(
-                icon: const Icon(Icons.today),
+                icon: Icon(
+                  Icons.today,
+                  size: isLandscape ? 20.0 : 24.0,
+                ),
                 onPressed: onTodayPressed,
                 tooltip: l10n.today,
               ),

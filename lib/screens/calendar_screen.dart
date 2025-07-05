@@ -59,27 +59,16 @@ class _CalendarScreenState extends State<CalendarScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+
     return Consumer2<ScheduleProvider, LanguageService>(
       builder: (context, scheduleProvider, languageService, child) {
         return Scaffold(
           appBar: _buildAppBar(l10n),
-          body: Column(
-            children: [
-              _buildCalendarHeader(scheduleProvider),
-              _buildTableCalendar(scheduleProvider),
-              ServicesSection(selectedDay: scheduleProvider.selectedDay),
-              Expanded(
-                child: ScheduleList(
-                  schedules: scheduleProvider.schedules,
-                  dutyGroups: scheduleProvider.dutyGroups,
-                  selectedDutyGroup: scheduleProvider.selectedDutyGroup,
-                  onDutyGroupSelected: (group) {
-                    scheduleProvider.setSelectedDutyGroup(group);
-                  },
-                ),
-              ),
-            ],
-          ),
+          body: isLandscape
+              ? _buildLandscapeLayout(scheduleProvider)
+              : _buildPortraitLayout(scheduleProvider),
         );
       },
     );
@@ -109,6 +98,64 @@ class _CalendarScreenState extends State<CalendarScreen>
     );
   }
 
+  Widget _buildPortraitLayout(ScheduleProvider scheduleProvider) {
+    return Column(
+      children: [
+        _buildCalendarHeader(scheduleProvider),
+        _buildTableCalendar(scheduleProvider),
+        ServicesSection(selectedDay: scheduleProvider.selectedDay),
+        Expanded(
+          child: ScheduleList(
+            schedules: scheduleProvider.schedules,
+            dutyGroups: scheduleProvider.dutyGroups,
+            selectedDutyGroup: scheduleProvider.selectedDutyGroup,
+            onDutyGroupSelected: (group) {
+              scheduleProvider.setSelectedDutyGroup(group);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLandscapeLayout(ScheduleProvider scheduleProvider) {
+    return Row(
+      children: [
+        // Left side: Calendar
+        Expanded(
+          flex: 3,
+          child: Column(
+            children: [
+              _buildCalendarHeader(scheduleProvider),
+              Expanded(
+                child: _buildTableCalendar(scheduleProvider),
+              ),
+            ],
+          ),
+        ),
+        // Right side: Services
+        Expanded(
+          flex: 2,
+          child: Column(
+            children: [
+              ServicesSection(selectedDay: scheduleProvider.selectedDay),
+              Expanded(
+                child: ScheduleList(
+                  schedules: scheduleProvider.schedules,
+                  dutyGroups: scheduleProvider.dutyGroups,
+                  selectedDutyGroup: scheduleProvider.selectedDutyGroup,
+                  onDutyGroupSelected: (group) {
+                    scheduleProvider.setSelectedDutyGroup(group);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildCalendarHeader(ScheduleProvider scheduleProvider) {
     return CalendarHeader(
       focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
@@ -128,7 +175,10 @@ class _CalendarScreenState extends State<CalendarScreen>
   }
 
   Widget _buildTableCalendar(ScheduleProvider scheduleProvider) {
-    return TableCalendar(
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+
+    final calendar = TableCalendar(
       firstDay: CalendarConfig.firstDay,
       lastDay: CalendarConfig.lastDay,
       focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
@@ -153,5 +203,7 @@ class _CalendarScreenState extends State<CalendarScreen>
       headerStyle: CalendarConfig.createHeaderStyle(),
       locale: _locale,
     );
+
+    return isLandscape ? SizedBox(height: 200.0, child: calendar) : calendar;
   }
 }

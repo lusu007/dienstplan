@@ -96,6 +96,9 @@ class _ScheduleListState extends State<ScheduleList> {
     final filteredSchedules = _filterSchedules(widget.schedules);
     final sortedSchedules = _sortSchedulesByTime(filteredSchedules);
     final provider = Provider.of<ScheduleProvider>(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+    final responsivePadding = isLandscape ? 12.0 : 16.0;
 
     if (sortedSchedules.isEmpty) {
       return Center(
@@ -104,7 +107,7 @@ class _ScheduleListState extends State<ScheduleList> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(responsivePadding),
       itemCount: sortedSchedules.length,
       itemBuilder: (context, index) {
         final schedule = sortedSchedules[index];
@@ -124,7 +127,7 @@ class _ScheduleListState extends State<ScheduleList> {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
               child: Row(
                 children: [
                   Expanded(
@@ -133,12 +136,18 @@ class _ScheduleListState extends State<ScheduleList> {
                       children: [
                         Text(
                           serviceName,
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontSize: isLandscape ? 16.0 : null,
+                                  ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           schedule.dutyGroupName,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: isLandscape ? 14.0 : null,
+                                  ),
                         ),
                       ],
                     ),
@@ -147,6 +156,7 @@ class _ScheduleListState extends State<ScheduleList> {
                     serviceTime,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).colorScheme.primary,
+                          fontSize: isLandscape ? 14.0 : null,
                         ),
                   ),
                 ],

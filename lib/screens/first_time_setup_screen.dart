@@ -119,80 +119,92 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
 
   Widget _buildStep1Content() {
     final l10n = AppLocalizations.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+    final responsivePadding = isLandscape ? 16.0 : 24.0;
+    final titleFontSize = isLandscape ? 28.0 : 36.0;
+    final bodyFontSize = isLandscape ? 16.0 : 18.0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 16),
-        Text(
-          l10n.welcome,
-          style: const TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(responsivePadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          Text(
+            l10n.welcome,
+            style: TextStyle(
+              fontSize: titleFontSize,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          l10n.welcomeMessage,
-          style: const TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 32),
-        ..._configs.map((config) {
-          final IconData icon = _getConfigIcon(config);
-          return SelectionCard(
-            title: config.meta.name,
-            subtitle: config.meta.description,
-            leadingIcon: icon,
-            isSelected: _selectedConfig == config,
-            onTap: () {
-              setState(() {
-                _selectedConfig = config;
-              });
-            },
+          const SizedBox(height: 16),
+          Text(
+            l10n.welcomeMessage,
+            style: TextStyle(fontSize: bodyFontSize),
+          ),
+          const SizedBox(height: 32),
+          ..._configs.map((config) {
+            final IconData icon = _getConfigIcon(config);
+            return SelectionCard(
+              title: config.meta.name,
+              subtitle: config.meta.description,
+              leadingIcon: icon,
+              isSelected: _selectedConfig == config,
+              onTap: () {
+                setState(() {
+                  _selectedConfig = config;
+                });
+              },
+              mainColor: AppColors.primary,
+            );
+          }),
+          const SizedBox(height: 32),
+          ActionButton(
+            text: l10n.continueButton,
+            onPressed: _selectedConfig == null ? null : _nextStep,
             mainColor: AppColors.primary,
-          );
-        }),
-        const Spacer(),
-        ActionButton(
-          text: l10n.continueButton,
-          onPressed: _selectedConfig == null ? null : _nextStep,
-          mainColor: AppColors.primary,
-        ),
-        const SizedBox(height: 16),
-      ],
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 
   Widget _buildStep2Content() {
     final l10n = AppLocalizations.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+    final responsivePadding = isLandscape ? 16.0 : 24.0;
+    final titleFontSize = isLandscape ? 28.0 : 36.0;
+    final bodyFontSize = isLandscape ? 16.0 : 18.0;
 
     if (_selectedConfig == null) return const SizedBox.shrink();
 
     final dutyGroups = _selectedConfig!.dutyGroups;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 16),
-        Text(
-          l10n.selectDutyGroup,
-          style: const TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(responsivePadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          Text(
+            l10n.selectDutyGroup,
+            style: TextStyle(
+              fontSize: titleFontSize,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          l10n.selectDutyGroupMessage,
-          style: const TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 32),
-        Flexible(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: dutyGroups.length +
-                1, // +1 for "no preferred duty group" option
-            itemBuilder: (context, index) {
+          const SizedBox(height: 16),
+          Text(
+            l10n.selectDutyGroupMessage,
+            style: TextStyle(fontSize: bodyFontSize),
+          ),
+          const SizedBox(height: 32),
+          ...List.generate(
+            dutyGroups.length + 1, // +1 for "no preferred duty group" option
+            (index) {
               // Regular duty groups first
               if (index < dutyGroups.length) {
                 final group = dutyGroups[index];
@@ -227,38 +239,38 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
               );
             },
           ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: ActionButton(
-                text: l10n.back,
-                onPressed: _previousStep,
-                isPrimary: false,
-                mainColor: AppColors.primary,
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: ActionButton(
+                  text: l10n.back,
+                  onPressed: _previousStep,
+                  isPrimary: false,
+                  mainColor: AppColors.primary,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: ActionButton(
-                text: l10n.continueButton,
-                onPressed: !_hasMadeDutyGroupSelection
-                    ? null
-                    : () {
-                        if (!_isGeneratingSchedules) {
-                          _saveDefaultConfig();
-                        }
-                      },
-                isLoading: _isGeneratingSchedules,
-                loadingText: l10n.generatingSchedules,
-                mainColor: AppColors.primary,
+              const SizedBox(width: 16),
+              Expanded(
+                child: ActionButton(
+                  text: l10n.continueButton,
+                  onPressed: !_hasMadeDutyGroupSelection
+                      ? null
+                      : () {
+                          if (!_isGeneratingSchedules) {
+                            _saveDefaultConfig();
+                          }
+                        },
+                  isLoading: _isGeneratingSchedules,
+                  loadingText: l10n.generatingSchedules,
+                  mainColor: AppColors.primary,
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-      ],
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
     );
   }
 
@@ -273,6 +285,9 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   @override
   Widget build(BuildContext context) {
     final languageService = context.watch<LanguageService>();
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+    final responsivePadding = isLandscape ? 16.0 : 24.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -291,7 +306,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: EdgeInsets.all(responsivePadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

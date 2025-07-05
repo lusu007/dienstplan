@@ -19,6 +19,13 @@ class CalendarDayBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+
+    // Use responsive sizing for landscape mode
+    final effectiveWidth = width ?? (isLandscape ? 35.0 : 40.0);
+    final effectiveHeight = height ?? (isLandscape ? 45.0 : 50.0);
+
     final dayStyle = _getDayTextStyle(theme);
     final containerDecoration = _getContainerDecoration(theme);
     final dutyBadgeDecoration = _getDutyBadgeDecoration(theme);
@@ -26,8 +33,8 @@ class CalendarDayBuilder extends StatelessWidget {
 
     return Container(
       margin: _getMargin(),
-      width: width,
-      height: height,
+      width: effectiveWidth,
+      height: effectiveHeight,
       decoration: containerDecoration,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -38,11 +45,15 @@ class CalendarDayBuilder extends StatelessWidget {
           ),
           if (dutyAbbreviation != null && dutyAbbreviation!.isNotEmpty)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              padding: EdgeInsets.symmetric(
+                  horizontal: isLandscape ? 2.0 : 4.0,
+                  vertical: isLandscape ? 0.5 : 1.0),
               decoration: dutyBadgeDecoration,
               child: Text(
                 dutyAbbreviation!,
-                style: dutyBadgeTextStyle,
+                style: dutyBadgeTextStyle.copyWith(
+                  fontSize: isLandscape ? 8.0 : 10.0,
+                ),
               ),
             ),
         ],
