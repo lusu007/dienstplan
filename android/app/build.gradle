@@ -69,6 +69,47 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Custom APK naming
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def versionName = defaultConfig.versionName
+            def versionCode = defaultConfig.versionCode
+            def buildType = variant.buildType.name
+            
+            if (buildType == 'release') {
+                outputFileName = "dienstplan-${versionName}-${versionCode}.apk"
+            } else {
+                outputFileName = "dienstplan-${versionName}-${versionCode}-${buildType}.apk"
+            }
+        }
+    }
+
+    // Custom AAB naming
+    bundle {
+        language {
+            enableSplit = false
+        }
+        density {
+            enableSplit = false
+        }
+        abi {
+            enableSplit = true
+        }
+    }
+    
+    // Set custom AAB filename
+    android.applicationVariants.all { variant ->
+        if (variant.buildType.name == 'release') {
+            variant.outputs.all { output ->
+                if (output.name.contains('Bundle')) {
+                    def versionName = defaultConfig.versionName
+                    def versionCode = defaultConfig.versionCode
+                    outputFileName = "dienstplan-${versionName}-${versionCode}.aab"
+                }
+            }
+        }
+    }
 }
 
 flutter {

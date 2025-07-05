@@ -1,9 +1,8 @@
 name: 🚀 Release Android App
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -34,6 +33,13 @@ jobs:
       - name: 📦 Install dependencies
         run: flutter pub get
 
+      - name: 📋 Get version from pubspec
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
       - name: 🔑 Setup Keystore
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
@@ -54,20 +60,6 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build appbundle --release --build-number=${{ github.run_number }}
         
-      - name: ⬆️ Upload App APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
-          retention-days: 3
-
-      - name: ⬆️ Upload App Bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-bundle
-          path: build/app/outputs/bundle/release/app-release.aab
-          retention-days: 3
-
       - name: 🔏 Sign Release
         uses: r0adkll/sign-android-release@v1
         id: sign
@@ -78,12 +70,32 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
+      - name: ⬆️ Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/dienstplan-${{ steps.version.outputs.version }}-${{ github.run_number }}.apk
+          asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: ⬆️ Upload AAB to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-${{ github.run_number }}.aab
+          asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.aab
+          asset_content_type: application/octet-stream
+
       - name: 🏪 Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
           packageName: io.scelus.dienstplan
-          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          releaseFiles: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-${{ github.run_number }}.aab
           track: production
           status: completed
           changesNotSentForReview: true 
