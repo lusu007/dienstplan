@@ -122,12 +122,10 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     final l10n = AppLocalizations.of(context);
     final screenSize = MediaQuery.of(context).size;
     final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 16.0 : 24.0;
     final titleFontSize = isLandscape ? 28.0 : 36.0;
     final bodyFontSize = isLandscape ? 16.0 : 18.0;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(responsivePadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -176,7 +174,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     final l10n = AppLocalizations.of(context);
     final screenSize = MediaQuery.of(context).size;
     final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 16.0 : 24.0;
     final titleFontSize = isLandscape ? 28.0 : 36.0;
     final bodyFontSize = isLandscape ? 16.0 : 18.0;
 
@@ -185,7 +182,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
     final dutyGroups = _selectedConfig!.dutyGroups;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(responsivePadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -281,12 +277,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
       return IconMapper.getIcon(config.meta.icon, defaultIcon: Icons.schedule);
     }
 
-    // Fallback to the old logic for backward compatibility
-    if (config.meta.name.toLowerCase().contains('bepo')) {
-      return Icons.shield;
-    } else {
-      return Icons.directions_car;
-    }
+    return Icons.directions_car;
   }
 
   @override
