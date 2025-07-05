@@ -515,8 +515,14 @@ abstract class AppLocalizations {
   /// Disclaimer text shown in the about dialog
   ///
   /// In en, this message translates to:
-  /// **'Disclaimer: This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.'**
+  /// **'This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.'**
   String get aboutDisclaimer;
+
+  /// Full disclaimer text for the disclaimer popup
+  ///
+  /// In en, this message translates to:
+  /// **'This application is not an official product of any government authority or agency. The Dienstplan App has been developed independently and is not officially affiliated with the police or any government entity.\n\nThe data used in this application originates from publicly accessible information materials of the police unions GdP (Gewerkschaft der Polizei) and DPolG (Deutsche Polizeigewerkschaft). Only publicly available information has been utilized. No internal or confidential agency data has been published or processed without authorization.\n\nThis application is intended for private use only and makes no claim to the completeness or accuracy of the information provided.'**
+  String get disclaimerLong;
 
   /// Title for duty group selection step
   ///
