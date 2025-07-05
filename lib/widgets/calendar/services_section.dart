@@ -13,22 +13,30 @@ class ServicesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+    final responsivePadding = isLandscape ? 12.0 : 16.0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding:
+          EdgeInsets.symmetric(horizontal: responsivePadding, vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.services,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: isLandscape ? 18.0 : null,
+                ),
           ),
           Text(
             selectedDay != null
                 ? l10n.servicesOnDate(
                     DateFormat('dd.MM.yyyy').format(selectedDay!))
                 : l10n.noServicesForDay,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize: isLandscape ? 14.0 : null,
+                ),
           ),
         ],
       ),

@@ -24,23 +24,27 @@ class CalendarBuildersHelper {
         );
       },
       selectedBuilder: (context, day, focusedDay) {
+        final screenSize = MediaQuery.of(context).size;
+        final isLandscape = screenSize.width > screenSize.height;
         return _buildCalendarDay(
           context,
           day,
           scheduleProvider,
           CalendarDayType.selected,
-          width: 40,
-          height: 50,
+          width: isLandscape ? 35.0 : 40.0,
+          height: isLandscape ? 45.0 : 50.0,
         );
       },
       todayBuilder: (context, day, focusedDay) {
+        final screenSize = MediaQuery.of(context).size;
+        final isLandscape = screenSize.width > screenSize.height;
         return _buildCalendarDay(
           context,
           day,
           scheduleProvider,
           CalendarDayType.today,
-          width: 40,
-          height: 50,
+          width: isLandscape ? 35.0 : 40.0,
+          height: isLandscape ? 45.0 : 50.0,
         );
       },
     );
