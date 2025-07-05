@@ -1,194 +1,210 @@
-# 📅 Duty Schedule Calendar
+# 📅 Dienstplan - Police Duty Schedule App
 
-A cross-platform mobile app for managing and viewing duty schedules — designed specifically for police officers. Available for **Android** and **iOS**.
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/lusu007/dienstplan/releases)
+[![Flutter](https://img.shields.io/badge/Flutter-3.32.4-blue.svg)](https://flutter.dev)
+[![License](https://img.shields.io/badge/License-AGPL--3.0-green.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-orange.svg)](https://github.com/lusu007/dienstplan)
 
----
-
-## 🚀 Overview
-
-**Duty Schedule Calendar** makes it simple for officers to access and manage their duty plans at any time. It features:
-
-- 📚 Support for multiple predefined duty schedules
-- 👤 User selection of their specific duty schedule
-- 🗓 Intuitive calendar-based display of duty times
-- 📱 Clean and user-friendly interface
-- 🌐 Full offline access to schedules
+A modern, cross-platform mobile application designed specifically for police officers to manage and view their duty schedules. Built with Flutter for optimal performance and user experience.
 
 ---
 
-## ⚖️ License
+## 🚀 Features
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)** – see the [LICENSE](LICENSE) file for details.
+### 📱 Core Functionality
+- **📅 Calendar View**: Intuitive calendar interface showing duty schedules
+- **👥 Duty Group Selection**: Choose your preferred duty group for personalized views
+- **🔄 Offline Access**: Full offline functionality - no internet required
+- **⚡ Fast Performance**: Optimized with database indexes for quick loading
+- **🌍 Localization**: Multi-language support with German as primary language
 
-### Summary
+### 🛠 Advanced Features
+- **📊 Multiple Schedule Support**: Load and manage different duty schedule configurations
+- **🎯 Preferred Duty Group**: Set your preferred duty group for quick access
+- **📋 Duty Details**: Tap any date to view detailed duty information
+- **🔧 Flexible Configuration**: JSON-based schedule configuration system
+- **📱 Modern UI**: Clean, intuitive interface optimized for mobile use
 
-✔️ You may:
-- View, study, and modify the code for personal use  
-- Compile and run the application yourself  
-
-❌ You may *not*:
-- Redistribute modified versions without publishing their source code  
-- Integrate this code in closed-source projects  
-- Remove or alter license notices  
-
-### Commercial Use
-
-While the source is open, the **compiled version** is distributed commercially in app stores:
-- ✅ You may purchase or build the app for personal use  
-- ❌ You may *not* distribute your own compiled builds  
-
----
-
-## ⚙️ Technical Overview
-
-### 📁 Schedule Configuration Format
-
-Duty schedules are defined via JSON in `assets/schedules/`. Example structure:
-
-```json
-{
-  "name": "ESD Polizei Bremen",
-  "startDate": "2024-01-01",
-  "rhythms": [
-    {
-      "name": "Week 1",
-      "pattern": [
-        { "dutyType": "ZD", "days": [1, 2, 3, 4, 5] },
-        { "dutyType": "Frei", "days": [6, 7] }
-      ]
-    }
-  ],
-  "dutyGroups": [
-    { "id": 1, "name": "Dienstgruppe 1", "offsetWeeks": 1 }
-  ],
-  "dutyTypes": [
-    { "id": "ZD", "name": "Zusatzdienst", "startTime": "08:00", "endTime": "16:00", "isAllDay": false }
-  ]
-}
-```
-
-### 🔍 Components Explained
-
-- **Configuration**
-  - `name`, `startDate`: Metadata for the schedule
-  - `rhythms`: Defines weekly patterns
-  - `dutyGroups`: Includes ID, name, and offset
-  - `dutyTypes`: Defines all known duty types
-
-- **Rhythm Pattern**
-  - Weekly definitions of duties
-  - `days`: 1 = Monday, 7 = Sunday
-
-- **Schedule Generation Flow**
-  1. Load JSON config  
-  2. Calculate current week with offset  
-  3. Apply rhythm  
-  4. Store result in local SQLite DB  
-
-#### 🔄 Extended Example
-
-```json
-{
-  "rhythms": [
-    {
-      "name": "Week 1",
-      "pattern": [
-        { "dutyType": "ZD", "days": [1, 2, 3, 4, 5] },
-        { "dutyType": "Frei", "days": [6, 7] }
-      ]
-    },
-    {
-      "name": "Week 2",
-      "pattern": [
-        { "dutyType": "Nacht", "days": [1, 2] },
-        { "dutyType": "Frei", "days": [3, 4] },
-        { "dutyType": "Früh", "days": [5, 6, 7] }
-      ]
-    }
-  ]
-}
-```
+### 🔒 Privacy & Security
+- **🔐 Local Storage**: All data stored locally on your device
+- **🚫 No Cloud Sync**: Your schedule data never leaves your device
+- **📊 No Analytics**: No tracking or data collection
 
 ---
 
-## 🛠 Installation
+## 📦 Installation
 
-### Prerequisites
-- Install [Flutter](https://flutter.dev/docs/get-started/install)
+### From App Store
+- **Direct APK**: Available in [GitHub Releases](https://github.com/lusu007/dienstplan/releases)
 
-### Steps
-
+### From Source
 ```bash
-# Clone the repo
-git clone https://github.com/yourusername/dienstplan.git
+# Clone the repository
+git clone https://github.com/lusu007/dienstplan.git
 cd dienstplan
 
-# Get dependencies
+# Install dependencies
 flutter pub get
 
-# Launch the app
+# Run the app
 flutter run
-```
 
----
-
-## 📱 How to Use
-
-1. Open the app  
-2. Select your duty schedule in the settings  
-3. View your duties in the calendar  
-4. Tap a date to see details  
-5. Receive automatic notifications about changes  
-
----
-
-## 🧱 Architecture & Tech Stack
-
-- **Flutter** – Cross-platform UI  
-- **Riverpod** – State management  
-- **SQLite** – Local database  
-- **TableCalendar** – Calendar UI  
-- **Flutter Local Notifications** – Native alerts  
-
-### 📁 Directory Structure
-
-```
-lib/
-├── models/         # Data structures
-├── providers/      # State management logic
-├── screens/        # App screens
-├── services/       # Business logic & persistence
-├── widgets/        # Reusable UI components
-└── main.dart       # Entry point
-```
-
----
-
-## 📦 Building for Production
-
-```bash
-# Android
+# Build for production
 flutter build apk --release
-
-# iOS
-flutter build ios --release
 ```
+
+For detailed development setup and workflow, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## 🏗 Architecture
+
+### Schedule Format
+Duty schedules are defined using JSON configuration files in `assets/schedules/`. The format supports comprehensive schedule management:
+
+```json
+{
+  "version": "1.1",
+  "meta": {
+    "name": "Example Duty Schedule",
+    "created_by": "Schedule Creator",
+    "description": "Example rotation schedule for demonstration",
+    "start_week_day": "Monday",
+    "start_date": "2024-01-01",
+    "days": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+  },
+  "duty_types": {
+    "F": {
+      "label": "Frühdienst"
+    },
+    "S": {
+      "label": "Spätdienst"
+    },
+    "N": {
+      "label": "Nachtdienst"
+    },
+    "ZD": {
+      "label": "Zusatzdienst",
+      "all_day": true
+    },
+    "-": {
+      "label": "Frei",
+      "all_day": true
+    }
+  },
+  "duty_type_order": ["F", "S", "N", "ZD", "-"],
+  "rhythms": {
+    "example_rhythm": {
+      "length_weeks": 4,
+      "pattern": [
+        ["-", "F", "F", "F", "F", "-", "-"],
+        ["S", "S", "S", "S", "-", "-", "-"],
+        ["N", "N", "N", "-", "-", "-", "-"],
+        ["-", "-", "-", "ZD", "ZD", "-", "-"]
+      ]
+    }
+  },
+  "dienstgruppen": [
+    {
+      "id": "DG1",
+      "name": "Dienstgruppe 1",
+      "rhythm": "example_rhythm",
+      "offset_weeks": 0
+    }
+  ]
+}
+```
+
+### Configuration Elements
+
+#### **Metadata (`meta`)**
+- **`name`**: Display name for the schedule
+- **`created_by`**: Author of the schedule
+- **`description`**: Detailed description of the schedule
+- **`start_week_day`**: First day of the week (e.g., "Monday")
+- **`start_date`**: Reference date for schedule calculations
+- **`days`**: Array of day abbreviations
+
+#### **Duty Types (`duty_types`)**
+- **`id`**: Short identifier (e.g., "F", "S", "N")
+- **`label`**: Human-readable name
+- **`all_day`**: Optional flag for all-day duties
+
+#### **Duty Type Order (`duty_type_order`)**
+- Defines the display order of duty types in the UI
+- Controls sorting and grouping of duties
+
+#### **Rhythms (`rhythms`)**
+- **`length_weeks`**: Duration of the rotation cycle
+- **`pattern`**: Array of weekly patterns
+- **`pattern[week][day]`**: Duty type for each day of each week
+
+#### **Duty Groups (`dienstgruppen`)**
+- **`id`**: Unique identifier for the group
+- **`name`**: Display name
+- **`rhythm`**: Reference to rhythm configuration
+- **`offset_weeks`**: Week offset from the start date
+
+### Advanced Features
+- **Multiple Rhythms**: Support for different rotation patterns
+- **Flexible Duty Types**: Custom duty types with labels and flags
+- **Week Offsets**: Different groups can start at different weeks
+- **All-Day Duties**: Special handling for full-day assignments
+- **Version Control**: Schema versioning for compatibility
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo  
-2. Create a feature branch  
-   `git checkout -b feature/my-feature`  
-3. Commit your changes  
-   `git commit -m 'Add new feature'`  
-4. Push and create a Pull Request  
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for detailed information on:
 
-> Please follow the code style and update/add tests where applicable.
+- 🚀 Development setup and workflow
+- 📝 Code standards and best practices
+- 🧪 Testing guidelines
+- 📋 Pull request process
+- 🐛 Issue reporting
+- 🏗 Project structure and architecture
+
+### Quick Start
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/your-feature`
+3. **Make your changes** following our coding standards
+4. **Test thoroughly** with `flutter test`
+5. **Submit a pull request** with a clear description
+
+For questions and discussions, please use [GitHub Discussions](https://github.com/lusu007/dienstplan/discussions).
 
 ---
 
-## 📜 Code of Conduct
+## 📄 License
 
-We expect contributors to follow our [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a respectful and inclusive community.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+### License Summary
+✅ **You may**:
+- View, study, and modify the source code
+- Compile and run the application for personal use
+- Distribute modified versions with source code
+
+❌ **You may not**:
+- Use in closed-source projects without publishing source
+- Remove or alter license notices
+- Distribute compiled versions commercially without permission
+
+### Commercial Use
+- **Source code**: Open source under AGPL-3.0
+- **Compiled app**: Available commercially in app stores
+- **Personal builds**: Allowed for personal use
+
+---
+
+## 📞 Support
+
+### Getting Help
+- **GitHub Issues**: [Report bugs or request features](https://github.com/lusu007/dienstplan/issues)
+- **Documentation**: Check the code comments and this README
+- **Community**: Join discussions in GitHub Discussions
+
+---
+
+**Built with ❤️ for police officers in Germany**
