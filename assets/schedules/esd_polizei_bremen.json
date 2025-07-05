@@ -19,21 +19,26 @@
   },
   "duty_types": {
     "F": {
-      "label": "Frühdienst"
+      "label": "Frühdienst",
+      "icon": "wb_sunny"
     },
     "S": {
-      "label": "Spätdienst"
+      "label": "Spätdienst",
+      "icon": "schedule"
     },
     "N": {
-      "label": "Nachtdienst"
+      "label": "Nachtdienst",
+      "icon": "bedtime"
     },
     "ZD": {
       "label": "Zusatzdienst",
-      "all_day": true
+      "all_day": true,
+      "icon": "add_circle"
     },
     "-": {
       "label": "Frei",
-      "all_day": true
+      "all_day": true,
+      "icon": "weekend"
     }
   },
   "duty_type_order": [
