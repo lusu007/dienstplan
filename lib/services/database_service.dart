@@ -26,6 +26,7 @@ class DatabaseService {
             id TEXT,
             label TEXT,
             all_day INTEGER,
+            icon TEXT,
             config_name TEXT,
             PRIMARY KEY (id, config_name)
           )
@@ -113,6 +114,7 @@ class DatabaseService {
             'id': entry.key,
             'label': entry.value.label,
             'all_day': entry.value.isAllDay ? 1 : 0,
+            'icon': entry.value.icon,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );

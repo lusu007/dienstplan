@@ -3,12 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/models/schedule.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
+import 'package:dienstplan/utils/icon_mapper.dart';
 
 class ScheduleList extends StatefulWidget {
   final List<Schedule> schedules;
   final List<String>? dutyGroups;
   final String? selectedDutyGroup;
   final Function(String?)? onDutyGroupSelected;
+  final ScrollController? scrollController;
 
   const ScheduleList({
     super.key,
@@ -16,6 +18,7 @@ class ScheduleList extends StatefulWidget {
     this.dutyGroups,
     this.selectedDutyGroup,
     this.onDutyGroupSelected,
+    this.scrollController,
   });
 
   @override
@@ -90,6 +93,18 @@ class _ScheduleListState extends State<ScheduleList> {
     return filteredSchedules;
   }
 
+  IconData _getDutyTypeIcon(String serviceId, ScheduleProvider provider) {
+    final dutyType = provider.activeConfig?.dutyTypes[serviceId];
+
+    // Use the icon from the duty type if available
+    if (dutyType?.icon != null) {
+      return IconMapper.getIcon(dutyType!.icon!, defaultIcon: Icons.schedule);
+    }
+
+    // Fallback to default schedule icon
+    return Icons.schedule;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -107,6 +122,7 @@ class _ScheduleListState extends State<ScheduleList> {
     }
 
     return ListView.builder(
+      controller: widget.scrollController,
       padding: EdgeInsets.all(responsivePadding),
       itemCount: sortedSchedules.length,
       itemBuilder: (context, index) {
@@ -115,53 +131,69 @@ class _ScheduleListState extends State<ScheduleList> {
         final serviceName = dutyType?.label ?? schedule.service;
         final serviceTime = dutyType?.isAllDay == true ? l10n.allDay : '';
 
-        return Card(
+        final isSelected = widget.selectedDutyGroup == schedule.dutyGroupName;
+        final mainColor = Theme.of(context).colorScheme.primary;
+
+        return Container(
           margin: const EdgeInsets.only(bottom: 8),
-          child: InkWell(
+          decoration: BoxDecoration(
+            color: isSelected ? mainColor.withAlpha(20) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? mainColor : Colors.grey.shade300,
+              width: isSelected ? 2.5 : 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: mainColor.withAlpha(46),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : [],
+          ),
+          child: ListTile(
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: isLandscape ? 12.0 : 20),
+            minVerticalPadding: isLandscape ? 12.0 : 20,
+            leading: Icon(
+              _getDutyTypeIcon(schedule.service, provider),
+              color: mainColor,
+              size: isLandscape ? 32.0 : 40,
+            ),
+            title: Text(
+              serviceName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.black,
+              ),
+            ),
+            subtitle: Text(
+              schedule.dutyGroupName,
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            ),
+            trailing: serviceTime.isNotEmpty
+                ? Text(
+                    serviceTime,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: mainColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            selectedTileColor: Colors.transparent,
             onTap: () {
               if (widget.onDutyGroupSelected != null) {
-                final isSelected =
-                    widget.selectedDutyGroup == schedule.dutyGroupName;
                 widget.onDutyGroupSelected!(
                     isSelected ? null : schedule.dutyGroupName);
               }
             },
-            child: Padding(
-              padding: EdgeInsets.all(isLandscape ? 12.0 : 16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          serviceName,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontSize: isLandscape ? 16.0 : null,
-                                  ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          schedule.dutyGroupName,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: isLandscape ? 14.0 : null,
-                                  ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    serviceTime,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: isLandscape ? 14.0 : null,
-                        ),
-                  ),
-                ],
-              ),
-            ),
           ),
         );
       },

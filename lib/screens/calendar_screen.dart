@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/services/language_service.dart';
-import 'package:dienstplan/widgets/layout/schedule_list.dart';
-import 'package:dienstplan/screens/settings_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:dienstplan/l10n/app_localizations.dart';
-import 'package:dienstplan/widgets/calendar/calendar_header.dart';
-import 'package:dienstplan/widgets/calendar/calendar_builders.dart';
-import 'package:dienstplan/widgets/calendar/calendar_config.dart';
-import 'package:dienstplan/widgets/calendar/services_section.dart';
+
+import 'package:dienstplan/widgets/calendar/calendar_app_bar.dart';
+import 'package:dienstplan/widgets/calendar/draggable_sheet.dart';
+import 'package:dienstplan/widgets/calendar/landscape_layout.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -58,152 +54,18 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final screenSize = MediaQuery.of(context).size;
     final isLandscape = screenSize.width > screenSize.height;
 
     return Consumer2<ScheduleProvider, LanguageService>(
       builder: (context, scheduleProvider, languageService, child) {
         return Scaffold(
-          appBar: _buildAppBar(l10n),
+          appBar: const CalendarAppBar(),
           body: isLandscape
-              ? _buildLandscapeLayout(scheduleProvider)
-              : _buildPortraitLayout(scheduleProvider),
+              ? LandscapeLayout(scheduleProvider: scheduleProvider)
+              : DraggableSheet(scheduleProvider: scheduleProvider),
         );
       },
     );
-  }
-
-  PreferredSizeWidget _buildAppBar(AppLocalizations l10n) {
-    return AppBar(
-      title: Text(
-        l10n.dutySchedule,
-        style: const TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      automaticallyImplyLeading: false,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.settings, color: Colors.white),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SettingsScreen(),
-              ),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPortraitLayout(ScheduleProvider scheduleProvider) {
-    return Column(
-      children: [
-        _buildCalendarHeader(scheduleProvider),
-        _buildTableCalendar(scheduleProvider),
-        ServicesSection(selectedDay: scheduleProvider.selectedDay),
-        Expanded(
-          child: ScheduleList(
-            schedules: scheduleProvider.schedules,
-            dutyGroups: scheduleProvider.dutyGroups,
-            selectedDutyGroup: scheduleProvider.selectedDutyGroup,
-            onDutyGroupSelected: (group) {
-              scheduleProvider.setSelectedDutyGroup(group);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLandscapeLayout(ScheduleProvider scheduleProvider) {
-    return Row(
-      children: [
-        // Left side: Calendar
-        Expanded(
-          flex: 3,
-          child: Column(
-            children: [
-              _buildCalendarHeader(scheduleProvider),
-              Expanded(
-                child: _buildTableCalendar(scheduleProvider),
-              ),
-            ],
-          ),
-        ),
-        // Right side: Services
-        Expanded(
-          flex: 2,
-          child: Column(
-            children: [
-              ServicesSection(selectedDay: scheduleProvider.selectedDay),
-              Expanded(
-                child: ScheduleList(
-                  schedules: scheduleProvider.schedules,
-                  dutyGroups: scheduleProvider.dutyGroups,
-                  selectedDutyGroup: scheduleProvider.selectedDutyGroup,
-                  onDutyGroupSelected: (group) {
-                    scheduleProvider.setSelectedDutyGroup(group);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCalendarHeader(ScheduleProvider scheduleProvider) {
-    return CalendarHeader(
-      focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
-      calendarFormat: scheduleProvider.calendarFormat,
-      onFormatChanged: (format) {
-        scheduleProvider.setCalendarFormat(format);
-      },
-      onDaySelected: (focusedDay) {
-        scheduleProvider.setFocusedDay(focusedDay);
-      },
-      onTodayPressed: () {
-        final now = DateTime.now();
-        scheduleProvider.setSelectedDay(now);
-        scheduleProvider.setFocusedDay(now);
-      },
-    );
-  }
-
-  Widget _buildTableCalendar(ScheduleProvider scheduleProvider) {
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-
-    final calendar = TableCalendar(
-      firstDay: CalendarConfig.firstDay,
-      lastDay: CalendarConfig.lastDay,
-      focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
-      calendarFormat: scheduleProvider.calendarFormat,
-      startingDayOfWeek: CalendarConfig.startingDayOfWeek,
-      selectedDayPredicate: (day) {
-        return isSameDay(scheduleProvider.selectedDay, day);
-      },
-      onDaySelected: (selectedDay, focusedDay) {
-        scheduleProvider.setSelectedDay(selectedDay);
-        scheduleProvider.setFocusedDay(focusedDay);
-      },
-      onFormatChanged: (format) {
-        scheduleProvider.setCalendarFormat(format);
-      },
-      onPageChanged: (focusedDay) {
-        scheduleProvider.setFocusedDay(focusedDay);
-      },
-      calendarBuilders:
-          CalendarBuildersHelper.createCalendarBuilders(scheduleProvider),
-      calendarStyle: CalendarConfig.createCalendarStyle(context),
-      headerStyle: CalendarConfig.createHeaderStyle(),
-      locale: _locale,
-    );
-
-    return isLandscape ? SizedBox(height: 200.0, child: calendar) : calendar;
   }
 }

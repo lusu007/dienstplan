@@ -19,37 +19,46 @@
     },
     "duty_types": {
       "F": {
-        "label": "Frühdienst"
+        "label": "Frühdienst",
+        "icon": "wb_sunny"
       },
       "S": {
-        "label": "Spätdienst"
+        "label": "Spätdienst",
+        "icon": "schedule"
       },
       "N": {
-        "label": "Nachtdienst"
+        "label": "Nachtdienst",
+        "icon": "bedtime"
       },
       "A-Tag": {
         "label": "Ausbildungstag",
-        "all_day": true
+        "all_day": true,
+        "icon": "school"
       },
       "Regio": {
         "label": "Regiobereitschaft",
-        "all_day": true
+        "all_day": true,
+        "icon": "location_on"
       },
       "SL 1": {
         "label": "Sonderlage Stufe 1",
-        "all_day": true
+        "all_day": true,
+        "icon": "warning"
       },
       "SL 2": {
         "label": "Sonderlage Stufe 2",
-        "all_day": true
+        "all_day": true,
+        "icon": "error"
       },
       "SL 3": {
         "label": "Sonderlage Stufe 3",
-        "all_day": true
+        "all_day": true,
+        "icon": "emergency"
       },
       "-": {
         "label": "Frei",
-        "all_day": true
+        "all_day": true,
+        "icon": "weekend"
       }
     },
     "duty_type_order": [

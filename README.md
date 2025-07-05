@@ -117,25 +117,30 @@ Duty schedules are defined using JSON configuration files in `assets/schedules/`
     "days": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
     "icon": "shield"
   },
-  "duty_types": {
-    "F": {
-      "label": "Frühdienst"
+      "duty_types": {
+      "F": {
+        "label": "Frühdienst",
+        "icon": "wb_sunny"
+      },
+      "S": {
+        "label": "Spätdienst",
+        "icon": "schedule"
+      },
+      "N": {
+        "label": "Nachtdienst",
+        "icon": "bedtime"
+      },
+      "ZD": {
+        "label": "Zusatzdienst",
+        "all_day": true,
+        "icon": "add_circle"
+      },
+      "-": {
+        "label": "Frei",
+        "all_day": true,
+        "icon": "weekend"
+      }
     },
-    "S": {
-      "label": "Spätdienst"
-    },
-    "N": {
-      "label": "Nachtdienst"
-    },
-    "ZD": {
-      "label": "Zusatzdienst",
-      "all_day": true
-    },
-    "-": {
-      "label": "Frei",
-      "all_day": true
-    }
-  },
   "duty_type_order": ["F", "S", "N", "ZD", "-"],
   "rhythms": {
     "example_rhythm": {
@@ -174,6 +179,7 @@ Duty schedules are defined using JSON configuration files in `assets/schedules/`
 - **`id`**: Short identifier (e.g., "F", "S", "N")
 - **`label`**: Human-readable name
 - **`all_day`**: Optional flag for all-day duties
+- **`icon`**: Optional icon identifier for visual representation
 
 #### **Duty Type Order (`duty_type_order`)**
 - Defines the display order of duty types in the UI
