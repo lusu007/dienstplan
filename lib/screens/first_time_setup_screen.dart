@@ -98,6 +98,9 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
       // Then save the preferred duty group from setup (can be null for "no preferred")
       scheduleProvider.preferredDutyGroup = _selectedDutyGroup;
 
+      // Mark setup as completed
+      await _configService.markSetupCompleted();
+
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const CalendarScreen()),

@@ -55,11 +55,11 @@ class _AppInitializerState extends State<AppInitializer> {
       AppLogger.i('Checking initial setup');
       final scheduleConfigService = context.read<ScheduleConfigService>();
       await scheduleConfigService.initialize();
-      final hasDefaultConfig = scheduleConfigService.hasDefaultConfig;
-      AppLogger.i('Has default config: $hasDefaultConfig');
+      final isSetupCompleted = scheduleConfigService.isSetupCompleted;
+      AppLogger.i('Setup completed: $isSetupCompleted');
       setState(() {
         _isLoading = false;
-        _needsSetup = !hasDefaultConfig;
+        _needsSetup = !isSetupCompleted;
       });
       AppLogger.i('Setup needed: $_needsSetup');
     } catch (e, stackTrace) {
