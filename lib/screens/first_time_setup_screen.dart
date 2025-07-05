@@ -4,6 +4,7 @@ import 'package:dienstplan/models/duty_schedule_config.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/services/schedule_config_service.dart';
 import 'package:dienstplan/utils/logger.dart';
+import 'package:dienstplan/utils/icon_mapper.dart';
 import 'calendar_screen.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/services/language_service.dart';
@@ -275,6 +276,12 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   }
 
   IconData _getConfigIcon(DutyScheduleConfig config) {
+    // Use the icon from the JSON configuration if available
+    if (config.meta.icon != null) {
+      return IconMapper.getIcon(config.meta.icon, defaultIcon: Icons.schedule);
+    }
+
+    // Fallback to the old logic for backward compatibility
     if (config.meta.name.toLowerCase().contains('bepo')) {
       return Icons.shield;
     } else {

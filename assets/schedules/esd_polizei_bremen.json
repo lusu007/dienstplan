@@ -4,6 +4,7 @@
     "name": "Einsatz- und Streifendienst",
     "created_by": "Lukas",
     "description": "5-wöchiger Rotationsplan für den Einsatz- und Streifendienst",
+    "icon": "directions_car",
     "start_week_day": "Monday",
     "start_date": "2025-03-17",
     "days": [

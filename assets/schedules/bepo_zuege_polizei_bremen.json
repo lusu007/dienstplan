@@ -4,6 +4,7 @@
       "name": "Bereitschaftspolizei",
       "created_by": "Lukas",
       "description": "Rotationsplan für die Züge der Bereitschaftspolizei inkl. Sonderlagen",
+      "icon": "shield",
       "start_week_day": "Monday",
       "start_date": "2025-06-30",
       "days": [
