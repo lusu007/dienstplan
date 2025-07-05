@@ -51,11 +51,13 @@ class ResetDialog {
                 onPressed: () async {
                   Navigator.pop(context);
 
+                  // Get the config service before async operations
+                  final configService = context.read<ScheduleConfigService>();
+
                   // Reset the schedule provider
                   await provider.reset();
 
                   // Reset the setup completion flag
-                  final configService = context.read<ScheduleConfigService>();
                   await configService.resetSetup();
 
                   if (context.mounted) {
