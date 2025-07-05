@@ -18,15 +18,13 @@ class DatabaseService {
     AppLogger.i('Opening database connection at: $dbPath');
     _database = await openDatabase(
       dbPath,
-      version: 3,
+      version: 1,
       onCreate: (db, version) async {
         AppLogger.i('Creating database tables');
         await db.execute('''
           CREATE TABLE duty_types (
             id TEXT,
             label TEXT,
-            start_time TEXT,
-            end_time TEXT,
             all_day INTEGER,
             config_name TEXT,
             PRIMARY KEY (id, config_name)
@@ -84,28 +82,7 @@ class DatabaseService {
       onUpgrade: (db, oldVersion, newVersion) async {
         AppLogger.i(
             'Upgrading database from version $oldVersion to $newVersion');
-
-        if (oldVersion < 2) {
-          // Add selected_duty_group column to settings table
-          try {
-            await db.execute(
-                'ALTER TABLE settings ADD COLUMN selected_duty_group TEXT');
-            AppLogger.i('Added selected_duty_group column to settings table');
-          } catch (e) {
-            AppLogger.w('Column selected_duty_group might already exist: $e');
-          }
-        }
-
-        if (oldVersion < 3) {
-          // Add preferred_duty_group column to settings table
-          try {
-            await db.execute(
-                'ALTER TABLE settings ADD COLUMN preferred_duty_group TEXT');
-            AppLogger.i('Added preferred_duty_group column to settings table');
-          } catch (e) {
-            AppLogger.w('Column preferred_duty_group might already exist: $e');
-          }
-        }
+        // No migrations needed during development
       },
     );
     return _database!;
@@ -136,8 +113,6 @@ class DatabaseService {
             'id': entry.key,
             'label': entry.value.label,
             'all_day': entry.value.isAllDay ? 1 : 0,
-            'start_time': entry.value.startTime,
-            'end_time': entry.value.endTime,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );

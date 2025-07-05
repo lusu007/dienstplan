@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "meta": {
     "name": "Einsatz- und Streifendienst",
     "created_by": "Lukas",
@@ -18,19 +18,13 @@
   },
   "duty_types": {
     "F": {
-      "label": "Frühdienst",
-      "start_time": "05:30",
-      "end_time": "13:30"
+      "label": "Frühdienst"
     },
     "S": {
-      "label": "Spätdienst",
-      "start_time": "13:30",
-      "end_time": "21:30"
+      "label": "Spätdienst"
     },
     "N": {
-      "label": "Nachtdienst",
-      "start_time": "21:30",
-      "end_time": "05:30"
+      "label": "Nachtdienst"
     },
     "ZD": {
       "label": "Zusatzdienst",
@@ -41,6 +35,13 @@
       "all_day": true
     }
   },
+  "duty_type_order": [
+    "F",
+    "S",
+    "N",
+    "ZD",
+    "-"
+  ],
   "rhythms": {
     "5wochen_standard": {
       "length_weeks": 5,
