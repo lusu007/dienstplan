@@ -26,37 +26,45 @@ class _ScheduleListState extends State<ScheduleList> {
   List<Schedule> _sortSchedulesByTime(List<Schedule> schedules) {
     return List.from(schedules)
       ..sort((a, b) {
-        // First sort by all-day status (all-day services go last)
+        // Sort by all-day status (all-day services go last)
         if (a.isAllDay && !b.isAllDay) return 1;
         if (!a.isAllDay && b.isAllDay) return -1;
-        if (a.isAllDay && b.isAllDay) return 0;
 
-        // For non-all-day services, sort by start time
+        // For services with same all-day status, sort by duty type order
         final provider = Provider.of<ScheduleProvider>(context, listen: false);
-        final dutyTypeA = provider.activeConfig?.dutyTypes[a.service];
-        final dutyTypeB = provider.activeConfig?.dutyTypes[b.service];
+        final activeConfig = provider.activeConfig;
 
-        if (dutyTypeA == null || dutyTypeB == null) return 0;
+        if (activeConfig == null) {
+          // Fallback to alphabetical sorting if no config available
+          final dutyTypeA = activeConfig?.dutyTypes[a.service];
+          final dutyTypeB = activeConfig?.dutyTypes[b.service];
 
-        final timeA = dutyTypeA.startTime;
-        final timeB = dutyTypeB.startTime;
+          final labelA = dutyTypeA?.label ?? a.service;
+          final labelB = dutyTypeB?.label ?? b.service;
 
-        if (timeA == null || timeB == null || timeA.isEmpty || timeB.isEmpty) {
-          return 0;
+          return labelA.compareTo(labelB);
         }
 
-        // Parse times to compare them properly
-        final timeAParts = timeA.split(':');
-        final timeBParts = timeB.split(':');
+        final orderA = activeConfig.dutyTypeOrder.indexOf(a.service);
+        final orderB = activeConfig.dutyTypeOrder.indexOf(b.service);
 
-        if (timeAParts.length != 2 || timeBParts.length != 2) return 0;
+        // If both services are in the order list, sort by their position
+        if (orderA != -1 && orderB != -1) {
+          return orderA.compareTo(orderB);
+        }
 
-        final timeAValue =
-            int.parse(timeAParts[0]) * 60 + int.parse(timeAParts[1]);
-        final timeBValue =
-            int.parse(timeBParts[0]) * 60 + int.parse(timeBParts[1]);
+        // If only one service is in the order list, prioritize it
+        if (orderA != -1) return -1;
+        if (orderB != -1) return 1;
 
-        return timeAValue.compareTo(timeBValue);
+        // If neither service is in the order list, sort alphabetically
+        final dutyTypeA = activeConfig.dutyTypes[a.service];
+        final dutyTypeB = activeConfig.dutyTypes[b.service];
+
+        final labelA = dutyTypeA?.label ?? a.service;
+        final labelB = dutyTypeB?.label ?? b.service;
+
+        return labelA.compareTo(labelB);
       });
   }
 
@@ -102,9 +110,7 @@ class _ScheduleListState extends State<ScheduleList> {
         final schedule = sortedSchedules[index];
         final dutyType = provider.activeConfig?.dutyTypes[schedule.service];
         final serviceName = dutyType?.label ?? schedule.service;
-        final serviceTime = dutyType?.isAllDay == true
-            ? l10n.allDay
-            : '${dutyType?.startTime ?? ''} - ${dutyType?.endTime ?? ''}';
+        final serviceTime = dutyType?.isAllDay == true ? l10n.allDay : '';
 
         return Card(
           margin: const EdgeInsets.only(bottom: 8),

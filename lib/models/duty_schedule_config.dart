@@ -4,6 +4,7 @@ class DutyScheduleConfig {
   final String version;
   final Meta meta;
   final Map<String, DutyType> dutyTypes;
+  final List<String> dutyTypeOrder;
   final Map<String, Rhythm> rhythms;
   final List<DutyGroup> dutyGroups;
 
@@ -11,6 +12,7 @@ class DutyScheduleConfig {
     required this.version,
     required this.meta,
     required this.dutyTypes,
+    required this.dutyTypeOrder,
     required this.rhythms,
     required this.dutyGroups,
   });
@@ -26,6 +28,7 @@ class DutyScheduleConfig {
         (key, value) =>
             MapEntry(key, DutyType.fromMap(value as Map<String, dynamic>)),
       ),
+      dutyTypeOrder: List<String>.from(map['duty_type_order'] as List),
       rhythms: (map['rhythms'] as Map<String, dynamic>).map(
         (key, value) =>
             MapEntry(key, Rhythm.fromMap(value as Map<String, dynamic>)),
@@ -43,6 +46,7 @@ class DutyScheduleConfig {
       'version': version,
       'meta': meta.toMap(),
       'duty_types': dutyTypes.map((key, value) => MapEntry(key, value.toMap())),
+      'duty_type_order': dutyTypeOrder,
       'rhythms': rhythms.map((key, value) => MapEntry(key, value.toMap())),
       'dienstgruppen': dutyGroups.map((x) => x.toMap()).toList(),
     };
