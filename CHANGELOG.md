@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.0](https://github.com/lusu007/dienstplan/compare/v0.2.0...v0.3.0) (2025-07-05)
+
+
+### Features
+
+* Add dynamic icon mapping for duty schedules ([#37](https://github.com/lusu007/dienstplan/issues/37)) ([642aed4](https://github.com/lusu007/dienstplan/commit/642aed4677d403338079585eecb75e562f21068f))
+* Add landscape design ([#33](https://github.com/lusu007/dienstplan/issues/33)) ([954c721](https://github.com/lusu007/dienstplan/commit/954c72183e639f20c400250196683f1e75875fdf))
+* Rework README and CONTRIBUTING.md ([#36](https://github.com/lusu007/dienstplan/issues/36)) ([82e743d](https://github.com/lusu007/dienstplan/commit/82e743d9c7e7795e11506e6e9073f3055a971f3f))
+
+
+### Bug Fixes
+
+* Fix size of selection cards ([#38](https://github.com/lusu007/dienstplan/issues/38)) ([0e19ccd](https://github.com/lusu007/dienstplan/commit/0e19ccd476d4cd7a43bfa4bd345cab365d093fd3))
+* Rename APK and AAB files to include version and build number ([#35](https://github.com/lusu007/dienstplan/issues/35)) ([9f0f236](https://github.com/lusu007/dienstplan/commit/9f0f236ae4fd2eed34f6f54ecb64c18b793593dc))
+* Setup process can now be interrupted with app restarts ([#39](https://github.com/lusu007/dienstplan/issues/39)) ([2ce74c6](https://github.com/lusu007/dienstplan/commit/2ce74c64ec317d8411c1cc638cee02ee599cdead))
+
 ## [0.2.0](https://github.com/lusu007/dienstplan/compare/v0.1.0...v0.2.0) (2025-07-05)
 
 
