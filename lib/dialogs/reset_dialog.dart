@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
+import 'package:dienstplan/services/schedule_config_service.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/screens/first_time_setup_screen.dart';
 import 'package:dienstplan/widgets/dialogs/app_dialog.dart';
@@ -48,7 +50,14 @@ class ResetDialog {
                 ),
                 onPressed: () async {
                   Navigator.pop(context);
+
+                  // Reset the schedule provider
                   await provider.reset();
+
+                  // Reset the setup completion flag
+                  final configService = context.read<ScheduleConfigService>();
+                  await configService.resetSetup();
+
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

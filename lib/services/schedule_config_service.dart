@@ -15,12 +15,14 @@ class ScheduleConfigService extends ChangeNotifier {
   DutyScheduleConfig? _defaultConfig;
   late Directory _configsPath;
   static const String _configDirName = 'configs';
+  static const String _setupCompletedKey = 'setup_completed';
 
   ScheduleConfigService(this._prefs);
 
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get defaultConfig => _defaultConfig;
   bool get hasDefaultConfig => _defaultConfig != null;
+  bool get isSetupCompleted => _prefs.getBool(_setupCompletedKey) ?? false;
 
   Future<void> initialize() async {
     try {
@@ -209,6 +211,30 @@ class ScheduleConfigService extends ChangeNotifier {
       AppLogger.i('Default config saved to SharedPreferences');
     } catch (e) {
       AppLogger.e('Error setting default config', e);
+      rethrow;
+    }
+  }
+
+  Future<void> markSetupCompleted() async {
+    try {
+      AppLogger.i('Marking setup as completed');
+      await _prefs.setBool(_setupCompletedKey, true);
+      AppLogger.i('Setup completion flag saved to SharedPreferences');
+    } catch (e) {
+      AppLogger.e('Error marking setup as completed', e);
+      rethrow;
+    }
+  }
+
+  Future<void> resetSetup() async {
+    try {
+      AppLogger.i('Resetting setup state');
+      await _prefs.remove('default_config');
+      await _prefs.remove(_setupCompletedKey);
+      _defaultConfig = null;
+      AppLogger.i('Setup state reset');
+    } catch (e) {
+      AppLogger.e('Error resetting setup state', e);
       rethrow;
     }
   }
