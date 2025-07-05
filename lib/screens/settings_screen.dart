@@ -155,7 +155,7 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       title: l10n.disclaimer,
       content: SingleChildScrollView(
-        child: Text(l10n.aboutDisclaimer),
+        child: Text(l10n.disclaimerLong),
       ),
       showCloseButton: true,
     );
