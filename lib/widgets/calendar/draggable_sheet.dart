@@ -25,6 +25,10 @@ class _DraggableSheetState extends State<DraggableSheet>
   double _currentHeight = 0.3;
   double _minHeight = 0.3;
   final double _maxHeight = 0.8;
+  CalendarFormat? _lastCalendarFormat;
+  double? _lastCalendarHeight;
+  final GlobalKey _calendarKey = GlobalKey();
+  double? _monthViewMinHeight;
 
   @override
   void initState() {
@@ -62,61 +66,73 @@ class _DraggableSheetState extends State<DraggableSheet>
     _animationController.forward(from: 0);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final calendarFormat = widget.scheduleProvider.calendarFormat;
+  void _updateMonthViewMinHeight(Size screenSize) {
+    // Temporär Kalender auf Monatsansicht rendern und Höhe messen
+    final RenderBox? calendarRenderBox =
+        _calendarKey.currentContext?.findRenderObject() as RenderBox?;
+    final double? currentCalendarHeight = calendarRenderBox?.size.height;
+    if (currentCalendarHeight == null) return;
+    const double spacingPercent = 0.08;
+    final double spacing = screenSize.height * spacingPercent;
+    final double availableHeight =
+        screenSize.height - currentCalendarHeight - spacing;
+    final double minHeight = availableHeight / screenSize.height;
+    _monthViewMinHeight = minHeight;
+  }
 
-    // Calculate calendar height based on format
-    double calendarHeight;
-    switch (calendarFormat) {
-      case CalendarFormat.month:
-        calendarHeight = screenSize.height * 0.5; // Month view is more compact
-        break;
-      case CalendarFormat.week:
-        calendarHeight = screenSize.height * 0.3; // Week view is very compact
-        break;
-      case CalendarFormat.twoWeeks:
-        calendarHeight = screenSize.height * 0.4; // 2-week view is medium
-        break;
+  void _adjustHeightForCalendarFormat(
+      CalendarFormat calendarFormat, Size screenSize) {
+    final RenderBox? calendarRenderBox =
+        _calendarKey.currentContext?.findRenderObject() as RenderBox?;
+    final double? currentCalendarHeight = calendarRenderBox?.size.height;
+    if (currentCalendarHeight == null) {
+      return;
     }
-
-    final availableHeight = screenSize.height - calendarHeight;
-    final minSheetHeight = availableHeight / screenSize.height;
-
-    // Update current height when calendar format has changed
-    _minHeight = minSheetHeight;
-
-    // If current height is no longer valid, adjust it
-    if (_currentHeight < minSheetHeight || _currentHeight > 0.8) {
-      // Set to minimum height or an appropriate height
-      final targetHeight = _currentHeight < minSheetHeight
-          ? minSheetHeight
-          : minSheetHeight + 0.1;
-      _currentHeight = targetHeight;
+    // Monatshöhe ggf. aktualisieren
+    if (calendarFormat == CalendarFormat.month) {
+      _updateMonthViewMinHeight(screenSize);
+    }
+    // Fallback falls noch nicht gesetzt
+    final double minHeight = _monthViewMinHeight ?? 0.1;
+    _minHeight = minHeight;
+    const double spacingPercent = 0.08;
+    final double spacing = screenSize.height * spacingPercent;
+    final double availableHeight =
+        screenSize.height - currentCalendarHeight - spacing;
+    final double newAutoHeight = availableHeight / screenSize.height;
+    bool needsAdjustment = false;
+    double targetHeight = _currentHeight;
+    if (_lastCalendarFormat != calendarFormat ||
+        _lastCalendarHeight == null ||
+        (currentCalendarHeight - _lastCalendarHeight!).abs() > 1.0) {
+      // Automatische Anpassung bei Formatwechsel oder signifikanter Höhenänderung
+      targetHeight = newAutoHeight < minHeight ? minHeight : newAutoHeight;
+      needsAdjustment = true;
+    }
+    _lastCalendarFormat = calendarFormat;
+    _lastCalendarHeight = currentCalendarHeight;
+    if (needsAdjustment) {
+      setState(() {
+        _currentHeight = targetHeight;
+      });
       _heightAnimation = Tween<double>(
         begin: _heightAnimation.value,
-        end: _currentHeight,
+        end: targetHeight,
       ).animate(CurvedAnimation(
         parent: _animationController,
         curve: Curves.easeInOut,
       ));
       _animationController.forward(from: 0);
-    } else {
-      // Update animation even if height is valid
-      // to ensure it matches the current height
-      if ((_heightAnimation.value - _currentHeight).abs() > 0.01) {
-        _heightAnimation = Tween<double>(
-          begin: _heightAnimation.value,
-          end: _currentHeight,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.easeInOut,
-        ));
-        _animationController.forward(from: 0);
-      }
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final calendarFormat = widget.scheduleProvider.calendarFormat;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _adjustHeightForCalendarFormat(calendarFormat, screenSize);
+    });
     return Stack(
       children: [
         Column(
@@ -134,12 +150,10 @@ class _DraggableSheetState extends State<DraggableSheet>
               final currentHeight = screenSize.height * _currentHeight;
               final newHeight = currentHeight - details.delta.dy;
               final newHeightPercent = newHeight / screenSize.height;
-
               if (newHeightPercent >= _minHeight &&
                   newHeightPercent <= _maxHeight) {
                 setState(() {
                   _currentHeight = newHeightPercent;
-                  // Update animation directly for immediate response
                   _heightAnimation = Tween<double>(
                     begin: _heightAnimation.value,
                     end: _currentHeight,
@@ -152,8 +166,6 @@ class _DraggableSheetState extends State<DraggableSheet>
               }
             },
             onPanEnd: (details) {
-              // No snap - keep current position
-              // Optional: Animated transition to current position
               _heightAnimation = Tween<double>(
                 begin: _heightAnimation.value,
                 end: _currentHeight,
@@ -185,7 +197,6 @@ class _DraggableSheetState extends State<DraggableSheet>
                   ),
                   child: Column(
                     children: [
-                      // Header with accent color
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -197,7 +208,6 @@ class _DraggableSheetState extends State<DraggableSheet>
                         ),
                         child: Column(
                           children: [
-                            // Drag handle
                             Container(
                               margin: const EdgeInsets.only(top: 8, bottom: 8),
                               width: double.infinity,
@@ -214,14 +224,12 @@ class _DraggableSheetState extends State<DraggableSheet>
                                 ),
                               ),
                             ),
-                            // Services section as header
                             ServicesSection(
                                 selectedDay:
                                     widget.scheduleProvider.selectedDay),
                           ],
                         ),
                       ),
-                      // Schedule list
                       Expanded(
                         child: ScheduleList(
                           schedules: widget.scheduleProvider.schedules,
@@ -246,6 +254,7 @@ class _DraggableSheetState extends State<DraggableSheet>
 
   Widget _buildTableCalendar(ScheduleProvider scheduleProvider) {
     final calendar = TableCalendar(
+      key: _calendarKey,
       firstDay: CalendarConfig.firstDay,
       lastDay: CalendarConfig.lastDay,
       focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
@@ -270,7 +279,6 @@ class _DraggableSheetState extends State<DraggableSheet>
       headerStyle: CalendarConfig.createHeaderStyle(),
       locale: 'de_DE',
     );
-
     return calendar;
   }
 }
