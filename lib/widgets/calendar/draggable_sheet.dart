@@ -131,71 +131,75 @@ class _DraggableSheetState extends State<DraggableSheet>
           bottom: 0,
           left: 0,
           right: 0,
-          child: GestureDetector(
-            onPanUpdate: (details) {
-              final currentHeight = screenSize.height * _currentHeight;
-              final newHeight = currentHeight - details.delta.dy;
-              final newHeightPercent = newHeight / screenSize.height;
-              if (newHeightPercent >= _minHeight &&
-                  newHeightPercent <= _maxHeight) {
-                setState(() {
-                  _currentHeight = newHeightPercent;
-                  _heightAnimation = Tween<double>(
-                    begin: _heightAnimation.value,
-                    end: _currentHeight,
-                  ).animate(CurvedAnimation(
-                    parent: _animationController,
-                    curve: Curves.linear,
-                  ));
-                  _animationController.value = 1.0;
-                });
-              }
-            },
-            onPanEnd: (details) {
-              _heightAnimation = Tween<double>(
-                begin: _heightAnimation.value,
-                end: _currentHeight,
-              ).animate(CurvedAnimation(
-                parent: _animationController,
-                curve: Curves.easeInOut,
-              ));
-              _animationController.forward(from: 0);
-            },
-            child: AnimatedBuilder(
-              animation: _heightAnimation,
-              builder: (context, child) {
-                final height = screenSize.height * _heightAnimation.value;
-                return Container(
-                  height: height,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    boxShadow: [
-                      const BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, -2),
-                      ),
-                    ],
+          child: AnimatedBuilder(
+            animation: _heightAnimation,
+            builder: (context, child) {
+              final height = screenSize.height * _heightAnimation.value;
+              return Container(
+                height: height,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
+                  boxShadow: [
+                    const BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 8, bottom: 8),
+                      ),
+                      child: Column(
+                        children: [
+                          // Drag handle with GestureDetector
+                          GestureDetector(
+                            onPanUpdate: (details) {
+                              final currentHeight =
+                                  screenSize.height * _currentHeight;
+                              final newHeight =
+                                  currentHeight - details.delta.dy;
+                              final newHeightPercent =
+                                  newHeight / screenSize.height;
+                              if (newHeightPercent >= _minHeight &&
+                                  newHeightPercent <= _maxHeight) {
+                                setState(() {
+                                  _currentHeight = newHeightPercent;
+                                  _heightAnimation = Tween<double>(
+                                    begin: _heightAnimation.value,
+                                    end: _currentHeight,
+                                  ).animate(CurvedAnimation(
+                                    parent: _animationController,
+                                    curve: Curves.linear,
+                                  ));
+                                  _animationController.value = 1.0;
+                                });
+                              }
+                            },
+                            onPanEnd: (details) {
+                              _heightAnimation = Tween<double>(
+                                begin: _heightAnimation.value,
+                                end: _currentHeight,
+                              ).animate(CurvedAnimation(
+                                parent: _animationController,
+                                curve: Curves.easeInOut,
+                              ));
+                              _animationController.forward(from: 0);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 8),
                               width: double.infinity,
                               height: 30,
                               color: Colors.transparent,
@@ -211,28 +215,27 @@ class _DraggableSheetState extends State<DraggableSheet>
                                 ),
                               ),
                             ),
-                            ServicesSection(
-                                selectedDay:
-                                    widget.scheduleProvider.selectedDay),
-                          ],
-                        ),
+                          ),
+                          ServicesSection(
+                              selectedDay: widget.scheduleProvider.selectedDay),
+                        ],
                       ),
-                      Expanded(
-                        child: ScheduleList(
-                          schedules: widget.scheduleProvider.schedules,
-                          dutyGroups: widget.scheduleProvider.dutyGroups,
-                          selectedDutyGroup:
-                              widget.scheduleProvider.selectedDutyGroup,
-                          onDutyGroupSelected: (group) {
-                            widget.scheduleProvider.setSelectedDutyGroup(group);
-                          },
-                        ),
+                    ),
+                    Expanded(
+                      child: ScheduleList(
+                        schedules: widget.scheduleProvider.schedules,
+                        dutyGroups: widget.scheduleProvider.dutyGroups,
+                        selectedDutyGroup:
+                            widget.scheduleProvider.selectedDutyGroup,
+                        onDutyGroupSelected: (group) {
+                          widget.scheduleProvider.setSelectedDutyGroup(group);
+                        },
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ],
