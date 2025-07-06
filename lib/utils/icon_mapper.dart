@@ -96,12 +96,9 @@ class IconMapper {
     'bus': Icons.directions_bus,
     'subway': Icons.subway,
     'taxi': Icons.local_taxi,
-    'bike': Icons.pedal_bike,
-    'motorcycle': Icons.motorcycle,
     'boat': Icons.directions_boat,
     'ship': Icons.directions_boat,
-    'plane': Icons.flight,
-    'exercise': Icons.fitness_center,
+    'plane': Icons.flight
   };
 
   /// Maps an icon name string to a Flutter IconData

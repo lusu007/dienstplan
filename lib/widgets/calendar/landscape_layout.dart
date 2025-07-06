@@ -34,10 +34,10 @@ class LandscapeLayout extends StatelessWidget {
                 topRight: Radius.circular(20),
               ),
               boxShadow: [
-                BoxShadow(
+                const BoxShadow(
                   color: Colors.black12,
                   blurRadius: 10,
-                  offset: const Offset(0, -2),
+                  offset: Offset(0, -2),
                 ),
               ],
             ),
@@ -66,7 +66,8 @@ class LandscapeLayout extends StatelessWidget {
                             width: 40,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.7),
+                              color:
+                                  Colors.white.withAlpha((0.7 * 255).toInt()),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),

@@ -39,7 +39,7 @@ class ServicesSection extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontSize: isLandscape ? 14.0 : null,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha((0.9 * 255).toInt()),
                 ),
           ),
         ],
