@@ -59,9 +59,10 @@ class _DraggableSheetState extends State<DraggableSheet>
     final double? currentCalendarHeight = calendarRenderBox?.size.height;
     if (currentCalendarHeight == null) return;
     const double spacingPercent = 0.08;
+    const double cornerRadius = 20.0; // Radius der abgerundeten Ecken
     final double spacing = screenSize.height * spacingPercent;
     final double availableHeight =
-        screenSize.height - currentCalendarHeight - spacing;
+        screenSize.height - currentCalendarHeight - spacing - cornerRadius;
     final double minHeight = availableHeight / screenSize.height;
     _monthViewMinHeight = minHeight;
   }
@@ -82,9 +83,10 @@ class _DraggableSheetState extends State<DraggableSheet>
     final double minHeight = _monthViewMinHeight ?? 0.1;
     _minHeight = minHeight;
     const double spacingPercent = 0.08;
+    const double cornerRadius = 20.0; // Radius der abgerundeten Ecken
     final double spacing = screenSize.height * spacingPercent;
     final double availableHeight =
-        screenSize.height - currentCalendarHeight - spacing;
+        screenSize.height - currentCalendarHeight - spacing - cornerRadius;
     final double newAutoHeight = availableHeight / screenSize.height;
     bool needsAdjustment = false;
     double targetHeight = _currentHeight;
