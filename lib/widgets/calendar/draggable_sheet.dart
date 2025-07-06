@@ -70,13 +70,13 @@ class _DraggableSheetState extends State<DraggableSheet>
   }
 
   void _updateMonthViewMinHeight(Size screenSize) {
-    // Temporär Kalender auf Monatsansicht rendern und Höhe messen
+    // Temporarily render calendar in month view and measure height
     final RenderBox? calendarRenderBox =
         _calendarKey.currentContext?.findRenderObject() as RenderBox?;
     final double? currentCalendarHeight = calendarRenderBox?.size.height;
     if (currentCalendarHeight == null) return;
     const double spacingPercent = 0.08;
-    const double cornerRadius = 20.0; // Radius der abgerundeten Ecken
+    const double cornerRadius = 20.0; // Radius of rounded corners
     final double spacing = screenSize.height * spacingPercent;
     final double availableHeight =
         screenSize.height - currentCalendarHeight - spacing - cornerRadius;
@@ -92,15 +92,15 @@ class _DraggableSheetState extends State<DraggableSheet>
     if (currentCalendarHeight == null) {
       return;
     }
-    // Monatshöhe ggf. aktualisieren
+    // Update month height if needed
     if (calendarFormat == CalendarFormat.month) {
       _updateMonthViewMinHeight(screenSize);
     }
-    // Fallback falls noch nicht gesetzt
+    // Fallback if not set yet
     final double minHeight = _monthViewMinHeight ?? 0.1;
     _minHeight = minHeight;
     const double spacingPercent = 0.08;
-    const double cornerRadius = 20.0; // Radius der abgerundeten Ecken
+    const double cornerRadius = 20.0; // Radius of rounded corners
     final double spacing = screenSize.height * spacingPercent;
     final double availableHeight =
         screenSize.height - currentCalendarHeight - spacing - cornerRadius;
@@ -110,7 +110,7 @@ class _DraggableSheetState extends State<DraggableSheet>
     if (_lastCalendarFormat != calendarFormat ||
         _lastCalendarHeight == null ||
         (currentCalendarHeight - _lastCalendarHeight!).abs() > 1.0) {
-      // Automatische Anpassung bei Formatwechsel oder signifikanter Höhenänderung
+      // Automatic adjustment on format change or significant height change
       targetHeight = newAutoHeight < minHeight ? minHeight : newAutoHeight;
       needsAdjustment = true;
     }
@@ -157,7 +157,7 @@ class _DraggableSheetState extends State<DraggableSheet>
               final height = screenSize.height * _heightAnimation.value;
               final horizontalOffset = screenSize.width *
                   _horizontalOffsetAnimation.value *
-                  0.3; // 30% der Bildschirmbreite für Karten-Swipe-Effekt
+                  0.3; // 30% of screen width for card swipe effect
 
               return Transform.translate(
                 offset: Offset(horizontalOffset, 0),
@@ -172,9 +172,9 @@ class _DraggableSheetState extends State<DraggableSheet>
                       final dragDistance =
                           details.globalPosition.dx - _dragStartX;
                       final maxDragDistance =
-                          screenWidth * 0.3; // 30% der Bildschirmbreite
+                          screenWidth * 0.3; // 30% of screen width
 
-                      // Begrenze die Drag-Distanz
+                      // Limit drag distance
                       final clampedDragDistance =
                           dragDistance.clamp(-maxDragDistance, maxDragDistance);
                       final normalizedOffset =
@@ -196,19 +196,19 @@ class _DraggableSheetState extends State<DraggableSheet>
                   onHorizontalDragEnd: (details) {
                     _isDraggingHorizontally = false;
 
-                    // Horizontale Swipe-Geste für Tagwechsel auf dem gesamten Sheet
+                    // Horizontal swipe gesture for day change on the entire sheet
                     const double swipeThreshold = 50.0;
                     if (details.primaryVelocity != null) {
                       final selectedDay = widget.scheduleProvider.selectedDay;
                       if (selectedDay != null) {
                         if (details.primaryVelocity! > swipeThreshold) {
-                          // Nach rechts gewischt - vorheriger Tag
+                          // Swiped right - previous day
                           final previousDay =
                               selectedDay.subtract(const Duration(days: 1));
                           widget.scheduleProvider.setSelectedDay(previousDay);
                           widget.scheduleProvider.setFocusedDay(previousDay);
                         } else if (details.primaryVelocity! < -swipeThreshold) {
-                          // Nach links gewischt - nächster Tag
+                          // Swiped left - next day
                           final nextDay =
                               selectedDay.add(const Duration(days: 1));
                           widget.scheduleProvider.setSelectedDay(nextDay);
@@ -238,8 +238,12 @@ class _DraggableSheetState extends State<DraggableSheet>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1 +
-                              (_horizontalOffsetAnimation.value.abs() * 0.2)),
+                          color: Colors.black.withValues(
+                            alpha: (0.002 +
+                                    (_horizontalOffsetAnimation.value.abs() *
+                                        0.04)) *
+                                255,
+                          ),
                           blurRadius:
                               10 + (_horizontalOffsetAnimation.value.abs() * 5),
                           offset:
@@ -262,7 +266,7 @@ class _DraggableSheetState extends State<DraggableSheet>
                             children: [
                               GestureDetector(
                                 onPanUpdate: (details) {
-                                  // Nur vertikale Bewegung für Sheet-Höhe
+                                  // Only vertical movement for sheet height
                                   final currentHeight =
                                       screenSize.height * _currentHeight;
                                   final newHeight =
