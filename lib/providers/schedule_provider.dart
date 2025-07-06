@@ -36,6 +36,8 @@ class ScheduleProvider extends ChangeNotifier {
   // Debounce timer for loadSchedules calls
   Timer? _loadSchedulesDebounceTimer;
 
+  final Map<String, String?> _dutyAbbreviationCache = {};
+
   ScheduleProvider(this._configService);
 
   List<DutyScheduleConfig> get configs => _configs;
@@ -288,6 +290,7 @@ class ScheduleProvider extends ChangeNotifier {
       if (_scheduleCache.containsKey(cacheKey)) {
         _schedules = _scheduleCache[cacheKey]!;
         _isLoadingSchedules = false;
+        clearDutyAbbreviationCache();
         notifyListeners();
         return;
       }
@@ -323,6 +326,7 @@ class ScheduleProvider extends ChangeNotifier {
       _cleanupCache();
 
       _isLoadingSchedules = false;
+      clearDutyAbbreviationCache();
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error loading schedules', e, stackTrace);
@@ -355,6 +359,7 @@ class ScheduleProvider extends ChangeNotifier {
   Future<void> saveSchedules() async {
     try {
       await _databaseService.saveSchedules(_schedules);
+      clearDutyAbbreviationCache();
       notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('Error saving schedules', e, stackTrace);
@@ -450,6 +455,7 @@ class ScheduleProvider extends ChangeNotifier {
       _selectedDay = DateTime.now();
       _focusedDay = DateTime.now();
       _calendarFormat = CalendarFormat.month;
+      clearDutyAbbreviationCache();
 
       notifyListeners();
     } catch (e, stackTrace) {
@@ -489,60 +495,56 @@ class ScheduleProvider extends ChangeNotifier {
 
   String? getDutyAbbreviationForDate(
       DateTime date, String? preferredDutyGroup) {
-    try {
-      if (preferredDutyGroup == null || _activeConfig == null) return null;
-
-      // Don't trigger generation if we're already loading schedules or reloading calendar view
-      if (_isLoadingSchedules || _isReloadingCalendarView) {
-        AppLogger.d(
-            'Skipping duty abbreviation lookup - loading in progress. Date: ${date.toIso8601String()}, Loading: $_isLoadingSchedules, Reloading: $_isReloadingCalendarView');
-        return null;
-      }
-
-      // Find schedule for the specific date and preferred duty group
-      final schedule = _schedules.firstWhere(
-        (s) =>
-            s.date.year == date.year &&
-            s.date.month == date.month &&
-            s.date.day == date.day &&
-            s.dutyGroupName == preferredDutyGroup,
-        orElse: () => Schedule(
-          date: date,
-          service: '',
-          dutyGroupId: '',
-          dutyTypeId: '',
-          dutyGroupName: '',
-          configName: '',
-        ),
-      );
-
-      if (schedule.service.isEmpty) {
-        AppLogger.d(
-            'No schedule found for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup. Total schedules: ${_schedules.length}');
-        // If no schedule found, trigger loading for this date range after build
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          _ensureSchedulesForDate(date);
-        });
-        return null;
-      }
-
-      // The duty_type_id is already the abbreviation from the JSON
-      final dutyTypeId = schedule.dutyTypeId;
-
-      // Only return empty string for free days ("-")
-      if (dutyTypeId == '-') {
-        return ''; // Don't show anything for free days
-      }
-
+    if (preferredDutyGroup == null || _activeConfig == null) return null;
+    final cacheKey = '${date.toIso8601String()}|$preferredDutyGroup';
+    if (_dutyAbbreviationCache.containsKey(cacheKey)) {
+      return _dutyAbbreviationCache[cacheKey];
+    }
+    // Don't trigger generation if we're already loading schedules or reloading calendar view
+    if (_isLoadingSchedules || _isReloadingCalendarView) {
       AppLogger.d(
-          'Found duty abbreviation: $dutyTypeId for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup');
-
-      // Return the duty type ID directly as the abbreviation
-      return dutyTypeId;
-    } catch (e, stackTrace) {
-      AppLogger.e('Error getting duty abbreviation for date', e, stackTrace);
+          'Skipping duty abbreviation lookup - loading in progress. Date: ${date.toIso8601String()}, Loading: $_isLoadingSchedules, Reloading: $_isReloadingCalendarView');
       return null;
     }
+    // Find schedule for the specific date and preferred duty group
+    final schedule = _schedules.firstWhere(
+      (s) =>
+          s.date.year == date.year &&
+          s.date.month == date.month &&
+          s.date.day == date.day &&
+          s.dutyGroupName == preferredDutyGroup,
+      orElse: () => Schedule(
+        date: date,
+        service: '',
+        dutyGroupId: '',
+        dutyTypeId: '',
+        dutyGroupName: '',
+        configName: '',
+      ),
+    );
+    String? result;
+    if (schedule.service.isEmpty) {
+      AppLogger.d(
+          'No schedule found for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup. Total schedules: ${_schedules.length}');
+      // If no schedule found, trigger loading for this date range after build
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _ensureSchedulesForDate(date);
+      });
+      result = null;
+    } else {
+      // The duty_type_id is already the abbreviation from the JSON
+      final dutyTypeId = schedule.dutyTypeId;
+      // Only return empty string for free days ("-")
+      if (dutyTypeId == '-') {
+        result = '';
+      } else {
+        result = dutyTypeId;
+      }
+      AppLogger.d(
+          'Found duty abbreviation: $result for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup');
+    }
+    _dutyAbbreviationCache[cacheKey] = result;
+    return result;
   }
 
   void _ensureSchedulesForDate(DateTime date) {
@@ -690,6 +692,7 @@ class ScheduleProvider extends ChangeNotifier {
       // Update the cache
       _scheduleCache[cacheKey] = _schedules;
       _cleanupCache();
+      clearDutyAbbreviationCache();
     } catch (e, stackTrace) {
       AppLogger.e('Error reloading current calendar view', e, stackTrace);
     } finally {
@@ -698,6 +701,10 @@ class ScheduleProvider extends ChangeNotifier {
   }
 
   int mod(int n, int m) => ((n % m) + m) % m;
+
+  void clearDutyAbbreviationCache() {
+    _dutyAbbreviationCache.clear();
+  }
 
   @override
   void dispose() {
