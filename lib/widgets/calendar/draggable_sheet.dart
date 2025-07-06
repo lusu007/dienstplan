@@ -29,7 +29,6 @@ class _DraggableSheetState extends State<DraggableSheet>
   final double _expandedHeight = 0.8;
   double _currentHorizontalOffset = 0.0;
   double _dragStartX = 0.0;
-  double _dragStartY = 0.0;
   bool _isDraggingHorizontally = false;
   bool _isDraggingVertically = false;
   CalendarFormat? _lastCalendarFormat;
@@ -287,7 +286,6 @@ class _DraggableSheetState extends State<DraggableSheet>
                             children: [
                               GestureDetector(
                                 onPanStart: (details) {
-                                  _dragStartY = details.globalPosition.dy;
                                   _isDraggingVertically = true;
                                 },
                                 onPanUpdate: (details) {
