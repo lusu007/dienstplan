@@ -25,11 +25,13 @@ class _DraggableSheetState extends State<DraggableSheet>
   late Animation<double> _heightAnimation;
   late Animation<double> _horizontalOffsetAnimation;
   double _currentHeight = 0.3;
-  double _minHeight = 0.3;
-  final double _maxHeight = 0.8;
+  double _collapsedHeight = 0.3;
+  final double _expandedHeight = 0.8;
   double _currentHorizontalOffset = 0.0;
   double _dragStartX = 0.0;
+  double _dragStartY = 0.0;
   bool _isDraggingHorizontally = false;
+  bool _isDraggingVertically = false;
   CalendarFormat? _lastCalendarFormat;
   double? _lastCalendarHeight;
   final GlobalKey _calendarKey = GlobalKey();
@@ -98,7 +100,7 @@ class _DraggableSheetState extends State<DraggableSheet>
     }
     // Fallback if not set yet
     final double minHeight = _monthViewMinHeight ?? 0.1;
-    _minHeight = minHeight;
+    _collapsedHeight = minHeight;
     const double spacingPercent = 0.08;
     const double cornerRadius = 20.0; // Radius of rounded corners
     final double spacing = screenSize.height * spacingPercent;
@@ -129,6 +131,25 @@ class _DraggableSheetState extends State<DraggableSheet>
       ));
       _heightAnimationController.forward(from: 0);
     }
+  }
+
+  void _snapToNearestPosition() {
+    final double midPoint = (_collapsedHeight + _expandedHeight) / 2;
+    final double targetHeight =
+        _currentHeight < midPoint ? _collapsedHeight : _expandedHeight;
+
+    setState(() {
+      _currentHeight = targetHeight;
+    });
+
+    _heightAnimation = Tween<double>(
+      begin: _heightAnimation.value,
+      end: targetHeight,
+    ).animate(CurvedAnimation(
+      parent: _heightAnimationController,
+      curve: Curves.easeInOut,
+    ));
+    _heightAnimationController.forward(from: 0);
   }
 
   @override
@@ -265,38 +286,38 @@ class _DraggableSheetState extends State<DraggableSheet>
                           child: Column(
                             children: [
                               GestureDetector(
+                                onPanStart: (details) {
+                                  _dragStartY = details.globalPosition.dy;
+                                  _isDraggingVertically = true;
+                                },
                                 onPanUpdate: (details) {
-                                  // Only vertical movement for sheet height
-                                  final currentHeight =
-                                      screenSize.height * _currentHeight;
-                                  final newHeight =
-                                      currentHeight - details.delta.dy;
-                                  final newHeightPercent =
-                                      newHeight / screenSize.height;
-                                  if (newHeightPercent >= _minHeight &&
-                                      newHeightPercent <= _maxHeight) {
-                                    setState(() {
-                                      _currentHeight = newHeightPercent;
-                                      _heightAnimation = Tween<double>(
-                                        begin: _heightAnimation.value,
-                                        end: _currentHeight,
-                                      ).animate(CurvedAnimation(
-                                        parent: _heightAnimationController,
-                                        curve: Curves.linear,
-                                      ));
-                                      _heightAnimationController.value = 1.0;
-                                    });
+                                  if (_isDraggingVertically) {
+                                    // Only vertical movement for sheet height
+                                    final currentHeight =
+                                        screenSize.height * _currentHeight;
+                                    final newHeight =
+                                        currentHeight - details.delta.dy;
+                                    final newHeightPercent =
+                                        newHeight / screenSize.height;
+                                    if (newHeightPercent >= _collapsedHeight &&
+                                        newHeightPercent <= _expandedHeight) {
+                                      setState(() {
+                                        _currentHeight = newHeightPercent;
+                                        _heightAnimation = Tween<double>(
+                                          begin: _heightAnimation.value,
+                                          end: _currentHeight,
+                                        ).animate(CurvedAnimation(
+                                          parent: _heightAnimationController,
+                                          curve: Curves.linear,
+                                        ));
+                                        _heightAnimationController.value = 1.0;
+                                      });
+                                    }
                                   }
                                 },
                                 onPanEnd: (details) {
-                                  _heightAnimation = Tween<double>(
-                                    begin: _heightAnimation.value,
-                                    end: _currentHeight,
-                                  ).animate(CurvedAnimation(
-                                    parent: _heightAnimationController,
-                                    curve: Curves.easeInOut,
-                                  ));
-                                  _heightAnimationController.forward(from: 0);
+                                  _isDraggingVertically = false;
+                                  _snapToNearestPosition();
                                 },
                                 child: Container(
                                   margin: const EdgeInsets.only(top: 8),
