@@ -77,6 +77,9 @@ flutter:
 
   generate: true
 
+# Flavor configuration
+default-flavor: dev
+
 flutter_launcher_icons:
   android: true
   ios: true

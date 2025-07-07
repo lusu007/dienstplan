@@ -1,0 +1,74 @@
+name: 🧪 Build Development APK
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-development:
+    name: 🧪 Build Development Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🚀 Cache pub deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          
+      - name: 📱 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+          channel: 'stable'
+          
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: 📋 Get version from pubspec
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: 📱 Build Development APK
+        run: flutter build apk --flavor dev --debug --build-number=${{ github.run_number }}
+        
+      - name: 📦 Build Development App Bundle
+        run: flutter build appbundle --flavor dev --debug --build-number=${{ github.run_number }}
+
+      - name: 📤 Upload Development APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dienstplan-development-apk
+          path: build/app/outputs/flutter-apk/dienstplan-${{ steps.version.outputs.version }}-dev-${{ github.run_number }}-debug.apk
+          retention-days: 7
+
+      - name: 📤 Upload Development AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: dienstplan-development-aab
+          path: build/app/outputs/bundle/debug/dienstplan-${{ steps.version.outputs.version }}-dev-${{ github.run_number }}.aab
+          retention-days: 7
+
+      - name: 📊 Build Summary
+        run: |
+          echo "## 🧪 Development Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Flavor:** Development" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Artifacts:**" >> $GITHUB_STEP_SUMMARY
+          echo "- APK: dienstplan-${{ steps.version.outputs.version }}-dev-${{ github.run_number }}-debug.apk" >> $GITHUB_STEP_SUMMARY
+          echo "- AAB: dienstplan-${{ steps.version.outputs.version }}-dev-${{ github.run_number }}.aab" >> $GITHUB_STEP_SUMMARY 

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Dienstplan</string>
     <string name="app_description">Die offizielle App zur Einsicht von Dienstplänen für Polizeibeamte. Features: Übersichtlicher Kalender, Offline-Zugriff, Dienstgruppen-Ansicht.</string>
 </resources> 

@@ -68,6 +68,22 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+        }
+    }
+
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "Dienstplan Dev"
+        }
+        prod {
+            dimension "default"
+            resValue "string", "app_name", "Dienstplan"
+        }
     }
 
     // Custom APK naming
@@ -76,11 +92,12 @@ android {
             def versionName = defaultConfig.versionName
             def versionCode = defaultConfig.versionCode
             def buildType = variant.buildType.name
+            def flavorName = variant.flavorName
             
             if (buildType == 'release') {
-                outputFileName = "dienstplan-${versionName}-${versionCode}.apk"
+                outputFileName = "dienstplan-${versionName}-${flavorName}-${versionCode}.apk"
             } else {
-                outputFileName = "dienstplan-${versionName}-${versionCode}-${buildType}.apk"
+                outputFileName = "dienstplan-${versionName}-${flavorName}-${versionCode}-${buildType}.apk"
             }
         }
     }
@@ -105,7 +122,8 @@ android {
                 if (output.name.contains('Bundle')) {
                     def versionName = defaultConfig.versionName
                     def versionCode = defaultConfig.versionCode
-                    outputFileName = "dienstplan-${versionName}-${versionCode}.aab"
+                    def flavorName = variant.flavorName
+                    outputFileName = "dienstplan-${versionName}-${flavorName}-${versionCode}.aab"
                 }
             }
         }
