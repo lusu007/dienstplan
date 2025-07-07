@@ -340,5 +340,9 @@
   "disclaimer": "Disclaimer",
   "@disclaimer": {
     "description": "Title for disclaimer option"
+  },
+  "preferredDutyGroupResetNotice": "Preferred duty group was reset because it is not available in the new schedule.",
+  "@preferredDutyGroupResetNotice": {
+    "description": "Notice when the preferred duty group is reset on schedule change"
   }
 } 

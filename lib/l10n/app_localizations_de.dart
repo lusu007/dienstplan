@@ -270,4 +270,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get disclaimer => 'Haftungsausschluss';
+
+  @override
+  String get preferredDutyGroupResetNotice =>
+      'Die bevorzugte Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.';
 }

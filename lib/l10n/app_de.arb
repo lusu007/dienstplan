@@ -340,5 +340,9 @@
   "privacyPolicy": "Datenschutzerklärung",
   "@privacyPolicy": {
     "description": "Title for privacy policy option"
+  },
+  "preferredDutyGroupResetNotice": "Die bevorzugte Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.",
+  "@preferredDutyGroupResetNotice": {
+    "description": "Hinweis, wenn die bevorzugte Dienstgruppe beim Dienstplanwechsel zurückgesetzt wird"
   }
 } 

@@ -601,6 +601,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disclaimer'**
   String get disclaimer;
+
+  /// Notice when the preferred duty group is reset on schedule change
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred duty group was reset because it is not available in the new schedule.'**
+  String get preferredDutyGroupResetNotice;
 }
 
 class _AppLocalizationsDelegate
