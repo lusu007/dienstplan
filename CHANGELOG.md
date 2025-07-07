@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.0](https://github.com/lusu007/dienstplan/compare/v0.2.0...v0.3.0) (2025-07-07)
+
+
+### Features
+
+* Add dynamic icon mapping for duty schedules ([#37](https://github.com/lusu007/dienstplan/issues/37)) ([642aed4](https://github.com/lusu007/dienstplan/commit/642aed4677d403338079585eecb75e562f21068f))
+* Add horizontal swipe gesture to switch between days ([#43](https://github.com/lusu007/dienstplan/issues/43)) ([b5b4f12](https://github.com/lusu007/dienstplan/commit/b5b4f12671c827a75c135fe6421985bee56ba5d6))
+* Add landscape design ([#33](https://github.com/lusu007/dienstplan/issues/33)) ([954c721](https://github.com/lusu007/dienstplan/commit/954c72183e639f20c400250196683f1e75875fdf))
+* Configure app flavors ([#41](https://github.com/lusu007/dienstplan/issues/41)) ([c34223e](https://github.com/lusu007/dienstplan/commit/c34223ec23b799e5b21189ff3bdb00bb6a89dfe5))
+* redesign calendar screen and update schedule data ([#40](https://github.com/lusu007/dienstplan/issues/40)) ([b535873](https://github.com/lusu007/dienstplan/commit/b5358739b0376d11fe7b76b18ec1c3a69ef583ce))
+* Rework README and CONTRIBUTING.md ([#36](https://github.com/lusu007/dienstplan/issues/36)) ([82e743d](https://github.com/lusu007/dienstplan/commit/82e743d9c7e7795e11506e6e9073f3055a971f3f))
+
+
+### Bug Fixes
+
+* Fix size of selection cards ([#38](https://github.com/lusu007/dienstplan/issues/38)) ([0e19ccd](https://github.com/lusu007/dienstplan/commit/0e19ccd476d4cd7a43bfa4bd345cab365d093fd3))
+* Rename APK and AAB files to include version and build number ([#35](https://github.com/lusu007/dienstplan/issues/35)) ([9f0f236](https://github.com/lusu007/dienstplan/commit/9f0f236ae4fd2eed34f6f54ecb64c18b793593dc))
+* Reset preferred duty group when switching duty schedule ([#42](https://github.com/lusu007/dienstplan/issues/42)) ([03d68f2](https://github.com/lusu007/dienstplan/commit/03d68f2fef3a8989da281f6dbba71d8611b382fd))
+* Setup process can now be interrupted with app restarts ([#39](https://github.com/lusu007/dienstplan/issues/39)) ([2ce74c6](https://github.com/lusu007/dienstplan/commit/2ce74c64ec317d8411c1cc638cee02ee599cdead))
+
 ## [0.2.0](https://github.com/lusu007/dienstplan/compare/v0.1.0...v0.2.0) (2025-07-05)
 
 
