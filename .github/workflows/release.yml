@@ -5,7 +5,8 @@ on:
     types: [published]
 
 jobs:
-  build:
+  build-and-deploy:
+    name: 🏗️ Build and Deploy Production Release
     runs-on: ubuntu-latest
     steps:
       - name: 📂 Checkout code
@@ -50,7 +51,7 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: flutter build apk --release --build-number=${{ github.run_number }}
+        run: flutter build apk --flavor prod --release --build-number=${{ github.run_number }}
         
       - name: 📦 Build App Bundle
         env:
@@ -58,7 +59,7 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: flutter build appbundle --release --build-number=${{ github.run_number }}
+        run: flutter build appbundle --flavor prod --release --build-number=${{ github.run_number }}
         
       - name: 🔏 Sign Release
         uses: r0adkll/sign-android-release@v1
@@ -76,8 +77,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/app/outputs/flutter-apk/dienstplan-${{ steps.version.outputs.version }}-${{ github.run_number }}.apk
-          asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.apk
+          asset_path: build/app/outputs/flutter-apk/dienstplan-${{ steps.version.outputs.version }}-prod-${{ github.run_number }}.apk
+          asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.apk
           asset_content_type: application/vnd.android.package-archive
 
       - name: ⬆️ Upload AAB to Release
@@ -86,8 +87,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-${{ github.run_number }}.aab
-          asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.aab
+          asset_path: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-prod-${{ github.run_number }}.aab
+          asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.aab
           asset_content_type: application/octet-stream
 
       - name: 🏪 Upload to Play Store
@@ -95,7 +96,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
           packageName: io.scelus.dienstplan
-          releaseFiles: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-${{ github.run_number }}.aab
+          releaseFiles: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-prod-${{ github.run_number }}.aab
           track: production
           status: completed
           changesNotSentForReview: true 
