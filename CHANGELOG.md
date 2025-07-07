@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/lusu007/dienstplan/compare/v0.3.0...v0.3.1) (2025-07-07)
+
+
+### Bug Fixes
+
+* Use correct build output directory ([#44](https://github.com/lusu007/dienstplan/issues/44)) ([e5a355a](https://github.com/lusu007/dienstplan/commit/e5a355a81e73d89b165669e93d900a8d66f8699a))
+
 ## [0.3.0](https://github.com/lusu007/dienstplan/compare/v0.2.0...v0.3.0) (2025-07-07)
 
 
