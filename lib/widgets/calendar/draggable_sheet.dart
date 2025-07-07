@@ -21,20 +21,20 @@ class DraggableSheet extends StatefulWidget {
 class _DraggableSheetState extends State<DraggableSheet>
     with TickerProviderStateMixin {
   late AnimationController _heightAnimationController;
-  late AnimationController _horizontalAnimationController;
+  late PageController _pageController;
   late Animation<double> _heightAnimation;
-  late Animation<double> _horizontalOffsetAnimation;
   double _currentHeight = 0.3;
   double _collapsedHeight = 0.3;
   final double _expandedHeight = 0.8;
-  double _currentHorizontalOffset = 0.0;
-  double _dragStartX = 0.0;
-  bool _isDraggingHorizontally = false;
   bool _isDraggingVertically = false;
   CalendarFormat? _lastCalendarFormat;
   double? _lastCalendarHeight;
   final GlobalKey _calendarKey = GlobalKey();
   double? _monthViewMinHeight;
+
+  // Track current page index for day navigation
+  int _currentPageIndex = 0;
+  final List<DateTime> _dayPages = [];
 
   @override
   void initState() {
@@ -43,9 +43,9 @@ class _DraggableSheetState extends State<DraggableSheet>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    _horizontalAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
+    _pageController = PageController(
+      initialPage: _currentPageIndex,
+      viewportFraction: 1.0,
     );
     _heightAnimation = Tween<double>(
       begin: _currentHeight,
@@ -54,20 +54,112 @@ class _DraggableSheetState extends State<DraggableSheet>
       parent: _heightAnimationController,
       curve: Curves.easeInOut,
     ));
-    _horizontalOffsetAnimation = Tween<double>(
-      begin: 0.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _horizontalAnimationController,
-      curve: Curves.easeInOut,
-    ));
+
+    // Initialize day pages around current selected day
+    _initializeDayPages();
+
+    // Listen to provider changes to sync calendar
+    widget.scheduleProvider.addListener(_onProviderChanged);
   }
 
   @override
   void dispose() {
     _heightAnimationController.dispose();
-    _horizontalAnimationController.dispose();
+    _pageController.dispose();
+    widget.scheduleProvider.removeListener(_onProviderChanged);
     super.dispose();
+  }
+
+  void _onProviderChanged() {
+    // Sync page view with provider changes
+    final selectedDay = widget.scheduleProvider.selectedDay;
+    if (selectedDay != null) {
+      final targetIndex = _dayPages.indexWhere((day) =>
+          day.year == selectedDay.year &&
+          day.month == selectedDay.month &&
+          day.day == selectedDay.day);
+
+      if (targetIndex != -1 && targetIndex != _currentPageIndex) {
+        _pageController.animateToPage(
+          targetIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+  }
+
+  void _initializeDayPages() {
+    final selectedDay = widget.scheduleProvider.selectedDay ?? DateTime.now();
+    _dayPages.clear();
+
+    // Add 3 days before, current day, and 3 days after
+    for (int i = -3; i <= 3; i++) {
+      _dayPages.add(selectedDay.add(Duration(days: i)));
+    }
+
+    _currentPageIndex = 3; // Current day is at index 3
+  }
+
+  void _updateDayPages() {
+    // Check if we need to add more days to the list
+    if (_currentPageIndex <= 1) {
+      // Add more days at the beginning
+      final firstDay = _dayPages.first;
+      for (int i = 1; i <= 3; i++) {
+        _dayPages.insert(0, firstDay.subtract(Duration(days: i)));
+      }
+      _currentPageIndex += 3;
+    } else if (_currentPageIndex >= _dayPages.length - 2) {
+      // Add more days at the end
+      final lastDay = _dayPages.last;
+      for (int i = 1; i <= 3; i++) {
+        _dayPages.add(lastDay.add(Duration(days: i)));
+      }
+    }
+  }
+
+  void _onPageChanged(int pageIndex) {
+    if (pageIndex != _currentPageIndex) {
+      setState(() {
+        _currentPageIndex = pageIndex;
+      });
+
+      // Update the selected day in the provider
+      final newSelectedDay = _dayPages[pageIndex];
+      widget.scheduleProvider.setSelectedDay(newSelectedDay);
+      widget.scheduleProvider.setFocusedDay(newSelectedDay);
+
+      // Update day pages if needed
+      _updateDayPages();
+    }
+  }
+
+  void _navigateToDay(DateTime targetDay) {
+    final targetIndex = _dayPages.indexWhere((day) =>
+        day.year == targetDay.year &&
+        day.month == targetDay.month &&
+        day.day == targetDay.day);
+
+    if (targetIndex != -1) {
+      final pageIndex = targetIndex;
+      _pageController.animateToPage(
+        pageIndex,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      // If day not in current pages, rebuild the list around target day
+      _dayPages.clear();
+      for (int i = -3; i <= 3; i++) {
+        _dayPages.add(targetDay.add(Duration(days: i)));
+      }
+      _currentPageIndex = 3;
+      _pageController.jumpToPage(_currentPageIndex);
+
+      widget.scheduleProvider.setSelectedDay(targetDay);
+      widget.scheduleProvider.setFocusedDay(targetDay);
+    }
   }
 
   void _updateMonthViewMinHeight(Size screenSize) {
@@ -171,82 +263,41 @@ class _DraggableSheetState extends State<DraggableSheet>
           left: 0,
           right: 0,
           child: AnimatedBuilder(
-            animation: Listenable.merge(
-                [_heightAnimation, _horizontalOffsetAnimation]),
+            animation: Listenable.merge([_heightAnimation]),
             builder: (context, child) {
               final height = screenSize.height * _heightAnimation.value;
-              final horizontalOffset = screenSize.width *
-                  _horizontalOffsetAnimation.value *
-                  0.3; // 30% of screen width for card swipe effect
 
               return Transform.translate(
-                offset: Offset(horizontalOffset, 0),
+                offset: const Offset(0, 0),
                 child: GestureDetector(
-                  onHorizontalDragStart: (details) {
-                    _dragStartX = details.globalPosition.dx;
-                    _isDraggingHorizontally = true;
+                  onPanStart: (details) {
+                    _isDraggingVertically = true;
                   },
-                  onHorizontalDragUpdate: (details) {
-                    if (_isDraggingHorizontally) {
-                      final screenWidth = MediaQuery.of(context).size.width;
-                      final dragDistance =
-                          details.globalPosition.dx - _dragStartX;
-                      final maxDragDistance =
-                          screenWidth * 0.3; // 30% of screen width
-
-                      // Limit drag distance
-                      final clampedDragDistance =
-                          dragDistance.clamp(-maxDragDistance, maxDragDistance);
-                      final normalizedOffset =
-                          clampedDragDistance / maxDragDistance;
-
-                      setState(() {
-                        _currentHorizontalOffset = normalizedOffset;
-                        _horizontalOffsetAnimation = Tween<double>(
-                          begin: _horizontalOffsetAnimation.value,
-                          end: _currentHorizontalOffset,
-                        ).animate(CurvedAnimation(
-                          parent: _horizontalAnimationController,
-                          curve: Curves.linear,
-                        ));
-                        _horizontalAnimationController.value = 1.0;
-                      });
-                    }
-                  },
-                  onHorizontalDragEnd: (details) {
-                    _isDraggingHorizontally = false;
-
-                    // Horizontal swipe gesture for day change on the entire sheet
-                    const double swipeThreshold = 50.0;
-                    if (details.primaryVelocity != null) {
-                      final selectedDay = widget.scheduleProvider.selectedDay;
-                      if (selectedDay != null) {
-                        if (details.primaryVelocity! > swipeThreshold) {
-                          // Swiped right - previous day
-                          final previousDay =
-                              selectedDay.subtract(const Duration(days: 1));
-                          widget.scheduleProvider.setSelectedDay(previousDay);
-                          widget.scheduleProvider.setFocusedDay(previousDay);
-                        } else if (details.primaryVelocity! < -swipeThreshold) {
-                          // Swiped left - next day
-                          final nextDay =
-                              selectedDay.add(const Duration(days: 1));
-                          widget.scheduleProvider.setSelectedDay(nextDay);
-                          widget.scheduleProvider.setFocusedDay(nextDay);
-                        }
+                  onPanUpdate: (details) {
+                    if (_isDraggingVertically) {
+                      // Only vertical movement for sheet height
+                      final currentHeight = screenSize.height * _currentHeight;
+                      final newHeight = currentHeight - details.delta.dy;
+                      final newHeightPercent = newHeight / screenSize.height;
+                      if (newHeightPercent >= _collapsedHeight &&
+                          newHeightPercent <= _expandedHeight) {
+                        setState(() {
+                          _currentHeight = newHeightPercent;
+                          _heightAnimation = Tween<double>(
+                            begin: _heightAnimation.value,
+                            end: _currentHeight,
+                          ).animate(CurvedAnimation(
+                            parent: _heightAnimationController,
+                            curve: Curves.linear,
+                          ));
+                          _heightAnimationController.value = 1.0;
+                        });
                       }
                     }
-
-                    // Reset horizontal offset animation
-                    _horizontalOffsetAnimation = Tween<double>(
-                      begin: _horizontalOffsetAnimation.value,
-                      end: 0.0,
-                    ).animate(CurvedAnimation(
-                      parent: _horizontalAnimationController,
-                      curve: Curves.easeInOut,
-                    ));
-                    _horizontalAnimationController.forward(from: 0);
-                    _currentHorizontalOffset = 0.0;
+                  },
+                  onPanEnd: (details) {
+                    _isDraggingVertically = false;
+                    _snapToNearestPosition();
                   },
                   child: Container(
                     height: height,
@@ -259,15 +310,10 @@ class _DraggableSheetState extends State<DraggableSheet>
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(
-                            alpha: (0.002 +
-                                    (_horizontalOffsetAnimation.value.abs() *
-                                        0.04)) *
-                                255,
+                            alpha: 0.02,
                           ),
-                          blurRadius:
-                              10 + (_horizontalOffsetAnimation.value.abs() * 5),
-                          offset:
-                              Offset(_horizontalOffsetAnimation.value * 2, -2),
+                          blurRadius: 10,
+                          offset: const Offset(0, -2),
                         ),
                       ],
                     ),
@@ -336,20 +382,19 @@ class _DraggableSheetState extends State<DraggableSheet>
                                 ),
                               ),
                               ServicesSection(
-                                  selectedDay:
-                                      widget.scheduleProvider.selectedDay),
+                                  selectedDay: _dayPages[_currentPageIndex]),
                             ],
                           ),
                         ),
                         Expanded(
-                          child: ScheduleList(
-                            schedules: widget.scheduleProvider.schedules,
-                            dutyGroups: widget.scheduleProvider.dutyGroups,
-                            selectedDutyGroup:
-                                widget.scheduleProvider.selectedDutyGroup,
-                            onDutyGroupSelected: (group) {
-                              widget.scheduleProvider
-                                  .setSelectedDutyGroup(group);
+                          child: PageView.builder(
+                            controller: _pageController,
+                            onPageChanged: _onPageChanged,
+                            itemCount: _dayPages.length,
+                            physics: const PageScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final day = _dayPages[index];
+                              return _buildSheetContent(day);
                             },
                           ),
                         ),
@@ -365,6 +410,17 @@ class _DraggableSheetState extends State<DraggableSheet>
     );
   }
 
+  Widget _buildSheetContent(DateTime day) {
+    return ScheduleList(
+      schedules: widget.scheduleProvider.schedules,
+      dutyGroups: widget.scheduleProvider.dutyGroups,
+      selectedDutyGroup: widget.scheduleProvider.selectedDutyGroup,
+      onDutyGroupSelected: (group) {
+        widget.scheduleProvider.setSelectedDutyGroup(group);
+      },
+    );
+  }
+
   Widget _buildTableCalendar(ScheduleProvider scheduleProvider) {
     final calendar = TableCalendar(
       key: _calendarKey,
@@ -377,8 +433,7 @@ class _DraggableSheetState extends State<DraggableSheet>
         return isSameDay(scheduleProvider.selectedDay, day);
       },
       onDaySelected: (selectedDay, focusedDay) {
-        scheduleProvider.setSelectedDay(selectedDay);
-        scheduleProvider.setFocusedDay(focusedDay);
+        _navigateToDay(selectedDay);
       },
       onFormatChanged: (format) {
         scheduleProvider.setCalendarFormat(format);
