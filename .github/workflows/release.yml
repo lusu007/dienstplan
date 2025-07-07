@@ -65,7 +65,7 @@ jobs:
         uses: r0adkll/sign-android-release@v1
         id: sign
         with:
-          releaseDirectory: build/app/outputs/bundle/release
+          releaseDirectory: build/app/outputs/bundle/prodRelease
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -77,7 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/app/outputs/flutter-apk/dienstplan-${{ steps.version.outputs.version }}-prod-${{ github.run_number }}.apk
+          asset_path: build/app/outputs/flutter-apk/app-prod-release.apk
           asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.apk
           asset_content_type: application/vnd.android.package-archive
 
@@ -87,7 +87,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-prod-${{ github.run_number }}.aab
+          asset_path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.aab
           asset_content_type: application/octet-stream
 
@@ -96,7 +96,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
           packageName: io.scelus.dienstplan
-          releaseFiles: build/app/outputs/bundle/release/dienstplan-${{ steps.version.outputs.version }}-prod-${{ github.run_number }}.aab
+          releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           track: production
           status: completed
           changesNotSentForReview: true 
