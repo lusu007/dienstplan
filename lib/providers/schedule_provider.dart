@@ -172,6 +172,28 @@ class ScheduleProvider extends ChangeNotifier {
         _activeConfig!.dutyTypes.addAll(loadedDutyTypes);
       }
 
+      // Check if the preferred duty group exists in the new config
+      if (_preferredDutyGroup != null) {
+        final availableDutyGroups =
+            config.dutyGroups.map((group) => group.name).toList();
+        if (!availableDutyGroups.contains(_preferredDutyGroup)) {
+          AppLogger.i(
+              'Preferred duty group "$_preferredDutyGroup" not available in new config "${config.name}", resetting to null');
+          _preferredDutyGroup = null;
+        }
+      }
+
+      // Check if the selected duty group exists in the new config
+      if (_selectedDutyGroup != null) {
+        final availableDutyGroups =
+            config.dutyGroups.map((group) => group.name).toList();
+        if (!availableDutyGroups.contains(_selectedDutyGroup)) {
+          AppLogger.i(
+              'Selected duty group "$_selectedDutyGroup" not available in new config "${config.name}", resetting to null');
+          _selectedDutyGroup = null;
+        }
+      }
+
       if (saveSettingsAfter) {
         await saveSettings();
       }

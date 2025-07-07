@@ -23,9 +23,24 @@ class DutyScheduleDialog {
                       : null,
                   isSelected:
                       provider.activeConfig?.meta.name == config.meta.name,
-                  onTap: () {
-                    provider.setActiveConfig(config);
-                    Navigator.pop(context);
+                  onTap: () async {
+                    final oldPreferred = provider.preferredDutyGroup;
+                    final l10n = AppLocalizations.of(context);
+                    final scaffoldMessenger = ScaffoldMessenger.of(context);
+                    final navigator = Navigator.of(context);
+                    await provider.setActiveConfig(config);
+                    navigator.pop();
+                    if (oldPreferred != null &&
+                        provider.preferredDutyGroup == null) {
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.preferredDutyGroupResetNotice),
+                            duration: const Duration(seconds: 4),
+                          ),
+                        );
+                      });
+                    }
                   },
                   mainColor: AppColors.primary,
                 )),

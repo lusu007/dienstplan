@@ -268,4 +268,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get disclaimer => 'Disclaimer';
+
+  @override
+  String get preferredDutyGroupResetNotice =>
+      'Preferred duty group was reset because it is not available in the new schedule.';
 }
