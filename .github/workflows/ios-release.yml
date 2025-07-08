@@ -36,7 +36,18 @@ jobs:
           echo "Version: $VERSION"
 
       - name: 🔧 Setup Codemagic CLI
-        run: pip install codemagic-cli-tools
+        run: |
+          echo "Setting up Codemagic CLI tools..."
+          
+          # Install using pip as per official documentation
+          pip3 install codemagic-cli-tools
+          
+          echo "Verifying installation..."
+          app-store-connect --version
+          keychain --version
+          xcode-project --version
+          
+          echo "✅ Codemagic CLI tools installation completed successfully"
 
       - name: 🔑 Setup iOS Code Signing
         run: |
@@ -130,18 +141,46 @@ jobs:
           APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APPSTORE_CONNECT_KEY_IDENTIFIER }}
           APP_STORE_APP_ID: ${{ secrets.APP_STORE_APP_ID }}
         run: |
+          echo "Starting App Store Connect deployment..."
+          
+          # Verify Codemagic CLI tools are available
+          echo "Checking Codemagic CLI tools installation..."
+          which app-store-connect
+          app-store-connect --version
+          
           # Create App Store Connect API key file
+          echo "Creating App Store Connect API key file..."
           echo "$APP_STORE_CONNECT_PRIVATE_KEY" | base64 -d > app_store_connect_api_key.p8
           
-          # Upload to App Store Connect using Codemagic CLI
-          codemagic-cli apps publish \
-            --app-id "$APP_STORE_APP_ID" \
-            --type ios \
-            --path "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa" \
+          # Verify the API key file was created
+          if [ -f "app_store_connect_api_key.p8" ]; then
+            echo "✅ API key file created successfully"
+            ls -la app_store_connect_api_key.p8
+          else
+            echo "❌ Failed to create API key file"
+            exit 1
+          fi
+          
+          # Verify the IPA file exists
+          IPA_FILE="dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
+          if [ -f "$IPA_FILE" ]; then
+            echo "✅ IPA file found: $IPA_FILE"
+            ls -la "$IPA_FILE"
+          else
+            echo "❌ IPA file not found: $IPA_FILE"
+            ls -la *.ipa || echo "No IPA files found"
+            exit 1
+          fi
+          
+          echo "Uploading to App Store Connect..."
+          # Upload to App Store Connect using app-store-connect CLI
+          app-store-connect publish \
+            --path "$IPA_FILE" \
             --api-key-path app_store_connect_api_key.p8 \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
-            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            --submit-to-app-store
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER"
+          
+          echo "✅ App Store Connect deployment completed"
 
       - name: 🧹 Cleanup
         run: |
