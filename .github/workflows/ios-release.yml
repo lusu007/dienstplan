@@ -1,0 +1,147 @@
+name: 🚀 Release iOS App
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-deploy-ios:
+    name: 🏗️ Build and Deploy iOS App to App Store
+    runs-on: macos-latest
+    steps:
+      - name: 📂 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🚀 Cache pub deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: 📱 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+          channel: 'stable'
+          
+      - name: 📦 Install dependencies
+        run: flutter pub get
+
+      - name: 📋 Get version from pubspec
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: 🔧 Setup Codemagic CLI
+        run: |
+          curl -Ls https://downloads.codemagic.io/cli/macos/latest/codemagic-cli.pkg -o codemagic-cli.pkg
+          sudo installer -pkg codemagic-cli.pkg -target /
+          codemagic-cli --version
+
+      - name: 🔑 Setup iOS Code Signing
+        run: |
+          # Create directories for certificates and profiles
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          mkdir -p ~/Library/Developer/Xcode/DerivedData
+          
+          # Decode and install distribution certificate
+          echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -d > dist_cert.p12
+          security create-keychain -p "" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          security set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain
+          security import dist_cert.p12 -k build.keychain -P "${{ secrets.DIS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
+          
+          # Decode and install provisioning profile
+          echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -d > dist_profile.mobileprovision
+          cp dist_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # List installed profiles for verification
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+
+      - name: 📱 Build iOS App
+        env:
+          FLUTTER_BUILD_NUMBER: ${{ github.run_number }}
+        run: |
+          flutter build ios --flavor prod --release --no-codesign --build-number=${{ github.run_number }}
+
+      - name: 🔏 Code Sign iOS App
+        run: |
+          # Find the built app
+          APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
+          echo "App path: $APP_PATH"
+          
+          # Check if entitlements file exists
+          if [ -f "ios/Runner/Runner.entitlements" ]; then
+            echo "Using entitlements file"
+            codesign --force --sign "iPhone Distribution" --entitlements ios/Runner/Runner.entitlements --timestamp=none "$APP_PATH"
+          else
+            echo "No entitlements file found, signing without entitlements"
+            codesign --force --sign "iPhone Distribution" --timestamp=none "$APP_PATH"
+          fi
+          
+          # Verify code signing
+          codesign -dv --verbose=4 "$APP_PATH"
+
+      - name: 📦 Create IPA
+        run: |
+          # Create payload directory
+          mkdir -p Payload
+          
+          # Find the built app
+          APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
+          echo "App path: $APP_PATH"
+          
+          # Copy app to payload
+          cp -R "$APP_PATH" Payload/
+          
+          # Create IPA
+          zip -r "dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa" Payload
+          
+          # Clean up
+          rm -rf Payload
+
+      - name: ⬆️ Upload IPA to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa
+          asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa
+          asset_content_type: application/octet-stream
+
+      - name: 🏪 Deploy to App Store Connect
+        env:
+          APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APPSTORE_CONNECT_KEY_IDENTIFIER }}
+          APP_STORE_APP_ID: ${{ secrets.APP_STORE_APP_ID }}
+        run: |
+          # Create App Store Connect API key file
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" | base64 -d > app_store_connect_api_key.p8
+          
+          # Upload to App Store Connect using Codemagic CLI
+          codemagic-cli apps publish \
+            --app-id "$APP_STORE_APP_ID" \
+            --type ios \
+            --path "dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa" \
+            --api-key-path app_store_connect_api_key.p8 \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
+            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --submit-to-app-store
+
+      - name: 🧹 Cleanup
+        run: |
+          # Remove sensitive files
+          rm -f dist_cert.p12
+          rm -f dist_profile.mobileprovision
+          rm -f app_store_connect_api_key.p8
+          rm -f "dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa"
+          
+          # Remove keychain
+          security delete-keychain build.keychain 
