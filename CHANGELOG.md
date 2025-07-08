@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/lusu007/dienstplan/compare/v0.4.1...v0.4.2) (2025-07-08)
+
+
+### Bug Fixes
+
+* Install codemagic cli via pip ([#51](https://github.com/lusu007/dienstplan/issues/51)) ([2287c8b](https://github.com/lusu007/dienstplan/commit/2287c8b18c2056dd4221395c14a79e910046648b))
+
 ## [0.4.1](https://github.com/lusu007/dienstplan/compare/v0.4.0...v0.4.1) (2025-07-08)
 
 
