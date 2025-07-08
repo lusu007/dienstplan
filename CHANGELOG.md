@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/lusu007/dienstplan/compare/v0.3.1...v0.4.0) (2025-07-08)
+
+
+### Features
+
+* Add ios release pipeline ([#46](https://github.com/lusu007/dienstplan/issues/46)) ([7dedf5a](https://github.com/lusu007/dienstplan/commit/7dedf5a097ec1b72443c9d6d6450eeae2f9fd4ac))
+
 ## [0.3.1](https://github.com/lusu007/dienstplan/compare/v0.3.0...v0.3.1) (2025-07-07)
 
 
