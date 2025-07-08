@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.4](https://github.com/lusu007/dienstplan/compare/v0.4.3...v0.4.4) (2025-07-08)
+
+
+### Bug Fixes
+
+* Change bundle id to io.scelus.dienstplan ([#56](https://github.com/lusu007/dienstplan/issues/56)) ([b549d2b](https://github.com/lusu007/dienstplan/commit/b549d2b3819b47a670b526041379f9e0d1106769))
+* Rework codemagic cli installation ([#58](https://github.com/lusu007/dienstplan/issues/58)) ([6724325](https://github.com/lusu007/dienstplan/commit/672432513ad46f842ff976f71f3d66d69eb5ff56))
+
 ## [0.4.3](https://github.com/lusu007/dienstplan/compare/v0.4.2...v0.4.3) (2025-07-08)
 
 
