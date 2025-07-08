@@ -39,8 +39,8 @@ jobs:
         run: |
           echo "Setting up Codemagic CLI tools..."
           
-          # Install using pip as per official documentation
-          pip3 install codemagic-cli-tools
+          # Install using pip with --break-system-packages flag to handle externally managed environment
+          pip3 install --break-system-packages codemagic-cli-tools
           
           echo "Verifying installation..."
           app-store-connect --version
