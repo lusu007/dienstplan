@@ -75,7 +75,7 @@ jobs:
         env:
           FLUTTER_BUILD_NUMBER: ${{ github.run_number }}
         run: |
-          flutter build ios --flavor prod --release --no-codesign --build-number=${{ github.run_number }}
+          flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
 
       - name: 🔏 Code Sign iOS App
         run: |
@@ -108,7 +108,7 @@ jobs:
           cp -R "$APP_PATH" Payload/
           
           # Create IPA
-          zip -r "dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa" Payload
+          zip -r "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa" Payload
           
           # Clean up
           rm -rf Payload
@@ -119,8 +119,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa
-          asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa
+          asset_path: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa
+          asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa
           asset_content_type: application/octet-stream
 
       - name: 🏪 Deploy to App Store Connect
@@ -137,7 +137,7 @@ jobs:
           codemagic-cli apps publish \
             --app-id "$APP_STORE_APP_ID" \
             --type ios \
-            --path "dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa" \
+            --path "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa" \
             --api-key-path app_store_connect_api_key.p8 \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
             --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
@@ -149,7 +149,7 @@ jobs:
           rm -f dist_cert.p12
           rm -f dist_profile.mobileprovision
           rm -f app_store_connect_api_key.p8
-          rm -f "dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.ipa"
+          rm -f "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
           
           # Remove keychain
           security delete-keychain build.keychain 
