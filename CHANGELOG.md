@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/lusu007/dienstplan/compare/v0.4.0...v0.4.1) (2025-07-08)
+
+
+### Bug Fixes
+
+* Add debug messages to ios release pipeline ([#49](https://github.com/lusu007/dienstplan/issues/49)) ([350da40](https://github.com/lusu007/dienstplan/commit/350da40420ca24e2ebaebda763773cd241756572))
+
 ## [0.4.0](https://github.com/lusu007/dienstplan/compare/v0.3.1...v0.4.0) (2025-07-08)
 
 
