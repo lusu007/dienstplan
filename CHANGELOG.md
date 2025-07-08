@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.5](https://github.com/lusu007/dienstplan/compare/v0.4.4...v0.4.5) (2025-07-08)
+
+
+### Bug Fixes
+
+* Install codemagic cli with --break-system-packages ([#59](https://github.com/lusu007/dienstplan/issues/59)) ([3467fae](https://github.com/lusu007/dienstplan/commit/3467fae1cb9a2faab471290ad6b6410fe974446e))
+
 ## [0.4.4](https://github.com/lusu007/dienstplan/compare/v0.4.3...v0.4.4) (2025-07-08)
 
 
