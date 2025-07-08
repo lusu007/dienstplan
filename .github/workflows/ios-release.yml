@@ -36,51 +36,7 @@ jobs:
           echo "Version: $VERSION"
 
       - name: 🔧 Setup Codemagic CLI
-        run: |
-          echo "Setting up Codemagic CLI..."
-          
-          # Try multiple installation methods
-          INSTALLED=false
-          
-          # Method 1: Direct download from GitHub releases
-          echo "Trying GitHub releases download..."
-          if curl -Ls https://github.com/codemagic-ci-cd/cli/releases/latest/download/codemagic-cli-macos.tar.gz -o codemagic-cli.tar.gz; then
-            if tar -xzf codemagic-cli.tar.gz && [ -f "codemagic-cli" ]; then
-              sudo mv codemagic-cli /usr/local/bin/
-              rm codemagic-cli.tar.gz
-              INSTALLED=true
-              echo "✅ Installed via GitHub releases"
-            fi
-          fi
-          
-          # Method 2: Alternative download URL
-          if [ "$INSTALLED" = false ]; then
-            echo "Trying alternative download URL..."
-            if curl -Ls https://downloads.codemagic.io/cli/macos/latest/codemagic-cli -o codemagic-cli; then
-              chmod +x codemagic-cli
-              sudo mv codemagic-cli /usr/local/bin/
-              INSTALLED=true
-              echo "✅ Installed via alternative URL"
-            fi
-          fi
-          
-          # Method 3: Homebrew (if available)
-          if [ "$INSTALLED" = false ] && command -v brew &> /dev/null; then
-            echo "Trying Homebrew installation..."
-            if brew install codemagic-cli; then
-              INSTALLED=true
-              echo "✅ Installed via Homebrew"
-            fi
-          fi
-          
-          if [ "$INSTALLED" = true ]; then
-            echo "Verifying installation..."
-            codemagic-cli --version
-            echo "✅ Codemagic CLI installation completed successfully"
-          else
-            echo "❌ All installation methods failed"
-            exit 1
-          fi
+        run: pip install codemagic-cli-tools
 
       - name: 🔑 Setup iOS Code Signing
         run: |
