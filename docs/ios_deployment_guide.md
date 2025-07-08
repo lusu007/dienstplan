@@ -74,10 +74,10 @@ The following secrets need to be configured in your GitHub repository:
 |-------------|-------------|---------|
 | `APP_STORE_CONNECT_PRIVATE_KEY` | App Store Connect API private key | Base64 encoded .p8 file |
 | `APP_STORE_CONNECT_ISSUER_ID` | App Store Connect issuer ID | String (UUID) |
-| `APP_STORE_CONNECT_KEY_IDENTIFIER` | App Store Connect key identifier | String |
+| `APPSTORE_CONNECT_KEY_IDENTIFIER` | App Store Connect key identifier | String |
 | `APP_STORE_APP_ID` | App Store Connect app ID | String |
-| `DISTRIBUTION_CERTIFICATE` | iOS distribution certificate | Base64 encoded .p12 file |
-| `DISTRIBUTION_CERTIFICATE_PASSWORD` | Distribution certificate password | String |
+| `DIS_CERTIFICATE_BASE64` | iOS distribution certificate | Base64 encoded .p12 file |
+| `DIS_CERTIFICATE_PASSWORD` | Distribution certificate password | String |
 | `PROVISIONING_PROFILE` | iOS provisioning profile | Base64 encoded .mobileprovision file |
 
 ### How to Get These Values

@@ -37,31 +37,83 @@ jobs:
 
       - name: 🔧 Setup Codemagic CLI
         run: |
-          curl -Ls https://downloads.codemagic.io/cli/macos/latest/codemagic-cli.pkg -o codemagic-cli.pkg
-          sudo installer -pkg codemagic-cli.pkg -target /
-          codemagic-cli --version
+          echo "Setting up Codemagic CLI..."
+          
+          # Try multiple installation methods
+          INSTALLED=false
+          
+          # Method 1: Direct download from GitHub releases
+          echo "Trying GitHub releases download..."
+          if curl -Ls https://github.com/codemagic-ci-cd/cli/releases/latest/download/codemagic-cli-macos.tar.gz -o codemagic-cli.tar.gz; then
+            if tar -xzf codemagic-cli.tar.gz && [ -f "codemagic-cli" ]; then
+              sudo mv codemagic-cli /usr/local/bin/
+              rm codemagic-cli.tar.gz
+              INSTALLED=true
+              echo "✅ Installed via GitHub releases"
+            fi
+          fi
+          
+          # Method 2: Alternative download URL
+          if [ "$INSTALLED" = false ]; then
+            echo "Trying alternative download URL..."
+            if curl -Ls https://downloads.codemagic.io/cli/macos/latest/codemagic-cli -o codemagic-cli; then
+              chmod +x codemagic-cli
+              sudo mv codemagic-cli /usr/local/bin/
+              INSTALLED=true
+              echo "✅ Installed via alternative URL"
+            fi
+          fi
+          
+          # Method 3: Homebrew (if available)
+          if [ "$INSTALLED" = false ] && command -v brew &> /dev/null; then
+            echo "Trying Homebrew installation..."
+            if brew install codemagic-cli; then
+              INSTALLED=true
+              echo "✅ Installed via Homebrew"
+            fi
+          fi
+          
+          if [ "$INSTALLED" = true ]; then
+            echo "Verifying installation..."
+            codemagic-cli --version
+            echo "✅ Codemagic CLI installation completed successfully"
+          else
+            echo "❌ All installation methods failed"
+            exit 1
+          fi
 
       - name: 🔑 Setup iOS Code Signing
         run: |
+          echo "Setting up iOS code signing..."
+          
           # Create directories for certificates and profiles
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           mkdir -p ~/Library/Developer/Xcode/DerivedData
           
+          echo "Decoding and installing distribution certificate..."
           # Decode and install distribution certificate
           echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -d > dist_cert.p12
+          
+          echo "Creating keychain..."
           security create-keychain -p "" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "" build.keychain
           security set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain
+          
+          echo "Importing certificate to keychain..."
           security import dist_cert.p12 -k build.keychain -P "${{ secrets.DIS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
           
+          echo "Decoding and installing provisioning profile..."
           # Decode and install provisioning profile
           echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -d > dist_profile.mobileprovision
           cp dist_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
+          echo "Verifying installed profiles..."
           # List installed profiles for verification
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          echo "Code signing setup completed successfully"
 
       - name: 📱 Build iOS App
         env:
