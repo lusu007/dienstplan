@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.3](https://github.com/lusu007/dienstplan/compare/v0.4.2...v0.4.3) (2025-07-08)
+
+
+### Bug Fixes
+
+* Remove ios flavors ([#54](https://github.com/lusu007/dienstplan/issues/54)) ([6a5eefc](https://github.com/lusu007/dienstplan/commit/6a5eefc83ba381731f136ba5ca496a559eb829be))
+
 ## [0.4.2](https://github.com/lusu007/dienstplan/compare/v0.4.1...v0.4.2) (2025-07-08)
 
 
