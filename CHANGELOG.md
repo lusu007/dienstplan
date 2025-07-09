@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.7](https://github.com/lusu007/dienstplan/compare/v0.4.6...v0.4.7) (2025-07-09)
+
+
+### Bug Fixes
+
+* Add mobileprovision file to app ([#63](https://github.com/lusu007/dienstplan/issues/63)) ([37d79c8](https://github.com/lusu007/dienstplan/commit/37d79c8610f89a97e96a96f89d8e8e017c6a9cb6))
+
 ## [0.4.6](https://github.com/lusu007/dienstplan/compare/v0.4.5...v0.4.6) (2025-07-09)
 
 
