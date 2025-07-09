@@ -188,20 +188,23 @@ jobs:
             
             echo "✅ Manual code signing completed"
             
-            # Embed the provisioning profile
+            # Sign all frameworks first
+            echo "🔐 Signing frameworks..."
+            if [ -d "build/ios/iphoneos/Runner.app/Frameworks" ]; then
+              find build/ios/iphoneos/Runner.app/Frameworks -name "*.framework" -type d | while read framework; do
+                echo "Signing framework: $framework"
+                codesign --force --sign "$CERT_NAME" --keychain build.keychain "$framework"
+              done
+              echo "✅ All frameworks signed"
+            else
+              echo "ℹ️ No Frameworks directory found"
+            fi
+            
+            # Embed the provisioning profile last
             echo "📋 Embedding provisioning profile..."
             cp dist_profile.mobileprovision build/ios/iphoneos/Runner.app/embedded.mobileprovision
             
             echo "✅ Provisioning profile embedded"
-            
-            # Sign all frameworks
-            echo "🔐 Signing frameworks..."
-            find build/ios/iphoneos/Runner.app/Frameworks -name "*.framework" -type d | while read framework; do
-              echo "Signing framework: $framework"
-              codesign --force --sign "$CERT_NAME" --keychain build.keychain "$framework"
-            done
-            
-            echo "✅ All frameworks signed"
 
       - name: 🔍 Verify Built App
         run: |
