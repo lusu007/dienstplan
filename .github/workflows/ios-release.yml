@@ -182,13 +182,7 @@ jobs:
             CERT_NAME=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
             echo "Using certificate: $CERT_NAME"
             
-            # Manually sign the app with our certificate
-            echo "🔐 Manually signing the app..."
-            codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app
-            
-            echo "✅ Manual code signing completed"
-            
-            # Sign Flutter framework if it exists
+            # Sign Flutter framework FIRST (before app signing)
             echo "🔐 Signing Flutter framework..."
             if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
               echo "Found Flutter framework, signing..."
@@ -197,6 +191,12 @@ jobs:
             else
               echo "ℹ️ No Flutter framework found"
             fi
+            
+            # Manually sign the app AFTER framework signing
+            echo "🔐 Manually signing the app..."
+            codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app
+            
+            echo "✅ Manual code signing completed"
             
             # Embed the provisioning profile last
             echo "📋 Embedding provisioning profile..."
