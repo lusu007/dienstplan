@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.8](https://github.com/lusu007/dienstplan/compare/v0.4.7...v0.4.8) (2025-07-09)
+
+
+### Bug Fixes
+
+* Sign frameworks before signing app ([#65](https://github.com/lusu007/dienstplan/issues/65)) ([cc84836](https://github.com/lusu007/dienstplan/commit/cc84836e44a61a7b556481ce515c0092155f62a4))
+
 ## [0.4.7](https://github.com/lusu007/dienstplan/compare/v0.4.6...v0.4.7) (2025-07-09)
 
 
