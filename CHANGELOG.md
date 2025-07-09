@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.22](https://github.com/lusu007/dienstplan/compare/v0.4.21...v0.4.22) (2025-07-09)
+
+
+### Bug Fixes
+
+* Sign Flutter framework ([#95](https://github.com/lusu007/dienstplan/issues/95)) ([0167563](https://github.com/lusu007/dienstplan/commit/016756361c00358f47c6121bdca672f00fc9cd81))
+
 ## [0.4.21](https://github.com/lusu007/dienstplan/compare/v0.4.20...v0.4.21) (2025-07-09)
 
 
