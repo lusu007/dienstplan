@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.10](https://github.com/lusu007/dienstplan/compare/v0.4.9...v0.4.10) (2025-07-09)
+
+
+### Bug Fixes
+
+* Add team id to workflow ([#69](https://github.com/lusu007/dienstplan/issues/69)) ([bac3288](https://github.com/lusu007/dienstplan/commit/bac3288ed5c3ee7e3c57cdc02fb9cd32520cbc3b))
+
 ## [0.4.9](https://github.com/lusu007/dienstplan/compare/v0.4.8...v0.4.9) (2025-07-09)
 
 
