@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.9](https://github.com/lusu007/dienstplan/compare/v0.4.8...v0.4.9) (2025-07-09)
+
+
+### Bug Fixes
+
+* Add application identifier to entitlements ([#67](https://github.com/lusu007/dienstplan/issues/67)) ([342b6ed](https://github.com/lusu007/dienstplan/commit/342b6ed91869f13224dfa5680e4b910e74dc7efa))
+
 ## [0.4.8](https://github.com/lusu007/dienstplan/compare/v0.4.7...v0.4.8) (2025-07-09)
 
 
