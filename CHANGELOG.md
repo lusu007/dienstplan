@@ -7,6 +7,13 @@
 
 * Use flutter build with built-in signing ([#73](https://github.com/lusu007/dienstplan/issues/73)) ([be65c7e](https://github.com/lusu007/dienstplan/commit/be65c7e264377c576237fdcd9320cd393c4739a9))
 
+## [0.4.12](https://github.com/lusu007/dienstplan/compare/v0.4.11...v0.4.12) (2025-07-09)
+
+
+### Bug Fixes
+
+* Use flutter build with built-in signing ([#73](https://github.com/lusu007/dienstplan/issues/73)) ([be65c7e](https://github.com/lusu007/dienstplan/commit/be65c7e264377c576237fdcd9320cd393c4739a9))
+
 ## [0.4.11](https://github.com/lusu007/dienstplan/compare/v0.4.10...v0.4.11) (2025-07-09)
 
 
