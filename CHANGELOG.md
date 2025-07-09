@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.20](https://github.com/lusu007/dienstplan/compare/v0.4.19...v0.4.20) (2025-07-09)
+
+
+### Bug Fixes
+
+* Sign all frameworks ([#91](https://github.com/lusu007/dienstplan/issues/91)) ([cba3231](https://github.com/lusu007/dienstplan/commit/cba32314e5d3427ea00c6d253770455e34b5ed02))
+
 ## [0.4.19](https://github.com/lusu007/dienstplan/compare/v0.4.18...v0.4.19) (2025-07-09)
 
 
