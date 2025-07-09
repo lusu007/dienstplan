@@ -94,6 +94,39 @@ jobs:
           CERT_HASH=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | awk '{print $2}')
           echo "Certificate hash: $CERT_HASH"
           
+          # Verify certificate is valid for App Store Connect
+          echo "🔍 Verifying certificate for App Store Connect..."
+          CERT_INFO=$(security find-certificate -c "$SIGNING_IDENTITY" -p build.keychain 2>/dev/null | openssl x509 -noout -text 2>/dev/null)
+          
+          if echo "$CERT_INFO" | grep -q "Digital Signature"; then
+            echo "✅ Certificate has Digital Signature capability"
+          else
+            echo "❌ Certificate missing Digital Signature capability"
+          fi
+          
+          if echo "$CERT_INFO" | grep -q "Key Encipherment"; then
+            echo "✅ Certificate has Key Encipherment capability"
+          else
+            echo "❌ Certificate missing Key Encipherment capability"
+          fi
+          
+          # Check certificate purpose
+          if echo "$CERT_INFO" | grep -q "Code Signing"; then
+            echo "✅ Certificate is valid for Code Signing"
+          else
+            echo "❌ Certificate not valid for Code Signing"
+          fi
+          
+          # Check if this is an App Store Connect certificate
+          if echo "$SIGNING_IDENTITY" | grep -q "iPhone Distribution"; then
+            echo "✅ Using iPhone Distribution certificate (App Store Connect)"
+          else
+            echo "❌ Not using iPhone Distribution certificate"
+            echo "   Current certificate: $SIGNING_IDENTITY"
+            echo "   Expected: iPhone Distribution certificate"
+            exit 1
+          fi
+          
           echo "Decoding and installing provisioning profile..."
           # Robust: Zeilenumbrüche entfernen und base64 dekodieren
           echo "${{ secrets.PROVISIONING_PROFILE }}" | tr -d '\n' | base64 -D > dist_profile.mobileprovision
