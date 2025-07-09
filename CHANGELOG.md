@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.14](https://github.com/lusu007/dienstplan/compare/v0.4.13...v0.4.14) (2025-07-09)
+
+
+### Bug Fixes
+
+* Correct certificate extraction ([#79](https://github.com/lusu007/dienstplan/issues/79)) ([7441a34](https://github.com/lusu007/dienstplan/commit/7441a34785e4c8b52595336fe704f67918e8d4f0))
+
 ## [0.4.13](https://github.com/lusu007/dienstplan/compare/v0.4.12...v0.4.13) (2025-07-09)
 
 
