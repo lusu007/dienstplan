@@ -94,6 +94,19 @@ jobs:
           APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
           echo "App path: $APP_PATH"
           
+          # Find the provisioning profile
+          PROFILE_PATH=$(find ~/Library/MobileDevice/Provisioning\ Profiles -name "*.mobileprovision" | head -1)
+          echo "Provisioning profile path: $PROFILE_PATH"
+          
+          # Embed the provisioning profile
+          if [ -f "$PROFILE_PATH" ]; then
+            echo "Embedding provisioning profile..."
+            cp "$PROFILE_PATH" "$APP_PATH/embedded.mobileprovision"
+          else
+            echo "❌ No provisioning profile found"
+            exit 1
+          fi
+          
           # Check if entitlements file exists
           if [ -f "ios/Runner/Runner.entitlements" ]; then
             echo "Using entitlements file"
@@ -105,6 +118,15 @@ jobs:
           
           # Verify code signing
           codesign -dv --verbose=4 "$APP_PATH"
+          
+          # Verify provisioning profile is embedded
+          if [ -f "$APP_PATH/embedded.mobileprovision" ]; then
+            echo "✅ Provisioning profile embedded successfully"
+            ls -la "$APP_PATH/embedded.mobileprovision"
+          else
+            echo "❌ Provisioning profile not embedded"
+            exit 1
+          fi
 
       - name: 📦 Create IPA
         run: |
@@ -164,9 +186,6 @@ jobs:
           
           echo "Uploading to App Store Connect..."
           
-          # Check the help for the publish command
-          echo "Checking publish command options..."
-          app-store-connect publish --help
           
           # Set environment variables for authentication
           export APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_ISSUER_ID"
