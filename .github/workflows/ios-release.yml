@@ -98,6 +98,8 @@ jobs:
           flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
 
       - name: 🔏 Code Sign iOS App
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           # Find the built app
           APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
@@ -116,6 +118,18 @@ jobs:
             exit 1
           fi
           
+          # Create resolved entitlements file
+          echo "Creating resolved entitlements file..."
+          if [ -f "ios/Runner/Runner.entitlements" ]; then
+            # Create a temporary entitlements file with resolved variables
+            sed "s/\$(AppIdentifierPrefix)/$APPLE_TEAM_ID./g; s/\$(DEVELOPMENT_TEAM)/$APPLE_TEAM_ID/g" ios/Runner/Runner.entitlements > resolved_entitlements.plist
+            echo "✅ Entitlements resolved with Team ID: $APPLE_TEAM_ID"
+            cat resolved_entitlements.plist
+          else
+            echo "❌ No entitlements file found"
+            exit 1
+          fi
+          
           # Sign all frameworks first
           echo "Signing frameworks..."
           find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
@@ -130,14 +144,9 @@ jobs:
             codesign --force --sign "iPhone Distribution" --timestamp=none "$dylib"
           done
           
-          # Check if entitlements file exists
-          if [ -f "ios/Runner/Runner.entitlements" ]; then
-            echo "Using entitlements file"
-            codesign --force --sign "iPhone Distribution" --entitlements ios/Runner/Runner.entitlements --timestamp=none "$APP_PATH"
-          else
-            echo "No entitlements file found, signing without entitlements"
-            codesign --force --sign "iPhone Distribution" --timestamp=none "$APP_PATH"
-          fi
+          # Sign the main app with resolved entitlements
+          echo "Signing main app with resolved entitlements..."
+          codesign --force --sign "iPhone Distribution" --entitlements resolved_entitlements.plist --timestamp=none "$APP_PATH"
           
           # Verify code signing
           codesign -dv --verbose=4 "$APP_PATH"
@@ -150,6 +159,9 @@ jobs:
             echo "❌ Provisioning profile not embedded"
             exit 1
           fi
+          
+          # Clean up temporary entitlements file
+          rm -f resolved_entitlements.plist
 
       - name: 📦 Create IPA
         run: |
@@ -228,6 +240,7 @@ jobs:
           rm -f dist_cert.p12
           rm -f dist_profile.mobileprovision
           rm -f "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
+          rm -f resolved_entitlements.plist
           
           # Remove keychain
           security delete-keychain build.keychain 
