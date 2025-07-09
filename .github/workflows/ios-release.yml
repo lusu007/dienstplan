@@ -148,18 +148,8 @@ jobs:
           which app-store-connect
           app-store-connect --version
           
-          # Create App Store Connect API key file
-          echo "Creating App Store Connect API key file..."
-          echo "$APP_STORE_CONNECT_PRIVATE_KEY" | base64 -d > app_store_connect_api_key.p8
-          
-          # Verify the API key file was created
-          if [ -f "app_store_connect_api_key.p8" ]; then
-            echo "✅ API key file created successfully"
-            ls -la app_store_connect_api_key.p8
-          else
-            echo "❌ Failed to create API key file"
-            exit 1
-          fi
+          # App Store Connect API key is available via environment variable
+          echo "App Store Connect API key available via environment variable"
           
           # Verify the IPA file exists
           IPA_FILE="dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
@@ -173,12 +163,21 @@ jobs:
           fi
           
           echo "Uploading to App Store Connect..."
-          # Upload to App Store Connect using app-store-connect CLI
+          
+          # Check the help for the publish command
+          echo "Checking publish command options..."
+          app-store-connect publish --help
+          
+          # Set environment variables for authentication
+          export APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_ISSUER_ID"
+          export APP_STORE_CONNECT_KEY_IDENTIFIER="$APP_STORE_CONNECT_KEY_IDENTIFIER"
+          export APP_STORE_CONNECT_PRIVATE_KEY="$APP_STORE_CONNECT_PRIVATE_KEY"
+          
+          echo "Environment variables set for authentication"
+          
+          # Upload to App Store Connect
           app-store-connect publish \
-            --path "$IPA_FILE" \
-            --api-key-path app_store_connect_api_key.p8 \
-            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" \
-            --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER"
+            --path "$IPA_FILE"
           
           echo "✅ App Store Connect deployment completed"
 
@@ -187,7 +186,6 @@ jobs:
           # Remove sensitive files
           rm -f dist_cert.p12
           rm -f dist_profile.mobileprovision
-          rm -f app_store_connect_api_key.p8
           rm -f "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
           
           # Remove keychain
