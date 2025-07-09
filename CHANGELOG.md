@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.28](https://github.com/lusu007/dienstplan/compare/v0.4.27...v0.4.28) (2025-07-09)
+
+
+### Bug Fixes
+
+* Rework release workflow ([#107](https://github.com/lusu007/dienstplan/issues/107)) ([39fd0d3](https://github.com/lusu007/dienstplan/commit/39fd0d3fcbb7e5761cd831f7fef485682f13bae8))
+
 ## [0.4.27](https://github.com/lusu007/dienstplan/compare/v0.4.26...v0.4.27) (2025-07-09)
 
 
