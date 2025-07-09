@@ -95,12 +95,14 @@ jobs:
           echo "Certificate hash: $CERT_HASH"
           
           echo "Decoding and installing provisioning profile..."
-          # Decode and install provisioning profile
-          echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -d > dist_profile.mobileprovision
+          # Robust: Zeilenumbrüche entfernen und base64 dekodieren
+          echo "${{ secrets.PROVISIONING_PROFILE }}" | tr -d '\n' | base64 -D > dist_profile.mobileprovision
           cp dist_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
           echo "Verifying installed profiles..."
           # List installed profiles for verification
+          ls -lh dist_profile.mobileprovision
+          file dist_profile.mobileprovision
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
           
           # Enhanced provisioning profile verification
