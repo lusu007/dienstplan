@@ -76,7 +76,8 @@ jobs:
           security import dist_cert.p12 -k build.keychain -P "${{ secrets.DIS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
           
-          # List available identities for verification
+          # Enhanced certificate verification
+          echo "🔍 Enhanced Certificate Verification:"
           echo "Available signing identities:"
           security find-identity -v build.keychain
           
@@ -89,6 +90,10 @@ jobs:
             exit 1
           fi
           
+          # Extract certificate hash for verification
+          CERT_HASH=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | awk '{print $2}')
+          echo "Certificate hash: $CERT_HASH"
+          
           echo "Decoding and installing provisioning profile..."
           # Decode and install provisioning profile
           echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -d > dist_profile.mobileprovision
@@ -98,77 +103,75 @@ jobs:
           # List installed profiles for verification
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
           
-          # Verify provisioning profile details
+          # Enhanced provisioning profile verification
+          echo "🔍 Enhanced Provisioning Profile Verification:"
           echo "Provisioning profile details:"
-          security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID)"
+          security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID|ExpirationDate)"
+          
+          # Extract certificate hash from provisioning profile
+          echo "Certificates in provisioning profile:"
+          PROFILE_CERT_HASH=$(security cms -D -i dist_profile.mobileprovision | grep -A 10 "DeveloperCertificates" | grep -o '[A-F0-9]\{40\}' | head -1)
+          echo "Profile certificate hash: $PROFILE_CERT_HASH"
+          
+          # Verify certificate-profile match
+          echo "🔍 Verifying Certificate-Profile Match:"
+          if [ "$CERT_HASH" = "$PROFILE_CERT_HASH" ]; then
+            echo "✅ Certificate hash matches provisioning profile"
+          else
+            echo "❌ Certificate hash mismatch!"
+            echo "   Certificate hash: $CERT_HASH"
+            echo "   Profile hash: $PROFILE_CERT_HASH"
+            echo "   This will cause App Store Connect upload to fail"
+            exit 1
+          fi
+          
+          # Verify certificate expiration
+          echo "🔍 Checking Certificate Expiration:"
+          CERT_EXPIRY=$(security find-certificate -c "$SIGNING_IDENTITY" -p build.keychain | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+          echo "Certificate expires: $CERT_EXPIRY"
+          
+          # Check if certificate is expired
+          if [ -n "$CERT_EXPIRY" ]; then
+            EXPIRY_EPOCH=$(date -j -f "%b %d %H:%M:%S %Y %Z" "$CERT_EXPIRY" +%s 2>/dev/null)
+            CURRENT_EPOCH=$(date +%s)
+            if [ "$EXPIRY_EPOCH" -lt "$CURRENT_EPOCH" ]; then
+              echo "❌ Certificate has expired!"
+              exit 1
+            else
+              echo "✅ Certificate is valid"
+            fi
+          fi
           
           echo "Code signing setup completed successfully"
 
-      - name: 📱 Build iOS App
+      - name: 📱 Build iOS App with Flutter Signing
         env:
           FLUTTER_BUILD_NUMBER: ${{ github.run_number }}
-        run: |
-          flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
-
-      - name: 🔏 Code Sign iOS App
-        env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          echo "Building iOS app with Flutter's built-in signing..."
+          
+          # Set environment variables for Flutter signing
+          export FLUTTER_BUILD_NUMBER=${{ github.run_number }}
+          export APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}
+          
+          # Build with Flutter's built-in signing (removed --no-codesign flag)
+          flutter build ios --release --build-number=${{ github.run_number }}
+          
+          echo "✅ Flutter build completed with built-in signing"
+
+      - name: 🔍 Verify Built App
+        run: |
+          echo "🔍 Verifying built app..."
+          
           # Find the built app
           APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
           echo "App path: $APP_PATH"
           
-          # Find the provisioning profile
-          PROFILE_PATH=$(find ~/Library/MobileDevice/Provisioning\ Profiles -name "*.mobileprovision" | head -1)
-          echo "Provisioning profile path: $PROFILE_PATH"
-          
-          # Get the signing identity from the previous step
-          SIGNING_IDENTITY=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-          echo "Using signing identity: $SIGNING_IDENTITY"
-          
-          if [ -z "$SIGNING_IDENTITY" ]; then
-            echo "❌ No iPhone Distribution certificate found"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "❌ Built app not found"
             exit 1
           fi
-          
-          # Embed the provisioning profile
-          if [ -f "$PROFILE_PATH" ]; then
-            echo "Embedding provisioning profile..."
-            cp "$PROFILE_PATH" "$APP_PATH/embedded.mobileprovision"
-          else
-            echo "❌ No provisioning profile found"
-            exit 1
-          fi
-          
-          # Create resolved entitlements file
-          echo "Creating resolved entitlements file..."
-          if [ -f "ios/Runner/Runner.entitlements" ]; then
-            # Create a temporary entitlements file with resolved variables
-            sed "s/\$(AppIdentifierPrefix)/$APPLE_TEAM_ID./g; s/\$(DEVELOPMENT_TEAM)/$APPLE_TEAM_ID/g" ios/Runner/Runner.entitlements > resolved_entitlements.plist
-            echo "✅ Entitlements resolved with Team ID: $APPLE_TEAM_ID"
-            cat resolved_entitlements.plist
-          else
-            echo "❌ No entitlements file found"
-            exit 1
-          fi
-          
-          # Sign all frameworks first
-          echo "Signing frameworks..."
-          find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
-            echo "Signing framework: $framework"
-            codesign --force --sign "$SIGNING_IDENTITY" --timestamp=none --deep "$framework"
-          done
-          
-          # Sign any dylibs in the app
-          echo "Signing dylibs..."
-          find "$APP_PATH" -name "*.dylib" | while read dylib; do
-            echo "Signing dylib: $dylib"
-            codesign --force --sign "$SIGNING_IDENTITY" --timestamp=none "$dylib"
-          done
-          
-          # Sign the main app with resolved entitlements
-          echo "Signing main app with resolved entitlements..."
-          codesign --force --sign "$SIGNING_IDENTITY" --entitlements resolved_entitlements.plist --timestamp=none "$APP_PATH"
           
           # Verify code signing
           echo "Verifying code signing..."
@@ -183,12 +186,33 @@ jobs:
             exit 1
           fi
           
-          # Verify the certificate matches the provisioning profile
-          echo "Verifying certificate matches provisioning profile..."
-          security cms -D -i "$APP_PATH/embedded.mobileprovision" | grep -A 5 "DeveloperCertificates"
+          # Verify the certificate matches the provisioning profile in the built app
+          echo "🔍 Final Certificate-Profile Verification:"
+          BUILT_CERT_HASH=$(codesign -dv --verbose=4 "$APP_PATH" 2>&1 | grep "Authority=" | head -1 | grep -o '[A-F0-9]\{40\}' || echo "")
+          PROFILE_CERT_HASH=$(security cms -D -i "$APP_PATH/embedded.mobileprovision" | grep -A 10 "DeveloperCertificates" | grep -o '[A-F0-9]\{40\}' | head -1)
           
-          # Clean up temporary entitlements file
-          rm -f resolved_entitlements.plist
+          echo "Built app certificate hash: $BUILT_CERT_HASH"
+          echo "Profile certificate hash: $PROFILE_CERT_HASH"
+          
+          if [ "$BUILT_CERT_HASH" = "$PROFILE_CERT_HASH" ]; then
+            echo "✅ Built app certificate matches provisioning profile"
+          else
+            echo "❌ Built app certificate mismatch with provisioning profile"
+            echo "   This will cause App Store Connect upload to fail"
+            exit 1
+          fi
+          
+          # Verify all frameworks are signed
+          echo "🔍 Verifying framework signing..."
+          find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
+            echo "Checking framework: $framework"
+            codesign -dv "$framework" 2>&1 | grep -q "Authority=" || {
+              echo "❌ Framework not properly signed: $framework"
+              exit 1
+            }
+          done
+          
+          echo "✅ All verification checks passed"
 
       - name: 📦 Create IPA
         run: |
@@ -267,7 +291,6 @@ jobs:
           rm -f dist_cert.p12
           rm -f dist_profile.mobileprovision
           rm -f "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
-          rm -f resolved_entitlements.plist
           
           # Remove keychain
           security delete-keychain build.keychain 

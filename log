@@ -1,0 +1,1234 @@
+2025-07-09T08:44:26.3822480Z Current runner version: '2.325.0'
+2025-07-09T08:44:26.3843210Z ##[group]Operating System
+2025-07-09T08:44:26.3844620Z macOS
+2025-07-09T08:44:26.3845860Z 15.5
+2025-07-09T08:44:26.3847100Z 24F74
+2025-07-09T08:44:26.3848340Z ##[endgroup]
+2025-07-09T08:44:26.3849620Z ##[group]Runner Image
+2025-07-09T08:44:26.3850910Z Image: macos-15-arm64
+2025-07-09T08:44:26.3852190Z Version: 20250630.1914
+2025-07-09T08:44:26.3853990Z Included Software: https://github.com/actions/runner-images/blob/macos-15-arm64/20250630.1914/images/macos/macos-15-arm64-Readme.md
+2025-07-09T08:44:26.3856130Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-15-arm64%2F20250630.1914
+2025-07-09T08:44:26.3857830Z ##[endgroup]
+2025-07-09T08:44:26.3859100Z ##[group]Runner Image Provisioner
+2025-07-09T08:44:26.3860470Z 2.0.449.1+6d46f4794670abc677653e70ad733fc4b7478209
+2025-07-09T08:44:26.3861890Z ##[endgroup]
+2025-07-09T08:44:26.3865110Z ##[group]GITHUB_TOKEN Permissions
+2025-07-09T08:44:26.3867080Z Actions: write
+2025-07-09T08:44:26.3868370Z Attestations: write
+2025-07-09T08:44:26.3869630Z Checks: write
+2025-07-09T08:44:26.3871120Z Contents: write
+2025-07-09T08:44:26.3872660Z Deployments: write
+2025-07-09T08:44:26.3882590Z Discussions: write
+2025-07-09T08:44:26.3883970Z Issues: write
+2025-07-09T08:44:26.3885280Z Metadata: read
+2025-07-09T08:44:26.3886570Z Models: read
+2025-07-09T08:44:26.3887830Z Packages: write
+2025-07-09T08:44:26.3889090Z Pages: write
+2025-07-09T08:44:26.3890340Z PullRequests: write
+2025-07-09T08:44:26.3891630Z RepositoryProjects: write
+2025-07-09T08:44:26.3892930Z SecurityEvents: write
+2025-07-09T08:44:26.3894210Z Statuses: write
+2025-07-09T08:44:26.3895460Z ##[endgroup]
+2025-07-09T08:44:26.3897870Z Secret source: Actions
+2025-07-09T08:44:26.3899250Z Prepare workflow directory
+2025-07-09T08:44:26.4115240Z Prepare all required actions
+2025-07-09T08:44:26.4141870Z Getting action download info
+2025-07-09T08:44:26.9615100Z ##[group]Download immutable action package 'actions/checkout@v4'
+2025-07-09T08:44:26.9617130Z Version: 4.2.2
+2025-07-09T08:44:26.9619070Z Digest: sha256:ccb2698953eaebd21c7bf6268a94f9c26518a7e38e27e0b83c1fe1ad049819b1
+2025-07-09T08:44:26.9621190Z Source commit SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
+2025-07-09T08:44:26.9622850Z ##[endgroup]
+2025-07-09T08:44:27.2217170Z ##[group]Download immutable action package 'actions/cache@v4'
+2025-07-09T08:44:27.2219310Z Version: 4.2.3
+2025-07-09T08:44:27.2221150Z Digest: sha256:c8a3bb963e1f1826d8fcc8d1354f0dd29d8ac1db1d4f6f20247055ae11b81ed9
+2025-07-09T08:44:27.2223170Z Source commit SHA: 5a3ec84eff668545956fd18022155c47e93e2684
+2025-07-09T08:44:27.2224840Z ##[endgroup]
+2025-07-09T08:44:27.3610370Z Download action repository 'maxim-lobanov/setup-xcode@v1' (SHA:60606e260d2fc5762a71e64e74b2174e8ea3c8bd)
+2025-07-09T08:44:27.9374850Z Download action repository 'subosito/flutter-action@v2' (SHA:e938fdf56512cc96ef2f93601a5a40bde3801046)
+2025-07-09T08:44:28.4674260Z Download action repository 'actions/upload-release-asset@v1' (SHA:e8f9f06c4b078e705bd2ea027f0926603fc9b4d5)
+2025-07-09T08:44:29.0047990Z Getting action download info
+2025-07-09T08:44:29.2570990Z Complete job name: 🏗️ Build and Deploy iOS App to App Store
+2025-07-09T08:44:29.3122850Z ##[group]Run actions/checkout@v4
+2025-07-09T08:44:29.3124100Z with:
+2025-07-09T08:44:29.3125160Z   repository: lusu007/dienstplan
+2025-07-09T08:44:29.3126370Z   token: ***
+2025-07-09T08:44:29.3127360Z   ssh-strict: true
+2025-07-09T08:44:29.3128380Z   ssh-user: git
+2025-07-09T08:44:29.3129400Z   persist-credentials: true
+2025-07-09T08:44:29.3130450Z   clean: true
+2025-07-09T08:44:29.3131470Z   sparse-checkout-cone-mode: true
+2025-07-09T08:44:29.3132550Z   fetch-depth: 1
+2025-07-09T08:44:29.3133770Z   fetch-tags: false
+2025-07-09T08:44:29.3134880Z   show-progress: true
+2025-07-09T08:44:29.3135970Z   lfs: false
+2025-07-09T08:44:29.3137040Z   submodules: false
+2025-07-09T08:44:29.3138150Z   set-safe-directory: true
+2025-07-09T08:44:29.3139630Z ##[endgroup]
+2025-07-09T08:44:29.6295980Z Syncing repository: lusu007/dienstplan
+2025-07-09T08:44:29.6301440Z ##[group]Getting Git version info
+2025-07-09T08:44:29.6302910Z Working directory is '/Users/runner/work/dienstplan/dienstplan'
+2025-07-09T08:44:29.6305690Z [command]/opt/homebrew/bin/git version
+2025-07-09T08:44:29.6808810Z git version 2.50.0
+2025-07-09T08:44:29.6857340Z ##[endgroup]
+2025-07-09T08:44:29.6863740Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/978c2e9d-2301-4824-88d9-fd02db55268a/.gitconfig'
+2025-07-09T08:44:29.6869980Z Temporarily overriding HOME='/Users/runner/work/_temp/978c2e9d-2301-4824-88d9-fd02db55268a' before making global git config changes
+2025-07-09T08:44:29.6872530Z Adding repository directory to the temporary git global config as a safe directory
+2025-07-09T08:44:29.6874790Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/dienstplan/dienstplan
+2025-07-09T08:44:29.6990850Z Deleting the contents of '/Users/runner/work/dienstplan/dienstplan'
+2025-07-09T08:44:29.6993650Z ##[group]Initializing the repository
+2025-07-09T08:44:29.6997640Z [command]/opt/homebrew/bin/git init /Users/runner/work/dienstplan/dienstplan
+2025-07-09T08:44:29.7198050Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-07-09T08:44:29.7200130Z hint: is subject to change. To configure the initial branch name to use in all
+2025-07-09T08:44:29.7201900Z hint: of your new repositories, which will suppress this warning, call:
+2025-07-09T08:44:29.7203460Z hint:
+2025-07-09T08:44:29.7204640Z hint: 	git config --global init.defaultBranch <name>
+2025-07-09T08:44:29.7205940Z hint:
+2025-07-09T08:44:29.7207150Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-07-09T08:44:29.7208860Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-07-09T08:44:29.7210350Z hint:
+2025-07-09T08:44:29.7211420Z hint: 	git branch -m <name>
+2025-07-09T08:44:29.7212540Z hint:
+2025-07-09T08:44:29.7213910Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2025-07-09T08:44:29.7215910Z Initialized empty Git repository in /Users/runner/work/dienstplan/dienstplan/.git/
+2025-07-09T08:44:29.7219240Z [command]/opt/homebrew/bin/git remote add origin https://github.com/lusu007/dienstplan
+2025-07-09T08:44:29.7295030Z ##[endgroup]
+2025-07-09T08:44:29.7296900Z ##[group]Disabling automatic garbage collection
+2025-07-09T08:44:29.7298430Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2025-07-09T08:44:29.7368280Z ##[endgroup]
+2025-07-09T08:44:29.7369990Z ##[group]Setting up auth
+2025-07-09T08:44:29.7371830Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-07-09T08:44:29.7445550Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-07-09T08:44:29.9102550Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-07-09T08:44:29.9168540Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-07-09T08:44:30.0075360Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-07-09T08:44:30.0205950Z ##[endgroup]
+2025-07-09T08:44:30.0213750Z ##[group]Fetching the repository
+2025-07-09T08:44:30.0215970Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b4048042696d8f9bdeff84995dc6c1736972cafe:refs/tags/v0.4.11
+2025-07-09T08:44:30.6179010Z From https://github.com/lusu007/dienstplan
+2025-07-09T08:44:30.6181580Z  * [new ref]         b4048042696d8f9bdeff84995dc6c1736972cafe -> v0.4.11
+2025-07-09T08:44:30.6251470Z ##[endgroup]
+2025-07-09T08:44:30.6273270Z ##[group]Determining the checkout info
+2025-07-09T08:44:30.6277940Z ##[endgroup]
+2025-07-09T08:44:30.6281350Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2025-07-09T08:44:30.6325440Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2025-07-09T08:44:30.6393130Z ##[group]Checking out the ref
+2025-07-09T08:44:30.6396350Z [command]/opt/homebrew/bin/git checkout --progress --force refs/tags/v0.4.11
+2025-07-09T08:44:30.7111270Z HEAD is now at b404804 chore(main): release 0.4.11 (#72)
+2025-07-09T08:44:30.7328620Z ##[endgroup]
+2025-07-09T08:44:30.7436640Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2025-07-09T08:44:30.7446250Z b4048042696d8f9bdeff84995dc6c1736972cafe
+2025-07-09T08:44:30.9047280Z ##[group]Run actions/cache@v4
+2025-07-09T08:44:30.9049630Z with:
+2025-07-09T08:44:30.9051790Z   path: ~/.pub-cache
+2025-07-09T08:44:30.9054670Z   key: macOS-pub-25a84f0a64e7c9cd26ee98d6eff2c9911d91a973b447ca0cd448e946eef82a65
+2025-07-09T08:44:30.9057670Z   restore-keys: macOS-pub-
+2025-07-09T08:44:30.9060010Z   enableCrossOsArchive: false
+2025-07-09T08:44:30.9062320Z   fail-on-cache-miss: false
+2025-07-09T08:44:30.9064550Z   lookup-only: false
+2025-07-09T08:44:30.9066910Z   save-always: false
+2025-07-09T08:44:30.9069150Z ##[endgroup]
+2025-07-09T08:44:31.4050450Z Cache not found for input keys: macOS-pub-25a84f0a64e7c9cd26ee98d6eff2c9911d91a973b447ca0cd448e946eef82a65, macOS-pub-
+2025-07-09T08:44:31.4261780Z ##[group]Run maxim-lobanov/setup-xcode@v1
+2025-07-09T08:44:31.4264050Z with:
+2025-07-09T08:44:31.4266100Z   xcode-version: 16.4
+2025-07-09T08:44:31.4268160Z ##[endgroup]
+2025-07-09T08:44:31.4957700Z Switching Xcode to version '16.4'...
+2025-07-09T08:44:31.6560790Z Xcode is set to 16.4.0 (16F6)
+2025-07-09T08:44:31.7244450Z ##[group]Run subosito/flutter-action@v2
+2025-07-09T08:44:31.7250630Z with:
+2025-07-09T08:44:31.7256210Z   flutter-version: 3.32.4
+2025-07-09T08:44:31.7258680Z   channel: stable
+2025-07-09T08:44:31.7260760Z   architecture: ARM64
+2025-07-09T08:44:31.7262790Z   cache: false
+2025-07-09T08:44:31.7264890Z   pub-cache-path: default
+2025-07-09T08:44:31.7267110Z   dry-run: false
+2025-07-09T08:44:31.7269270Z   git-source: https://github.com/flutter/flutter.git
+2025-07-09T08:44:31.7271770Z env:
+2025-07-09T08:44:31.7281080Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:44:31.7283660Z ##[endgroup]
+2025-07-09T08:44:31.7551520Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2025-07-09T08:44:31.7554000Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2025-07-09T08:44:31.7601030Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2025-07-09T08:44:31.7603150Z env:
+2025-07-09T08:44:31.7605060Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:44:31.7607250Z ##[endgroup]
+2025-07-09T08:44:31.8010080Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2025-07-09T08:44:31.8012870Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2025-07-09T08:44:31.8015330Z [36;1m  -n '3.32.4' \[0m
+2025-07-09T08:44:31.8017540Z [36;1m  -f '' \[0m
+2025-07-09T08:44:31.8019750Z [36;1m  -a 'ARM64' \[0m
+2025-07-09T08:44:31.8021880Z [36;1m  -k '' \[0m
+2025-07-09T08:44:31.8024070Z [36;1m  -c '' \[0m
+2025-07-09T08:44:31.8026220Z [36;1m  -l '' \[0m
+2025-07-09T08:44:31.8028390Z [36;1m  -d 'default' \[0m
+2025-07-09T08:44:31.8030800Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+2025-07-09T08:44:31.8033180Z [36;1m  stable[0m
+2025-07-09T08:44:31.8067900Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2025-07-09T08:44:31.8070110Z env:
+2025-07-09T08:44:31.8072140Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:44:31.8074400Z ##[endgroup]
+2025-07-09T08:44:32.0009870Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2025-07-09T08:44:32.0011950Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2025-07-09T08:44:32.0013920Z [36;1m  -n '3.32.4' \[0m
+2025-07-09T08:44:32.0015780Z [36;1m  -a 'arm64' \[0m
+2025-07-09T08:44:32.0017980Z [36;1m  -c '/Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64' \[0m
+2025-07-09T08:44:32.0020440Z [36;1m  -d '/Users/runner/.pub-cache' \[0m
+2025-07-09T08:44:32.0022540Z [36;1m  stable[0m
+2025-07-09T08:44:32.0053770Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2025-07-09T08:44:32.0055870Z env:
+2025-07-09T08:44:32.0057760Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:44:32.0059890Z ##[endgroup]
+2025-07-09T08:44:32.2304570Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2025-07-09T08:44:32.2409250Z                                  Dload  Upload   Total   Spent    Left  Speed
+2025-07-09T08:44:32.2511430Z 
+2025-07-09T08:44:32.5404010Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2025-07-09T08:44:33.5408800Z   0 1988M    0 18.5M    0     0  59.4M      0  0:00:33 --:--:--  0:00:33 59.3M
+2025-07-09T08:44:34.5407190Z   5 1988M    5  108M    0     0  82.7M      0  0:00:24  0:00:01  0:00:23 82.7M
+2025-07-09T08:44:35.5409690Z   9 1988M    9  196M    0     0  85.0M      0  0:00:23  0:00:02  0:00:21 85.0M
+2025-07-09T08:44:36.5409560Z  14 1988M   14  294M    0     0  88.9M      0  0:00:22  0:00:03  0:00:19 88.9M
+2025-07-09T08:44:37.5431870Z  20 1988M   20  398M    0     0  92.4M      0  0:00:21  0:00:04  0:00:17 92.3M
+2025-07-09T08:44:38.5405190Z  24 1988M   24  494M    0     0  93.0M      0  0:00:21  0:00:05  0:00:16 95.1M
+2025-07-09T08:44:39.5406780Z  30 1988M   30  598M    0     0  94.7M      0  0:00:20  0:00:06  0:00:14 97.9M
+2025-07-09T08:44:40.5408200Z  34 1988M   34  693M    0     0  94.8M      0  0:00:20  0:00:07  0:00:13 99.3M
+2025-07-09T08:44:41.5418660Z  40 1988M   40  796M    0     0  95.8M      0  0:00:20  0:00:08  0:00:12  100M
+2025-07-09T08:44:42.5405350Z  45 1988M   45  899M    0     0  96.5M      0  0:00:20  0:00:09  0:00:11  100M
+2025-07-09T08:44:43.5409700Z  50 1988M   50 1005M    0     0  97.4M      0  0:00:20  0:00:10  0:00:10  102M
+2025-07-09T08:44:44.5403150Z  55 1988M   55 1111M    0     0  98.2M      0  0:00:20  0:00:11  0:00:09  102M
+2025-07-09T08:44:45.5408430Z  61 1988M   61 1214M    0     0  98.6M      0  0:00:20  0:00:12  0:00:08  104M
+2025-07-09T08:44:46.5410360Z  65 1988M   65 1305M    0     0  98.0M      0  0:00:20  0:00:13  0:00:07  101M
+2025-07-09T08:44:47.5409880Z  69 1988M   69 1387M    0     0  96.9M      0  0:00:20  0:00:14  0:00:06 97.7M
+2025-07-09T08:44:48.5400810Z  75 1988M   75 1491M    0     0  97.4M      0  0:00:20  0:00:15  0:00:05 97.2M
+2025-07-09T08:44:49.5409950Z  80 1988M   80 1596M    0     0  97.8M      0  0:00:20  0:00:16  0:00:04 97.1M
+2025-07-09T08:44:50.5409000Z  85 1988M   85 1700M    0     0  98.2M      0  0:00:20  0:00:17  0:00:03 97.2M
+2025-07-09T08:44:51.5411140Z  90 1988M   90 1807M    0     0  98.6M      0  0:00:20  0:00:18  0:00:02  100M
+2025-07-09T08:44:52.2486950Z  96 1988M   96 1913M    0     0  99.0M      0  0:00:20  0:00:19  0:00:01  105M
+2025-07-09T08:44:52.2488790Z 100 1988M  100 1988M    0     0  99.3M      0  0:00:20  0:00:20 --:--:--  105M
+2025-07-09T08:45:30.2135940Z ##[group]Run flutter pub get
+2025-07-09T08:45:30.2137000Z [36;1mflutter pub get[0m
+2025-07-09T08:45:30.2345470Z shell: /bin/bash -e {0}
+2025-07-09T08:45:30.2346590Z env:
+2025-07-09T08:45:30.2364840Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:45:30.2366060Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:45:30.2367280Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:45:30.2368350Z ##[endgroup]
+2025-07-09T08:45:34.0598480Z Resolving dependencies...
+2025-07-09T08:45:34.6825190Z Downloading packages...
+2025-07-09T08:45:36.6585120Z + ansicolor 2.0.3
+2025-07-09T08:45:36.6585890Z + archive 4.0.7
+2025-07-09T08:45:36.6586660Z + args 2.7.0
+2025-07-09T08:45:36.6587360Z + async 2.13.0
+2025-07-09T08:45:36.6588060Z + characters 1.4.0 (1.4.1 available)
+2025-07-09T08:45:36.6588870Z + checked_yaml 2.0.4
+2025-07-09T08:45:36.6589660Z + cli_util 0.4.2
+2025-07-09T08:45:36.6590740Z + clock 1.1.2
+2025-07-09T08:45:36.6591460Z + collection 1.19.1
+2025-07-09T08:45:36.6592090Z + crypto 3.0.6
+2025-07-09T08:45:36.6592720Z + csslib 1.0.2
+2025-07-09T08:45:36.6593390Z + dbus 0.7.11
+2025-07-09T08:45:36.6594020Z + ffi 2.1.4
+2025-07-09T08:45:36.6607700Z + file 7.0.1
+2025-07-09T08:45:36.6614890Z + flutter 0.0.0 from sdk flutter
+2025-07-09T08:45:36.6615560Z + flutter_launcher_icons 0.14.4
+2025-07-09T08:45:36.6616210Z + flutter_lints 6.0.0
+2025-07-09T08:45:36.6616870Z + flutter_local_notifications 19.3.0
+2025-07-09T08:45:36.6617630Z + flutter_local_notifications_linux 6.0.0
+2025-07-09T08:45:36.6618350Z + flutter_local_notifications_platform_interface 9.1.0
+2025-07-09T08:45:36.6619190Z + flutter_local_notifications_windows 1.0.0
+2025-07-09T08:45:36.6619910Z + flutter_localizations 0.0.0 from sdk flutter
+2025-07-09T08:45:36.6620690Z + flutter_native_splash 2.4.6
+2025-07-09T08:45:36.6621350Z + flutter_web_plugins 0.0.0 from sdk flutter
+2025-07-09T08:45:36.6622050Z + html 0.15.6
+2025-07-09T08:45:36.6622640Z + http 1.4.0
+2025-07-09T08:45:36.6623260Z + http_parser 4.1.2
+2025-07-09T08:45:36.6623890Z + image 4.5.4
+2025-07-09T08:45:36.6624480Z + intl 0.20.2
+2025-07-09T08:45:36.6625180Z + json_annotation 4.9.0
+2025-07-09T08:45:36.6625810Z + lints 6.0.0
+2025-07-09T08:45:36.6626380Z + logger 2.6.0
+2025-07-09T08:45:36.6626930Z + material_color_utilities 0.11.1 (0.13.0 available)
+2025-07-09T08:45:36.6627600Z + meta 1.16.0 (1.17.0 available)
+2025-07-09T08:45:36.6628150Z + nested 1.0.0
+2025-07-09T08:45:36.6628680Z + package_info_plus 8.3.0
+2025-07-09T08:45:36.6629240Z + package_info_plus_platform_interface 3.2.0
+2025-07-09T08:45:36.6629950Z + path 1.9.1
+2025-07-09T08:45:36.6630470Z + path_provider 2.1.5
+2025-07-09T08:45:36.6631000Z + path_provider_android 2.2.17
+2025-07-09T08:45:36.6631560Z + path_provider_foundation 2.4.1
+2025-07-09T08:45:36.6632130Z + path_provider_linux 2.2.1
+2025-07-09T08:45:36.6632700Z + path_provider_platform_interface 2.1.2
+2025-07-09T08:45:36.6633270Z + path_provider_windows 2.3.0
+2025-07-09T08:45:36.6633830Z + petitparser 6.1.0 (7.0.0 available)
+2025-07-09T08:45:36.6634390Z + platform 3.1.6
+2025-07-09T08:45:36.6634920Z + plugin_platform_interface 2.1.8
+2025-07-09T08:45:36.6635460Z + posix 6.0.3
+2025-07-09T08:45:36.6635990Z + provider 6.1.5
+2025-07-09T08:45:36.6636530Z + shared_preferences 2.5.3
+2025-07-09T08:45:36.6637080Z + shared_preferences_android 2.4.10
+2025-07-09T08:45:36.6637670Z + shared_preferences_foundation 2.5.4
+2025-07-09T08:45:36.6638250Z + shared_preferences_linux 2.4.1
+2025-07-09T08:45:36.6638830Z + shared_preferences_platform_interface 2.4.1
+2025-07-09T08:45:36.6639480Z + shared_preferences_web 2.4.3
+2025-07-09T08:45:36.6640040Z + shared_preferences_windows 2.4.1
+2025-07-09T08:45:36.6646530Z + simple_gesture_detector 0.2.1
+2025-07-09T08:45:36.6647110Z + sky_engine 0.0.0 from sdk flutter
+2025-07-09T08:45:36.6647670Z + source_span 1.10.1
+2025-07-09T08:45:36.6648190Z + sqflite 2.4.2
+2025-07-09T08:45:36.6648730Z + sqflite_android 2.4.1
+2025-07-09T08:45:36.6649270Z + sqflite_common 2.5.5
+2025-07-09T08:45:36.6649790Z + sqflite_darwin 2.4.2
+2025-07-09T08:45:36.6650820Z + sqflite_platform_interface 2.4.0
+2025-07-09T08:45:36.6651380Z + string_scanner 1.4.1
+2025-07-09T08:45:36.6651990Z + synchronized 3.4.0
+2025-07-09T08:45:36.6652520Z + table_calendar 3.2.0
+2025-07-09T08:45:36.6653060Z + term_glyph 1.2.2
+2025-07-09T08:45:36.6653580Z + timezone 0.10.1
+2025-07-09T08:45:36.6654140Z + typed_data 1.4.0
+2025-07-09T08:45:36.6654670Z + universal_io 2.2.2
+2025-07-09T08:45:36.6655200Z + url_launcher 6.3.1
+2025-07-09T08:45:36.6655730Z + url_launcher_android 6.3.16
+2025-07-09T08:45:36.6656280Z + url_launcher_ios 6.3.3
+2025-07-09T08:45:36.6656820Z + url_launcher_linux 3.2.1
+2025-07-09T08:45:36.6657350Z + url_launcher_macos 3.2.2
+2025-07-09T08:45:36.6657910Z + url_launcher_platform_interface 2.3.2
+2025-07-09T08:45:36.6658480Z + url_launcher_web 2.4.1
+2025-07-09T08:45:36.6659020Z + url_launcher_windows 3.1.4
+2025-07-09T08:45:36.6659570Z + vector_math 2.1.4 (2.2.0 available)
+2025-07-09T08:45:36.6660130Z + web 1.1.1
+2025-07-09T08:45:36.6660630Z + win32 5.14.0
+2025-07-09T08:45:36.6661140Z + xdg_directories 1.1.0
+2025-07-09T08:45:36.6661680Z + xml 6.5.0 (6.6.0 available)
+2025-07-09T08:45:36.6662230Z + yaml 3.1.3
+2025-07-09T08:45:36.6662810Z Changed 85 dependencies!
+2025-07-09T08:45:36.6663780Z 6 packages have newer versions incompatible with dependency constraints.
+2025-07-09T08:45:36.6664590Z Try `flutter pub outdated` for more information.
+2025-07-09T08:45:42.8222430Z ##[group]Run VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+2025-07-09T08:45:42.8225740Z [36;1mVERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')[0m
+2025-07-09T08:45:42.8226960Z [36;1mecho "version=$VERSION" >> $GITHUB_OUTPUT[0m
+2025-07-09T08:45:42.8227990Z [36;1mecho "Version: $VERSION"[0m
+2025-07-09T08:45:42.8606600Z shell: /bin/bash -e {0}
+2025-07-09T08:45:42.8607410Z env:
+2025-07-09T08:45:42.8608320Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:45:42.8609530Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:45:42.8610610Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:45:42.8611430Z ##[endgroup]
+2025-07-09T08:45:42.9491120Z Version: 0.4.11
+2025-07-09T08:45:42.9554080Z ##[group]Run echo "Setting up Codemagic CLI tools..."
+2025-07-09T08:45:42.9555150Z [36;1mecho "Setting up Codemagic CLI tools..."[0m
+2025-07-09T08:45:42.9555980Z [36;1m[0m
+2025-07-09T08:45:42.9557000Z [36;1m# Install using pip with --break-system-packages flag to handle externally managed environment[0m
+2025-07-09T08:45:42.9558120Z [36;1mpip3 install --break-system-packages codemagic-cli-tools[0m
+2025-07-09T08:45:42.9558990Z [36;1m[0m
+2025-07-09T08:45:42.9559650Z [36;1mecho "Verifying installation..."[0m
+2025-07-09T08:45:42.9560430Z [36;1mapp-store-connect --version[0m
+2025-07-09T08:45:42.9561190Z [36;1mkeychain --version[0m
+2025-07-09T08:45:42.9561850Z [36;1mxcode-project --version[0m
+2025-07-09T08:45:42.9562540Z [36;1m[0m
+2025-07-09T08:45:42.9563310Z [36;1mecho "✅ Codemagic CLI tools installation completed successfully"[0m
+2025-07-09T08:45:42.9607900Z shell: /bin/bash -e {0}
+2025-07-09T08:45:42.9608570Z env:
+2025-07-09T08:45:42.9609170Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:45:42.9609940Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:45:42.9611230Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:45:42.9611850Z ##[endgroup]
+2025-07-09T08:45:42.9957200Z Setting up Codemagic CLI tools...
+2025-07-09T08:45:44.6999760Z Collecting codemagic-cli-tools
+2025-07-09T08:45:44.8063240Z   Downloading codemagic_cli_tools-0.60.0-py3-none-any.whl.metadata (10 kB)
+2025-07-09T08:45:44.8462230Z Requirement already satisfied: cryptography>=38.0.0 in /opt/homebrew/lib/python3.13/site-packages (from codemagic-cli-tools) (45.0.4)
+2025-07-09T08:45:44.9124210Z Collecting google-api-python-client>=2.84.0 (from codemagic-cli-tools)
+2025-07-09T08:45:44.9379050Z   Downloading google_api_python_client-2.176.0-py3-none-any.whl.metadata (7.0 kB)
+2025-07-09T08:45:45.0302220Z Collecting httplib2>=0.19.0 (from codemagic-cli-tools)
+2025-07-09T08:45:45.0438340Z   Downloading httplib2-0.22.0-py3-none-any.whl.metadata (2.6 kB)
+2025-07-09T08:45:45.0844150Z Collecting oauth2client>=4.1.3 (from codemagic-cli-tools)
+2025-07-09T08:45:45.0856870Z   Downloading oauth2client-4.1.3-py2.py3-none-any.whl.metadata (1.2 kB)
+2025-07-09T08:45:45.1236680Z Collecting packaging>=22.0 (from codemagic-cli-tools)
+2025-07-09T08:45:45.1337450Z   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-07-09T08:45:45.1948320Z Collecting psutil>=5.8.0 (from codemagic-cli-tools)
+2025-07-09T08:45:45.2052230Z   Downloading psutil-7.0.0-cp36-abi3-macosx_11_0_arm64.whl.metadata (22 kB)
+2025-07-09T08:45:45.2760460Z Collecting pyjwt<3.0.0,>=2.4.0 (from codemagic-cli-tools)
+2025-07-09T08:45:45.2869210Z   Downloading PyJWT-2.10.1-py3-none-any.whl.metadata (4.0 kB)
+2025-07-09T08:45:46.7706810Z Collecting python-dateutil>=2.9.0 (from codemagic-cli-tools)
+2025-07-09T08:45:46.7811750Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2025-07-09T08:45:46.8114290Z Collecting requests>=2.25 (from codemagic-cli-tools)
+2025-07-09T08:45:46.8216790Z   Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+2025-07-09T08:45:46.8328090Z Requirement already satisfied: cffi>=1.14 in /opt/homebrew/lib/python3.13/site-packages (from cryptography>=38.0.0->codemagic-cli-tools) (1.17.1)
+2025-07-09T08:45:46.8431910Z Requirement already satisfied: pycparser in /opt/homebrew/lib/python3.13/site-packages (from cffi>=1.14->cryptography>=38.0.0->codemagic-cli-tools) (2.22)
+2025-07-09T08:45:46.8696190Z Collecting google-auth!=2.24.0,!=2.25.0,<3.0.0,>=1.32.0 (from google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:46.8800990Z   Downloading google_auth-2.40.3-py2.py3-none-any.whl.metadata (6.2 kB)
+2025-07-09T08:45:46.9219540Z Collecting google-auth-httplib2<1.0.0,>=0.2.0 (from google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:46.9365530Z   Downloading google_auth_httplib2-0.2.0-py2.py3-none-any.whl.metadata (2.2 kB)
+2025-07-09T08:45:46.9669870Z Collecting google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0,>=1.31.5 (from google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:46.9773910Z   Downloading google_api_core-2.25.1-py3-none-any.whl.metadata (3.0 kB)
+2025-07-09T08:45:46.9878060Z Collecting uritemplate<5,>=3.0.1 (from google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:46.9987980Z   Downloading uritemplate-4.2.0-py3-none-any.whl.metadata (2.6 kB)
+2025-07-09T08:45:47.0291580Z Collecting googleapis-common-protos<2.0.0,>=1.56.2 (from google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0,>=1.31.5->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.0335310Z   Downloading googleapis_common_protos-1.70.0-py3-none-any.whl.metadata (9.3 kB)
+2025-07-09T08:45:47.1742810Z Collecting protobuf!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<7.0.0,>=3.19.5 (from google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0,>=1.31.5->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.1836530Z   Downloading protobuf-6.31.1-cp39-abi3-macosx_10_9_universal2.whl.metadata (593 bytes)
+2025-07-09T08:45:47.2012970Z Collecting proto-plus<2.0.0,>=1.22.3 (from google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0,>=1.31.5->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.2245750Z   Downloading proto_plus-1.26.1-py3-none-any.whl.metadata (2.2 kB)
+2025-07-09T08:45:47.2735110Z Collecting cachetools<6.0,>=2.0.0 (from google-auth!=2.24.0,!=2.25.0,<3.0.0,>=1.32.0->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.2782200Z   Downloading cachetools-5.5.2-py3-none-any.whl.metadata (5.4 kB)
+2025-07-09T08:45:47.2985310Z Collecting pyasn1-modules>=0.2.1 (from google-auth!=2.24.0,!=2.25.0,<3.0.0,>=1.32.0->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.3011680Z   Downloading pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
+2025-07-09T08:45:47.3204590Z Collecting rsa<5,>=3.1.4 (from google-auth!=2.24.0,!=2.25.0,<3.0.0,>=1.32.0->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.3239280Z   Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+2025-07-09T08:45:47.3999880Z Collecting pyparsing!=3.0.0,!=3.0.1,!=3.0.2,!=3.0.3,<4,>=2.4.2 (from httplib2>=0.19.0->codemagic-cli-tools)
+2025-07-09T08:45:47.4034920Z   Downloading pyparsing-3.2.3-py3-none-any.whl.metadata (5.0 kB)
+2025-07-09T08:45:47.5132010Z Collecting charset_normalizer<4,>=2 (from requests>=2.25->codemagic-cli-tools)
+2025-07-09T08:45:47.5160720Z   Downloading charset_normalizer-3.4.2-cp313-cp313-macosx_10_13_universal2.whl.metadata (35 kB)
+2025-07-09T08:45:47.5312270Z Collecting idna<4,>=2.5 (from requests>=2.25->codemagic-cli-tools)
+2025-07-09T08:45:47.5341550Z   Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+2025-07-09T08:45:47.5631250Z Collecting urllib3<3,>=1.21.1 (from requests>=2.25->codemagic-cli-tools)
+2025-07-09T08:45:47.5689580Z   Downloading urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+2025-07-09T08:45:47.5746790Z Requirement already satisfied: certifi>=2017.4.17 in /opt/homebrew/lib/python3.13/site-packages (from requests>=2.25->codemagic-cli-tools) (2025.6.15)
+2025-07-09T08:45:47.5862000Z Collecting pyasn1>=0.1.3 (from rsa<5,>=3.1.4->google-auth!=2.24.0,!=2.25.0,<3.0.0,>=1.32.0->google-api-python-client>=2.84.0->codemagic-cli-tools)
+2025-07-09T08:45:47.5893000Z   Downloading pyasn1-0.6.1-py3-none-any.whl.metadata (8.4 kB)
+2025-07-09T08:45:47.6439700Z Collecting six>=1.6.1 (from oauth2client>=4.1.3->codemagic-cli-tools)
+2025-07-09T08:45:47.6493600Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2025-07-09T08:45:47.6697970Z Downloading codemagic_cli_tools-0.60.0-py3-none-any.whl (31.0 MB)
+2025-07-09T08:45:47.8756070Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 31.0/31.0 MB 154.8 MB/s eta 0:00:00
+2025-07-09T08:45:47.8824500Z Downloading PyJWT-2.10.1-py3-none-any.whl (22 kB)
+2025-07-09T08:45:47.8887310Z Downloading google_api_python_client-2.176.0-py3-none-any.whl (13.7 MB)
+2025-07-09T08:45:47.9497330Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.7/13.7 MB 229.5 MB/s eta 0:00:00
+2025-07-09T08:45:47.9534160Z Downloading google_api_core-2.25.1-py3-none-any.whl (160 kB)
+2025-07-09T08:45:47.9607270Z Downloading google_auth-2.40.3-py2.py3-none-any.whl (216 kB)
+2025-07-09T08:45:47.9662930Z Downloading cachetools-5.5.2-py3-none-any.whl (10 kB)
+2025-07-09T08:45:47.9712160Z Downloading google_auth_httplib2-0.2.0-py2.py3-none-any.whl (9.3 kB)
+2025-07-09T08:45:47.9760750Z Downloading googleapis_common_protos-1.70.0-py3-none-any.whl (294 kB)
+2025-07-09T08:45:47.9823440Z Downloading httplib2-0.22.0-py3-none-any.whl (96 kB)
+2025-07-09T08:45:47.9876300Z Downloading proto_plus-1.26.1-py3-none-any.whl (50 kB)
+2025-07-09T08:45:47.9927910Z Downloading protobuf-6.31.1-cp39-abi3-macosx_10_9_universal2.whl (425 kB)
+2025-07-09T08:45:47.9996210Z Downloading pyparsing-3.2.3-py3-none-any.whl (111 kB)
+2025-07-09T08:45:48.0157050Z Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+2025-07-09T08:45:48.0267240Z Downloading charset_normalizer-3.4.2-cp313-cp313-macosx_10_13_universal2.whl (199 kB)
+2025-07-09T08:45:48.0358960Z Downloading idna-3.10-py3-none-any.whl (70 kB)
+2025-07-09T08:45:48.0464270Z Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+2025-07-09T08:45:48.0565930Z Downloading uritemplate-4.2.0-py3-none-any.whl (11 kB)
+2025-07-09T08:45:48.0651130Z Downloading urllib3-2.5.0-py3-none-any.whl (129 kB)
+2025-07-09T08:45:48.0652180Z Downloading oauth2client-4.1.3-py2.py3-none-any.whl (98 kB)
+2025-07-09T08:45:48.0690100Z Downloading packaging-25.0-py3-none-any.whl (66 kB)
+2025-07-09T08:45:48.0954900Z Downloading psutil-7.0.0-cp36-abi3-macosx_11_0_arm64.whl (239 kB)
+2025-07-09T08:45:48.0973650Z Downloading pyasn1-0.6.1-py3-none-any.whl (83 kB)
+2025-07-09T08:45:48.1021500Z Downloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+2025-07-09T08:45:48.1093620Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2025-07-09T08:45:48.1145920Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2025-07-09T08:45:48.1841580Z Installing collected packages: urllib3, uritemplate, six, pyparsing, pyjwt, pyasn1, psutil, protobuf, packaging, idna, charset_normalizer, cachetools, rsa, requests, python-dateutil, pyasn1-modules, proto-plus, httplib2, googleapis-common-protos, oauth2client, google-auth, google-auth-httplib2, google-api-core, google-api-python-client, codemagic-cli-tools
+2025-07-09T08:45:49.9484630Z 
+2025-07-09T08:45:49.9637360Z Successfully installed cachetools-5.5.2 charset_normalizer-3.4.2 codemagic-cli-tools-0.60.0 google-api-core-2.25.1 google-api-python-client-2.176.0 google-auth-2.40.3 google-auth-httplib2-0.2.0 googleapis-common-protos-1.70.0 httplib2-0.22.0 idna-3.10 oauth2client-4.1.3 packaging-25.0 proto-plus-1.26.1 protobuf-6.31.1 psutil-7.0.0 pyasn1-0.6.1 pyasn1-modules-0.4.2 pyjwt-2.10.1 pyparsing-3.2.3 python-dateutil-2.9.0.post0 requests-2.32.4 rsa-4.9.1 six-1.17.0 uritemplate-4.2.0 urllib3-2.5.0
+2025-07-09T08:45:50.0950830Z Verifying installation...
+2025-07-09T08:45:50.9043180Z AppStoreConnect installed at /opt/homebrew/bin/app-store-connect
+2025-07-09T08:45:50.9080310Z app-store-connect 0.60.0
+2025-07-09T08:45:51.3360740Z Keychain installed at /opt/homebrew/bin/keychain
+2025-07-09T08:45:51.3365020Z keychain 0.60.0
+2025-07-09T08:45:51.9842660Z XcodeProject installed at /opt/homebrew/bin/xcode-project
+2025-07-09T08:45:51.9944580Z xcode-project 0.60.0
+2025-07-09T08:45:52.0671940Z ✅ Codemagic CLI tools installation completed successfully
+2025-07-09T08:45:52.0753310Z ##[group]Run echo "Setting up iOS code signing..."
+2025-07-09T08:45:52.0755280Z [36;1mecho "Setting up iOS code signing..."[0m
+2025-07-09T08:45:52.0756000Z [36;1m[0m
+2025-07-09T08:45:52.0768330Z [36;1m# Create directories for certificates and profiles[0m
+2025-07-09T08:45:52.0769350Z [36;1mmkdir -p ~/Library/MobileDevice/Provisioning\ Profiles[0m
+2025-07-09T08:45:52.0770210Z [36;1mmkdir -p ~/Library/Developer/Xcode/DerivedData[0m
+2025-07-09T08:45:52.0771510Z [36;1m[0m
+2025-07-09T08:45:52.0772120Z [36;1mecho "Decoding and installing distribution certificate..."[0m
+2025-07-09T08:45:52.0772950Z [36;1m# Decode and install distribution certificate[0m
+2025-07-09T08:45:52.0802590Z [36;1mecho "***" | base64 -d > dist_cert.p12[0m
+2025-07-09T08:45:52.0803360Z [36;1m[0m
+2025-07-09T08:45:52.0804080Z [36;1mecho "Creating keychain..."[0m
+2025-07-09T08:45:52.0804780Z [36;1msecurity create-keychain -p "" build.keychain[0m
+2025-07-09T08:45:52.0805630Z [36;1msecurity default-keychain -s build.keychain[0m
+2025-07-09T08:45:52.0806900Z [36;1msecurity unlock-keychain -p "" build.keychain[0m
+2025-07-09T08:45:52.0808040Z [36;1msecurity set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain[0m
+2025-07-09T08:45:52.0808970Z [36;1m[0m
+2025-07-09T08:45:52.0809540Z [36;1mecho "Importing certificate to keychain..."[0m
+2025-07-09T08:45:52.0810880Z [36;1msecurity import dist_cert.p12 -k build.keychain -P "***" -T /usr/bin/codesign[0m
+2025-07-09T08:45:52.0812050Z [36;1msecurity set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain[0m
+2025-07-09T08:45:52.0812970Z [36;1m[0m
+2025-07-09T08:45:52.0813930Z [36;1m# List available identities for verification[0m
+2025-07-09T08:45:52.0814710Z [36;1mecho "Available signing identities:"[0m
+2025-07-09T08:45:52.0815440Z [36;1msecurity find-identity -v build.keychain[0m
+2025-07-09T08:45:52.0816320Z [36;1m[0m
+2025-07-09T08:45:52.0816890Z [36;1m# Get the exact identity name for signing[0m
+2025-07-09T08:45:52.0817980Z [36;1mSIGNING_IDENTITY=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')[0m
+2025-07-09T08:45:52.0819380Z [36;1mecho "Using signing identity: $SIGNING_IDENTITY"[0m
+2025-07-09T08:45:52.0820080Z [36;1m[0m
+2025-07-09T08:45:52.0820660Z [36;1mif [ -z "$SIGNING_IDENTITY" ]; then[0m
+2025-07-09T08:45:52.0821420Z [36;1m  echo "❌ No iPhone Distribution certificate found"[0m
+2025-07-09T08:45:52.0822300Z [36;1m  exit 1[0m
+2025-07-09T08:45:52.0822840Z [36;1mfi[0m
+2025-07-09T08:45:52.0823590Z [36;1m[0m
+2025-07-09T08:45:52.0824180Z [36;1mecho "Decoding and installing provisioning profile..."[0m
+2025-07-09T08:45:52.0825500Z [36;1m# Decode and install provisioning profile[0m
+2025-07-09T08:45:52.0826720Z [36;1mecho "***[0m
+2025-07-09T08:45:52.0827620Z [36;1m***[0m
+2025-07-09T08:45:52.0828450Z [36;1m***[0m
+2025-07-09T08:45:52.0829240Z [36;1m***[0m
+2025-07-09T08:45:52.0830110Z [36;1m***[0m
+2025-07-09T08:45:52.0830930Z [36;1m***[0m
+2025-07-09T08:45:52.0831800Z [36;1m***[0m
+2025-07-09T08:45:52.0832800Z [36;1m***[0m
+2025-07-09T08:45:52.0836380Z [36;1m***[0m
+2025-07-09T08:45:52.0845010Z [36;1m***[0m
+2025-07-09T08:45:52.0846500Z [36;1m***[0m
+2025-07-09T08:45:52.0847360Z [36;1m***[0m
+2025-07-09T08:45:52.0848170Z [36;1m***[0m
+2025-07-09T08:45:52.0849010Z [36;1m***[0m
+2025-07-09T08:45:52.0849820Z [36;1m***[0m
+2025-07-09T08:45:52.0850580Z [36;1m***[0m
+2025-07-09T08:45:52.0851360Z [36;1m***[0m
+2025-07-09T08:45:52.0852140Z [36;1m***[0m
+2025-07-09T08:45:52.0852960Z [36;1m***[0m
+2025-07-09T08:45:52.0853860Z [36;1m***[0m
+2025-07-09T08:45:52.0854750Z [36;1m***[0m
+2025-07-09T08:45:52.0855580Z [36;1m***[0m
+2025-07-09T08:45:52.0856960Z [36;1m***[0m
+2025-07-09T08:45:52.0857820Z [36;1m***[0m
+2025-07-09T08:45:52.0858590Z [36;1m***[0m
+2025-07-09T08:45:52.0859370Z [36;1m***[0m
+2025-07-09T08:45:52.0860350Z [36;1m***[0m
+2025-07-09T08:45:52.0861350Z [36;1m***[0m
+2025-07-09T08:45:52.0862100Z [36;1m***[0m
+2025-07-09T08:45:52.0863380Z [36;1m***[0m
+2025-07-09T08:45:52.0864210Z [36;1m***[0m
+2025-07-09T08:45:52.0865040Z [36;1m***[0m
+2025-07-09T08:45:52.0865900Z [36;1m***[0m
+2025-07-09T08:45:52.0866730Z [36;1m***[0m
+2025-07-09T08:45:52.0867590Z [36;1m***[0m
+2025-07-09T08:45:52.0868450Z [36;1m***[0m
+2025-07-09T08:45:52.0869210Z [36;1m***[0m
+2025-07-09T08:45:52.0870030Z [36;1m***[0m
+2025-07-09T08:45:52.0870950Z [36;1m***[0m
+2025-07-09T08:45:52.0871840Z [36;1m***[0m
+2025-07-09T08:45:52.0872690Z [36;1m***[0m
+2025-07-09T08:45:52.0873490Z [36;1m***[0m
+2025-07-09T08:45:52.0874830Z [36;1m***[0m
+2025-07-09T08:45:52.0875980Z [36;1m***[0m
+2025-07-09T08:45:52.0876920Z [36;1m***[0m
+2025-07-09T08:45:52.0877880Z [36;1m***[0m
+2025-07-09T08:45:52.0878800Z [36;1m***[0m
+2025-07-09T08:45:52.0879800Z [36;1m***[0m
+2025-07-09T08:45:52.0880700Z [36;1m***[0m
+2025-07-09T08:45:52.0881520Z [36;1m***[0m
+2025-07-09T08:45:52.0882290Z [36;1m***[0m
+2025-07-09T08:45:52.0883160Z [36;1m***[0m
+2025-07-09T08:45:52.0897750Z [36;1m***[0m
+2025-07-09T08:45:52.0898630Z [36;1m***[0m
+2025-07-09T08:45:52.0899390Z [36;1m***[0m
+2025-07-09T08:45:52.0900170Z [36;1m***[0m
+2025-07-09T08:45:52.0902470Z [36;1m***[0m
+2025-07-09T08:45:52.0904430Z [36;1m***[0m
+2025-07-09T08:45:52.0905220Z [36;1m***[0m
+2025-07-09T08:45:52.0906290Z [36;1m***[0m
+2025-07-09T08:45:52.0908930Z [36;1m***[0m
+2025-07-09T08:45:52.0909720Z [36;1m***[0m
+2025-07-09T08:45:52.0910720Z [36;1m***[0m
+2025-07-09T08:45:52.0911550Z [36;1m***[0m
+2025-07-09T08:45:52.0912310Z [36;1m***[0m
+2025-07-09T08:45:52.0913100Z [36;1m***[0m
+2025-07-09T08:45:52.0913910Z [36;1m***[0m
+2025-07-09T08:45:52.0914810Z [36;1m***[0m
+2025-07-09T08:45:52.0915690Z [36;1m***[0m
+2025-07-09T08:45:52.0916540Z [36;1m***[0m
+2025-07-09T08:45:52.0917410Z [36;1m***[0m
+2025-07-09T08:45:52.0918270Z [36;1m***[0m
+2025-07-09T08:45:52.0919070Z [36;1m***[0m
+2025-07-09T08:45:52.0919870Z [36;1m***[0m
+2025-07-09T08:45:52.0920670Z [36;1m***[0m
+2025-07-09T08:45:52.0921470Z [36;1m***[0m
+2025-07-09T08:45:52.0922300Z [36;1m***[0m
+2025-07-09T08:45:52.0923130Z [36;1m***[0m
+2025-07-09T08:45:52.0924000Z [36;1m***[0m
+2025-07-09T08:45:52.0924920Z [36;1m***[0m
+2025-07-09T08:45:52.0925770Z [36;1m***[0m
+2025-07-09T08:45:52.0926590Z [36;1m***[0m
+2025-07-09T08:45:52.0927360Z [36;1m***[0m
+2025-07-09T08:45:52.0928170Z [36;1m***[0m
+2025-07-09T08:45:52.0928980Z [36;1m***[0m
+2025-07-09T08:45:52.0929770Z [36;1m***[0m
+2025-07-09T08:45:52.0930560Z [36;1m***[0m
+2025-07-09T08:45:52.0931370Z [36;1m***[0m
+2025-07-09T08:45:52.0932800Z [36;1m***[0m
+2025-07-09T08:45:52.0933790Z [36;1m***[0m
+2025-07-09T08:45:52.0934890Z [36;1m***[0m
+2025-07-09T08:45:52.0935730Z [36;1m***[0m
+2025-07-09T08:45:52.0936600Z [36;1m***[0m
+2025-07-09T08:45:52.0937430Z [36;1m***[0m
+2025-07-09T08:45:52.0946260Z [36;1m***[0m
+2025-07-09T08:45:52.0947240Z [36;1m***[0m
+2025-07-09T08:45:52.0948050Z [36;1m***[0m
+2025-07-09T08:45:52.0948920Z [36;1m***[0m
+2025-07-09T08:45:52.0949970Z [36;1m***[0m
+2025-07-09T08:45:52.0950850Z [36;1m***[0m
+2025-07-09T08:45:52.0951700Z [36;1m***[0m
+2025-07-09T08:45:52.0952510Z [36;1m***[0m
+2025-07-09T08:45:52.0955190Z [36;1m***[0m
+2025-07-09T08:45:52.0956020Z [36;1m***[0m
+2025-07-09T08:45:52.0956850Z [36;1m***[0m
+2025-07-09T08:45:52.0957740Z [36;1m***[0m
+2025-07-09T08:45:52.0958550Z [36;1m***[0m
+2025-07-09T08:45:52.0959730Z [36;1m***[0m
+2025-07-09T08:45:52.0960580Z [36;1m***[0m
+2025-07-09T08:45:52.0961440Z [36;1m***[0m
+2025-07-09T08:45:52.0962500Z [36;1m***[0m
+2025-07-09T08:45:52.0964050Z [36;1m***[0m
+2025-07-09T08:45:52.0964930Z [36;1m***[0m
+2025-07-09T08:45:52.0965990Z [36;1m***[0m
+2025-07-09T08:45:52.0967490Z [36;1m***[0m
+2025-07-09T08:45:52.0969340Z [36;1m***[0m
+2025-07-09T08:45:52.0970280Z [36;1m***[0m
+2025-07-09T08:45:52.0971250Z [36;1m***[0m
+2025-07-09T08:45:52.0972140Z [36;1m***[0m
+2025-07-09T08:45:52.0973000Z [36;1m***[0m
+2025-07-09T08:45:52.0973830Z [36;1m***[0m
+2025-07-09T08:45:52.0974680Z [36;1m***[0m
+2025-07-09T08:45:52.0975750Z [36;1m***[0m
+2025-07-09T08:45:52.0976520Z [36;1m***[0m
+2025-07-09T08:45:52.0977270Z [36;1m***[0m
+2025-07-09T08:45:52.0978050Z [36;1m***[0m
+2025-07-09T08:45:52.0978890Z [36;1m***[0m
+2025-07-09T08:45:52.0979650Z [36;1m***[0m
+2025-07-09T08:45:52.0980820Z [36;1m***[0m
+2025-07-09T08:45:52.0981650Z [36;1m***[0m
+2025-07-09T08:45:52.0982400Z [36;1m***[0m
+2025-07-09T08:45:52.0983230Z [36;1m***[0m
+2025-07-09T08:45:52.0983990Z [36;1m***[0m
+2025-07-09T08:45:52.0984810Z [36;1m***[0m
+2025-07-09T08:45:52.0985560Z [36;1m***[0m
+2025-07-09T08:45:52.0986330Z [36;1m***[0m
+2025-07-09T08:45:52.0987120Z [36;1m***[0m
+2025-07-09T08:45:52.0998490Z [36;1m***[0m
+2025-07-09T08:45:52.0999330Z [36;1m***[0m
+2025-07-09T08:45:52.1000250Z [36;1m***[0m
+2025-07-09T08:45:52.1001020Z [36;1m***[0m
+2025-07-09T08:45:52.1001830Z [36;1m***[0m
+2025-07-09T08:45:52.1003130Z [36;1m***[0m
+2025-07-09T08:45:52.1004040Z [36;1m***[0m
+2025-07-09T08:45:52.1004850Z [36;1m***[0m
+2025-07-09T08:45:52.1005610Z [36;1m***[0m
+2025-07-09T08:45:52.1006530Z [36;1m***[0m
+2025-07-09T08:45:52.1007420Z [36;1m***[0m
+2025-07-09T08:45:52.1008380Z [36;1m***[0m
+2025-07-09T08:45:52.1009350Z [36;1m***[0m
+2025-07-09T08:45:52.1010170Z [36;1m***[0m
+2025-07-09T08:45:52.1010960Z [36;1m***[0m
+2025-07-09T08:45:52.1012080Z [36;1m***[0m
+2025-07-09T08:45:52.1013060Z [36;1m***[0m
+2025-07-09T08:45:52.1013940Z [36;1m***[0m
+2025-07-09T08:45:52.1014860Z [36;1m***[0m
+2025-07-09T08:45:52.1016040Z [36;1m***[0m
+2025-07-09T08:45:52.1017610Z [36;1m***[0m
+2025-07-09T08:45:52.1018380Z [36;1m***[0m
+2025-07-09T08:45:52.1019100Z [36;1m***[0m
+2025-07-09T08:45:52.1019850Z [36;1m***[0m
+2025-07-09T08:45:52.1020700Z [36;1m***[0m
+2025-07-09T08:45:52.1021650Z [36;1m***[0m
+2025-07-09T08:45:52.1022440Z [36;1m***[0m
+2025-07-09T08:45:52.1023240Z [36;1m***[0m
+2025-07-09T08:45:52.1024040Z [36;1m***[0m
+2025-07-09T08:45:52.1024810Z [36;1m***[0m
+2025-07-09T08:45:52.1039020Z [36;1m***[0m
+2025-07-09T08:45:52.1039870Z [36;1m***[0m
+2025-07-09T08:45:52.1040630Z [36;1m***[0m
+2025-07-09T08:45:52.1041450Z [36;1m***[0m
+2025-07-09T08:45:52.1042200Z [36;1m***[0m
+2025-07-09T08:45:52.1042950Z [36;1m***[0m
+2025-07-09T08:45:52.1043700Z [36;1m***[0m
+2025-07-09T08:45:52.1044430Z [36;1m***[0m
+2025-07-09T08:45:52.1045180Z [36;1m***[0m
+2025-07-09T08:45:52.1045930Z [36;1m***[0m
+2025-07-09T08:45:52.1046690Z [36;1m***[0m
+2025-07-09T08:45:52.1047420Z [36;1m***[0m
+2025-07-09T08:45:52.1055830Z [36;1m***[0m
+2025-07-09T08:45:52.1056650Z [36;1m***[0m
+2025-07-09T08:45:52.1057450Z [36;1m***[0m
+2025-07-09T08:45:52.1058220Z [36;1m***[0m
+2025-07-09T08:45:52.1059020Z [36;1m***[0m
+2025-07-09T08:45:52.1059810Z [36;1m***[0m
+2025-07-09T08:45:52.1060580Z [36;1m***[0m
+2025-07-09T08:45:52.1061330Z [36;1m***[0m
+2025-07-09T08:45:52.1062080Z [36;1m***[0m
+2025-07-09T08:45:52.1062830Z [36;1m***[0m
+2025-07-09T08:45:52.1064640Z [36;1m***[0m
+2025-07-09T08:45:52.1065430Z [36;1m***[0m
+2025-07-09T08:45:52.1066270Z [36;1m***[0m
+2025-07-09T08:45:52.1067030Z [36;1m***[0m
+2025-07-09T08:45:52.1068050Z [36;1m***[0m
+2025-07-09T08:45:52.1068870Z [36;1m***[0m
+2025-07-09T08:45:52.1069640Z [36;1m***[0m
+2025-07-09T08:45:52.1070520Z [36;1m***[0m
+2025-07-09T08:45:52.1071470Z [36;1m***[0m
+2025-07-09T08:45:52.1072250Z [36;1m***[0m
+2025-07-09T08:45:52.1073020Z [36;1m***[0m
+2025-07-09T08:45:52.1073880Z [36;1m***[0m
+2025-07-09T08:45:52.1074660Z [36;1m***[0m
+2025-07-09T08:45:52.1075420Z [36;1m***[0m
+2025-07-09T08:45:52.1076340Z [36;1m***[0m
+2025-07-09T08:45:52.1077130Z [36;1m***[0m
+2025-07-09T08:45:52.1077900Z [36;1m***[0m
+2025-07-09T08:45:52.1079000Z [36;1m***[0m
+2025-07-09T08:45:52.1079800Z [36;1m***[0m
+2025-07-09T08:45:52.1082130Z [36;1m***[0m
+2025-07-09T08:45:52.1082930Z [36;1m***[0m
+2025-07-09T08:45:52.1083690Z [36;1m***[0m
+2025-07-09T08:45:52.1084450Z [36;1m***[0m
+2025-07-09T08:45:52.1085280Z [36;1m***" | base64 -d > dist_profile.mobileprovision[0m
+2025-07-09T08:45:52.1086440Z [36;1mcp dist_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/[0m
+2025-07-09T08:45:52.1087370Z [36;1m[0m
+2025-07-09T08:45:52.1088000Z [36;1mecho "Verifying installed profiles..."[0m
+2025-07-09T08:45:52.1088740Z [36;1m# List installed profiles for verification[0m
+2025-07-09T08:45:52.1089460Z [36;1mls -la ~/Library/MobileDevice/Provisioning\ Profiles/[0m
+2025-07-09T08:45:52.1090210Z [36;1m[0m
+2025-07-09T08:45:52.1090790Z [36;1m# Verify provisioning profile details[0m
+2025-07-09T08:45:52.1091540Z [36;1mecho "Provisioning profile details:"[0m
+2025-07-09T08:45:52.1092560Z [36;1msecurity cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID)"[0m
+2025-07-09T08:45:52.1100750Z [36;1m[0m
+2025-07-09T08:45:52.1101340Z [36;1mecho "Code signing setup completed successfully"[0m
+2025-07-09T08:45:52.1142440Z shell: /bin/bash -e {0}
+2025-07-09T08:45:52.1143000Z env:
+2025-07-09T08:45:52.1143560Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:45:52.1144350Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:45:52.1145150Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:45:52.1145720Z ##[endgroup]
+2025-07-09T08:45:52.1929810Z Setting up iOS code signing...
+2025-07-09T08:45:52.1982040Z Decoding and installing distribution certificate...
+2025-07-09T08:45:52.2020500Z Creating keychain...
+2025-07-09T08:45:52.2655480Z Importing certificate to keychain...
+2025-07-09T08:45:52.3153070Z 1 identity imported.
+2025-07-09T08:45:52.3252980Z 1 certificate imported.
+2025-07-09T08:45:52.3504440Z keychain: "/Users/runner/Library/Keychains/build.keychain-db"
+2025-07-09T08:45:52.3506340Z version: 512
+2025-07-09T08:45:52.3507380Z class: 0x00000010 
+2025-07-09T08:45:52.3508490Z attributes:
+2025-07-09T08:45:52.3509840Z     0x00000000 <uint32>=0x00000010 
+2025-07-09T08:45:52.3510850Z     0x00000001 <blob>=0x333145434433463200  "31ECD3F2\000"
+2025-07-09T08:45:52.3511820Z     0x00000002 <blob>=<NULL>
+2025-07-09T08:45:52.3512680Z     0x00000003 <uint32>=0x00000001 
+2025-07-09T08:45:52.3513750Z     0x00000004 <uint32>=0x00000000 
+2025-07-09T08:45:52.3514510Z     0x00000005 <uint32>=0x00000000 
+2025-07-09T08:45:52.3515720Z     0x00000006 <blob>=0x1F7B7F9D6FB285CDFE1C938170BAB3FBD4190928  "\037{\177\235o\262\205\315\376\034\223\201p\272\263\373\324\031\011("
+2025-07-09T08:45:52.3516830Z     0x00000007 <blob>=<NULL>
+2025-07-09T08:45:52.3526680Z     0x00000008 <blob>=0x7B38373139316361322D306663392D313164342D383439612D3030303530326235323132327D00  "{87191ca2-0fc9-11d4-849a-000502b52122}\000"
+2025-07-09T08:45:52.3527900Z     0x00000009 <uint32>=0x0000002A  "\000\000\000*"
+2025-07-09T08:45:52.3528780Z     0x0000000A <uint32>=0x00000800 
+2025-07-09T08:45:52.3529520Z     0x0000000B <uint32>=0x00000800 
+2025-07-09T08:45:52.3530240Z     0x0000000C <blob>=0x0000000000000000 
+2025-07-09T08:45:52.3530920Z     0x0000000D <blob>=0x0000000000000000 
+2025-07-09T08:45:52.3531630Z     0x0000000E <uint32>=0x00000001 
+2025-07-09T08:45:52.3532310Z     0x0000000F <uint32>=0x00000001 
+2025-07-09T08:45:52.3532990Z     0x00000010 <uint32>=0x00000001 
+2025-07-09T08:45:52.3533720Z     0x00000011 <uint32>=0x00000000 
+2025-07-09T08:45:52.3534380Z     0x00000012 <uint32>=0x00000001 
+2025-07-09T08:45:52.3535030Z     0x00000013 <uint32>=0x00000001 
+2025-07-09T08:45:52.3535680Z     0x00000014 <uint32>=0x00000001 
+2025-07-09T08:45:52.3536330Z     0x00000015 <uint32>=0x00000001 
+2025-07-09T08:45:52.3536960Z     0x00000016 <uint32>=0x00000001 
+2025-07-09T08:45:52.3537590Z     0x00000017 <uint32>=0x00000001 
+2025-07-09T08:45:52.3538230Z     0x00000018 <uint32>=0x00000001 
+2025-07-09T08:45:52.3538860Z     0x00000019 <uint32>=0x00000001 
+2025-07-09T08:45:52.3539500Z     0x0000001A <uint32>=0x00000001 
+2025-07-09T08:45:52.3541030Z Available signing identities:
+2025-07-09T08:45:52.3938160Z   1) 5C7B3A989B333E06819C16C6A1C2C95956AAEEBE "iPhone Distribution: Lukas Jost (***)"
+2025-07-09T08:45:52.3939560Z      1 valid identities found
+2025-07-09T08:45:52.4182020Z Using signing identity: iPhone Distribution: Lukas Jost (***)
+2025-07-09T08:45:52.4182940Z Decoding and installing provisioning profile...
+2025-07-09T08:45:52.4245270Z Verifying installed profiles...
+2025-07-09T08:45:52.4288180Z total 24
+2025-07-09T08:45:52.4288930Z drwxr-xr-x  3 runner  staff     96 Jul  9 08:45 .
+2025-07-09T08:45:52.4289760Z drwxr-xr-x  3 runner  staff     96 Jul  9 08:45 ..
+2025-07-09T08:45:52.4290660Z -rw-r--r--  1 runner  staff  12118 Jul  9 08:45 dist_profile.mobileprovision
+2025-07-09T08:45:52.4291500Z Provisioning profile details:
+2025-07-09T08:45:52.4564920Z 	<key>AppIDName</key>
+2025-07-09T08:45:52.4565530Z 	<key>Name</key>
+2025-07-09T08:45:52.4566080Z 	<key>TeamIdentifier</key>
+2025-07-09T08:45:52.4566630Z 	<key>TeamName</key>
+2025-07-09T08:45:52.4567640Z 	<key>UUID</key>
+2025-07-09T08:45:52.4568250Z Code signing setup completed successfully
+2025-07-09T08:45:52.4615660Z ##[group]Run flutter build ios --release --no-codesign --build-number=12
+2025-07-09T08:45:52.4616520Z [36;1mflutter build ios --release --no-codesign --build-number=12[0m
+2025-07-09T08:45:52.4646660Z shell: /bin/bash -e {0}
+2025-07-09T08:45:52.4647150Z env:
+2025-07-09T08:45:52.4647660Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:45:52.4648370Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:45:52.4649110Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:45:52.4649640Z   FLUTTER_BUILD_NUMBER: 12
+2025-07-09T08:45:52.4650140Z ##[endgroup]
+2025-07-09T08:45:53.6517790Z Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+2025-07-09T08:45:55.6952140Z Building io.scelus.dienstplan for device (ios-release)...
+2025-07-09T08:45:55.7323140Z ios/Runner/AppDelegate.swift uses the deprecated @UIApplicationMain attribute, updating.
+2025-07-09T08:45:55.7332700Z .gitignore does not ignore Swift Package Manager build directories, updating.
+2025-07-09T08:45:55.7385060Z Upgrading Runner.xcscheme
+2025-07-09T08:45:59.3535560Z Running pod install...                                           1,493ms
+2025-07-09T08:47:01.0752350Z Running Xcode build...                                          
+2025-07-09T08:47:01.0781800Z Xcode build done.                                           61.7s
+2025-07-09T08:47:03.9052600Z ✓ Built build/ios/iphoneos/Runner.app (55.9MB)
+2025-07-09T08:47:03.9765100Z ##[group]Run # Find the built app
+2025-07-09T08:47:03.9767830Z [36;1m# Find the built app[0m
+2025-07-09T08:47:03.9770550Z [36;1mAPP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)[0m
+2025-07-09T08:47:03.9772780Z [36;1mecho "App path: $APP_PATH"[0m
+2025-07-09T08:47:03.9775230Z [36;1m[0m
+2025-07-09T08:47:03.9778050Z [36;1m# Find the provisioning profile[0m
+2025-07-09T08:47:03.9780880Z [36;1mPROFILE_PATH=$(find ~/Library/MobileDevice/Provisioning\ Profiles -name "*.mobileprovision" | head -1)[0m
+2025-07-09T08:47:03.9783690Z [36;1mecho "Provisioning profile path: $PROFILE_PATH"[0m
+2025-07-09T08:47:03.9786760Z [36;1m[0m
+2025-07-09T08:47:03.9787480Z [36;1m# Get the signing identity from the previous step[0m
+2025-07-09T08:47:03.9788710Z [36;1mSIGNING_IDENTITY=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')[0m
+2025-07-09T08:47:03.9789920Z [36;1mecho "Using signing identity: $SIGNING_IDENTITY"[0m
+2025-07-09T08:47:03.9790730Z [36;1m[0m
+2025-07-09T08:47:03.9791300Z [36;1mif [ -z "$SIGNING_IDENTITY" ]; then[0m
+2025-07-09T08:47:03.9792030Z [36;1m  echo "❌ No iPhone Distribution certificate found"[0m
+2025-07-09T08:47:03.9793040Z [36;1m  exit 1[0m
+2025-07-09T08:47:03.9809580Z [36;1mfi[0m
+2025-07-09T08:47:03.9810330Z [36;1m[0m
+2025-07-09T08:47:03.9810980Z [36;1m# Embed the provisioning profile[0m
+2025-07-09T08:47:03.9818090Z [36;1mif [ -f "$PROFILE_PATH" ]; then[0m
+2025-07-09T08:47:03.9819040Z [36;1m  echo "Embedding provisioning profile..."[0m
+2025-07-09T08:47:03.9820340Z [36;1m  cp "$PROFILE_PATH" "$APP_PATH/embedded.mobileprovision"[0m
+2025-07-09T08:47:03.9821260Z [36;1melse[0m
+2025-07-09T08:47:03.9821940Z [36;1m  echo "❌ No provisioning profile found"[0m
+2025-07-09T08:47:03.9822700Z [36;1m  exit 1[0m
+2025-07-09T08:47:03.9823290Z [36;1mfi[0m
+2025-07-09T08:47:03.9823880Z [36;1m[0m
+2025-07-09T08:47:03.9824550Z [36;1m# Create resolved entitlements file[0m
+2025-07-09T08:47:03.9826260Z [36;1mecho "Creating resolved entitlements file..."[0m
+2025-07-09T08:47:03.9827060Z [36;1mif [ -f "ios/Runner/Runner.entitlements" ]; then[0m
+2025-07-09T08:47:03.9827960Z [36;1m  # Create a temporary entitlements file with resolved variables[0m
+2025-07-09T08:47:03.9831070Z [36;1m  sed "s/\$(AppIdentifierPrefix)/$APPLE_TEAM_ID./g; s/\$(DEVELOPMENT_TEAM)/$APPLE_TEAM_ID/g" ios/Runner/Runner.entitlements > resolved_entitlements.plist[0m
+2025-07-09T08:47:03.9832390Z [36;1m  echo "✅ Entitlements resolved with Team ID: $APPLE_TEAM_ID"[0m
+2025-07-09T08:47:03.9838330Z [36;1m  cat resolved_entitlements.plist[0m
+2025-07-09T08:47:03.9840710Z [36;1melse[0m
+2025-07-09T08:47:03.9843210Z [36;1m  echo "❌ No entitlements file found"[0m
+2025-07-09T08:47:03.9846050Z [36;1m  exit 1[0m
+2025-07-09T08:47:03.9848260Z [36;1mfi[0m
+2025-07-09T08:47:03.9850110Z [36;1m[0m
+2025-07-09T08:47:03.9851820Z [36;1m# Sign all frameworks first[0m
+2025-07-09T08:47:03.9853650Z [36;1mecho "Signing frameworks..."[0m
+2025-07-09T08:47:03.9857440Z [36;1mfind "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do[0m
+2025-07-09T08:47:03.9859880Z [36;1m  echo "Signing framework: $framework"[0m
+2025-07-09T08:47:03.9862260Z [36;1m  codesign --force --sign "$SIGNING_IDENTITY" --timestamp=none --deep "$framework"[0m
+2025-07-09T08:47:03.9864650Z [36;1mdone[0m
+2025-07-09T08:47:03.9866340Z [36;1m[0m
+2025-07-09T08:47:03.9868020Z [36;1m# Sign any dylibs in the app[0m
+2025-07-09T08:47:03.9869850Z [36;1mecho "Signing dylibs..."[0m
+2025-07-09T08:47:03.9871810Z [36;1mfind "$APP_PATH" -name "*.dylib" | while read dylib; do[0m
+2025-07-09T08:47:03.9873900Z [36;1m  echo "Signing dylib: $dylib"[0m
+2025-07-09T08:47:03.9883750Z [36;1m  codesign --force --sign "$SIGNING_IDENTITY" --timestamp=none "$dylib"[0m
+2025-07-09T08:47:03.9886150Z [36;1mdone[0m
+2025-07-09T08:47:03.9886780Z [36;1m[0m
+2025-07-09T08:47:03.9902260Z [36;1m# Sign the main app with resolved entitlements[0m
+2025-07-09T08:47:03.9906960Z [36;1mecho "Signing main app with resolved entitlements..."[0m
+2025-07-09T08:47:03.9910440Z [36;1mcodesign --force --sign "$SIGNING_IDENTITY" --entitlements resolved_entitlements.plist --timestamp=none "$APP_PATH"[0m
+2025-07-09T08:47:03.9913250Z [36;1m[0m
+2025-07-09T08:47:03.9914930Z [36;1m# Verify code signing[0m
+2025-07-09T08:47:03.9916710Z [36;1mecho "Verifying code signing..."[0m
+2025-07-09T08:47:03.9936510Z [36;1mcodesign -dv --verbose=4 "$APP_PATH"[0m
+2025-07-09T08:47:03.9938440Z [36;1m[0m
+2025-07-09T08:47:03.9940150Z [36;1m# Verify provisioning profile is embedded[0m
+2025-07-09T08:47:03.9950940Z [36;1mif [ -f "$APP_PATH/embedded.mobileprovision" ]; then[0m
+2025-07-09T08:47:03.9953070Z [36;1m  echo "✅ Provisioning profile embedded successfully"[0m
+2025-07-09T08:47:03.9955130Z [36;1m  ls -la "$APP_PATH/embedded.mobileprovision"[0m
+2025-07-09T08:47:03.9957070Z [36;1melse[0m
+2025-07-09T08:47:03.9958770Z [36;1m  echo "❌ Provisioning profile not embedded"[0m
+2025-07-09T08:47:03.9960530Z [36;1m  exit 1[0m
+2025-07-09T08:47:03.9961090Z [36;1mfi[0m
+2025-07-09T08:47:03.9961670Z [36;1m[0m
+2025-07-09T08:47:03.9962370Z [36;1m# Verify the certificate matches the provisioning profile[0m
+2025-07-09T08:47:03.9963370Z [36;1mecho "Verifying certificate matches provisioning profile..."[0m
+2025-07-09T08:47:03.9964440Z [36;1msecurity cms -D -i "$APP_PATH/embedded.mobileprovision" | grep -A 5 "DeveloperCertificates"[0m
+2025-07-09T08:47:03.9965820Z [36;1m[0m
+2025-07-09T08:47:03.9966390Z [36;1m# Clean up temporary entitlements file[0m
+2025-07-09T08:47:03.9967090Z [36;1mrm -f resolved_entitlements.plist[0m
+2025-07-09T08:47:04.0557420Z shell: /bin/bash -e {0}
+2025-07-09T08:47:04.0558020Z env:
+2025-07-09T08:47:04.0558650Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:47:04.0559470Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:47:04.0560320Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:47:04.0561240Z   APPLE_TEAM_ID: ***
+2025-07-09T08:47:04.0561820Z ##[endgroup]
+2025-07-09T08:47:04.1424450Z App path: build/ios/iphoneos/Runner.app
+2025-07-09T08:47:04.1515810Z Provisioning profile path: /Users/runner/Library/MobileDevice/Provisioning Profiles/dist_profile.mobileprovision
+2025-07-09T08:47:04.2349730Z Using signing identity: iPhone Distribution: Lukas Jost (***)
+2025-07-09T08:47:04.2350760Z Embedding provisioning profile...
+2025-07-09T08:47:04.2429940Z Creating resolved entitlements file...
+2025-07-09T08:47:04.2472240Z ✅ Entitlements resolved with Team ID: ***
+2025-07-09T08:47:04.2503330Z <?xml version="1.0" encoding="UTF-8"?>
+2025-07-09T08:47:04.2504630Z <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+2025-07-09T08:47:04.2505830Z <plist version="1.0">
+2025-07-09T08:47:04.2506630Z <dict>
+2025-07-09T08:47:04.2507330Z 	<key>application-identifier</key>
+2025-07-09T08:47:04.2508250Z 	<string>***.io.scelus.dienstplan</string>
+2025-07-09T08:47:04.2509170Z 	<key>com.apple.developer.team-identifier</key>
+2025-07-09T08:47:04.2510080Z 	<string>***</string>
+2025-07-09T08:47:04.2510810Z 	<key>keychain-access-groups</key>
+2025-07-09T08:47:04.2511520Z 	<array>
+2025-07-09T08:47:04.2512260Z 		<string>***.io.scelus.dienstplan</string>
+2025-07-09T08:47:04.2512980Z 	</array>
+2025-07-09T08:47:04.2513580Z </dict>
+2025-07-09T08:47:04.2514260Z </plist> Signing frameworks...
+2025-07-09T08:47:04.2588690Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework
+2025-07-09T08:47:04.3027620Z build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework: replacing existing signature
+2025-07-09T08:47:04.4615940Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/App.framework
+2025-07-09T08:47:04.5332360Z build/ios/iphoneos/Runner.app/Frameworks/App.framework: replacing existing signature
+2025-07-09T08:47:04.6400080Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/url_launcher_ios.framework
+2025-07-09T08:47:04.6863400Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/path_provider_foundation.framework
+2025-07-09T08:47:04.7611880Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/sqflite_darwin.framework
+2025-07-09T08:47:04.7983290Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/flutter_native_splash.framework
+2025-07-09T08:47:04.8766610Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/package_info_plus.framework
+2025-07-09T08:47:04.9421330Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/shared_preferences_foundation.framework
+2025-07-09T08:47:05.0079500Z Signing framework: build/ios/iphoneos/Runner.app/Frameworks/flutter_local_notifications.framework
+2025-07-09T08:47:05.0611730Z Signing dylibs...
+2025-07-09T08:47:05.0684470Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreImage.dylib
+2025-07-09T08:47:05.1008530Z build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreImage.dylib: replacing existing signature
+2025-07-09T08:47:05.1231070Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftObjectiveC.dylib
+2025-07-09T08:47:05.1485250Z build/ios/iphoneos/Runner.app/Frameworks/libswiftObjectiveC.dylib: replacing existing signature
+2025-07-09T08:47:05.1820310Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftCore.dylib
+2025-07-09T08:47:05.2051630Z build/ios/iphoneos/Runner.app/Frameworks/libswiftCore.dylib: replacing existing signature
+2025-07-09T08:47:05.3507260Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreGraphics.dylib
+2025-07-09T08:47:05.4073630Z build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreGraphics.dylib: replacing existing signature
+2025-07-09T08:47:05.4393910Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftUIKit.dylib
+2025-07-09T08:47:05.4729050Z build/ios/iphoneos/Runner.app/Frameworks/libswiftUIKit.dylib: replacing existing signature
+2025-07-09T08:47:05.5153700Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftMetal.dylib
+2025-07-09T08:47:05.5463580Z build/ios/iphoneos/Runner.app/Frameworks/libswiftMetal.dylib: replacing existing signature
+2025-07-09T08:47:05.5740710Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftDispatch.dylib
+2025-07-09T08:47:05.6063430Z build/ios/iphoneos/Runner.app/Frameworks/libswiftDispatch.dylib: replacing existing signature
+2025-07-09T08:47:05.6326250Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftos.dylib
+2025-07-09T08:47:05.6629280Z build/ios/iphoneos/Runner.app/Frameworks/libswiftos.dylib: replacing existing signature
+2025-07-09T08:47:05.6835040Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreFoundation.dylib
+2025-07-09T08:47:05.7198310Z build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreFoundation.dylib: replacing existing signature
+2025-07-09T08:47:05.7465560Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftDarwin.dylib
+2025-07-09T08:47:05.7753630Z build/ios/iphoneos/Runner.app/Frameworks/libswiftDarwin.dylib: replacing existing signature
+2025-07-09T08:47:05.7955170Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftQuartzCore.dylib
+2025-07-09T08:47:05.8247000Z build/ios/iphoneos/Runner.app/Frameworks/libswiftQuartzCore.dylib: replacing existing signature
+2025-07-09T08:47:05.8411290Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreAudio.dylib
+2025-07-09T08:47:05.8853830Z build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreAudio.dylib: replacing existing signature
+2025-07-09T08:47:05.9164060Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftFoundation.dylib
+2025-07-09T08:47:05.9578710Z build/ios/iphoneos/Runner.app/Frameworks/libswiftFoundation.dylib: replacing existing signature
+2025-07-09T08:47:06.0255860Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreMedia.dylib
+2025-07-09T08:47:06.0482880Z build/ios/iphoneos/Runner.app/Frameworks/libswiftCoreMedia.dylib: replacing existing signature
+2025-07-09T08:47:06.0697710Z Signing dylib: build/ios/iphoneos/Runner.app/Frameworks/libswiftsimd.dylib
+2025-07-09T08:47:06.0926480Z build/ios/iphoneos/Runner.app/Frameworks/libswiftsimd.dylib: replacing existing signature
+2025-07-09T08:47:06.1118470Z Signing main app with resolved entitlements...
+2025-07-09T08:47:06.2165200Z Verifying code signing...
+2025-07-09T08:47:06.2315870Z Executable=/Users/runner/work/dienstplan/dienstplan/build/ios/iphoneos/Runner.app/Runner
+2025-07-09T08:47:06.2387200Z Identifier=io.scelus.dienstplan
+2025-07-09T08:47:06.2388070Z ✅ Provisioning profile embedded successfully
+2025-07-09T08:47:06.2391330Z Format=app bundle with Mach-O thin (arm64)
+2025-07-09T08:47:06.2395250Z CodeDirectory v=20400 size=1016 flags=0x0(none) hashes=21+7 location=embedded
+2025-07-09T08:47:06.2405190Z VersionPlatform=2
+2025-07-09T08:47:06.2439200Z VersionMin=786432
+2025-07-09T08:47:06.2440110Z VersionSDK=1180928
+2025-07-09T08:47:06.2440750Z Hash type=sha256 size=32
+2025-07-09T08:47:06.2441420Z CandidateCDHash sha256=b01d643ef8043427ad5272947720cd45ae1f1a75
+2025-07-09T08:47:06.2442450Z CandidateCDHashFull sha256=b01d643ef8043427ad5272947720cd45ae1f1a75f6f5e00c624e474d7ef4b8c9
+2025-07-09T08:47:06.2454990Z Hash choices=sha256
+2025-07-09T08:47:06.2517130Z CMSDigest=b01d643ef8043427ad5272947720cd45ae1f1a75f6f5e00c624e474d7ef4b8c9
+2025-07-09T08:47:06.2518410Z -rw-r--r--  1 runner  staff  12118 Jul  9 08:47 build/ios/iphoneos/Runner.app/embedded.mobileprovision
+2025-07-09T08:47:06.2582080Z CMSDigestType=2
+2025-07-09T08:47:06.2582900Z Verifying certificate matches provisioning profile...
+2025-07-09T08:47:06.2623510Z Executable Segment base=0
+2025-07-09T08:47:06.2647370Z Executable Segment limit=32768
+2025-07-09T08:47:06.2659100Z Executable Segment flags=0x1
+2025-07-09T08:47:06.2663800Z Page size=4096
+2025-07-09T08:47:06.2668850Z CDHash=b01d643ef8043427ad5272947720cd45ae1f1a75
+2025-07-09T08:47:06.2671140Z Signature size=4758
+2025-07-09T08:47:06.2673990Z Authority=iPhone Distribution: Lukas Jost (***)
+2025-07-09T08:47:06.2684310Z Authority=Apple Worldwide Developer Relations Certification Authority
+2025-07-09T08:47:06.2694970Z Authority=Apple Root CA
+2025-07-09T08:47:06.2709330Z Signed Time=Jul 9, 2025 at 8:47:06 AM
+2025-07-09T08:47:06.2710380Z Info.plist entries=34
+2025-07-09T08:47:06.2711610Z TeamIdentifier=***
+2025-07-09T08:47:06.2713790Z Sealed Resources version=2 rules=10 files=97
+2025-07-09T08:47:06.2714570Z Internal requirements count=1 size=180
+2025-07-09T08:47:06.2862590Z 	<key>DeveloperCertificates</key>
+2025-07-09T08:47:06.2863420Z 	<array>
+2025-07-09T08:47:06.2897170Z 		<data>MIIFwzCCBKugAwIBAgIQahkdfRT672anOib9U8VcLDANBgkqhkiG9w0BAQsFADB1MUQwQgYDVQQDDDtBcHBsZSBXb3JsZHdpZGUgRGV2ZWxvcGVyIFJlbGF0aW9ucyBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTELMAkGA1UECwwCRzMxEzARBgNVBAoMCkFwcGxlIEluYy4xCzAJBgNVBAYTAlVTMB4XDTI1MDcwODA4MTgwNloXDTI2MDcwODA4MTgwNVowgYkxGjAYBgoJkiaJk/IsZAEBDApH***MTQwMgYDVQQDDCtBcHBsZSBEaXN0cmlidXRpb246IEx1a2FzIEpvc3QgKEdaR0M4NzZZTEcpMRMwEQYDVQQLDApH***MRMwEQYDVQQKDApMdWthcyBKb3N0MQswCQYDVQQGEwJVUzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKD68M0bGucEbD1zYo8rSSraqzqmHcz7e85QA4ictWYur/EPK1bnCGVR1rpXI0f9CY1ImvAsUmXEWB1tFuvHtoWXwzWyVTbR+MBVIunT29PQ0DsZ/auNG4ICV0bjU9LRGh1exUxatV/UKRDjCx5XDST46gmeq7rNN0/W5wEYWhDb4OBze+WPNHCmLPIbpmjrDznvK5EzzfjttiFjEGxo4/4GE46dJyKUs/87ti2BvKl+4jXMwA9eTrp3IBf1NAPb7cU7KLQ5se4vyhjqp6PeQU0Caq2f77W/903XG5ozXWqx0j/vF5SnqcbU47kHA318e5M8AVfUVQln4lNDYHaGqm8CAwEAAaOCAjgwggI0MAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUCf7AFZD5r2QKkhK5JihjDJfsp7IwcAYIKwYBBQUHAQEEZDBiMC0GCCsGAQUFBzAChiFodHRwOi8vY2VydHMuYXBwbGUuY29tL3d3ZHJnMy5kZXIwMQYIKwYBBQUHMAGGJWh0dHA6Ly9vY3NwLmFwcGxlLmNvbS9vY3NwMDMtd3dkcmczMDUwggEeBgNVHSAEggEVMIIBETCCAQ0GCSqGSIb3Y2QFATCB/zCBwwYIKwYBBQUHAgIwgbYMgbNSZWxpYW5jZSBvbiB0aGlzIGNlcnRpZmljYXRlIGJ5IGFueSBwYXJ0eSBhc3N1bWVzIGFjY2VwdGFuY2Ugb2YgdGhlIHRoZW4gYXBwbGljYWJsZSBzdGFuZGFyZCB0ZXJtcyBhbmQgY29uZGl0aW9ucyBvZiB1c2UsIGNlcnRpZmljYXRlIHBvbGljeSBhbmQgY2VydGlmaWNhdGlvbiBwcmFjdGljZSBzdGF0ZW1lbnRzLjA3BggrBgEFBQcCARYraHR0cHM6Ly93d3cuYXBwbGUuY29tL2NlcnRpZmljYXRlYXV0aG9yaXR5LzAWBgNVHSUBAf8EDDAKBggrBgEFBQcDAzAdBgNVHQ4EFgQUH3t/nW+yhc3+HJOBcLqz+9QZCSgwDgYDVR0PAQH/BAQDAgeAMBMGCiqGSIb3Y2QGAQcBAf8EAgUAMBMGCiqGSIb3Y2QGAQQBAf8EAgUAMA0GCSqGSIb3DQEBCwUAA4IBAQCZJqKOzVIlkJKPGrpKIiQ8JMmMWRNP8mMCuVy9OdLcXxXfn/ziWCViiGeGEsm34VVrrJICji+cdge1tksOa0bLjYjR27sd78MwJ4Mnxy9UgUIbT4GZ5sEcSfeuiFsWBEKQ/l3Cl8VgRt63gT6oqdhgZYgCNSZ/lkjkAZZr9imsVPr+ODsY8NMcjDYjhGUdrU44iPKpE0S/qDpN4ITwarL9lV2cRlxhG+dIuOAc9WU9aJsNg5DMCKWWhBUQGw0CxinK5cDF0F33HOKPN7IlRmF0vNupQ2uiRj6OMcvblkU7o5W/mExveVSdv1FHEtrTGrXAkYqmnUpXB7cXzs0xRUxK</data>
+2025-07-09T08:47:06.2908160Z 	</array>
+2025-07-09T08:47:06.2908440Z 
+2025-07-09T08:47:06.2908710Z 	<key>DER-Encoded-Profile</key>
+2025-07-09T08:47:06.3095530Z ##[group]Run # Create payload directory
+2025-07-09T08:47:06.3096240Z [36;1m# Create payload directory[0m
+2025-07-09T08:47:06.3096880Z [36;1mmkdir -p Payload[0m
+2025-07-09T08:47:06.3097430Z [36;1m[0m
+2025-07-09T08:47:06.3097970Z [36;1m# Find the built app[0m
+2025-07-09T08:47:06.3098700Z [36;1mAPP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)[0m
+2025-07-09T08:47:06.3099640Z [36;1mecho "App path: $APP_PATH"[0m
+2025-07-09T08:47:06.3100240Z [36;1m[0m
+2025-07-09T08:47:06.3100760Z [36;1m# Copy app to payload[0m
+2025-07-09T08:47:06.3101340Z [36;1mcp -R "$APP_PATH" Payload/[0m
+2025-07-09T08:47:06.3101900Z [36;1m[0m
+2025-07-09T08:47:06.3102410Z [36;1m# Create IPA[0m
+2025-07-09T08:47:06.3103000Z [36;1mzip -r "dienstplan-v0.4.11-12.ipa" Payload[0m
+2025-07-09T08:47:06.3103670Z [36;1m[0m
+2025-07-09T08:47:06.3104170Z [36;1m# Clean up[0m
+2025-07-09T08:47:06.3104710Z [36;1mrm -rf Payload[0m
+2025-07-09T08:47:06.3139320Z shell: /bin/bash -e {0}
+2025-07-09T08:47:06.3139940Z env:
+2025-07-09T08:47:06.3140520Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:47:06.3141310Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:47:06.3142140Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:47:06.3142720Z ##[endgroup]
+2025-07-09T08:47:06.4031760Z App path: build/ios/iphoneos/Runner.app
+2025-07-09T08:47:06.5812500Z   adding: Payload/ (stored 0%)
+2025-07-09T08:47:06.5813420Z   adding: Payload/Runner.app/ (stored 0%)
+2025-07-09T08:47:06.5817390Z   adding: Payload/Runner.app/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:06.5821780Z   adding: Payload/Runner.app/_CodeSignature/CodeResources (deflated 76%)
+2025-07-09T08:47:06.5825260Z   adding: Payload/Runner.app/AppIcon60x60@2x.png (deflated 1%)
+2025-07-09T08:47:06.5861660Z   adding: Payload/Runner.app/Runner (deflated 80%)
+2025-07-09T08:47:06.5862990Z   adding: Payload/Runner.app/Base.lproj/ (stored 0%)
+2025-07-09T08:47:06.5866350Z   adding: Payload/Runner.app/Base.lproj/Main.storyboardc/ (stored 0%)
+2025-07-09T08:47:06.5867770Z   adding: Payload/Runner.app/Base.lproj/Main.storyboardc/UIViewController-BYZ-38-t0r.nib (deflated 35%)
+2025-07-09T08:47:06.5869330Z   adding: Payload/Runner.app/Base.lproj/Main.storyboardc/BYZ-38-t0r-view-8bC-Xf-vdC.nib (deflated 42%)
+2025-07-09T08:47:06.5870520Z   adding: Payload/Runner.app/Base.lproj/Main.storyboardc/Info.plist (deflated 42%)
+2025-07-09T08:47:06.5871590Z   adding: Payload/Runner.app/Base.lproj/LaunchScreen.storyboardc/ (stored 0%)
+2025-07-09T08:47:06.5873500Z   adding: Payload/Runner.app/Base.lproj/LaunchScreen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib (deflated 48%)
+2025-07-09T08:47:06.5875150Z   adding: Payload/Runner.app/Base.lproj/LaunchScreen.storyboardc/UIViewController-01J-lp-oVM.nib (deflated 35%)
+2025-07-09T08:47:06.5876570Z   adding: Payload/Runner.app/Base.lproj/LaunchScreen.storyboardc/Info.plist (deflated 42%)
+2025-07-09T08:47:06.6143640Z   adding: Payload/Runner.app/Assets.car (deflated 7%)
+2025-07-09T08:47:06.6144630Z   adding: Payload/Runner.app/AppFrameworkInfo.plist (deflated 27%)
+2025-07-09T08:47:06.6148720Z   adding: Payload/Runner.app/AppIcon76x76@2x~ipad.png (deflated 1%)
+2025-07-09T08:47:06.6151050Z   adding: Payload/Runner.app/Frameworks/ (stored 0%)
+2025-07-09T08:47:06.6171430Z   adding: Payload/Runner.app/Frameworks/libswiftCoreImage.dylib (deflated 84%)
+2025-07-09T08:47:06.6246140Z   adding: Payload/Runner.app/Frameworks/libswiftObjectiveC.dylib (deflated 73%)
+2025-07-09T08:47:07.4751870Z   adding: Payload/Runner.app/Frameworks/libswiftCore.dylib (deflated 56%)
+2025-07-09T08:47:07.4883630Z   adding: Payload/Runner.app/Frameworks/libswiftCoreGraphics.dylib (deflated 68%)
+2025-07-09T08:47:07.4985290Z   adding: Payload/Runner.app/Frameworks/libswiftUIKit.dylib (deflated 64%)
+2025-07-09T08:47:07.5014810Z   adding: Payload/Runner.app/Frameworks/libswiftMetal.dylib (deflated 75%)
+2025-07-09T08:47:07.5296310Z   adding: Payload/Runner.app/Frameworks/libswiftDispatch.dylib (deflated 66%)
+2025-07-09T08:47:07.5342750Z   adding: Payload/Runner.app/Frameworks/libswiftos.dylib (deflated 67%)
+2025-07-09T08:47:07.5351150Z   adding: Payload/Runner.app/Frameworks/libswiftCoreFoundation.dylib (deflated 86%)
+2025-07-09T08:47:07.5365120Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/ (stored 0%)
+2025-07-09T08:47:07.5366320Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:07.5367430Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/_CodeSignature/CodeResources (deflated 70%)
+2025-07-09T08:47:07.5813430Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/icudtl.dat (deflated 42%)
+2025-07-09T08:47:07.9938000Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Flutter (deflated 57%)
+2025-07-09T08:47:07.9939140Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/ (stored 0%)
+2025-07-09T08:47:07.9941490Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterEngine.h (deflated 79%)
+2025-07-09T08:47:07.9944210Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterChannels.h (deflated 85%)
+2025-07-09T08:47:07.9947970Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterPlugin.h (deflated 75%)
+2025-07-09T08:47:07.9949430Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterAppDelegate.h (deflated 48%)
+2025-07-09T08:47:07.9950710Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterTexture.h (deflated 58%)
+2025-07-09T08:47:07.9951920Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterEngineGroup.h (deflated 71%)
+2025-07-09T08:47:07.9953160Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterPlatformViews.h (deflated 57%)
+2025-07-09T08:47:07.9954400Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterHeadlessDartRunner.h (deflated 73%)
+2025-07-09T08:47:07.9956520Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterCodecs.h (deflated 75%)
+2025-07-09T08:47:07.9957680Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/Flutter.h (deflated 59%)
+2025-07-09T08:47:07.9959600Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterViewController.h (deflated 68%)
+2025-07-09T08:47:07.9960910Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterMacros.h (deflated 58%)
+2025-07-09T08:47:07.9962230Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterDartProject.h (deflated 67%)
+2025-07-09T08:47:07.9963460Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterHourFormat.h (deflated 45%)
+2025-07-09T08:47:07.9964810Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterPluginAppLifeCycleDelegate.h (deflated 78%)
+2025-07-09T08:47:07.9966180Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterBinaryMessenger.h (deflated 67%)
+2025-07-09T08:47:07.9967420Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Headers/FlutterCallbackCache.h (deflated 60%)
+2025-07-09T08:47:07.9968630Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/PrivacyInfo.xcprivacy (deflated 62%)
+2025-07-09T08:47:07.9969680Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Modules/ (stored 0%)
+2025-07-09T08:47:07.9970760Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Modules/module.modulemap (deflated 20%)
+2025-07-09T08:47:07.9971900Z   adding: Payload/Runner.app/Frameworks/Flutter.framework/Info.plist (deflated 56%)
+2025-07-09T08:47:07.9972880Z   adding: Payload/Runner.app/Frameworks/App.framework/ (stored 0%)
+2025-07-09T08:47:07.9973890Z   adding: Payload/Runner.app/Frameworks/App.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:07.9975040Z   adding: Payload/Runner.app/Frameworks/App.framework/_CodeSignature/CodeResources (deflated 72%)
+2025-07-09T08:47:08.2777460Z   adding: Payload/Runner.app/Frameworks/App.framework/App (deflated 60%)
+2025-07-09T08:47:08.2779910Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/ (stored 0%)
+2025-07-09T08:47:08.2781250Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/NOTICES.Z (stored 0%)
+2025-07-09T08:47:08.2782420Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/NativeAssetsManifest.json (stored 0%)
+2025-07-09T08:47:08.2783610Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/AssetManifest.json (deflated 63%)
+2025-07-09T08:47:08.2784750Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/FontManifest.json (deflated 16%)
+2025-07-09T08:47:08.2785820Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/shaders/ (stored 0%)
+2025-07-09T08:47:08.2786940Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/shaders/ink_sparkle.frag (deflated 74%)
+2025-07-09T08:47:08.2788080Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/AssetManifest.bin (deflated 63%)
+2025-07-09T08:47:08.2789150Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/fonts/ (stored 0%)
+2025-07-09T08:47:08.2791600Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/fonts/MaterialIcons-Regular.otf (deflated 38%)
+2025-07-09T08:47:08.2801880Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/assets/ (stored 0%)
+2025-07-09T08:47:08.2803030Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/assets/images/ (stored 0%)
+2025-07-09T08:47:08.2846670Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/assets/images/logo.png (deflated 3%)
+2025-07-09T08:47:08.2847860Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/assets/schedules/ (stored 0%)
+2025-07-09T08:47:08.2849140Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/assets/schedules/bepo_zuege_polizei_bremen.json (deflated 79%)
+2025-07-09T08:47:08.2850530Z   adding: Payload/Runner.app/Frameworks/App.framework/flutter_assets/assets/schedules/esd_polizei_bremen.json (deflated 76%)
+2025-07-09T08:47:08.2851700Z   adding: Payload/Runner.app/Frameworks/App.framework/Info.plist (deflated 59%)
+2025-07-09T08:47:08.2910650Z   adding: Payload/Runner.app/Frameworks/libswiftDarwin.dylib (deflated 71%)
+2025-07-09T08:47:08.2911730Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/ (stored 0%)
+2025-07-09T08:47:08.2912780Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.2914070Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.2954430Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/url_launcher_ios (deflated 76%)
+2025-07-09T08:47:08.2955720Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/url_launcher_ios_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.2957010Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/url_launcher_ios_privacy.bundle/PrivacyInfo.xcprivacy (deflated 40%)
+2025-07-09T08:47:08.2958380Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/url_launcher_ios_privacy.bundle/Info.plist (deflated 28%)
+2025-07-09T08:47:08.2959530Z   adding: Payload/Runner.app/Frameworks/url_launcher_ios.framework/Info.plist (deflated 28%)
+2025-07-09T08:47:08.2971880Z   adding: Payload/Runner.app/Frameworks/libswiftQuartzCore.dylib (deflated 79%)
+2025-07-09T08:47:08.2972980Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/ (stored 0%)
+2025-07-09T08:47:08.2974130Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.2975350Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.2976660Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.2978460Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/PrivacyInfo.xcprivacy (deflated 40%)
+2025-07-09T08:47:08.2979940Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation_privacy.bundle/Info.plist (deflated 29%)
+2025-07-09T08:47:08.2981220Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3003150Z   adding: Payload/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation (deflated 79%)
+2025-07-09T08:47:08.3004350Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/ (stored 0%)
+2025-07-09T08:47:08.3005570Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.3006730Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.3075450Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/sqflite_darwin (deflated 75%)
+2025-07-09T08:47:08.3076880Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/sqflite_darwin_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.3078170Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/sqflite_darwin_privacy.bundle/PrivacyInfo.xcprivacy (deflated 40%)
+2025-07-09T08:47:08.3079480Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/sqflite_darwin_privacy.bundle/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3080630Z   adding: Payload/Runner.app/Frameworks/sqflite_darwin.framework/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3118760Z   adding: Payload/Runner.app/Frameworks/libswiftCoreAudio.dylib (deflated 70%)
+2025-07-09T08:47:08.3119790Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/ (stored 0%)
+2025-07-09T08:47:08.3120870Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.3122040Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.3127430Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/flutter_native_splash (deflated 89%)
+2025-07-09T08:47:08.3128780Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/flutter_native_splash_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.3130210Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/flutter_native_splash_privacy.bundle/PrivacyInfo.xcprivacy (deflated 40%)
+2025-07-09T08:47:08.3132160Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/flutter_native_splash_privacy.bundle/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3133390Z   adding: Payload/Runner.app/Frameworks/flutter_native_splash.framework/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3140130Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/ (stored 0%)
+2025-07-09T08:47:08.3141180Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.3142420Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.3143640Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/package_info_plus (deflated 86%)
+2025-07-09T08:47:08.3144720Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3145870Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/package_info_plus_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.3147170Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/package_info_plus_privacy.bundle/PrivacyInfo.xcprivacy (deflated 40%)
+2025-07-09T08:47:08.3148510Z   adding: Payload/Runner.app/Frameworks/package_info_plus.framework/package_info_plus_privacy.bundle/Info.plist (deflated 28%)
+2025-07-09T08:47:08.3149750Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/ (stored 0%)
+2025-07-09T08:47:08.3151210Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.3152450Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.3153790Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.3155270Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/PrivacyInfo.xcprivacy (deflated 51%)
+2025-07-09T08:47:08.3156800Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation_privacy.bundle/Info.plist (deflated 29%)
+2025-07-09T08:47:08.3190960Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation (deflated 76%)
+2025-07-09T08:47:08.3192460Z   adding: Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/Info.plist (deflated 29%)
+2025-07-09T08:47:08.7082180Z   adding: Payload/Runner.app/Frameworks/libswiftFoundation.dylib (deflated 59%)
+2025-07-09T08:47:08.7170180Z   adding: Payload/Runner.app/Frameworks/libswiftCoreMedia.dylib (deflated 73%)
+2025-07-09T08:47:08.7196810Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/ (stored 0%)
+2025-07-09T08:47:08.7200210Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/_CodeSignature/ (stored 0%)
+2025-07-09T08:47:08.7203800Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/_CodeSignature/CodeResources (deflated 74%)
+2025-07-09T08:47:08.7207700Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/flutter_local_notifications_privacy.bundle/ (stored 0%)
+2025-07-09T08:47:08.7212520Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/flutter_local_notifications_privacy.bundle/PrivacyInfo.xcprivacy (deflated 51%)
+2025-07-09T08:47:08.7219860Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/flutter_local_notifications_privacy.bundle/Info.plist (deflated 29%)
+2025-07-09T08:47:08.7221730Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/flutter_local_notifications (deflated 77%)
+2025-07-09T08:47:08.7223070Z   adding: Payload/Runner.app/Frameworks/flutter_local_notifications.framework/Info.plist (deflated 29%)
+2025-07-09T08:47:08.7437610Z   adding: Payload/Runner.app/Frameworks/libswiftsimd.dylib (deflated 68%)
+2025-07-09T08:47:08.7441040Z   adding: Payload/Runner.app/embedded.mobileprovision (deflated 36%)
+2025-07-09T08:47:08.7443790Z   adding: Payload/Runner.app/Info.plist (deflated 35%)
+2025-07-09T08:47:08.7444560Z   adding: Payload/Runner.app/PkgInfo (stored 0%)
+2025-07-09T08:47:08.7783980Z ##[group]Run actions/upload-release-asset@v1
+2025-07-09T08:47:08.7784670Z with:
+2025-07-09T08:47:08.7785570Z   upload_url: https://uploads.github.com/repos/lusu007/dienstplan/releases/231073231/assets{?name,label}
+2025-07-09T08:47:08.7786540Z   asset_path: dienstplan-v0.4.11-12.ipa
+2025-07-09T08:47:08.7787150Z   asset_name: dienstplan-v0.4.11-12.ipa
+2025-07-09T08:47:08.7787790Z   asset_content_type: application/octet-stream
+2025-07-09T08:47:08.7788460Z env:
+2025-07-09T08:47:08.7789030Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:47:08.7789840Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:47:08.7790680Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:47:08.7791630Z   GITHUB_TOKEN: ***
+2025-07-09T08:47:08.7792160Z ##[endgroup]
+2025-07-09T08:47:11.0710020Z ##[warning]The `set-output` command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+2025-07-09T08:47:11.0863900Z ##[group]Run echo "Starting App Store Connect deployment..."
+2025-07-09T08:47:11.0866810Z [36;1mecho "Starting App Store Connect deployment..."[0m
+2025-07-09T08:47:11.0868920Z [36;1m[0m
+2025-07-09T08:47:11.0870620Z [36;1m# Verify Codemagic CLI tools are available[0m
+2025-07-09T08:47:11.0872870Z [36;1mecho "Checking Codemagic CLI tools installation..."[0m
+2025-07-09T08:47:11.0874950Z [36;1mwhich app-store-connect[0m
+2025-07-09T08:47:11.0876730Z [36;1mapp-store-connect --version[0m
+2025-07-09T08:47:11.0878460Z [36;1m[0m
+2025-07-09T08:47:11.0880420Z [36;1m# App Store Connect API key is available via environment variable[0m
+2025-07-09T08:47:11.0885050Z [36;1mecho "App Store Connect API key available via environment variable"[0m
+2025-07-09T08:47:11.0889400Z [36;1m[0m
+2025-07-09T08:47:11.0891100Z [36;1m# Verify the IPA file exists[0m
+2025-07-09T08:47:11.0892940Z [36;1mIPA_FILE="dienstplan-v0.4.11-12.ipa"[0m
+2025-07-09T08:47:11.0894950Z [36;1mif [ -f "$IPA_FILE" ]; then[0m
+2025-07-09T08:47:11.0909770Z [36;1m  echo "✅ IPA file found: $IPA_FILE"[0m
+2025-07-09T08:47:11.0929410Z [36;1m  ls -la "$IPA_FILE"[0m
+2025-07-09T08:47:11.0929960Z [36;1melse[0m
+2025-07-09T08:47:11.0931320Z [36;1m  echo "❌ IPA file not found: $IPA_FILE"[0m
+2025-07-09T08:47:11.0932170Z [36;1m  ls -la *.ipa || echo "No IPA files found"[0m
+2025-07-09T08:47:11.0932860Z [36;1m  exit 1[0m
+2025-07-09T08:47:11.0933390Z [36;1mfi[0m
+2025-07-09T08:47:11.0933880Z [36;1m[0m
+2025-07-09T08:47:11.0934430Z [36;1mecho "Uploading to App Store Connect..."[0m
+2025-07-09T08:47:11.0935080Z [36;1m[0m
+2025-07-09T08:47:11.0935650Z [36;1m# Set environment variables for authentication[0m
+2025-07-09T08:47:11.0936500Z [36;1mexport APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_ISSUER_ID"[0m
+2025-07-09T08:47:11.0937530Z [36;1mexport APP_STORE_CONNECT_KEY_IDENTIFIER="$APP_STORE_CONNECT_KEY_IDENTIFIER"[0m
+2025-07-09T08:47:11.0938560Z [36;1mexport APP_STORE_CONNECT_PRIVATE_KEY="$APP_STORE_CONNECT_PRIVATE_KEY"[0m
+2025-07-09T08:47:11.0939350Z [36;1m[0m
+2025-07-09T08:47:11.0939950Z [36;1mecho "Environment variables set for authentication"[0m
+2025-07-09T08:47:11.0940650Z [36;1m[0m
+2025-07-09T08:47:11.0949030Z [36;1m# Upload to App Store Connect[0m
+2025-07-09T08:47:11.0949720Z [36;1mapp-store-connect publish \[0m
+2025-07-09T08:47:11.0950330Z [36;1m  --path "$IPA_FILE"[0m
+2025-07-09T08:47:11.0950910Z [36;1m[0m
+2025-07-09T08:47:11.0951490Z [36;1mecho "✅ App Store Connect deployment completed"[0m
+2025-07-09T08:47:11.1026110Z shell: /bin/bash -e {0}
+2025-07-09T08:47:11.1026670Z env:
+2025-07-09T08:47:11.1027260Z   MD_APPLE_SDK_ROOT: /Applications/Xcode_16.4.app
+2025-07-09T08:47:11.1028060Z   FLUTTER_ROOT: /Users/runner/hostedtoolcache/flutter/stable-3.32.4-arm64
+2025-07-09T08:47:11.1028900Z   PUB_CACHE: /Users/runner/.pub-cache
+2025-07-09T08:47:11.1030950Z   APP_STORE_CONNECT_PRIVATE_KEY: ***
+2025-07-09T08:47:11.1031660Z   APP_STORE_CONNECT_ISSUER_ID: ***
+2025-07-09T08:47:11.1032310Z   APP_STORE_CONNECT_KEY_IDENTIFIER: ***
+2025-07-09T08:47:11.1032950Z   APP_STORE_APP_ID: ***
+2025-07-09T08:47:11.1033520Z ##[endgroup]
+2025-07-09T08:47:11.1631820Z Starting App Store Connect deployment...
+2025-07-09T08:47:11.1632650Z Checking Codemagic CLI tools installation...
+2025-07-09T08:47:11.1664220Z /opt/homebrew/bin/app-store-connect
+2025-07-09T08:47:12.5309890Z AppStoreConnect installed at /opt/homebrew/bin/app-store-connect
+2025-07-09T08:47:12.5312840Z app-store-connect 0.60.0
+2025-07-09T08:47:12.6111290Z App Store Connect API key available via environment variable
+2025-07-09T08:47:12.6112990Z ✅ IPA file found: dienstplan-v0.4.11-12.ipa
+2025-07-09T08:47:12.6165740Z -rw-r--r--  1 runner  staff  23936406 Jul  9 08:47 dienstplan-v0.4.11-12.ipa
+2025-07-09T08:47:12.6166710Z Uploading to App Store Connect...
+2025-07-09T08:47:12.6167490Z Environment variables set for authentication
+2025-07-09T08:47:13.3409160Z 
+2025-07-09T08:47:13.3429700Z [34mPublish "dienstplan-v0.4.11-12.ipa" to App Store Connect[0m
+2025-07-09T08:47:13.3450180Z App name: Dienstplan
+2025-07-09T08:47:13.3453600Z Bundle identifier: io.scelus.dienstplan
+2025-07-09T08:47:13.3455290Z Certificate expires: 2026-07-08T08:18:05.000+0000
+2025-07-09T08:47:13.3457450Z Distribution type: App Store
+2025-07-09T08:47:13.3459680Z Min OS version: 12.0
+2025-07-09T08:47:13.3462250Z Provisioned devices: N/A
+2025-07-09T08:47:13.3464400Z Provisions all devices: No
+2025-07-09T08:47:13.3465270Z Supported platforms: iPhoneOS
+2025-07-09T08:47:13.3465960Z Version code: 12
+2025-07-09T08:47:13.3466830Z Version: 0.4.11
+2025-07-09T08:47:13.3467270Z 
+2025-07-09T08:47:13.3468010Z [34mUpload "dienstplan-v0.4.11-12.ipa" to App Store Connect[0m
+2025-07-09T08:47:14.8015590Z Running altool at path '/Applications/Xcode_16.4.app/Contents/SharedFrameworks/ContentDeliveryServices.framework/Frameworks/AppStoreService.framework/Support/altool'...
+2025-07-09T08:48:02.2772400Z Running altool at path '/Applications/Xcode_16.4.app/Contents/SharedFrameworks/ContentDeliveryServices.framework/Frameworks/AppStoreService.framework/Support/altool'...
+2025-07-09T08:48:02.2878180Z [31mFailed to upload archive at "dienstplan-v0.4.11-12.ipa"[0m
+2025-07-09T08:48:02.2888060Z 2025-07-09 08:48:02.130 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Runner' must be signed with the certificate that is contained in the provisioning profile. (ID: cbbbca3d-4ebc-4ca7-8f4f-35b47776fc17)
+2025-07-09T08:48:02.2891270Z [31mFailed to publish dienstplan-v0.4.11-12.ipa[0m
+2025-07-09T08:48:02.2983230Z 2025-07-09 08:48:02.130 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/App.framework/App' must be signed with the certificate that is contained in the provisioning profile. (ID: ece8cb45-429e-4279-8e62-e7a242a5a999)
+2025-07-09T08:48:02.3085320Z 2025-07-09 08:48:02.131 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/Flutter.framework/Flutter' must be signed with the certificate that is contained in the provisioning profile. (ID: 5c409314-8a1d-400e-a76c-557e5b46bec5)
+2025-07-09T08:48:02.3192430Z 2025-07-09 08:48:02.131 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/flutter_local_notifications.framework/flutter_local_notifications' must be signed with the certificate that is contained in the provisioning profile. (ID: 6771023f-3317-4bc7-adc8-86605512f3f0)
+2025-07-09T08:48:02.3303440Z 2025-07-09 08:48:02.132 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/flutter_native_splash.framework/flutter_native_splash' must be signed with the certificate that is contained in the provisioning profile. (ID: 432adad1-095a-4b39-b205-63b1cf26d196)
+2025-07-09T08:48:02.3410110Z 2025-07-09 08:48:02.135 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/package_info_plus.framework/package_info_plus' must be signed with the certificate that is contained in the provisioning profile. (ID: 27e054e1-f1de-4f27-9f81-804003035051)
+2025-07-09T08:48:02.3524280Z 2025-07-09 08:48:02.135 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/path_provider_foundation.framework/path_provider_foundation' must be signed with the certificate that is contained in the provisioning profile. (ID: b00e2a8e-ece7-476b-b2ac-a03ac913d753)
+2025-07-09T08:48:02.3658710Z 2025-07-09 08:48:02.136 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/shared_preferences_foundation.framework/shared_preferences_foundation' must be signed with the certificate that is contained in the provisioning profile. (ID: 2545c2ab-7c72-4f51-93f7-2ba289a07603)
+2025-07-09T08:48:02.3662460Z 2025-07-09 08:48:02.162 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/sqflite_darwin.framework/sqflite_darwin' must be signed with the certificate that is contained in the provisioning profile. (ID: 34db09ed-d5b4-41b6-aaee-0040f8ecfeb7)
+2025-07-09T08:48:02.3766740Z 2025-07-09 08:48:02.165 ERROR: [altool.600002498080] [ContentDelivery.Uploader.600002498080] Validation failed (409) Invalid Code Signing. The executable 'Payload/Runner.app/Frameworks/url_launcher_ios.framework/url_launcher_ios' must be signed with the certificate that is contained in the provisioning profile. (ID: 8dc101c9-5c91-4117-8874-8a1eb2d70386)
+2025-07-09T08:48:02.3870500Z 2025-07-09 08:48:02.227  INFO: [altool.600002498080] [ContentDelivery.Uploader.600002498080] 
+2025-07-09T08:48:02.3973490Z =======================================
+2025-07-09T08:48:02.4076200Z UPLOAD FAILED with 10 errors, 0 warnings, 0 messages
+2025-07-09T08:48:02.4136950Z =======================================
+2025-07-09T08:48:02.4207310Z {"tool-version":"8.303.16303","tool-path":"\/Applications\/Xcode_16.4.app\/Contents\/SharedFrameworks\/ContentDeliveryServices.framework\/Versions\/A\/Frameworks\/AppStoreService.framework","os-version":"15.5.0","product-errors":[{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Runner' must be signed with the certificate that is contained in the provisioning profile., id=cbbbca3d-4ebc-4ca7-8f4f-35b47776fc17, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Runner' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Runner' must be signed with the certificate that is contained in the provisioning profile. (ID: cbbbca3d-4ebc-4ca7-8f4f-35b47776fc17)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/App.framework\/App' must be signed with the certificate that is contained in the provisioning profile., id=ece8cb45-429e-4279-8e62-e7a242a5a999, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/App.framework\/App' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/App.framework\/App' must be signed with the certificate that is contained in the provisioning profile. (ID: ece8cb45-429e-4279-8e62-e7a242a5a999)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/Flutter.framework\/Flutter' must be signed with the certificate that is contained in the provisioning profile., id=5c409314-8a1d-400e-a76c-557e5b46bec5, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/Flutter.framework\/Flutter' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/Flutter.framework\/Flutter' must be signed with the certificate that is contained in the provisioning profile. (ID: 5c409314-8a1d-400e-a76c-557e5b46bec5)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/flutter_local_notifications.framework\/flutter_local_notifications' must be signed with the certificate that is contained in the provisioning profile., id=6771023f-3317-4bc7-adc8-86605512f3f0, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/flutter_local_notifications.framework\/flutter_local_notifications' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/flutter_local_notifications.framework\/flutter_local_notifications' must be signed with the certificate that is contained in the provisioning profile. (ID: 6771023f-3317-4bc7-adc8-86605512f3f0)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/flutter_native_splash.framework\/flutter_native_splash' must be signed with the certificate that is contained in the provisioning profile., id=432adad1-095a-4b39-b205-63b1cf26d196, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/flutter_native_splash.framework\/flutter_native_splash' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/flutter_native_splash.framework\/flutter_native_splash' must be signed with the certificate that is contained in the provisioning profile. (ID: 432adad1-095a-4b39-b205-63b1cf26d196)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/package_info_plus.framework\/package_info_plus' must be signed with the certificate that is contained in the provisioning profile., id=27e054e1-f1de-4f27-9f81-804003035051, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/package_info_plus.framework\/package_info_plus' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/package_info_plus.framework\/package_info_plus' must be signed with the certificate that is contained in the provisioning profile. (ID: 27e054e1-f1de-4f27-9f81-804003035051)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/path_provider_foundation.framework\/path_provider_foundation' must be signed with the certificate that is contained in the provisioning profile., id=b00e2a8e-ece7-476b-b2ac-a03ac913d753, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/path_provider_foundation.framework\/path_provider_foundation' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/path_provider_foundation.framework\/path_provider_foundation' must be signed with the certificate that is contained in the provisioning profile. (ID: b00e2a8e-ece7-476b-b2ac-a03ac913d753)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/shared_preferences_foundation.framework\/shared_preferences_foundation' must be signed with the certificate that is contained in the provisioning profile., id=2545c2ab-7c72-4f51-93f7-2ba289a07603, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/shared_preferences_foundation.framework\/shared_preferences_foundation' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/shared_preferences_foundation.framework\/shared_preferences_foundation' must be signed with the certificate that is contained in the provisioning profile. (ID: 2545c2ab-7c72-4f51-93f7-2ba289a07603)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/sqflite_darwin.framework\/sqflite_darwin' must be signed with the certificate that is contained in the provisioning profile., id=34db09ed-d5b4-41b6-aaee-0040f8ecfeb7, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/sqflite_darwin.framework\/sqflite_darwin' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/sqflite_darwin.framework\/sqflite_darwin' must be signed with the certificate that is contained in the provisioning profile. (ID: 34db09ed-d5b4-41b6-aaee-0040f8ecfeb7)"},"code":409},{"message":"Validation failed","userInfo":{"NSUnderlyingError":"Error Domain=IrisAPI Code=-19241 \"Validation failed\" UserInfo={status=409, detail=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/url_launcher_ios.framework\/url_launcher_ios' must be signed with the certificate that is contained in the provisioning profile., id=8dc101c9-5c91-4117-8874-8a1eb2d70386, code=STATE_ERROR.VALIDATION_ERROR, title=Validation failed, NSLocalizedFailureReason=Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/url_launcher_ios.framework\/url_launcher_ios' must be signed with the certificate that is contained in the provisioning profile., NSLocalizedDescription=Validation failed}","NSLocalizedDescription":"Validation failed","iris-code":"STATE_ERROR.VALIDATION_ERROR","NSLocalizedFailureReason":"Invalid Code Signing. The executable 'Payload\/Runner.app\/Frameworks\/url_launcher_ios.framework\/url_launcher_ios' must be signed with the certificate that is contained in the provisioning profile. (ID: 8dc101c9-5c91-4117-8874-8a1eb2d70386)"},"code":409}]}
+2025-07-09T08:48:02.4244910Z 
+2025-07-09T08:48:02.4244920Z 
+2025-07-09T08:48:02.4257200Z ##[error]Process completed with exit code 1.
+2025-07-09T08:48:02.4469610Z Post job cleanup.
+2025-07-09T08:48:02.4579010Z Post job cleanup.
+2025-07-09T08:48:02.9645050Z [command]/opt/homebrew/bin/git version
+2025-07-09T08:48:03.0119320Z git version 2.50.0
+2025-07-09T08:48:03.0546730Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/d8d05c65-68d9-43f2-908a-f8ab56c4a83e/.gitconfig'
+2025-07-09T08:48:03.0549540Z Temporarily overriding HOME='/Users/runner/work/_temp/d8d05c65-68d9-43f2-908a-f8ab56c4a83e' before making global git config changes
+2025-07-09T08:48:03.0550950Z Adding repository directory to the temporary git global config as a safe directory
+2025-07-09T08:48:03.0552350Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/dienstplan/dienstplan
+2025-07-09T08:48:03.0671440Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-07-09T08:48:03.0936760Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-07-09T08:48:03.2028090Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-07-09T08:48:03.2090200Z http.https://github.com/.extraheader
+2025-07-09T08:48:03.2099550Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-07-09T08:48:03.2181330Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-07-09T08:48:03.3317400Z Cleaning up orphan processes
+2025-07-09T08:48:03.8214800Z Terminate orphan process: pid (7486) (ibtoold)
+2025-07-09T08:48:03.8988230Z Terminate orphan process: pid (5874) (ibtoold)
+2025-07-09T08:48:03.9593030Z Terminate orphan process: pid (5840) (ibtoold)
