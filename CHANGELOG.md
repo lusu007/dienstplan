@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.15](https://github.com/lusu007/dienstplan/compare/v0.4.14...v0.4.15) (2025-07-09)
+
+
+### Bug Fixes
+
+* Use correct Flutter build command ([#81](https://github.com/lusu007/dienstplan/issues/81)) ([f551546](https://github.com/lusu007/dienstplan/commit/f551546c1f1f317e5deb1e1726769278ec1ff444))
+
 ## [0.4.14](https://github.com/lusu007/dienstplan/compare/v0.4.13...v0.4.14) (2025-07-09)
 
 
