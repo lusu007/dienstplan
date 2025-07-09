@@ -7,7 +7,7 @@ on:
 jobs:
   build-and-deploy-ios:
     name: 🏗️ Build and Deploy iOS App to App Store
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - name: 📂 Checkout code
         uses: actions/checkout@v4
@@ -18,6 +18,11 @@ jobs:
           path: ~/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: ${{ runner.os }}-pub-
+
+      - name: 🔧 Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.4'
 
       - name: 📱 Setup Flutter
         uses: subosito/flutter-action@v2
@@ -71,6 +76,10 @@ jobs:
           security import dist_cert.p12 -k build.keychain -P "${{ secrets.DIS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
           
+          # List available identities for verification
+          echo "Available signing identities:"
+          security find-identity -v build.keychain
+          
           echo "Decoding and installing provisioning profile..."
           # Decode and install provisioning profile
           echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -d > dist_profile.mobileprovision
@@ -111,7 +120,14 @@ jobs:
           echo "Signing frameworks..."
           find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
             echo "Signing framework: $framework"
-            codesign --force --sign "iPhone Distribution" --timestamp=none "$framework"
+            codesign --force --sign "iPhone Distribution" --timestamp=none --deep "$framework"
+          done
+          
+          # Sign any dylibs in the app
+          echo "Signing dylibs..."
+          find "$APP_PATH" -name "*.dylib" | while read dylib; do
+            echo "Signing dylib: $dylib"
+            codesign --force --sign "iPhone Distribution" --timestamp=none "$dylib"
           done
           
           # Check if entitlements file exists
