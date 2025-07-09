@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.17](https://github.com/lusu007/dienstplan/compare/v0.4.16...v0.4.17) (2025-07-09)
+
+
+### Bug Fixes
+
+* Manually sign app ([#85](https://github.com/lusu007/dienstplan/issues/85)) ([cebbc2f](https://github.com/lusu007/dienstplan/commit/cebbc2f79d78a5712ab74a2c3c67b4d4057b5937))
+
 ## [0.4.16](https://github.com/lusu007/dienstplan/compare/v0.4.15...v0.4.16) (2025-07-09)
 
 
