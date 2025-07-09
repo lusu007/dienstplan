@@ -54,153 +54,70 @@ jobs:
           
           echo "✅ Codemagic CLI tools installation completed successfully"
 
+      
       - name: 🔑 Setup iOS Code Signing
         run: |
           echo "Setting up iOS code signing..."
-          
+
           # Create directories for certificates and profiles
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           mkdir -p ~/Library/Developer/Xcode/DerivedData
-          
+
           echo "Decoding and installing distribution certificate..."
-          # Decode and install distribution certificate
           echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -d > dist_cert.p12
-          
+
           echo "Creating keychain..."
           security create-keychain -p "" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "" build.keychain
           security set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain
-          
+
           echo "Importing certificate to keychain..."
           security import dist_cert.p12 -k build.keychain -P "${{ secrets.DIS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
-          
-          # Enhanced certificate verification
-          echo "🔍 Enhanced Certificate Verification:"
-          echo "Available signing identities:"
+
+          echo "🔍 Listing signing identities in keychain:"
           security find-identity -v build.keychain
-          
-          # Get the exact identity name for signing
-          SIGNING_IDENTITY=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-          echo "Using signing identity: $SIGNING_IDENTITY"
-          
-          if [ -z "$SIGNING_IDENTITY" ]; then
-            echo "❌ No iPhone Distribution certificate found"
+
+          # Use "Apple Distribution" for current App Store builds
+          CERT_HASH=$(security find-identity -v build.keychain | grep "Apple Distribution" | head -1 | awk '{print $2}')
+          CERT_NAME=$(security find-identity -v build.keychain | grep "Apple Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+
+          echo "Using certificate hash: $CERT_HASH"
+          echo "Using certificate name: $CERT_NAME"
+
+          if [ -z "$CERT_HASH" ]; then
+            echo "❌ No valid Apple Distribution certificate found in keychain."
             exit 1
           fi
-          
-          # Extract certificate hash for verification
-          CERT_HASH=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | awk '{print $2}')
-          echo "Certificate hash: $CERT_HASH"
-          
-          # Verify certificate is valid for App Store Connect
-          echo "🔍 Verifying certificate for App Store Connect..."
-          CERT_INFO=$(security find-certificate -c "$SIGNING_IDENTITY" -p build.keychain 2>/dev/null | openssl x509 -noout -text 2>/dev/null)
-          
-          if echo "$CERT_INFO" | grep -q "Digital Signature"; then
-            echo "✅ Certificate has Digital Signature capability"
-          else
-            echo "❌ Certificate missing Digital Signature capability"
-          fi
-          
-          if echo "$CERT_INFO" | grep -q "Key Encipherment"; then
-            echo "✅ Certificate has Key Encipherment capability"
-          else
-            echo "❌ Certificate missing Key Encipherment capability"
-          fi
-          
-          # Check certificate purpose
-          if echo "$CERT_INFO" | grep -q "Code Signing"; then
-            echo "✅ Certificate is valid for Code Signing"
-          else
-            echo "❌ Certificate not valid for Code Signing"
-          fi
-          
-          # Check if this is an App Store Connect certificate
-          if echo "$SIGNING_IDENTITY" | grep -q "iPhone Distribution"; then
-            echo "✅ Using iPhone Distribution certificate (App Store Connect)"
-          else
-            echo "❌ Not using iPhone Distribution certificate"
-            echo "   Current certificate: $SIGNING_IDENTITY"
-            echo "   Expected: iPhone Distribution certificate"
-            exit 1
-          fi
-          
-          # Show certificate details
-          echo "🔍 Certificate details:"
+
+          # Show certificate details for verification
+          CERT_INFO=$(security find-certificate -c "$CERT_NAME" -p build.keychain | openssl x509 -noout -text 2>/dev/null)
+          echo "Certificate Details:"
           echo "$CERT_INFO" | grep -E "(Subject:|Issuer:|Not Before:|Not After:)" | head -10
-          
+
+          # Enhanced provisioning profile verification
           echo "Decoding and installing provisioning profile..."
-          # Robust: Zeilenumbrüche entfernen und base64 dekodieren
           echo "${{ secrets.PROVISIONING_PROFILE }}" | tr -d '\n' | base64 -D > dist_profile.mobileprovision
           cp dist_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          echo "Verifying installed profiles..."
-          # List installed profiles for verification
-          ls -lh dist_profile.mobileprovision
-          file dist_profile.mobileprovision
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-          
-          # Enhanced provisioning profile verification
-          echo "🔍 Enhanced Provisioning Profile Verification:"
+
           echo "Provisioning profile details:"
-          security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID|ExpirationDate)"
-          
-          # Extract certificate hash from provisioning profile using the working one-liner
-          echo "Certificates in provisioning profile:"
+          security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID|ExpirationDate|ProvisionsAllDevices|Entitlements)"
+
+          # Extract cert hash from profile and compare
           PROFILE_CERT_HASH=$(security cms -D -i dist_profile.mobileprovision | plutil -extract DeveloperCertificates.0 raw -o - - | base64 -D | openssl x509 -inform DER -noout -fingerprint -sha1 | sed 's/SHA1 Fingerprint=//' | tr -d ':')
           echo "Profile certificate hash: $PROFILE_CERT_HASH"
-          
-          # Verify certificate-profile match
-          echo "🔍 Verifying Certificate-Profile Match:"
+
           if [ "$CERT_HASH" = "$PROFILE_CERT_HASH" ]; then
             echo "✅ Certificate hash matches provisioning profile"
           else
-            echo "❌ Certificate hash mismatch!"
-            echo "   Certificate hash: $CERT_HASH"
-            echo "   Profile hash: $PROFILE_CERT_HASH"
-            echo "   This will cause App Store Connect upload to fail"
-            echo "   ⚠️  You need to create a new provisioning profile with the new certificate"
+            echo "❌ Certificate hash mismatch! You must create the profile with your installed certificate."
             exit 1
           fi
-          
-          # Verify certificate expiration
-          echo "🔍 Checking Certificate Expiration:"
-          CERT_EXPIRY=$(security find-certificate -c "$SIGNING_IDENTITY" -p build.keychain | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+
+          # Check expiry
+          CERT_EXPIRY=$(security find-certificate -c "$CERT_NAME" -p build.keychain | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
           echo "Certificate expires: $CERT_EXPIRY"
-          
-          # Check if certificate is expired
-          if [ -n "$CERT_EXPIRY" ]; then
-            EXPIRY_EPOCH=$(date -j -f "%b %d %H:%M:%S %Y %Z" "$CERT_EXPIRY" +%s 2>/dev/null)
-            CURRENT_EPOCH=$(date +%s)
-            if [ "$EXPIRY_EPOCH" -lt "$CURRENT_EPOCH" ]; then
-              echo "❌ Certificate has expired!"
-              exit 1
-            else
-              echo "✅ Certificate is valid"
-            fi
-          fi
-          
-          echo "Code signing setup completed successfully"
-          
-          # Configure Flutter to use our keychain
-          echo "🔧 Configuring Flutter to use build keychain..."
-          export CODESIGN_KEYCHAIN=build.keychain
-          export CODESIGN_KEYCHAIN_PASSWORD=""
-          
-          # Set keychain as default for codesign
-          security default-keychain -s build.keychain
-          security list-keychains -s build.keychain
-          security unlock-keychain -p "" build.keychain
-          
-          # Verify Flutter can see the certificates
-          echo "🔍 Verifying Flutter can access certificates:"
-          flutter doctor -v
-          
-          # Show available signing identities for Flutter
-          echo "🔍 Available signing identities for Flutter:"
-          security find-identity -v build.keychain | grep "iPhone Distribution"
 
       - name: 📱 Build and sign iOS App
         env:
@@ -212,35 +129,30 @@ jobs:
             # Build without code signing first
             echo "🔨 Building without code signing..."
             flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
-            
+
             echo "✅ Flutter build completed without code signing"
-            
-            # Get the exact certificate name from keychain
-            echo "🔍 Getting exact certificate name..."
-            CERT_NAME=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-            echo "Using certificate: $CERT_NAME"
-            
-            # Sign Flutter framework FIRST (before app signing)
-            echo "🔐 Signing Flutter framework..."
-            if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
-              echo "Found Flutter framework, signing..."
-              codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework
-              echo "Flutter framework signing completed"
-            else
-              echo "ℹ️ No Flutter framework found"
+
+            # Get certificate hash from previous step
+            CERT_HASH=$(security find-identity -v build.keychain | grep "Apple Distribution" | head -1 | awk '{print $2}')
+            if [ -z "$CERT_HASH" ]; then
+              echo "❌ No valid Apple Distribution certificate hash found for codesigning."
+              exit 1
             fi
-            
-            # Manually sign the app AFTER framework signing
+
+            # Sign Flutter framework FIRST
+            echo "🔐 Signing Flutter framework (if exists)..."
+            if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
+              codesign --force --sign "$CERT_HASH" --keychain build.keychain build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework
+            fi
+
+            # Sign the App using the certificate hash!
             echo "🔐 Manually signing the app..."
-            codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app
-            
+            codesign --force --sign "$CERT_HASH" --keychain build.keychain build/ios/iphoneos/Runner.app
+
             echo "✅ Manual code signing completed"
-            
-            # Embed the provisioning profile last
-            echo "📋 Embedding provisioning profile..."
+
+            # Embed provisioning profile
             cp dist_profile.mobileprovision build/ios/iphoneos/Runner.app/embedded.mobileprovision
-            
-            echo "✅ Provisioning profile embedded"
 
       - name: 🔍 Verify Built App
         run: |
