@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.13](https://github.com/lusu007/dienstplan/compare/v0.4.12...v0.4.13) (2025-07-09)
+
+
+### Bug Fixes
+
+* Fix provisioning profile decoding ([#77](https://github.com/lusu007/dienstplan/issues/77)) ([38e8f40](https://github.com/lusu007/dienstplan/commit/38e8f4019166be06c270da8cb3e6d1eee2cabcb4))
+
 ## [0.4.12](https://github.com/lusu007/dienstplan/compare/v0.4.11...v0.4.12) (2025-07-09)
 
 
