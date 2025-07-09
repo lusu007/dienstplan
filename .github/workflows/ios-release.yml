@@ -193,6 +193,15 @@ jobs:
             cp dist_profile.mobileprovision build/ios/iphoneos/Runner.app/embedded.mobileprovision
             
             echo "✅ Provisioning profile embedded"
+            
+            # Sign all frameworks
+            echo "🔐 Signing frameworks..."
+            find build/ios/iphoneos/Runner.app/Frameworks -name "*.framework" -type d | while read framework; do
+              echo "Signing framework: $framework"
+              codesign --force --sign "$CERT_NAME" --keychain build.keychain "$framework"
+            done
+            
+            echo "✅ All frameworks signed"
 
       - name: 🔍 Verify Built App
         run: |
