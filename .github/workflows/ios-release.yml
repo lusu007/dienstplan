@@ -127,6 +127,10 @@ jobs:
             exit 1
           fi
           
+          # Show certificate details
+          echo "🔍 Certificate details:"
+          echo "$CERT_INFO" | grep -E "(Subject:|Issuer:|Not Before:|Not After:)" | head -10
+          
           echo "Decoding and installing provisioning profile..."
           # Robust: Zeilenumbrüche entfernen und base64 dekodieren
           echo "${{ secrets.PROVISIONING_PROFILE }}" | tr -d '\n' | base64 -D > dist_profile.mobileprovision
@@ -157,6 +161,7 @@ jobs:
             echo "   Certificate hash: $CERT_HASH"
             echo "   Profile hash: $PROFILE_CERT_HASH"
             echo "   This will cause App Store Connect upload to fail"
+            echo "   ⚠️  You need to create a new provisioning profile with the new certificate"
             exit 1
           fi
           
