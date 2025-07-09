@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.24](https://github.com/lusu007/dienstplan/compare/v0.4.23...v0.4.24) (2025-07-09)
+
+
+### Bug Fixes
+
+* Sign app after framework ([#99](https://github.com/lusu007/dienstplan/issues/99)) ([1802d74](https://github.com/lusu007/dienstplan/commit/1802d7409c3f995a775be68ceb8598ee23ed7f0b))
+
 ## [0.4.23](https://github.com/lusu007/dienstplan/compare/v0.4.22...v0.4.23) (2025-07-09)
 
 
