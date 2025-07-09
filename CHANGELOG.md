@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.18](https://github.com/lusu007/dienstplan/compare/v0.4.17...v0.4.18) (2025-07-09)
+
+
+### Bug Fixes
+
+* Use correct certificate name ([#87](https://github.com/lusu007/dienstplan/issues/87)) ([7e69585](https://github.com/lusu007/dienstplan/commit/7e695858a2f060c5bdba705c95a4cee0d24d0aa1))
+
 ## [0.4.17](https://github.com/lusu007/dienstplan/compare/v0.4.16...v0.4.17) (2025-07-09)
 
 
