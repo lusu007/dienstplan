@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.16](https://github.com/lusu007/dienstplan/compare/v0.4.15...v0.4.16) (2025-07-09)
+
+
+### Bug Fixes
+
+* Use correct keychain for Flutter build ([#83](https://github.com/lusu007/dienstplan/issues/83)) ([37f9460](https://github.com/lusu007/dienstplan/commit/37f9460c4b4bc0b464d233e788df207a590f8edc))
+
 ## [0.4.15](https://github.com/lusu007/dienstplan/compare/v0.4.14...v0.4.15) (2025-07-09)
 
 
