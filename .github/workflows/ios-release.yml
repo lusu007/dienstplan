@@ -80,6 +80,15 @@ jobs:
           echo "Available signing identities:"
           security find-identity -v build.keychain
           
+          # Get the exact identity name for signing
+          SIGNING_IDENTITY=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "Using signing identity: $SIGNING_IDENTITY"
+          
+          if [ -z "$SIGNING_IDENTITY" ]; then
+            echo "❌ No iPhone Distribution certificate found"
+            exit 1
+          fi
+          
           echo "Decoding and installing provisioning profile..."
           # Decode and install provisioning profile
           echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -d > dist_profile.mobileprovision
@@ -88,6 +97,10 @@ jobs:
           echo "Verifying installed profiles..."
           # List installed profiles for verification
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Verify provisioning profile details
+          echo "Provisioning profile details:"
+          security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID)"
           
           echo "Code signing setup completed successfully"
 
@@ -108,6 +121,15 @@ jobs:
           # Find the provisioning profile
           PROFILE_PATH=$(find ~/Library/MobileDevice/Provisioning\ Profiles -name "*.mobileprovision" | head -1)
           echo "Provisioning profile path: $PROFILE_PATH"
+          
+          # Get the signing identity from the previous step
+          SIGNING_IDENTITY=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "Using signing identity: $SIGNING_IDENTITY"
+          
+          if [ -z "$SIGNING_IDENTITY" ]; then
+            echo "❌ No iPhone Distribution certificate found"
+            exit 1
+          fi
           
           # Embed the provisioning profile
           if [ -f "$PROFILE_PATH" ]; then
@@ -134,21 +156,22 @@ jobs:
           echo "Signing frameworks..."
           find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
             echo "Signing framework: $framework"
-            codesign --force --sign "iPhone Distribution" --timestamp=none --deep "$framework"
+            codesign --force --sign "$SIGNING_IDENTITY" --timestamp=none --deep "$framework"
           done
           
           # Sign any dylibs in the app
           echo "Signing dylibs..."
           find "$APP_PATH" -name "*.dylib" | while read dylib; do
             echo "Signing dylib: $dylib"
-            codesign --force --sign "iPhone Distribution" --timestamp=none "$dylib"
+            codesign --force --sign "$SIGNING_IDENTITY" --timestamp=none "$dylib"
           done
           
           # Sign the main app with resolved entitlements
           echo "Signing main app with resolved entitlements..."
-          codesign --force --sign "iPhone Distribution" --entitlements resolved_entitlements.plist --timestamp=none "$APP_PATH"
+          codesign --force --sign "$SIGNING_IDENTITY" --entitlements resolved_entitlements.plist --timestamp=none "$APP_PATH"
           
           # Verify code signing
+          echo "Verifying code signing..."
           codesign -dv --verbose=4 "$APP_PATH"
           
           # Verify provisioning profile is embedded
@@ -159,6 +182,10 @@ jobs:
             echo "❌ Provisioning profile not embedded"
             exit 1
           fi
+          
+          # Verify the certificate matches the provisioning profile
+          echo "Verifying certificate matches provisioning profile..."
+          security cms -D -i "$APP_PATH/embedded.mobileprovision" | grep -A 5 "DeveloperCertificates"
           
           # Clean up temporary entitlements file
           rm -f resolved_entitlements.plist
