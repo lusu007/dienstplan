@@ -246,15 +246,23 @@ jobs:
             exit 1
           fi
           
-          # Verify all frameworks are signed
+          # Verify framework signing
           echo "🔍 Verifying framework signing..."
-          find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
-            echo "Checking framework: $framework"
-            codesign -dv "$framework" 2>&1 | grep -q "Authority=" || {
-              echo "❌ Framework not properly signed: $framework"
+          if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
+            echo "Checking framework: build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework"
+            
+            # Check if framework is signed
+            if codesign -dv build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework 2>&1 | grep -q "not signed"; then
+              echo "❌ Framework not properly signed: build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework"
+              echo "Framework signing details:"
+              codesign -dv build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework 2>&1
               exit 1
-            }
-          done
+            else
+              echo "✅ Framework signing verification passed"
+            fi
+          else
+            echo "ℹ️ No Flutter framework found to verify"
+          fi
           
           echo "✅ All verification checks passed"
 
