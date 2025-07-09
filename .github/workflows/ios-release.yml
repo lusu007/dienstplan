@@ -188,27 +188,14 @@ jobs:
             
             echo "✅ Manual code signing completed"
             
-            # Sign all frameworks first
-            echo "🔐 Signing frameworks..."
-            if [ -d "build/ios/iphoneos/Runner.app/Frameworks" ]; then
-              echo "Found Frameworks directory, listing contents:"
-              ls -la build/ios/iphoneos/Runner.app/Frameworks/
-              
-              find build/ios/iphoneos/Runner.app/Frameworks -name "*.framework" -type d | while read framework; do
-                echo "Signing framework: $framework"
-                codesign --force --sign "$CERT_NAME" --keychain build.keychain "$framework"
-                echo "Framework signing result: $?"
-              done
-              echo "✅ All frameworks signed"
-              
-              # Explicitly sign Flutter framework if it exists
-              if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
-                echo "🔐 Explicitly signing Flutter framework..."
-                codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework
-                echo "Flutter framework signing result: $?"
-              fi
+            # Sign Flutter framework if it exists
+            echo "🔐 Signing Flutter framework..."
+            if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
+              echo "Found Flutter framework, signing..."
+              codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework
+              echo "Flutter framework signing completed"
             else
-              echo "ℹ️ No Frameworks directory found"
+              echo "ℹ️ No Flutter framework found"
             fi
             
             # Embed the provisioning profile last
