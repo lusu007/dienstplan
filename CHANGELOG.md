@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.11](https://github.com/lusu007/dienstplan/compare/v0.4.10...v0.4.11) (2025-07-09)
+
+
+### Bug Fixes
+
+* Debug certificate verification ([#71](https://github.com/lusu007/dienstplan/issues/71)) ([9042c32](https://github.com/lusu007/dienstplan/commit/9042c32b5f86ee7b3977369a9561232e2f047adf))
+
 ## [0.4.10](https://github.com/lusu007/dienstplan/compare/v0.4.9...v0.4.10) (2025-07-09)
 
 
