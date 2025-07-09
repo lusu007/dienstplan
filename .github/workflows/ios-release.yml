@@ -110,9 +110,9 @@ jobs:
           echo "Provisioning profile details:"
           security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID|ExpirationDate)"
           
-          # Extract certificate hash from provisioning profile
+          # Extract certificate hash from provisioning profile using the working one-liner
           echo "Certificates in provisioning profile:"
-          PROFILE_CERT_HASH=$(security cms -D -i dist_profile.mobileprovision | grep -A 10 "DeveloperCertificates" | grep -o '[A-F0-9]\{40\}' | head -1)
+          PROFILE_CERT_HASH=$(security cms -D -i dist_profile.mobileprovision | plutil -extract DeveloperCertificates.0 raw -o - - | base64 -D | openssl x509 -inform DER -noout -fingerprint -sha1 | sed 's/SHA1 Fingerprint=//' | tr -d ':')
           echo "Profile certificate hash: $PROFILE_CERT_HASH"
           
           # Verify certificate-profile match
