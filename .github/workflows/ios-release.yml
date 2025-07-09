@@ -145,19 +145,40 @@ jobs:
           fi
           
           echo "Code signing setup completed successfully"
+          
+          # Configure Flutter to use our keychain
+          echo "🔧 Configuring Flutter to use build keychain..."
+          export CODESIGN_KEYCHAIN=build.keychain
+          export CODESIGN_KEYCHAIN_PASSWORD=""
+          
+          # Set keychain as default for codesign
+          security default-keychain -s build.keychain
+          security list-keychains -s build.keychain
+          security unlock-keychain -p "" build.keychain
+          
+          # Verify Flutter can see the certificates
+          echo "🔍 Verifying Flutter can access certificates:"
+          flutter doctor -v
+          
+          # Show available signing identities for Flutter
+          echo "🔍 Available signing identities for Flutter:"
+          security find-identity -v build.keychain | grep "iPhone Distribution"
 
       - name: 📱 Build iOS App with Flutter Signing
         env:
+          CODESIGN_KEYCHAIN: build.keychain
+          CODESIGN_KEYCHAIN_PASSWORD: ""
           FLUTTER_BUILD_NUMBER: ${{ github.run_number }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           echo "Building iOS app with Flutter's built-in signing..."
           
-          # Set environment variables for Flutter signing
-          export FLUTTER_BUILD_NUMBER=${{ github.run_number }}
-          export APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}
+          # Ensure keychain is accessible
+          security default-keychain -s build.keychain
+          security list-keychains -s build.keychain
+          security unlock-keychain -p "" build.keychain
           
-          # Build with Flutter's built-in signing (removed --no-codesign flag)
+          # Build with Flutter's built-in signing (no --no-codesign flag)
           flutter build ios --release --build-number=${{ github.run_number }}
           
           echo "✅ Flutter build completed with built-in signing"
