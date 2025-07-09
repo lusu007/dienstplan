@@ -107,6 +107,13 @@ jobs:
             exit 1
           fi
           
+          # Sign all frameworks first
+          echo "Signing frameworks..."
+          find "$APP_PATH/Frameworks" -name "*.framework" -type d | while read framework; do
+            echo "Signing framework: $framework"
+            codesign --force --sign "iPhone Distribution" --timestamp=none "$framework"
+          done
+          
           # Check if entitlements file exists
           if [ -f "ios/Runner/Runner.entitlements" ]; then
             echo "Using entitlements file"
@@ -185,7 +192,6 @@ jobs:
           fi
           
           echo "Uploading to App Store Connect..."
-          
           
           # Set environment variables for authentication
           export APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_ISSUER_ID"
