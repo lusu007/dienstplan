@@ -171,17 +171,22 @@ jobs:
           FLUTTER_BUILD_NUMBER: ${{ github.run_number }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          # Build without code signing first
-          echo "🔨 Building without code signing..."
-          flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
-          
-          echo "✅ Flutter build completed without code signing"
-          
-          # Manually sign the app with our certificate
-          echo "🔐 Manually signing the app..."
-          codesign --force --sign "iPhone Distribution: Lukas Jost (***)" --keychain build.keychain build/ios/iphoneos/Runner.app
-          
-          echo "✅ Manual code signing completed"
+            # Build without code signing first
+            echo "🔨 Building without code signing..."
+            flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
+            
+            echo "✅ Flutter build completed without code signing"
+            
+            # Get the exact certificate name from keychain
+            echo "🔍 Getting exact certificate name..."
+            CERT_NAME=$(security find-identity -v build.keychain | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+            echo "Using certificate: $CERT_NAME"
+            
+            # Manually sign the app with our certificate
+            echo "🔐 Manually signing the app..."
+            codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app
+            
+            echo "✅ Manual code signing completed"
 
       - name: 🔍 Verify Built App
         run: |
