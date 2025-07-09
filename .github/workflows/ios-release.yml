@@ -187,6 +187,12 @@ jobs:
             codesign --force --sign "$CERT_NAME" --keychain build.keychain build/ios/iphoneos/Runner.app
             
             echo "✅ Manual code signing completed"
+            
+            # Embed the provisioning profile
+            echo "📋 Embedding provisioning profile..."
+            cp dist_profile.mobileprovision build/ios/iphoneos/Runner.app/embedded.mobileprovision
+            
+            echo "✅ Provisioning profile embedded"
 
       - name: 🔍 Verify Built App
         run: |
