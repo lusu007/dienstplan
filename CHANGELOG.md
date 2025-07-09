@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.6](https://github.com/lusu007/dienstplan/compare/v0.4.5...v0.4.6) (2025-07-09)
+
+
+### Bug Fixes
+
+* Use correct arguments for app-store-connect publish ([#61](https://github.com/lusu007/dienstplan/issues/61)) ([60e6836](https://github.com/lusu007/dienstplan/commit/60e6836b0343b33f5df2bb45e3c45ad9a9fa8a95))
+
 ## [0.4.5](https://github.com/lusu007/dienstplan/compare/v0.4.4...v0.4.5) (2025-07-08)
 
 
