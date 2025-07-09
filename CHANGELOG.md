@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.19](https://github.com/lusu007/dienstplan/compare/v0.4.18...v0.4.19) (2025-07-09)
+
+
+### Bug Fixes
+
+* Embed provisioning profile ([#89](https://github.com/lusu007/dienstplan/issues/89)) ([bfaaf24](https://github.com/lusu007/dienstplan/commit/bfaaf245718bcdb48b785bf5d92c2a42520035a1))
+
 ## [0.4.18](https://github.com/lusu007/dienstplan/compare/v0.4.17...v0.4.18) (2025-07-09)
 
 
