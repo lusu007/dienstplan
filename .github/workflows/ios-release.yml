@@ -64,7 +64,7 @@ jobs:
           mkdir -p ~/Library/Developer/Xcode/DerivedData
 
           echo "Decoding and installing distribution certificate..."
-          echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -d > dist_cert.p12
+          echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -D > dist_cert.p12
 
           echo "Creating keychain..."
           security create-keychain -p "" build.keychain
