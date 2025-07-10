@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.29](https://github.com/lusu007/dienstplan/compare/v0.4.28...v0.4.29) (2025-07-10)
+
+
+### Bug Fixes
+
+* Use correct flag for base64 on macos ([#109](https://github.com/lusu007/dienstplan/issues/109)) ([6ce51ce](https://github.com/lusu007/dienstplan/commit/6ce51ce00c9687dd11ddc8874e28e1e840df9dd8))
+
 ## [0.4.28](https://github.com/lusu007/dienstplan/compare/v0.4.27...v0.4.28) (2025-07-09)
 
 
