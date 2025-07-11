@@ -127,13 +127,20 @@ jobs:
             -exportOptionsPlist ios/ExportOptions.plist \
             -exportPath build/export
 
+      - name: 🔍 Find exported IPA
+        id: find_ipa
+        run: |
+          find build/export -type f -name "*.ipa" | head -1 > ipa_path.txt
+          IPA_PATH=$(cat ipa_path.txt)
+          echo "IPA_PATH=$IPA_PATH" >> $GITHUB_ENV
+          
       - name: ⬆️ Upload IPA to Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/export/Runner.ipa
+          asset_path: ${{ env.IPA_PATH }}
           asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa
           asset_content_type: application/octet-stream
 
@@ -146,17 +153,17 @@ jobs:
         run: |
           which app-store-connect
           app-store-connect --version
-
-          IPA_FILE="build/export/Runner.ipa"
-          if [ -f "$IPA_FILE" ]; then
-            echo "✅ IPA file found: $IPA_FILE"
-            ls -la "$IPA_FILE"
+      
+          if [ -f "${IPA_FILE}" ]; then
+            echo "✅ IPA file found: ${IPA_FILE}"
+            ls -la "${IPA_FILE}"
           else
-            echo "❌ IPA file not found: $IPA_FILE"
+            echo "❌ IPA file not found: ${IPA_FILE}"
+            find build/export
             exit 1
           fi
-          
-          app-store-connect publish --path "$IPA_FILE"
+      
+          app-store-connect publish --path "${IPA_FILE}"
           echo "✅ App Store Connect deployment completed"
 
       - name: 🧹 Cleanup
