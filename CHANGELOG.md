@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.35](https://github.com/lusu007/dienstplan/compare/v0.4.34...v0.4.35) (2025-07-11)
+
+
+### Bug Fixes
+
+* Use echo and plutil to create ExportOptions.plist ([#124](https://github.com/lusu007/dienstplan/issues/124)) ([9928fd7](https://github.com/lusu007/dienstplan/commit/9928fd7af626b8f7edbb0c77cdb3add6edaf5366))
+
 ## [0.4.34](https://github.com/lusu007/dienstplan/compare/v0.4.33...v0.4.34) (2025-07-11)
 
 
