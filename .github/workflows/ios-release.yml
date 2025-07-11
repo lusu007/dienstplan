@@ -108,17 +108,18 @@ jobs:
 
       - name: 📝 Generate ExportOptions.plist
         run: |
-          plutil -create xml1 -o ios/ExportOptions.plist - <<EOF
-          {
+          echo '{
             "method": "app-store",
             "teamID": "${{ secrets.APPLE_TEAM_ID }}",
             "signingStyle": "manual",
             "provisioningProfiles": {
               "io.scelus.dienstplan": "${{ secrets.PROFILE_NAME }}"
             }
-          }
-          EOF
-    
+          }' > ios/ExportOptions.json
+          plutil -convert xml1 -o ios/ExportOptions.plist ios/ExportOptions.json
+          ls -l ios/ExportOptions.plist
+          cat ios/ExportOptions.plist
+
       - name: 📦 Export IPA
         run: |
           xcodebuild -exportArchive \
