@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.34](https://github.com/lusu007/dienstplan/compare/v0.4.33...v0.4.34) (2025-07-11)
+
+
+### Bug Fixes
+
+* Use correct path for exportOptionsPlist and fix EOF ([#122](https://github.com/lusu007/dienstplan/issues/122)) ([56171f5](https://github.com/lusu007/dienstplan/commit/56171f5bb4fd78d13ac560f0df537a07554920ad))
+
 ## [0.4.33](https://github.com/lusu007/dienstplan/compare/v0.4.32...v0.4.33) (2025-07-11)
 
 
