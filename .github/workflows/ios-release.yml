@@ -40,199 +40,60 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
-      - name: 🔧 Setup Codemagic CLI
-        run: |
-          echo "Setting up Codemagic CLI tools..."
-          
-          # Install using pip with --break-system-packages flag to handle externally managed environment
-          pip3 install --break-system-packages codemagic-cli-tools
-          
-          echo "Verifying installation..."
-          app-store-connect --version
-          keychain --version
-          xcode-project --version
-          
-          echo "✅ Codemagic CLI tools installation completed successfully"
-
-      
       - name: 🔑 Setup iOS Code Signing
         run: |
-          echo "Setting up iOS code signing..."
-
-          # Create directories for certificates and profiles
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          mkdir -p ~/Library/Developer/Xcode/DerivedData
-
-          echo "Decoding and installing distribution certificate..."
           echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -D > dist_cert.p12
+          echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -D > dist_profile.mobileprovision
 
-          echo "Creating keychain..."
           security create-keychain -p "" build.keychain
           security default-keychain -s build.keychain
           security unlock-keychain -p "" build.keychain
-          security set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain
-
-          echo "Importing certificate to keychain..."
           security import dist_cert.p12 -k build.keychain -P "${{ secrets.DIS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" build.keychain
 
-          echo "🔍 Listing signing identities in keychain:"
-          security find-identity -v build.keychain
-
-          # Use "Apple Distribution" for current App Store builds
-          CERT_HASH=$(security find-identity -v build.keychain | grep "Apple Distribution" | head -1 | awk '{print $2}')
-          CERT_NAME=$(security find-identity -v build.keychain | grep "Apple Distribution" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-
-          echo "Using certificate hash: $CERT_HASH"
-          echo "Using certificate name: $CERT_NAME"
-
-          if [ -z "$CERT_HASH" ]; then
-            echo "❌ No valid Apple Distribution certificate found in keychain."
-            exit 1
-          fi
-
-          # Show certificate details for verification
-          CERT_INFO=$(security find-certificate -c "$CERT_NAME" -p build.keychain | openssl x509 -noout -text 2>/dev/null)
-          echo "Certificate Details:"
-          echo "$CERT_INFO" | grep -E "(Subject:|Issuer:|Not Before:|Not After:)" | head -10
-
-          # Enhanced provisioning profile verification
-          echo "Decoding and installing provisioning profile..."
-          echo "${{ secrets.PROVISIONING_PROFILE }}" | tr -d '\n' | base64 -D > dist_profile.mobileprovision
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp dist_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Find UUID of the provisioning profile
+          PP_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< "$(security cms -D -i dist_profile.mobileprovision)")
+          echo "Provisioning Profile UUID: $PP_UUID"
 
-          echo "Provisioning profile details:"
-          security cms -D -i dist_profile.mobileprovision | grep -E "(Name|TeamIdentifier|TeamName|AppIDName|UUID|ExpirationDate|ProvisionsAllDevices|Entitlements)"
+      - name: 🛠️ Build Flutter iOS App (no codesign)
+        run: flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
 
-          # Extract cert hash from profile and compare
-          PROFILE_CERT_HASH=$(security cms -D -i dist_profile.mobileprovision | plutil -extract DeveloperCertificates.0 raw -o - - | base64 -D | openssl x509 -inform DER -noout -fingerprint -sha1 | sed 's/SHA1 Fingerprint=//' | tr -d ':')
-          echo "Profile certificate hash: $PROFILE_CERT_HASH"
-
-          if [ "$CERT_HASH" = "$PROFILE_CERT_HASH" ]; then
-            echo "✅ Certificate hash matches provisioning profile"
-          else
-            echo "❌ Certificate hash mismatch! You must create the profile with your installed certificate."
-            exit 1
-          fi
-
-          # Check expiry
-          CERT_EXPIRY=$(security find-certificate -c "$CERT_NAME" -p build.keychain | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
-          echo "Certificate expires: $CERT_EXPIRY"
-
-      - name: 📱 Build and sign iOS App
-        env:
-          CODESIGN_KEYCHAIN: build.keychain
-          CODESIGN_KEYCHAIN_PASSWORD: ""
-          FLUTTER_BUILD_NUMBER: ${{ github.run_number }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: 🏗️ Archive iOS App
         run: |
-            # Build without code signing first
-            echo "🔨 Building without code signing..."
-            flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
+          cd ios
+          xcodebuild \
+            -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath ../build/Runner.xcarchive \
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="${{ secrets.PROFILE_NAME }}" \
+            OTHER_CODE_SIGN_FLAGS="--keychain build.keychain" \
+            archive
 
-            echo "✅ Flutter build completed without code signing"
-
-            # Get certificate hash from previous step
-            CERT_HASH=$(security find-identity -v build.keychain | grep "Apple Distribution" | head -1 | awk '{print $2}')
-            if [ -z "$CERT_HASH" ]; then
-              echo "❌ No valid Apple Distribution certificate hash found for codesigning."
-              exit 1
-            fi
-
-            # Sign Flutter framework FIRST
-            echo "🔐 Signing Flutter framework (if exists)..."
-            if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
-              codesign --force --sign "$CERT_HASH" --keychain build.keychain build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework
-            fi
-
-            # Sign the App using the certificate hash!
-            echo "🔐 Manually signing the app..."
-            codesign --force --sign "$CERT_HASH" --keychain build.keychain build/ios/iphoneos/Runner.app
-
-            echo "✅ Manual code signing completed"
-
-            # Embed provisioning profile
-            cp dist_profile.mobileprovision build/ios/iphoneos/Runner.app/embedded.mobileprovision
-
-      - name: 🔍 Verify Built App
+      - name: 📝 Generate ExportOptions.plist
         run: |
-          echo "🔍 Verifying built app..."
-          
-          # Find the built app
-          APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
-          echo "App path: $APP_PATH"
-          
-          if [ ! -d "$APP_PATH" ]; then
-            echo "❌ Built app not found"
-            exit 1
-          fi
-          
-          # Verify code signing
-          echo "Verifying code signing..."
-          codesign -dv --verbose=4 "$APP_PATH"
-          
-          # Verify provisioning profile is embedded
-          if [ -f "$APP_PATH/embedded.mobileprovision" ]; then
-            echo "✅ Provisioning profile embedded successfully"
-            ls -la "$APP_PATH/embedded.mobileprovision"
-          else
-            echo "❌ Provisioning profile not embedded"
-            exit 1
-          fi
-          
-          # Verify the certificate matches the provisioning profile in the built app
-          echo "🔍 Final Certificate-Profile Verification:"
-          BUILT_CERT_HASH=$(codesign -dv --verbose=4 "$APP_PATH" 2>&1 | grep "Authority=" | head -1 | grep -o '[A-F0-9]\{40\}' || echo "")
-          PROFILE_CERT_HASH=$(security cms -D -i "$APP_PATH/embedded.mobileprovision" | grep -A 10 "DeveloperCertificates" | grep -o '[A-F0-9]\{40\}' | head -1)
-          
-          echo "Built app certificate hash: $BUILT_CERT_HASH"
-          echo "Profile certificate hash: $PROFILE_CERT_HASH"
-          
-          if [ "$BUILT_CERT_HASH" = "$PROFILE_CERT_HASH" ]; then
-            echo "✅ Built app certificate matches provisioning profile"
-          else
-            echo "❌ Built app certificate mismatch with provisioning profile"
-            echo "   This will cause App Store Connect upload to fail"
-            exit 1
-          fi
-          
-          # Verify framework signing
-          echo "🔍 Verifying framework signing..."
-          if [ -d "build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework" ]; then
-            echo "Checking framework: build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework"
-            
-            # Check if framework is signed
-            if codesign -dv build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework 2>&1 | grep -q "not signed"; then
-              echo "❌ Framework not properly signed: build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework"
-              echo "Framework signing details:"
-              codesign -dv build/ios/iphoneos/Runner.app/Frameworks/Flutter.framework 2>&1
-              exit 1
-            else
-              echo "✅ Framework signing verification passed"
-            fi
-          else
-            echo "ℹ️ No Flutter framework found to verify"
-          fi
-          
-          echo "✅ All verification checks passed"
+          plutil -create xml1 -o ExportOptions.plist - << EOF
+          {
+            "method": "app-store",
+            "teamID": "${{ secrets.APPLE_TEAM_ID }}",
+            "signingStyle": "manual",
+            "provisioningProfiles": {
+              "io.scelus.dienstplan": "${{ secrets.PROFILE_NAME }}"
+            }
+          }
+          EOF
 
-      - name: 📦 Create IPA
+      - name: 📦 Export IPA
         run: |
-          # Create payload directory
-          mkdir -p Payload
-          
-          # Find the built app
-          APP_PATH=$(find build/ios/iphoneos -name "*.app" -type d | head -1)
-          echo "App path: $APP_PATH"
-          
-          # Copy app to payload
-          cp -R "$APP_PATH" Payload/
-          
-          # Create IPA
-          zip -r "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa" Payload
-          
-          # Clean up
-          rm -rf Payload
+          xcodebuild -exportArchive \
+            -archivePath build/Runner.xcarchive \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -exportPath build/export
 
       - name: ⬆️ Upload IPA to Release
         uses: actions/upload-release-asset@v1
@@ -240,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa
+          asset_path: build/export/Runner.ipa
           asset_name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa
           asset_content_type: application/octet-stream
 
@@ -251,48 +112,24 @@ jobs:
           APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.APPSTORE_CONNECT_KEY_IDENTIFIER }}
           APP_STORE_APP_ID: ${{ secrets.APP_STORE_APP_ID }}
         run: |
-          echo "Starting App Store Connect deployment..."
-          
-          # Verify Codemagic CLI tools are available
-          echo "Checking Codemagic CLI tools installation..."
           which app-store-connect
           app-store-connect --version
-          
-          # App Store Connect API key is available via environment variable
-          echo "App Store Connect API key available via environment variable"
-          
-          # Verify the IPA file exists
-          IPA_FILE="dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
+
+          IPA_FILE="build/export/Runner.ipa"
           if [ -f "$IPA_FILE" ]; then
             echo "✅ IPA file found: $IPA_FILE"
             ls -la "$IPA_FILE"
           else
             echo "❌ IPA file not found: $IPA_FILE"
-            ls -la *.ipa || echo "No IPA files found"
             exit 1
           fi
           
-          echo "Uploading to App Store Connect..."
-          
-          # Set environment variables for authentication
-          export APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_ISSUER_ID"
-          export APP_STORE_CONNECT_KEY_IDENTIFIER="$APP_STORE_CONNECT_KEY_IDENTIFIER"
-          export APP_STORE_CONNECT_PRIVATE_KEY="$APP_STORE_CONNECT_PRIVATE_KEY"
-          
-          echo "Environment variables set for authentication"
-          
-          # Upload to App Store Connect
-          app-store-connect publish \
-            --path "$IPA_FILE"
-          
+          app-store-connect publish --path "$IPA_FILE"
           echo "✅ App Store Connect deployment completed"
 
       - name: 🧹 Cleanup
         run: |
-          # Remove sensitive files
           rm -f dist_cert.p12
           rm -f dist_profile.mobileprovision
-          rm -f "dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
-          
-          # Remove keychain
-          security delete-keychain build.keychain 
+          rm -rf build/
+          security delete-keychain build.keychain
