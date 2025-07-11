@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.32](https://github.com/lusu007/dienstplan/compare/v0.4.31...v0.4.32) (2025-07-11)
+
+
+### Bug Fixes
+
+* add signing config to podfile ([#115](https://github.com/lusu007/dienstplan/issues/115)) ([c0979fb](https://github.com/lusu007/dienstplan/commit/c0979fb521dc56df725691f96d8087ef9b483ad3))
+
 ## [0.4.31](https://github.com/lusu007/dienstplan/compare/v0.4.30...v0.4.31) (2025-07-11)
 
 
