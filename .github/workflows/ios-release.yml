@@ -108,7 +108,7 @@ jobs:
 
       - name: 📝 Generate ExportOptions.plist
         run: |
-          plutil -create xml1 -o ExportOptions.plist - << EOF
+          plutil -create xml1 -o ios/ExportOptions.plist - <<EOF
           {
             "method": "app-store",
             "teamID": "${{ secrets.APPLE_TEAM_ID }}",
@@ -123,7 +123,7 @@ jobs:
         run: |
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
-            -exportOptionsPlist ExportOptions.plist \
+            -exportOptionsPlist ios/ExportOptions.plist \
             -exportPath build/export
 
       - name: ⬆️ Upload IPA to Release
