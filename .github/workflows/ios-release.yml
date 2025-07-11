@@ -118,12 +118,12 @@ jobs:
             }
           }
           EOF
-
+    
       - name: 📦 Export IPA
         run: |
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
-            -exportOptionsPlist ios/ExportOptions.plist \
+            -exportOptionsPlist ExportOptions.plist \
             -exportPath build/export
 
       - name: ⬆️ Upload IPA to Release
