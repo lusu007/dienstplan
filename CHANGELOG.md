@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.36](https://github.com/lusu007/dienstplan/compare/v0.4.35...v0.4.36) (2025-07-11)
+
+
+### Bug Fixes
+
+* Use find to find exported IPA ([#126](https://github.com/lusu007/dienstplan/issues/126)) ([68ab7c5](https://github.com/lusu007/dienstplan/commit/68ab7c5bd68dbf0e3e6777cd2baa533709212115))
+
 ## [0.4.35](https://github.com/lusu007/dienstplan/compare/v0.4.34...v0.4.35) (2025-07-11)
 
 
