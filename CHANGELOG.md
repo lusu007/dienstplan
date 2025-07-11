@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.30](https://github.com/lusu007/dienstplan/compare/v0.4.29...v0.4.30) (2025-07-11)
+
+
+### Bug Fixes
+
+* Use xcodebuild to sign the app ([#111](https://github.com/lusu007/dienstplan/issues/111)) ([f047455](https://github.com/lusu007/dienstplan/commit/f047455a4dd12981fe3937f63f7fa7e622e11da9))
+
 ## [0.4.29](https://github.com/lusu007/dienstplan/compare/v0.4.28...v0.4.29) (2025-07-10)
 
 
