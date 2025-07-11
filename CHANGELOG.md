@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.31](https://github.com/lusu007/dienstplan/compare/v0.4.30...v0.4.31) (2025-07-11)
+
+
+### Bug Fixes
+
+* add signing config ([#113](https://github.com/lusu007/dienstplan/issues/113)) ([d34431c](https://github.com/lusu007/dienstplan/commit/d34431c80efdda4f75a620a03599752a8e0d0ebd))
+
 ## [0.4.30](https://github.com/lusu007/dienstplan/compare/v0.4.29...v0.4.30) (2025-07-11)
 
 
