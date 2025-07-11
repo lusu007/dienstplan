@@ -5,6 +5,15 @@
 
 ### Bug Fixes
 
+* Remove README.md in widgets ([#120](https://github.com/lusu007/dienstplan/issues/120)) ([180054e](https://github.com/lusu007/dienstplan/commit/180054eaa906791b58c61eee0f0ad07e8c52e071))
+* update release-please-manifest.json ([d085fe3](https://github.com/lusu007/dienstplan/commit/d085fe370eb98b4ca7b1aed2b223e7f4978da0e2))
+* Use correct path for exportOptionsPlist ([#117](https://github.com/lusu007/dienstplan/issues/117)) ([b7047e7](https://github.com/lusu007/dienstplan/commit/b7047e782a7cfffb5d4575eff4bec312ee4cb191))
+
+## [0.4.33](https://github.com/lusu007/dienstplan/compare/v0.4.32...v0.4.33) (2025-07-11)
+
+
+### Bug Fixes
+
 * Use correct path for exportOptionsPlist ([#117](https://github.com/lusu007/dienstplan/issues/117)) ([b7047e7](https://github.com/lusu007/dienstplan/commit/b7047e782a7cfffb5d4575eff4bec312ee4cb191))
 
 ## [0.4.32](https://github.com/lusu007/dienstplan/compare/v0.4.31...v0.4.32) (2025-07-11)
