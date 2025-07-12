@@ -79,6 +79,7 @@ class _DateSwitcherState extends State<DateSwitcher>
     final clampedYear = currentYear.clamp(2018, 2100);
 
     setState(() {
+      _selectedYear = clampedYear; // Initialize selected year
       _displayedYear = clampedYear;
       _yearBlockStart = _calculateYearBlockStart(clampedYear);
       _isYearView = false;
@@ -168,8 +169,11 @@ class _DateSwitcherState extends State<DateSwitcher>
                                 controller: _monthPageController!,
                                 physics: const ClampingScrollPhysics(),
                                 onPageChanged: (pageIndex) {
+                                  final newYear = 2018 + pageIndex;
                                   setState(() {
-                                    _displayedYear = 2018 + pageIndex;
+                                    _displayedYear = newYear;
+                                    _selectedYear =
+                                        newYear; // Keep selected year in sync
                                   });
                                   setModalState(() {});
                                 },
@@ -177,7 +181,8 @@ class _DateSwitcherState extends State<DateSwitcher>
                                 itemBuilder: (context, index) {
                                   final year = 2018 + index;
                                   return _buildMonthGrid(
-                                      key: ValueKey(year), displayedYear: year);
+                                      key: ValueKey(year),
+                                      displayedYear: _selectedYear);
                                 },
                               )
                             : const Center(child: CircularProgressIndicator())),
@@ -227,6 +232,9 @@ class _DateSwitcherState extends State<DateSwitcher>
                 onTap: () {
                   setState(() {
                     _isYearView = true;
+                    // Preserve selected year when switching to year view
+                    _displayedYear = _selectedYear;
+                    _yearBlockStart = _calculateYearBlockStart(_selectedYear);
                   });
                   setModalState(() {});
                 },
@@ -292,6 +300,8 @@ class _DateSwitcherState extends State<DateSwitcher>
                 onTap: () {
                   setState(() {
                     _isYearView = false;
+                    // Preserve selected year when switching to month view
+                    _displayedYear = _selectedYear;
                   });
                   setModalState(() {});
                 },
@@ -350,24 +360,29 @@ class _DateSwitcherState extends State<DateSwitcher>
       itemCount: 12,
       itemBuilder: (context, index) {
         final month = months[index];
-        final currentDisplayedYear = displayedYear ?? _displayedYear;
+        final currentDisplayedYear = displayedYear ??
+            _selectedYear; // Use selected year instead of displayed year
         final isCurrentMonth =
             month == now.month && currentDisplayedYear == now.year;
+        final isFocusedMonth = month == widget.currentDate.month &&
+            currentDisplayedYear == widget.currentDate.year;
         final monthName = DateFormat('MMM', widget.locale.languageCode)
             .format(DateTime(2024, month));
         return GestureDetector(
           onTap: () {
             setState(() {
               _selectedMonth = month;
-              _selectedYear = currentDisplayedYear;
+              _selectedYear = currentDisplayedYear; // Use the displayed year
             });
             _selectDate();
           },
           child: Container(
             decoration: BoxDecoration(
-              color: isCurrentMonth
-                  ? Theme.of(context).colorScheme.primary.withAlpha(128)
-                  : Colors.transparent,
+              color: isFocusedMonth
+                  ? Theme.of(context).colorScheme.primary
+                  : (isCurrentMonth
+                      ? Theme.of(context).colorScheme.primary.withAlpha(128)
+                      : Colors.transparent),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
@@ -375,7 +390,9 @@ class _DateSwitcherState extends State<DateSwitcher>
                 monthName,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isCurrentMonth ? Colors.white : null,
+                      color: (isFocusedMonth || isCurrentMonth)
+                          ? Colors.white
+                          : null,
                     ),
               ),
             ),
@@ -400,6 +417,7 @@ class _DateSwitcherState extends State<DateSwitcher>
       itemBuilder: (context, index) {
         final year = years[index];
         final isCurrentYear = year == now.year;
+        final isFocusedYear = year == widget.currentDate.year;
         final isValidYear = year >= 2018 && year <= 2100;
 
         return GestureDetector(
@@ -407,6 +425,8 @@ class _DateSwitcherState extends State<DateSwitcher>
               ? () {
                   setState(() {
                     _displayedYear = year;
+                    _selectedYear =
+                        year; // Set selected year when year is chosen
                     _isYearView = false;
                   });
                   setModalState(() {});
@@ -415,9 +435,11 @@ class _DateSwitcherState extends State<DateSwitcher>
           child: Container(
             decoration: BoxDecoration(
               color: isValidYear
-                  ? (isCurrentYear
-                      ? Theme.of(context).colorScheme.primary.withAlpha(128)
-                      : Colors.transparent)
+                  ? (isFocusedYear
+                      ? Theme.of(context).colorScheme.primary
+                      : (isCurrentYear
+                          ? Theme.of(context).colorScheme.primary.withAlpha(128)
+                          : Colors.transparent))
                   : Colors.grey.withAlpha((0.1 * 255).toInt()),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -427,7 +449,9 @@ class _DateSwitcherState extends State<DateSwitcher>
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: isValidYear
-                          ? (isCurrentYear ? Colors.white : null)
+                          ? ((isFocusedYear || isCurrentYear)
+                              ? Colors.white
+                              : null)
                           : Colors.grey,
                     ),
               ),
