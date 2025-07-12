@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/widgets/layout/section_header.dart';
-import 'package:dienstplan/widgets/settings/settings_card.dart';
 
 class SettingsSection extends StatelessWidget {
   final String title;
-  final List<SettingsCard> cards;
+  final List<Widget> cards;
   final EdgeInsets? padding;
 
   const SettingsSection({

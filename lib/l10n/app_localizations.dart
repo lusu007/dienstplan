@@ -607,6 +607,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preferred duty group was reset because it is not available in the new schedule.'**
   String get preferredDutyGroupResetNotice;
+
+  /// Title for Sentry analytics and error reporting setting
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics & Error Reporting'**
+  String get sentryAnalytics;
+
+  /// Description for Sentry analytics setting
+  ///
+  /// In en, this message translates to:
+  /// **'Help improve the app by sending anonymous usage data and error reports'**
+  String get sentryAnalyticsDescription;
+
+  /// Title for Sentry session replay setting
+  ///
+  /// In en, this message translates to:
+  /// **'Session Replay'**
+  String get sentryReplay;
+
+  /// Description for Sentry session replay setting
+  ///
+  /// In en, this message translates to:
+  /// **'Record user interactions to help debug issues (only when analytics is enabled)'**
+  String get sentryReplayDescription;
+
+  /// Title for privacy settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacy;
 }
 
 class _AppLocalizationsDelegate

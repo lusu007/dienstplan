@@ -344,5 +344,25 @@
   "preferredDutyGroupResetNotice": "Preferred duty group was reset because it is not available in the new schedule.",
   "@preferredDutyGroupResetNotice": {
     "description": "Notice when the preferred duty group is reset on schedule change"
+  },
+  "sentryAnalytics": "Analytics & Error Reporting",
+  "@sentryAnalytics": {
+    "description": "Title for Sentry analytics and error reporting setting"
+  },
+  "sentryAnalyticsDescription": "Help improve the app by sending anonymous usage data and error reports",
+  "@sentryAnalyticsDescription": {
+    "description": "Description for Sentry analytics setting"
+  },
+  "sentryReplay": "Session Replay",
+  "@sentryReplay": {
+    "description": "Title for Sentry session replay setting"
+  },
+  "sentryReplayDescription": "Record user interactions to help debug issues (only when analytics is enabled)",
+  "@sentryReplayDescription": {
+    "description": "Description for Sentry session replay setting"
+  },
+  "privacy": "Privacy",
+  "@privacy": {
+    "description": "Title for privacy settings section"
   }
 } 

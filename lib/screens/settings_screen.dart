@@ -7,6 +7,7 @@ import 'package:dienstplan/services/language_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dienstplan/widgets/settings/settings_section.dart';
 import 'package:dienstplan/widgets/settings/settings_card.dart';
+import 'package:dienstplan/widgets/settings/settings_switch_card.dart';
 import 'package:dienstplan/widgets/dialogs/app_dialog.dart';
 import 'package:dienstplan/widgets/dialogs/app_about_dialog.dart';
 import 'package:dienstplan/widgets/dialogs/app_license_page.dart';
@@ -16,6 +17,7 @@ import 'package:dienstplan/dialogs/language_dialog.dart';
 import 'package:dienstplan/dialogs/preferred_duty_group_dialog.dart';
 import 'package:dienstplan/dialogs/reset_dialog.dart';
 import 'package:dienstplan/utils/app_info.dart';
+import 'package:dienstplan/services/sentry_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -25,6 +27,7 @@ class SettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final languageService = context.watch<LanguageService>();
     final scheduleProvider = context.watch<ScheduleProvider>();
+    final sentryService = context.watch<SentryService>();
 
     return Scaffold(
       appBar: AppBar(
@@ -36,6 +39,8 @@ class SettingsScreen extends StatelessWidget {
           children: [
             _buildGeneralSection(
                 context, l10n, languageService, scheduleProvider),
+            const SizedBox(height: 16),
+            _buildPrivacySection(context, l10n, sentryService),
             const SizedBox(height: 16),
             _buildLegalSection(context, l10n),
           ],
@@ -86,6 +91,35 @@ class SettingsScreen extends StatelessWidget {
           icon: Icons.delete_forever,
           title: l10n.resetData,
           onTap: () => ResetDialog.show(context, scheduleProvider),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacySection(
+    BuildContext context,
+    AppLocalizations l10n,
+    SentryService sentryService,
+  ) {
+    return SettingsSection(
+      title: l10n.privacy,
+      cards: [
+        SettingsSwitchCard(
+          icon: Icons.analytics,
+          title: l10n.sentryAnalytics,
+          subtitle: l10n.sentryAnalyticsDescription,
+          value: sentryService.isEnabled,
+          onChanged: (value) => sentryService.setEnabled(value),
+        ),
+        SettingsSwitchCard(
+          icon: Icons.videocam,
+          title: l10n.sentryReplay,
+          subtitle: l10n.sentryReplayDescription,
+          value: sentryService.isReplayEnabled,
+          enabled: sentryService.isEnabled,
+          onChanged: sentryService.isEnabled
+              ? (value) => sentryService.setReplayEnabled(value)
+              : null,
         ),
       ],
     );
