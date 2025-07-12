@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/lusu007/dienstplan/compare/v0.4.41...v0.5.0) (2025-07-12)
+
+
+### Features
+
+* Add month and year picker to make it easier to select a date ([#142](https://github.com/lusu007/dienstplan/issues/142)) ([a420967](https://github.com/lusu007/dienstplan/commit/a4209678df028760ceed41380be0a6d38454d46e))
+
+
+### Bug Fixes
+
+* Add sentry error tracking ([#141](https://github.com/lusu007/dienstplan/issues/141)) ([1da740f](https://github.com/lusu007/dienstplan/commit/1da740fed3660e08274836e0356e45d3e91c4597))
+* Equal spacing between header and calendar and sheet ([#144](https://github.com/lusu007/dienstplan/issues/144)) ([5e07456](https://github.com/lusu007/dienstplan/commit/5e07456062a466289451249ed2682098dac16ac4))
+* Remove landscape layout and fix app in portrait mode ([#143](https://github.com/lusu007/dienstplan/issues/143)) ([6c59f24](https://github.com/lusu007/dienstplan/commit/6c59f2445f0abdc895ce45d0736917e6c0e3ceeb))
+* Rename IPA for Release Asset ([#138](https://github.com/lusu007/dienstplan/issues/138)) ([65ee544](https://github.com/lusu007/dienstplan/commit/65ee544b3d10dcc1a44104325f7db7a8185e9e45))
+
 ## [0.4.41](https://github.com/lusu007/dienstplan/compare/v0.4.40...v0.4.41) (2025-07-12)
 
 
