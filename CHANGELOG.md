@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.40](https://github.com/lusu007/dienstplan/compare/v0.4.39...v0.4.40) (2025-07-12)
+
+
+### Bug Fixes
+
+* Install codemagic-cli-tools ([#134](https://github.com/lusu007/dienstplan/issues/134)) ([c909ae7](https://github.com/lusu007/dienstplan/commit/c909ae73c39d88aa54aa329edfe5f33edd1de5c4))
+
 ## [0.4.39](https://github.com/lusu007/dienstplan/compare/v0.4.38...v0.4.39) (2025-07-12)
 
 
