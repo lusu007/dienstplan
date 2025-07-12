@@ -174,9 +174,13 @@ class _DraggableSheetState extends State<DraggableSheet>
     if (currentCalendarHeight == null) return;
     const double spacingPercent = 0.08;
     const double cornerRadius = 20.0; // Radius of rounded corners
+    const double headerSpacing = 16.0; // Spacing between header and calendar
     final double spacing = screenSize.height * spacingPercent;
-    final double availableHeight =
-        screenSize.height - currentCalendarHeight - spacing - cornerRadius;
+    final double availableHeight = screenSize.height -
+        currentCalendarHeight -
+        spacing -
+        headerSpacing -
+        cornerRadius;
     final double minHeight = availableHeight / screenSize.height;
     _monthViewMinHeight = minHeight;
   }
@@ -198,9 +202,13 @@ class _DraggableSheetState extends State<DraggableSheet>
     _collapsedHeight = minHeight;
     const double spacingPercent = 0.08;
     const double cornerRadius = 20.0; // Radius of rounded corners
+    const double headerSpacing = 16.0; // Spacing between header and calendar
     final double spacing = screenSize.height * spacingPercent;
-    final double availableHeight =
-        screenSize.height - currentCalendarHeight - spacing - cornerRadius;
+    final double availableHeight = screenSize.height -
+        currentCalendarHeight -
+        spacing -
+        headerSpacing -
+        cornerRadius;
     final double newAutoHeight = availableHeight / screenSize.height;
     bool needsAdjustment = false;
     double targetHeight = _currentHeight;
@@ -263,7 +271,11 @@ class _DraggableSheetState extends State<DraggableSheet>
           (_calendarHeight - calendarHeight).abs() > 1.0) {
         const double spacing = 16.0;
         const double minSheetHeight = 0.2;
-        final double totalHeight = headerHeight + calendarHeight + spacing;
+        final double totalHeight = 16.0 +
+            headerHeight +
+            spacing +
+            calendarHeight +
+            spacing; // AppBar spacing + header + spacing + calendar + spacing
         final double collapsedHeight =
             (1.0 - totalHeight / screenHeight).clamp(minSheetHeight, 0.9);
         setState(() {
@@ -330,7 +342,10 @@ class _DraggableSheetState extends State<DraggableSheet>
           ],
         ),
         Positioned(
-          top: _headerHeight + _calendarHeight + 16.0,
+          top: 16.0 +
+              _headerHeight +
+              _calendarHeight +
+              16.0, // AppBar spacing + header + spacing + calendar + spacing
           left: 0,
           right: 0,
           bottom: 0,
