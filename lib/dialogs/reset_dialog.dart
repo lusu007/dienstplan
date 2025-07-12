@@ -17,66 +17,45 @@ class ResetDialog {
       content: Text(l10n.resetDataConfirmation),
       showCloseButton: false,
       actions: [
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: Text(l10n.cancel),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              textStyle: const TextStyle(fontSize: 14),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            onPressed: () async {
+              Navigator.pop(context);
+
+              // Get the config service before async operations
+              final configService = context.read<ScheduleConfigService>();
+
+              // Reset the schedule provider
+              await provider.reset();
+
+              // Reset the setup completion flag
+              await configService.resetSetup();
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.resetDataSuccess),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                onPressed: () async {
-                  Navigator.pop(context);
-
-                  // Get the config service before async operations
-                  final configService = context.read<ScheduleConfigService>();
-
-                  // Reset the schedule provider
-                  await provider.reset();
-
-                  // Reset the setup completion flag
-                  await configService.resetSetup();
-
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.resetDataSuccess),
-                      ),
-                    );
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const FirstTimeSetupScreen(),
-                      ),
-                    );
-                  }
-                },
-                child: Text(l10n.reset),
-              ),
-            ),
-          ],
+                );
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => const FirstTimeSetupScreen(),
+                  ),
+                );
+              }
+            },
+            child: Text(l10n.reset),
+          ),
         ),
       ],
     );

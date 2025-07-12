@@ -494,12 +494,6 @@ abstract class AppLocalizations {
   /// **'Today'**
   String get today;
 
-  /// Text shown while generating schedules
-  ///
-  /// In en, this message translates to:
-  /// **'Generating'**
-  String get generatingSchedules;
-
   /// Title for the about dialog
   ///
   /// In en, this message translates to:

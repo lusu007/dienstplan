@@ -211,9 +211,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
-  String get generatingSchedules => 'Generating';
-
-  @override
   String get about => 'About';
 
   @override

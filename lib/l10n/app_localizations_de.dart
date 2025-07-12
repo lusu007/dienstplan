@@ -129,8 +129,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get welcome => 'Willkommen';
 
   @override
-  String get welcomeMessage =>
-      'Bitte wählen Sie einen Standard-Dienstplan aus.';
+  String get welcomeMessage => 'Bitte wähle einen Standard-Dienstplan aus.';
 
   @override
   String get settingsSaved => 'Einstellungen gespeichert';
@@ -151,7 +150,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dutyScheduleDeleteError => 'Fehler beim Löschen des Dienstplans';
 
   @override
-  String get confirmDelete => 'Möchten Sie diesen Dienstplan wirklich löschen?';
+  String get confirmDelete => 'Möchtest du diesen Dienstplan wirklich löschen?';
 
   @override
   String get yes => 'Ja';
@@ -176,7 +175,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get resetDataConfirmation =>
-      'Möchten Sie wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.';
+      'Möchtest du wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.';
 
   @override
   String get resetDataSuccess => 'Daten wurden zurückgesetzt';
@@ -211,14 +210,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get today => 'Heute';
 
   @override
-  String get generatingSchedules => 'Generiere';
-
-  @override
   String get about => 'Über';
 
   @override
   String get aboutDescription =>
-      'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.';
+      'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet dir einen Überblick über deine Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.';
 
   @override
   String get aboutDisclaimer =>
@@ -229,11 +225,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Anwendung ist kein offizielles Produkt einer Behörde oder Regierungseinrichtung. Die Dienstplan App wurde unabhängig entwickelt und steht in keiner offiziellen Verbindung zur Polizei oder anderen staatlichen Stellen.\n\nDie in dieser Anwendung verwendeten Daten stammen aus öffentlich zugänglichen Informationsmaterialien der Polizeigewerkschaften GdP (Gewerkschaft der Polizei) und DPolG (Deutsche Polizeigewerkschaft). Es wurden ausschließlich öffentlich verfügbare Informationen verwendet. Keine behördeninternen oder vertraulichen Daten wurden unbefugt veröffentlicht oder verarbeitet.\n\nDiese Anwendung dient ausschließlich der privaten Nutzung und erhebt keinen Anspruch auf Vollständigkeit oder Richtigkeit der bereitgestellten Informationen.';
 
   @override
-  String get selectDutyGroup => 'Wählen Sie Ihre Dienstgruppe';
+  String get selectDutyGroup => 'Wähle deine Dienstgruppe';
 
   @override
   String get selectDutyGroupMessage =>
-      'Wählen Sie die Dienstgruppe, zu der Sie gehören:';
+      'Wähle die Dienstgruppe, zu der du gehörst:';
 
   @override
   String get back => 'Zurück';
@@ -280,7 +276,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sentryAnalyticsDescription =>
-      'Helfen Sie bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte';
+      'Hilf bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte';
 
   @override
   String get sentryReplay => 'Sitzungsaufzeichnung';

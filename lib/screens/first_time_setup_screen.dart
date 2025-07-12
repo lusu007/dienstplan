@@ -254,7 +254,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
                           }
                         },
                   isLoading: _isGeneratingSchedules,
-                  loadingText: l10n.generatingSchedules,
+                  loadingText: l10n.continueButton,
                   mainColor: AppColors.primary,
                 ),
               ),
