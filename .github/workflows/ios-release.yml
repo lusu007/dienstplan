@@ -134,11 +134,16 @@ jobs:
           IPA_PATH=$(cat ipa_path.txt)
           echo "IPA_PATH=$IPA_PATH" >> $GITHUB_ENV
           
+      - name: 📛 Rename IPA for Release Asset
+        run: |
+          NEW_NAME="dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
+          mv "$IPA_PATH" "build/export/$NEW_NAME"
+          echo "IPA_PATH=build/export/$NEW_NAME" >> $GITHUB_ENV
+        
       - name: ⬆️ Upload IPA to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.IPA_PATH }}
-          name: dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
