@@ -111,9 +111,6 @@ class _ScheduleListState extends State<ScheduleList> {
     final filteredSchedules = _filterSchedules(widget.schedules);
     final sortedSchedules = _sortSchedulesByTime(filteredSchedules);
     final provider = Provider.of<ScheduleProvider>(context);
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 12.0 : 16.0;
 
     if (sortedSchedules.isEmpty) {
       return Center(
@@ -123,7 +120,7 @@ class _ScheduleListState extends State<ScheduleList> {
 
     return ListView.builder(
       controller: widget.scrollController,
-      padding: EdgeInsets.all(responsivePadding),
+      padding: const EdgeInsets.all(16.0),
       itemCount: sortedSchedules.length,
       itemBuilder: (context, index) {
         final schedule = sortedSchedules[index];
@@ -154,13 +151,12 @@ class _ScheduleListState extends State<ScheduleList> {
                 : [],
           ),
           child: ListTile(
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: isLandscape ? 12.0 : 20),
-            minVerticalPadding: isLandscape ? 12.0 : 20,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            minVerticalPadding: 20,
             leading: Icon(
               _getDutyTypeIcon(schedule.service, provider),
               color: mainColor,
-              size: isLandscape ? 32.0 : 40,
+              size: 40,
             ),
             title: Text(
               serviceName,

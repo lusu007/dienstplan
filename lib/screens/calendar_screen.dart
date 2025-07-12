@@ -6,7 +6,6 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:dienstplan/widgets/calendar/calendar_app_bar.dart';
 import 'package:dienstplan/widgets/calendar/draggable_sheet.dart';
-import 'package:dienstplan/widgets/calendar/landscape_layout.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -54,16 +53,11 @@ class _CalendarScreenState extends State<CalendarScreen>
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-
     return Consumer2<ScheduleProvider, LanguageService>(
       builder: (context, scheduleProvider, languageService, child) {
         return Scaffold(
           appBar: const CalendarAppBar(),
-          body: isLandscape
-              ? LandscapeLayout(scheduleProvider: scheduleProvider)
-              : DraggableSheet(scheduleProvider: scheduleProvider),
+          body: DraggableSheet(scheduleProvider: scheduleProvider),
         );
       },
     );

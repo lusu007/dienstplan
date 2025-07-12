@@ -25,16 +25,13 @@ class SettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final languageService = context.watch<LanguageService>();
     final scheduleProvider = context.watch<ScheduleProvider>();
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 16.0 : 24.0;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settings),
       ),
       body: Padding(
-        padding: EdgeInsets.all(responsivePadding),
+        padding: const EdgeInsets.all(24.0),
         child: ListView(
           children: [
             _buildGeneralSection(

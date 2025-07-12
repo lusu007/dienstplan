@@ -123,10 +123,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
 
   Widget _buildStep1Content() {
     final l10n = AppLocalizations.of(context);
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final titleFontSize = isLandscape ? 28.0 : 36.0;
-    final bodyFontSize = isLandscape ? 16.0 : 18.0;
 
     return SingleChildScrollView(
       child: Column(
@@ -135,15 +131,15 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
           const SizedBox(height: 16),
           Text(
             l10n.welcome,
-            style: TextStyle(
-              fontSize: titleFontSize,
+            style: const TextStyle(
+              fontSize: 36.0,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             l10n.welcomeMessage,
-            style: TextStyle(fontSize: bodyFontSize),
+            style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 32),
           ..._configs.map((config) {
@@ -175,10 +171,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
 
   Widget _buildStep2Content() {
     final l10n = AppLocalizations.of(context);
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final titleFontSize = isLandscape ? 28.0 : 36.0;
-    final bodyFontSize = isLandscape ? 16.0 : 18.0;
 
     if (_selectedConfig == null) return const SizedBox.shrink();
 
@@ -191,15 +183,15 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
           const SizedBox(height: 16),
           Text(
             l10n.selectDutyGroup,
-            style: TextStyle(
-              fontSize: titleFontSize,
+            style: const TextStyle(
+              fontSize: 36.0,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             l10n.selectDutyGroupMessage,
-            style: TextStyle(fontSize: bodyFontSize),
+            style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 32),
           ...List.generate(
@@ -286,9 +278,6 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
   @override
   Widget build(BuildContext context) {
     final languageService = context.watch<LanguageService>();
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 16.0 : 24.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -307,7 +296,7 @@ class _FirstTimeSetupScreenState extends State<FirstTimeSetupScreen> {
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
               child: Padding(
-                padding: EdgeInsets.all(responsivePadding),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
