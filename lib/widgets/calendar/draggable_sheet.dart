@@ -19,22 +19,10 @@ class DraggableSheet extends StatefulWidget {
   State<DraggableSheet> createState() => _DraggableSheetState();
 }
 
-class _DraggableSheetState extends State<DraggableSheet>
-    with TickerProviderStateMixin {
-  late AnimationController _heightAnimationController;
+class _DraggableSheetState extends State<DraggableSheet> {
   late PageController _pageController;
-  late Animation<double> _heightAnimation;
-  double _currentHeight = 0.3;
-  double _collapsedHeight = 0.3;
-  final double _expandedHeight = 0.8;
-  bool _isDraggingVertically = false;
-  CalendarFormat? _lastCalendarFormat;
-  double? _lastCalendarHeight;
   final GlobalKey _calendarKey = GlobalKey();
-  double? _monthViewMinHeight;
-  double _calendarHeight = 0.0;
   final GlobalKey _headerKey = GlobalKey();
-  double _headerHeight = 0.0;
 
   // Track current page index for day navigation
   int _currentPageIndex = 0;
@@ -43,21 +31,10 @@ class _DraggableSheetState extends State<DraggableSheet>
   @override
   void initState() {
     super.initState();
-    _heightAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
     _pageController = PageController(
       initialPage: _currentPageIndex,
       viewportFraction: 1.0,
     );
-    _heightAnimation = Tween<double>(
-      begin: _currentHeight,
-      end: _currentHeight,
-    ).animate(CurvedAnimation(
-      parent: _heightAnimationController,
-      curve: Curves.easeInOut,
-    ));
 
     // Initialize day pages around current selected day
     _initializeDayPages();
@@ -68,7 +45,6 @@ class _DraggableSheetState extends State<DraggableSheet>
 
   @override
   void dispose() {
-    _heightAnimationController.dispose();
     _pageController.dispose();
     widget.scheduleProvider.removeListener(_onProviderChanged);
     super.dispose();
@@ -166,332 +142,106 @@ class _DraggableSheetState extends State<DraggableSheet>
     }
   }
 
-  void _updateMonthViewMinHeight(Size screenSize) {
-    // Temporarily render calendar in month view and measure height
-    final RenderBox? calendarRenderBox =
-        _calendarKey.currentContext?.findRenderObject() as RenderBox?;
-    final double? currentCalendarHeight = calendarRenderBox?.size.height;
-    if (currentCalendarHeight == null) return;
-    const double spacingPercent = 0.08;
-    const double cornerRadius = 20.0; // Radius of rounded corners
-    const double headerSpacing = 16.0; // Spacing between header and calendar
-    final double spacing = screenSize.height * spacingPercent;
-    final double availableHeight = screenSize.height -
-        currentCalendarHeight -
-        spacing -
-        headerSpacing -
-        cornerRadius;
-    final double minHeight = availableHeight / screenSize.height;
-    _monthViewMinHeight = minHeight;
-  }
-
-  void _adjustHeightForCalendarFormat(
-      CalendarFormat calendarFormat, Size screenSize) {
-    final RenderBox? calendarRenderBox =
-        _calendarKey.currentContext?.findRenderObject() as RenderBox?;
-    final double? currentCalendarHeight = calendarRenderBox?.size.height;
-    if (currentCalendarHeight == null) {
-      return;
-    }
-    // Update month height if needed
-    if (calendarFormat == CalendarFormat.month) {
-      _updateMonthViewMinHeight(screenSize);
-    }
-    // Fallback if not set yet
-    final double minHeight = _monthViewMinHeight ?? 0.1;
-    _collapsedHeight = minHeight;
-    const double spacingPercent = 0.08;
-    const double cornerRadius = 20.0; // Radius of rounded corners
-    const double headerSpacing = 16.0; // Spacing between header and calendar
-    final double spacing = screenSize.height * spacingPercent;
-    final double availableHeight = screenSize.height -
-        currentCalendarHeight -
-        spacing -
-        headerSpacing -
-        cornerRadius;
-    final double newAutoHeight = availableHeight / screenSize.height;
-    bool needsAdjustment = false;
-    double targetHeight = _currentHeight;
-    if (_lastCalendarFormat != calendarFormat ||
-        _lastCalendarHeight == null ||
-        (currentCalendarHeight - _lastCalendarHeight!).abs() > 1.0) {
-      // Automatic adjustment on format change or significant height change
-      targetHeight = newAutoHeight < minHeight ? minHeight : newAutoHeight;
-      needsAdjustment = true;
-    }
-    _lastCalendarFormat = calendarFormat;
-    _lastCalendarHeight = currentCalendarHeight;
-    if (needsAdjustment) {
-      setState(() {
-        _currentHeight = targetHeight;
-      });
-      _heightAnimation = Tween<double>(
-        begin: _heightAnimation.value,
-        end: targetHeight,
-      ).animate(CurvedAnimation(
-        parent: _heightAnimationController,
-        curve: Curves.easeInOut,
-      ));
-      _heightAnimationController.forward(from: 0);
-    }
-  }
-
-  void _snapToNearestPosition() {
-    final double midPoint = (_collapsedHeight + _expandedHeight) / 2;
-    final double targetHeight =
-        _currentHeight < midPoint ? _collapsedHeight : _expandedHeight;
-
-    setState(() {
-      _currentHeight = targetHeight;
-    });
-
-    _heightAnimation = Tween<double>(
-      begin: _heightAnimation.value,
-      end: targetHeight,
-    ).animate(CurvedAnimation(
-      parent: _heightAnimationController,
-      curve: Curves.easeInOut,
-    ));
-    _heightAnimationController.forward(from: 0);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final calendarFormat = widget.scheduleProvider.calendarFormat;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final RenderBox? headerBox =
-          _headerKey.currentContext?.findRenderObject() as RenderBox?;
-      final RenderBox? calendarBox =
-          _calendarKey.currentContext?.findRenderObject() as RenderBox?;
-      final double headerHeight = headerBox?.size.height ?? 0.0;
-      final double calendarHeight = calendarBox?.size.height ?? 0.0;
-      final double screenHeight = MediaQuery.of(context).size.height;
-      if ((_headerHeight - headerHeight).abs() > 1.0 ||
-          (_calendarHeight - calendarHeight).abs() > 1.0) {
-        const double spacing = 16.0;
-        const double minSheetHeight = 0.2;
-        final double totalHeight = 16.0 +
-            headerHeight +
-            spacing +
-            calendarHeight +
-            spacing; // AppBar spacing + header + spacing + calendar + spacing
-        final double collapsedHeight =
-            (1.0 - totalHeight / screenHeight).clamp(minSheetHeight, 0.9);
-        setState(() {
-          _headerHeight = headerHeight;
-          _calendarHeight = calendarHeight;
-          _collapsedHeight = collapsedHeight;
-          _currentHeight = _collapsedHeight;
-        });
-      }
-      _adjustHeightForCalendarFormat(calendarFormat, screenSize);
-    });
-    return Stack(
+    return Column(
       children: [
-        Column(
-          children: [
-            const SizedBox(height: 16), // Abstand zur AppBar
-            CustomCalendarHeader(
-              key: _headerKey,
-              focusedDay: widget.scheduleProvider.focusedDay ?? DateTime.now(),
-              onLeftChevronTap: () {
-                final newFocusedDay = _getPreviousPeriod(
-                    widget.scheduleProvider.focusedDay ?? DateTime.now(),
-                    widget.scheduleProvider.calendarFormat);
-                widget.scheduleProvider.setFocusedDay(newFocusedDay);
-              },
-              onRightChevronTap: () {
-                final newFocusedDay = _getNextPeriod(
-                    widget.scheduleProvider.focusedDay ?? DateTime.now(),
-                    widget.scheduleProvider.calendarFormat);
-                widget.scheduleProvider.setFocusedDay(newFocusedDay);
-              },
-              locale: const Locale('de', 'DE'),
-              onDateSelected: (selectedDate) {
-                widget.scheduleProvider.setFocusedDay(selectedDate);
-                widget.scheduleProvider.setSelectedDay(selectedDate);
-              },
-            ),
-            TableCalendar(
-              key: _calendarKey,
-              firstDay: CalendarConfig.firstDay,
-              lastDay: CalendarConfig.lastDay,
-              focusedDay: widget.scheduleProvider.focusedDay ?? DateTime.now(),
-              calendarFormat: widget.scheduleProvider.calendarFormat,
-              startingDayOfWeek: CalendarConfig.startingDayOfWeek,
-              selectedDayPredicate: (day) {
-                return isSameDay(widget.scheduleProvider.selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                _navigateToDay(selectedDay);
-              },
-              onFormatChanged: (format) {
-                widget.scheduleProvider.setCalendarFormat(format);
-              },
-              onPageChanged: (focusedDay) {
-                widget.scheduleProvider.setFocusedDay(focusedDay);
-              },
-              calendarBuilders: CalendarBuildersHelper.createCalendarBuilders(
-                  widget.scheduleProvider),
-              calendarStyle: CalendarConfig.createCalendarStyle(context),
-              headerStyle: CalendarConfig.createHeaderStyle(),
-              locale: 'de_DE',
-            ),
-            const Expanded(child: SizedBox.shrink()),
-          ],
+        const SizedBox(height: 16), // Abstand zur AppBar
+        CustomCalendarHeader(
+          key: _headerKey,
+          focusedDay: widget.scheduleProvider.focusedDay ?? DateTime.now(),
+          onLeftChevronTap: () {
+            final newFocusedDay = _getPreviousPeriod(
+                widget.scheduleProvider.focusedDay ?? DateTime.now(),
+                widget.scheduleProvider.calendarFormat);
+            widget.scheduleProvider.setFocusedDay(newFocusedDay);
+          },
+          onRightChevronTap: () {
+            final newFocusedDay = _getNextPeriod(
+                widget.scheduleProvider.focusedDay ?? DateTime.now(),
+                widget.scheduleProvider.calendarFormat);
+            widget.scheduleProvider.setFocusedDay(newFocusedDay);
+          },
+          locale: const Locale('de', 'DE'),
+          onDateSelected: (selectedDate) {
+            widget.scheduleProvider.setFocusedDay(selectedDate);
+            widget.scheduleProvider.setSelectedDay(selectedDate);
+          },
         ),
-        Positioned(
-          top: 16.0 +
-              _headerHeight +
-              _calendarHeight +
-              16.0, // AppBar spacing + header + spacing + calendar + spacing
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: AnimatedBuilder(
-            animation: Listenable.merge([_heightAnimation]),
-            builder: (context, child) {
-              final height =
-                  MediaQuery.of(context).size.height * _heightAnimation.value;
-
-              return Transform.translate(
-                offset: const Offset(0, 0),
-                child: GestureDetector(
-                  onPanStart: (details) {
-                    _isDraggingVertically = true;
-                  },
-                  onPanUpdate: (details) {
-                    if (_isDraggingVertically) {
-                      // Only vertical movement for sheet height
-                      final currentHeight = screenSize.height * _currentHeight;
-                      final newHeight = currentHeight - details.delta.dy;
-                      final newHeightPercent = newHeight / screenSize.height;
-                      if (newHeightPercent >= _collapsedHeight &&
-                          newHeightPercent <= _expandedHeight) {
-                        setState(() {
-                          _currentHeight = newHeightPercent;
-                          _heightAnimation = Tween<double>(
-                            begin: _heightAnimation.value,
-                            end: _currentHeight,
-                          ).animate(CurvedAnimation(
-                            parent: _heightAnimationController,
-                            curve: Curves.linear,
-                          ));
-                          _heightAnimationController.value = 1.0;
-                        });
-                      }
-                    }
-                  },
-                  onPanEnd: (details) {
-                    _isDraggingVertically = false;
-                    _snapToNearestPosition();
-                  },
-                  child: Container(
-                    height: height,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(
-                            alpha: 0.02,
-                          ),
-                          blurRadius: 10,
-                          offset: const Offset(0, -2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              GestureDetector(
-                                onPanStart: (details) {
-                                  _isDraggingVertically = true;
-                                },
-                                onPanUpdate: (details) {
-                                  if (_isDraggingVertically) {
-                                    // Only vertical movement for sheet height
-                                    final currentHeight =
-                                        screenSize.height * _currentHeight;
-                                    final newHeight =
-                                        currentHeight - details.delta.dy;
-                                    final newHeightPercent =
-                                        newHeight / screenSize.height;
-                                    if (newHeightPercent >= _collapsedHeight &&
-                                        newHeightPercent <= _expandedHeight) {
-                                      setState(() {
-                                        _currentHeight = newHeightPercent;
-                                        _heightAnimation = Tween<double>(
-                                          begin: _heightAnimation.value,
-                                          end: _currentHeight,
-                                        ).animate(CurvedAnimation(
-                                          parent: _heightAnimationController,
-                                          curve: Curves.linear,
-                                        ));
-                                        _heightAnimationController.value = 1.0;
-                                      });
-                                    }
-                                  }
-                                },
-                                onPanEnd: (details) {
-                                  _isDraggingVertically = false;
-                                  _snapToNearestPosition();
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 8),
-                                  width: double.infinity,
-                                  height: 30,
-                                  color: Colors.transparent,
-                                  child: Center(
-                                    child: Container(
-                                      width: 40,
-                                      height: 4,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white
-                                            .withAlpha((0.7 * 255).toInt()),
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              ServicesSection(
-                                  selectedDay: _dayPages[_currentPageIndex]),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: PageView.builder(
-                            controller: _pageController,
-                            onPageChanged: _onPageChanged,
-                            itemCount: _dayPages.length,
-                            physics: const PageScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final day = _dayPages[index];
-                              return _buildSheetContent(day);
-                            },
-                          ),
-                        ),
-                      ],
+        TableCalendar(
+          key: _calendarKey,
+          firstDay: CalendarConfig.firstDay,
+          lastDay: CalendarConfig.lastDay,
+          focusedDay: widget.scheduleProvider.focusedDay ?? DateTime.now(),
+          calendarFormat: widget.scheduleProvider.calendarFormat,
+          startingDayOfWeek: CalendarConfig.startingDayOfWeek,
+          selectedDayPredicate: (day) {
+            return isSameDay(widget.scheduleProvider.selectedDay, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            _navigateToDay(selectedDay);
+          },
+          onFormatChanged: (format) {
+            widget.scheduleProvider.setCalendarFormat(format);
+          },
+          onPageChanged: (focusedDay) {
+            widget.scheduleProvider.setFocusedDay(focusedDay);
+          },
+          calendarBuilders: CalendarBuildersHelper.createCalendarBuilders(
+              widget.scheduleProvider),
+          calendarStyle: CalendarConfig.createCalendarStyle(context),
+          headerStyle: CalendarConfig.createHeaderStyle(),
+          locale: 'de_DE',
+        ),
+        const SizedBox(height: 16), // Abstand zwischen Kalender und Sheet
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: 0.02,
+                  ),
+                  blurRadius: 10,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
                     ),
                   ),
+                  child: ServicesSection(
+                      selectedDay: _dayPages.isNotEmpty
+                          ? _dayPages[_currentPageIndex]
+                          : null),
                 ),
-              );
-            },
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: _onPageChanged,
+                    itemCount: _dayPages.length,
+                    physics: const PageScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final day = _dayPages[index];
+                      return _buildSheetContent(day);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

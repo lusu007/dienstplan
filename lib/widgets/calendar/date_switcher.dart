@@ -474,7 +474,7 @@ class _DateSwitcherState extends State<DateSwitcher>
 
   @override
   Widget build(BuildContext context) {
-    final monthYearText = DateFormat('MMMM yyyy', widget.locale.languageCode)
+    final monthText = DateFormat('MMMM', widget.locale.languageCode)
         .format(widget.currentDate);
     return GestureDetector(
       onTap: _showDateSwitcher,
@@ -491,11 +491,12 @@ class _DateSwitcherState extends State<DateSwitcher>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              monthYearText,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+              monthText,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(width: 8),
             Icon(

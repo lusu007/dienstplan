@@ -40,7 +40,7 @@ class DialogSelectionCard extends StatelessWidget {
           title,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 18,
             color: isSelected ? mainColor : AppColors.black,
           ),
         ),
@@ -48,7 +48,7 @@ class DialogSelectionCard extends StatelessWidget {
             ? Text(
                 subtitle!,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   color: isSelected
                       ? mainColor.withValues(alpha: 0.8)
                       : Colors.black54,

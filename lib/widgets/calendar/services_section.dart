@@ -22,9 +22,11 @@ class ServicesSection extends StatelessWidget {
           Text(
             l10n.services,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.white,
-                ),
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
           ),
           Text(
             selectedDay != null
