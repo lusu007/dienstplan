@@ -21,12 +21,9 @@ class CustomCalendarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 12.0 : 16.0;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: responsivePadding),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
           // Left navigation button

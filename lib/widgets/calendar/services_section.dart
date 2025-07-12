@@ -13,13 +13,9 @@ class ServicesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final screenSize = MediaQuery.of(context).size;
-    final isLandscape = screenSize.width > screenSize.height;
-    final responsivePadding = isLandscape ? 12.0 : 16.0;
 
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: responsivePadding, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -27,7 +23,6 @@ class ServicesSection extends StatelessWidget {
             l10n.services,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: isLandscape ? 18.0 : null,
                   color: Colors.white,
                 ),
           ),
@@ -38,7 +33,6 @@ class ServicesSection extends StatelessWidget {
                 : l10n.noServicesForDay,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontSize: isLandscape ? 14.0 : null,
                   color: Colors.white.withAlpha((0.9 * 255).toInt()),
                 ),
           ),
