@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.41](https://github.com/lusu007/dienstplan/compare/v0.4.40...v0.4.41) (2025-07-12)
+
+
+### Bug Fixes
+
+* Use softprops/action-gh-release@v1 ([#136](https://github.com/lusu007/dienstplan/issues/136)) ([fbfd202](https://github.com/lusu007/dienstplan/commit/fbfd202b6a7713c24859859cbdb12d151394ccc4))
+
 ## [0.4.40](https://github.com/lusu007/dienstplan/compare/v0.4.39...v0.4.40) (2025-07-12)
 
 
