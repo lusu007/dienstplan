@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.37](https://github.com/lusu007/dienstplan/compare/v0.4.36...v0.4.37) (2025-07-12)
+
+
+### Bug Fixes
+
+* Use correct env variable for IPA path ([#128](https://github.com/lusu007/dienstplan/issues/128)) ([f5360ac](https://github.com/lusu007/dienstplan/commit/f5360ac39e6bb5279d512bd863ed281f517e3b72))
+
 ## [0.4.36](https://github.com/lusu007/dienstplan/compare/v0.4.35...v0.4.36) (2025-07-11)
 
 
