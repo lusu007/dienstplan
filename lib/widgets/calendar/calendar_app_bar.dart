@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/screens/settings_screen.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 
@@ -22,16 +20,6 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).colorScheme.primary,
       automaticallyImplyLeading: false,
       actions: [
-        IconButton(
-          icon: const Icon(Icons.today, color: Colors.white),
-          onPressed: () {
-            final now = DateTime.now();
-            final scheduleProvider = context.read<ScheduleProvider>();
-            scheduleProvider.setSelectedDay(now);
-            scheduleProvider.setFocusedDay(now);
-          },
-          tooltip: l10n.today,
-        ),
         IconButton(
           icon: const Icon(Icons.settings, color: Colors.white),
           onPressed: () {

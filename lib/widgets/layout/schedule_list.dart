@@ -120,7 +120,7 @@ class _ScheduleListState extends State<ScheduleList> {
 
     return ListView.builder(
       controller: widget.scrollController,
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       itemCount: sortedSchedules.length,
       itemBuilder: (context, index) {
         final schedule = sortedSchedules[index];
@@ -132,64 +132,85 @@ class _ScheduleListState extends State<ScheduleList> {
         final mainColor = Theme.of(context).colorScheme.primary;
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? mainColor.withAlpha(20) : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? mainColor : Colors.grey.shade300,
-              width: isSelected ? 2.5 : 1,
-            ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: mainColor.withAlpha(46),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : [],
-          ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-            minVerticalPadding: 20,
-            leading: Icon(
-              _getDutyTypeIcon(schedule.service, provider),
-              color: mainColor,
-              size: 40,
-            ),
-            title: Text(
-              serviceName,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: Colors.black,
-              ),
-            ),
-            subtitle: Text(
-              schedule.dutyGroupName,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            ),
-            trailing: serviceTime.isNotEmpty
-                ? Text(
-                    serviceTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: mainColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
-                : null,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            selectedTileColor: Colors.transparent,
+          margin: const EdgeInsets.only(bottom: 4),
+          child: GestureDetector(
             onTap: () {
               if (widget.onDutyGroupSelected != null) {
                 widget.onDutyGroupSelected!(
                     isSelected ? null : schedule.dutyGroupName);
               }
             },
+            child: Container(
+              decoration: BoxDecoration(
+                color: isSelected ? mainColor.withAlpha(20) : Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isSelected ? mainColor : Colors.grey.shade300,
+                  width: isSelected ? 2 : 1,
+                ),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: mainColor.withAlpha(46),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  children: [
+                    // Icon on the left
+                    Icon(
+                      _getDutyTypeIcon(schedule.service, provider),
+                      color: mainColor,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 12),
+                    // Text content on the right
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            serviceName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            schedule.dutyGroupName,
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.black87),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (serviceTime.isNotEmpty) ...[
+                            const SizedBox(height: 1),
+                            Text(
+                              serviceTime,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: mainColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
       },

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/widgets/calendar/date_switcher.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 
@@ -36,13 +38,20 @@ class CustomCalendarHeader extends StatelessWidget {
 
           const SizedBox(width: 8),
 
-          // Date Switcher (center)
+          // Date Switcher with Today button (center)
           Expanded(
             child: Center(
-              child: DateSwitcher(
-                currentDate: focusedDay,
-                onDateSelected: onDateSelected,
-                locale: locale,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DateSwitcher(
+                    currentDate: focusedDay,
+                    onDateSelected: onDateSelected,
+                    locale: locale,
+                  ),
+                  const SizedBox(width: 12),
+                  _buildTodayButton(context, l10n),
+                ],
               ),
             ),
           ),
@@ -57,6 +66,29 @@ class CustomCalendarHeader extends StatelessWidget {
             tooltip: l10n.nextPeriod,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTodayButton(BuildContext context, AppLocalizations l10n) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          final now = DateTime.now();
+          final scheduleProvider = context.read<ScheduleProvider>();
+          scheduleProvider.setSelectedDay(now);
+          scheduleProvider.setFocusedDay(now);
+        },
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          child: Icon(
+            Icons.today,
+            size: 24,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
       ),
     );
   }
