@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.39](https://github.com/lusu007/dienstplan/compare/v0.4.38...v0.4.39) (2025-07-12)
+
+
+### Bug Fixes
+
+* Add debug output to app-store-connect ([#132](https://github.com/lusu007/dienstplan/issues/132)) ([888bd5d](https://github.com/lusu007/dienstplan/commit/888bd5d2ba7292f95d96ae54c75368f3209b68c5))
+
 ## [0.4.38](https://github.com/lusu007/dienstplan/compare/v0.4.37...v0.4.38) (2025-07-12)
 
 
