@@ -19,6 +19,10 @@ class CalendarConfig {
     return const HeaderStyle(
       formatButtonVisible: false,
       titleCentered: true,
+      leftChevronVisible: false,
+      rightChevronVisible: false,
+      titleTextFormatter: null,
+      titleTextStyle: TextStyle(fontSize: 0),
     );
   }
 
