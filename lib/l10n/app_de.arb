@@ -156,15 +156,12 @@
   "@continueButton": {
     "description": "Continue button text"
   },
-  "generatingSchedules": "Generiere",
-  "@generatingSchedules": {
-    "description": "Text shown while generating schedules"
-  },
+
   "welcome": "Willkommen",
   "@welcome": {
     "description": "Welcome message title"
   },
-  "welcomeMessage": "Bitte wählen Sie einen Standard-Dienstplan aus.",
+  "welcomeMessage": "Bitte wähle einen Standard-Dienstplan aus.",
   "@welcomeMessage": {
     "description": "Welcome message text"
   },
@@ -192,7 +189,7 @@
   "@dutyScheduleDeleteError": {
     "description": "Error message when duty schedule deletion fails"
   },
-  "confirmDelete": "Möchten Sie diesen Dienstplan wirklich löschen?",
+  "confirmDelete": "Möchtest du diesen Dienstplan wirklich löschen?",
   "@confirmDelete": {
     "description": "Confirmation message for deleting a duty schedule"
   },
@@ -224,7 +221,7 @@
   "@resetData": {
     "description": "Title for reset data option"
   },
-  "resetDataConfirmation": "Möchten Sie wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
+  "resetDataConfirmation": "Möchtest du wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
   "@resetDataConfirmation": {
     "description": "Confirmation message for resetting data"
   },
@@ -281,7 +278,7 @@
   "@about": {
     "description": "Title for the about dialog"
   },
-  "aboutDescription": "Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet einen Überblick über Ihre Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.",
+  "aboutDescription": "Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet dir einen Überblick über deine Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.",
   "@aboutDescription": {
     "description": "Description text shown in the about dialog"
   },
@@ -293,11 +290,11 @@
   "@disclaimerLong": {
     "description": "Full disclaimer text for the disclaimer popup"
   },
-  "selectDutyGroup": "Wählen Sie Ihre Dienstgruppe",
+  "selectDutyGroup": "Wähle deine Dienstgruppe",
   "@selectDutyGroup": {
     "description": "Title for duty group selection step"
   },
-  "selectDutyGroupMessage": "Wählen Sie die Dienstgruppe, zu der Sie gehören:",
+  "selectDutyGroupMessage": "Wähle die Dienstgruppe, zu der du gehörst:",
   "@selectDutyGroupMessage": {
     "description": "Message for duty group selection step"
   },
@@ -349,7 +346,7 @@
   "@sentryAnalytics": {
     "description": "Title for Sentry analytics and error reporting setting"
   },
-  "sentryAnalyticsDescription": "Helfen Sie bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte",
+  "sentryAnalyticsDescription": "Hilf bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte",
   "@sentryAnalyticsDescription": {
     "description": "Description for Sentry analytics setting"
   },

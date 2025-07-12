@@ -3,7 +3,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/providers/schedule_provider.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/widgets/dialogs/dialog_selection_card.dart';
-import 'package:dienstplan/widgets/dialogs/dialog_close_button.dart';
 import 'package:dienstplan/constants/app_colors.dart';
 
 class CalendarFormatDialog {
@@ -46,9 +45,6 @@ class CalendarFormatDialog {
             ),
           ],
         ),
-        actions: [
-          const DialogCloseButton(mainColor: AppColors.primary),
-        ],
       ),
     );
   }

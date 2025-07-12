@@ -269,10 +269,7 @@
     "description": "Tooltip for the today button"
   },
   "today": "Today",
-  "generatingSchedules": "Generating",
-  "@generatingSchedules": {
-    "description": "Text shown while generating schedules"
-  },
+
   "about": "About",
   "@about": {
     "description": "Title for the about dialog"

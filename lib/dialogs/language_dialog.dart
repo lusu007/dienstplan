@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:dienstplan/services/language_service.dart';
 import 'package:dienstplan/l10n/app_localizations.dart';
 import 'package:dienstplan/widgets/dialogs/dialog_selection_card.dart';
-import 'package:dienstplan/widgets/dialogs/dialog_close_button.dart';
 import 'package:dienstplan/constants/app_colors.dart';
 
 class LanguageDialog {
@@ -38,9 +37,6 @@ class LanguageDialog {
             ),
           ],
         ),
-        actions: [
-          const DialogCloseButton(mainColor: AppColors.primary),
-        ],
       ),
     );
   }
