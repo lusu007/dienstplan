@@ -80,3 +80,4 @@ pubspec.lock
 # Database files
 *.db
 *.db-journal 
+sentry.properties
