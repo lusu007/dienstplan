@@ -5,6 +5,7 @@ import 'package:dienstplan/widgets/layout/schedule_list.dart';
 import 'package:dienstplan/widgets/calendar/calendar_builders.dart';
 import 'package:dienstplan/widgets/calendar/calendar_config.dart';
 import 'package:dienstplan/widgets/calendar/services_section.dart';
+import 'package:dienstplan/widgets/calendar/custom_calendar_header.dart';
 
 class DraggableSheet extends StatefulWidget {
   final ScheduleProvider scheduleProvider;
@@ -31,6 +32,9 @@ class _DraggableSheetState extends State<DraggableSheet>
   double? _lastCalendarHeight;
   final GlobalKey _calendarKey = GlobalKey();
   double? _monthViewMinHeight;
+  double _calendarHeight = 0.0;
+  final GlobalKey _headerKey = GlobalKey();
+  double _headerHeight = 0.0;
 
   // Track current page index for day navigation
   int _currentPageIndex = 0;
@@ -248,24 +252,93 @@ class _DraggableSheetState extends State<DraggableSheet>
     final screenSize = MediaQuery.of(context).size;
     final calendarFormat = widget.scheduleProvider.calendarFormat;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox? headerBox =
+          _headerKey.currentContext?.findRenderObject() as RenderBox?;
+      final RenderBox? calendarBox =
+          _calendarKey.currentContext?.findRenderObject() as RenderBox?;
+      final double headerHeight = headerBox?.size.height ?? 0.0;
+      final double calendarHeight = calendarBox?.size.height ?? 0.0;
+      final double screenHeight = MediaQuery.of(context).size.height;
+      if ((_headerHeight - headerHeight).abs() > 1.0 ||
+          (_calendarHeight - calendarHeight).abs() > 1.0) {
+        const double spacing = 16.0;
+        const double minSheetHeight = 0.2;
+        final double totalHeight = headerHeight + calendarHeight + spacing;
+        final double collapsedHeight =
+            (1.0 - totalHeight / screenHeight).clamp(minSheetHeight, 0.9);
+        setState(() {
+          _headerHeight = headerHeight;
+          _calendarHeight = calendarHeight;
+          _collapsedHeight = collapsedHeight;
+          _currentHeight = _collapsedHeight;
+        });
+      }
       _adjustHeightForCalendarFormat(calendarFormat, screenSize);
     });
     return Stack(
       children: [
         Column(
           children: [
-            _buildTableCalendar(widget.scheduleProvider),
+            const SizedBox(height: 16), // Abstand zur AppBar
+            CustomCalendarHeader(
+              key: _headerKey,
+              focusedDay: widget.scheduleProvider.focusedDay ?? DateTime.now(),
+              onLeftChevronTap: () {
+                final newFocusedDay = _getPreviousPeriod(
+                    widget.scheduleProvider.focusedDay ?? DateTime.now(),
+                    widget.scheduleProvider.calendarFormat);
+                widget.scheduleProvider.setFocusedDay(newFocusedDay);
+              },
+              onRightChevronTap: () {
+                final newFocusedDay = _getNextPeriod(
+                    widget.scheduleProvider.focusedDay ?? DateTime.now(),
+                    widget.scheduleProvider.calendarFormat);
+                widget.scheduleProvider.setFocusedDay(newFocusedDay);
+              },
+              locale: const Locale('de', 'DE'),
+              onDateSelected: (selectedDate) {
+                widget.scheduleProvider.setFocusedDay(selectedDate);
+                widget.scheduleProvider.setSelectedDay(selectedDate);
+              },
+            ),
+            TableCalendar(
+              key: _calendarKey,
+              firstDay: CalendarConfig.firstDay,
+              lastDay: CalendarConfig.lastDay,
+              focusedDay: widget.scheduleProvider.focusedDay ?? DateTime.now(),
+              calendarFormat: widget.scheduleProvider.calendarFormat,
+              startingDayOfWeek: CalendarConfig.startingDayOfWeek,
+              selectedDayPredicate: (day) {
+                return isSameDay(widget.scheduleProvider.selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                _navigateToDay(selectedDay);
+              },
+              onFormatChanged: (format) {
+                widget.scheduleProvider.setCalendarFormat(format);
+              },
+              onPageChanged: (focusedDay) {
+                widget.scheduleProvider.setFocusedDay(focusedDay);
+              },
+              calendarBuilders: CalendarBuildersHelper.createCalendarBuilders(
+                  widget.scheduleProvider),
+              calendarStyle: CalendarConfig.createCalendarStyle(context),
+              headerStyle: CalendarConfig.createHeaderStyle(),
+              locale: 'de_DE',
+            ),
             const Expanded(child: SizedBox.shrink()),
           ],
         ),
         Positioned(
-          bottom: 0,
+          top: _headerHeight + _calendarHeight + 16.0,
           left: 0,
           right: 0,
+          bottom: 0,
           child: AnimatedBuilder(
             animation: Listenable.merge([_heightAnimation]),
             builder: (context, child) {
-              final height = screenSize.height * _heightAnimation.value;
+              final height =
+                  MediaQuery.of(context).size.height * _heightAnimation.value;
 
               return Transform.translate(
                 offset: const Offset(0, 0),
@@ -421,32 +494,25 @@ class _DraggableSheetState extends State<DraggableSheet>
     );
   }
 
-  Widget _buildTableCalendar(ScheduleProvider scheduleProvider) {
-    final calendar = TableCalendar(
-      key: _calendarKey,
-      firstDay: CalendarConfig.firstDay,
-      lastDay: CalendarConfig.lastDay,
-      focusedDay: scheduleProvider.focusedDay ?? DateTime.now(),
-      calendarFormat: scheduleProvider.calendarFormat,
-      startingDayOfWeek: CalendarConfig.startingDayOfWeek,
-      selectedDayPredicate: (day) {
-        return isSameDay(scheduleProvider.selectedDay, day);
-      },
-      onDaySelected: (selectedDay, focusedDay) {
-        _navigateToDay(selectedDay);
-      },
-      onFormatChanged: (format) {
-        scheduleProvider.setCalendarFormat(format);
-      },
-      onPageChanged: (focusedDay) {
-        scheduleProvider.setFocusedDay(focusedDay);
-      },
-      calendarBuilders:
-          CalendarBuildersHelper.createCalendarBuilders(scheduleProvider),
-      calendarStyle: CalendarConfig.createCalendarStyle(context),
-      headerStyle: CalendarConfig.createHeaderStyle(),
-      locale: 'de_DE',
-    );
-    return calendar;
+  DateTime _getPreviousPeriod(DateTime currentDate, CalendarFormat format) {
+    switch (format) {
+      case CalendarFormat.month:
+        return DateTime(currentDate.year, currentDate.month - 1, 1);
+      case CalendarFormat.twoWeeks:
+        return currentDate.subtract(const Duration(days: 14));
+      case CalendarFormat.week:
+        return currentDate.subtract(const Duration(days: 7));
+    }
+  }
+
+  DateTime _getNextPeriod(DateTime currentDate, CalendarFormat format) {
+    switch (format) {
+      case CalendarFormat.month:
+        return DateTime(currentDate.year, currentDate.month + 1, 1);
+      case CalendarFormat.twoWeeks:
+        return currentDate.add(const Duration(days: 14));
+      case CalendarFormat.week:
+        return currentDate.add(const Duration(days: 7));
+    }
   }
 }
