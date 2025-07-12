@@ -143,7 +143,7 @@ class ScheduleProvider extends ChangeNotifier {
       if (generateSchedules) {
         final now = DateTime.now();
         final startDate = DateTime(now.year - 1, now.month, now.day);
-        final endDate = DateTime(now.year + 1, now.month, now.day);
+        final endDate = DateTime(now.year + 5, now.month, now.day);
 
         _lastGeneratedStartDate = startDate;
         _lastGeneratedEndDate = endDate;
@@ -413,10 +413,11 @@ class ScheduleProvider extends ChangeNotifier {
         AppLogger.i(
             'Selected day outside current generation range, generating schedules for: ${selectedDayStart.toIso8601String()}');
 
-        // Generate schedules for a range that includes the selected day
+        // Calculate 3 months before and after
         final generateStartDate =
-            selectedDayStart.subtract(const Duration(days: 7));
-        final generateEndDate = selectedDayStart.add(const Duration(days: 7));
+            DateTime(selectedDayStart.year, selectedDayStart.month - 3, 1);
+        final generateEndDate =
+            DateTime(selectedDayStart.year, selectedDayStart.month + 4, 0);
 
         final newSchedules = await _configService.generateSchedulesForConfig(
           _activeConfig!,
@@ -518,53 +519,35 @@ class ScheduleProvider extends ChangeNotifier {
   String? getDutyAbbreviationForDate(
       DateTime date, String? preferredDutyGroup) {
     if (preferredDutyGroup == null || _activeConfig == null) return null;
-    final cacheKey = '${date.toIso8601String()}|$preferredDutyGroup';
+
+    // Use simple cache key for better performance
+    final cacheKey =
+        '${date.year}-${date.month}-${date.day}|$preferredDutyGroup';
     if (_dutyAbbreviationCache.containsKey(cacheKey)) {
       return _dutyAbbreviationCache[cacheKey];
     }
+
     // Don't trigger generation if we're already loading schedules or reloading calendar view
     if (_isLoadingSchedules || _isReloadingCalendarView) {
-      AppLogger.d(
-          'Skipping duty abbreviation lookup - loading in progress. Date: ${date.toIso8601String()}, Loading: $_isLoadingSchedules, Reloading: $_isReloadingCalendarView');
       return null;
     }
-    // Find schedule for the specific date and preferred duty group
-    final schedule = _schedules.firstWhere(
-      (s) =>
-          s.date.year == date.year &&
-          s.date.month == date.month &&
-          s.date.day == date.day &&
-          s.dutyGroupName == preferredDutyGroup,
-      orElse: () => Schedule(
-        date: date,
-        service: '',
-        dutyGroupId: '',
-        dutyTypeId: '',
-        dutyGroupName: '',
-        configName: '',
-      ),
-    );
+
+    // Use optimized lookup with early exit
     String? result;
-    if (schedule.service.isEmpty) {
-      AppLogger.d(
-          'No schedule found for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup. Total schedules: ${_schedules.length}');
-      // If no schedule found, trigger loading for this date range after build
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        _ensureSchedulesForDate(date);
-      });
-      result = null;
-    } else {
-      // The duty_type_id is already the abbreviation from the JSON
-      final dutyTypeId = schedule.dutyTypeId;
-      // Only return empty string for free days ("-")
-      if (dutyTypeId == '-') {
-        result = '';
-      } else {
-        result = dutyTypeId;
+    for (final schedule in _schedules) {
+      if (schedule.date.year == date.year &&
+          schedule.date.month == date.month &&
+          schedule.date.day == date.day &&
+          schedule.dutyGroupName == preferredDutyGroup) {
+        // The duty_type_id is already the abbreviation from the JSON
+        final dutyTypeId = schedule.dutyTypeId;
+        // Only return empty string for free days ("-")
+        result = dutyTypeId == '-' ? '' : dutyTypeId;
+        break;
       }
-      AppLogger.d(
-          'Found duty abbreviation: $result for date: ${date.toIso8601String()}, duty group: $preferredDutyGroup');
     }
+
+    // Cache the result (including null results)
     _dutyAbbreviationCache[cacheKey] = result;
     return result;
   }
