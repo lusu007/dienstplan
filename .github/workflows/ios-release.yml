@@ -141,7 +141,7 @@ jobs:
           echo "IPA_PATH=build/export/$NEW_NAME" >> $GITHUB_ENV
         
       - name: ⬆️ Upload IPA to GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.IPA_PATH }}
         env:
