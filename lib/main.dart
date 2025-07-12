@@ -10,6 +10,7 @@ import 'package:dienstplan/services/language_service.dart';
 import 'package:dienstplan/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/services/database_service.dart';
+import 'package:dienstplan/services/sentry_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
@@ -23,29 +24,46 @@ void main() async {
   final databaseService = DatabaseService();
   final scheduleConfigService = ScheduleConfigService(prefs);
   final languageService = LanguageService();
+  final sentryService = SentryService();
 
   await databaseService.init();
   await scheduleConfigService.initialize();
   await languageService.initialize();
+  await sentryService.initialize();
 
   await SentryFlutter.init(
     (options) {
       options.dsn =
           'https://26cd4b7f0d4f1cf36308a96994e7a23a@o4509656380801024.ingest.de.sentry.io/4509656382701648';
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-      // We recommend adjusting this value in production.
-      options.tracesSampleRate = 1.0;
-      // The sampling rate for profiling is relative to tracesSampleRate
-      // Setting to 1.0 will profile 100% of sampled transactions:
-      options.profilesSampleRate = 1.0;
-      // options.replay.sessionSampleRate = 1.0;
-      // options.replay.onErrorSampleRate = 1.0;
+
+      // Apply configuration based on service settings
+      if (sentryService.isEnabled) {
+        options.tracesSampleRate = 1.0;
+        options.profilesSampleRate = 1.0;
+
+        // Only enable replay if both Sentry and replay are enabled
+        if (sentryService.isReplayEnabled) {
+          options.replay.sessionSampleRate = 1.0;
+          options.replay.onErrorSampleRate = 1.0;
+        } else {
+          options.replay.sessionSampleRate = 0.0;
+          options.replay.onErrorSampleRate = 0.0;
+        }
+      } else {
+        // Disable Sentry by setting sample rates to 0
+        options.tracesSampleRate = 0.0;
+        options.profilesSampleRate = 0.0;
+        options.replay.sessionSampleRate = 0.0;
+        options.replay.onErrorSampleRate = 0.0;
+      }
     },
     appRunner: () => runApp(SentryWidget(
-        child: MyApp(
-      scheduleConfigService: scheduleConfigService,
-      languageService: languageService,
-    ))),
+      child: MyApp(
+        scheduleConfigService: scheduleConfigService,
+        languageService: languageService,
+        sentryService: sentryService,
+      ),
+    )),
   );
 }
 
@@ -108,11 +126,13 @@ class _AppInitializerState extends State<AppInitializer> {
 class MyApp extends StatefulWidget {
   final ScheduleConfigService scheduleConfigService;
   final LanguageService languageService;
+  final SentryService sentryService;
 
   const MyApp({
     super.key,
     required this.scheduleConfigService,
     required this.languageService,
+    required this.sentryService,
   });
 
   @override
@@ -141,6 +161,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(value: _scheduleProvider),
         ChangeNotifierProvider(create: (_) => widget.scheduleConfigService),
         ChangeNotifierProvider(create: (_) => widget.languageService),
+        ChangeNotifierProvider(create: (_) => widget.sentryService),
       ],
       child: Consumer<LanguageService>(
         builder: (context, languageService, _) {

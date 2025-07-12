@@ -272,4 +272,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get preferredDutyGroupResetNotice =>
       'Preferred duty group was reset because it is not available in the new schedule.';
+
+  @override
+  String get sentryAnalytics => 'Analytics & Error Reporting';
+
+  @override
+  String get sentryAnalyticsDescription =>
+      'Help improve the app by sending anonymous usage data and error reports';
+
+  @override
+  String get sentryReplay => 'Session Replay';
+
+  @override
+  String get sentryReplayDescription =>
+      'Record user interactions to help debug issues (only when analytics is enabled)';
+
+  @override
+  String get privacy => 'Privacy';
 }

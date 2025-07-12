@@ -274,4 +274,21 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get preferredDutyGroupResetNotice =>
       'Die bevorzugte Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.';
+
+  @override
+  String get sentryAnalytics => 'Analysen & Fehlerberichte';
+
+  @override
+  String get sentryAnalyticsDescription =>
+      'Helfen Sie bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte';
+
+  @override
+  String get sentryReplay => 'Sitzungsaufzeichnung';
+
+  @override
+  String get sentryReplayDescription =>
+      'Nutzereingaben aufzeichnen, um bei der Fehlerbehebung zu helfen (nur wenn Analysen aktiviert sind)';
+
+  @override
+  String get privacy => 'Datenschutz';
 }

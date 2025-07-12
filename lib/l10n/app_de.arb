@@ -344,5 +344,25 @@
   "preferredDutyGroupResetNotice": "Die bevorzugte Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.",
   "@preferredDutyGroupResetNotice": {
     "description": "Hinweis, wenn die bevorzugte Dienstgruppe beim Dienstplanwechsel zurückgesetzt wird"
+  },
+  "sentryAnalytics": "Analysen & Fehlerberichte",
+  "@sentryAnalytics": {
+    "description": "Title for Sentry analytics and error reporting setting"
+  },
+  "sentryAnalyticsDescription": "Helfen Sie bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte",
+  "@sentryAnalyticsDescription": {
+    "description": "Description for Sentry analytics setting"
+  },
+  "sentryReplay": "Sitzungsaufzeichnung",
+  "@sentryReplay": {
+    "description": "Title for Sentry session replay setting"
+  },
+  "sentryReplayDescription": "Nutzereingaben aufzeichnen, um bei der Fehlerbehebung zu helfen (nur wenn Analysen aktiviert sind)",
+  "@sentryReplayDescription": {
+    "description": "Description for Sentry session replay setting"
+  },
+  "privacy": "Datenschutz",
+  "@privacy": {
+    "description": "Title for privacy settings section"
   }
 } 
