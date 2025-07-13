@@ -287,4 +287,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacy => 'Datenschutz';
+
+  @override
+  String get filteredBy => 'Gefiltert nach';
+
+  @override
+  String get all => 'Alle';
 }

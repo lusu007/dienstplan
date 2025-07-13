@@ -361,5 +361,13 @@
   "privacy": "Privacy",
   "@privacy": {
     "description": "Title for privacy settings section"
+  },
+  "filteredBy": "Filtered by",
+  "@filteredBy": {
+    "description": "Label for filter status text"
+  },
+  "all": "All",
+  "@all": {
+    "description": "Label for showing all items (no filter)"
   }
 } 
