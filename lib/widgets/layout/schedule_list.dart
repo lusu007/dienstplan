@@ -118,102 +118,113 @@ class _ScheduleListState extends State<ScheduleList> {
       );
     }
 
-    return ListView.builder(
-      controller: widget.scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      itemCount: sortedSchedules.length,
-      itemBuilder: (context, index) {
-        final schedule = sortedSchedules[index];
-        final dutyType = provider.activeConfig?.dutyTypes[schedule.service];
-        final serviceName = dutyType?.label ?? schedule.service;
-        final serviceTime = dutyType?.isAllDay == true ? l10n.allDay : '';
+    return Column(
+      children: [
+        // Filter status text
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            '${l10n.filteredBy}: ${widget.selectedDutyGroup ?? l10n.all}',
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Colors.grey.shade600,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
 
-        final isSelected = widget.selectedDutyGroup == schedule.dutyGroupName;
-        final mainColor = Theme.of(context).colorScheme.primary;
+        // Duty list
+        Expanded(
+          child: ListView.builder(
+            controller: widget.scrollController,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+            itemCount: sortedSchedules.length,
+            itemBuilder: (context, index) {
+              final schedule = sortedSchedules[index];
+              final dutyType =
+                  provider.activeConfig?.dutyTypes[schedule.service];
+              final serviceName = dutyType?.label ?? schedule.service;
 
-        return Container(
-          margin: const EdgeInsets.only(bottom: 4),
-          child: GestureDetector(
-            onTap: () {
-              if (widget.onDutyGroupSelected != null) {
-                widget.onDutyGroupSelected!(
-                    isSelected ? null : schedule.dutyGroupName);
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: isSelected ? mainColor.withAlpha(20) : Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: isSelected ? mainColor : Colors.grey.shade300,
-                  width: isSelected ? 2 : 1,
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: mainColor.withAlpha(46),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
+              final isSelected =
+                  widget.selectedDutyGroup == schedule.dutyGroupName;
+              final mainColor = Theme.of(context).colorScheme.primary;
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      if (widget.onDutyGroupSelected != null) {
+                        widget.onDutyGroupSelected!(
+                            isSelected ? null : schedule.dutyGroupName);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      height: 56,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color:
+                            isSelected ? mainColor.withAlpha(20) : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isSelected ? mainColor : Colors.grey.shade300,
+                          width: isSelected ? 2 : 1,
                         ),
-                      ]
-                    : [],
-              ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Row(
-                  children: [
-                    // Icon on the left
-                    Icon(
-                      _getDutyTypeIcon(schedule.service, provider),
-                      color: mainColor,
-                      size: 32,
-                    ),
-                    const SizedBox(width: 12),
-                    // Text content on the right
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            serviceName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(8),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
                           ),
-                          const SizedBox(height: 2),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          // Icon on the left
+                          Icon(
+                            _getDutyTypeIcon(schedule.service, provider),
+                            color: mainColor,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 12),
+
+                          // Service type text in the center
+                          Expanded(
+                            child: Text(
+                              serviceName,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+
+                          // Duty group hint on the right
                           Text(
                             schedule.dutyGroupName,
-                            style: const TextStyle(
-                                fontSize: 15, color: Colors.black87),
-                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey.shade600,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                          if (serviceTime.isNotEmpty) ...[
-                            const SizedBox(height: 1),
-                            Text(
-                              serviceTime,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: mainColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }

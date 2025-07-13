@@ -286,4 +286,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacy => 'Privacy';
+
+  @override
+  String get filteredBy => 'Filtered by';
+
+  @override
+  String get all => 'All';
 }

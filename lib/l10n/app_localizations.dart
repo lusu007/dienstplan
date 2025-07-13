@@ -631,6 +631,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy'**
   String get privacy;
+
+  /// Label for filter status text
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered by'**
+  String get filteredBy;
+
+  /// Label for showing all items (no filter)
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
 }
 
 class _AppLocalizationsDelegate
