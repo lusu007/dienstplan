@@ -11,6 +11,7 @@ class ScheduleList extends StatefulWidget {
   final String? selectedDutyGroup;
   final Function(String?)? onDutyGroupSelected;
   final ScrollController? scrollController;
+  final bool shouldAnimate;
 
   const ScheduleList({
     super.key,
@@ -19,13 +20,80 @@ class ScheduleList extends StatefulWidget {
     this.selectedDutyGroup,
     this.onDutyGroupSelected,
     this.scrollController,
+    this.shouldAnimate = false,
   });
 
   @override
   State<ScheduleList> createState() => _ScheduleListState();
 }
 
-class _ScheduleListState extends State<ScheduleList> {
+class _ScheduleListState extends State<ScheduleList>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
+  List<Schedule> _currentSchedules = [];
+  bool _hasAnimated = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.1, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+  }
+
+  @override
+  void didUpdateWidget(ScheduleList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Only animate if shouldAnimate is true and we haven't animated yet
+    if (widget.shouldAnimate && !oldWidget.shouldAnimate && !_hasAnimated) {
+      _hasAnimated = true;
+      _animationController.reset();
+      _animationController.forward();
+
+      // Reset the flag after animation completes
+      Future.delayed(const Duration(milliseconds: 250), () {
+        if (mounted) {
+          setState(() {
+            _hasAnimated = false;
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  List<Schedule> _getFilteredAndSortedSchedules() {
+    final filteredSchedules = _filterSchedules(widget.schedules);
+    return _sortSchedulesByTime(filteredSchedules);
+  }
+
   List<Schedule> _sortSchedulesByTime(List<Schedule> schedules) {
     return List.from(schedules)
       ..sort((a, b) {
@@ -108,9 +176,14 @@ class _ScheduleListState extends State<ScheduleList> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final filteredSchedules = _filterSchedules(widget.schedules);
-    final sortedSchedules = _sortSchedulesByTime(filteredSchedules);
+    final sortedSchedules = _getFilteredAndSortedSchedules();
     final provider = Provider.of<ScheduleProvider>(context);
+
+    // Initialize current schedules if empty
+    if (_currentSchedules.isEmpty && sortedSchedules.isNotEmpty) {
+      _currentSchedules = List.from(sortedSchedules);
+      _animationController.forward();
+    }
 
     if (sortedSchedules.isEmpty) {
       return Center(
@@ -134,90 +207,106 @@ class _ScheduleListState extends State<ScheduleList> {
           ),
         ),
 
-        // Duty list
+        // Animated duty list
         Expanded(
-          child: ListView.builder(
-            controller: widget.scrollController,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-            itemCount: sortedSchedules.length,
-            itemBuilder: (context, index) {
-              final schedule = sortedSchedules[index];
-              final dutyType =
-                  provider.activeConfig?.dutyTypes[schedule.service];
-              final serviceName = dutyType?.label ?? schedule.service;
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ListView.builder(
+                    controller: widget.scrollController,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 0.0),
+                    itemCount: sortedSchedules.length,
+                    itemBuilder: (context, index) {
+                      final schedule = sortedSchedules[index];
+                      final dutyType =
+                          provider.activeConfig?.dutyTypes[schedule.service];
+                      final serviceName = dutyType?.label ?? schedule.service;
 
-              final isSelected =
-                  widget.selectedDutyGroup == schedule.dutyGroupName;
-              final mainColor = Theme.of(context).colorScheme.primary;
+                      final isSelected =
+                          widget.selectedDutyGroup == schedule.dutyGroupName;
+                      final mainColor = Theme.of(context).colorScheme.primary;
 
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      if (widget.onDutyGroupSelected != null) {
-                        widget.onDutyGroupSelected!(
-                            isSelected ? null : schedule.dutyGroupName);
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected ? mainColor.withAlpha(20) : Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: isSelected ? mainColor : Colors.grey.shade300,
-                          width: isSelected ? 2 : 1,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(8),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          // Icon on the left
-                          Icon(
-                            _getDutyTypeIcon(schedule.service, provider),
-                            color: mainColor,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 12),
-
-                          // Service type text in the center
-                          Expanded(
-                            child: Text(
-                              serviceName,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              if (widget.onDutyGroupSelected != null) {
+                                widget.onDutyGroupSelected!(
+                                    isSelected ? null : schedule.dutyGroupName);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              height: 56,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? mainColor.withAlpha(20)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? mainColor
+                                      : Colors.grey.shade300,
+                                  width: isSelected ? 2 : 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withAlpha(8),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                              child: Row(
+                                children: [
+                                  // Icon on the left
+                                  Icon(
+                                    _getDutyTypeIcon(
+                                        schedule.service, provider),
+                                    color: mainColor,
+                                    size: 24,
+                                  ),
+                                  const SizedBox(width: 12),
 
-                          // Duty group hint on the right
-                          Text(
-                            schedule.dutyGroupName,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey.shade600,
+                                  // Service type text in the center
+                                  Expanded(
+                                    child: Text(
+                                      serviceName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black87,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+
+                                  // Duty group hint on the right
+                                  Text(
+                                    schedule.dutyGroupName,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               );

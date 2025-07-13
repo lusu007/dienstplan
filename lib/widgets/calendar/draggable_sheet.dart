@@ -20,24 +20,27 @@ class DraggableSheet extends StatefulWidget {
 }
 
 class _DraggableSheetState extends State<DraggableSheet> {
-  late PageController _pageController;
+  PageController? _pageController;
   final GlobalKey _calendarKey = GlobalKey();
   final GlobalKey _headerKey = GlobalKey();
 
   // Track current page index for day navigation
   int _currentPageIndex = 0;
   final List<DateTime> _dayPages = [];
+  DateTime? _lastSelectedDay;
+  bool _shouldAnimateScheduleList = false;
 
   @override
   void initState() {
     super.initState();
+
+    // Initialize day pages around current selected day first
+    _initializeDayPages();
+
     _pageController = PageController(
       initialPage: _currentPageIndex,
       viewportFraction: 1.0,
     );
-
-    // Initialize day pages around current selected day
-    _initializeDayPages();
 
     // Listen to provider changes to sync calendar
     widget.scheduleProvider.addListener(_onProviderChanged);
@@ -45,57 +48,49 @@ class _DraggableSheetState extends State<DraggableSheet> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController?.dispose();
     widget.scheduleProvider.removeListener(_onProviderChanged);
     super.dispose();
   }
 
   void _onProviderChanged() {
-    // Sync page view with provider changes
     final selectedDay = widget.scheduleProvider.selectedDay;
-    if (selectedDay != null) {
-      final targetIndex = _dayPages.indexWhere((day) =>
-          day.year == selectedDay.year &&
-          day.month == selectedDay.month &&
-          day.day == selectedDay.day);
 
-      if (targetIndex != -1 && targetIndex != _currentPageIndex) {
-        _pageController.animateToPage(
-          targetIndex,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+    // Check if the selected day has changed significantly (more than 5 days difference)
+    if (selectedDay != null && _lastSelectedDay != null) {
+      final daysDifference =
+          selectedDay.difference(_lastSelectedDay!).inDays.abs();
+
+      if (daysDifference > 5) {
+        // Rebuild the day pages around the new selected day
+        _rebuildDayPagesAroundDay(selectedDay);
       }
     }
+
+    _lastSelectedDay = selectedDay;
   }
 
   void _initializeDayPages() {
     final selectedDay = widget.scheduleProvider.selectedDay ?? DateTime.now();
-    _dayPages.clear();
-
-    // Add 3 days before, current day, and 3 days after
-    for (int i = -3; i <= 3; i++) {
-      _dayPages.add(selectedDay.add(Duration(days: i)));
-    }
-
-    _currentPageIndex = 3; // Current day is at index 3
+    _lastSelectedDay = selectedDay;
+    _rebuildDayPagesAroundDay(selectedDay);
   }
 
-  void _updateDayPages() {
-    // Check if we need to add more days to the list
-    if (_currentPageIndex <= 1) {
-      // Add more days at the beginning
-      final firstDay = _dayPages.first;
-      for (int i = 1; i <= 3; i++) {
-        _dayPages.insert(0, firstDay.subtract(Duration(days: i)));
-      }
-      _currentPageIndex += 3;
-    } else if (_currentPageIndex >= _dayPages.length - 2) {
-      // Add more days at the end
-      final lastDay = _dayPages.last;
-      for (int i = 1; i <= 3; i++) {
-        _dayPages.add(lastDay.add(Duration(days: i)));
-      }
+  void _rebuildDayPagesAroundDay(DateTime centerDay) {
+    _dayPages.clear();
+
+    // Create a larger range of days to prevent running out of pages
+    // Start from 30 days before to 30 days after the selected day
+    for (int i = -30; i <= 30; i++) {
+      _dayPages.add(centerDay.add(Duration(days: i)));
+    }
+
+    _currentPageIndex = 30; // Selected day is at index 30 (middle)
+
+    // Update the PageController if it has clients
+    // Only jump immediately if not animating (for provider changes)
+    if (_pageController?.hasClients == true && !_shouldAnimateScheduleList) {
+      _pageController!.jumpToPage(_currentPageIndex);
     }
   }
 
@@ -103,43 +98,31 @@ class _DraggableSheetState extends State<DraggableSheet> {
     if (pageIndex != _currentPageIndex) {
       setState(() {
         _currentPageIndex = pageIndex;
+        // Don't animate when scrolling - only when calendar selection
+        _shouldAnimateScheduleList = false;
       });
 
       // Update the selected day in the provider
       final newSelectedDay = _dayPages[pageIndex];
       widget.scheduleProvider.setSelectedDay(newSelectedDay);
       widget.scheduleProvider.setFocusedDay(newSelectedDay);
-
-      // Update day pages if needed
-      _updateDayPages();
     }
   }
 
-  void _navigateToDay(DateTime targetDay) {
-    final targetIndex = _dayPages.indexWhere((day) =>
-        day.year == targetDay.year &&
-        day.month == targetDay.month &&
-        day.day == targetDay.day);
+  void _triggerAnimation() {
+    // Set animation flag
+    setState(() {
+      _shouldAnimateScheduleList = true;
+    });
 
-    if (targetIndex != -1) {
-      final pageIndex = targetIndex;
-      _pageController.animateToPage(
-        pageIndex,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      // If day not in current pages, rebuild the list around target day
-      _dayPages.clear();
-      for (int i = -3; i <= 3; i++) {
-        _dayPages.add(targetDay.add(Duration(days: i)));
+    // Reset animation flag after animation completes
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        setState(() {
+          _shouldAnimateScheduleList = false;
+        });
       }
-      _currentPageIndex = 3;
-      _pageController.jumpToPage(_currentPageIndex);
-
-      widget.scheduleProvider.setSelectedDay(targetDay);
-      widget.scheduleProvider.setFocusedDay(targetDay);
-    }
+    });
   }
 
   @override
@@ -179,7 +162,8 @@ class _DraggableSheetState extends State<DraggableSheet> {
             return isSameDay(widget.scheduleProvider.selectedDay, day);
           },
           onDaySelected: (selectedDay, focusedDay) {
-            _navigateToDay(selectedDay);
+            // This callback is not used since we handle day selection in the calendar builders
+            // The calendar builders directly call the provider methods
           },
           onFormatChanged: (format) {
             widget.scheduleProvider.setCalendarFormat(format);
@@ -188,7 +172,9 @@ class _DraggableSheetState extends State<DraggableSheet> {
             widget.scheduleProvider.setFocusedDay(focusedDay);
           },
           calendarBuilders: CalendarBuildersHelper.createCalendarBuilders(
-              widget.scheduleProvider),
+            widget.scheduleProvider,
+            onDaySelected: _triggerAnimation,
+          ),
           calendarStyle: CalendarConfig.createCalendarStyle(context),
           headerStyle: CalendarConfig.createHeaderStyle(),
           locale: 'de_DE',
@@ -230,7 +216,7 @@ class _DraggableSheetState extends State<DraggableSheet> {
                 ),
                 Expanded(
                   child: PageView.builder(
-                    controller: _pageController,
+                    controller: _pageController!,
                     onPageChanged: _onPageChanged,
                     itemCount: _dayPages.length,
                     physics: const PageScrollPhysics(),
@@ -256,6 +242,7 @@ class _DraggableSheetState extends State<DraggableSheet> {
       onDutyGroupSelected: (group) {
         widget.scheduleProvider.setSelectedDutyGroup(group);
       },
+      shouldAnimate: _shouldAnimateScheduleList,
     );
   }
 
