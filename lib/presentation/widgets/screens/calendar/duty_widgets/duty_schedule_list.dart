@@ -5,10 +5,10 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 
 import 'package:dienstplan/presentation/widgets/screens/calendar/helpers/schedule_list_animation_mixin.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_widgets/schedule_list_ui_builder.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_widgets/duty_list_widget.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_item_ui_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_item_list.dart';
 
-class ScheduleList extends StatefulWidget {
+class DutyScheduleList extends StatefulWidget {
   final List<Schedule> schedules;
   final List<String>? dutyGroups;
   final String? selectedDutyGroup;
@@ -20,7 +20,7 @@ class ScheduleList extends StatefulWidget {
   final List<String>? dutyTypeOrder;
   final String? activeConfigName;
 
-  const ScheduleList({
+  const DutyScheduleList({
     super.key,
     required this.schedules,
     this.dutyGroups,
@@ -35,10 +35,10 @@ class ScheduleList extends StatefulWidget {
   });
 
   @override
-  State<ScheduleList> createState() => _ScheduleListState();
+  State<DutyScheduleList> createState() => _DutyScheduleListState();
 }
 
-class _ScheduleListState extends State<ScheduleList>
+class _DutyScheduleListState extends State<DutyScheduleList>
     with TickerProviderStateMixin, ScheduleListAnimationMixin {
   String? _selectedDutyGroup;
 
@@ -49,7 +49,7 @@ class _ScheduleListState extends State<ScheduleList>
   }
 
   @override
-  void didUpdateWidget(ScheduleList oldWidget) {
+  void didUpdateWidget(DutyScheduleList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     // Only animate if shouldAnimate is true and we haven't animated yet
@@ -78,7 +78,7 @@ class _ScheduleListState extends State<ScheduleList>
 
       return filteredSchedules;
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleList: Error filtering schedules', e, stackTrace);
+      AppLogger.e('DutyScheduleList: Error filtering schedules', e, stackTrace);
       return [];
     }
   }
@@ -89,8 +89,8 @@ class _ScheduleListState extends State<ScheduleList>
         _selectedDutyGroup = dutyGroupId;
       });
     } catch (e, stackTrace) {
-      AppLogger.e(
-          'ScheduleList: Error updating duty group selection', e, stackTrace);
+      AppLogger.e('DutyScheduleList: Error updating duty group selection', e,
+          stackTrace);
     }
   }
 
@@ -102,7 +102,7 @@ class _ScheduleListState extends State<ScheduleList>
       final sortedSchedules = _getFilteredAndSortedSchedules();
 
       if (sortedSchedules.isEmpty) {
-        return ScheduleListUiBuilder.buildEmptyState(l10n.noServicesForDay);
+        return DutyItemUiBuilder.buildEmptyState(l10n.noServicesForDay);
       }
 
       // Get schedules for the duty list (show all duties for the selected day, not filtered by duty group)
@@ -141,7 +141,7 @@ class _ScheduleListState extends State<ScheduleList>
         children: [
           // Duty list widget
           Expanded(
-            child: DutyListWidget(
+            child: DutyItemList(
               schedules: dutyListSchedules,
               selectedDutyGroupName: _selectedDutyGroup,
               onDutyGroupSelected: _onDutyGroupSelected,
@@ -153,7 +153,7 @@ class _ScheduleListState extends State<ScheduleList>
         ],
       );
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleList: Error in build method', e, stackTrace);
+      AppLogger.e('DutyScheduleList: Error in build method', e, stackTrace);
 
       // Return a safe fallback widget
       return Center(

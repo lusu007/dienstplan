@@ -211,7 +211,7 @@ class _CalendarViewState extends State<CalendarView>
   }
 
   Widget _buildSheetContent(DateTime day) {
-    return CalendarViewUiBuilder.buildScheduleList(
+    return CalendarViewUiBuilder.buildDutyScheduleList(
       scheduleController: widget.scheduleController,
       shouldAnimate: shouldAnimateScheduleList,
     );

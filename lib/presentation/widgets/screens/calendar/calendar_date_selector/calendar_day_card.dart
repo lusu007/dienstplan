@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_widgets/animated_calendar_day_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_date_selector/animated_calendar_day.dart';
 
-class CalendarDayWidget extends StatelessWidget {
+class CalendarDayCard extends StatelessWidget {
   final DateTime day;
   final ScheduleController scheduleController;
   final CalendarDayType dayType;
@@ -11,7 +11,7 @@ class CalendarDayWidget extends StatelessWidget {
   final VoidCallback? onDaySelected;
   final String? dutyAbbreviation;
 
-  const CalendarDayWidget({
+  const CalendarDayCard({
     super.key,
     required this.day,
     required this.scheduleController,
@@ -26,7 +26,7 @@ class CalendarDayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSelected = _isDaySelected();
 
-    return AnimatedCalendarDayBuilder(
+    return AnimatedCalendarDay(
       day: day,
       dutyAbbreviation: dutyAbbreviation ?? '',
       dayType: dayType,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DateSwitcher extends StatefulWidget {
+class CalendarDateSelector extends StatefulWidget {
   final DateTime currentDate;
   final Function(DateTime) onDateSelected;
   final Locale locale;
 
-  const DateSwitcher({
+  const CalendarDateSelector({
     super.key,
     required this.currentDate,
     required this.onDateSelected,
@@ -14,10 +14,10 @@ class DateSwitcher extends StatefulWidget {
   });
 
   @override
-  State<DateSwitcher> createState() => _DateSwitcherState();
+  State<CalendarDateSelector> createState() => _CalendarDateSelectorState();
 }
 
-class _DateSwitcherState extends State<DateSwitcher>
+class _CalendarDateSelectorState extends State<CalendarDateSelector>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;

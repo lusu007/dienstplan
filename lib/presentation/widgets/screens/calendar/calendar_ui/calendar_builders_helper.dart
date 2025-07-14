@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_widgets/animated_calendar_day_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
 
 class CalendarBuildersHelper {
@@ -71,7 +71,7 @@ class CalendarBuildersHelper {
           day.month == scheduleController.selectedDay!.month &&
           day.day == scheduleController.selectedDay!.day;
 
-      return AnimatedCalendarDayBuilder(
+      return AnimatedCalendarDay(
         key: ValueKey(day),
         day: day,
         dutyAbbreviation: dutyAbbreviation,

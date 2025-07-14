@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AnimatedCalendarDayBuilder extends StatefulWidget {
+class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
   final String? dutyAbbreviation;
   final CalendarDayType dayType;
@@ -9,7 +9,7 @@ class AnimatedCalendarDayBuilder extends StatefulWidget {
   final bool isSelected;
   final VoidCallback? onTap;
 
-  const AnimatedCalendarDayBuilder({
+  const AnimatedCalendarDay({
     super.key,
     required this.day,
     this.dutyAbbreviation,
@@ -21,11 +21,10 @@ class AnimatedCalendarDayBuilder extends StatefulWidget {
   });
 
   @override
-  State<AnimatedCalendarDayBuilder> createState() =>
-      _AnimatedCalendarDayBuilderState();
+  State<AnimatedCalendarDay> createState() => _AnimatedCalendarDayState();
 }
 
-class _AnimatedCalendarDayBuilderState extends State<AnimatedCalendarDayBuilder>
+class _AnimatedCalendarDayState extends State<AnimatedCalendarDay>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -48,7 +47,7 @@ class _AnimatedCalendarDayBuilderState extends State<AnimatedCalendarDayBuilder>
   }
 
   @override
-  void didUpdateWidget(AnimatedCalendarDayBuilder oldWidget) {
+  void didUpdateWidget(AnimatedCalendarDay oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     // Animate when selection changes

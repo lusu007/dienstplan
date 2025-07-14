@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_widgets/schedule_list_ui_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_item_ui_builder.dart';
 
-class ScheduleItemWidget extends StatelessWidget {
+class DutyItemCard extends StatelessWidget {
   final Schedule schedule;
   final String serviceName;
   final IconData icon;
@@ -11,7 +11,7 @@ class ScheduleItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final bool showDutyGroup;
 
-  const ScheduleItemWidget({
+  const DutyItemCard({
     super.key,
     required this.schedule,
     required this.serviceName,
@@ -24,7 +24,7 @@ class ScheduleItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScheduleListUiBuilder.buildScheduleItem(
+    return DutyItemUiBuilder.buildDutyItem(
       schedule: schedule,
       serviceName: serviceName,
       icon: icon,
@@ -35,7 +35,7 @@ class ScheduleItemWidget extends StatelessWidget {
   }
 }
 
-class ScheduleItemListWidget extends StatelessWidget {
+class DutyItemCardList extends StatelessWidget {
   final List<Schedule> schedules;
   final Map<String, dynamic>? dutyTypes;
   final String? selectedDutyGroup;
@@ -43,7 +43,7 @@ class ScheduleItemListWidget extends StatelessWidget {
   final ScrollController? scrollController;
   final EdgeInsets? padding;
 
-  const ScheduleItemListWidget({
+  const DutyItemCardList({
     super.key,
     required this.schedules,
     this.dutyTypes,
@@ -67,10 +67,10 @@ class ScheduleItemListWidget extends StatelessWidget {
         final serviceName = schedule.service; // Simplified for now
         final isSelected = selectedDutyGroup == schedule.dutyGroupName;
 
-        return ScheduleItemWidget(
+        return DutyItemCard(
           schedule: schedule,
           serviceName: serviceName,
-          icon: ScheduleListUiBuilder.getDutyTypeIcon(
+          icon: DutyItemUiBuilder.getDutyTypeIcon(
             schedule.service,
             null, // Simplified for now
           ),

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
-class ServicesSection extends StatelessWidget {
+class DutyScheduleHeader extends StatelessWidget {
   final DateTime? selectedDay;
 
-  const ServicesSection({
+  const DutyScheduleHeader({
     super.key,
     required this.selectedDay,
   });

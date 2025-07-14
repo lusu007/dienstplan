@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_widgets/date_switcher.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_date_selector/calendar_date_selector.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
-class CustomCalendarHeader extends StatefulWidget {
+class CalendarDateSelectorHeader extends StatefulWidget {
   final ScheduleController scheduleController;
   final VoidCallback onLeftChevronTap;
   final VoidCallback onRightChevronTap;
   final Locale locale;
   final Function(DateTime) onDateSelected;
 
-  const CustomCalendarHeader({
+  const CalendarDateSelectorHeader({
     super.key,
     required this.scheduleController,
     required this.onLeftChevronTap,
@@ -20,10 +20,12 @@ class CustomCalendarHeader extends StatefulWidget {
   });
 
   @override
-  State<CustomCalendarHeader> createState() => _CustomCalendarHeaderState();
+  State<CalendarDateSelectorHeader> createState() =>
+      _CalendarDateSelectorHeaderState();
 }
 
-class _CustomCalendarHeaderState extends State<CustomCalendarHeader> {
+class _CalendarDateSelectorHeaderState
+    extends State<CalendarDateSelectorHeader> {
   @override
   void initState() {
     super.initState();
@@ -68,7 +70,7 @@ class _CustomCalendarHeaderState extends State<CustomCalendarHeader> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DateSwitcher(
+                  CalendarDateSelector(
                     currentDate: focusedDay,
                     onDateSelected: widget.onDateSelected,
                     locale: widget.locale,

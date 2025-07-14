@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_widgets/schedule_list.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_widgets/calendar_builders.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/config/calendar_config.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_widgets/services_section.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_widgets/custom_calendar_header.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_schedule_list.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_ui/calendar_builders_helper.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_schedule_header.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_date_selector/calendar_date_selector_header.dart';
 
 class CalendarViewUiBuilder {
   static Widget buildCalendarHeader({
@@ -16,7 +16,7 @@ class CalendarViewUiBuilder {
     required VoidCallback onRightChevronTap,
     required Function(DateTime) onDateSelected,
   }) {
-    return CustomCalendarHeader(
+    return CalendarDateSelectorHeader(
       key: headerKey,
       scheduleController: scheduleController,
       onLeftChevronTap: onLeftChevronTap,
@@ -82,13 +82,13 @@ class CalendarViewUiBuilder {
               topRight: Radius.circular(20),
             ),
           ),
-          child: ServicesSection(selectedDay: selectedDay),
+          child: DutyScheduleHeader(selectedDay: selectedDay),
         );
       },
     );
   }
 
-  static Widget buildScheduleList({
+  static Widget buildDutyScheduleList({
     required ScheduleController scheduleController,
     required bool shouldAnimate,
   }) {
@@ -98,7 +98,7 @@ class CalendarViewUiBuilder {
             : (scheduleController.preferredDutyGroup?.isNotEmpty == true
                 ? scheduleController.preferredDutyGroup
                 : null);
-    return ScheduleList(
+    return DutyScheduleList(
       schedules: scheduleController.schedulesForSelectedDay.cast(),
       dutyGroups: scheduleController.dutyGroups,
       selectedDutyGroup: selectedGroup,

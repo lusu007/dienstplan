@@ -4,7 +4,7 @@ import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 
-class DutyListWidget extends StatelessWidget {
+class DutyItemList extends StatelessWidget {
   final List<Schedule> schedules;
   final String? selectedDutyGroupName;
   final Function(String?)? onDutyGroupSelected;
@@ -12,7 +12,7 @@ class DutyListWidget extends StatelessWidget {
   final DateTime? selectedDay;
   final Map<String, DutyType>? dutyTypes;
 
-  const DutyListWidget({
+  const DutyItemList({
     super.key,
     required this.schedules,
     this.selectedDutyGroupName,
@@ -170,7 +170,7 @@ class DutyListWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: mainColor.withAlpha(50),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       _getDutyTypeIcon(schedule.dutyTypeId),

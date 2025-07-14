@@ -3,7 +3,7 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 
-class ScheduleListUiBuilder {
+class DutyItemUiBuilder {
   static Widget buildFilterStatusText({
     required String filterText,
     required String filteredByText,
@@ -22,7 +22,7 @@ class ScheduleListUiBuilder {
     );
   }
 
-  static Widget buildScheduleItem({
+  static Widget buildDutyItem({
     required Schedule schedule,
     required String serviceName,
     required IconData icon,
@@ -70,7 +70,7 @@ class ScheduleListUiBuilder {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: mainColor.withAlpha(50),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     icon,
