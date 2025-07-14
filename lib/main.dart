@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/calendar_screen.dart';
-import 'package:dienstplan/presentation/screens/first_time_setup_screen.dart';
+import 'package:dienstplan/presentation/screens/setup_screen.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/di/injection_container.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
@@ -23,7 +23,6 @@ void main() async {
   AppLogger.i('Starting Dienstplan application');
 
   // Get services from DI container and ensure they're initialized
-  final languageService = await GetIt.instance.getAsync<LanguageService>();
   final sentryService = await GetIt.instance.getAsync<SentryService>();
 
   await SentryFlutter.init(
@@ -59,7 +58,9 @@ void main() async {
 }
 
 class AppInitializer extends StatefulWidget {
-  const AppInitializer({super.key});
+  final RouteObserver<ModalRoute<void>> routeObserver;
+
+  const AppInitializer({super.key, required this.routeObserver});
 
   @override
   State<AppInitializer> createState() => _AppInitializerState();
@@ -109,10 +110,10 @@ class _AppInitializerState extends State<AppInitializer> {
     }
 
     if (_needsSetup) {
-      return const FirstTimeSetupScreen();
+      return const SetupScreen();
     }
 
-    return const CalendarScreen();
+    return CalendarScreen(routeObserver: widget.routeObserver);
   }
 }
 
@@ -128,6 +129,8 @@ class _MyAppState extends State<MyApp> {
   SettingsController? _settingsController;
   LanguageService? _languageService;
   bool _isInitialized = false;
+  final RouteObserver<ModalRoute<void>> _routeObserver =
+      RouteObserver<ModalRoute<void>>();
 
   @override
   void initState() {
@@ -138,7 +141,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _initializeControllers() async {
     _scheduleController = await GetIt.instance.getAsync<ScheduleController>();
     _settingsController = await GetIt.instance.getAsync<SettingsController>();
-    _languageService = GetIt.instance<LanguageService>();
+    _languageService = await GetIt.instance.getAsync<LanguageService>();
 
     await _scheduleController!.loadSchedules(DateTime.now());
     await _settingsController!.loadSettings();
@@ -165,6 +168,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return MaterialApp(
           title: 'Dienstplan',
+          navigatorObservers: [_routeObserver],
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF005B8C),
@@ -189,7 +193,7 @@ class _MyAppState extends State<MyApp> {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           locale: _languageService!.currentLocale,
-          home: const AppInitializer(),
+          home: AppInitializer(routeObserver: _routeObserver),
         );
       },
     );

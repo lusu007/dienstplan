@@ -48,7 +48,7 @@ class Schedule {
         configName: configName,
         isAllDay: map['is_all_day'] == 1,
       );
-    } catch (e, stackTrace) {
+    } catch (e) {
       rethrow;
     }
   }

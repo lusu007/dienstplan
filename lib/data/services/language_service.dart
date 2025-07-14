@@ -8,6 +8,11 @@ class LanguageService extends ChangeNotifier {
 
   Locale get currentLocale => _currentLocale;
 
+  List<Locale> get supportedLocales => const [
+        Locale('de'),
+        Locale('en'),
+      ];
+
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
     final savedLanguage = _prefs.getString(_languageKey);
@@ -23,8 +28,19 @@ class LanguageService extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const List<Locale> supportedLocales = [
-    Locale('de'),
-    Locale('en'),
-  ];
+  Future<void> setLocale(Locale locale) async {
+    _currentLocale = locale;
+    await _prefs.setString(_languageKey, locale.languageCode);
+    notifyListeners();
+  }
+
+  Future<void> loadSavedLocale() async {
+    await initialize();
+  }
+
+  Future<void> resetToDefault() async {
+    _currentLocale = const Locale('de');
+    await _prefs.setString(_languageKey, 'de');
+    notifyListeners();
+  }
 }

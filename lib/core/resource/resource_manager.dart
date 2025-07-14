@@ -139,7 +139,7 @@ class FileResource extends Resource {
 
   @override
   Future<void> dispose() async {
-    if (autoDelete && await file.exists()) {
+    if (autoDelete && file.existsSync()) {
       try {
         await file.delete();
         AppLogger.d('FileResource: Deleted file: ${file.path}');

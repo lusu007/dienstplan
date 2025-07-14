@@ -1,5 +1,5 @@
 import 'package:dienstplan/domain/entities/settings.dart';
-import 'package:dienstplan/domain/repositories/settings_repository.dart';
+import 'package:dienstplan/data/repositories/settings_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 
 class SaveSettingsUseCase {
@@ -27,7 +27,7 @@ class SaveSettingsUseCase {
 
     // Validate that focused day and selected day are not in the distant past/future
     final now = DateTime.now();
-    final maxDateDifference = Duration(days: 365 * 10); // 10 years
+    const maxDateDifference = Duration(days: 365 * 10); // 10 years
 
     if (settings.focusedDay.difference(now).abs() > maxDateDifference) {
       throw ArgumentError('Focused day is too far from current date');

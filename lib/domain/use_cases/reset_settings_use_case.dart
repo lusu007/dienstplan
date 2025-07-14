@@ -1,5 +1,5 @@
 import 'package:dienstplan/domain/entities/settings.dart';
-import 'package:dienstplan/domain/repositories/settings_repository.dart';
+import 'package:dienstplan/data/repositories/settings_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:table_calendar/table_calendar.dart';
 

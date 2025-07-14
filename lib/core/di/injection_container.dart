@@ -7,19 +7,13 @@ import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/data/data_sources/schedule_local_data_source.dart';
-import 'package:dienstplan/data/data_sources/schedule_local_data_source_impl.dart';
 import 'package:dienstplan/data/data_sources/settings_local_data_source.dart';
-import 'package:dienstplan/data/data_sources/settings_local_data_source_impl.dart';
 import 'package:dienstplan/data/data_sources/config_local_data_source.dart';
-import 'package:dienstplan/data/data_sources/config_local_data_source_impl.dart';
 
 // Repositories
-import 'package:dienstplan/domain/repositories/schedule_repository.dart';
-import 'package:dienstplan/domain/repositories/settings_repository.dart';
-import 'package:dienstplan/domain/repositories/config_repository.dart';
-import 'package:dienstplan/data/repositories/schedule_repository_impl.dart';
-import 'package:dienstplan/data/repositories/settings_repository_impl.dart';
-import 'package:dienstplan/data/repositories/config_repository_impl.dart';
+import 'package:dienstplan/data/repositories/schedule_repository.dart';
+import 'package:dienstplan/data/repositories/settings_repository.dart';
+import 'package:dienstplan/data/repositories/config_repository.dart';
 
 // Use Cases
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
@@ -110,19 +104,19 @@ class InjectionContainer {
     // ScheduleLocalDataSource - Singleton
     getIt.registerLazySingletonAsync<ScheduleLocalDataSource>(() async {
       final databaseService = await getIt.getAsync<DatabaseService>();
-      return ScheduleLocalDataSourceImpl(databaseService);
+      return ScheduleLocalDataSource(databaseService);
     });
 
     // SettingsLocalDataSource - Singleton
     getIt.registerLazySingletonAsync<SettingsLocalDataSource>(() async {
       final databaseService = await getIt.getAsync<DatabaseService>();
-      return SettingsLocalDataSourceImpl(databaseService);
+      return SettingsLocalDataSource(databaseService);
     });
 
     // ConfigLocalDataSource - Singleton
     getIt.registerLazySingletonAsync<ConfigLocalDataSource>(() async {
       final configService = await getIt.getAsync<ScheduleConfigService>();
-      return ConfigLocalDataSourceImpl(configService);
+      return ConfigLocalDataSource(configService);
     });
   }
 
@@ -132,19 +126,19 @@ class InjectionContainer {
     // ScheduleRepository - Singleton
     getIt.registerLazySingletonAsync<ScheduleRepository>(() async {
       final databaseService = await getIt.getAsync<DatabaseService>();
-      return ScheduleRepositoryImpl(databaseService);
+      return ScheduleRepository(databaseService);
     });
 
     // SettingsRepository - Singleton
     getIt.registerLazySingletonAsync<SettingsRepository>(() async {
       final databaseService = await getIt.getAsync<DatabaseService>();
-      return SettingsRepositoryImpl(databaseService);
+      return SettingsRepository(databaseService);
     });
 
     // ConfigRepository - Singleton
     getIt.registerLazySingletonAsync<ConfigRepository>(() async {
       final configService = await getIt.getAsync<ScheduleConfigService>();
-      return ConfigRepositoryImpl(configService);
+      return ConfigRepository(configService);
     });
   }
 

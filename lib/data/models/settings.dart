@@ -22,7 +22,7 @@ class Settings {
   factory Settings.fromMap(Map<String, dynamic> map) {
     return Settings(
       calendarFormat: CalendarFormat.values.firstWhere(
-        (format) => format.toString() == map['calendar_format'],
+        (format) => format.name == map['calendar_format'],
         orElse: () => CalendarFormat.month,
       ),
       focusedDay: DateTime.parse(map['focused_day'] as String),
@@ -36,7 +36,7 @@ class Settings {
 
   Map<String, dynamic> toMap() {
     return {
-      'calendar_format': calendarFormat.toString(),
+      'calendar_format': calendarFormat.name,
       'focused_day': focusedDay.toIso8601String(),
       'selected_day': selectedDay.toIso8601String(),
       if (language != null) 'language': language,

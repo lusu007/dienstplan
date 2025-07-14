@@ -1,4 +1,4 @@
-import 'package:dienstplan/domain/repositories/schedule_repository.dart';
+import 'package:dienstplan/data/repositories/schedule_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 
 class GetDutyAbbreviationUseCase {

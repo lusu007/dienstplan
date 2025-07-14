@@ -1,7 +1,7 @@
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
-import 'package:dienstplan/domain/repositories/schedule_repository.dart';
-import 'package:dienstplan/domain/repositories/config_repository.dart';
+import 'package:dienstplan/data/repositories/schedule_repository.dart';
+import 'package:dienstplan/data/repositories/config_repository.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart' as data;
 import 'package:dienstplan/data/models/schedule.dart' as data_schedule;

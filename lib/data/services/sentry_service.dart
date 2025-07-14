@@ -62,6 +62,37 @@ class SentryService extends ChangeNotifier {
     }
   }
 
+  Future<void> captureException(dynamic exception, dynamic stackTrace) async {
+    try {
+      if (!_isEnabled) {
+        AppLogger.d('Sentry disabled, skipping exception capture');
+        return;
+      }
+
+      // Note: Actual Sentry capture would be implemented here
+      // For now, just log the exception
+      AppLogger.e(
+          'Sentry would capture exception: $exception', exception, stackTrace);
+    } catch (e, stackTrace) {
+      AppLogger.e('Error capturing exception in Sentry', e, stackTrace);
+    }
+  }
+
+  Future<void> captureMessage(String message) async {
+    try {
+      if (!_isEnabled) {
+        AppLogger.d('Sentry disabled, skipping message capture');
+        return;
+      }
+
+      // Note: Actual Sentry capture would be implemented here
+      // For now, just log the message
+      AppLogger.i('Sentry would capture message: $message');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error capturing message in Sentry', e, stackTrace);
+    }
+  }
+
   Future<void> _applyConfiguration() async {
     try {
       // Note: Sentry configuration is handled in main.dart

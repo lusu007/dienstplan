@@ -4,18 +4,20 @@ import 'package:dienstplan/data/services/language_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:dienstplan/presentation/widgets/extra_widgets/calendar/calendar_app_bar.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/calendar/draggable_sheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_widgets/calendar_app_bar.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({super.key});
+  final RouteObserver<ModalRoute<void>> routeObserver;
+
+  const CalendarScreen({super.key, required this.routeObserver});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
 class _CalendarScreenState extends State<CalendarScreen>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
   late AnimationController _controller;
   late String _locale;
   ScheduleController? _scheduleController;
@@ -39,6 +41,34 @@ class _CalendarScreenState extends State<CalendarScreen>
     _initializeControllers();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.routeObserver.subscribe(this, ModalRoute.of(context)!);
+
+    if (_languageService != null) {
+      final appLocale = _languageService!.currentLocale.languageCode;
+      if (appLocale != _locale) {
+        setState(() {
+          _locale = appLocale;
+          initializeDateFormatting(_locale, null);
+        });
+      }
+    }
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    if (_scheduleController != null) {
+      _scheduleController!.reloadCalendarFormat().then((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+  }
+
   Future<void> _initializeControllers() async {
     _scheduleController = await GetIt.instance.getAsync<ScheduleController>();
     _languageService = GetIt.instance<LanguageService>();
@@ -60,10 +90,19 @@ class _CalendarScreenState extends State<CalendarScreen>
       await _scheduleController!.loadSchedulesForCurrentMonth();
     }
 
+    // Add listener to controller to react to format changes
+    _scheduleController!.addListener(_onControllerChanged);
+
     if (mounted) {
       setState(() {
         _isInitialized = true;
       });
+    }
+  }
+
+  void _onControllerChanged() {
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -118,32 +157,13 @@ class _CalendarScreenState extends State<CalendarScreen>
               await _scheduleController!.saveSettingsUseCase
                   .execute(updatedSettings);
             }
-          } catch (e) {}
+          } catch (e) {
+            // Ignore errors when determining active config from schedules
+          }
         }
       }
-    } catch (e, stackTrace) {}
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_languageService != null) {
-      final appLocale = _languageService!.currentLocale.languageCode;
-      if (appLocale != _locale) {
-        setState(() {
-          _locale = appLocale;
-          initializeDateFormatting(_locale, null);
-        });
-      }
-    }
-
-    // Reload calendar format when screen becomes active to sync with settings changes
-    if (_scheduleController != null) {
-      print('DEBUG CalendarScreen: Reloading calendar format');
-      _scheduleController!.reloadCalendarFormat().then((_) {
-        print(
-            'DEBUG CalendarScreen: Calendar format reloaded: ${_scheduleController!.calendarFormat}');
-      });
+    } catch (e) {
+      // Ignore errors when determining active config from schedules
     }
   }
 
@@ -151,11 +171,11 @@ class _CalendarScreenState extends State<CalendarScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      print('DEBUG CalendarScreen: App resumed, reloading calendar format');
       if (_scheduleController != null) {
         _scheduleController!.reloadCalendarFormat().then((_) {
-          print(
-              'DEBUG CalendarScreen: Calendar format reloaded after resume: ${_scheduleController!.calendarFormat}');
+          if (mounted) {
+            setState(() {});
+          }
         });
       }
     }
@@ -164,14 +184,14 @@ class _CalendarScreenState extends State<CalendarScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    widget.routeObserver.unsubscribe(this);
+    _scheduleController?.removeListener(_onControllerChanged);
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'DEBUG CalendarScreen: build() called, isInitialized: $_isInitialized');
     if (!_isInitialized || _scheduleController == null) {
       return const Scaffold(
         body: Center(
@@ -180,27 +200,9 @@ class _CalendarScreenState extends State<CalendarScreen>
       );
     }
 
-    // Force reload calendar format on every build to ensure it's up to date
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _scheduleController != null) {
-        print(
-            'DEBUG CalendarScreen: Post-frame callback - reloading calendar format');
-        _scheduleController!.reloadCalendarFormat().then((_) {
-          print(
-              'DEBUG CalendarScreen: Post-frame callback - calendar format reloaded: ${_scheduleController!.calendarFormat}');
-        });
-      }
-    });
-
-    // Ensure the selected day is properly synchronized if schedules are already loaded
-    if (_scheduleController!.selectedDay != null &&
-        _scheduleController!.schedules.isNotEmpty) {
-      _scheduleController!.notifyListeners();
-    }
-
     return Scaffold(
       appBar: const CalendarAppBar(),
-      body: DraggableSheet(scheduleController: _scheduleController!),
+      body: CalendarView(scheduleController: _scheduleController!),
     );
   }
 }

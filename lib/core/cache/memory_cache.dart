@@ -103,7 +103,7 @@ class MemoryCache<T> extends BaseCache<T> {
     DateTime? oldestTime;
 
     for (final entry in _cache.entries) {
-      if (oldestTime == null || entry.value.expiryTime.isBefore(oldestTime!)) {
+      if (oldestTime == null || entry.value.expiryTime.isBefore(oldestTime)) {
         oldestTime = entry.value.expiryTime;
         oldestKey = entry.key;
       }

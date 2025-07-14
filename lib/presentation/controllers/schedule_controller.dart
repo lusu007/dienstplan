@@ -31,7 +31,6 @@ class ScheduleController extends ChangeNotifier {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   bool _isLoading = false;
   String? _error;
-  bool _isInitializing = false;
 
   final Map<String, String?> _dutyAbbreviationCache = {};
 
@@ -123,20 +122,11 @@ class ScheduleController extends ChangeNotifier {
       // Use configName parameter to filter at database level for better performance
       final configName = _activeConfig?.name;
 
-      print(
-          'DEBUG loadSchedulesForRange: Loading schedules for range: $start to $end');
-      print('  Config: $configName');
-      print(
-          '  Range covers: ${start.month}/${start.year} to ${end.month}/${end.year}');
-      print('  Current schedules count before loading: ${_schedules.length}');
-
       final newSchedules = await getSchedulesUseCase.executeForDateRange(
         startDate: start,
         endDate: end,
         configName: configName,
       );
-
-      print('  Loaded ${newSchedules.length} new schedules');
 
       // Merge new schedules with existing ones, avoiding duplicates
       final existingDates = _schedules
@@ -152,23 +142,9 @@ class ScheduleController extends ChangeNotifier {
       if (schedulesToAdd.isNotEmpty) {
         _schedules.addAll(schedulesToAdd);
 
-        print('  Added ${schedulesToAdd.length} new schedules');
-        print('  Total schedules count after loading: ${_schedules.length}');
-
-        // Notify listeners immediately when new data is added
         notifyListeners();
       }
-
-      if (_schedules.isNotEmpty) {
-        final firstSchedule = _schedules.first;
-        final lastSchedule = _schedules.last;
-        print(
-            '  Total schedule range: ${firstSchedule.date} to ${lastSchedule.date}');
-      }
     } catch (e, stackTrace) {
-      print('ERROR loadSchedulesForRange: Error loading schedules: $e');
-      print('Stack trace: $stackTrace');
-      _error = 'Failed to load schedules';
       AppLogger.e('ScheduleController: Error loading schedules', e, stackTrace);
     } finally {
       _isLoading = false;
@@ -184,8 +160,6 @@ class ScheduleController extends ChangeNotifier {
       // Check if we have schedules for this day, if not, load them
       _ensureSchedulesForSelectedDay(day);
     } catch (e, stackTrace) {
-      print('ERROR setSelectedDay: Error setting selected day: $e');
-      print('Stack trace: $stackTrace');
       AppLogger.e(
           'ScheduleController: Error setting selected day', e, stackTrace);
     }
@@ -193,10 +167,6 @@ class ScheduleController extends ChangeNotifier {
 
   Future<void> _ensureSchedulesForSelectedDay(DateTime day) async {
     try {
-      print(
-          'DEBUG _ensureSchedulesForSelectedDay: Checking schedules for day: $day');
-      print('  Current schedules count: ${_schedules.length}');
-
       // Check if we have schedules for this day
       final hasSchedulesForDay = _schedules.any((schedule) {
         return schedule.date.year == day.year &&
@@ -204,24 +174,15 @@ class ScheduleController extends ChangeNotifier {
             schedule.date.day == day.day;
       });
 
-      print('  Has schedules for selected day: $hasSchedulesForDay');
-
       // If no schedules for this day, load them for a small range around the day
       if (!hasSchedulesForDay) {
-        print('  Loading schedules for selected day range');
         // Load schedules for a small range around the selected day to avoid performance issues
         final startDate = day.subtract(const Duration(days: 3));
         final endDate = day.add(const Duration(days: 3));
 
         await loadSchedulesForRange(startDate, endDate);
-        print('  Schedules loaded for selected day range');
-      } else {
-        print('  Schedules already available for selected day');
       }
     } catch (e, stackTrace) {
-      print(
-          'ERROR _ensureSchedulesForSelectedDay: Error ensuring schedules for selected day: $e');
-      print('Stack trace: $stackTrace');
       AppLogger.e(
           'ScheduleController: Error ensuring schedules for selected day',
           e,
@@ -230,29 +191,20 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  void setFocusedDay(DateTime day) {
+  Future<void> setFocusedDay(DateTime focusedDay) async {
     try {
-      final oldFocusedDay = _focusedDay;
-      _focusedDay = day;
+      final previousFocusedDay = _focusedDay;
+      _focusedDay = focusedDay;
 
-      // Notify listeners immediately for UI update
-      notifyListeners();
-
-      // Only reload schedules if this is not during initialization and the month changed
-      // AND if this is not a day selection (to avoid race conditions with setSelectedDay)
-      if (!_isInitializing &&
-          (oldFocusedDay == null ||
-              oldFocusedDay.year != day.year ||
-              oldFocusedDay.month != day.month)) {
-        print(
-            'DEBUG setFocusedDay: Month changed, loading schedules for: $day');
-        _loadSchedulesForCurrentMonth(day);
-      } else {
-        print('DEBUG setFocusedDay: No month change or during initialization');
+      // Check if we need to load schedules for a new month
+      if (previousFocusedDay == null ||
+          previousFocusedDay.year != focusedDay.year ||
+          previousFocusedDay.month != focusedDay.month) {
+        await _loadSchedulesForCurrentMonth(focusedDay);
       }
+
+      notifyListeners();
     } catch (e, stackTrace) {
-      print('ERROR setFocusedDay: Error setting focused day: $e');
-      print('Stack trace: $stackTrace');
       AppLogger.e(
           'ScheduleController: Error setting focused day', e, stackTrace);
     }
@@ -260,21 +212,9 @@ class ScheduleController extends ChangeNotifier {
 
   Future<void> _loadSchedulesForCurrentMonth(DateTime focusedDay) async {
     try {
-      // Load schedules for the current month plus 2 months before and after
-      // This ensures smooth navigation and proper calendar display
-      final firstDayOfMonth = DateTime(focusedDay.year, focusedDay.month, 1);
-      final lastDayOfMonth = DateTime(focusedDay.year, focusedDay.month + 1, 0);
-
       // Add 2 months before and after to ensure calendar displays properly
       final startDate = DateTime(focusedDay.year, focusedDay.month - 2, 1);
       final endDate = DateTime(focusedDay.year, focusedDay.month + 3, 0);
-
-      print(
-          'DEBUG _loadSchedulesForCurrentMonth: Loading schedules for range: $startDate to $endDate');
-      print('  Focused day: $focusedDay');
-      print('  Selected day: $_selectedDay');
-      print(
-          '  Range covers: ${startDate.month}/${startDate.year} to ${endDate.month}/${endDate.year}');
 
       await loadSchedulesForRange(startDate, endDate);
 
@@ -305,17 +245,16 @@ class ScheduleController extends ChangeNotifier {
   }
 
   Future<void> setCalendarFormat(CalendarFormat format) async {
-    print(
-        'DEBUG ScheduleController: setCalendarFormat called with format: $format');
-    _calendarFormat = format;
-    print(
-        'DEBUG ScheduleController: Calling notifyListeners() from setCalendarFormat');
-    notifyListeners();
-
-    // Save calendar format to settings
-    await _saveCalendarFormat(format);
-    print(
-        'DEBUG ScheduleController: setCalendarFormat completed, format saved: $_calendarFormat');
+    try {
+      if (_calendarFormat != format) {
+        _calendarFormat = format;
+        await _saveCalendarFormat();
+        notifyListeners();
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error setting calendar format', e, stackTrace);
+    }
   }
 
   void setSelectedDutyGroup(String group) {
@@ -333,7 +272,6 @@ class ScheduleController extends ChangeNotifier {
   Future<void> loadConfigs() async {
     _isLoading = true;
     _error = null;
-    _isInitializing = true;
     notifyListeners();
     try {
       _configs = await getConfigsUseCase.execute();
@@ -359,7 +297,6 @@ class ScheduleController extends ChangeNotifier {
       AppLogger.e('ScheduleController: Error loading configs', e, stackTrace);
     } finally {
       _isLoading = false;
-      _isInitializing = false;
       notifyListeners();
     }
   }
@@ -369,13 +306,6 @@ class ScheduleController extends ChangeNotifier {
       final settings = await getSettingsUseCase.execute();
       final configName = settings?.activeConfigName;
 
-      print('DEBUG _loadActiveConfig: Starting to load active config');
-      print('  Settings: $settings');
-      print('  activeConfigName: $configName');
-      print('  selectedDutyGroup: ${settings?.selectedDutyGroup}');
-      print('  preferredDutyGroup: ${settings?.preferredDutyGroup}');
-      print('  Available configs: ${_configs.map((c) => c.name).toList()}');
-
       if (settings != null && configName != null && configName.isNotEmpty) {
         // Try to find the active config by name
         try {
@@ -383,16 +313,12 @@ class ScheduleController extends ChangeNotifier {
             (config) => config.name == configName,
           );
           _activeConfig = activeConfig;
-          print('  ✅ Found active config: ${activeConfig.name}');
           notifyListeners();
           return;
         } catch (e) {
-          print(
-              '  ❌ Config not found: $configName, falling back to first config');
           // If config not found, fallback to first config
           if (_configs.isNotEmpty) {
             _activeConfig = _configs.first;
-            print('  🔄 Using first config: ${_activeConfig!.name}');
             // Save this as the active config
             await _saveActiveConfig(_activeConfig!.name);
             notifyListeners();
@@ -402,23 +328,17 @@ class ScheduleController extends ChangeNotifier {
       } else if (_configs.isNotEmpty && _activeConfig == null) {
         // Fallback to first config if no active config is set
         _activeConfig = _configs.first;
-        print(
-            '  🔄 No active config set, using first config: ${_activeConfig!.name}');
         // Save this as the active config
         await _saveActiveConfig(_activeConfig!.name);
         notifyListeners();
         return;
       }
-
-      print('  ⚠️ No configs available or no fallback possible');
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleController: Error loading active config', e, stackTrace);
       // Fallback to first config if error occurs
       if (_configs.isNotEmpty && _activeConfig == null) {
         _activeConfig = _configs.first;
-        print(
-            '  🔄 Error fallback: Using first config: ${_activeConfig!.name}');
         notifyListeners();
       }
     }
@@ -515,17 +435,11 @@ class ScheduleController extends ChangeNotifier {
 
   Future<void> _loadCalendarFormat() async {
     try {
-      print('DEBUG ScheduleController: _loadCalendarFormat called');
       final settings = await getSettingsUseCase.execute();
-      print('DEBUG ScheduleController: Settings loaded: $settings');
       if (settings != null) {
-        print(
-            'DEBUG ScheduleController: Current format: $_calendarFormat, Settings format: ${settings.calendarFormat}');
         _calendarFormat = settings.calendarFormat;
-        print('DEBUG ScheduleController: Format updated to: $_calendarFormat');
-        print(
-            'DEBUG ScheduleController: Calling notifyListeners() from _loadCalendarFormat');
-        notifyListeners();
+        // Migrate old format if necessary
+        await _migrateCalendarFormatIfNeeded(settings);
       }
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -533,19 +447,37 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  Future<void> reloadCalendarFormat() async {
-    print('DEBUG ScheduleController: reloadCalendarFormat called');
-    await _loadCalendarFormat();
-    print(
-        'DEBUG ScheduleController: reloadCalendarFormat completed, format: $_calendarFormat');
-  }
-
-  Future<void> _saveCalendarFormat(CalendarFormat format) async {
+  Future<void> _migrateCalendarFormatIfNeeded(Settings settings) async {
     try {
+      // Check if the calendar format was saved with the old toString() method
+      // If so, we need to migrate it to use the name property
       final currentSettings = await getSettingsUseCase.execute();
       if (currentSettings != null) {
-        final updatedSettings = currentSettings.copyWith(
-          calendarFormat: format,
+        // Force a save to ensure the format is saved with the correct name property
+        await _saveCalendarFormat();
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error migrating calendar format', e, stackTrace);
+    }
+  }
+
+  Future<void> reloadCalendarFormat() async {
+    try {
+      await _loadCalendarFormat();
+      notifyListeners();
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error reloading calendar format', e, stackTrace);
+    }
+  }
+
+  Future<void> _saveCalendarFormat() async {
+    try {
+      final settings = await getSettingsUseCase.execute();
+      if (settings != null) {
+        final updatedSettings = settings.copyWith(
+          calendarFormat: _calendarFormat,
         );
         await saveSettingsUseCase.execute(updatedSettings);
       }

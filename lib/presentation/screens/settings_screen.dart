@@ -6,24 +6,37 @@ import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/settings/settings_section.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/settings/settings_card.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/settings/settings_switch_card.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/dialogs/app_dialog.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/dialogs/app_about_dialog.dart';
-import 'package:dienstplan/presentation/widgets/extra_widgets/dialogs/app_license_page.dart';
-import 'package:dienstplan/presentation/widgets/dialogs/calendar_format_dialog.dart';
-import 'package:dienstplan/presentation/widgets/dialogs/duty_schedule_dialog.dart';
-import 'package:dienstplan/presentation/widgets/dialogs/language_dialog.dart';
-import 'package:dienstplan/presentation/widgets/dialogs/preferred_duty_group_dialog.dart';
-import 'package:dienstplan/presentation/widgets/dialogs/reset_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
+import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
+import 'package:dienstplan/presentation/widgets/common/cards/toggle_card.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_about_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_license_page.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/calendar_format_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/duty_schedule_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/language_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/preferred_duty_group_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
-import 'package:dienstplan/data/services/database_service.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
-  Future<ScheduleController> _initializeScheduleController() async {
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  ScheduleController? _scheduleController;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeScheduleController();
+  }
+
+  Future<void> _initializeScheduleController() async {
     final scheduleController =
         await GetIt.instance.getAsync<ScheduleController>();
 
@@ -36,58 +49,49 @@ class SettingsScreen extends StatelessWidget {
     // This will reload all settings including activeConfig and preferredDutyGroup
     if (scheduleController.activeConfig == null ||
         scheduleController.preferredDutyGroup == null) {
-      print(
-          'DEBUG SettingsScreen: Reloading configs to ensure settings are loaded');
       await scheduleController.loadConfigs();
     }
 
-    print(
-        'DEBUG SettingsScreen: Active config: ${scheduleController.activeConfig?.name}');
-    print(
-        'DEBUG SettingsScreen: Preferred duty group: ${scheduleController.preferredDutyGroup}');
-
-    return scheduleController;
+    if (mounted) {
+      setState(() {
+        _scheduleController = scheduleController;
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return FutureBuilder<ScheduleController>(
-      future: _initializeScheduleController(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        final scheduleController = snapshot.data!;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(l10n.settings),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: ListView(
-              children: [
-                ListenableBuilder(
-                  listenable: scheduleController,
-                  builder: (context, child) =>
-                      _buildGeneralSection(context, l10n, scheduleController),
-                ),
-                const SizedBox(height: 16),
-                ListenableBuilder(
-                  listenable: GetIt.instance<SentryService>(),
-                  builder: (context, child) =>
-                      _buildPrivacySection(context, l10n),
-                ),
-                const SizedBox(height: 16),
-                _buildLegalSection(context, l10n),
-              ],
+    if (_isLoading || _scheduleController == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.settings),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n.settings),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: ListView(
+          children: [
+            _buildGeneralSection(context, l10n, _scheduleController!),
+            const SizedBox(height: 16),
+            ListenableBuilder(
+              listenable: GetIt.instance<SentryService>(),
+              builder: (context, child) => _buildPrivacySection(context, l10n),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 16),
+            _buildLegalSection(context, l10n),
+          ],
+        ),
+      ),
     );
   }
 
@@ -97,96 +101,51 @@ class SettingsScreen extends StatelessWidget {
     ScheduleController scheduleController,
   ) {
     final languageService = GetIt.instance<LanguageService>();
-    return SettingsSection(
-      title: l10n.general,
-      cards: [
-        SettingsCard(
-          icon: Icons.calendar_today,
-          title: l10n.dutySchedule,
-          subtitle: _getDutyScheduleDisplayName(scheduleController, l10n),
-          onTap: () => DutyScheduleDialog.show(context, scheduleController),
-        ),
-        SettingsCard(
-          icon: Icons.favorite,
-          title: l10n.preferredDutyGroup,
-          subtitle: _getPreferredDutyGroupDisplayName(scheduleController, l10n),
-          onTap: () =>
-              PreferredDutyGroupDialog.show(context, scheduleController),
-        ),
-        SettingsCard(
-          icon: Icons.view_week,
-          title: l10n.calendarFormat,
-          subtitle:
-              _getCalendarFormatName(scheduleController.calendarFormat, l10n),
-          onTap: () => CalendarFormatDialog.show(context, scheduleController),
-        ),
-        SettingsCard(
-          icon: Icons.language,
-          title: l10n.language,
-          subtitle: languageService.currentLocale.languageCode == 'de'
-              ? l10n.german
-              : l10n.english,
-          onTap: () => LanguageDialog.show(context),
-        ),
-        SettingsCard(
-          icon: Icons.delete_forever,
-          title: l10n.resetData,
-          onTap: () => ResetDialog.show(context, scheduleController),
-        ),
-        SettingsCard(
-          icon: Icons.refresh,
-          title: 'Regenerate Schedules (Debug)',
-          subtitle: 'Fix service field issue',
-          onTap: () async {
-            final now = DateTime.now();
-            final startDate = DateTime(now.year - 1, 1, 1);
-            final endDate = DateTime(now.year + 1, 12, 31);
-            await scheduleController.regenerateAllSchedules(startDate, endDate);
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Schedules regenerated')),
-              );
-            }
-          },
-        ),
-        SettingsCard(
-          icon: Icons.settings,
-          title: 'Set Active Config (Debug)',
-          subtitle:
-              'Current: ${scheduleController.activeConfig?.name ?? 'None'}',
-          onTap: () async {
-            // Show a dialog to select the active config
-            final configName = await showDialog<String>(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('Select Active Config'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: scheduleController.configs
-                      .map((config) => ListTile(
-                            title: Text(config.name),
-                            subtitle: Text(config.meta.description),
-                            onTap: () => Navigator.pop(context, config.name),
-                          ))
-                      .toList(),
-                ),
-              ),
-            );
 
-            if (configName != null) {
-              final config = scheduleController.configs.firstWhere(
-                (config) => config.name == configName,
-              );
-              await scheduleController.setActiveConfig(config);
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Active config set to: $configName')),
-                );
-              }
-            }
-          },
-        ),
-      ],
+    return ListenableBuilder(
+      listenable: scheduleController,
+      builder: (context, child) {
+        return SettingsSection(
+          title: l10n.general,
+          cards: [
+            NavigationCard(
+              icon: Icons.calendar_today,
+              title: l10n.dutySchedule,
+              subtitle: _getDutyScheduleDisplayName(scheduleController, l10n),
+              onTap: () => DutyScheduleDialog.show(context, scheduleController),
+            ),
+            NavigationCard(
+              icon: Icons.favorite,
+              title: l10n.preferredDutyGroup,
+              subtitle:
+                  _getPreferredDutyGroupDisplayName(scheduleController, l10n),
+              onTap: () =>
+                  PreferredDutyGroupDialog.show(context, scheduleController),
+            ),
+            NavigationCard(
+              icon: Icons.view_week,
+              title: l10n.calendarFormat,
+              subtitle: _getCalendarFormatName(
+                  scheduleController.calendarFormat, l10n),
+              onTap: () =>
+                  CalendarFormatDialog.show(context, scheduleController),
+            ),
+            NavigationCard(
+              icon: Icons.language,
+              title: l10n.language,
+              subtitle: languageService.currentLocale.languageCode == 'de'
+                  ? l10n.german
+                  : l10n.english,
+              onTap: () => LanguageDialog.show(context),
+            ),
+            NavigationCard(
+              icon: Icons.delete_forever,
+              title: l10n.resetData,
+              onTap: () => ResetDialog.show(context, scheduleController),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -198,14 +157,14 @@ class SettingsScreen extends StatelessWidget {
     return SettingsSection(
       title: l10n.privacy,
       cards: [
-        SettingsSwitchCard(
+        ToggleCard(
           icon: Icons.analytics,
           title: l10n.sentryAnalytics,
           subtitle: l10n.sentryAnalyticsDescription,
           value: sentryService.isEnabled,
           onChanged: (value) => sentryService.setEnabled(value),
         ),
-        SettingsSwitchCard(
+        ToggleCard(
           icon: Icons.videocam,
           title: l10n.sentryReplay,
           subtitle: l10n.sentryReplayDescription,
@@ -223,22 +182,22 @@ class SettingsScreen extends StatelessWidget {
     return SettingsSection(
       title: l10n.legal,
       cards: [
-        SettingsCard(
+        NavigationCard(
           icon: Icons.info_outline,
           title: l10n.about,
           onTap: () => _showAboutDialog(context),
         ),
-        SettingsCard(
+        NavigationCard(
           icon: Icons.warning_outlined,
           title: l10n.disclaimer,
           onTap: () => _showDisclaimerDialog(context),
         ),
-        SettingsCard(
+        NavigationCard(
           icon: Icons.privacy_tip_outlined,
           title: l10n.privacyPolicy,
           onTap: () => _openPrivacyPolicy(),
         ),
-        SettingsCard(
+        NavigationCard(
           icon: Icons.description_outlined,
           title: l10n.licenses,
           onTap: () => _showLicenses(context),
