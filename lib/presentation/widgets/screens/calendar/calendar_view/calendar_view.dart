@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_animation_mixin.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_page_manager.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_ui_builder.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/helpers/calendar_navigation_helper.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_animations.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_controller.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_navigation_helper.dart';
 
 class CalendarView extends StatefulWidget {
   final ScheduleController scheduleController;
@@ -19,16 +19,16 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends State<CalendarView>
-    with CalendarViewAnimationMixin {
+    with CalendarViewAnimations {
   final GlobalKey _calendarKey = GlobalKey();
   final GlobalKey _headerKey = GlobalKey();
-  late final CalendarViewPageManager _pageManager;
+  late final CalendarViewController _pageManager;
   CalendarFormat? _lastKnownFormat;
 
   @override
   void initState() {
     super.initState();
-    _pageManager = CalendarViewPageManager();
+    _pageManager = CalendarViewController();
 
     // Initialize day pages around current selected day first
     final selectedDay = widget.scheduleController.selectedDay ?? DateTime.now();
@@ -219,7 +219,7 @@ class _CalendarViewState extends State<CalendarView>
 }
 
 class _ServicesSectionWrapper extends StatefulWidget {
-  final CalendarViewPageManager pageManager;
+  final CalendarViewController pageManager;
 
   const _ServicesSectionWrapper({
     required this.pageManager,

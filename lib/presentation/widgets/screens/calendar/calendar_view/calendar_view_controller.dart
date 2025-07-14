@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class CalendarViewPageManager {
+class CalendarViewController {
   final PageController pageController;
   final List<DateTime> dayPages = [];
   int currentPageIndex = 0;
   DateTime? lastSelectedDay;
 
-  CalendarViewPageManager()
+  CalendarViewController()
       : pageController = PageController(
           initialPage: 0,
           viewportFraction: 1.0,

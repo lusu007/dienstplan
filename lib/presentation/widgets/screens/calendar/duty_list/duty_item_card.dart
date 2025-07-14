@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_item_ui_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_ui_builder.dart';
 
 class DutyItemCard extends StatelessWidget {
   final Schedule schedule;

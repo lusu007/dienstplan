@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-mixin CalendarViewAnimationMixin<T extends StatefulWidget> on State<T> {
+mixin CalendarViewAnimations<T extends StatefulWidget> on State<T> {
   bool _shouldAnimateScheduleList = false;
 
   bool get shouldAnimateScheduleList => _shouldAnimateScheduleList;

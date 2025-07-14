@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_date_selector/calendar_date_selector.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class CalendarDateSelectorHeader extends StatefulWidget {

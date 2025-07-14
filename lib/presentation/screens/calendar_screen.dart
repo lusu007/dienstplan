@@ -4,7 +4,7 @@ import 'package:dienstplan/data/services/language_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_ui/calendar_app_bar.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
 
 class CalendarScreen extends StatefulWidget {

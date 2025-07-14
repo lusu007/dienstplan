@@ -4,9 +4,9 @@ import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 
-import 'package:dienstplan/presentation/widgets/screens/calendar/helpers/schedule_list_animation_mixin.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_item_ui_builder.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/duty_widgets/duty_item_list.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/utils/schedule_list_animation_mixin.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_ui_builder.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_list.dart';
 
 class DutyScheduleList extends StatefulWidget {
   final List<Schedule> schedules;

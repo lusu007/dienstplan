@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_date_selector/animated_calendar_day.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 
 class CalendarDayCard extends StatelessWidget {
   final DateTime day;
