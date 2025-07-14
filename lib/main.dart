@@ -143,6 +143,8 @@ class _MyAppState extends State<MyApp> {
     _settingsController = await GetIt.instance.getAsync<SettingsController>();
     _languageService = await GetIt.instance.getAsync<LanguageService>();
 
+    // Ensure all settings data is loaded during app startup
+    await _scheduleController!.loadConfigs();
     await _scheduleController!.loadSchedules(DateTime.now());
     await _settingsController!.loadSettings();
 

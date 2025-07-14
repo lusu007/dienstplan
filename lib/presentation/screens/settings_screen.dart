@@ -27,70 +27,76 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  ScheduleController? _scheduleController;
-  bool _isLoading = true;
+  late final Future<ScheduleController> _scheduleControllerFuture;
 
   @override
   void initState() {
     super.initState();
-    _initializeScheduleController();
+    // Get the controller and ensure all data is loaded
+    _scheduleControllerFuture = _getFullyLoadedController();
   }
 
-  Future<void> _initializeScheduleController() async {
-    final scheduleController =
-        await GetIt.instance.getAsync<ScheduleController>();
+  Future<ScheduleController> _getFullyLoadedController() async {
+    final controller = await GetIt.instance.getAsync<ScheduleController>();
 
-    // Load configs if not already loaded
-    if (scheduleController.configs.isEmpty) {
-      await scheduleController.loadConfigs();
+    // Ensure configs and settings are loaded
+    if (controller.configs.isEmpty ||
+        controller.activeConfig == null ||
+        controller.preferredDutyGroup == null) {
+      await controller.loadConfigs();
     }
 
-    // Ensure settings are loaded by calling loadConfigs again if needed
-    // This will reload all settings including activeConfig and preferredDutyGroup
-    if (scheduleController.activeConfig == null ||
-        scheduleController.preferredDutyGroup == null) {
-      await scheduleController.loadConfigs();
-    }
-
-    if (mounted) {
-      setState(() {
-        _scheduleController = scheduleController;
-        _isLoading = false;
-      });
-    }
+    return controller;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    if (_isLoading || _scheduleController == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.settings),
-        ),
-        body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settings),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: ListView(
-          children: [
-            _buildGeneralSection(context, l10n, _scheduleController!),
-            const SizedBox(height: 16),
-            ListenableBuilder(
-              listenable: GetIt.instance<SentryService>(),
-              builder: (context, child) => _buildPrivacySection(context, l10n),
+      body: FutureBuilder<ScheduleController>(
+        future: _scheduleControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // This should be very brief since data is preloaded
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Error loading settings: ${snapshot.error}'),
+                ],
+              ),
+            );
+          }
+
+          final scheduleController = snapshot.data!;
+
+          return Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: ListView(
+              children: [
+                _buildGeneralSection(context, l10n, scheduleController),
+                const SizedBox(height: 16),
+                ListenableBuilder(
+                  listenable: GetIt.instance<SentryService>(),
+                  builder: (context, child) =>
+                      _buildPrivacySection(context, l10n),
+                ),
+                const SizedBox(height: 16),
+                _buildLegalSection(context, l10n),
+              ],
             ),
-            const SizedBox(height: 16),
-            _buildLegalSection(context, l10n),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
