@@ -18,6 +18,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/preferred_duty_group_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -47,6 +48,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     return controller;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Refresh the UI after settings screen is closed
+    GetIt.instance.getAsync<ScheduleController>().then((controller) {
+      controller.refreshAfterSettingsClose();
+    }).catchError((e, stackTrace) {
+      AppLogger.e(
+          'SettingsScreen: Error refreshing after close', e, stackTrace);
+    });
   }
 
   @override
@@ -111,6 +124,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListenableBuilder(
       listenable: scheduleController,
       builder: (context, child) {
+        // Show loading indicator if controller is loading
+        if (scheduleController.isLoading) {
+          return SettingsSection(
+            title: l10n.general,
+            cards: [
+              const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        // Show error message if there's an error
+        if (scheduleController.error != null) {
+          return SettingsSection(
+            title: l10n.general,
+            cards: [
+              Card(
+                color: Colors.red.shade50,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red.shade700),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Error: ${scheduleController.error}',
+                        style: TextStyle(color: Colors.red.shade700),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
         return SettingsSection(
           title: l10n.general,
           cards: [
@@ -227,21 +283,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ScheduleController scheduleController,
     AppLocalizations l10n,
   ) {
-    if (scheduleController.activeConfig == null) {
+    try {
+      if (scheduleController.activeConfig == null) {
+        return l10n.noDutySchedules;
+      }
+      return scheduleController.activeConfig!.meta.name;
+    } catch (e) {
+      AppLogger.e(
+          'SettingsScreen: Error getting duty schedule display name', e);
       return l10n.noDutySchedules;
     }
-    return scheduleController.activeConfig!.meta.name;
   }
 
   String _getPreferredDutyGroupDisplayName(
     ScheduleController scheduleController,
     AppLocalizations l10n,
   ) {
-    if (scheduleController.preferredDutyGroup == null ||
-        scheduleController.preferredDutyGroup!.isEmpty) {
+    try {
+      if (scheduleController.preferredDutyGroup == null ||
+          scheduleController.preferredDutyGroup!.isEmpty) {
+        return l10n.noPreferredDutyGroup;
+      }
+      return scheduleController.preferredDutyGroup!;
+    } catch (e) {
+      AppLogger.e(
+          'SettingsScreen: Error getting preferred duty group display name', e);
       return l10n.noPreferredDutyGroup;
     }
-    return scheduleController.preferredDutyGroup!;
   }
 
   Future<void> _showAboutDialog(BuildContext context) async {

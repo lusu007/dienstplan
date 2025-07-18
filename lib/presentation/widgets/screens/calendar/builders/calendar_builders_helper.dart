@@ -52,15 +52,33 @@ class CalendarBuildersHelper {
   static String _getDutyAbbreviationForDate(
       DateTime day, ScheduleController scheduleController) {
     try {
+      // First check if we have an active config
+      if (scheduleController.activeConfig == null) {
+        return '';
+      }
+
+      final activeConfigName = scheduleController.activeConfig!.name;
+
+      // Get schedules for the specific day and active config
       final schedulesForDay = scheduleController.schedules.where((schedule) {
         final isSameDay = schedule.date.year == day.year &&
             schedule.date.month == day.month &&
             schedule.date.day == day.day;
-        return isSameDay;
+
+        // Only consider schedules from the active config
+        final isActiveConfig = schedule.configName == activeConfigName;
+
+        return isSameDay && isActiveConfig;
       }).toList();
+
+      // If no schedules found for the active config, return empty string
+      if (schedulesForDay.isEmpty) {
+        return '';
+      }
 
       final preferredGroup = scheduleController.preferredDutyGroup;
 
+      // Only show duty abbreviation if a preferred group is set
       if (preferredGroup != null && preferredGroup.isNotEmpty) {
         Schedule? preferredSchedule;
         try {
@@ -77,7 +95,8 @@ class CalendarBuildersHelper {
           return preferredSchedule.dutyTypeId;
         }
       }
-      // If no preferred group is set, show nothing
+
+      // If no preferred group is set or no preferred schedule found, show nothing
       return '';
     } catch (e) {
       return '';
@@ -123,6 +142,20 @@ class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
     if (mounted) {
       // Force rebuild to ensure duty abbreviations are updated
       setState(() {});
+
+      // Force another rebuild after a small delay to ensure all updates are processed
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+
+      // Force another rebuild after a longer delay to ensure calendar chips are updated
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     }
   }
 
@@ -139,8 +172,9 @@ class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
           widget.day.month == widget.scheduleController.selectedDay!.month &&
           widget.day.day == widget.scheduleController.selectedDay!.day;
 
+      // Use a unique key that includes the duty abbreviation to force rebuild when it changes
       return AnimatedCalendarDay(
-        key: ValueKey(widget.day),
+        key: ValueKey('${widget.day.toIso8601String()}_$dutyAbbreviation'),
         day: widget.day,
         dutyAbbreviation: dutyAbbreviation,
         dayType: widget.dayType,

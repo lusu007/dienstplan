@@ -11,8 +11,18 @@ class SetActiveConfigUseCase {
     try {
       AppLogger.i('SetActiveConfigUseCase: Setting active config: $configName');
 
+      // Validate input parameter
+      if (configName.isEmpty) {
+        throw ArgumentError('Config name cannot be empty');
+      }
+
       // Business logic: Validate config exists
       final configs = await _configRepository.getConfigs();
+
+      if (configs.isEmpty) {
+        throw ArgumentError('No configurations available');
+      }
+
       final configExists = configs.any((config) => config.name == configName);
 
       if (!configExists) {
@@ -40,27 +50,31 @@ class SetActiveConfigUseCase {
 
     // Check if config has duty types
     if (config.dutyTypes.isEmpty) {
-      throw ArgumentError('Configuration must have at least one duty type');
+      throw ArgumentError(
+          'Configuration "${config.name}" must have at least one duty type');
     }
 
     // Check if config has duty groups
     if (config.dutyGroups.isEmpty) {
-      throw ArgumentError('Configuration must have at least one duty group');
+      throw ArgumentError(
+          'Configuration "${config.name}" must have at least one duty group');
     }
 
     // Check if config has rhythms
     if (config.rhythms.isEmpty) {
-      throw ArgumentError('Configuration must have at least one rhythm');
+      throw ArgumentError(
+          'Configuration "${config.name}" must have at least one rhythm');
     }
 
     // Validate that all duty groups reference valid rhythms
     for (final dutyGroup in config.dutyGroups) {
       if (!config.rhythms.containsKey(dutyGroup.rhythm)) {
         throw ArgumentError(
-            'Duty group "${dutyGroup.name}" references invalid rhythm: ${dutyGroup.rhythm}');
+            'Duty group "${dutyGroup.name}" in configuration "${config.name}" references invalid rhythm: ${dutyGroup.rhythm}');
       }
     }
 
-    AppLogger.d('SetActiveConfigUseCase: Config validation passed');
+    AppLogger.d(
+        'SetActiveConfigUseCase: Config validation passed for ${config.name}');
   }
 }

@@ -92,12 +92,13 @@ class CalendarViewUiBuilder {
     required ScheduleController scheduleController,
     required bool shouldAnimate,
   }) {
+    // Only use selectedDutyGroup if it's explicitly set by user action
+    // Don't automatically use preferredDutyGroup for filtering
     final selectedGroup =
         scheduleController.selectedDutyGroup?.isNotEmpty == true
             ? scheduleController.selectedDutyGroup
-            : (scheduleController.preferredDutyGroup?.isNotEmpty == true
-                ? scheduleController.preferredDutyGroup
-                : null);
+            : null;
+
     return DutyScheduleList(
       schedules: scheduleController.schedulesForSelectedDay.cast(),
       dutyGroups: scheduleController.dutyGroups,

@@ -57,9 +57,9 @@ class GenerateSchedulesUseCase {
       );
 
       // If we have schedules for most of the range, only generate missing ones
-      final expectedSchedulesPerDay = 5; // Approximate number of duty groups
+      const expectedSchedulesPerDay = 5; // Approximate number of duty groups
       final expectedTotalSchedules = daysDifference * expectedSchedulesPerDay;
-      final coverageThreshold = 0.8; // 80% coverage threshold
+      const coverageThreshold = 0.8; // 80% coverage threshold
 
       if (existingSchedules.length >=
           expectedTotalSchedules * coverageThreshold) {

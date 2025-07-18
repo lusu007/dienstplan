@@ -83,6 +83,20 @@ class _CalendarViewState extends State<CalendarView>
         }
       }
     }
+
+    // Force a rebuild of the calendar to ensure duty chips are updated
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+
+    // Force another rebuild after a delay to ensure all updates are processed
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   void _onPageChanged(int pageIndex) {

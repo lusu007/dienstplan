@@ -61,6 +61,14 @@ class _CalendarScreenState extends State<CalendarScreen>
   void didPopNext() {
     super.didPopNext();
     if (_scheduleController != null) {
+      // Refresh the UI after returning from settings screen
+      _scheduleController!.refreshAfterSettingsClose().then((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+
+      // Also reload calendar format
       _scheduleController!.reloadCalendarFormat().then((_) {
         if (mounted) {
           setState(() {});
@@ -172,6 +180,14 @@ class _CalendarScreenState extends State<CalendarScreen>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       if (_scheduleController != null) {
+        // Refresh the UI when app is resumed
+        _scheduleController!.refreshAfterSettingsClose().then((_) {
+          if (mounted) {
+            setState(() {});
+          }
+        });
+
+        // Also reload calendar format
         _scheduleController!.reloadCalendarFormat().then((_) {
           if (mounted) {
             setState(() {});

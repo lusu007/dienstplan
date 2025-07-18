@@ -42,7 +42,18 @@ class ScheduleController extends ChangeNotifier {
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get activeConfig => _activeConfig;
   List<String> get dutyGroups {
-    // First try to get duty groups from actual schedules
+    // First try to get duty groups from active config (this updates immediately when config changes)
+    if (_activeConfig != null) {
+      final configDutyGroups =
+          _activeConfig!.dutyGroups.map((group) => group.name).toList();
+      if (configDutyGroups.isNotEmpty) {
+        // Sort duty groups for consistent ordering
+        configDutyGroups.sort();
+        return configDutyGroups;
+      }
+    }
+
+    // Fallback to duty groups from actual schedules
     if (_schedules.isNotEmpty) {
       final dutyGroupNames = _schedules
           .map((schedule) => schedule.dutyGroupName)
@@ -57,11 +68,8 @@ class ScheduleController extends ChangeNotifier {
       }
     }
 
-    // Fallback to active config duty groups
-    final configDutyGroups =
-        _activeConfig?.dutyGroups.map((group) => group.name).toList() ?? [];
-    configDutyGroups.sort();
-    return configDutyGroups;
+    // Return empty list if no duty groups found
+    return [];
   }
 
   String? get selectedDutyGroup => _selectedDutyGroup;
@@ -73,10 +81,24 @@ class ScheduleController extends ChangeNotifier {
   List<Schedule> get schedulesForSelectedDay {
     if (_selectedDay == null) return [];
 
+    // Ensure we have a valid active config
+    if (_activeConfig == null) {
+      AppLogger.w(
+          'ScheduleController: No active config for schedulesForSelectedDay');
+      return [];
+    }
+
+    final activeConfigName = _activeConfig!.name;
+
     return _schedules.where((schedule) {
-      return schedule.date.year == _selectedDay!.year &&
+      final isSameDay = schedule.date.year == _selectedDay!.year &&
           schedule.date.month == _selectedDay!.month &&
           schedule.date.day == _selectedDay!.day;
+
+      // Only return schedules for the active config
+      final isActiveConfig = schedule.configName == activeConfigName;
+
+      return isSameDay && isActiveConfig;
     }).toList();
   }
 
@@ -92,7 +114,12 @@ class ScheduleController extends ChangeNotifier {
   set preferredDutyGroup(String? value) {
     _preferredDutyGroup = value;
     notifyListeners();
-    _savePreferredDutyGroup(value);
+
+    // Use unawaited to prevent blocking the UI while saving
+    _savePreferredDutyGroup(value).catchError((e, stackTrace) {
+      AppLogger.e('ScheduleController: Error in preferredDutyGroup setter', e,
+          stackTrace);
+    });
   }
 
   Future<void> _savePreferredDutyGroup(String? value) async {
@@ -107,6 +134,7 @@ class ScheduleController extends ChangeNotifier {
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleController: Error saving preferred duty group', e,
           stackTrace);
+      // Don't rethrow to prevent UI crashes
     }
   }
 
@@ -160,13 +188,27 @@ class ScheduleController extends ChangeNotifier {
       notifyListeners();
 
       // Use configName parameter to filter at database level for better performance
-      final configName = _activeConfig?.name;
+      // Ensure we have a consistent view of the active config
+      final activeConfig = _activeConfig;
+      final configName = activeConfig?.name;
+
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Loading for config: $configName');
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Active config object: ${activeConfig?.toString()}');
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Date range: $start to $end');
 
       final newSchedules = await getSchedulesUseCase.executeForDateRange(
         startDate: start,
         endDate: end,
         configName: configName,
       );
+
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Loaded ${newSchedules.length} schedules from database');
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Schedules for active config: ${newSchedules.where((s) => s.configName == configName).length}');
 
       // If no schedules found and we have an active config, generate them
       if (newSchedules.isEmpty && configName != null && configName.isNotEmpty) {
@@ -180,9 +222,14 @@ class ScheduleController extends ChangeNotifier {
             endDate: end,
           );
 
-          // Merge generated schedules with existing ones instead of replacing
-          _mergeSchedules(generatedSchedules);
-          // _mergeSchedules already calls notifyListeners()
+          AppLogger.i(
+              'ScheduleController: Generated ${generatedSchedules.length} schedules');
+          AppLogger.i(
+              'ScheduleController: Generated schedules for active config: ${generatedSchedules.where((s) => s.configName == configName).length}');
+
+          // Replace all schedules with generated ones for the active config
+          _schedules = generatedSchedules;
+          notifyListeners();
         } catch (e, stackTrace) {
           AppLogger.e(
               'ScheduleController: Error generating schedules for range',
@@ -191,55 +238,23 @@ class ScheduleController extends ChangeNotifier {
           // Don't rethrow - we still want to show the UI even if generation fails
         }
       } else {
-        // Merge new schedules with existing ones instead of replacing
-        _mergeSchedules(newSchedules);
-        // _mergeSchedules already calls notifyListeners()
+        // Replace all schedules with new ones for the active config
+        _schedules = newSchedules;
+        notifyListeners();
       }
+
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Final schedules count: ${_schedules.length}');
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Final schedules for active config: ${_schedules.where((s) => s.configName == configName).length}');
+      AppLogger.i(
+          'ScheduleController: loadSchedulesForRange - Active config used: $configName');
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleController: Error loading schedules', e, stackTrace);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
-  }
-
-  void _mergeSchedules(List<Schedule> newSchedules) {
-    AppLogger.i(
-        'ScheduleController: Merging ${newSchedules.length} new schedules with ${_schedules.length} existing schedules');
-
-    // Create a map of new schedules by date and duty group
-    final newSchedulesMap = <String, Schedule>{};
-    for (final schedule in newSchedules) {
-      final key =
-          '${schedule.date.toIso8601String()}_${schedule.dutyGroupName}';
-      newSchedulesMap[key] = schedule;
-    }
-
-    // Merge: keep ALL existing schedules, add/update new schedules
-    final mergedSchedules = <Schedule>[];
-
-    // Add all existing schedules (keep everything in memory)
-    for (final existingSchedule in _schedules) {
-      final key =
-          '${existingSchedule.date.toIso8601String()}_${existingSchedule.dutyGroupName}';
-      if (!newSchedulesMap.containsKey(key)) {
-        // Keep existing schedule if no new one for this date/group
-        mergedSchedules.add(existingSchedule);
-      }
-      // If newSchedulesMap contains the key, we'll add the new one below
-    }
-
-    // Add all new schedules (this will replace any existing ones for the same date/group)
-    mergedSchedules.addAll(newSchedules);
-
-    // Update the schedules list
-    _schedules = mergedSchedules;
-
-    AppLogger.i(
-        'ScheduleController: After merge: ${_schedules.length} total schedules');
-
-    // Notify listeners that schedules have been updated
-    notifyListeners();
   }
 
   void setSelectedDay(DateTime day) {
@@ -284,6 +299,34 @@ class ScheduleController extends ChangeNotifier {
   }
 
   Future<void> setFocusedDay(DateTime focusedDay) async {
+    if (_isLoading) {
+      AppLogger.i(
+          'ScheduleController: setFocusedDay - Ignored because _isLoading is true');
+      return;
+    }
+
+    // Additional safety check: ensure we have a valid active config
+    if (_activeConfig == null) {
+      AppLogger.w(
+          'ScheduleController: setFocusedDay - No active config set, attempting to load from settings');
+
+      // Try to refresh active config from settings
+      await _refreshActiveConfigFromSettings();
+
+      // If still no active config, ignore the call
+      if (_activeConfig == null) {
+        AppLogger.w(
+            'ScheduleController: setFocusedDay - Still no active config after refresh, ignoring call');
+        return;
+      }
+    }
+
+    // Force refresh active config from settings to ensure consistency
+    await _refreshActiveConfigFromSettings();
+
+    AppLogger.i(
+        'ScheduleController: setFocusedDay - Called with active config: ${_activeConfig?.name}');
+
     try {
       final previousFocusedDay = _focusedDay;
       _focusedDay = focusedDay;
@@ -297,6 +340,8 @@ class ScheduleController extends ChangeNotifier {
           previousFocusedDay.month != focusedDay.month) {
         AppLogger.i(
             'ScheduleController: Loading schedules for new month: ${focusedDay.year}-${focusedDay.month}');
+        AppLogger.i(
+            'ScheduleController: setFocusedDay - Active config: ${_activeConfig?.name}');
         // Load schedules asynchronously without blocking the UI
         _loadSchedulesForCurrentMonth(focusedDay);
       } else {
@@ -331,8 +376,19 @@ class ScheduleController extends ChangeNotifier {
       final startDate = DateTime(focusedDay.year, focusedDay.month - 2, 1);
       final endDate = DateTime(focusedDay.year, focusedDay.month + 3, 0);
 
+      // Ensure we have a consistent view of the active config
+      final activeConfig = _activeConfig;
+
+      if (activeConfig == null) {
+        AppLogger.w(
+            'ScheduleController: _loadSchedulesForCurrentMonth - No active config available');
+        return;
+      }
+
       AppLogger.i(
           'ScheduleController: Loading schedules for range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+      AppLogger.i(
+          'ScheduleController: _loadSchedulesForCurrentMonth - Active config before loadSchedulesForRange: ${activeConfig.name}');
 
       await loadSchedulesForRange(startDate, endDate);
 
@@ -342,14 +398,15 @@ class ScheduleController extends ChangeNotifier {
       // Check if we have schedules for the focused month specifically
       final schedulesForFocusedMonth = _schedules.where((schedule) {
         return schedule.date.year == focusedDay.year &&
-            schedule.date.month == focusedDay.month;
+            schedule.date.month == focusedDay.month &&
+            schedule.configName == activeConfig.name;
       }).toList();
 
       AppLogger.i(
-          'ScheduleController: Found ${schedulesForFocusedMonth.length} schedules for focused month ${focusedDay.year}-${focusedDay.month}');
+          'ScheduleController: Found ${schedulesForFocusedMonth.length} schedules for focused month ${focusedDay.year}-${focusedDay.month} for config ${activeConfig.name}');
 
       // If no schedules were loaded for the focused month, try to generate them
-      if (schedulesForFocusedMonth.isEmpty && _activeConfig != null) {
+      if (schedulesForFocusedMonth.isEmpty) {
         AppLogger.w(
             'ScheduleController: Missing schedules for focused month ${focusedDay.year}-${focusedDay.month}, attempting to generate them');
 
@@ -359,12 +416,16 @@ class ScheduleController extends ChangeNotifier {
         // After generating, check again if we have schedules
         final updatedSchedulesForFocusedMonth = _schedules.where((schedule) {
           return schedule.date.year == focusedDay.year &&
-              schedule.date.month == focusedDay.month;
+              schedule.date.month == focusedDay.month &&
+              schedule.configName == activeConfig.name;
         }).toList();
 
         AppLogger.i(
-            'ScheduleController: After generation: Found ${updatedSchedulesForFocusedMonth.length} schedules for focused month ${focusedDay.year}-${focusedDay.month}');
+            'ScheduleController: After generation: Found ${updatedSchedulesForFocusedMonth.length} schedules for focused month ${focusedDay.year}-${focusedDay.month} for config ${activeConfig.name}');
       }
+
+      // Force UI update after loading schedules
+      notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleController: Error loading schedules for current month',
@@ -529,18 +590,54 @@ class ScheduleController extends ChangeNotifier {
     _error = null;
     notifyListeners();
     try {
+      // Validate config before proceeding
+      if (config.name.isEmpty) {
+        throw ArgumentError('Config name cannot be empty');
+      }
+
+      AppLogger.i(
+          'ScheduleController: Starting to set active config: ${config.name}');
+      AppLogger.i(
+          'ScheduleController: Current schedules count: ${_schedules.length}');
+      AppLogger.i(
+          'ScheduleController: Previous active config: ${_activeConfig?.name}');
+
       await setActiveConfigUseCase.execute(config.name);
       _activeConfig = config;
+
+      AppLogger.i('ScheduleController: Active config set to: ${config.name}');
+      AppLogger.i(
+          'ScheduleController: Active config object: ${_activeConfig?.toString()}');
 
       // Save active config to settings
       await _saveActiveConfig(config.name);
 
       // Check if preferred duty group is still available in new config
       await _validatePreferredDutyGroup();
+
+      // Clear old schedules and load new ones for the active config
+      await _refreshSchedulesForNewConfig();
+
+      // Explicitly set focused day again to ensure correct config is used
+      if (_focusedDay != null) {
+        AppLogger.i(
+            'ScheduleController: setActiveConfig - Explicitly setting focused day after config change: $_focusedDay');
+        await setFocusedDay(_focusedDay!);
+      }
+
+      AppLogger.i(
+          'ScheduleController: After refresh, schedules count: ${_schedules.length}');
+      AppLogger.i(
+          'ScheduleController: Schedules for active config: ${_schedules.where((s) => s.configName == config.name).length}');
+
+      AppLogger.i(
+          'ScheduleController: Successfully set active config: ${config.name}');
     } catch (e, stackTrace) {
-      _error = 'Failed to set active config';
+      _error = 'Failed to set active config: ${e.toString()}';
       AppLogger.e(
           'ScheduleController: Error setting active config', e, stackTrace);
+      // Re-throw the error so the UI can handle it appropriately
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -695,5 +792,119 @@ class ScheduleController extends ChangeNotifier {
     if (_focusedDay != null && _activeConfig != null) {
       await _loadSchedulesForCurrentMonth(_focusedDay!);
     } else {}
+  }
+
+  Future<void> _refreshSchedulesForNewConfig() async {
+    try {
+      AppLogger.i('ScheduleController: Starting _refreshSchedulesForNewConfig');
+      AppLogger.i('ScheduleController: Active config: ${_activeConfig?.name}');
+      AppLogger.i(
+          'ScheduleController: Active config object: ${_activeConfig?.toString()}');
+
+      // Force refresh active config from settings to ensure consistency
+      await _refreshActiveConfigFromSettings();
+
+      // Clear existing schedules to prevent showing old data
+      _schedules.clear();
+      notifyListeners();
+
+      AppLogger.i(
+          'ScheduleController: Cleared schedules, count: ${_schedules.length}');
+
+      // Determine the date range to load/generate schedules for
+      DateTime targetDate;
+      if (_focusedDay != null) {
+        targetDate = _focusedDay!;
+      } else if (_selectedDay != null) {
+        targetDate = _selectedDay!;
+      } else {
+        targetDate = DateTime.now();
+      }
+
+      AppLogger.i('ScheduleController: Target date for loading: $targetDate');
+
+      // Load schedules for the current month (this will only load for active config)
+      await _loadSchedulesForCurrentMonth(targetDate);
+
+      AppLogger.i(
+          'ScheduleController: After _loadSchedulesForCurrentMonth, schedules count: ${_schedules.length}');
+      AppLogger.i(
+          'ScheduleController: Schedules for active config: ${_schedules.where((s) => s.configName == _activeConfig?.name).length}');
+
+      AppLogger.i('ScheduleController: Refreshed schedules for new config');
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error refreshing schedules for new config',
+          e,
+          stackTrace);
+      // Don't rethrow - we still want to show the UI even if schedule loading fails
+    }
+  }
+
+  Future<void> _refreshActiveConfigFromSettings() async {
+    try {
+      AppLogger.i('ScheduleController: Refreshing active config from settings');
+      final settings = await getSettingsUseCase.execute();
+      final configName = settings?.activeConfigName;
+
+      if (configName != null && configName.isNotEmpty) {
+        // Find the config by name
+        final config = _configs.firstWhere(
+          (config) => config.name == configName,
+          orElse: () => _activeConfig ?? _configs.first,
+        );
+
+        if (config.name != _activeConfig?.name) {
+          AppLogger.i(
+              'ScheduleController: Active config updated from settings: ${config.name}');
+          _activeConfig = config;
+          notifyListeners();
+        }
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error refreshing active config from settings',
+          e,
+          stackTrace);
+    }
+  }
+
+  /// Call this method after the settings screen is closed to ensure UI is properly updated
+  Future<void> refreshAfterSettingsClose() async {
+    try {
+      AppLogger.i('ScheduleController: Refreshing after settings screen close');
+
+      // Refresh active config from settings to ensure consistency
+      await _refreshActiveConfigFromSettings();
+
+      // Load preferred duty group from settings to ensure consistency
+      await _loadPreferredDutyGroup();
+
+      // Clear schedules to force a complete reload
+      _schedules.clear();
+      notifyListeners();
+
+      // Reload schedules for current focused day if available
+      if (_focusedDay != null) {
+        AppLogger.i(
+            'ScheduleController: Reloading schedules for focused day: $_focusedDay');
+
+        // Ensure we have an active config before loading schedules
+        if (_activeConfig != null) {
+          await _loadSchedulesForCurrentMonth(_focusedDay!);
+        } else {
+          AppLogger.w(
+              'ScheduleController: No active config available after settings close');
+        }
+      } else {
+        AppLogger.w(
+            'ScheduleController: No focused day available after settings close');
+      }
+
+      AppLogger.i('ScheduleController: Refresh after settings close completed');
+    } catch (e, stackTrace) {
+      AppLogger.e('ScheduleController: Error refreshing after settings close',
+          e, stackTrace);
+    }
   }
 }

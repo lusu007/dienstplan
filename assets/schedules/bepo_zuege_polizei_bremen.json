@@ -41,17 +41,17 @@
         "icon": "location_on"
       },
       "SL 1": {
-        "label": "Sonderlage Stufe 1",
+        "label": "Sonderlage 1",
         "all_day": true,
         "icon": "warning"
       },
       "SL 2": {
-        "label": "Sonderlage Stufe 2",
+        "label": "Sonderlage 2",
         "all_day": true,
         "icon": "error"
       },
       "SL 3": {
-        "label": "Sonderlage Stufe 3",
+        "label": "Sonderlage 3",
         "all_day": true,
         "icon": "emergency"
       },
