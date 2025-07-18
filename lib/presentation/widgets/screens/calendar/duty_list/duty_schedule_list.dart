@@ -46,11 +46,23 @@ class _DutyScheduleListState extends State<DutyScheduleList>
   void initState() {
     super.initState();
     initializeAnimations(this);
+
+    // Only initialize with selected duty group if it's explicitly set (not just preferred)
+    // This prevents automatic filtering by preferred duty group
+    _selectedDutyGroup = null;
   }
 
   @override
   void didUpdateWidget(DutyScheduleList oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    // Only update selected duty group if it's explicitly set by user action
+    // Don't automatically update from preferred duty group
+    if (oldWidget.selectedDutyGroup != widget.selectedDutyGroup &&
+        widget.selectedDutyGroup != null &&
+        widget.selectedDutyGroup!.isNotEmpty) {
+      _selectedDutyGroup = widget.selectedDutyGroup;
+    }
 
     // Only animate if shouldAnimate is true and we haven't animated yet
     if (widget.shouldAnimate && !oldWidget.shouldAnimate && !hasAnimated) {

@@ -1,21 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
-import 'package:dienstplan/domain/use_cases/get_duty_abbreviation_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
-import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 
 class ScheduleController extends ChangeNotifier {
   final GetSchedulesUseCase getSchedulesUseCase;
   final GenerateSchedulesUseCase generateSchedulesUseCase;
-  final GetDutyAbbreviationUseCase getDutyAbbreviationUseCase;
   final GetConfigsUseCase getConfigsUseCase;
   final SetActiveConfigUseCase setActiveConfigUseCase;
   final GetSettingsUseCase getSettingsUseCase;
@@ -32,12 +30,9 @@ class ScheduleController extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
 
-  final Map<String, String?> _dutyAbbreviationCache = {};
-
   ScheduleController({
     required this.getSchedulesUseCase,
     required this.generateSchedulesUseCase,
-    required this.getDutyAbbreviationUseCase,
     required this.getConfigsUseCase,
     required this.setActiveConfigUseCase,
     required this.getSettingsUseCase,
@@ -46,8 +41,29 @@ class ScheduleController extends ChangeNotifier {
 
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get activeConfig => _activeConfig;
-  List<String> get dutyGroups =>
-      _activeConfig?.dutyGroups.map((group) => group.name).toList() ?? [];
+  List<String> get dutyGroups {
+    // First try to get duty groups from actual schedules
+    if (_schedules.isNotEmpty) {
+      final dutyGroupNames = _schedules
+          .map((schedule) => schedule.dutyGroupName)
+          .where((name) => name.isNotEmpty)
+          .toSet()
+          .toList();
+
+      if (dutyGroupNames.isNotEmpty) {
+        // Sort duty groups for consistent ordering
+        dutyGroupNames.sort();
+        return dutyGroupNames;
+      }
+    }
+
+    // Fallback to active config duty groups
+    final configDutyGroups =
+        _activeConfig?.dutyGroups.map((group) => group.name).toList() ?? [];
+    configDutyGroups.sort();
+    return configDutyGroups;
+  }
+
   String? get selectedDutyGroup => _selectedDutyGroup;
   String? get preferredDutyGroup => _preferredDutyGroup;
   DateTime? get selectedDay => _selectedDay;
@@ -100,10 +116,33 @@ class ScheduleController extends ChangeNotifier {
     notifyListeners();
     try {
       _selectedDay = date;
+      final configName = _activeConfig?.name;
+
       _schedules = await getSchedulesUseCase.executeForDateRange(
         startDate: date,
         endDate: date,
+        configName: configName,
       );
+
+      // If no schedules found and we have an active config, generate them
+      if (_schedules.isEmpty && configName != null && configName.isNotEmpty) {
+        AppLogger.i(
+            'ScheduleController: No schedules found for date $date, generating new schedules');
+
+        try {
+          final generatedSchedules = await generateSchedulesUseCase.execute(
+            configName: configName,
+            startDate: date,
+            endDate: date,
+          );
+
+          _schedules = generatedSchedules;
+        } catch (e, stackTrace) {
+          AppLogger.e('ScheduleController: Error generating schedules for date',
+              e, stackTrace);
+          // Don't rethrow - we still want to show the UI even if generation fails
+        }
+      }
     } catch (e, stackTrace) {
       _error = 'Failed to load schedules';
       AppLogger.e('ScheduleController: Error loading schedules', e, stackTrace);
@@ -117,6 +156,7 @@ class ScheduleController extends ChangeNotifier {
     try {
       _isLoading = true;
       _error = null;
+      // Notify listeners immediately to show loading state
       notifyListeners();
 
       // Use configName parameter to filter at database level for better performance
@@ -128,21 +168,32 @@ class ScheduleController extends ChangeNotifier {
         configName: configName,
       );
 
-      // Merge new schedules with existing ones, avoiding duplicates
-      final existingDates = _schedules
-          .map((s) => '${s.date.year}-${s.date.month}-${s.date.day}')
-          .toSet();
-      final schedulesToAdd = newSchedules.where((schedule) {
-        final dateKey =
-            '${schedule.date.year}-${schedule.date.month}-${schedule.date.day}';
-        return !existingDates.contains(dateKey);
-      }).toList();
+      // If no schedules found and we have an active config, generate them
+      if (newSchedules.isEmpty && configName != null && configName.isNotEmpty) {
+        AppLogger.i(
+            'ScheduleController: No schedules found for range $start to $end, generating new schedules');
 
-      // Update schedules immediately and notify listeners
-      if (schedulesToAdd.isNotEmpty) {
-        _schedules.addAll(schedulesToAdd);
+        try {
+          final generatedSchedules = await generateSchedulesUseCase.execute(
+            configName: configName,
+            startDate: start,
+            endDate: end,
+          );
 
-        notifyListeners();
+          // Merge generated schedules with existing ones instead of replacing
+          _mergeSchedules(generatedSchedules);
+          // _mergeSchedules already calls notifyListeners()
+        } catch (e, stackTrace) {
+          AppLogger.e(
+              'ScheduleController: Error generating schedules for range',
+              e,
+              stackTrace);
+          // Don't rethrow - we still want to show the UI even if generation fails
+        }
+      } else {
+        // Merge new schedules with existing ones instead of replacing
+        _mergeSchedules(newSchedules);
+        // _mergeSchedules already calls notifyListeners()
       }
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleController: Error loading schedules', e, stackTrace);
@@ -150,6 +201,45 @@ class ScheduleController extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void _mergeSchedules(List<Schedule> newSchedules) {
+    AppLogger.i(
+        'ScheduleController: Merging ${newSchedules.length} new schedules with ${_schedules.length} existing schedules');
+
+    // Create a map of new schedules by date and duty group
+    final newSchedulesMap = <String, Schedule>{};
+    for (final schedule in newSchedules) {
+      final key =
+          '${schedule.date.toIso8601String()}_${schedule.dutyGroupName}';
+      newSchedulesMap[key] = schedule;
+    }
+
+    // Merge: keep ALL existing schedules, add/update new schedules
+    final mergedSchedules = <Schedule>[];
+
+    // Add all existing schedules (keep everything in memory)
+    for (final existingSchedule in _schedules) {
+      final key =
+          '${existingSchedule.date.toIso8601String()}_${existingSchedule.dutyGroupName}';
+      if (!newSchedulesMap.containsKey(key)) {
+        // Keep existing schedule if no new one for this date/group
+        mergedSchedules.add(existingSchedule);
+      }
+      // If newSchedulesMap contains the key, we'll add the new one below
+    }
+
+    // Add all new schedules (this will replace any existing ones for the same date/group)
+    mergedSchedules.addAll(newSchedules);
+
+    // Update the schedules list
+    _schedules = mergedSchedules;
+
+    AppLogger.i(
+        'ScheduleController: After merge: ${_schedules.length} total schedules');
+
+    // Notify listeners that schedules have been updated
+    notifyListeners();
   }
 
   void setSelectedDay(DateTime day) {
@@ -174,11 +264,13 @@ class ScheduleController extends ChangeNotifier {
             schedule.date.day == day.day;
       });
 
-      // If no schedules for this day, load them for a small range around the day
+      // If no schedules for this day, load them for the entire month plus 2 months before and after
+      // This ensures that out-days are covered
       if (!hasSchedulesForDay) {
-        // Load schedules for a small range around the selected day to avoid performance issues
-        final startDate = day.subtract(const Duration(days: 3));
-        final endDate = day.add(const Duration(days: 3));
+        // Load schedules for the entire current month plus 2 months before and after
+        final startDate = DateTime(day.year, day.month - 2, 1);
+        final endDate =
+            DateTime(day.year, day.month + 3, 0); // Last day of 2 months after
 
         await loadSchedulesForRange(startDate, endDate);
       }
@@ -196,31 +288,82 @@ class ScheduleController extends ChangeNotifier {
       final previousFocusedDay = _focusedDay;
       _focusedDay = focusedDay;
 
+      // Always notify listeners immediately when focused day changes
+      notifyListeners();
+
       // Check if we need to load schedules for a new month
       if (previousFocusedDay == null ||
           previousFocusedDay.year != focusedDay.year ||
           previousFocusedDay.month != focusedDay.month) {
-        await _loadSchedulesForCurrentMonth(focusedDay);
-      }
+        AppLogger.i(
+            'ScheduleController: Loading schedules for new month: ${focusedDay.year}-${focusedDay.month}');
+        // Load schedules asynchronously without blocking the UI
+        _loadSchedulesForCurrentMonth(focusedDay);
+      } else {
+        // Even if we're in the same month, ensure we have schedules for this specific month
+        // This handles the case where we navigate to a month that hasn't been loaded yet
+        final schedulesForMonth = _schedules.where((schedule) {
+          return schedule.date.year == focusedDay.year &&
+              schedule.date.month == focusedDay.month;
+        }).toList();
 
-      notifyListeners();
+        AppLogger.i(
+            'ScheduleController: Found ${schedulesForMonth.length} schedules for month ${focusedDay.year}-${focusedDay.month}');
+
+        if (schedulesForMonth.isEmpty) {
+          AppLogger.i(
+              'ScheduleController: No schedules found for month ${focusedDay.year}-${focusedDay.month}, loading them');
+          // Load schedules asynchronously without blocking the UI
+          _loadSchedulesForCurrentMonth(focusedDay);
+        }
+      }
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleController: Error setting focused day', e, stackTrace);
+      // Still notify listeners even if there was an error
+      notifyListeners();
     }
   }
 
   Future<void> _loadSchedulesForCurrentMonth(DateTime focusedDay) async {
     try {
-      // Add 2 months before and after to ensure calendar displays properly
+      // Load current month ±2 months to cover all visible days (including out-days)
       final startDate = DateTime(focusedDay.year, focusedDay.month - 2, 1);
       final endDate = DateTime(focusedDay.year, focusedDay.month + 3, 0);
 
+      AppLogger.i(
+          'ScheduleController: Loading schedules for range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+
       await loadSchedulesForRange(startDate, endDate);
 
-      // After loading the month range, also ensure we have schedules for the selected day
-      if (_selectedDay != null) {
-        await _ensureSchedulesForSelectedDay(_selectedDay!);
+      AppLogger.i(
+          'ScheduleController: Loaded ${_schedules.length} schedules for current month');
+
+      // Check if we have schedules for the focused month specifically
+      final schedulesForFocusedMonth = _schedules.where((schedule) {
+        return schedule.date.year == focusedDay.year &&
+            schedule.date.month == focusedDay.month;
+      }).toList();
+
+      AppLogger.i(
+          'ScheduleController: Found ${schedulesForFocusedMonth.length} schedules for focused month ${focusedDay.year}-${focusedDay.month}');
+
+      // If no schedules were loaded for the focused month, try to generate them
+      if (schedulesForFocusedMonth.isEmpty && _activeConfig != null) {
+        AppLogger.w(
+            'ScheduleController: Missing schedules for focused month ${focusedDay.year}-${focusedDay.month}, attempting to generate them');
+
+        // Generate schedules for the entire visible range
+        await generateSchedules(startDate, endDate);
+
+        // After generating, check again if we have schedules
+        final updatedSchedulesForFocusedMonth = _schedules.where((schedule) {
+          return schedule.date.year == focusedDay.year &&
+              schedule.date.month == focusedDay.month;
+        }).toList();
+
+        AppLogger.i(
+            'ScheduleController: After generation: Found ${updatedSchedulesForFocusedMonth.length} schedules for focused month ${focusedDay.year}-${focusedDay.month}');
       }
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -232,7 +375,6 @@ class ScheduleController extends ChangeNotifier {
 
   void clearScheduleCache() {
     _schedules.clear();
-    _dutyAbbreviationCache.clear();
     notifyListeners();
   }
 
@@ -487,28 +629,6 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  Future<String?> getDutyAbbreviation(String dutyTypeId) async {
-    if (_dutyAbbreviationCache.containsKey(dutyTypeId)) {
-      return _dutyAbbreviationCache[dutyTypeId];
-    }
-
-    try {
-      final configName = _activeConfig?.name ?? '';
-      if (configName.isEmpty) return null;
-
-      final abbreviation = await getDutyAbbreviationUseCase.execute(
-        dutyTypeId: dutyTypeId,
-        configName: configName,
-      );
-      _dutyAbbreviationCache[dutyTypeId] = abbreviation;
-      return abbreviation;
-    } catch (e, stackTrace) {
-      AppLogger.e(
-          'ScheduleController: Error getting duty abbreviation', e, stackTrace);
-      return null;
-    }
-  }
-
   Future<void> generateSchedules(DateTime startDate, DateTime endDate) async {
     _isLoading = true;
     _error = null;
@@ -524,7 +644,9 @@ class ScheduleController extends ChangeNotifier {
         startDate: startDate,
         endDate: endDate,
       );
-      await refreshSchedules();
+
+      // Load the generated schedules for the entire range
+      await loadSchedulesForRange(startDate, endDate);
     } catch (e, stackTrace) {
       _error = 'Failed to generate schedules';
       AppLogger.e(

@@ -143,55 +143,85 @@ class ScheduleConfigService extends ChangeNotifier {
     AppLogger.i(
         'Generating schedules for ${daysToGenerate + 1} days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}');
 
-    for (var i = 0; i <= daysToGenerate; i++) {
-      final date = effectiveStartDate.add(Duration(days: i));
-      // Use UTC dates consistently
-      final normalizedDate = DateTime.utc(date.year, date.month, date.day);
-      final normalizedStartDate = DateTime.utc(
-          config.startDate.year, config.startDate.month, config.startDate.day);
+    // Pre-calculate normalized start date
+    final normalizedStartDate = DateTime.utc(
+        config.startDate.year, config.startDate.month, config.startDate.day);
 
-      for (final dutyGroup in config.dutyGroups) {
-        final rhythm = config.rhythms[dutyGroup.rhythm];
-        if (rhythm == null) {
-          AppLogger.w('Rhythm not found for duty group: ${dutyGroup.name}');
-          continue;
-        }
+    // Pre-calculate rhythm patterns for better performance
+    final rhythmPatterns = <String, List<List<String>>>{};
+    for (final dutyGroup in config.dutyGroups) {
+      final rhythm = config.rhythms[dutyGroup.rhythm];
+      if (rhythm != null) {
+        rhythmPatterns[dutyGroup.rhythm] = rhythm.pattern;
+      }
+    }
+
+    // Pre-calculate duty types for better performance
+    final dutyTypes = config.dutyTypes;
+
+    // Use more efficient batch processing
+    const batchSize = 1000;
+    for (var batchStart = 0;
+        batchStart <= daysToGenerate;
+        batchStart += batchSize) {
+      final batchEnd = (batchStart + batchSize - 1).clamp(0, daysToGenerate);
+      final batchSchedules = <Schedule>[];
+
+      for (var i = batchStart; i <= batchEnd; i++) {
+        final date = effectiveStartDate.add(Duration(days: i));
+        final normalizedDate = DateTime.utc(date.year, date.month, date.day);
 
         final deltaDays = normalizedDate.difference(normalizedStartDate).inDays;
-        final rawWeekIndex =
-            floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
-        final weekIndex =
-            ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
-                rhythm.lengthWeeks;
-        final dayIndex = ((deltaDays % 7) + 7) % 7;
 
-        if (weekIndex >= 0 &&
-            weekIndex < rhythm.pattern.length &&
-            dayIndex >= 0 &&
-            dayIndex < rhythm.pattern[weekIndex].length) {
-          final dutyTypeId = rhythm.pattern[weekIndex][dayIndex];
-          final dutyType = config.dutyTypes[dutyTypeId];
-
-          if (dutyType == null) {
-            AppLogger.w('Duty type not found: $dutyTypeId');
+        for (final dutyGroup in config.dutyGroups) {
+          final rhythmPattern = rhythmPatterns[dutyGroup.rhythm];
+          if (rhythmPattern == null) {
+            AppLogger.w('Rhythm not found for duty group: ${dutyGroup.name}');
             continue;
           }
 
-          final schedule = Schedule(
-            date: normalizedDate,
-            configName: config.name,
-            dutyGroupId: dutyGroup.id,
-            dutyGroupName: dutyGroup.name,
-            service: dutyType.label,
-            dutyTypeId: dutyTypeId,
-            isAllDay: dutyType.isAllDay,
-          );
+          final rhythm = config.rhythms[dutyGroup.rhythm]!;
+          final rawWeekIndex =
+              floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
+          final weekIndex =
+              ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
+                  rhythm.lengthWeeks;
+          final dayIndex = ((deltaDays % 7) + 7) % 7;
 
-          schedules.add(schedule);
-        } else if (date.year == 2025 && date.month == 6 && date.day == 30) {
-          AppLogger.w(
-              'Invalid indices for 2025-06-30: weekIndex=$weekIndex, dayIndex=$dayIndex');
+          if (weekIndex >= 0 &&
+              weekIndex < rhythmPattern.length &&
+              dayIndex >= 0 &&
+              dayIndex < rhythmPattern[weekIndex].length) {
+            final dutyTypeId = rhythmPattern[weekIndex][dayIndex];
+            final dutyType = dutyTypes[dutyTypeId];
+
+            if (dutyType == null) {
+              AppLogger.w('Duty type not found: $dutyTypeId');
+              continue;
+            }
+
+            final schedule = Schedule(
+              date: normalizedDate,
+              configName: config.name,
+              dutyGroupId: dutyGroup.id,
+              dutyGroupName: dutyGroup.name,
+              service: dutyType.label,
+              dutyTypeId: dutyTypeId,
+              isAllDay: dutyType.isAllDay,
+            );
+
+            batchSchedules.add(schedule);
+          }
         }
+      }
+
+      schedules.addAll(batchSchedules);
+
+      // Log progress for large generations
+      if (daysToGenerate > 100) {
+        final progress = ((batchEnd + 1) / (daysToGenerate + 1) * 100).round();
+        AppLogger.i(
+            'Schedule generation progress: $progress% (${schedules.length} schedules generated)');
       }
     }
 

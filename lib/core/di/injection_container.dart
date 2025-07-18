@@ -18,7 +18,6 @@ import 'package:dienstplan/data/repositories/config_repository.dart';
 // Use Cases
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
-import 'package:dienstplan/domain/use_cases/get_duty_abbreviation_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
@@ -159,11 +158,6 @@ class InjectionContainer {
           scheduleRepository, configRepository, scheduleConfigService);
     });
 
-    getIt.registerFactoryAsync<GetDutyAbbreviationUseCase>(() async {
-      final repository = await getIt.getAsync<ScheduleRepository>();
-      return GetDutyAbbreviationUseCase(repository);
-    });
-
     // Settings Use Cases - Factories
     getIt.registerFactoryAsync<GetSettingsUseCase>(() async {
       final repository = await getIt.getAsync<SettingsRepository>();
@@ -205,8 +199,6 @@ class InjectionContainer {
       final getSchedulesUseCase = await getIt.getAsync<GetSchedulesUseCase>();
       final generateSchedulesUseCase =
           await getIt.getAsync<GenerateSchedulesUseCase>();
-      final getDutyAbbreviationUseCase =
-          await getIt.getAsync<GetDutyAbbreviationUseCase>();
       final getConfigsUseCase = await getIt.getAsync<GetConfigsUseCase>();
       final setActiveConfigUseCase =
           await getIt.getAsync<SetActiveConfigUseCase>();
@@ -216,7 +208,6 @@ class InjectionContainer {
       return ScheduleController(
         getSchedulesUseCase: getSchedulesUseCase,
         generateSchedulesUseCase: generateSchedulesUseCase,
-        getDutyAbbreviationUseCase: getDutyAbbreviationUseCase,
         getConfigsUseCase: getConfigsUseCase,
         setActiveConfigUseCase: setActiveConfigUseCase,
         getSettingsUseCase: getSettingsUseCase,

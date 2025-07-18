@@ -255,7 +255,7 @@ class DatabaseService {
       AppLogger.i(
           'Saving ${schedules.length} schedules with optimized batch processing');
       final db = await database;
-      const batchSize = 500; // Reduced batch size for better memory management
+      const batchSize = 1000; // Increased batch size for better performance
       final now = DateTime.now().millisecondsSinceEpoch;
 
       await db.transaction((txn) async {
@@ -287,6 +287,13 @@ class DatabaseService {
           }
 
           await batch.commit();
+
+          // Log progress for large saves
+          if (schedules.length > 1000) {
+            final progress = ((end) / schedules.length * 100).round();
+            AppLogger.i(
+                'Schedule saving progress: $progress% ($end/${schedules.length})');
+          }
         }
       });
 

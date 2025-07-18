@@ -97,8 +97,9 @@ class _CalendarViewState extends State<CalendarView>
           currentSelectedDay.year != newSelectedDay.year ||
           currentSelectedDay.month != newSelectedDay.month ||
           currentSelectedDay.day != newSelectedDay.day) {
+        // Only update selected day, not focused day
+        // The focused day should only be updated by the TableCalendar's onPageChanged
         widget.scheduleController.setSelectedDay(newSelectedDay);
-        widget.scheduleController.setFocusedDay(newSelectedDay);
       }
     }
   }

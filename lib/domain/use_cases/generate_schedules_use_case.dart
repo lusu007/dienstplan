@@ -40,13 +40,53 @@ class GenerateSchedulesUseCase {
         throw ArgumentError('Date range too large. Maximum 5 years allowed.');
       }
 
-      // Get the configuration
+      // Get the configuration first
       final configs = await _configRepository.getConfigs();
       final config = configs.firstWhere(
         (c) => c.name == configName,
         orElse: () =>
             throw ArgumentError('Configuration not found: $configName'),
       );
+
+      // Check if schedules already exist for this range
+      final existingSchedules =
+          await _scheduleRepository.getSchedulesForDateRange(
+        start: startDate,
+        end: endDate,
+        configName: configName,
+      );
+
+      // If we have schedules for most of the range, only generate missing ones
+      final expectedSchedulesPerDay = 5; // Approximate number of duty groups
+      final expectedTotalSchedules = daysDifference * expectedSchedulesPerDay;
+      final coverageThreshold = 0.8; // 80% coverage threshold
+
+      if (existingSchedules.length >=
+          expectedTotalSchedules * coverageThreshold) {
+        AppLogger.i(
+            'GenerateSchedulesUseCase: Found ${existingSchedules.length} existing schedules, checking for gaps');
+
+        // Find date gaps and only generate for missing dates
+        final missingDates = _findMissingDates(
+            existingSchedules, startDate, endDate, configName);
+
+        if (missingDates.isEmpty) {
+          AppLogger.i(
+              'GenerateSchedulesUseCase: All schedules already exist, returning existing schedules');
+          return existingSchedules;
+        }
+
+        AppLogger.i(
+            'GenerateSchedulesUseCase: Generating schedules for ${missingDates.length} missing dates');
+
+        // Generate only for missing dates
+        final missingSchedules =
+            await _generateForMissingDates(configName, missingDates, config);
+
+        // Combine existing and new schedules
+        final allSchedules = [...existingSchedules, ...missingSchedules];
+        return allSchedules;
+      }
 
       // Convert domain config to data config
       final dataConfig = _toDataConfig(config);
@@ -124,5 +164,60 @@ class GenerateSchedulesUseCase {
       configName: schedule.configName,
       isAllDay: schedule.isAllDay,
     );
+  }
+
+  // Find missing dates in the schedule range
+  List<DateTime> _findMissingDates(
+    List<Schedule> existingSchedules,
+    DateTime startDate,
+    DateTime endDate,
+    String configName,
+  ) {
+    final existingDates = existingSchedules
+        .map((s) => DateTime(s.date.year, s.date.month, s.date.day))
+        .toSet();
+
+    final missingDates = <DateTime>[];
+    for (var date = startDate;
+        date.isBefore(endDate.add(const Duration(days: 1)));
+        date = date.add(const Duration(days: 1))) {
+      final normalizedDate = DateTime(date.year, date.month, date.day);
+      if (!existingDates.contains(normalizedDate)) {
+        missingDates.add(normalizedDate);
+      }
+    }
+
+    return missingDates;
+  }
+
+  // Generate schedules for missing dates only
+  Future<List<Schedule>> _generateForMissingDates(
+    String configName,
+    List<DateTime> missingDates,
+    DutyScheduleConfig config,
+  ) async {
+    if (missingDates.isEmpty) return [];
+
+    final startDate = missingDates.first;
+    final endDate = missingDates.last;
+
+    // Convert domain config to data config
+    final dataConfig = _toDataConfig(config);
+
+    // Generate schedules for missing date range
+    final dataSchedules =
+        await _scheduleConfigService.generateSchedulesForConfig(
+      dataConfig,
+      startDate: startDate,
+      endDate: endDate,
+    );
+
+    // Convert data schedules to domain schedules
+    final schedules = dataSchedules.map((s) => _toDomainSchedule(s)).toList();
+
+    // Save generated schedules
+    await _scheduleRepository.saveSchedules(schedules);
+
+    return schedules;
   }
 }
