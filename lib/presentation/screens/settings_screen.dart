@@ -9,6 +9,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/toggle_card.dart';
+import 'package:dienstplan/presentation/widgets/common/cards/navigation_card_skeleton.dart';
+import 'package:dienstplan/presentation/widgets/common/cards/toggle_card_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_about_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_license_page.dart';
@@ -74,8 +76,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
         future: _scheduleControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // This should be very brief since data is preloaded
-            return const Center(child: CircularProgressIndicator());
+            // Show skeleton loader instead of circular progress indicator
+            return Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: ListView(
+                children: [
+                  _buildGeneralSectionSkeleton(context, l10n),
+                  const SizedBox(height: 16),
+                  _buildPrivacySectionSkeleton(context, l10n),
+                  const SizedBox(height: 16),
+                  _buildLegalSection(context, l10n),
+                ],
+              ),
+            );
           }
 
           if (snapshot.hasError || !snapshot.hasData) {
@@ -124,21 +137,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListenableBuilder(
       listenable: scheduleController,
       builder: (context, child) {
-        // Show loading indicator if controller is loading
+        // Show skeleton loader if controller is loading
         if (scheduleController.isLoading) {
-          return SettingsSection(
-            title: l10n.general,
-            cards: [
-              const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              ),
-            ],
-          );
+          return _buildGeneralSectionSkeleton(context, l10n);
         }
 
         // Show error message if there's an error
@@ -263,6 +264,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
           icon: Icons.description_outlined,
           title: l10n.licenses,
           onTap: () => _showLicenses(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGeneralSectionSkeleton(
+      BuildContext context, AppLocalizations l10n) {
+    final languageService = GetIt.instance<LanguageService>();
+
+    return SettingsSection(
+      title: l10n.general,
+      cards: [
+        NavigationCardSkeleton(
+          icon: Icons.calendar_today,
+          title: l10n.dutySchedule,
+          showSubtitleSkeleton: true, // Dynamisch geladen
+        ),
+        NavigationCardSkeleton(
+          icon: Icons.favorite,
+          title: l10n.preferredDutyGroup,
+          showSubtitleSkeleton: true, // Dynamisch geladen
+        ),
+        NavigationCardSkeleton(
+          icon: Icons.view_week,
+          title: l10n.calendarFormat,
+          showSubtitleSkeleton: true, // Dynamisch geladen
+        ),
+        NavigationCardSkeleton(
+          icon: Icons.language,
+          title: l10n.language,
+          subtitle: languageService.currentLocale.languageCode == 'de'
+              ? l10n.german
+              : l10n.english,
+          showSubtitleSkeleton: false, // Statisch
+        ),
+        NavigationCardSkeleton(
+          icon: Icons.delete_forever,
+          title: l10n.resetData,
+          showSubtitleSkeleton: false, // Kein Subtitle
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacySectionSkeleton(
+      BuildContext context, AppLocalizations l10n) {
+    final sentryService = GetIt.instance<SentryService>();
+
+    return SettingsSection(
+      title: l10n.privacy,
+      cards: [
+        ToggleCardSkeleton(
+          icon: Icons.analytics,
+          title: l10n.sentryAnalytics,
+          subtitle: l10n.sentryAnalyticsDescription,
+          showSubtitleSkeleton: false, // Statisch
+          value: sentryService.isEnabled,
+          enabled: true,
+        ),
+        ToggleCardSkeleton(
+          icon: Icons.videocam,
+          title: l10n.sentryReplay,
+          subtitle: l10n.sentryReplayDescription,
+          showSubtitleSkeleton: false, // Statisch
+          value: sentryService.isReplayEnabled,
+          enabled: sentryService.isEnabled,
         ),
       ],
     );
