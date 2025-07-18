@@ -227,8 +227,37 @@ class ScheduleController extends ChangeNotifier {
           AppLogger.i(
               'ScheduleController: Generated schedules for active config: ${generatedSchedules.where((s) => s.configName == configName).length}');
 
-          // Replace all schedules with generated ones for the active config
-          _schedules = generatedSchedules;
+          // Merge generated schedules with existing ones instead of replacing them
+          final existingSchedules = _schedules
+              .where((schedule) => schedule.configName != configName)
+              .toList();
+
+          // Remove duplicates by using a map with date+configName as key
+          final scheduleMap = <String, Schedule>{};
+
+          // Add existing schedules
+          for (final schedule in existingSchedules) {
+            final key =
+                '${schedule.date.toIso8601String()}_${schedule.configName}_${schedule.dutyGroupId}';
+            scheduleMap[key] = schedule;
+          }
+
+          // Add generated schedules (will overwrite duplicates)
+          for (final schedule in generatedSchedules) {
+            final key =
+                '${schedule.date.toIso8601String()}_${schedule.configName}_${schedule.dutyGroupId}';
+            scheduleMap[key] = schedule;
+          }
+
+          _schedules = scheduleMap.values.toList();
+
+          // Clean up old schedules to prevent memory issues
+          _cleanupOldSchedules();
+
+          AppLogger.i(
+              'ScheduleController: Merged generated schedules - existing: ${existingSchedules.length}, generated: ${generatedSchedules.length}, total: ${_schedules.length}');
+          AppLogger.i(
+              'ScheduleController: Schedules for active config after merge: ${_schedules.where((s) => s.configName == configName).length}');
           notifyListeners();
         } catch (e, stackTrace) {
           AppLogger.e(
@@ -238,8 +267,61 @@ class ScheduleController extends ChangeNotifier {
           // Don't rethrow - we still want to show the UI even if generation fails
         }
       } else {
-        // Replace all schedules with new ones for the active config
-        _schedules = newSchedules;
+        // Merge new schedules with existing ones instead of replacing them
+        // This ensures that schedules for selected days remain available when navigating between months
+        final existingSchedules = _schedules
+            .where((schedule) => schedule.configName != configName)
+            .toList();
+
+        // Remove duplicates by using a map with date+configName as key
+        final scheduleMap = <String, Schedule>{};
+
+        // Add existing schedules
+        for (final schedule in existingSchedules) {
+          final key =
+              '${schedule.date.toIso8601String()}_${schedule.configName}_${schedule.dutyGroupId}';
+          scheduleMap[key] = schedule;
+        }
+
+        // Add new schedules (will overwrite duplicates)
+        for (final schedule in newSchedules) {
+          final key =
+              '${schedule.date.toIso8601String()}_${schedule.configName}_${schedule.dutyGroupId}';
+          scheduleMap[key] = schedule;
+        }
+
+        // Also preserve schedules for the selected day if it exists
+        if (_selectedDay != null) {
+          final selectedDaySchedules = _schedules.where((schedule) {
+            final isSelectedDay = schedule.date.year == _selectedDay!.year &&
+                schedule.date.month == _selectedDay!.month &&
+                schedule.date.day == _selectedDay!.day;
+            final isActiveConfig = schedule.configName == configName;
+            return isSelectedDay && isActiveConfig;
+          }).toList();
+
+          // Add selected day schedules to the map
+          for (final schedule in selectedDaySchedules) {
+            final key =
+                '${schedule.date.toIso8601String()}_${schedule.configName}_${schedule.dutyGroupId}';
+            scheduleMap[key] = schedule;
+          }
+
+          if (selectedDaySchedules.isNotEmpty) {
+            AppLogger.i(
+                'ScheduleController: Preserving ${selectedDaySchedules.length} schedules for selected day ${_selectedDay!.toIso8601String()}');
+          }
+        }
+
+        _schedules = scheduleMap.values.toList();
+
+        // Clean up old schedules to prevent memory issues
+        _cleanupOldSchedules();
+
+        AppLogger.i(
+            'ScheduleController: Merged schedules - existing: ${existingSchedules.length}, new: ${newSchedules.length}, total: ${_schedules.length}');
+        AppLogger.i(
+            'ScheduleController: Schedules for active config after merge: ${_schedules.where((s) => s.configName == configName).length}');
         notifyListeners();
       }
 
@@ -373,8 +455,34 @@ class ScheduleController extends ChangeNotifier {
   Future<void> _loadSchedulesForCurrentMonth(DateTime focusedDay) async {
     try {
       // Load current month ±2 months to cover all visible days (including out-days)
-      final startDate = DateTime(focusedDay.year, focusedDay.month - 2, 1);
-      final endDate = DateTime(focusedDay.year, focusedDay.month + 3, 0);
+      DateTime startDate = DateTime(focusedDay.year, focusedDay.month - 2, 1);
+      DateTime endDate = DateTime(focusedDay.year, focusedDay.month + 3, 0);
+
+      // If we have a selected day, ensure it's also covered in the loading range
+      if (_selectedDay != null) {
+        final selectedDay = _selectedDay!;
+
+        // Check if selected day is outside the current loading range
+        if (selectedDay.isBefore(startDate) || selectedDay.isAfter(endDate)) {
+          AppLogger.i(
+              'ScheduleController: Selected day ${selectedDay.toIso8601String()} is outside current range, extending loading range');
+
+          // Extend the range to include selected day ±1 month
+          final selectedDayStart =
+              DateTime(selectedDay.year, selectedDay.month - 1, 1);
+          final selectedDayEnd =
+              DateTime(selectedDay.year, selectedDay.month + 2, 0);
+
+          // Use the broader range that covers both focused day and selected day
+          startDate = startDate.isBefore(selectedDayStart)
+              ? startDate
+              : selectedDayStart;
+          endDate = endDate.isAfter(selectedDayEnd) ? endDate : selectedDayEnd;
+
+          AppLogger.i(
+              'ScheduleController: Extended loading range to: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+        }
+      }
 
       // Ensure we have a consistent view of the active config
       final activeConfig = _activeConfig;
@@ -437,6 +545,25 @@ class ScheduleController extends ChangeNotifier {
   void clearScheduleCache() {
     _schedules.clear();
     notifyListeners();
+  }
+
+  void _cleanupOldSchedules() {
+    try {
+      final now = DateTime.now();
+      final cutoffDate = DateTime(now.year, now.month - 6, 1); // 6 months ago
+
+      final initialCount = _schedules.length;
+      _schedules.removeWhere((schedule) => schedule.date.isBefore(cutoffDate));
+      final removedCount = initialCount - _schedules.length;
+
+      if (removedCount > 0) {
+        AppLogger.i(
+            'ScheduleController: Cleaned up $removedCount old schedules (older than ${cutoffDate.toIso8601String()})');
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error cleaning up old schedules', e, stackTrace);
+    }
   }
 
   void setActiveConfigDirectly(DutyScheduleConfig config) {
