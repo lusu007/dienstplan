@@ -5,12 +5,14 @@ class CalendarDateSelector extends StatefulWidget {
   final DateTime currentDate;
   final Function(DateTime) onDateSelected;
   final Locale locale;
+  final DateTime? selectedDay; // Add selected day parameter
 
   const CalendarDateSelector({
     super.key,
     required this.currentDate,
     required this.onDateSelected,
     required this.locale,
+    this.selectedDay, // Optional parameter
   });
 
   @override
@@ -30,6 +32,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
   late int _selectedMonth;
   late int _yearBlockStart;
   int _pageControllerKey = 0;
+  late int _originalSelectedDay; // Store the originally selected day
 
   @override
   void initState() {
@@ -57,6 +60,19 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
     _selectedMonth = widget.currentDate.month;
     _displayedYear = _selectedYear;
     _yearBlockStart = _selectedYear - (_selectedYear % 12);
+    // Use the selected day if provided, otherwise use the current date day
+    _originalSelectedDay = widget.selectedDay?.day ?? widget.currentDate.day;
+  }
+
+  @override
+  void didUpdateWidget(CalendarDateSelector oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update the original selected day if the selected day changes
+    if (widget.selectedDay != oldWidget.selectedDay &&
+        widget.selectedDay != null) {
+      _originalSelectedDay = widget.selectedDay!.day;
+    }
   }
 
   @override
@@ -464,12 +480,15 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
   }
 
   void _selectDate() {
-    final selectedDate = DateTime(
-      _selectedYear,
-      _selectedMonth,
-      widget.currentDate.day,
-    );
-    widget.onDateSelected(selectedDate);
+    // Create a date with the selected year/month and the original day
+    // This sets the focused day to the same day in the new month
+    final lastDayOfMonth = DateTime(_selectedYear, _selectedMonth + 1, 0).day;
+    final validDay = _originalSelectedDay > lastDayOfMonth
+        ? lastDayOfMonth
+        : _originalSelectedDay;
+
+    final focusedDate = DateTime(_selectedYear, _selectedMonth, validDay);
+    widget.onDateSelected(focusedDate);
     Navigator.pop(context);
   }
 

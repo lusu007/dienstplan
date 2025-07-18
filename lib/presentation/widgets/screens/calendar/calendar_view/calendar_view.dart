@@ -119,8 +119,13 @@ class _CalendarViewState extends State<CalendarView>
   }
 
   void _updatePageViewForCalendarNavigation(DateTime newFocusedDay) {
-    // Rebuild the page manager around the new focused day
-    _pageManager.rebuildDayPagesAroundDay(newFocusedDay);
+    // When navigating to a new month, we want to show the selected day in the new month
+    // But if the selected day doesn't exist in the new month, we show the focused day
+    final selectedDay = widget.scheduleController.selectedDay;
+    final dayToShow = selectedDay ?? newFocusedDay;
+
+    // Rebuild the page manager around the day we want to show
+    _pageManager.rebuildDayPagesAroundDay(dayToShow);
 
     // The rebuildDayPagesAroundDay method will automatically jump to the correct page
     // and update the currentPageIndex to 30 (the middle page)
@@ -158,7 +163,7 @@ class _CalendarViewState extends State<CalendarView>
             // Update the PageView to show the current selected day in the new calendar view
             final currentSelectedDay = widget.scheduleController.selectedDay;
             if (currentSelectedDay != null) {
-              _updatePageViewForCalendarNavigation(currentSelectedDay);
+              _updatePageViewForCalendarNavigation(newFocusedDay);
             }
           },
           onRightChevronTap: () {
@@ -171,12 +176,14 @@ class _CalendarViewState extends State<CalendarView>
             // Update the PageView to show the current selected day in the new calendar view
             final currentSelectedDay = widget.scheduleController.selectedDay;
             if (currentSelectedDay != null) {
-              _updatePageViewForCalendarNavigation(currentSelectedDay);
+              _updatePageViewForCalendarNavigation(newFocusedDay);
             }
           },
           onDateSelected: (selectedDate) {
+            // Only change the focused day, keep the selected day unchanged
+            // This allows users to navigate to different months while keeping their original selection
             widget.scheduleController.setFocusedDay(selectedDate);
-            widget.scheduleController.setSelectedDay(selectedDate);
+            // Don't change selectedDay - preserve the user's original selection
           },
         ),
         // Create a unique key for the table calendar that changes when format changes
