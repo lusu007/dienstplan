@@ -844,10 +844,18 @@ class ScheduleController extends ChangeNotifier {
   Future<void> _refreshActiveConfigFromSettings() async {
     try {
       AppLogger.i('ScheduleController: Refreshing active config from settings');
+      AppLogger.i(
+          'ScheduleController: Current configs count: ${_configs.length}');
+      AppLogger.i(
+          'ScheduleController: Current active config: ${_activeConfig?.name}');
+
       final settings = await getSettingsUseCase.execute();
       final configName = settings?.activeConfigName;
 
-      if (configName != null && configName.isNotEmpty) {
+      AppLogger.i(
+          'ScheduleController: Active config name from settings: $configName');
+
+      if (configName != null && configName.isNotEmpty && _configs.isNotEmpty) {
         // Find the config by name
         final config = _configs.firstWhere(
           (config) => config.name == configName,
@@ -860,6 +868,19 @@ class ScheduleController extends ChangeNotifier {
           _activeConfig = config;
           notifyListeners();
         }
+      } else if (_configs.isNotEmpty) {
+        // If no active config name in settings but we have configs, use the first one
+        if (_activeConfig == null || !_configs.contains(_activeConfig)) {
+          AppLogger.i(
+              'ScheduleController: No active config in settings, using first available config: ${_configs.first.name}');
+          _activeConfig = _configs.first;
+          notifyListeners();
+        }
+      } else {
+        AppLogger.w(
+            'ScheduleController: No configs available to set as active');
+        AppLogger.w(
+            'ScheduleController: Configs list is empty, skipping active config refresh');
       }
     } catch (e, stackTrace) {
       AppLogger.e(
