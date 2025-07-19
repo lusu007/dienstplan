@@ -89,8 +89,9 @@ class CalendarViewUiBuilder {
   }
 
   static Widget buildDutyScheduleList({
+    required BuildContext context,
     required ScheduleController scheduleController,
-    required bool shouldAnimate,
+    bool shouldAnimate = false,
   }) {
     // Only use selectedDutyGroup if it's explicitly set by user action
     // Don't automatically use preferredDutyGroup for filtering
@@ -111,6 +112,7 @@ class CalendarViewUiBuilder {
       },
       shouldAnimate: shouldAnimate,
       selectedDay: scheduleController.selectedDay,
+      isLoading: scheduleController.isLoading, // Pass loading state
     );
   }
 }

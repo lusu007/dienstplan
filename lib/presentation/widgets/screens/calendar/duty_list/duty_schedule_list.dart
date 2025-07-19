@@ -19,6 +19,7 @@ class DutyScheduleList extends StatefulWidget {
   final Map<String, DutyType>? dutyTypes;
   final List<String>? dutyTypeOrder;
   final String? activeConfigName;
+  final bool isLoading; // Add loading state parameter
 
   const DutyScheduleList({
     super.key,
@@ -32,6 +33,7 @@ class DutyScheduleList extends StatefulWidget {
     this.dutyTypes,
     this.dutyTypeOrder,
     this.activeConfigName,
+    this.isLoading = false, // Default to false
   });
 
   @override
@@ -111,6 +113,11 @@ class _DutyScheduleListState extends State<DutyScheduleList>
     final l10n = AppLocalizations.of(context);
 
     try {
+      // Show skeleton loader if loading or if no schedules available
+      if (widget.isLoading || widget.schedules.isEmpty) {
+        return _buildSkeletonLoader();
+      }
+
       final sortedSchedules = _getFilteredAndSortedSchedules();
 
       if (sortedSchedules.isEmpty) {
@@ -178,5 +185,91 @@ class _DutyScheduleListState extends State<DutyScheduleList>
         ),
       );
     }
+  }
+
+  Widget _buildSkeletonLoader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Header skeleton
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Container(
+            height: 12,
+            width: 120,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ),
+        // Duty items skeleton
+        Expanded(
+          child: ListView.builder(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+            itemCount: 5, // Show 5 skeleton items
+            itemBuilder: (context, index) => _buildSkeletonDutyItem(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSkeletonDutyItem() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        height: 72,
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            // Skeleton icon
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Skeleton text
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 16,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 12,
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

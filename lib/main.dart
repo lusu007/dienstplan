@@ -24,6 +24,8 @@ void main() async {
 
   // Get services from DI container and ensure they're initialized
   final sentryService = await GetIt.instance.getAsync<SentryService>();
+  // ignore: unused_local_variable
+  final languageService = await GetIt.instance.getAsync<LanguageService>();
 
   await SentryFlutter.init(
     (options) {
@@ -67,8 +69,7 @@ class AppInitializer extends StatefulWidget {
 }
 
 class _AppInitializerState extends State<AppInitializer> {
-  bool _isLoading = true;
-  bool _needsSetup = false;
+  bool _needsSetup = true; // Default to setup screen
 
   @override
   void initState() {
@@ -85,30 +86,25 @@ class _AppInitializerState extends State<AppInitializer> {
       // For now, assume setup is completed if settings are loaded successfully
       final isSetupCompleted = settingsController.settings != null;
       AppLogger.i('Setup completed: $isSetupCompleted');
-      setState(() {
-        _isLoading = false;
-        _needsSetup = !isSetupCompleted;
-      });
+      if (mounted) {
+        setState(() {
+          _needsSetup = !isSetupCompleted;
+        });
+      }
       AppLogger.i('Setup needed: $_needsSetup');
     } catch (e, stackTrace) {
       AppLogger.e('Error checking initial setup', e, stackTrace);
-      setState(() {
-        _isLoading = false;
-        _needsSetup = true;
-      });
+      if (mounted) {
+        setState(() {
+          _needsSetup = true;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
+    // Show setup screen by default, will update if setup is completed
     if (_needsSetup) {
       return const SetupScreen();
     }
@@ -125,10 +121,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // ignore: unused_field
   ScheduleController? _scheduleController;
+  // ignore: unused_field
   SettingsController? _settingsController;
   LanguageService? _languageService;
-  bool _isInitialized = false;
   final RouteObserver<ModalRoute<void>> _routeObserver =
       RouteObserver<ModalRoute<void>>();
 
@@ -138,66 +135,63 @@ class _MyAppState extends State<MyApp> {
     _initializeControllers();
   }
 
-  Future<void> _initializeControllers() async {
-    _scheduleController = await GetIt.instance.getAsync<ScheduleController>();
-    _settingsController = await GetIt.instance.getAsync<SettingsController>();
-    _languageService = await GetIt.instance.getAsync<LanguageService>();
+  void _initializeControllers() {
+    // Initialize controllers in background without blocking the UI
+    GetIt.instance.getAsync<ScheduleController>().then((controller) {
+      _scheduleController = controller;
+      // Load data in background
+      controller.loadConfigs();
+      controller.loadSchedules(DateTime.now());
+    });
 
-    // Ensure all settings data is loaded during app startup
-    await _scheduleController!.loadConfigs();
-    await _scheduleController!.loadSchedules(DateTime.now());
-    await _settingsController!.loadSettings();
+    GetIt.instance.getAsync<SettingsController>().then((controller) {
+      _settingsController = controller;
+      // Load settings in background
+      controller.loadSettings();
+    });
 
-    setState(() {
-      _isInitialized = true;
+    GetIt.instance.getAsync<LanguageService>().then((service) {
+      _languageService = service;
+      // Update UI when language service is ready
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isInitialized) {
-      return const MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }
+    // Use a fallback locale if language service is not ready yet
+    final currentLocale = _languageService?.currentLocale ?? const Locale('de');
 
-    return ListenableBuilder(
-      listenable: _languageService!,
-      builder: (context, child) {
-        return MaterialApp(
-          title: 'Dienstplan',
-          navigatorObservers: [_routeObserver],
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF005B8C),
-              primary: const Color(0xFF005B8C),
-            ),
-            useMaterial3: true,
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF005B8C),
-              titleTextStyle: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-              iconTheme: IconThemeData(color: Colors.white),
-            ),
+    return MaterialApp(
+      title: 'Dienstplan',
+      navigatorObservers: [_routeObserver],
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF005B8C),
+          primary: const Color(0xFF005B8C),
+        ),
+        useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF005B8C),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: _languageService!.currentLocale,
-          home: AppInitializer(routeObserver: _routeObserver),
-        );
-      },
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+      ),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: currentLocale,
+      home: AppInitializer(routeObserver: _routeObserver),
     );
   }
 }
