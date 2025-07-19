@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.5.0](https://github.com/lusu007/dienstplan/compare/v0.4.41...v0.5.0) (2025-07-19)
+
+
+### Features
+
+* Add animated calendar day builder ([#152](https://github.com/lusu007/dienstplan/issues/152)) ([7b45f31](https://github.com/lusu007/dienstplan/commit/7b45f3148707b4c68b5922e8e9e47afaaf5ef9e5))
+* Add month and year picker to make it easier to select a date ([#142](https://github.com/lusu007/dienstplan/issues/142)) ([a420967](https://github.com/lusu007/dienstplan/commit/a4209678df028760ceed41380be0a6d38454d46e))
+* Add skeleton loader for settings screen ([#156](https://github.com/lusu007/dienstplan/issues/156)) ([52f5bde](https://github.com/lusu007/dienstplan/commit/52f5bde60c2eee463fa1402ee22b375b21c90ca8))
+* Add skeleton to calendar screen and optimize splash screen ([#160](https://github.com/lusu007/dienstplan/issues/160)) ([ab08f3e](https://github.com/lusu007/dienstplan/commit/ab08f3e583820ed0827530175a2f1b3eb2a1425b))
+* data backend rewrite ([#154](https://github.com/lusu007/dienstplan/issues/154)) ([3163fae](https://github.com/lusu007/dienstplan/commit/3163fae67f67f9d7209632c32536461f87da33fb))
+* Improve schedule list view and add filter status text ([#150](https://github.com/lusu007/dienstplan/issues/150)) ([a02835a](https://github.com/lusu007/dienstplan/commit/a02835a59755a8344015bf4c22a05701bd2b51b4))
+* Make it possible to disable Sentry ([#147](https://github.com/lusu007/dienstplan/issues/147)) ([5f7c799](https://github.com/lusu007/dienstplan/commit/5f7c79981b3a62e25920d92ee169260381eb7a17))
+* Make UI more compact and consistent ([#149](https://github.com/lusu007/dienstplan/issues/149)) ([29a7c12](https://github.com/lusu007/dienstplan/commit/29a7c12434167c7d1d98a74939bad192e4f7ca9f))
+* Optimize UX/UI of dialogs and first time setup screen ([#148](https://github.com/lusu007/dienstplan/issues/148)) ([062be7e](https://github.com/lusu007/dienstplan/commit/062be7e66651b79ecd495bf83930331b07c3f673))
+* Update app icon and splash screen ([#153](https://github.com/lusu007/dienstplan/issues/153)) ([ff6b57e](https://github.com/lusu007/dienstplan/commit/ff6b57eea987c39dbe691365ec34206551542dc2))
+
+
+### Bug Fixes
+
+* Add sentry error tracking ([#141](https://github.com/lusu007/dienstplan/issues/141)) ([1da740f](https://github.com/lusu007/dienstplan/commit/1da740fed3660e08274836e0356e45d3e91c4597))
+* Cleanup unused files ([#151](https://github.com/lusu007/dienstplan/issues/151)) ([ca5487d](https://github.com/lusu007/dienstplan/commit/ca5487d1179eecb7fe4043f0898fce75085cc2e1))
+* Correctly set year in date switcher ([#146](https://github.com/lusu007/dienstplan/issues/146)) ([8936621](https://github.com/lusu007/dienstplan/commit/89366210de398fa20c9329be8d169ac8145c1f85))
+* Equal spacing between header and calendar and sheet ([#144](https://github.com/lusu007/dienstplan/issues/144)) ([5e07456](https://github.com/lusu007/dienstplan/commit/5e07456062a466289451249ed2682098dac16ac4))
+* Fix loading in non-generated schedules ([#161](https://github.com/lusu007/dienstplan/issues/161)) ([91ad209](https://github.com/lusu007/dienstplan/commit/91ad209ff99851eec9b006787571244d22670724))
+* Keep current selected month +-1 loaded ([#158](https://github.com/lusu007/dienstplan/issues/158)) ([5924c58](https://github.com/lusu007/dienstplan/commit/5924c587de41489781d80a2ec7ea9eb95602980e))
+* Keep current selected month +-1 loaded when using date switcher ([#159](https://github.com/lusu007/dienstplan/issues/159)) ([412e828](https://github.com/lusu007/dienstplan/commit/412e82808dd6924806f3d152ba44587f49243f15))
+* Optimize pregeneration logic ([#145](https://github.com/lusu007/dienstplan/issues/145)) ([63bc318](https://github.com/lusu007/dienstplan/commit/63bc318b3f656a7b5089072f02a3441474e166eb))
+* Prevent a refreshing before element is loaded ([#155](https://github.com/lusu007/dienstplan/issues/155)) ([ef658bd](https://github.com/lusu007/dienstplan/commit/ef658bd88bd4c4a272923234ea1767cd999e4ea7))
+* Remove landscape layout and fix app in portrait mode ([#143](https://github.com/lusu007/dienstplan/issues/143)) ([6c59f24](https://github.com/lusu007/dienstplan/commit/6c59f2445f0abdc895ce45d0736917e6c0e3ceeb))
+* Rename IPA for Release Asset ([#138](https://github.com/lusu007/dienstplan/issues/138)) ([65ee544](https://github.com/lusu007/dienstplan/commit/65ee544b3d10dcc1a44104325f7db7a8185e9e45))
+
 ## [0.4.41](https://github.com/lusu007/dienstplan/compare/v0.4.40...v0.4.41) (2025-07-12)
 
 
