@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/lusu007/dienstplan/compare/v0.5.0...v0.5.1) (2025-07-19)
+
+
+### Bug Fixes
+
+* Fix iPad orientation ([#162](https://github.com/lusu007/dienstplan/issues/162)) ([488c167](https://github.com/lusu007/dienstplan/commit/488c167706151dd6357cfb76b825a46146c279f3))
+
 ## [0.5.0](https://github.com/lusu007/dienstplan/compare/v0.4.41...v0.5.0) (2025-07-19)
 
 
