@@ -162,9 +162,11 @@ class _TableCalendarWrapperState extends State<_TableCalendarWrapper> {
   @override
   Widget build(BuildContext context) {
     final calendarFormat = widget.scheduleController.calendarFormat;
+    final scheduleCount = widget.scheduleController.schedules.length;
 
-    // Use a stable key based on calendarFormat only
-    final calendarKey = ValueKey('calendar_$calendarFormat');
+    // Use a key that changes when format or schedules change
+    final calendarKey = ValueKey(
+        'calendar_${calendarFormat}_${scheduleCount}_${DateTime.now().millisecondsSinceEpoch}');
 
     return TableCalendar(
       key: calendarKey,
