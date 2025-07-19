@@ -156,6 +156,13 @@ class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
           setState(() {});
         }
       });
+
+      // Force another rebuild after an even longer delay to ensure all schedule updates are processed
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) {
+          setState(() {});
+        }
+      });
     }
   }
 
