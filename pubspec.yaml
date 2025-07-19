@@ -95,21 +95,21 @@ flutter_launcher_icons:
   adaptive_icon_monochrome: "assets/images/logo.png"
 
 flutter_native_splash:
-  color: "#FFFFFF"
-  image: assets/images/logo.png
+  color: "#F8F9FA"
+  image: assets/images/splashscreen.png
   android: true
   ios: true
   web: true
   android_12:
-    image: assets/images/logo.png
-    icon_background_color: "#FFFFFF"
-    image_dark: assets/images/logo.png
-    icon_background_color_dark: "#FFFFFF"
+    image: assets/images/splashscreen.png
+    icon_background_color: "#F8F9FA"
+    image_dark: assets/images/splashscreen.png
+    icon_background_color_dark: "#F8F9FA"
   fullscreen: true
   android_gravity: center
   ios_content_mode: center
-  image_dark: assets/images/logo.png
-  color_dark: "#FFFFFF"
+  image_dark: assets/images/splashscreen.png
+  color_dark: "#F8F9FA"
 
 sentry:
   upload_debug_symbols: true

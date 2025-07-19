@@ -45,6 +45,12 @@ class _SetupScreenState extends State<SetupScreen> {
     _initializeServices();
   }
 
+  @override
+  void dispose() {
+    // Clean up any resources if needed
+    super.dispose();
+  }
+
   Future<void> _initializeServices() async {
     _prefs = await SharedPreferences.getInstance();
     _configService = ScheduleConfigService(_prefs);
@@ -55,15 +61,19 @@ class _SetupScreenState extends State<SetupScreen> {
     try {
       await _configService.initialize();
       final configs = _configService.configs;
-      setState(() {
-        _configs = configs;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _configs = configs;
+          _isLoading = false;
+        });
+      }
     } catch (e, stackTrace) {
       AppLogger.e('Error loading configs', e, stackTrace);
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -193,21 +203,26 @@ class _SetupScreenState extends State<SetupScreen> {
             style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 32),
-          ..._configs.map((config) {
-            final IconData icon = _getConfigIcon(config);
-            return SelectionCard(
-              title: config.meta.name,
-              subtitle: config.meta.description,
-              leadingIcon: icon,
-              isSelected: _selectedConfig == config,
-              onTap: () {
-                setState(() {
-                  _selectedConfig = config;
-                });
-              },
-              mainColor: AppColors.primary,
-            );
-          }),
+          if (_isLoading)
+            // Show skeleton loading cards
+            ...List.generate(3, (index) => _buildSkeletonCard())
+          else
+            // Show actual configs
+            ..._configs.map((config) {
+              final IconData icon = _getConfigIcon(config);
+              return SelectionCard(
+                title: config.meta.name,
+                subtitle: config.meta.description,
+                leadingIcon: icon,
+                isSelected: _selectedConfig == config,
+                onTap: () {
+                  setState(() {
+                    _selectedConfig = config;
+                  });
+                },
+                mainColor: AppColors.primary,
+              );
+            }),
           const SizedBox(height: 32),
           ActionButton(
             text: l10n.continueButton,
@@ -215,6 +230,64 @@ class _SetupScreenState extends State<SetupScreen> {
             mainColor: AppColors.primary,
           ),
           const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Skeleton icon
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Skeleton text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 20,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 16,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -343,29 +416,27 @@ class _SetupScreenState extends State<SetupScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    StepIndicator(
-                      currentStep: _currentStep,
-                      totalSteps: 2,
-                      activeColor: AppColors.primary,
-                    ),
-                    const SizedBox(height: 24),
-                    Expanded(
-                      child: _currentStep == 1
-                          ? _buildStep1Content()
-                          : _buildStep2Content(),
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              StepIndicator(
+                currentStep: _currentStep,
+                totalSteps: 2,
+                activeColor: AppColors.primary,
               ),
-            ),
+              const SizedBox(height: 24),
+              Expanded(
+                child: _currentStep == 1
+                    ? _buildStep1Content()
+                    : _buildStep2Content(),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
