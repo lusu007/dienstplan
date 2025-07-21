@@ -494,7 +494,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
 
   @override
   Widget build(BuildContext context) {
-    final monthText = DateFormat('MMMM', widget.locale.languageCode)
+    final monthYearText = DateFormat('MMMM yyyy', widget.locale.languageCode)
         .format(widget.currentDate);
     return GestureDetector(
       onTap: _showDateSwitcher,
@@ -511,7 +511,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              monthText,
+              monthYearText,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
