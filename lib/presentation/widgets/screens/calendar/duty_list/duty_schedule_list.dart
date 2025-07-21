@@ -42,29 +42,15 @@ class DutyScheduleList extends StatefulWidget {
 
 class _DutyScheduleListState extends State<DutyScheduleList>
     with TickerProviderStateMixin, ScheduleListAnimationMixin {
-  String? _selectedDutyGroup;
-
   @override
   void initState() {
     super.initState();
     initializeAnimations(this);
-
-    // Only initialize with selected duty group if it's explicitly set (not just preferred)
-    // This prevents automatic filtering by preferred duty group
-    _selectedDutyGroup = null;
   }
 
   @override
   void didUpdateWidget(DutyScheduleList oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    // Only update selected duty group if it's explicitly set by user action
-    // Don't automatically update from preferred duty group
-    if (oldWidget.selectedDutyGroup != widget.selectedDutyGroup &&
-        widget.selectedDutyGroup != null &&
-        widget.selectedDutyGroup!.isNotEmpty) {
-      _selectedDutyGroup = widget.selectedDutyGroup;
-    }
 
     // Only animate if shouldAnimate is true and we haven't animated yet
     if (widget.shouldAnimate && !oldWidget.shouldAnimate && !hasAnimated) {
@@ -82,8 +68,8 @@ class _DutyScheduleListState extends State<DutyScheduleList>
     try {
       // Since we now receive schedulesForSelectedDay, we only need to filter by duty group and config
       final filteredSchedules = widget.schedules.where((schedule) {
-        final isSelectedDutyGroup = _selectedDutyGroup == null ||
-            schedule.dutyGroupName == _selectedDutyGroup;
+        final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
+            schedule.dutyGroupName == widget.selectedDutyGroup;
         final isActiveConfig = widget.activeConfigName == null ||
             schedule.configName == widget.activeConfigName;
 
@@ -99,9 +85,9 @@ class _DutyScheduleListState extends State<DutyScheduleList>
 
   void _onDutyGroupSelected(String? dutyGroupId) {
     try {
-      setState(() {
-        _selectedDutyGroup = dutyGroupId;
-      });
+      if (widget.onDutyGroupSelected != null) {
+        widget.onDutyGroupSelected!(dutyGroupId);
+      }
     } catch (e, stackTrace) {
       AppLogger.e('DutyScheduleList: Error updating duty group selection', e,
           stackTrace);
@@ -128,8 +114,8 @@ class _DutyScheduleListState extends State<DutyScheduleList>
       final dutyListSchedules = widget.schedules.where((schedule) {
         final isActiveConfig = widget.activeConfigName == null ||
             schedule.configName == widget.activeConfigName;
-        final isSelectedDutyGroup = _selectedDutyGroup == null ||
-            schedule.dutyGroupName == _selectedDutyGroup;
+        final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
+            schedule.dutyGroupName == widget.selectedDutyGroup;
 
         // Show all duties for the selected day, but filter by duty group if selected
         return isActiveConfig && isSelectedDutyGroup;
@@ -162,7 +148,7 @@ class _DutyScheduleListState extends State<DutyScheduleList>
           Expanded(
             child: DutyItemList(
               schedules: dutyListSchedules,
-              selectedDutyGroupName: _selectedDutyGroup,
+              selectedDutyGroupName: widget.selectedDutyGroup,
               onDutyGroupSelected: _onDutyGroupSelected,
               scrollController: widget.scrollController,
               selectedDay: widget.selectedDay,
@@ -188,20 +174,25 @@ class _DutyScheduleListState extends State<DutyScheduleList>
   }
 
   Widget _buildSkeletonLoader() {
+    final l10n = AppLocalizations.of(context);
+    final filterStatusText =
+        widget.selectedDutyGroup != null && widget.selectedDutyGroup!.isNotEmpty
+            ? '${l10n.filteredBy}: ${widget.selectedDutyGroup}'
+            : '${l10n.filteredBy}: ${l10n.all}';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Header skeleton
+        // Header with real filter status text (no skeleton)
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Container(
-            height: 12,
-            width: 120,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(4),
+          child: Text(
+            filterStatusText,
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Colors.grey.shade600,
+              fontStyle: FontStyle.italic,
             ),
           ),
         ),
