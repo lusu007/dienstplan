@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class AppDialog extends StatelessWidget {
   final String title;
@@ -20,6 +21,7 @@ class AppDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveMainColor = mainColor ?? AppColors.primary;
+    final l10n = AppLocalizations.of(context);
 
     return AlertDialog(
       title: Text(title),
@@ -30,7 +32,7 @@ class AppDialog extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
-              'Close',
+              l10n.close,
               style: TextStyle(color: effectiveMainColor),
             ),
           ),
