@@ -16,7 +16,7 @@ import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
-import 'package:dienstplan/main.dart';
+import 'package:dienstplan/presentation/app.dart';
 import 'package:dienstplan/presentation/controllers/settings_controller.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
