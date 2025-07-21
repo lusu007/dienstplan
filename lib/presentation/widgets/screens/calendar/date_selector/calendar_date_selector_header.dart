@@ -76,7 +76,6 @@ class _CalendarDateSelectorHeaderState
                     locale: widget.locale,
                     selectedDay: widget.scheduleController.selectedDay,
                   ),
-                  const SizedBox(width: 12),
                   _buildTodayButton(context, l10n),
                 ],
               ),
