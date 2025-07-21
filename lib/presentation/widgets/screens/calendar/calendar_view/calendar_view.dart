@@ -211,6 +211,7 @@ class _CalendarViewState extends State<CalendarView>
               children: [
                 _ServicesSectionWrapper(
                   pageManager: _pageManager,
+                  scheduleController: widget.scheduleController,
                 ),
                 Expanded(
                   child: PageView.builder(
@@ -243,9 +244,11 @@ class _CalendarViewState extends State<CalendarView>
 
 class _ServicesSectionWrapper extends StatefulWidget {
   final CalendarViewController pageManager;
+  final ScheduleController scheduleController;
 
   const _ServicesSectionWrapper({
     required this.pageManager,
+    required this.scheduleController,
   });
 
   @override
@@ -257,7 +260,6 @@ class _ServicesSectionWrapperState extends State<_ServicesSectionWrapper> {
   @override
   void initState() {
     super.initState();
-    // Listen to page changes to rebuild the services section
     widget.pageManager.pageController.addListener(_onPageChanged);
   }
 
@@ -268,7 +270,6 @@ class _ServicesSectionWrapperState extends State<_ServicesSectionWrapper> {
   }
 
   void _onPageChanged() {
-    // Rebuild the widget when the page changes
     if (mounted) {
       setState(() {});
     }
@@ -276,8 +277,13 @@ class _ServicesSectionWrapperState extends State<_ServicesSectionWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return CalendarViewUiBuilder.buildServicesSection(
-      selectedDay: widget.pageManager.getCurrentDay(),
+    return ListenableBuilder(
+      listenable: widget.scheduleController,
+      builder: (context, child) {
+        return CalendarViewUiBuilder.buildServicesSection(
+          selectedDay: widget.scheduleController.selectedDay,
+        );
+      },
     );
   }
 }
