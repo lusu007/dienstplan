@@ -16,6 +16,7 @@ class CalendarViewUiBuilder {
     required VoidCallback onLeftChevronTap,
     required VoidCallback onRightChevronTap,
     required Function(DateTime) onDateSelected,
+    VoidCallback? onTodayButtonPressed,
   }) {
     return CalendarDateSelectorHeader(
       key: headerKey,
@@ -24,6 +25,7 @@ class CalendarViewUiBuilder {
       onRightChevronTap: onRightChevronTap,
       locale: Localizations.localeOf(context),
       onDateSelected: onDateSelected,
+      onTodayButtonPressed: onTodayButtonPressed,
     );
   }
 

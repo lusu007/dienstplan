@@ -27,6 +27,7 @@ class CalendarViewController {
   }
 
   void rebuildDayPagesAroundDay(DateTime centerDay) {
+    // Clear existing pages
     dayPages.clear();
 
     // Create a larger range of days to prevent running out of pages
@@ -35,6 +36,7 @@ class CalendarViewController {
       dayPages.add(centerDay.add(Duration(days: i)));
     }
 
+    // Reset to middle page
     currentPageIndex = 30; // Selected day is at index 30 (middle)
 
     // Update the PageController if it has clients
@@ -42,6 +44,9 @@ class CalendarViewController {
       // Use jumpToPage instead of animateToPage to avoid animation conflicts
       pageController.jumpToPage(currentPageIndex);
     }
+
+    // Also update the lastSelectedDay to prevent unnecessary rebuilds
+    lastSelectedDay = centerDay;
   }
 
   void onPageChanged(int pageIndex, bool shouldAnimate) {
@@ -67,20 +72,5 @@ class CalendarViewController {
       return dayPages[currentPageIndex];
     }
     return null;
-  }
-
-  void checkAndRebuildPages(DateTime? selectedDay) {
-    // Check if the selected day has changed significantly (more than 5 days difference)
-    if (selectedDay != null && lastSelectedDay != null) {
-      final daysDifference =
-          selectedDay.difference(lastSelectedDay!).inDays.abs();
-
-      if (daysDifference > 5) {
-        // Rebuild the day pages around the new selected day
-        rebuildDayPagesAroundDay(selectedDay);
-      }
-    }
-
-    lastSelectedDay = selectedDay;
   }
 }
