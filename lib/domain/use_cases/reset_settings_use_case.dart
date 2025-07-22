@@ -2,6 +2,7 @@ import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/data/repositories/settings_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 
 class ResetSettingsUseCase {
   final SettingsRepository _settingsRepository;
@@ -21,8 +22,11 @@ class ResetSettingsUseCase {
       // Save default settings
       await _settingsRepository.saveSettings(defaultSettings);
 
+      // Update cache with new default settings
+      SettingsCache.updateCache(defaultSettings);
+
       AppLogger.i(
-          'ResetSettingsUseCase: Settings reset to defaults successfully');
+          'ResetSettingsUseCase: Settings reset to defaults successfully and cache updated');
     } catch (e, stackTrace) {
       AppLogger.e(
           'ResetSettingsUseCase: Error resetting settings', e, stackTrace);

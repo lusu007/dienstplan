@@ -1,7 +1,6 @@
 # 📅 Dienstplan - Police Duty Schedule App
 
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/lusu007/dienstplan/releases)
-[![Flutter](https://img.shields.io/badge/Flutter-3.32.4-blue.svg)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.32.7-blue.svg)](https://flutter.dev)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-orange.svg)](https://github.com/lusu007/dienstplan)
 

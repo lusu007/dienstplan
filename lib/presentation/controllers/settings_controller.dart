@@ -4,6 +4,7 @@ import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 
 class SettingsController extends ChangeNotifier {
   final GetSettingsUseCase getSettingsUseCase;
@@ -82,5 +83,16 @@ class SettingsController extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  /// Clear the settings cache (useful for debugging or force refresh)
+  void clearCache() {
+    SettingsCache.clearCache();
+    AppLogger.d('SettingsController: Settings cache cleared');
+  }
+
+  /// Get cache statistics for debugging
+  Map<String, dynamic> getCacheStatistics() {
+    return SettingsCache.cacheStatistics;
   }
 }

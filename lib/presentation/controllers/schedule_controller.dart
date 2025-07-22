@@ -10,6 +10,7 @@ import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 
 class ScheduleController extends ChangeNotifier {
   final GetSchedulesUseCase getSchedulesUseCase;
@@ -1054,5 +1055,10 @@ class ScheduleController extends ChangeNotifier {
       AppLogger.e('ScheduleController: Error refreshing after settings close',
           e, stackTrace);
     }
+  }
+
+  /// Get settings cache statistics for debugging
+  Map<String, dynamic> getSettingsCacheStatistics() {
+    return SettingsCache.cacheStatistics;
   }
 }

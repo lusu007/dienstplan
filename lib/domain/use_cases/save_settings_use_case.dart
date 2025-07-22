@@ -1,6 +1,7 @@
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/data/repositories/settings_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 
 class SaveSettingsUseCase {
   final SettingsRepository _settingsRepository;
@@ -15,7 +16,12 @@ class SaveSettingsUseCase {
       _validateSettings(settings);
 
       await _settingsRepository.saveSettings(settings);
-      AppLogger.i('SaveSettingsUseCase: Settings saved successfully');
+
+      // Update cache with new settings
+      SettingsCache.updateCache(settings);
+
+      AppLogger.i(
+          'SaveSettingsUseCase: Settings saved successfully and cache updated');
     } catch (e, stackTrace) {
       AppLogger.e('SaveSettingsUseCase: Error saving settings', e, stackTrace);
       rethrow;
