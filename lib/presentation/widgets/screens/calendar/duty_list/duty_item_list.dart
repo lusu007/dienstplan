@@ -11,6 +11,7 @@ class DutyItemList extends StatelessWidget {
   final ScrollController? scrollController;
   final DateTime? selectedDay;
   final Map<String, DutyType>? dutyTypes;
+  final bool showFilterStatus;
 
   const DutyItemList({
     super.key,
@@ -20,6 +21,7 @@ class DutyItemList extends StatelessWidget {
     this.scrollController,
     this.selectedDay,
     this.dutyTypes,
+    this.showFilterStatus = true, // Default to true for backward compatibility
   });
 
   @override
@@ -44,22 +46,23 @@ class DutyItemList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header with filter status only
-          Container(
-            width: double.infinity,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Text(
-              selectedDutyGroupName != null
-                  ? '${l10n.filteredBy}: $selectedDutyGroupName'
-                  : '${l10n.filteredBy}: ${l10n.all}',
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.grey.shade600,
-                fontStyle: FontStyle.italic,
+          // Header with filter status only (conditionally shown)
+          if (showFilterStatus)
+            Container(
+              width: double.infinity,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
+                selectedDutyGroupName != null
+                    ? '${l10n.filteredBy}: $selectedDutyGroupName'
+                    : '${l10n.filteredBy}: ${l10n.all}',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.grey.shade600,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
-          ),
 
           // Duty list - show each schedule separately, not grouped by duty type
           Expanded(

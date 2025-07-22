@@ -141,22 +141,21 @@ class _DutyScheduleListState extends State<DutyScheduleList>
         });
       }
 
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Duty list widget
-          Expanded(
-            child: DutyItemList(
-              schedules: dutyListSchedules,
-              selectedDutyGroupName: widget.selectedDutyGroup,
-              onDutyGroupSelected: _onDutyGroupSelected,
-              scrollController: widget.scrollController,
-              selectedDay: widget.selectedDay,
-              dutyTypes: widget.dutyTypes,
-            ),
-          ),
-        ],
+      // Build the duty list content (will be animated)
+      final dutyListContent = DutyItemList(
+        schedules: dutyListSchedules,
+        selectedDutyGroupName: widget.selectedDutyGroup,
+        onDutyGroupSelected: _onDutyGroupSelected,
+        scrollController: widget.scrollController,
+        selectedDay: widget.selectedDay,
+        dutyTypes: widget.dutyTypes,
+        showFilterStatus: false, // Never show filter status here
       );
+
+      // Only the list is rendered, not the filter text
+      return widget.shouldAnimate
+          ? buildAnimatedContent(dutyListContent)
+          : dutyListContent;
     } catch (e, stackTrace) {
       AppLogger.e('DutyScheduleList: Error in build method', e, stackTrace);
 

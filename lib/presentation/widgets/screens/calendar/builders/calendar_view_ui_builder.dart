@@ -6,6 +6,7 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calend
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class CalendarViewUiBuilder {
   static Widget buildCalendarHeader({
@@ -113,6 +114,28 @@ class CalendarViewUiBuilder {
       shouldAnimate: shouldAnimate,
       selectedDay: scheduleController.selectedDay,
       isLoading: scheduleController.isLoading, // Pass loading state
+    );
+  }
+
+  static Widget buildFilterStatusText({
+    required BuildContext context,
+    required ScheduleController scheduleController,
+  }) {
+    final l10n = AppLocalizations.of(context);
+    final filterText = scheduleController.selectedDutyGroup?.isNotEmpty == true
+        ? scheduleController.selectedDutyGroup!
+        : l10n.all;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Text(
+        '${l10n.filteredBy}: $filterText',
+        style: TextStyle(
+          fontSize: 12.0,
+          color: Colors.grey.shade600,
+          fontStyle: FontStyle.italic,
+        ),
+      ),
     );
   }
 }

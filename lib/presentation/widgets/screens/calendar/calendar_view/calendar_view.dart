@@ -213,6 +213,11 @@ class _CalendarViewState extends State<CalendarView>
                   pageManager: _pageManager,
                   scheduleController: widget.scheduleController,
                 ),
+                // Filter status text (always visible, never animated)
+                CalendarViewUiBuilder.buildFilterStatusText(
+                  context: context,
+                  scheduleController: widget.scheduleController,
+                ),
                 Expanded(
                   child: PageView.builder(
                     controller: _pageManager.pageController,
