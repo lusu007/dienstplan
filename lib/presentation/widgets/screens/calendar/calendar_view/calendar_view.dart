@@ -5,7 +5,6 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/c
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_controller.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_navigation_helper.dart';
-import 'package:dienstplan/core/utils/logger.dart';
 
 class CalendarView extends StatefulWidget {
   final ScheduleController scheduleController;
@@ -64,9 +63,6 @@ class _CalendarViewState extends State<CalendarView>
 
     final selectedDay = widget.scheduleController.selectedDay;
     if (selectedDay != null) {
-      AppLogger.d(
-          'CalendarView: _onProviderChanged - selectedDay: ${selectedDay.toIso8601String()}');
-
       _pageManager.checkAndRebuildPages(selectedDay);
 
       // Ensure the page manager's current day is synchronized with the controller
@@ -75,9 +71,6 @@ class _CalendarViewState extends State<CalendarView>
           (currentDay.year != selectedDay.year ||
               currentDay.month != selectedDay.month ||
               currentDay.day != selectedDay.day)) {
-        AppLogger.d(
-            'CalendarView: Current day mismatch - current: ${currentDay.toIso8601String()}, selected: ${selectedDay.toIso8601String()}');
-
         // Find the page index for the selected day and jump to it
         final dayIndex = _pageManager.dayPages.indexWhere((day) =>
             day.year == selectedDay.year &&
@@ -85,15 +78,11 @@ class _CalendarViewState extends State<CalendarView>
             day.day == selectedDay.day);
 
         if (dayIndex != -1) {
-          AppLogger.d(
-              'CalendarView: Found day at index $dayIndex, jumping to it');
           _pageManager.currentPageIndex = dayIndex;
           if (_pageManager.pageController.hasClients) {
             _pageManager.pageController.jumpToPage(dayIndex);
           }
         } else {
-          AppLogger.w(
-              'CalendarView: Could not find selected day in dayPages, rebuilding around selected day');
           _pageManager.rebuildDayPagesAroundDay(selectedDay);
         }
       }
@@ -120,20 +109,12 @@ class _CalendarViewState extends State<CalendarView>
     // Update the selected day in the controller
     final newSelectedDay = _pageManager.getCurrentDay();
     if (newSelectedDay != null) {
-      // Debug logging
-      AppLogger.d('CalendarView: Page changed to index $pageIndex');
-      AppLogger.d(
-          'CalendarView: New selected day: ${newSelectedDay.toIso8601String()}');
-
       // Only update if the day actually changed to avoid unnecessary rebuilds
       final currentSelectedDay = widget.scheduleController.selectedDay;
       if (currentSelectedDay == null ||
           currentSelectedDay.year != newSelectedDay.year ||
           currentSelectedDay.month != newSelectedDay.month ||
           currentSelectedDay.day != newSelectedDay.day) {
-        AppLogger.d(
-            'CalendarView: Updating selected day from ${currentSelectedDay?.toIso8601String()} to ${newSelectedDay.toIso8601String()}');
-
         // Check if the month has changed
         final currentFocusedDay = widget.scheduleController.focusedDay;
         final monthChanged = currentFocusedDay == null ||
@@ -141,20 +122,13 @@ class _CalendarViewState extends State<CalendarView>
             currentFocusedDay.month != newSelectedDay.month;
 
         if (monthChanged) {
-          AppLogger.d(
-              'CalendarView: Month changed, updating focused day to ${newSelectedDay.toIso8601String()}');
           // Update the focused day to match the new month
           widget.scheduleController.setFocusedDay(newSelectedDay);
         }
 
         // Update selected day when scrolling in the list
         widget.scheduleController.setSelectedDay(newSelectedDay);
-      } else {
-        AppLogger.d('CalendarView: Selected day unchanged, skipping update');
       }
-    } else {
-      AppLogger.w(
-          'CalendarView: No new selected day available for page index $pageIndex');
     }
   }
 
