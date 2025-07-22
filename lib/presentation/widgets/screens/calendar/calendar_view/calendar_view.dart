@@ -5,6 +5,7 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/c
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_controller.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_navigation_helper.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 
 class CalendarView extends StatefulWidget {
   final ScheduleController scheduleController;
@@ -24,6 +25,7 @@ class _CalendarViewState extends State<CalendarView>
   final GlobalKey _headerKey = GlobalKey();
   late final CalendarViewController _pageManager;
   CalendarFormat? _lastKnownFormat;
+  Key _pageViewKey = UniqueKey();
 
   @override
   void initState() {
@@ -63,25 +65,26 @@ class _CalendarViewState extends State<CalendarView>
 
     final selectedDay = widget.scheduleController.selectedDay;
     if (selectedDay != null) {
-      _pageManager.checkAndRebuildPages(selectedDay);
-      // Ensure the page manager's current day is synchronized with the controller
-      final currentDay = _pageManager.getCurrentDay();
-      if (currentDay != null &&
-          (currentDay.year != selectedDay.year ||
-              currentDay.month != selectedDay.month ||
-              currentDay.day != selectedDay.day)) {
-        // Find the page index for the selected day and jump to it
-        final dayIndex = _pageManager.dayPages.indexWhere((day) =>
-            day.year == selectedDay.year &&
-            day.month == selectedDay.month &&
-            day.day == selectedDay.day);
-        if (dayIndex != -1) {
-          _pageManager.currentPageIndex = dayIndex;
-          if (_pageManager.pageController.hasClients) {
-            _pageManager.pageController.jumpToPage(dayIndex);
-          }
-        }
+      // Always rebuild the page manager around the selected day to ensure synchronization
+      _pageManager.rebuildDayPagesAroundDay(selectedDay);
+
+      // Force a complete rebuild of the PageView by changing its key
+      setState(() {
+        _pageViewKey = UniqueKey();
+      });
+
+      // Force the PageController to jump to the correct page immediately and after a delay
+      // This ensures the PageView is properly synchronized
+      if (_pageManager.pageController.hasClients) {
+        _pageManager.pageController.jumpToPage(_pageManager.currentPageIndex);
       }
+
+      // Additional synchronization after a short delay to handle any timing issues
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (mounted && _pageManager.pageController.hasClients) {
+          _pageManager.pageController.jumpToPage(_pageManager.currentPageIndex);
+        }
+      });
     }
 
     // Force a rebuild of the calendar to ensure duty chips are updated
@@ -105,14 +108,32 @@ class _CalendarViewState extends State<CalendarView>
     // Update the selected day in the controller
     final newSelectedDay = _pageManager.getCurrentDay();
     if (newSelectedDay != null) {
+      AppLogger.d(
+          'CalendarView: _onPageChanged - pageIndex: $pageIndex, newSelectedDay: ${newSelectedDay.toIso8601String()}');
+
       // Only update if the day actually changed to avoid unnecessary rebuilds
       final currentSelectedDay = widget.scheduleController.selectedDay;
       if (currentSelectedDay == null ||
           currentSelectedDay.year != newSelectedDay.year ||
           currentSelectedDay.month != newSelectedDay.month ||
           currentSelectedDay.day != newSelectedDay.day) {
-        // Only update selected day, not focused day
-        // The focused day should only be updated by the TableCalendar's onPageChanged
+        AppLogger.d(
+            'CalendarView: Day changed from ${currentSelectedDay?.toIso8601String()} to ${newSelectedDay.toIso8601String()}');
+
+        // Check if the month has changed
+        final currentFocusedDay = widget.scheduleController.focusedDay;
+        final monthChanged = currentFocusedDay == null ||
+            currentFocusedDay.year != newSelectedDay.year ||
+            currentFocusedDay.month != newSelectedDay.month;
+
+        if (monthChanged) {
+          AppLogger.d(
+              'CalendarView: Month changed, updating focused day to ${newSelectedDay.toIso8601String()}');
+          // Update the focused day to match the new month
+          widget.scheduleController.setFocusedDay(newSelectedDay);
+        }
+
+        // Update selected day when scrolling in the list
         widget.scheduleController.setSelectedDay(newSelectedDay);
       }
     }
@@ -122,7 +143,20 @@ class _CalendarViewState extends State<CalendarView>
     // When navigating to a new month, we want to show the selected day in the new month
     // But if the selected day doesn't exist in the new month, we show the focused day
     final selectedDay = widget.scheduleController.selectedDay;
-    final dayToShow = selectedDay ?? newFocusedDay;
+
+    // Determine which day to show in the new month
+    DateTime dayToShow;
+    if (selectedDay != null) {
+      // Try to keep the same day of the month, but validate it exists in the new month
+      final lastDayOfNewMonth =
+          DateTime(newFocusedDay.year, newFocusedDay.month + 1, 0).day;
+      final validDay = selectedDay.day > lastDayOfNewMonth
+          ? lastDayOfNewMonth
+          : selectedDay.day;
+      dayToShow = DateTime(newFocusedDay.year, newFocusedDay.month, validDay);
+    } else {
+      dayToShow = newFocusedDay;
+    }
 
     // Rebuild the page manager around the day we want to show
     _pageManager.rebuildDayPagesAroundDay(dayToShow);
@@ -185,6 +219,22 @@ class _CalendarViewState extends State<CalendarView>
             widget.scheduleController.setFocusedDay(selectedDate);
             // Don't change selectedDay - preserve the user's original selection
           },
+          onTodayButtonPressed: () {
+            // Handle Today button press directly in CalendarView
+            final now = DateTime.now();
+
+            // Set the selected and focused day
+            widget.scheduleController.setSelectedDay(now);
+            widget.scheduleController.setFocusedDay(now);
+
+            // Force the PageView to rebuild around the new "today" day
+            _pageManager.rebuildDayPagesAroundDay(now);
+
+            // Force a complete rebuild of the PageView by changing its key
+            setState(() {
+              _pageViewKey = UniqueKey();
+            });
+          },
         ),
         // Create a unique key for the table calendar that changes when format changes
         KeyedSubtree(
@@ -220,6 +270,7 @@ class _CalendarViewState extends State<CalendarView>
                 ),
                 Expanded(
                   child: PageView.builder(
+                    key: _pageViewKey,
                     controller: _pageManager.pageController,
                     onPageChanged: _onPageChanged,
                     itemCount: _pageManager.dayPages.length,

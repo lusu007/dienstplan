@@ -8,7 +8,7 @@ class CalendarViewController {
 
   CalendarViewController()
       : pageController = PageController(
-          initialPage: 0,
+          initialPage: 30, // Start at the middle page (index 30)
           viewportFraction: 1.0,
         );
 
@@ -19,9 +19,15 @@ class CalendarViewController {
   void initializeDayPages(DateTime selectedDay) {
     lastSelectedDay = selectedDay;
     rebuildDayPagesAroundDay(selectedDay);
+
+    // Ensure the PageController is at the correct page
+    if (pageController.hasClients) {
+      pageController.jumpToPage(currentPageIndex);
+    }
   }
 
   void rebuildDayPagesAroundDay(DateTime centerDay) {
+    // Clear existing pages
     dayPages.clear();
 
     // Create a larger range of days to prevent running out of pages
@@ -30,21 +36,30 @@ class CalendarViewController {
       dayPages.add(centerDay.add(Duration(days: i)));
     }
 
+    // Reset to middle page
     currentPageIndex = 30; // Selected day is at index 30 (middle)
 
     // Update the PageController if it has clients
     if (pageController.hasClients) {
-      pageController.animateToPage(
-        currentPageIndex,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      // Use jumpToPage instead of animateToPage to avoid animation conflicts
+      pageController.jumpToPage(currentPageIndex);
     }
+
+    // Also update the lastSelectedDay to prevent unnecessary rebuilds
+    lastSelectedDay = centerDay;
   }
 
   void onPageChanged(int pageIndex, bool shouldAnimate) {
     if (pageIndex != currentPageIndex) {
+      // Ensure the page index is within bounds first
+      if (pageIndex >= dayPages.length) {
+        pageIndex = dayPages.length - 1;
+      } else if (pageIndex < 0) {
+        pageIndex = 0;
+      }
+
       currentPageIndex = pageIndex;
+
       // Don't animate when scrolling - only when calendar selection
       if (shouldAnimate) {
         // Handle animation state here if needed
@@ -57,20 +72,5 @@ class CalendarViewController {
       return dayPages[currentPageIndex];
     }
     return null;
-  }
-
-  void checkAndRebuildPages(DateTime? selectedDay) {
-    // Check if the selected day has changed significantly (more than 5 days difference)
-    if (selectedDay != null && lastSelectedDay != null) {
-      final daysDifference =
-          selectedDay.difference(lastSelectedDay!).inDays.abs();
-
-      if (daysDifference > 5) {
-        // Rebuild the day pages around the new selected day
-        rebuildDayPagesAroundDay(selectedDay);
-      }
-    }
-
-    lastSelectedDay = selectedDay;
   }
 }

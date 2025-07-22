@@ -9,6 +9,7 @@ class CalendarDateSelectorHeader extends StatefulWidget {
   final VoidCallback onRightChevronTap;
   final Locale locale;
   final Function(DateTime) onDateSelected;
+  final VoidCallback? onTodayButtonPressed;
 
   const CalendarDateSelectorHeader({
     super.key,
@@ -17,6 +18,7 @@ class CalendarDateSelectorHeader extends StatefulWidget {
     required this.onRightChevronTap,
     required this.locale,
     required this.onDateSelected,
+    this.onTodayButtonPressed,
   });
 
   @override
@@ -102,8 +104,23 @@ class _CalendarDateSelectorHeaderState
       child: InkWell(
         onTap: () async {
           final now = DateTime.now();
+
+          // Set the selected and focused day
           widget.scheduleController.setSelectedDay(now);
           widget.scheduleController.setFocusedDay(now);
+
+          // Call the callback if provided
+          widget.onTodayButtonPressed?.call();
+
+          // Force multiple rebuilds to ensure proper synchronization
+          // This ensures the PageView is rebuilt around the new "today" day
+          for (int i = 0; i < 3; i++) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {});
+              }
+            });
+          }
         },
         borderRadius: BorderRadius.circular(8),
         child: Container(
