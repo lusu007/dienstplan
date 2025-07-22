@@ -30,6 +30,7 @@ import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
 import 'package:dienstplan/presentation/controllers/settings_controller.dart';
 
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -236,6 +237,10 @@ class InjectionContainer {
 
   static Future<void> dispose() async {
     AppLogger.i('InjectionContainer: Disposing dependency injection');
+
+    // Clear settings cache
+    SettingsCache.clearCache();
+
     await getIt.reset();
   }
 }
