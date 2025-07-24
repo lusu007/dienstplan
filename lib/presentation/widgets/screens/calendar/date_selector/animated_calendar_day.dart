@@ -24,58 +24,7 @@ class AnimatedCalendarDay extends StatefulWidget {
   State<AnimatedCalendarDay> createState() => _AnimatedCalendarDayState();
 }
 
-class _AnimatedCalendarDayState extends State<AnimatedCalendarDay>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-  }
-
-  @override
-  void didUpdateWidget(AnimatedCalendarDay oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Animate when selection changes
-    if (widget.isSelected != oldWidget.isSelected) {
-      if (widget.isSelected) {
-        _animationController.reset();
-        _animationController.forward();
-      }
-    }
-  }
-
-  void _triggerTapAnimation() {
-    // Reset animation controller first
-    _animationController.reset();
-    // Start the animation with a slight delay to ensure reset is complete
-    Future.delayed(const Duration(milliseconds: 10), () {
-      if (mounted) {
-        _animationController.forward();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
+class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -91,45 +40,36 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay>
 
     return InkWell(
       onTap: () {
-        _triggerTapAnimation();
         widget.onTap?.call();
       },
       borderRadius: BorderRadius.circular(8),
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Container(
-              margin: _getMargin(),
-              width: effectiveWidth,
-              height: effectiveHeight,
-              decoration: containerDecoration,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${widget.day.day}',
-                    style: dayStyle,
-                  ),
-                  if (widget.dutyAbbreviation != null &&
-                      widget.dutyAbbreviation!.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4.0, vertical: 1.0),
-                      decoration: dutyBadgeDecoration,
-                      child: Text(
-                        widget.dutyAbbreviation!,
-                        style: dutyBadgeTextStyle.copyWith(
-                          fontSize: 10.0,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+      child: Container(
+        margin: _getMargin(),
+        width: effectiveWidth,
+        height: effectiveHeight,
+        decoration: containerDecoration,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '${widget.day.day}',
+              style: dayStyle,
             ),
-          );
-        },
+            if (widget.dutyAbbreviation != null &&
+                widget.dutyAbbreviation!.isNotEmpty)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1.0),
+                decoration: dutyBadgeDecoration,
+                child: Text(
+                  widget.dutyAbbreviation!,
+                  style: dutyBadgeTextStyle.copyWith(
+                    fontSize: 10.0,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

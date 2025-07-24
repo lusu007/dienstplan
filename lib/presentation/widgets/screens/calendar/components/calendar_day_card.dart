@@ -51,7 +51,6 @@ class CalendarDayCard extends StatelessWidget {
     scheduleController.setSelectedDay(day);
     scheduleController.setFocusedDay(day);
 
-    // Call the additional callback for animation
-    onDaySelected?.call();
+    // Animation callback removed
   }
 }

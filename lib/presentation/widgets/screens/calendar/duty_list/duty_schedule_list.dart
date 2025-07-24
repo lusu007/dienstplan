@@ -3,7 +3,6 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
-import 'package:dienstplan/presentation/widgets/screens/calendar/utils/schedule_list_animation_mixin.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_ui_builder.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_list.dart';
 
@@ -35,28 +34,7 @@ class DutyScheduleList extends StatefulWidget {
   State<DutyScheduleList> createState() => _DutyScheduleListState();
 }
 
-class _DutyScheduleListState extends State<DutyScheduleList>
-    with TickerProviderStateMixin, ScheduleListAnimationMixin {
-  @override
-  void initState() {
-    super.initState();
-    initializeAnimations(this);
-  }
-
-  @override
-  void didUpdateWidget(DutyScheduleList oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.shouldAnimate && !oldWidget.shouldAnimate && !hasAnimated) {
-      triggerAnimation();
-    }
-  }
-
-  @override
-  void dispose() {
-    disposeAnimations();
-    super.dispose();
-  }
-
+class _DutyScheduleListState extends State<DutyScheduleList> {
   List<Schedule> _getFilteredSchedules() {
     return widget.schedules.where((schedule) {
       final isActiveConfig = widget.activeConfigName == null ||
@@ -103,11 +81,7 @@ class _DutyScheduleListState extends State<DutyScheduleList>
     }
 
     final sortedSchedules = _sortSchedules(filteredSchedules);
-    final dutyListContent = _buildDutyList(sortedSchedules);
-
-    return widget.shouldAnimate
-        ? buildAnimatedContent(dutyListContent)
-        : dutyListContent;
+    return _buildDutyList(sortedSchedules);
   }
 
   Widget _buildEmptyState() {

@@ -173,8 +173,7 @@ class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
             widget.scheduleController.setSelectedDay(widget.day);
             widget.scheduleController.setFocusedDay(widget.day);
 
-            // Call the additional callback for animation
-            widget.onDaySelected?.call();
+            // Animation callback removed
           } catch (e) {
             // Ignore errors during day selection
           }
