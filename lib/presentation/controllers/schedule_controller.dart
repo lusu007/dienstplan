@@ -126,11 +126,17 @@ class ScheduleController extends ChangeNotifier {
   Future<void> _savePreferredDutyGroup(String? value) async {
     try {
       final currentSettings = await getSettingsUseCase.execute();
-      if (currentSettings != null) {
+      if (currentSettings != null &&
+          currentSettings.preferredDutyGroup != value) {
+        AppLogger.i(
+            'ScheduleController: Preferred duty group changed, saving settings');
         final updatedSettings = currentSettings.copyWith(
           preferredDutyGroup: value,
         );
         await saveSettingsUseCase.execute(updatedSettings);
+      } else {
+        AppLogger.d(
+            'ScheduleController: Preferred duty group unchanged, skipping save');
       }
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleController: Error saving preferred duty group', e,
@@ -788,11 +794,17 @@ class ScheduleController extends ChangeNotifier {
   Future<void> _saveActiveConfig(String configName) async {
     try {
       final currentSettings = await getSettingsUseCase.execute();
-      if (currentSettings != null) {
+      if (currentSettings != null &&
+          currentSettings.activeConfigName != configName) {
+        AppLogger.i(
+            'ScheduleController: Active config changed, saving settings');
         final updatedSettings = currentSettings.copyWith(
           activeConfigName: configName,
         );
         await saveSettingsUseCase.execute(updatedSettings);
+      } else {
+        AppLogger.d(
+            'ScheduleController: Active config unchanged, skipping save');
       }
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -820,8 +832,15 @@ class ScheduleController extends ChangeNotifier {
       // If so, we need to migrate it to use the name property
       final currentSettings = await getSettingsUseCase.execute();
       if (currentSettings != null) {
-        // Force a save to ensure the format is saved with the correct name property
-        await _saveCalendarFormat();
+        // Only save if the format actually changed or needs migration
+        if (currentSettings.calendarFormat != _calendarFormat) {
+          AppLogger.i(
+              'ScheduleController: Calendar format changed, saving settings');
+          await _saveCalendarFormat();
+        } else {
+          AppLogger.d(
+              'ScheduleController: Calendar format unchanged, skipping save');
+        }
       }
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -842,11 +861,16 @@ class ScheduleController extends ChangeNotifier {
   Future<void> _saveCalendarFormat() async {
     try {
       final settings = await getSettingsUseCase.execute();
-      if (settings != null) {
+      if (settings != null && settings.calendarFormat != _calendarFormat) {
+        AppLogger.i(
+            'ScheduleController: Calendar format changed, saving settings');
         final updatedSettings = settings.copyWith(
           calendarFormat: _calendarFormat,
         );
         await saveSettingsUseCase.execute(updatedSettings);
+      } else {
+        AppLogger.d(
+            'ScheduleController: Calendar format unchanged, skipping save');
       }
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -1023,31 +1047,62 @@ class ScheduleController extends ChangeNotifier {
     try {
       AppLogger.i('ScheduleController: Refreshing after settings screen close');
 
+      // Store current state before refreshing
+      final previousActiveConfig = _activeConfig?.name;
+      final previousFocusedDay = _focusedDay;
+      final previousSelectedDay = _selectedDay;
+
       // Refresh active config from settings to ensure consistency
       await _refreshActiveConfigFromSettings();
 
       // Load preferred duty group from settings to ensure consistency
       await _loadPreferredDutyGroup();
 
-      // Clear schedules to force a complete reload
-      _schedules.clear();
-      notifyListeners();
+      // Check if any relevant settings have changed
+      final activeConfigChanged = previousActiveConfig != _activeConfig?.name;
+      final focusedDayChanged = previousFocusedDay?.year != _focusedDay?.year ||
+          previousFocusedDay?.month != _focusedDay?.month ||
+          previousFocusedDay?.day != _focusedDay?.day;
+      final selectedDayChanged =
+          previousSelectedDay?.year != _selectedDay?.year ||
+              previousSelectedDay?.month != _selectedDay?.month ||
+              previousSelectedDay?.day != _selectedDay?.day;
 
-      // Reload schedules for current focused day if available
-      if (_focusedDay != null) {
+      // Only reload schedules if relevant settings have changed
+      final relevantSettingsChanged =
+          activeConfigChanged || focusedDayChanged || selectedDayChanged;
+
+      if (relevantSettingsChanged) {
         AppLogger.i(
-            'ScheduleController: Reloading schedules for focused day: $_focusedDay');
+            'ScheduleController: Relevant settings changed, reloading schedules');
+        AppLogger.i(
+            'ScheduleController: Changes - activeConfig: $activeConfigChanged, focusedDay: $focusedDayChanged, selectedDay: $selectedDayChanged');
 
-        // Ensure we have an active config before loading schedules
-        if (_activeConfig != null) {
-          await _loadSchedulesForCurrentMonth(_focusedDay!);
+        // Clear schedules to force a complete reload
+        _schedules.clear();
+        notifyListeners();
+
+        // Reload schedules for current focused day if available
+        if (_focusedDay != null) {
+          AppLogger.i(
+              'ScheduleController: Reloading schedules for focused day: $_focusedDay');
+
+          // Ensure we have an active config before loading schedules
+          if (_activeConfig != null) {
+            await _loadSchedulesForCurrentMonth(_focusedDay!);
+          } else {
+            AppLogger.w(
+                'ScheduleController: No active config available after settings close');
+          }
         } else {
           AppLogger.w(
-              'ScheduleController: No active config available after settings close');
+              'ScheduleController: No focused day available after settings close');
         }
       } else {
-        AppLogger.w(
-            'ScheduleController: No focused day available after settings close');
+        AppLogger.i(
+            'ScheduleController: No relevant settings changed, skipping schedule reload');
+        // Still notify listeners for UI updates (e.g., preferred duty group changes)
+        notifyListeners();
       }
 
       AppLogger.i('ScheduleController: Refresh after settings close completed');
