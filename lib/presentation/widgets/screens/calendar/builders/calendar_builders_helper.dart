@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 

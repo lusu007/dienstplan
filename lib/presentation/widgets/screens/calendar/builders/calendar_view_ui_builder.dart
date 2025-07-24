@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_builders_helper.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/list/duty_schedule_header.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/header/calendar_date_selector_header.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class CalendarViewUiBuilder {

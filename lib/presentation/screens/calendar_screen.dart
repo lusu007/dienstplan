@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/core/calendar_view.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/core/calendar_app_bar.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dienstplan/data/services/language_service.dart';
