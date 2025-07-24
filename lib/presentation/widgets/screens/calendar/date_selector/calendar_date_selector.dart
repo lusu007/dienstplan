@@ -488,7 +488,17 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
         : _originalSelectedDay;
 
     final focusedDate = DateTime(_selectedYear, _selectedMonth, validDay);
-    widget.onDateSelected(focusedDate);
+
+    // Only call onDateSelected if the month or year actually changed
+    // This prevents unnecessary reloads when closing without changes
+    final currentFocusedDay = widget.currentDate;
+    final monthChanged = currentFocusedDay.year != focusedDate.year ||
+        currentFocusedDay.month != focusedDate.month;
+
+    if (monthChanged) {
+      widget.onDateSelected(focusedDate);
+    }
+
     Navigator.pop(context);
   }
 
