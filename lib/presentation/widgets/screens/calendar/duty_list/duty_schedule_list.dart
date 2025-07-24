@@ -173,38 +173,10 @@ class _DutyScheduleListState extends State<DutyScheduleList>
   }
 
   Widget _buildSkeletonLoader() {
-    final l10n = AppLocalizations.of(context);
-    final filterStatusText =
-        widget.selectedDutyGroup != null && widget.selectedDutyGroup!.isNotEmpty
-            ? '${l10n.filteredBy}: ${widget.selectedDutyGroup}'
-            : '${l10n.filteredBy}: ${l10n.all}';
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Header with real filter status text (no skeleton)
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Text(
-            filterStatusText,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Colors.grey.shade600,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-        ),
-        // Duty items skeleton
-        Expanded(
-          child: ListView.builder(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-            itemCount: 5, // Show 5 skeleton items
-            itemBuilder: (context, index) => _buildSkeletonDutyItem(),
-          ),
-        ),
-      ],
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+      itemCount: 5, // Show 5 skeleton items
+      itemBuilder: (context, index) => _buildSkeletonDutyItem(),
     );
   }
 
