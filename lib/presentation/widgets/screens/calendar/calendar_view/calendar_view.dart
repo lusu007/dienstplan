@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_animations.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_controller.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_navigation_helper.dart';
@@ -19,8 +18,7 @@ class CalendarView extends StatefulWidget {
   State<CalendarView> createState() => _CalendarViewState();
 }
 
-class _CalendarViewState extends State<CalendarView>
-    with CalendarViewAnimations {
+class _CalendarViewState extends State<CalendarView> {
   final GlobalKey _calendarKey = GlobalKey();
   final GlobalKey _headerKey = GlobalKey();
   late final CalendarViewController _pageManager;
@@ -103,7 +101,7 @@ class _CalendarViewState extends State<CalendarView>
   }
 
   void _onPageChanged(int pageIndex) {
-    _pageManager.onPageChanged(pageIndex, shouldAnimateScheduleList);
+    _pageManager.onPageChanged(pageIndex, false);
 
     // Update the selected day in the controller
     final newSelectedDay = _pageManager.getCurrentDay();
@@ -250,7 +248,7 @@ class _CalendarViewState extends State<CalendarView>
             onPageChanged: (focusedDay) {
               widget.scheduleController.setFocusedDay(focusedDay);
             },
-            onDaySelected: triggerAnimation,
+            onDaySelected: () {},
           ),
         ),
         const SizedBox(height: 16), // Abstand zwischen Kalender und Sheet
@@ -293,7 +291,7 @@ class _CalendarViewState extends State<CalendarView>
     return CalendarViewUiBuilder.buildDutyScheduleList(
       context: context,
       scheduleController: widget.scheduleController,
-      shouldAnimate: shouldAnimateScheduleList,
+      shouldAnimate: false,
     );
   }
 }
