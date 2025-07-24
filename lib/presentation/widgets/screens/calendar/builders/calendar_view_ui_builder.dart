@@ -105,7 +105,6 @@ class CalendarViewUiBuilder {
 
     return DutyScheduleList(
       schedules: scheduleController.schedulesForSelectedDay.cast(),
-      dutyGroups: scheduleController.dutyGroups,
       selectedDutyGroup: selectedGroup,
       activeConfigName: scheduleController.activeConfig?.name,
       dutyTypeOrder: scheduleController.activeConfig?.dutyTypeOrder,
@@ -114,8 +113,7 @@ class CalendarViewUiBuilder {
         scheduleController.setSelectedDutyGroup(group ?? '');
       },
       shouldAnimate: shouldAnimate,
-      selectedDay: scheduleController.selectedDay,
-      isLoading: scheduleController.isLoading, // Pass loading state
+      isLoading: scheduleController.isLoading,
     );
   }
 

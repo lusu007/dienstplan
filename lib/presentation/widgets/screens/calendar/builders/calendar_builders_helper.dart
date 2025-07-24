@@ -140,29 +140,8 @@ class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
 
   void _onControllerChanged() {
     if (mounted) {
-      // Force rebuild to ensure duty abbreviations are updated
+      // Single rebuild should be sufficient for duty abbreviation updates
       setState(() {});
-
-      // Force another rebuild after a small delay to ensure all updates are processed
-      Future.delayed(const Duration(milliseconds: 50), () {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-
-      // Force another rebuild after a longer delay to ensure calendar chips are updated
-      Future.delayed(const Duration(milliseconds: 150), () {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-
-      // Force another rebuild after an even longer delay to ensure all schedule updates are processed
-      Future.delayed(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          setState(() {});
-        }
-      });
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/core/utils/logger.dart';
 
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/schedule_list_animation_mixin.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_ui_builder.dart';
@@ -10,30 +9,26 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_
 
 class DutyScheduleList extends StatefulWidget {
   final List<Schedule> schedules;
-  final List<String>? dutyGroups;
   final String? selectedDutyGroup;
   final Function(String?)? onDutyGroupSelected;
   final ScrollController? scrollController;
   final bool shouldAnimate;
-  final DateTime? selectedDay;
   final Map<String, DutyType>? dutyTypes;
   final List<String>? dutyTypeOrder;
   final String? activeConfigName;
-  final bool isLoading; // Add loading state parameter
+  final bool isLoading;
 
   const DutyScheduleList({
     super.key,
     required this.schedules,
-    this.dutyGroups,
     this.selectedDutyGroup,
     this.onDutyGroupSelected,
     this.scrollController,
     this.shouldAnimate = false,
-    this.selectedDay,
     this.dutyTypes,
     this.dutyTypeOrder,
     this.activeConfigName,
-    this.isLoading = false, // Default to false
+    this.isLoading = false,
   });
 
   @override
@@ -51,8 +46,6 @@ class _DutyScheduleListState extends State<DutyScheduleList>
   @override
   void didUpdateWidget(DutyScheduleList oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    // Only animate if shouldAnimate is true and we haven't animated yet
     if (widget.shouldAnimate && !oldWidget.shouldAnimate && !hasAnimated) {
       triggerAnimation();
     }
@@ -64,173 +57,130 @@ class _DutyScheduleListState extends State<DutyScheduleList>
     super.dispose();
   }
 
-  List<Schedule> _getFilteredAndSortedSchedules() {
-    try {
-      // Since we now receive schedulesForSelectedDay, we only need to filter by duty group and config
-      final filteredSchedules = widget.schedules.where((schedule) {
-        final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
-            schedule.dutyGroupName == widget.selectedDutyGroup;
-        final isActiveConfig = widget.activeConfigName == null ||
-            schedule.configName == widget.activeConfigName;
+  List<Schedule> _getFilteredSchedules() {
+    return widget.schedules.where((schedule) {
+      final isActiveConfig = widget.activeConfigName == null ||
+          schedule.configName == widget.activeConfigName;
+      final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
+          schedule.dutyGroupName == widget.selectedDutyGroup;
+      return isActiveConfig && isSelectedDutyGroup;
+    }).toList();
+  }
 
-        return isSelectedDutyGroup && isActiveConfig;
-      }).toList();
-
-      return filteredSchedules;
-    } catch (e, stackTrace) {
-      AppLogger.e('DutyScheduleList: Error filtering schedules', e, stackTrace);
-      return [];
+  List<Schedule> _sortSchedules(List<Schedule> schedules) {
+    if (widget.dutyTypeOrder == null || widget.dutyTypeOrder!.isEmpty) {
+      return schedules;
     }
+
+    return List.from(schedules)
+      ..sort((a, b) {
+        final aIndex = widget.dutyTypeOrder!.indexOf(a.dutyTypeId);
+        final bIndex = widget.dutyTypeOrder!.indexOf(b.dutyTypeId);
+
+        if (aIndex != -1 && bIndex != -1) {
+          return aIndex.compareTo(bIndex);
+        }
+        if (aIndex != -1) return -1;
+        if (bIndex != -1) return 1;
+        return a.dutyTypeId.compareTo(b.dutyTypeId);
+      });
   }
 
   void _onDutyGroupSelected(String? dutyGroupId) {
-    try {
-      if (widget.onDutyGroupSelected != null) {
-        widget.onDutyGroupSelected!(dutyGroupId);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e('DutyScheduleList: Error updating duty group selection', e,
-          stackTrace);
-    }
+    widget.onDutyGroupSelected?.call(dutyGroupId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    try {
-      // Show skeleton loader if loading or if no schedules available
-      if (widget.isLoading || widget.schedules.isEmpty) {
-        return _buildSkeletonLoader();
-      }
-
-      final sortedSchedules = _getFilteredAndSortedSchedules();
-
-      if (sortedSchedules.isEmpty) {
-        return DutyItemUiBuilder.buildEmptyState(l10n.noServicesForDay);
-      }
-
-      // Get schedules for the duty list (show all duties for the selected day, not filtered by duty group)
-      final dutyListSchedules = widget.schedules.where((schedule) {
-        final isActiveConfig = widget.activeConfigName == null ||
-            schedule.configName == widget.activeConfigName;
-        final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
-            schedule.dutyGroupName == widget.selectedDutyGroup;
-
-        // Show all duties for the selected day, but filter by duty group if selected
-        return isActiveConfig && isSelectedDutyGroup;
-      }).toList();
-
-      // Sort schedules by duty_type_order from JSON configuration
-      if (widget.dutyTypeOrder != null && widget.dutyTypeOrder!.isNotEmpty) {
-        dutyListSchedules.sort((a, b) {
-          final aIndex = widget.dutyTypeOrder!.indexOf(a.dutyTypeId);
-          final bIndex = widget.dutyTypeOrder!.indexOf(b.dutyTypeId);
-
-          // If both duty types are in the order list, sort by their position
-          if (aIndex != -1 && bIndex != -1) {
-            return aIndex.compareTo(bIndex);
-          }
-
-          // If only one is in the order list, prioritize the one that is
-          if (aIndex != -1) return -1;
-          if (bIndex != -1) return 1;
-
-          // If neither is in the order list, sort alphabetically
-          return a.dutyTypeId.compareTo(b.dutyTypeId);
-        });
-      }
-
-      // Build the duty list content (will be animated)
-      final dutyListContent = DutyItemList(
-        schedules: dutyListSchedules,
-        selectedDutyGroupName: widget.selectedDutyGroup,
-        onDutyGroupSelected: _onDutyGroupSelected,
-        scrollController: widget.scrollController,
-        selectedDay: widget.selectedDay,
-        dutyTypes: widget.dutyTypes,
-        showFilterStatus: false, // Never show filter status here
-      );
-
-      // Only the list is rendered, not the filter text
-      return widget.shouldAnimate
-          ? buildAnimatedContent(dutyListContent)
-          : dutyListContent;
-    } catch (e, stackTrace) {
-      AppLogger.e('DutyScheduleList: Error in build method', e, stackTrace);
-
-      // Return a safe fallback widget
-      return Center(
-        child: Text(
-          'Error loading schedules',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.red.shade600,
-          ),
-        ),
-      );
+    if (widget.isLoading || widget.schedules.isEmpty) {
+      return _buildSkeletonLoader();
     }
+
+    final filteredSchedules = _getFilteredSchedules();
+
+    if (filteredSchedules.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    final sortedSchedules = _sortSchedules(filteredSchedules);
+    final dutyListContent = _buildDutyList(sortedSchedules);
+
+    return widget.shouldAnimate
+        ? buildAnimatedContent(dutyListContent)
+        : dutyListContent;
+  }
+
+  Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context);
+    return DutyItemUiBuilder.buildEmptyState(l10n.noServicesForDay);
+  }
+
+  Widget _buildDutyList(List<Schedule> schedules) {
+    return DutyItemList(
+      schedules: schedules,
+      selectedDutyGroupName: widget.selectedDutyGroup,
+      onDutyGroupSelected: _onDutyGroupSelected,
+      scrollController: widget.scrollController,
+      dutyTypes: widget.dutyTypes,
+      showFilterStatus: false,
+    );
   }
 
   Widget _buildSkeletonLoader() {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-      itemCount: 5, // Show 5 skeleton items
-      itemBuilder: (context, index) => _buildSkeletonDutyItem(),
+      itemCount: 5,
+      itemBuilder: (context, index) => _buildSkeletonItem(),
     );
   }
 
-  Widget _buildSkeletonDutyItem() {
+  Widget _buildSkeletonItem() {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      child: Container(
-        height: 72,
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Row(
-          children: [
-            // Skeleton icon
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(8),
-              ),
+      height: 72,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(8),
             ),
-            const SizedBox(width: 16),
-            // Skeleton text
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 16,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 16,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 12,
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  height: 12,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
