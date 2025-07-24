@@ -591,7 +591,7 @@ class ScheduleController extends ChangeNotifier {
   void setSelectedDutyGroup(String group) {
     _selectedDutyGroup = group;
     notifyListeners();
-    refreshSchedules();
+    // Don't refresh schedules - filtering should only affect display, not data loading
   }
 
   Future<void> refreshSchedules() async {
