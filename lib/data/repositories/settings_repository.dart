@@ -53,7 +53,7 @@ class SettingsRepository {
       focusedDay: s.focusedDay,
       selectedDay: s.selectedDay,
       selectedDutyGroup: s.selectedDutyGroup,
-      preferredDutyGroup: s.preferredDutyGroup,
+      myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
     );
   }
@@ -64,7 +64,7 @@ class SettingsRepository {
       focusedDay: s.focusedDay,
       selectedDay: s.selectedDay,
       selectedDutyGroup: s.selectedDutyGroup,
-      preferredDutyGroup: s.preferredDutyGroup,
+      myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
     );
   }

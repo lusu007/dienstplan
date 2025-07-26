@@ -11,7 +11,7 @@ class DatabaseService {
   DatabaseService._internal();
 
   static Database? _database;
-  static const int _currentVersion = 2;
+  static const int _currentVersion = 3;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -66,7 +66,7 @@ class DatabaseService {
         selected_day TEXT NOT NULL,
         language TEXT,
         selected_duty_group TEXT,
-        preferred_duty_group TEXT,
+        my_duty_group TEXT,
         active_config_name TEXT,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
@@ -136,6 +136,44 @@ class DatabaseService {
 
       // Create new optimized indexes
       await _createOptimizedIndexes(db);
+    }
+
+    if (oldVersion < 3) {
+      // Rename preferred_duty_group to my_duty_group
+      AppLogger.i('Migrating preferred_duty_group to my_duty_group');
+
+      // SQLite doesn't support RENAME COLUMN directly, so we need to recreate the table
+      // First, create a temporary table with the new schema
+      await db.execute('''
+        CREATE TABLE settings_temp (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          calendar_format TEXT NOT NULL,
+          focused_day TEXT NOT NULL,
+          selected_day TEXT NOT NULL,
+          language TEXT,
+          selected_duty_group TEXT,
+          my_duty_group TEXT,
+          active_config_name TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        )
+      ''');
+
+      // Copy data from old table to new table
+      await db.execute('''
+        INSERT INTO settings_temp 
+        SELECT id, calendar_format, focused_day, selected_day, language, 
+               selected_duty_group, preferred_duty_group, active_config_name,
+               created_at, updated_at
+        FROM settings
+      ''');
+
+      // Drop old table and rename new table
+      await db.execute('DROP TABLE settings');
+      await db.execute('ALTER TABLE settings_temp RENAME TO settings');
+
+      AppLogger.i(
+          'Successfully migrated preferred_duty_group to my_duty_group');
     }
   }
 

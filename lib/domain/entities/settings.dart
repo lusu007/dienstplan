@@ -6,7 +6,7 @@ class Settings {
   final DateTime selectedDay;
   final String? language;
   final String? selectedDutyGroup;
-  final String? preferredDutyGroup;
+  final String? myDutyGroup;
   final String? activeConfigName;
 
   const Settings({
@@ -15,7 +15,7 @@ class Settings {
     required this.selectedDay,
     this.language,
     this.selectedDutyGroup,
-    this.preferredDutyGroup,
+    this.myDutyGroup,
     this.activeConfigName,
   });
 
@@ -29,7 +29,7 @@ class Settings {
       selectedDay: DateTime.parse(map['selected_day'] as String),
       language: map['language'] as String?,
       selectedDutyGroup: map['selected_duty_group'] as String?,
-      preferredDutyGroup: map['preferred_duty_group'] as String?,
+      myDutyGroup: map['my_duty_group'] as String?,
       activeConfigName: map['active_config_name'] as String?,
     );
   }
@@ -41,8 +41,7 @@ class Settings {
       'selected_day': selectedDay.toIso8601String(),
       if (language != null) 'language': language,
       if (selectedDutyGroup != null) 'selected_duty_group': selectedDutyGroup,
-      if (preferredDutyGroup != null)
-        'preferred_duty_group': preferredDutyGroup,
+      if (myDutyGroup != null) 'my_duty_group': myDutyGroup,
       if (activeConfigName != null) 'active_config_name': activeConfigName,
     };
   }
@@ -53,7 +52,7 @@ class Settings {
     DateTime? selectedDay,
     String? language,
     String? selectedDutyGroup,
-    String? preferredDutyGroup,
+    String? myDutyGroup,
     String? activeConfigName,
   }) {
     return Settings(
@@ -62,7 +61,7 @@ class Settings {
       selectedDay: selectedDay ?? this.selectedDay,
       language: language ?? this.language,
       selectedDutyGroup: selectedDutyGroup ?? this.selectedDutyGroup,
-      preferredDutyGroup: preferredDutyGroup ?? this.preferredDutyGroup,
+      myDutyGroup: myDutyGroup ?? this.myDutyGroup,
       activeConfigName: activeConfigName ?? this.activeConfigName,
     );
   }
