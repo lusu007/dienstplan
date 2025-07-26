@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.6.0](https://github.com/lusu007/dienstplan/compare/v0.5.1...v0.6.0) (2025-07-26)
+
+
+### Features
+
+* Make wording in setup screen more personal ([#180](https://github.com/lusu007/dienstplan/issues/180)) ([0115cc3](https://github.com/lusu007/dienstplan/commit/0115cc31e07d2ce071881f99562d8da2cd9f3f64))
+* Rename preferred_duty_group to my_duty_group to improve UX ([#179](https://github.com/lusu007/dienstplan/issues/179)) ([603aa43](https://github.com/lusu007/dienstplan/commit/603aa43d5e54e4fa14b08a9346d6d271f3cb8b79))
+
+
+### Bug Fixes
+
+* Chips are flickering when filtering the schedule list ([#176](https://github.com/lusu007/dienstplan/issues/176)) ([5474935](https://github.com/lusu007/dienstplan/commit/547493582f1b42221b6fcbb7ef64f2dba6c282a2))
+* Don't show skeleton on filter status text ([#168](https://github.com/lusu007/dienstplan/issues/168)) ([bcd27cb](https://github.com/lusu007/dienstplan/commit/bcd27cba489d0a7287c62d784b4e9285085858f5))
+* Implement correct behavior for drag on calendar ([#174](https://github.com/lusu007/dienstplan/issues/174)) ([1daf6f6](https://github.com/lusu007/dienstplan/commit/1daf6f65e42d57d39f02010e03b5b6d4bf5b275f))
+* Implement settings cache ([#173](https://github.com/lusu007/dienstplan/issues/173)) ([407d396](https://github.com/lusu007/dienstplan/commit/407d3965d0967fa8ae03aeb5e7e729afeb06641d))
+* Language switching ([#181](https://github.com/lusu007/dienstplan/issues/181)) ([85e9054](https://github.com/lusu007/dienstplan/commit/85e9054c8eafac35f3ff3069542058cfd60b5737))
+* Optimize main.dart ([#169](https://github.com/lusu007/dienstplan/issues/169)) ([5f30ea4](https://github.com/lusu007/dienstplan/commit/5f30ea4b90a0789f7043a58506f42c61bd1d750e))
+* Optimize Sentry config for production ([#166](https://github.com/lusu007/dienstplan/issues/166)) ([06bd8f2](https://github.com/lusu007/dienstplan/commit/06bd8f2c4099117279fa1124651b1e323c9eab8f))
+* Reloading issues in the calendar date selector ([#177](https://github.com/lusu007/dienstplan/issues/177)) ([12a7407](https://github.com/lusu007/dienstplan/commit/12a74078aaaa5c91f9cb155eb9ea8c43c5fb84eb))
+* Remove animations from the calendar and schedule list ([#178](https://github.com/lusu007/dienstplan/issues/178)) ([3771b3b](https://github.com/lusu007/dienstplan/commit/3771b3b3ae7a1c4d1bffff0a5f9a46e1f2f22ba7))
+* Remove drag effect on filter status text ([#172](https://github.com/lusu007/dienstplan/issues/172)) ([88b29c3](https://github.com/lusu007/dienstplan/commit/88b29c377dc803989151e4e40e3b043613a0a698))
+* Remove filter status text skeleton ([#175](https://github.com/lusu007/dienstplan/issues/175)) ([c2f3ee2](https://github.com/lusu007/dienstplan/commit/c2f3ee2a29b04160827c60fe8f2d43f172496b3d))
+* Show year in date selector ([#167](https://github.com/lusu007/dienstplan/issues/167)) ([3cc360b](https://github.com/lusu007/dienstplan/commit/3cc360b95255ca7ed9b8a25d70ab13535e8ac0ad))
+* Translate close button in app dialog ([#170](https://github.com/lusu007/dienstplan/issues/170)) ([8d9ccf7](https://github.com/lusu007/dienstplan/commit/8d9ccf72f3b45f95566554d9316541e77ba03a43))
+* Update date in schedule list header ([#164](https://github.com/lusu007/dienstplan/issues/164)) ([01754ac](https://github.com/lusu007/dienstplan/commit/01754acaba0fabd5c208bd52630950a882c71745))
+
 ## [0.5.1](https://github.com/lusu007/dienstplan/compare/v0.5.0...v0.5.1) (2025-07-19)
 
 
