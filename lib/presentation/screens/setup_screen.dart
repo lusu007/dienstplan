@@ -402,41 +402,47 @@ class _SetupScreenState extends State<SetupScreen> {
   Widget build(BuildContext context) {
     final languageService = GetIt.instance<LanguageService>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppInfo.appName),
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        actions: [
-          LanguageSelectorButton(
-            languageService: languageService,
-            disabled: _isGeneratingSchedules,
-            onLanguageChanged: null, // Remove callback to prevent double update
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              StepIndicator(
-                currentStep: _currentStep,
-                totalSteps: 2,
-                activeColor: AppColors.primary,
-              ),
-              const SizedBox(height: 24),
-              Expanded(
-                child: _currentStep == 1
-                    ? _buildStep1Content()
-                    : _buildStep2Content(),
+    return ListenableBuilder(
+      listenable: languageService,
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(AppInfo.appName),
+            backgroundColor: AppColors.primary,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            actions: [
+              LanguageSelectorButton(
+                languageService: languageService,
+                disabled: _isGeneratingSchedules,
+                onLanguageChanged:
+                    null, // Remove callback to prevent double update
               ),
             ],
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  StepIndicator(
+                    currentStep: _currentStep,
+                    totalSteps: 2,
+                    activeColor: AppColors.primary,
+                  ),
+                  const SizedBox(height: 24),
+                  Expanded(
+                    child: _currentStep == 1
+                        ? _buildStep1Content()
+                        : _buildStep2Content(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
