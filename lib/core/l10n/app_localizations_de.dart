@@ -126,10 +126,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get continueButton => 'Weiter';
 
   @override
-  String get welcome => 'Willkommen';
+  String get welcome => 'Hallo! 👋';
 
   @override
-  String get welcomeMessage => 'Bitte wähle einen Standard-Dienstplan aus.';
+  String get welcomeMessage =>
+      'Lass uns deinen Dienstplan einrichten. Wähle dafür deinen Dienstplan aus.';
 
   @override
   String get settingsSaved => 'Einstellungen gespeichert';
@@ -225,11 +226,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Anwendung ist kein offizielles Produkt einer Behörde oder Regierungseinrichtung. Die Dienstplan App wurde unabhängig entwickelt und steht in keiner offiziellen Verbindung zur Polizei oder anderen staatlichen Stellen.\n\nDie in dieser Anwendung verwendeten Daten stammen aus öffentlich zugänglichen Informationsmaterialien der Polizeigewerkschaften GdP (Gewerkschaft der Polizei) und DPolG (Deutsche Polizeigewerkschaft). Es wurden ausschließlich öffentlich verfügbare Informationen verwendet. Keine behördeninternen oder vertraulichen Daten wurden unbefugt veröffentlicht oder verarbeitet.\n\nDiese Anwendung dient ausschließlich der privaten Nutzung und erhebt keinen Anspruch auf Vollständigkeit oder Richtigkeit der bereitgestellten Informationen.';
 
   @override
-  String get selectDutyGroup => 'Wähle deine Dienstgruppe';
+  String get selectDutyGroup => 'Zu welcher Dienstgruppe gehörst du?';
 
   @override
   String get selectDutyGroupMessage =>
-      'Wähle die Dienstgruppe, zu der du gehörst:';
+      'Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.';
 
   @override
   String get back => 'Zurück';
@@ -249,7 +250,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Dienstgruppe wird für zukünftige Funktionen verwendet';
 
   @override
-  String get noMyDutyGroup => 'Keine Dienstgruppe ausgewählt';
+  String get noMyDutyGroup =>
+      'Ich möchte keine spezielle Dienstgruppe festlegen';
 
   @override
   String get noMyDutyGroupDescription =>

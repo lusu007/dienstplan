@@ -126,10 +126,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
-  String get welcome => 'Welcome';
+  String get welcome => 'Hello! 👋';
 
   @override
-  String get welcomeMessage => 'Please select a default duty schedule.';
+  String get welcomeMessage =>
+      'Let\'s set up your duty schedule. Therefore choose your duty schedule.';
 
   @override
   String get settingsSaved => 'Settings saved';
@@ -226,10 +227,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'This application is not an official product of any government authority or agency. The Dienstplan App has been developed independently and is not officially affiliated with the police or any government entity.\n\nThe data used in this application originates from publicly accessible information materials of the police unions GdP (Gewerkschaft der Polizei) and DPolG (Deutsche Polizeigewerkschaft). Only publicly available information has been utilized. No internal or confidential agency data has been published or processed without authorization.\n\nThis application is intended for private use only and makes no claim to the completeness or accuracy of the information provided.';
 
   @override
-  String get selectDutyGroup => 'Select Your Duty Group';
+  String get selectDutyGroup => 'Which duty group are you in?';
 
   @override
-  String get selectDutyGroupMessage => 'Choose the duty group you belong to:';
+  String get selectDutyGroupMessage =>
+      'Select your duty group so we can show you the right information.';
 
   @override
   String get back => 'Back';
@@ -248,7 +250,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This duty group will be used for future functionality';
 
   @override
-  String get noMyDutyGroup => 'No duty group selected';
+  String get noMyDutyGroup => 'I don\'t want to set a specific duty group';
 
   @override
   String get noMyDutyGroupDescription =>
