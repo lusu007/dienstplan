@@ -335,13 +335,13 @@ abstract class AppLocalizations {
   /// Welcome message title
   ///
   /// In en, this message translates to:
-  /// **'Welcome'**
+  /// **'Hello! 👋'**
   String get welcome;
 
   /// Welcome message text
   ///
   /// In en, this message translates to:
-  /// **'Please select a default duty schedule.'**
+  /// **'Let\'s set up your duty schedule. Therefore choose your duty schedule.'**
   String get welcomeMessage;
 
   /// Message shown when settings are saved successfully
@@ -521,13 +521,13 @@ abstract class AppLocalizations {
   /// Title for duty group selection step
   ///
   /// In en, this message translates to:
-  /// **'Select Your Duty Group'**
+  /// **'Which duty group are you in?'**
   String get selectDutyGroup;
 
   /// Message for duty group selection step
   ///
   /// In en, this message translates to:
-  /// **'Choose the duty group you belong to:'**
+  /// **'Select your duty group so we can show you the right information.'**
   String get selectDutyGroupMessage;
 
   /// Back button text
@@ -563,7 +563,7 @@ abstract class AppLocalizations {
   /// Text shown when no my duty group is selected
   ///
   /// In en, this message translates to:
-  /// **'No duty group selected'**
+  /// **'I don\'t want to set a specific duty group'**
   String get noMyDutyGroup;
 
   /// Description for no my duty group option

@@ -156,11 +156,11 @@
   "@continueButton": {
     "description": "Continue button text"
   },
-  "welcome": "Welcome",
+  "welcome": "Hello! 👋",
   "@welcome": {
     "description": "Welcome message title"
   },
-  "welcomeMessage": "Please select a default duty schedule.",
+  "welcomeMessage": "Let's set up your duty schedule. Therefore choose your duty schedule.",
   "@welcomeMessage": {
     "description": "Welcome message text"
   },
@@ -286,11 +286,11 @@
   "@disclaimerLong": {
     "description": "Full disclaimer text for the disclaimer popup"
   },
-  "selectDutyGroup": "Select Your Duty Group",
+  "selectDutyGroup": "Which duty group are you in?",
   "@selectDutyGroup": {
     "description": "Title for duty group selection step"
   },
-  "selectDutyGroupMessage": "Choose the duty group you belong to:",
+  "selectDutyGroupMessage": "Select your duty group so we can show you the right information.",
   "@selectDutyGroupMessage": {
     "description": "Message for duty group selection step"
   },
@@ -302,6 +302,7 @@
   "@errorSavingDefaultConfig": {
     "description": "Error message when saving default configuration fails"
   },
+
   "myDutyGroup": "My Duty Group",
   "@myDutyGroup": {
     "description": "Label for my duty group setting"
@@ -314,7 +315,7 @@
   "@myDutyGroupDescription": {
     "description": "Description for my duty group setting"
   },
-  "noMyDutyGroup": "No duty group selected",
+  "noMyDutyGroup": "I don't want to set a specific duty group",
   "@noMyDutyGroup": {
     "description": "Text shown when no my duty group is selected"
   },

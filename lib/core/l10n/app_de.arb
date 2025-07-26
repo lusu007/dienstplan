@@ -157,11 +157,11 @@
     "description": "Continue button text"
   },
 
-  "welcome": "Willkommen",
+  "welcome": "Hallo! 👋",
   "@welcome": {
     "description": "Welcome message title"
   },
-  "welcomeMessage": "Bitte wähle einen Standard-Dienstplan aus.",
+  "welcomeMessage": "Lass uns deinen Dienstplan einrichten. Wähle dafür deinen Dienstplan aus.",
   "@welcomeMessage": {
     "description": "Welcome message text"
   },
@@ -290,11 +290,11 @@
   "@disclaimerLong": {
     "description": "Full disclaimer text for the disclaimer popup"
   },
-  "selectDutyGroup": "Wähle deine Dienstgruppe",
+  "selectDutyGroup": "Zu welcher Dienstgruppe gehörst du?",
   "@selectDutyGroup": {
     "description": "Title for duty group selection step"
   },
-  "selectDutyGroupMessage": "Wähle die Dienstgruppe, zu der du gehörst:",
+  "selectDutyGroupMessage": "Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.",
   "@selectDutyGroupMessage": {
     "description": "Message for duty group selection step"
   },
@@ -306,6 +306,7 @@
   "@errorSavingDefaultConfig": {
     "description": "Error message when saving default configuration fails"
   },
+
   "myDutyGroup": "Meine Dienstgruppe",
   "@myDutyGroup": {
     "description": "Label for my duty group setting"
@@ -318,7 +319,7 @@
   "@myDutyGroupDescription": {
     "description": "Description for my duty group setting"
   },
-  "noMyDutyGroup": "Keine Dienstgruppe ausgewählt",
+  "noMyDutyGroup": "Ich möchte keine spezielle Dienstgruppe festlegen",
   "@noMyDutyGroup": {
     "description": "Text shown when no my duty group is selected"
   },
