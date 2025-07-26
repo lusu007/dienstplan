@@ -43,7 +43,7 @@ class ResetSettingsUseCase {
       focusedDay: now,
       selectedDay: now,
       selectedDutyGroup: null,
-      preferredDutyGroup: null,
+      myDutyGroup: null,
     );
   }
 }

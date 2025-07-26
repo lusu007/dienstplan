@@ -542,35 +542,35 @@ abstract class AppLocalizations {
   /// **'Error saving default configuration'**
   String get errorSavingDefaultConfig;
 
-  /// Label for preferred duty group setting
+  /// Label for my duty group setting
   ///
   /// In en, this message translates to:
-  /// **'Preferred Duty Group'**
-  String get preferredDutyGroup;
+  /// **'My Duty Group'**
+  String get myDutyGroup;
 
-  /// Title for preferred duty group selection dialog
+  /// Title for my duty group selection dialog
   ///
   /// In en, this message translates to:
-  /// **'Select Preferred Duty Group'**
-  String get selectPreferredDutyGroup;
+  /// **'Select My Duty Group'**
+  String get selectMyDutyGroup;
 
-  /// Description for preferred duty group setting
+  /// Description for my duty group setting
   ///
   /// In en, this message translates to:
   /// **'This duty group will be used for future functionality'**
-  String get preferredDutyGroupDescription;
+  String get myDutyGroupDescription;
 
-  /// Text shown when no preferred duty group is selected
+  /// Text shown when no my duty group is selected
   ///
   /// In en, this message translates to:
-  /// **'No preferred duty group set'**
-  String get noPreferredDutyGroup;
+  /// **'No duty group selected'**
+  String get noMyDutyGroup;
 
-  /// Description for no preferred duty group option
+  /// Description for no my duty group option
   ///
   /// In en, this message translates to:
   /// **'No duty group abbreviations will be shown on the calendar'**
-  String get noPreferredDutyGroupDescription;
+  String get noMyDutyGroupDescription;
 
   /// Title for general settings section
   ///
@@ -596,11 +596,11 @@ abstract class AppLocalizations {
   /// **'Disclaimer'**
   String get disclaimer;
 
-  /// Notice when the preferred duty group is reset on schedule change
+  /// Notice when the my duty group is reset on schedule change
   ///
   /// In en, this message translates to:
-  /// **'Preferred duty group was reset because it is not available in the new schedule.'**
-  String get preferredDutyGroupResetNotice;
+  /// **'Your duty group was reset because it is not available in the new schedule.'**
+  String get myDutyGroupResetNotice;
 
   /// Title for Sentry analytics and error reporting setting
   ///

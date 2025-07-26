@@ -17,7 +17,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/a
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/calendar_format_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/duty_schedule_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/language_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/preferred_duty_group_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_duty_group_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -179,11 +179,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             NavigationCard(
               icon: Icons.favorite,
-              title: l10n.preferredDutyGroup,
+              title: l10n.myDutyGroup,
               subtitle:
                   _getPreferredDutyGroupDisplayName(scheduleController, l10n),
-              onTap: () =>
-                  PreferredDutyGroupDialog.show(context, scheduleController),
+              onTap: () => MyDutyGroupDialog.show(context, scheduleController),
             ),
             NavigationCard(
               icon: Icons.view_week,
@@ -283,7 +282,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         NavigationCardSkeleton(
           icon: Icons.favorite,
-          title: l10n.preferredDutyGroup,
+          title: l10n.myDutyGroup,
           showSubtitleSkeleton: true, // Dynamisch geladen
         ),
         NavigationCardSkeleton(
@@ -369,13 +368,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       if (scheduleController.preferredDutyGroup == null ||
           scheduleController.preferredDutyGroup!.isEmpty) {
-        return l10n.noPreferredDutyGroup;
+        return l10n.noMyDutyGroup;
       }
       return scheduleController.preferredDutyGroup!;
     } catch (e) {
       AppLogger.e(
           'SettingsScreen: Error getting preferred duty group display name', e);
-      return l10n.noPreferredDutyGroup;
+      return l10n.noMyDutyGroup;
     }
   }
 

@@ -306,25 +306,25 @@
   "@errorSavingDefaultConfig": {
     "description": "Error message when saving default configuration fails"
   },
-  "preferredDutyGroup": "Bevorzugte Dienstgruppe",
-  "@preferredDutyGroup": {
-    "description": "Label for preferred duty group setting"
+  "myDutyGroup": "Meine Dienstgruppe",
+  "@myDutyGroup": {
+    "description": "Label for my duty group setting"
   },
-  "selectPreferredDutyGroup": "Bevorzugte Dienstgruppe auswählen",
-  "@selectPreferredDutyGroup": {
-    "description": "Title for preferred duty group selection dialog"
+  "selectMyDutyGroup": "Meine Dienstgruppe auswählen",
+  "@selectMyDutyGroup": {
+    "description": "Title for my duty group selection dialog"
   },
-  "preferredDutyGroupDescription": "Diese Dienstgruppe wird für zukünftige Funktionen verwendet",
-  "@preferredDutyGroupDescription": {
-    "description": "Description for preferred duty group setting"
+  "myDutyGroupDescription": "Diese Dienstgruppe wird für zukünftige Funktionen verwendet",
+  "@myDutyGroupDescription": {
+    "description": "Description for my duty group setting"
   },
-  "noPreferredDutyGroup": "Keine bevorzugte Dienstgruppe gesetzt",
-  "@noPreferredDutyGroup": {
-    "description": "Text shown when no preferred duty group is selected"
+  "noMyDutyGroup": "Keine Dienstgruppe ausgewählt",
+  "@noMyDutyGroup": {
+    "description": "Text shown when no my duty group is selected"
   },
-  "noPreferredDutyGroupDescription": "Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt",
-  "@noPreferredDutyGroupDescription": {
-    "description": "Description for no preferred duty group option"
+  "noMyDutyGroupDescription": "Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt",
+  "@noMyDutyGroupDescription": {
+    "description": "Description for no my duty group option"
   },
   "general": "Allgemein",
   "@general": {
@@ -338,9 +338,9 @@
   "@privacyPolicy": {
     "description": "Title for privacy policy option"
   },
-  "preferredDutyGroupResetNotice": "Die bevorzugte Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.",
-  "@preferredDutyGroupResetNotice": {
-    "description": "Hinweis, wenn die bevorzugte Dienstgruppe beim Dienstplanwechsel zurückgesetzt wird"
+  "myDutyGroupResetNotice": "Deine Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.",
+  "@myDutyGroupResetNotice": {
+    "description": "Hinweis, wenn die meine Dienstgruppe beim Dienstplanwechsel zurückgesetzt wird"
   },
   "sentryAnalytics": "Analysen & Fehlerberichte",
   "@sentryAnalytics": {

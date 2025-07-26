@@ -23,7 +23,7 @@ class ScheduleController extends ChangeNotifier {
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _activeConfig;
   String? _selectedDutyGroup;
-  String? _preferredDutyGroup;
+  String? _myDutyGroup;
   DateTime? _selectedDay;
   DateTime? _focusedDay;
   List<Schedule> _schedules = [];
@@ -74,7 +74,7 @@ class ScheduleController extends ChangeNotifier {
   }
 
   String? get selectedDutyGroup => _selectedDutyGroup;
-  String? get preferredDutyGroup => _preferredDutyGroup;
+  String? get preferredDutyGroup => _myDutyGroup;
   DateTime? get selectedDay => _selectedDay;
   DateTime? get focusedDay => _focusedDay;
   List<Schedule> get schedules => _schedules;
@@ -113,34 +113,33 @@ class ScheduleController extends ChangeNotifier {
   }
 
   set preferredDutyGroup(String? value) {
-    _preferredDutyGroup = value;
+    _myDutyGroup = value;
     notifyListeners();
 
     // Use unawaited to prevent blocking the UI while saving
-    _savePreferredDutyGroup(value).catchError((e, stackTrace) {
+    _saveMyDutyGroup(value).catchError((e, stackTrace) {
       AppLogger.e('ScheduleController: Error in preferredDutyGroup setter', e,
           stackTrace);
     });
   }
 
-  Future<void> _savePreferredDutyGroup(String? value) async {
+  Future<void> _saveMyDutyGroup(String? value) async {
     try {
       final currentSettings = await getSettingsUseCase.execute();
-      if (currentSettings != null &&
-          currentSettings.preferredDutyGroup != value) {
+      if (currentSettings != null && currentSettings.myDutyGroup != value) {
         AppLogger.i(
-            'ScheduleController: Preferred duty group changed, saving settings');
+            'ScheduleController: My duty group changed, saving settings');
         final updatedSettings = currentSettings.copyWith(
-          preferredDutyGroup: value,
+          myDutyGroup: value,
         );
         await saveSettingsUseCase.execute(updatedSettings);
       } else {
         AppLogger.d(
-            'ScheduleController: Preferred duty group unchanged, skipping save');
+            'ScheduleController: My duty group unchanged, skipping save');
       }
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleController: Error saving preferred duty group', e,
-          stackTrace);
+      AppLogger.e(
+          'ScheduleController: Error saving my duty group', e, stackTrace);
       // Don't rethrow to prevent UI crashes
     }
   }
@@ -617,7 +616,7 @@ class ScheduleController extends ChangeNotifier {
       await _loadActiveConfig();
 
       // Load preferred duty group from settings
-      await _loadPreferredDutyGroup();
+      await _loadMyDutyGroup();
 
       // Load selected and focused day from settings
       await _loadSelectedAndFocusedDay();
@@ -681,16 +680,16 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadPreferredDutyGroup() async {
+  Future<void> _loadMyDutyGroup() async {
     try {
       final settings = await getSettingsUseCase.execute();
-      if (settings != null && settings.preferredDutyGroup != null) {
-        _preferredDutyGroup = settings.preferredDutyGroup;
+      if (settings != null && settings.myDutyGroup != null) {
+        _myDutyGroup = settings.myDutyGroup;
         notifyListeners();
       }
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleController: Error loading preferred duty group', e,
-          stackTrace);
+      AppLogger.e(
+          'ScheduleController: Error loading my duty group', e, stackTrace);
     }
   }
 
@@ -747,7 +746,7 @@ class ScheduleController extends ChangeNotifier {
       await _saveActiveConfig(config.name);
 
       // Check if preferred duty group is still available in new config
-      await _validatePreferredDutyGroup();
+      await _validateMyDutyGroup();
 
       // Clear old schedules and load new ones for the active config
       await _refreshSchedulesForNewConfig();
@@ -778,14 +777,14 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  Future<void> _validatePreferredDutyGroup() async {
-    if (_preferredDutyGroup != null && _activeConfig != null) {
+  Future<void> _validateMyDutyGroup() async {
+    if (_myDutyGroup != null && _activeConfig != null) {
       final availableGroups =
           _activeConfig!.dutyGroups.map((group) => group.name).toList();
-      if (!availableGroups.contains(_preferredDutyGroup)) {
-        // Preferred duty group is not available in new config, reset it
-        _preferredDutyGroup = null;
-        await _savePreferredDutyGroup(null);
+      if (!availableGroups.contains(_myDutyGroup)) {
+        // My duty group is not available in new config, reset it
+        _myDutyGroup = null;
+        await _saveMyDutyGroup(null);
         notifyListeners();
       }
     }
@@ -1056,7 +1055,7 @@ class ScheduleController extends ChangeNotifier {
       await _refreshActiveConfigFromSettings();
 
       // Load preferred duty group from settings to ensure consistency
-      await _loadPreferredDutyGroup();
+      await _loadMyDutyGroup();
 
       // Check if any relevant settings have changed
       final activeConfigChanged = previousActiveConfig != _activeConfig?.name;

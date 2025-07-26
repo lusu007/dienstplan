@@ -147,7 +147,7 @@ class _SetupScreenState extends State<SetupScreen> {
         focusedDay: DateTime.now(),
         selectedDay: DateTime.now(),
         calendarFormat: CalendarFormat.month,
-        preferredDutyGroup: _selectedDutyGroup,
+        myDutyGroup: _selectedDutyGroup,
         activeConfigName: _selectedConfig!.name,
       );
       await settingsController.saveSettings(initialSettings);
@@ -340,8 +340,8 @@ class _SetupScreenState extends State<SetupScreen> {
 
               // Last item is "no preferred duty group"
               return SelectionCard(
-                title: l10n.noPreferredDutyGroup,
-                subtitle: l10n.noPreferredDutyGroupDescription,
+                title: l10n.noMyDutyGroup,
+                subtitle: l10n.noMyDutyGroupDescription,
                 leadingIcon: Icons.clear,
                 isSelected:
                     _selectedDutyGroup == null && _hasMadeDutyGroupSelection,

@@ -238,20 +238,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorSavingDefaultConfig => 'Error saving default configuration';
 
   @override
-  String get preferredDutyGroup => 'Preferred Duty Group';
+  String get myDutyGroup => 'My Duty Group';
 
   @override
-  String get selectPreferredDutyGroup => 'Select Preferred Duty Group';
+  String get selectMyDutyGroup => 'Select My Duty Group';
 
   @override
-  String get preferredDutyGroupDescription =>
+  String get myDutyGroupDescription =>
       'This duty group will be used for future functionality';
 
   @override
-  String get noPreferredDutyGroup => 'No preferred duty group set';
+  String get noMyDutyGroup => 'No duty group selected';
 
   @override
-  String get noPreferredDutyGroupDescription =>
+  String get noMyDutyGroupDescription =>
       'No duty group abbreviations will be shown on the calendar';
 
   @override
@@ -267,8 +267,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get disclaimer => 'Disclaimer';
 
   @override
-  String get preferredDutyGroupResetNotice =>
-      'Preferred duty group was reset because it is not available in the new schedule.';
+  String get myDutyGroupResetNotice =>
+      'Your duty group was reset because it is not available in the new schedule.';
 
   @override
   String get sentryAnalytics => 'Analytics & Error Reporting';

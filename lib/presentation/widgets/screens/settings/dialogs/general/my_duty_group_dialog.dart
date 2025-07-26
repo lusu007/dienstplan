@@ -4,7 +4,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 
-class PreferredDutyGroupDialog {
+class MyDutyGroupDialog {
   static void show(BuildContext context, ScheduleController controller) {
     final l10n = AppLocalizations.of(context);
 
@@ -33,7 +33,7 @@ class PreferredDutyGroupDialog {
           // If no duty groups available, show message
           if (dutyGroups.isEmpty) {
             return AlertDialog(
-              title: Text(l10n.selectPreferredDutyGroup),
+              title: Text(l10n.selectMyDutyGroup),
               content: const Text(
                   'No duty groups available in the current schedule.'),
               actions: [
@@ -46,7 +46,7 @@ class PreferredDutyGroupDialog {
           }
 
           return AlertDialog(
-            title: Text(l10n.selectPreferredDutyGroup),
+            title: Text(l10n.selectMyDutyGroup),
             content: ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -67,7 +67,7 @@ class PreferredDutyGroupDialog {
                           useDialogStyle: true,
                         )),
                     SelectionCard(
-                      title: l10n.noPreferredDutyGroup,
+                      title: l10n.noMyDutyGroup,
                       isSelected: controller.preferredDutyGroup == null,
                       onTap: () {
                         controller.preferredDutyGroup = null;

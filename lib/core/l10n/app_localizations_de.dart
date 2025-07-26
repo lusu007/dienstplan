@@ -239,20 +239,20 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Speichern der Standard-Konfiguration';
 
   @override
-  String get preferredDutyGroup => 'Bevorzugte Dienstgruppe';
+  String get myDutyGroup => 'Meine Dienstgruppe';
 
   @override
-  String get selectPreferredDutyGroup => 'Bevorzugte Dienstgruppe auswählen';
+  String get selectMyDutyGroup => 'Meine Dienstgruppe auswählen';
 
   @override
-  String get preferredDutyGroupDescription =>
+  String get myDutyGroupDescription =>
       'Diese Dienstgruppe wird für zukünftige Funktionen verwendet';
 
   @override
-  String get noPreferredDutyGroup => 'Keine bevorzugte Dienstgruppe gesetzt';
+  String get noMyDutyGroup => 'Keine Dienstgruppe ausgewählt';
 
   @override
-  String get noPreferredDutyGroupDescription =>
+  String get noMyDutyGroupDescription =>
       'Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt';
 
   @override
@@ -268,8 +268,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get disclaimer => 'Haftungsausschluss';
 
   @override
-  String get preferredDutyGroupResetNotice =>
-      'Die bevorzugte Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.';
+  String get myDutyGroupResetNotice =>
+      'Deine Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.';
 
   @override
   String get sentryAnalytics => 'Analysen & Fehlerberichte';

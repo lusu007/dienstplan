@@ -36,16 +36,13 @@ class DutyScheduleDialog {
                       controller.activeConfig?.meta.name == config.meta.name,
                   onTap: () async {
                     try {
-                      final oldPreferred = controller.preferredDutyGroup;
-
                       // Set active config first
                       try {
                         await controller.setActiveConfig(config);
 
-                        // Reset preferred duty group when switching duty plans
-                        if (oldPreferred != null) {
-                          controller.preferredDutyGroup = null;
-                        }
+                        // Always reset preferred duty group when switching duty plans
+                        // This ensures the user must explicitly choose a preferred duty group for the new plan
+                        controller.preferredDutyGroup = null;
 
                         // Close dialog after successful operation
                         if (dialogContext.mounted) {

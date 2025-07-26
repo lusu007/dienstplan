@@ -302,25 +302,25 @@
   "@errorSavingDefaultConfig": {
     "description": "Error message when saving default configuration fails"
   },
-  "preferredDutyGroup": "Preferred Duty Group",
-  "@preferredDutyGroup": {
-    "description": "Label for preferred duty group setting"
+  "myDutyGroup": "My Duty Group",
+  "@myDutyGroup": {
+    "description": "Label for my duty group setting"
   },
-  "selectPreferredDutyGroup": "Select Preferred Duty Group",
-  "@selectPreferredDutyGroup": {
-    "description": "Title for preferred duty group selection dialog"
+  "selectMyDutyGroup": "Select My Duty Group",
+  "@selectMyDutyGroup": {
+    "description": "Title for my duty group selection dialog"
   },
-  "preferredDutyGroupDescription": "This duty group will be used for future functionality",
-  "@preferredDutyGroupDescription": {
-    "description": "Description for preferred duty group setting"
+  "myDutyGroupDescription": "This duty group will be used for future functionality",
+  "@myDutyGroupDescription": {
+    "description": "Description for my duty group setting"
   },
-  "noPreferredDutyGroup": "No preferred duty group set",
-  "@noPreferredDutyGroup": {
-    "description": "Text shown when no preferred duty group is selected"
+  "noMyDutyGroup": "No duty group selected",
+  "@noMyDutyGroup": {
+    "description": "Text shown when no my duty group is selected"
   },
-  "noPreferredDutyGroupDescription": "No duty group abbreviations will be shown on the calendar",
-  "@noPreferredDutyGroupDescription": {
-    "description": "Description for no preferred duty group option"
+  "noMyDutyGroupDescription": "No duty group abbreviations will be shown on the calendar",
+  "@noMyDutyGroupDescription": {
+    "description": "Description for no my duty group option"
   },
   "general": "General",
   "@general": {
@@ -338,9 +338,9 @@
   "@disclaimer": {
     "description": "Title for disclaimer option"
   },
-  "preferredDutyGroupResetNotice": "Preferred duty group was reset because it is not available in the new schedule.",
-  "@preferredDutyGroupResetNotice": {
-    "description": "Notice when the preferred duty group is reset on schedule change"
+  "myDutyGroupResetNotice": "Your duty group was reset because it is not available in the new schedule.",
+  "@myDutyGroupResetNotice": {
+    "description": "Notice when the my duty group is reset on schedule change"
   },
   "sentryAnalytics": "Analytics & Error Reporting",
   "@sentryAnalytics": {
