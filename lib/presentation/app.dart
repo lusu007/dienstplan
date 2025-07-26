@@ -39,37 +39,41 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Use a fallback locale if language service is not ready yet
-    final currentLocale = _languageService?.currentLocale ?? const Locale('de');
+    return ListenableBuilder(
+      listenable: _languageService ?? LanguageService(),
+      builder: (context, child) {
+        final locale = _languageService?.currentLocale ?? const Locale('de');
 
-    return MaterialApp(
-      title: 'Dienstplan',
-      navigatorObservers: [_routeObserver],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF005B8C),
-          primary: const Color(0xFF005B8C),
-        ),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF005B8C),
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+        return MaterialApp(
+          title: 'Dienstplan',
+          navigatorObservers: [_routeObserver],
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF005B8C),
+              primary: const Color(0xFF005B8C),
+            ),
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0xFF005B8C),
+              titleTextStyle: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+              iconTheme: IconThemeData(color: Colors.white),
+            ),
           ),
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
-      ),
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      locale: currentLocale,
-      home: AppInitializerWidget(routeObserver: _routeObserver),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: locale,
+          home: AppInitializerWidget(routeObserver: _routeObserver),
+        );
+      },
     );
   }
 }
