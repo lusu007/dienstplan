@@ -59,8 +59,10 @@ class _SetupScreenState extends State<SetupScreen> {
 
   Future<void> _loadConfigs() async {
     try {
+      AppLogger.i('Loading duty schedule configurations');
       await _configService.initialize();
       final configs = _configService.configs;
+      AppLogger.i('Loaded ${configs.length} configurations');
       if (mounted) {
         setState(() {
           _configs = configs;
@@ -96,6 +98,7 @@ class _SetupScreenState extends State<SetupScreen> {
 
   Future<void> _saveDefaultConfig() async {
     try {
+      AppLogger.i('Starting setup completion process');
       setState(() {
         _isGeneratingSchedules = true;
       });
@@ -157,6 +160,8 @@ class _SetupScreenState extends State<SetupScreen> {
 
       // Mark setup as completed
       await _configService.markSetupCompleted();
+      AppLogger.i(
+          'Setup completed successfully for config: ${_selectedConfig!.name}');
 
       if (!mounted) return;
 

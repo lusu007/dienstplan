@@ -38,5 +38,8 @@ class SentryConfig {
     options.profilesSampleRate = profilesSampleRate;
     options.replay.sessionSampleRate = replaySessionSampleRate;
     options.replay.onErrorSampleRate = replayOnErrorSampleRate;
+
+    // Enable Sentry logs only when analytics and error reporting is enabled
+    options.enableLogs = sentryService.isEnabled;
   }
 }
