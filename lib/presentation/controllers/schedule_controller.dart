@@ -350,6 +350,12 @@ class ScheduleController extends ChangeNotifier {
       _selectedDay = day;
       notifyListeners();
 
+      // Save the selected day to settings
+      _saveSelectedDay(day).catchError((e, stackTrace) {
+        AppLogger.e(
+            'ScheduleController: Error saving selected day', e, stackTrace);
+      });
+
       // Check if we have schedules for this day, if not, load them
       _ensureSchedulesForSelectedDay(day);
     } catch (e, stackTrace) {
@@ -367,13 +373,13 @@ class ScheduleController extends ChangeNotifier {
             schedule.date.day == day.day;
       });
 
-      // If no schedules for this day, load them for the entire month plus 2 months before and after
+      // If no schedules for this day, load them for the entire month plus 3 months before and after
       // This ensures that out-days are covered
       if (!hasSchedulesForDay) {
-        // Load schedules for the entire current month plus 2 months before and after
-        final startDate = DateTime(day.year, day.month - 2, 1);
+        // Load schedules for the entire current month plus 3 months before and after
+        final startDate = DateTime(day.year, day.month - 3, 1);
         final endDate =
-            DateTime(day.year, day.month + 3, 0); // Last day of 2 months after
+            DateTime(day.year, day.month + 4, 0); // Last day of 3 months after
 
         await loadSchedulesForRange(startDate, endDate);
       }
@@ -419,6 +425,12 @@ class ScheduleController extends ChangeNotifier {
       final previousFocusedDay = _focusedDay;
       _focusedDay = focusedDay;
 
+      // Save the focused day to settings
+      _saveFocusedDay(focusedDay).catchError((e, stackTrace) {
+        AppLogger.e(
+            'ScheduleController: Error saving focused day', e, stackTrace);
+      });
+
       // Always notify listeners immediately when focused day changes
       notifyListeners();
 
@@ -460,49 +472,77 @@ class ScheduleController extends ChangeNotifier {
 
   Future<void> _loadSchedulesForCurrentMonth(DateTime focusedDay) async {
     try {
-      // Load current month ±2 months to cover all visible days (including out-days)
-      DateTime startDate = DateTime(focusedDay.year, focusedDay.month - 2, 1);
-      DateTime endDate = DateTime(focusedDay.year, focusedDay.month + 3, 0);
+      // First, ensure selectedDay is in the focused month to avoid extending the range unnecessarily
+      if (_selectedDay == null ||
+          _selectedDay!.year != focusedDay.year ||
+          _selectedDay!.month != focusedDay.month) {
+        final newSelectedDay = DateTime(focusedDay.year, focusedDay.month, 1);
+        AppLogger.i(
+            'ScheduleController: Setting selectedDay to focused month: ${newSelectedDay.toIso8601String()}');
+        _selectedDay = newSelectedDay;
 
-      // If we have a selected day, ensure it's also covered in the loading range
-      if (_selectedDay != null) {
-        final selectedDay = _selectedDay!;
-
-        // Check if selected day is outside the current loading range
-        if (selectedDay.isBefore(startDate) || selectedDay.isAfter(endDate)) {
-          AppLogger.i(
-              'ScheduleController: Selected day ${selectedDay.toIso8601String()} is outside current range, extending loading range');
-
-          // Extend the range to include selected day ±1 month
-          final selectedDayStart =
-              DateTime(selectedDay.year, selectedDay.month - 1, 1);
-          final selectedDayEnd =
-              DateTime(selectedDay.year, selectedDay.month + 2, 0);
-
-          // Use the broader range that covers both focused day and selected day
-          startDate = startDate.isBefore(selectedDayStart)
-              ? startDate
-              : selectedDayStart;
-          endDate = endDate.isAfter(selectedDayEnd) ? endDate : selectedDayEnd;
-
-          AppLogger.i(
-              'ScheduleController: Extended loading range to: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
-        }
+        // Save the new selected day to settings
+        _saveSelectedDay(newSelectedDay).catchError((e, stackTrace) {
+          AppLogger.e(
+              'ScheduleController: Error saving selected day', e, stackTrace);
+        });
       }
+
+      // Load focused month ±3 months to cover all visible days
+      final DateTime startDate =
+          DateTime(focusedDay.year, focusedDay.month - 3, 1);
+      final DateTime endDate =
+          DateTime(focusedDay.year, focusedDay.month + 4, 0);
+
+      AppLogger.i(
+          'ScheduleController: Loading schedules for range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
 
       // Ensure we have a consistent view of the active config
       final activeConfig = _activeConfig;
 
       if (activeConfig == null) {
         AppLogger.w(
-            'ScheduleController: _loadSchedulesForCurrentMonth - No active config available');
+            'ScheduleController: _loadSchedulesForCurrentMonth - No active config available, attempting to load schedules anyway');
+
+        // Try to load schedules without an active config to see what's available
+        await loadSchedulesForRange(startDate, endDate);
+
+        // If we loaded some schedules, try to determine the active config
+        if (_schedules.isNotEmpty) {
+          final configCounts = <String, int>{};
+          for (final schedule in _schedules) {
+            configCounts[schedule.configName] =
+                (configCounts[schedule.configName] ?? 0) + 1;
+          }
+
+          // Find the config with the most schedules
+          String? mostUsedConfig;
+          int maxCount = 0;
+          for (final entry in configCounts.entries) {
+            if (entry.value > maxCount) {
+              maxCount = entry.value;
+              mostUsedConfig = entry.key;
+            }
+          }
+
+          if (mostUsedConfig != null) {
+            // Find the config object and set it as active
+            try {
+              final configToSet = _configs
+                  .firstWhere((config) => config.name == mostUsedConfig);
+              _activeConfig = configToSet;
+              AppLogger.i(
+                  'ScheduleController: Auto-selected active config: ${configToSet.name}');
+              notifyListeners();
+            } catch (e) {
+              AppLogger.w(
+                  'ScheduleController: Could not find config object for: $mostUsedConfig');
+            }
+          }
+        }
+
         return;
       }
-
-      AppLogger.i(
-          'ScheduleController: Loading schedules for range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
-      AppLogger.i(
-          'ScheduleController: _loadSchedulesForCurrentMonth - Active config before loadSchedulesForRange: ${activeConfig.name}');
 
       await loadSchedulesForRange(startDate, endDate);
 
@@ -624,10 +664,11 @@ class ScheduleController extends ChangeNotifier {
       // Load calendar format from settings
       await _loadCalendarFormat();
 
-      // Load schedules for current month if we have an active config and focused day
-      if (_activeConfig != null && _focusedDay != null) {
-        await _loadSchedulesForCurrentMonth(_focusedDay!);
-      }
+      // Load schedules for current month ±3 months as fallback
+      final now = DateTime.now();
+      final startDate = DateTime(now.year, now.month - 3, 1);
+      final endDate = DateTime(now.year, now.month + 4, 0);
+      await loadSchedulesForRange(startDate, endDate);
     } catch (e, stackTrace) {
       _error = 'Failed to load configs';
       AppLogger.e('ScheduleController: Error loading configs', e, stackTrace);
@@ -922,11 +963,11 @@ class ScheduleController extends ChangeNotifier {
 
       // Reload schedules for current range
       if (_selectedDay != null) {
-        // Use the same range as _loadSchedulesForCurrentMonth (±2 months)
+        // Use the same range as _loadSchedulesForCurrentMonth (±3 months)
         final startDate =
-            DateTime(_selectedDay!.year, _selectedDay!.month - 2, 1);
+            DateTime(_selectedDay!.year, _selectedDay!.month - 3, 1);
         final endDate =
-            DateTime(_selectedDay!.year, _selectedDay!.month + 3, 0);
+            DateTime(_selectedDay!.year, _selectedDay!.month + 4, 0);
         await loadSchedulesForRange(startDate, endDate);
       }
     } catch (e, stackTrace) {
@@ -942,7 +983,18 @@ class ScheduleController extends ChangeNotifier {
   Future<void> loadSchedulesForCurrentMonth() async {
     if (_focusedDay != null && _activeConfig != null) {
       await _loadSchedulesForCurrentMonth(_focusedDay!);
-    } else {}
+    } else if (_focusedDay != null) {
+      // If we have a focused day but no active config, still try to load schedules
+      await _loadSchedulesForCurrentMonth(_focusedDay!);
+    } else if (_activeConfig != null) {
+      // If we have an active config but no focused day, use current date
+      final now = DateTime.now();
+      await _loadSchedulesForCurrentMonth(now);
+    } else {
+      // If we have neither, use current date and try to load anyway
+      final now = DateTime.now();
+      await _loadSchedulesForCurrentMonth(now);
+    }
   }
 
   Future<void> _refreshSchedulesForNewConfig() async {
@@ -1114,5 +1166,46 @@ class ScheduleController extends ChangeNotifier {
   /// Get settings cache statistics for debugging
   Map<String, dynamic> getSettingsCacheStatistics() {
     return SettingsCache.cacheStatistics;
+  }
+
+  Future<void> _saveSelectedDay(DateTime selectedDay) async {
+    try {
+      final currentSettings = await getSettingsUseCase.execute();
+      if (currentSettings != null &&
+          currentSettings.selectedDay != selectedDay) {
+        AppLogger.i(
+            'ScheduleController: Selected day changed, saving settings');
+        final updatedSettings = currentSettings.copyWith(
+          selectedDay: selectedDay,
+        );
+        await saveSettingsUseCase.execute(updatedSettings);
+      } else {
+        AppLogger.d(
+            'ScheduleController: Selected day unchanged, skipping save');
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error saving selected day', e, stackTrace);
+      // Don't rethrow to prevent UI crashes
+    }
+  }
+
+  Future<void> _saveFocusedDay(DateTime focusedDay) async {
+    try {
+      final currentSettings = await getSettingsUseCase.execute();
+      if (currentSettings != null && currentSettings.focusedDay != focusedDay) {
+        AppLogger.i('ScheduleController: Focused day changed, saving settings');
+        final updatedSettings = currentSettings.copyWith(
+          focusedDay: focusedDay,
+        );
+        await saveSettingsUseCase.execute(updatedSettings);
+      } else {
+        AppLogger.d('ScheduleController: Focused day unchanged, skipping save');
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error saving focused day', e, stackTrace);
+      // Don't rethrow to prevent UI crashes
+    }
   }
 }
