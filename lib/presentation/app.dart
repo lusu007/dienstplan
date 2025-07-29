@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('App-Update'),
+          title: const Text('Datenbank Migration'),
           content: Text(message),
           actions: [
             TextButton(
