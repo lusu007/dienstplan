@@ -5,6 +5,8 @@
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-orange.svg)](https://github.com/lusu007/dienstplan)
 [![Version](https://img.shields.io/badge/Version-0.5.1-brightgreen.svg)](https://github.com/lusu007/dienstplan/releases)
 
+![Vorstellungsgrafik](static/Vorstellungsgrafik.png)
+
 A modern, cross-platform mobile application designed specifically for police officers to manage and view their duty schedules. Built with Flutter using clean architecture principles for optimal performance and maintainability.
 
 ---
