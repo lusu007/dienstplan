@@ -106,10 +106,11 @@ class _CalendarScreenState extends State<CalendarScreen>
       await _determineActiveConfigFromSchedules();
     }
 
-    // Load schedules immediately after configs are loaded
-    if (_scheduleController!.activeConfig != null) {
-      await _scheduleController!.loadSchedulesForCurrentMonth();
-    }
+    // Load schedules for the entire visible month range (±3 months around current month)
+    final now = DateTime.now();
+    final startDate = DateTime(now.year, now.month - 3, 1);
+    final endDate = DateTime(now.year, now.month + 4, 0);
+    await _scheduleController!.loadSchedulesForRange(startDate, endDate);
 
     // Add listener to controller to react to format changes
     _scheduleController!.addListener(_onControllerChanged);
