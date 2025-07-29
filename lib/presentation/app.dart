@@ -19,11 +19,18 @@ class _MyAppState extends State<MyApp> {
   final RouteObserver<ModalRoute<void>> _routeObserver =
       RouteObserver<ModalRoute<void>>();
 
+  // Global navigator key for showing dialogs
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  // Queue for migration messages
+  final List<String> _migrationMessageQueue = [];
+  bool _isShowingSnackbar = false;
+
   @override
   void initState() {
     super.initState();
     _initializeControllers();
-    _setupMigrationDialog();
+    _setupMigrationSnackbar();
   }
 
   void _initializeControllers() {
@@ -39,34 +46,59 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _setupMigrationDialog() {
-    // Set up the migration dialog callback
-    DatabaseService.setMigrationDialogCallback(_showMigrationDialog);
+  void _setupMigrationSnackbar() {
+    // Set up the migration snackbar callback
+    DatabaseService.setMigrationDialogCallback(_queueMigrationSnackbar);
   }
 
-  void _showMigrationDialog(String message) {
-    // Show migration dialog when called from database service
+  void _queueMigrationSnackbar(String message) {
+    _migrationMessageQueue.add(message);
+    _processMigrationQueue();
+  }
+
+  void _processMigrationQueue() {
+    if (_migrationMessageQueue.isEmpty || _isShowingSnackbar) {
+      return;
+    }
+
+    // Wait for the app to be fully initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('App-Update'),
-              content: Text(message),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        if (mounted && _migrationMessageQueue.isNotEmpty) {
+          _showNextMigrationSnackbar();
+        }
+      });
+    });
+  }
+
+  void _showNextMigrationSnackbar() {
+    if (_migrationMessageQueue.isEmpty || _isShowingSnackbar) {
+      return;
+    }
+
+    _isShowingSnackbar = true;
+    final message = _migrationMessageQueue.removeAt(0);
+
+    // Show snackbar instead of dialog
+    ScaffoldMessenger.of(_navigatorKey.currentContext!).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            ScaffoldMessenger.of(_navigatorKey.currentContext!)
+                .hideCurrentSnackBar();
           },
-        );
-      }
+        ),
+      ),
+    );
+
+    // Reset flag after a delay
+    Future.delayed(const Duration(seconds: 5), () {
+      _isShowingSnackbar = false;
+      // Process next message in queue
+      _processMigrationQueue();
     });
   }
 
@@ -79,6 +111,7 @@ class _MyAppState extends State<MyApp> {
 
         return MaterialApp(
           title: 'Dienstplan',
+          navigatorKey: _navigatorKey,
           navigatorObservers: [_routeObserver],
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
