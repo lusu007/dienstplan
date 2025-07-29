@@ -3,74 +3,44 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.32.7-blue.svg)](https://flutter.dev)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-orange.svg)](https://github.com/lusu007/dienstplan)
+[![Version](https://img.shields.io/badge/Version-0.5.1-brightgreen.svg)](https://github.com/lusu007/dienstplan/releases)
 
-A modern, cross-platform mobile application designed specifically for police officers to manage and view their duty schedules. Built with Flutter for optimal performance and user experience.
+![Vorstellungsgrafik](static/Vorstellungsgrafik.png)
+
+A modern, cross-platform mobile application designed specifically for police officers to manage and view their duty schedules. Built with Flutter using clean architecture principles for optimal performance and maintainability.
 
 ---
 
 ## 🚀 Features
 
 ### 📱 Core Functionality
-- **📅 Calendar View**: Intuitive calendar interface showing duty schedules
-- **👥 Duty Group Selection**: Choose your preferred duty group for personalized views
-- **🔄 Offline Access**: Full offline functionality - no internet required
-- **⚡ Fast Performance**: Optimized with database indexes for quick loading
-- **🌍 Localization**: Multi-language support with German as primary language
+- **📅 Interactive Calendar**: Easy-to-use calendar with month and year picker for quick navigation to any date
+- **👥 Personal Duty Group**: Set your preferred duty group for personalized schedule views
+- **🔄 Works Offline**: No internet connection required - all data stored on your device
+- **⚡ Fast Loading**: Quick access to your schedule with optimized performance
+- **🌍 German Language**: Full German localization for native users
+- **📊 Multiple Schedules**: Switch between different duty schedule types (e.g., Bereitschaftspolizei, ESD)
 
 ### 🛠 Advanced Features
-- **📊 Multiple Schedule Support**: Load and manage different duty schedule configurations
-- **🎯 Preferred Duty Group**: Set your preferred duty group for quick access
-- **📋 Duty Details**: Tap any date to view detailed duty information
-- **🔧 Flexible Configuration**: JSON-based schedule configuration system
-- **📱 Modern UI**: Clean, intuitive interface optimized for mobile use
+- **🎯 Smart Schedule Generation**: Automatically generates your schedule based on rotation patterns
+- **📋 Detailed Duty Information**: Tap any date to see your specific duty details and times
+- **🔧 Flexible Duty Types**: Support for various duty types like Frühdienst, Spätdienst, Nachtdienst, and special assignments
+- **📱 Modern Interface**: Clean, intuitive design that's easy to navigate
+- **🔄 Remember Your Settings**: App remembers your preferences, selected dates, and duty group
+- **📊 Filter Your View**: Filter schedules by duty group to focus on your assignments
 
 ### 🔒 Privacy & Security
-- **🔐 Local Storage**: All data stored locally on your device
-- **🚫 No Cloud Sync**: Your schedule data never leaves your device
-- **📊 No Analytics**: No tracking or data collection
+- **🔐 Your Data Stays Private**: All schedule data stored locally on your device
+- **🚫 No Cloud Sync**: Your personal schedule information never leaves your device
+- **📊 Optional Error Reporting**: Help improve the app with optional error reporting (can be turned off)
+- **🔒 Complete Privacy**: No personal data collection or tracking
 
-### Advanced Features
-- **Multiple Rhythms**: Support for different rotation patterns
-- **Flexible Duty Types**: Custom duty types with labels and flags
-- **Week Offsets**: Different groups can start at different weeks
-- **All-Day Duties**: Special handling for full-day assignments
-- **Version Control**: Schema versioning for compatibility
-- **Custom Icons**: Visual identification of schedules in the UI
-
-### Available Icons
-The `icon` field in the meta section supports various icon names:
-
-#### **Police & Security**
-- `shield`, `security`, `police`, `badge`
-
-#### **Vehicles**
-- `car`, `directions_car`, `vehicle`, `motorcycle`, `bike`
-
-#### **Emergency & Medical**
-- `emergency`, `medical`, `ambulance`, `fire`
-
-#### **Communication**
-- `phone`, `radio`, `message`
-
-#### **Time & Schedule**
-- `schedule`, `time`, `calendar`, `clock`
-
-#### **Location & Navigation**
-- `location`, `map`, `navigation`, `gps`
-
-#### **General**
-- `star`, `favorite`, `check`, `warning`, `info`, `settings`, `group`, `person`, `people`, `team`
-
-#### **Movement & Activity**
-- `directions`, `route`, `traffic`, `patrol`, `walk`, `run`, `exercise`
-
-#### **Equipment & Tools**
-- `tool`, `equipment`, `gear`, `device`
-
-#### **Weather & Environment**
-- `weather`, `sun`, `rain`, `storm`
-
-If no icon is specified or an invalid icon name is used, a default schedule icon will be displayed.
+### 🏗 Technical Features
+- **Clean Architecture**: Separation of concerns with domain, data, and presentation layers
+- **Dependency Injection**: GetIt-based service locator for testable components
+- **State Management**: Provider pattern with ChangeNotifier for reactive UI
+- **Database Migration**: Automatic schema updates with user notifications
+- **Error Handling**: Comprehensive error tracking and user-friendly error messages
 
 ---
 
@@ -101,106 +71,111 @@ For detailed development setup and workflow, see [CONTRIBUTING.md](CONTRIBUTING.
 
 ## 🏗 Architecture
 
-### Schedule Format
-Duty schedules are defined using JSON configuration files in `assets/schedules/`. The format supports comprehensive schedule management:
-
-```json
-{
-  "version": "1.1",
-  "meta": {
-    "name": "Example Duty Schedule",
-    "created_by": "Schedule Creator",
-    "description": "Example rotation schedule for demonstration",
-    "start_week_day": "Monday",
-    "start_date": "2024-01-01",
-    "days": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
-    "icon": "shield"
-  },
-      "duty_types": {
-      "F": {
-        "label": "Frühdienst",
-        "icon": "wb_sunny"
-      },
-      "S": {
-        "label": "Spätdienst",
-        "icon": "schedule"
-      },
-      "N": {
-        "label": "Nachtdienst",
-        "icon": "bedtime"
-      },
-      "ZD": {
-        "label": "Zusatzdienst",
-        "all_day": true,
-        "icon": "add_circle"
-      },
-      "-": {
-        "label": "Frei",
-        "all_day": true,
-        "icon": "weekend"
-      }
-    },
-  "duty_type_order": ["F", "S", "N", "ZD", "-"],
-  "rhythms": {
-    "example_rhythm": {
-      "length_weeks": 4,
-      "pattern": [
-        ["-", "F", "F", "F", "F", "-", "-"],
-        ["S", "S", "S", "S", "-", "-", "-"],
-        ["N", "N", "N", "-", "-", "-", "-"],
-        ["-", "-", "-", "ZD", "ZD", "-", "-"]
-      ]
-    }
-  },
-  "dienstgruppen": [
-    {
-      "id": "DG1",
-      "name": "Dienstgruppe 1",
-      "rhythm": "example_rhythm",
-      "offset_weeks": 0
-    }
-  ]
-}
+### Project Structure
+```
+lib/
+├── core/                    # Core utilities and services
+│   ├── di/                 # Dependency injection
+│   ├── initialization/     # App initialization
+│   ├── services/          # Core services
+│   ├── utils/             # Utilities and helpers
+│   └── cache/             # Caching mechanisms
+├── data/                   # Data layer
+│   ├── data_sources/      # Data sources (local, remote)
+│   ├── models/            # Data models
+│   ├── repositories/      # Repository implementations
+│   └── services/          # Data services
+├── domain/                 # Domain layer
+│   ├── entities/          # Business entities
+│   ├── use_cases/         # Business logic use cases
+│   └── repositories/      # Repository interfaces
+└── presentation/           # Presentation layer
+    ├── controllers/       # State management controllers
+    ├── screens/           # UI screens
+    └── widgets/           # Reusable UI components
 ```
 
-### Configuration Elements
+### Schedule Configuration Format
+Duty schedules are defined using JSON configuration files in `assets/schedules/`. The format supports comprehensive schedule management.
 
-#### **Metadata (`meta`)**
-- **`name`**: Display name for the schedule
+#### Configuration Elements
+
+##### **Metadata (`meta`)**
+- **`name`**: Display name for the schedule configuration
 - **`created_by`**: Author of the schedule
 - **`description`**: Detailed description of the schedule
 - **`start_week_day`**: First day of the week (e.g., "Monday")
 - **`start_date`**: Reference date for schedule calculations
 - **`days`**: Array of day abbreviations
-- **`icon`**: Icon identifier for the schedule
+- **`icon`**: Icon identifier for visual representation
 
-#### **Duty Types (`duty_types`)**
+##### **Duty Types (`duty_types`)**
 - **`id`**: Short identifier (e.g., "F", "S", "N")
 - **`label`**: Human-readable name
 - **`all_day`**: Optional flag for all-day duties
 - **`icon`**: Optional icon identifier for visual representation
 
-#### **Duty Type Order (`duty_type_order`)**
+##### **Duty Type Order (`duty_type_order`)**
 - Defines the display order of duty types in the UI
 - Controls sorting and grouping of duties
 
-#### **Rhythms (`rhythms`)**
+##### **Rhythms (`rhythms`)**
 - **`length_weeks`**: Duration of the rotation cycle
 - **`pattern`**: Array of weekly patterns
 - **`pattern[week][day]`**: Duty type for each day of each week
 
-#### **Duty Groups (`dienstgruppen`)**
+##### **Duty Groups (`dienstgruppen`)**
 - **`id`**: Unique identifier for the group
 - **`name`**: Display name
 - **`rhythm`**: Reference to rhythm configuration
 - **`offset_weeks`**: Week offset from the start date
 
-### Advanced Features
-- **Multiple Rhythms**: Support for different rotation patterns
-- **Flexible Duty Types**: Custom duty types with labels and flags
-- **Week Offsets**: Different groups can start at different weeks
-- **All-Day Duties**: Special handling for full-day assignments
-- **Version Control**: Schema versioning for compatibility
+#### Icons
+The `icon` field supports various Material Design icon names. For a complete list of available icons, see [`lib/core/utils/icon_mapper.dart`](lib/core/utils/icon_mapper.dart). If no icon is specified or an invalid icon name is used, a default schedule icon will be displayed.
+
+---
+
+## 🛠 Development
+
+### Prerequisites
+- Flutter SDK 3.2.3 or higher
+- Dart SDK 3.2.3 or higher
+- Android Studio / VS Code
+- Git
+
+### Setup
+```bash
+# Clone the repository
+git clone https://github.com/lusu007/dienstplan.git
+cd dienstplan
+
+# Install dependencies
+flutter pub get
+
+# Run the app
+flutter run
+
+# Run tests
+flutter test
+
+# Build for production
+flutter build apk --release
+```
+
+### Key Dependencies
+- **State Management**: `provider: ^6.1.1`
+- **Dependency Injection**: `get_it: ^8.0.3`
+- **Database**: `sqflite: ^2.3.0`
+- **Calendar**: `table_calendar: ^3.0.9`
+- **Localization**: `flutter_localizations`
+- **Error Tracking**: `sentry_flutter: ^9.4.0`
+
+### Architecture Patterns
+- **Clean Architecture**: Separation of concerns with clear layer boundaries
+- **Repository Pattern**: Abstract data access with concrete implementations
+- **Use Case Pattern**: Business logic encapsulation
+- **Provider Pattern**: State management with ChangeNotifier
+- **Dependency Injection**: Service locator pattern with GetIt
 
 ---
 
