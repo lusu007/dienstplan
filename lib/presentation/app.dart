@@ -24,13 +24,13 @@ class _MyAppState extends State<MyApp> {
 
   // Queue for migration messages
   final List<String> _migrationMessageQueue = [];
-  bool _isShowingSnackbar = false;
+  bool _isShowingDialog = false;
 
   @override
   void initState() {
     super.initState();
     _initializeControllers();
-    _setupMigrationSnackbar();
+    _setupMigrationDialog();
   }
 
   void _initializeControllers() {
@@ -46,18 +46,18 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _setupMigrationSnackbar() {
-    // Set up the migration snackbar callback
-    DatabaseService.setMigrationDialogCallback(_queueMigrationSnackbar);
+  void _setupMigrationDialog() {
+    // Set up the migration dialog callback
+    DatabaseService.setMigrationDialogCallback(_queueMigrationDialog);
   }
 
-  void _queueMigrationSnackbar(String message) {
+  void _queueMigrationDialog(String message) {
     _migrationMessageQueue.add(message);
     _processMigrationQueue();
   }
 
   void _processMigrationQueue() {
-    if (_migrationMessageQueue.isEmpty || _isShowingSnackbar) {
+    if (_migrationMessageQueue.isEmpty || _isShowingDialog) {
       return;
     }
 
@@ -65,41 +65,42 @@ class _MyAppState extends State<MyApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 1000), () {
         if (mounted && _migrationMessageQueue.isNotEmpty) {
-          _showNextMigrationSnackbar();
+          _showNextMigrationDialog();
         }
       });
     });
   }
 
-  void _showNextMigrationSnackbar() {
-    if (_migrationMessageQueue.isEmpty || _isShowingSnackbar) {
+  void _showNextMigrationDialog() {
+    if (_migrationMessageQueue.isEmpty || _isShowingDialog) {
       return;
     }
 
-    _isShowingSnackbar = true;
+    _isShowingDialog = true;
     final message = _migrationMessageQueue.removeAt(0);
 
-    // Show snackbar instead of dialog
-    ScaffoldMessenger.of(_navigatorKey.currentContext!).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 5),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(_navigatorKey.currentContext!)
-                .hideCurrentSnackBar();
-          },
-        ),
-      ),
+    // Show dialog instead of snackbar
+    showDialog(
+      context: _navigatorKey.currentContext!,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('App-Update'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _isShowingDialog = false;
+                // Process next message in queue
+                _processMigrationQueue();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
-
-    // Reset flag after a delay
-    Future.delayed(const Duration(seconds: 5), () {
-      _isShowingSnackbar = false;
-      // Process next message in queue
-      _processMigrationQueue();
-    });
   }
 
   @override
