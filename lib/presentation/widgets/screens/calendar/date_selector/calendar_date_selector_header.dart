@@ -103,11 +103,8 @@ class _CalendarDateSelectorHeaderState
       color: Colors.transparent,
       child: InkWell(
         onTap: () async {
-          final now = DateTime.now();
-
-          // Set the selected and focused day
-          widget.scheduleController.setSelectedDay(now);
-          widget.scheduleController.setFocusedDay(now);
+          // Use the new goToToday method
+          await widget.scheduleController.goToToday();
 
           // Call the callback if provided
           widget.onTodayButtonPressed?.call();
