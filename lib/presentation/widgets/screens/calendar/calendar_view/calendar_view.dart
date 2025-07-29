@@ -217,16 +217,12 @@ class _CalendarViewState extends State<CalendarView> {
             widget.scheduleController.setFocusedDay(selectedDate);
             // Don't change selectedDay - preserve the user's original selection
           },
-          onTodayButtonPressed: () {
-            // Handle Today button press directly in CalendarView
-            final now = DateTime.now();
-
-            // Set the selected and focused day
-            widget.scheduleController.setSelectedDay(now);
-            widget.scheduleController.setFocusedDay(now);
+          onTodayButtonPressed: () async {
+            // Handle Today button press using the new goToToday method
+            await widget.scheduleController.goToToday();
 
             // Force the PageView to rebuild around the new "today" day
-            _pageManager.rebuildDayPagesAroundDay(now);
+            _pageManager.rebuildDayPagesAroundDay(DateTime.now());
 
             // Force a complete rebuild of the PageView by changing its key
             setState(() {

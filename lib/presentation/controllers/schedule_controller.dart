@@ -392,6 +392,37 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
+  Future<void> goToToday() async {
+    final now = DateTime.now();
+
+    // Set both selected and focused day to today
+    _selectedDay = now;
+    _focusedDay = now;
+
+    // Save both to settings
+    _saveSelectedDay(now).catchError((e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error saving selected day', e, stackTrace);
+    });
+
+    _saveFocusedDay(now).catchError((e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error saving focused day', e, stackTrace);
+    });
+
+    // Notify listeners immediately
+    notifyListeners();
+
+    // Load schedules for today's month ±3 months
+    final startDate = DateTime(now.year, now.month - 3, 1);
+    final endDate = DateTime(now.year, now.month + 4, 0);
+
+    AppLogger.i(
+        'ScheduleController: goToToday - Loading schedules for range: ${startDate.toIso8601String()} to ${endDate.toIso8601String()}');
+
+    await loadSchedulesForRange(startDate, endDate);
+  }
+
   Future<void> setFocusedDay(DateTime focusedDay) async {
     if (_isLoading) {
       AppLogger.i(
