@@ -4,7 +4,6 @@ import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_type.dart';
 import 'package:dienstplan/data/models/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:flutter/material.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -143,20 +142,24 @@ class DatabaseService {
       // Notify user about data clearing (this will be handled by the UI)
       await _notifyUserAboutDataClearing();
 
-      // Clear all tables
-      await db.delete('schedules');
-      await db.delete('duty_types');
-      await db.delete('settings');
-
-      // Ensure tables exist with current schema
-      await _ensureRequiredColumns(db);
-      await _createOptimizedIndexes(db);
+      // Completely recreate database to ensure clean schema
+      await _recreateDatabaseCompletely(db);
 
       AppLogger.i('Successfully cleared all data and recreated schema');
     } catch (e, stackTrace) {
       AppLogger.e('Failed to clear data for migration', e, stackTrace);
       rethrow;
     }
+  }
+
+  Future<void> _recreateDatabaseCompletely(Database db) async {
+    // Drop all tables
+    await db.execute('DROP TABLE IF EXISTS schedules');
+    await db.execute('DROP TABLE IF EXISTS duty_types');
+    await db.execute('DROP TABLE IF EXISTS settings');
+
+    // Recreate tables with current schema
+    await _createDatabase(db, _currentVersion);
   }
 
   Future<void> _notifyUserAboutDataClearing() async {
@@ -168,69 +171,6 @@ class DatabaseService {
 
     AppLogger.i(
         'User should be notified: Database schema has changed significantly. All data has been cleared for development purposes.');
-  }
-
-  Future<void> _ensureRequiredColumns(Database db) async {
-    // Ensure duty_types table has all required columns
-    final dutyTypesColumns = await db.rawQuery('PRAGMA table_info(duty_types)');
-    final dutyTypesColumnNames =
-        dutyTypesColumns.map((col) => col['name'] as String).toList();
-
-    if (!dutyTypesColumnNames.contains('icon')) {
-      await db.execute('ALTER TABLE duty_types ADD COLUMN icon TEXT');
-    }
-
-    if (!dutyTypesColumnNames.contains('config_name')) {
-      await db.execute(
-          'ALTER TABLE duty_types ADD COLUMN config_name TEXT NOT NULL DEFAULT "default"');
-    }
-
-    // Ensure schedules table has all required columns
-    final schedulesColumns = await db.rawQuery('PRAGMA table_info(schedules)');
-    final schedulesColumnNames =
-        schedulesColumns.map((col) => col['name'] as String).toList();
-
-    if (!schedulesColumnNames.contains('is_all_day')) {
-      await db.execute(
-          'ALTER TABLE schedules ADD COLUMN is_all_day INTEGER NOT NULL DEFAULT 0');
-    }
-
-    if (!schedulesColumnNames.contains('duty_group_name')) {
-      await db.execute(
-          'ALTER TABLE schedules ADD COLUMN duty_group_name TEXT NOT NULL DEFAULT ""');
-    }
-
-    if (!schedulesColumnNames.contains('config_name')) {
-      await db.execute(
-          'ALTER TABLE schedules ADD COLUMN config_name TEXT NOT NULL DEFAULT "default"');
-    }
-
-    // Ensure settings table has all required columns
-    final settingsColumns = await db.rawQuery('PRAGMA table_info(settings)');
-    final settingsColumnNames =
-        settingsColumns.map((col) => col['name'] as String).toList();
-
-    if (!settingsColumnNames.contains('active_config_name')) {
-      await db
-          .execute('ALTER TABLE settings ADD COLUMN active_config_name TEXT');
-    }
-  }
-
-  Future<void> _recreateIndexes(Database db) async {
-    // Drop existing indexes to recreate them
-    try {
-      await db
-          .execute('DROP INDEX IF EXISTS idx_schedules_date_config_service');
-      await db.execute('DROP INDEX IF EXISTS idx_schedules_config_date');
-      await db.execute('DROP INDEX IF EXISTS idx_schedules_duty_group');
-      await db.execute('DROP INDEX IF EXISTS idx_schedules_all_day');
-      await db.execute('DROP INDEX IF EXISTS idx_duty_types_config_id');
-    } catch (e) {
-      AppLogger.i('Some indexes may not exist, continuing with recreation');
-    }
-
-    // Recreate optimized indexes
-    await _createOptimizedIndexes(db);
   }
 
   Future<void> init() async {
