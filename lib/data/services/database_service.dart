@@ -11,7 +11,14 @@ class DatabaseService {
   DatabaseService._internal();
 
   static Database? _database;
-  static const int _currentVersion = 3;
+  static const int _currentVersion = 4;
+
+  // Callback for showing migration dialog
+  static Function(String)? _showMigrationDialog;
+
+  static void setMigrationDialogCallback(Function(String) callback) {
+    _showMigrationDialog = callback;
+  }
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -119,62 +126,51 @@ class DatabaseService {
       Database db, int oldVersion, int newVersion) async {
     AppLogger.i('Upgrading database from version $oldVersion to $newVersion');
 
-    if (oldVersion < 2) {
-      // Add timestamp columns
-      await db.execute(
-          'ALTER TABLE duty_types ADD COLUMN created_at INTEGER NOT NULL DEFAULT 0');
-      await db.execute(
-          'ALTER TABLE duty_types ADD COLUMN updated_at INTEGER NOT NULL DEFAULT 0');
-      await db.execute(
-          'ALTER TABLE schedules ADD COLUMN created_at INTEGER NOT NULL DEFAULT 0');
-      await db.execute(
-          'ALTER TABLE schedules ADD COLUMN updated_at INTEGER NOT NULL DEFAULT 0');
-      await db.execute(
-          'ALTER TABLE settings ADD COLUMN created_at INTEGER NOT NULL DEFAULT 0');
-      await db.execute(
-          'ALTER TABLE settings ADD COLUMN updated_at INTEGER NOT NULL DEFAULT 0');
-
-      // Create new optimized indexes
-      await _createOptimizedIndexes(db);
-    }
-
-    if (oldVersion < 3) {
-      // Rename preferred_duty_group to my_duty_group
-      AppLogger.i('Migrating preferred_duty_group to my_duty_group');
-
-      // SQLite doesn't support RENAME COLUMN directly, so we need to recreate the table
-      // First, create a temporary table with the new schema
-      await db.execute('''
-        CREATE TABLE settings_temp (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          calendar_format TEXT NOT NULL,
-          focused_day TEXT NOT NULL,
-          selected_day TEXT NOT NULL,
-          language TEXT,
-          selected_duty_group TEXT,
-          my_duty_group TEXT,
-          active_config_name TEXT,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        )
-      ''');
-
-      // Copy data from old table to new table
-      await db.execute('''
-        INSERT INTO settings_temp 
-        SELECT id, calendar_format, focused_day, selected_day, language, 
-               selected_duty_group, preferred_duty_group, active_config_name,
-               created_at, updated_at
-        FROM settings
-      ''');
-
-      // Drop old table and rename new table
-      await db.execute('DROP TABLE settings');
-      await db.execute('ALTER TABLE settings_temp RENAME TO settings');
-
+    // For development phase: Clear all data if version is not current
+    if (oldVersion < _currentVersion) {
       AppLogger.i(
-          'Successfully migrated preferred_duty_group to my_duty_group');
+          'Clearing all data for development migration from version $oldVersion');
+      await _clearAllDataForMigration(db);
+      return;
     }
+  }
+
+  Future<void> _clearAllDataForMigration(Database db) async {
+    try {
+      AppLogger.i('Clearing all data for development migration');
+
+      // Notify user about data clearing (this will be handled by the UI)
+      await _notifyUserAboutDataClearing();
+
+      // Completely recreate database to ensure clean schema
+      await _recreateDatabaseCompletely(db);
+
+      AppLogger.i('Successfully cleared all data and recreated schema');
+    } catch (e, stackTrace) {
+      AppLogger.e('Failed to clear data for migration', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _recreateDatabaseCompletely(Database db) async {
+    // Drop all tables
+    await db.execute('DROP TABLE IF EXISTS schedules');
+    await db.execute('DROP TABLE IF EXISTS duty_types');
+    await db.execute('DROP TABLE IF EXISTS settings');
+
+    // Recreate tables with current schema
+    await _createDatabase(db, _currentVersion);
+  }
+
+  Future<void> _notifyUserAboutDataClearing() async {
+    // Show migration dialog if callback is set
+    if (_showMigrationDialog != null) {
+      _showMigrationDialog!(
+          'Die App wurde aktualisiert und das Datenbankschema hat sich geändert. Alle Daten wurden für Entwicklungszwecke zurückgesetzt. Bitte konfigurieren Sie die App neu.');
+    }
+
+    AppLogger.i(
+        'User should be notified: Database schema has changed significantly. All data has been cleared for development purposes.');
   }
 
   Future<void> init() async {
