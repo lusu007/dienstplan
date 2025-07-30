@@ -103,36 +103,22 @@ class _CalendarViewState extends State<CalendarView> {
   void _onPageChanged(int pageIndex) {
     _pageManager.onPageChanged(pageIndex, false);
 
-    // Update the selected day in the controller
-    final newSelectedDay = _pageManager.getCurrentDay();
-    if (newSelectedDay != null) {
+    // Only update focused day when navigating, not selected day
+    final newDay = _pageManager.getCurrentDay();
+    if (newDay != null) {
       AppLogger.d(
-          'CalendarView: _onPageChanged - pageIndex: $pageIndex, newSelectedDay: ${newSelectedDay.toIso8601String()}');
+          'CalendarView: _onPageChanged - pageIndex: $pageIndex, newDay: ${newDay.toIso8601String()}');
 
-      // Only update if the day actually changed to avoid unnecessary rebuilds
-      final currentSelectedDay = widget.scheduleController.selectedDay;
-      if (currentSelectedDay == null ||
-          currentSelectedDay.year != newSelectedDay.year ||
-          currentSelectedDay.month != newSelectedDay.month ||
-          currentSelectedDay.day != newSelectedDay.day) {
+      // Check if the month has changed
+      final currentFocusedDay = widget.scheduleController.focusedDay;
+      final monthChanged = currentFocusedDay == null ||
+          currentFocusedDay.year != newDay.year ||
+          currentFocusedDay.month != newDay.month;
+
+      if (monthChanged) {
         AppLogger.d(
-            'CalendarView: Day changed from ${currentSelectedDay?.toIso8601String()} to ${newSelectedDay.toIso8601String()}');
-
-        // Check if the month has changed
-        final currentFocusedDay = widget.scheduleController.focusedDay;
-        final monthChanged = currentFocusedDay == null ||
-            currentFocusedDay.year != newSelectedDay.year ||
-            currentFocusedDay.month != newSelectedDay.month;
-
-        if (monthChanged) {
-          AppLogger.d(
-              'CalendarView: Month changed, updating focused day to ${newSelectedDay.toIso8601String()}');
-          // Update the focused day to match the new month
-          widget.scheduleController.setFocusedDay(newSelectedDay);
-        }
-
-        // Update selected day when scrolling in the list
-        widget.scheduleController.setSelectedDay(newSelectedDay);
+            'CalendarView: Month changed, updating focused day to ${newDay.toIso8601String()}');
+        widget.scheduleController.setFocusedDay(newDay);
       }
     }
   }
