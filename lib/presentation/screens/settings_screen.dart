@@ -180,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           cards: [
             NavigationCard(
               icon: Icons.calendar_today,
-              title: l10n.dutySchedule,
+              title: l10n.myDutySchedule,
               subtitle: _getDutyScheduleDisplayName(scheduleController, l10n),
               onTap: () => DutyScheduleDialog.show(context, scheduleController),
             ),

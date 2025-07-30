@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
@@ -31,6 +32,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _initializeControllers();
     _setupMigrationDialog();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   void _initializeControllers() {
