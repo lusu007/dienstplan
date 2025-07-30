@@ -27,7 +27,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get english => 'Englisch';
 
   @override
-  String get dutySchedule => 'Dienstplan';
+  String get dutySchedule => 'Mein Dienstplan';
 
   @override
   String get selectDutySchedule => 'Dienstplan auswählen';
