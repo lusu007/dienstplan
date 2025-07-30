@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/lusu007/dienstplan/compare/v0.6.0...v0.7.0) (2025-07-30)
+
+
+### Features
+
+* Improve settings screen ([#189](https://github.com/lusu007/dienstplan/issues/189)) ([51174a6](https://github.com/lusu007/dienstplan/commit/51174a6607ed94e28e49162c520fa83320524297))
+* Make duty name more user friendly ([#187](https://github.com/lusu007/dienstplan/issues/187)) ([5f745f6](https://github.com/lusu007/dienstplan/commit/5f745f65e6e121f60faa600199023d7746c86519))
+
 ## [0.6.0](https://github.com/lusu007/dienstplan/compare/v0.5.1...v0.6.0) (2025-07-29)
 
 
