@@ -503,21 +503,9 @@ class ScheduleController extends ChangeNotifier {
 
   Future<void> _loadSchedulesForCurrentMonth(DateTime focusedDay) async {
     try {
-      // First, ensure selectedDay is in the focused month to avoid extending the range unnecessarily
-      if (_selectedDay == null ||
-          _selectedDay!.year != focusedDay.year ||
-          _selectedDay!.month != focusedDay.month) {
-        final newSelectedDay = DateTime(focusedDay.year, focusedDay.month, 1);
-        AppLogger.i(
-            'ScheduleController: Setting selectedDay to focused month: ${newSelectedDay.toIso8601String()}');
-        _selectedDay = newSelectedDay;
-
-        // Save the new selected day to settings
-        _saveSelectedDay(newSelectedDay).catchError((e, stackTrace) {
-          AppLogger.e(
-              'ScheduleController: Error saving selected day', e, stackTrace);
-        });
-      }
+      // Don't automatically change selectedDay when loading schedules for a new month
+      // The selectedDay should only change when the user explicitly selects a day
+      // This preserves the user's selection across month navigation
 
       // Load focused month ±3 months to cover all visible days
       final DateTime startDate =
