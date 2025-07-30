@@ -24,7 +24,7 @@
   "@english": {
     "description": "English language option"
   },
-  "dutySchedule": "Dienstplan",
+  "dutySchedule": "Mein Dienstplan",
   "@dutySchedule": {
     "description": "Title for duty schedule"
   },

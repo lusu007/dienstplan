@@ -24,7 +24,7 @@
   "@english": {
     "description": "English language option"
   },
-  "dutySchedule": "Duty Schedule",
+  "dutySchedule": "My Duty Schedule",
   "@dutySchedule": {
     "description": "Title for duty schedule"
   },
