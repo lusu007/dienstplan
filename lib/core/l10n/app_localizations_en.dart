@@ -173,14 +173,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calendarFormatWeek => 'Week';
 
   @override
-  String get resetData => 'Reset Data';
+  String get resetData => 'Reset App';
+
+  @override
+  String get resetDataWarning => '⚠️ All data will be permanently deleted';
 
   @override
   String get resetDataConfirmation =>
-      'Are you sure you want to reset all data? This cannot be undone.';
+      'Are you sure you want to reset the app? This cannot be undone.';
 
   @override
-  String get resetDataSuccess => 'Data has been reset';
+  String get resetDataSuccess => 'App has been reset successfully';
 
   @override
   String get reset => 'Reset';
@@ -201,6 +204,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Licenses';
+
+  @override
+  String get footer => 'Info';
+
+  @override
+  String get copyright => 'Copyright';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get author => 'Author';
 
   @override
   String get previousPeriod => 'Previous period';
@@ -250,7 +265,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'This duty group will be used for future functionality';
 
   @override
-  String get noMyDutyGroup => 'I don\'t want to set a specific duty group';
+  String get noMyDutyGroup => 'No duty group selected';
+
+  @override
+  String get noDutyGroup => 'No duty group';
 
   @override
   String get noMyDutyGroupDescription =>
@@ -258,6 +276,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get general => 'General';
+
+  @override
+  String get schedule => 'Schedule';
+
+  @override
+  String get app => 'General';
 
   @override
   String get legal => 'Legal';

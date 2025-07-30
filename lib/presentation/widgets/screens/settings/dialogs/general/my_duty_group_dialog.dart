@@ -67,7 +67,7 @@ class MyDutyGroupDialog {
                           useDialogStyle: true,
                         )),
                     SelectionCard(
-                      title: l10n.noMyDutyGroup,
+                      title: l10n.noDutyGroup,
                       isSelected: controller.preferredDutyGroup == null,
                       onTap: () {
                         controller.preferredDutyGroup = null;

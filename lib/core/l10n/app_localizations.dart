@@ -422,22 +422,28 @@ abstract class AppLocalizations {
   /// **'Week'**
   String get calendarFormatWeek;
 
-  /// Title for reset data option
+  /// Reset app button text
   ///
   /// In en, this message translates to:
-  /// **'Reset Data'**
+  /// **'Reset App'**
   String get resetData;
 
-  /// Confirmation message for resetting data
+  /// Warning message for reset app action
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to reset all data? This cannot be undone.'**
+  /// **'⚠️ All data will be permanently deleted'**
+  String get resetDataWarning;
+
+  /// Confirmation message for reset app action
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to reset the app? This cannot be undone.'**
   String get resetDataConfirmation;
 
-  /// Message shown when data is reset successfully
+  /// Success message after reset app action
   ///
   /// In en, this message translates to:
-  /// **'Data has been reset'**
+  /// **'App has been reset successfully'**
   String get resetDataSuccess;
 
   /// Reset button text
@@ -470,11 +476,35 @@ abstract class AppLocalizations {
   /// **'All day'**
   String get allDay;
 
-  /// Title for the licenses screen
+  /// Title for licenses page
   ///
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
+
+  /// Title for footer section in settings
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get footer;
+
+  /// Copyright label
+  ///
+  /// In en, this message translates to:
+  /// **'Copyright'**
+  String get copyright;
+
+  /// Version label
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// Author label
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get author;
 
   /// Tooltip for the previous period navigation button
   ///
@@ -563,8 +593,14 @@ abstract class AppLocalizations {
   /// Text shown when no my duty group is selected
   ///
   /// In en, this message translates to:
-  /// **'I don\'t want to set a specific duty group'**
+  /// **'No duty group selected'**
   String get noMyDutyGroup;
+
+  /// Text for no duty group option in selection dialogs
+  ///
+  /// In en, this message translates to:
+  /// **'No duty group'**
+  String get noDutyGroup;
 
   /// Description for no my duty group option
   ///
@@ -577,6 +613,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'General'**
   String get general;
+
+  /// Title for schedule settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule'**
+  String get schedule;
+
+  /// Title for general app settings section
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get app;
 
   /// Title for legal section
   ///

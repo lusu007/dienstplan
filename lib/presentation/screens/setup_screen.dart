@@ -345,7 +345,7 @@ class _SetupScreenState extends State<SetupScreen> {
 
               // Last item is "no preferred duty group"
               return SelectionCard(
-                title: l10n.noMyDutyGroup,
+                title: l10n.noDutyGroup,
                 subtitle: l10n.noMyDutyGroupDescription,
                 leadingIcon: Icons.clear,
                 isSelected:

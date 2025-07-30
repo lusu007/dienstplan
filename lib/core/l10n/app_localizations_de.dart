@@ -172,14 +172,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get calendarFormatWeek => 'Woche';
 
   @override
-  String get resetData => 'Daten zurücksetzen';
+  String get resetData => 'App zurücksetzen';
+
+  @override
+  String get resetDataWarning => '⚠️ Alle Daten werden unwiderruflich gelöscht';
 
   @override
   String get resetDataConfirmation =>
-      'Möchtest du wirklich alle Daten zurücksetzen? Dies kann nicht rückgängig gemacht werden.';
+      'Möchtest du wirklich die App zurücksetzen? Dies kann nicht rückgängig gemacht werden.';
 
   @override
-  String get resetDataSuccess => 'Daten wurden zurückgesetzt';
+  String get resetDataSuccess => 'App wurde erfolgreich zurückgesetzt';
 
   @override
   String get reset => 'Zurücksetzen';
@@ -200,6 +203,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licenses => 'Lizenzen';
+
+  @override
+  String get footer => 'Info';
+
+  @override
+  String get copyright => 'Copyright';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get author => 'Autor';
 
   @override
   String get previousPeriod => 'Vorheriger Zeitraum';
@@ -250,8 +265,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Dienstgruppe wird für zukünftige Funktionen verwendet';
 
   @override
-  String get noMyDutyGroup =>
-      'Ich möchte keine spezielle Dienstgruppe festlegen';
+  String get noMyDutyGroup => 'Keine Dienstgruppe ausgewählt';
+
+  @override
+  String get noDutyGroup => 'Keine Dienstgruppe';
 
   @override
   String get noMyDutyGroupDescription =>
@@ -259,6 +276,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get general => 'Allgemein';
+
+  @override
+  String get schedule => 'Dienstplan';
+
+  @override
+  String get app => 'Allgemein';
 
   @override
   String get legal => 'Rechtliches';

@@ -21,6 +21,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/presentation/screens/debug_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -31,6 +32,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late final Future<ScheduleController> _scheduleControllerFuture;
+  int _footerTapCount = 0;
+  DateTime? _lastTapTime;
 
   @override
   void initState() {
@@ -81,7 +84,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.all(24.0),
               child: ListView(
                 children: [
-                  _buildGeneralSectionSkeleton(context, l10n),
+                  _buildScheduleSectionSkeleton(context, l10n),
+                  const SizedBox(height: 16),
+                  _buildAppSectionSkeleton(context, l10n),
                   const SizedBox(height: 16),
                   _buildPrivacySectionSkeleton(context, l10n),
                   const SizedBox(height: 16),
@@ -110,7 +115,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             padding: const EdgeInsets.all(24.0),
             child: ListView(
               children: [
-                _buildGeneralSection(context, l10n, scheduleController),
+                _buildScheduleSection(context, l10n, scheduleController),
+                const SizedBox(height: 16),
+                _buildAppSection(context, l10n, scheduleController),
                 const SizedBox(height: 16),
                 ListenableBuilder(
                   listenable: GetIt.instance<SentryService>(),
@@ -119,6 +126,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildLegalSection(context, l10n),
+                const SizedBox(height: 32),
+                _buildFooterSection(context, l10n),
               ],
             ),
           );
@@ -127,25 +136,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildGeneralSection(
+  Widget _buildScheduleSection(
     BuildContext context,
     AppLocalizations l10n,
     ScheduleController scheduleController,
   ) {
-    final languageService = GetIt.instance<LanguageService>();
-
     return ListenableBuilder(
       listenable: scheduleController,
       builder: (context, child) {
         // Show skeleton loader if controller is loading
         if (scheduleController.isLoading) {
-          return _buildGeneralSectionSkeleton(context, l10n);
+          return _buildScheduleSectionSkeleton(context, l10n);
         }
 
         // Show error message if there's an error
         if (scheduleController.error != null) {
           return SettingsSection(
-            title: l10n.general,
+            title: l10n.schedule,
             cards: [
               Card(
                 color: Colors.red.shade50,
@@ -169,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
 
         return SettingsSection(
-          title: l10n.general,
+          title: l10n.schedule,
           cards: [
             NavigationCard(
               icon: Icons.calendar_today,
@@ -192,6 +199,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () =>
                   CalendarFormatDialog.show(context, scheduleController),
             ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildAppSection(
+    BuildContext context,
+    AppLocalizations l10n,
+    ScheduleController scheduleController,
+  ) {
+    final languageService = GetIt.instance<LanguageService>();
+
+    return ListenableBuilder(
+      listenable: scheduleController,
+      builder: (context, child) {
+        // Show skeleton loader if controller is loading
+        if (scheduleController.isLoading) {
+          return _buildAppSectionSkeleton(context, l10n);
+        }
+
+        return SettingsSection(
+          title: l10n.app,
+          cards: [
             NavigationCard(
               icon: Icons.language,
               title: l10n.language,
@@ -204,6 +235,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.delete_forever,
               title: l10n.resetData,
               onTap: () => ResetDialog.show(context, scheduleController),
+              iconColor: Colors.red,
             ),
           ],
         );
@@ -268,12 +300,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildGeneralSectionSkeleton(
+  Widget _buildScheduleSectionSkeleton(
       BuildContext context, AppLocalizations l10n) {
-    final languageService = GetIt.instance<LanguageService>();
-
     return SettingsSection(
-      title: l10n.general,
+      title: l10n.schedule,
       cards: [
         NavigationCardSkeleton(
           icon: Icons.calendar_today,
@@ -290,12 +320,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: l10n.calendarFormat,
           showSubtitleSkeleton: true, // Dynamisch geladen
         ),
+      ],
+    );
+  }
+
+  Widget _buildAppSectionSkeleton(BuildContext context, AppLocalizations l10n) {
+    return SettingsSection(
+      title: l10n.app,
+      cards: [
         NavigationCardSkeleton(
           icon: Icons.language,
           title: l10n.language,
-          subtitle: languageService.currentLocale.languageCode == 'de'
-              ? l10n.german
-              : l10n.english,
           showSubtitleSkeleton: false, // Statisch
         ),
         NavigationCardSkeleton(
@@ -423,5 +458,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appIconPath: AppInfo.appIconPath,
       appLegalese: AppInfo.appLegalese,
     );
+  }
+
+  Widget _buildFooterSection(BuildContext context, AppLocalizations l10n) {
+    return GestureDetector(
+      onTap: _handleFooterTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            AppInfo.appLegalese,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          FutureBuilder<String>(
+            future: AppInfo.fullVersion,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  snapshot.data!,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade500,
+                  ),
+                );
+              }
+              return Container(
+                width: 80,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleFooterTap() {
+    final now = DateTime.now();
+
+    // Reset counter if more than 3 seconds have passed since last tap
+    if (_lastTapTime != null && now.difference(_lastTapTime!).inSeconds > 3) {
+      _footerTapCount = 0;
+    }
+
+    _footerTapCount++;
+    _lastTapTime = now;
+
+    // Open debug screen after 7 taps
+    if (_footerTapCount >= 7) {
+      _footerTapCount = 0; // Reset counter
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DebugScreen(),
+        ),
+      );
+    }
   }
 }
