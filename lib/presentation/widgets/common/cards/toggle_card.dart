@@ -33,33 +33,49 @@ class ToggleCard extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-        minVerticalPadding: 20,
-        leading: Icon(icon, color: iconColor, size: 40),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: AppColors.black,
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon, color: iconColor, size: 40),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: subtitle != null
+                            ? Text(
+                                subtitle!,
+                                style: const TextStyle(
+                                    fontSize: 15, color: Colors.black87),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      Switch(
+                        value: value,
+                        onChanged: enabled ? onChanged : null,
+                        activeColor: AppColors.primary,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
-              )
-            : null,
-        trailing: Switch(
-          value: value,
-          onChanged: enabled ? onChanged : null,
-          activeColor: AppColors.primary,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        selectedTileColor: Colors.transparent,
       ),
     );
   }

@@ -216,17 +216,21 @@
   "@calendarFormatWeek": {
     "description": "Label for week view in calendar format selector"
   },
-  "resetData": "Reset Data",
+  "resetData": "Reset App",
   "@resetData": {
-    "description": "Title for reset data option"
+    "description": "Reset app button text"
   },
-  "resetDataConfirmation": "Are you sure you want to reset all data? This cannot be undone.",
+  "resetDataWarning": "⚠️ All data will be permanently deleted",
+  "@resetDataWarning": {
+    "description": "Warning message for reset app action"
+  },
+  "resetDataConfirmation": "Are you sure you want to reset the app? This cannot be undone.",
   "@resetDataConfirmation": {
-    "description": "Confirmation message for resetting data"
+    "description": "Confirmation message for reset app action"
   },
-  "resetDataSuccess": "Data has been reset",
+  "resetDataSuccess": "App has been reset successfully",
   "@resetDataSuccess": {
-    "description": "Message shown when data is reset successfully"
+    "description": "Success message after reset app action"
   },
   "reset": "Reset",
   "@reset": {
@@ -255,7 +259,23 @@
   },
   "licenses": "Licenses",
   "@licenses": {
-    "description": "Title for the licenses screen"
+    "description": "Title for licenses page"
+  },
+  "footer": "Info",
+  "@footer": {
+    "description": "Title for footer section in settings"
+  },
+  "copyright": "Copyright",
+  "@copyright": {
+    "description": "Copyright label"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Version label"
+  },
+  "author": "Author",
+  "@author": {
+    "description": "Author label"
   },
   "@previousPeriod": {
     "description": "Tooltip for the previous period navigation button"
@@ -315,9 +335,13 @@
   "@myDutyGroupDescription": {
     "description": "Description for my duty group setting"
   },
-  "noMyDutyGroup": "I don't want to set a specific duty group",
+  "noMyDutyGroup": "No duty group selected",
   "@noMyDutyGroup": {
     "description": "Text shown when no my duty group is selected"
+  },
+  "noDutyGroup": "No duty group",
+  "@noDutyGroup": {
+    "description": "Text for no duty group option in selection dialogs"
   },
   "noMyDutyGroupDescription": "No duty group abbreviations will be shown on the calendar",
   "@noMyDutyGroupDescription": {
@@ -326,6 +350,14 @@
   "general": "General",
   "@general": {
     "description": "Title for general settings section"
+  },
+  "schedule": "Schedule",
+  "@schedule": {
+    "description": "Title for schedule settings section"
+  },
+  "app": "General",
+  "@app": {
+    "description": "Title for general app settings section"
   },
   "legal": "Legal",
   "@legal": {

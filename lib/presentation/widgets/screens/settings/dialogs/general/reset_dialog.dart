@@ -4,7 +4,6 @@ import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:get_it/get_it.dart';
 
 class ResetDialog {
@@ -21,7 +20,7 @@ class ResetDialog {
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
