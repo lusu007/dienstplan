@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.2](https://github.com/lusu007/dienstplan/compare/v0.7.1...v0.7.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* Add encryption compliance to iOS app ([#194](https://github.com/lusu007/dienstplan/issues/194)) ([d15b950](https://github.com/lusu007/dienstplan/commit/d15b950ca661df5af974c25253c35a510afb9f12))
+* When changing the calendar format, the selected was changed to the first day of the month ([#192](https://github.com/lusu007/dienstplan/issues/192)) ([3f91f87](https://github.com/lusu007/dienstplan/commit/3f91f877bae4c4ae3de56f55c91ce0fa2b520b2e))
+
 ## [0.7.1](https://github.com/lusu007/dienstplan/compare/v0.7.0...v0.7.1) (2025-07-30)
 
 
