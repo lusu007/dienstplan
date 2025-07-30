@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/lusu007/dienstplan/compare/v0.7.0...v0.7.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* Lock app orientation to portrait ([#190](https://github.com/lusu007/dienstplan/issues/190)) ([d17f0f3](https://github.com/lusu007/dienstplan/commit/d17f0f331b7f62f1d909aad492e85d63d1968307))
+
 ## [0.7.0](https://github.com/lusu007/dienstplan/compare/v0.6.0...v0.7.0) (2025-07-30)
 
 
