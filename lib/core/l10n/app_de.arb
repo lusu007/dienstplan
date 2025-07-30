@@ -24,9 +24,13 @@
   "@english": {
     "description": "English language option"
   },
-  "dutySchedule": "Mein Dienstplan",
+  "dutySchedule": "Dienstplan",
   "@dutySchedule": {
     "description": "Title for duty schedule"
+  },
+  "myDutySchedule": "Mein Dienstplan",
+  "@myDutySchedule": {
+    "description": "Title for duty schedule in settings"
   },
   "selectDutySchedule": "Dienstplan auswählen",
   "@selectDutySchedule": {

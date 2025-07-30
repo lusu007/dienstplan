@@ -137,8 +137,14 @@ abstract class AppLocalizations {
   /// Title for duty schedule
   ///
   /// In en, this message translates to:
-  /// **'My Duty Schedule'**
+  /// **'Duty Schedule'**
   String get dutySchedule;
+
+  /// Title for duty schedule in settings
+  ///
+  /// In en, this message translates to:
+  /// **'My Duty Schedule'**
+  String get myDutySchedule;
 
   /// Title for duty schedule selection screen
   ///
