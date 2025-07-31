@@ -425,11 +425,11 @@
     "placeholders": {
       "appStoreUrl": {
         "type": "String",
-        "example": "https://apps.apple.com/app/dienstplan/id123456789"
+        "example": "https://apps.apple.com/app/dienstplan/id6748340130"
       },
       "playStoreUrl": {
         "type": "String",
-        "example": "https://play.google.com/store/apps/details?id=com.scelus.dienstplan"
+        "example": "https://play.google.com/store/apps/details?id=io.scelus.dienstplan"
       }
     }
   },
