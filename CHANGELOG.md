@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.8.0](https://github.com/lusu007/dienstplan/compare/v0.7.2...v0.8.0) (2025-07-31)
+
+
+### Features
+
+* Add share app feature ([#195](https://github.com/lusu007/dienstplan/issues/195)) ([03afcba](https://github.com/lusu007/dienstplan/commit/03afcba980fb430f6bd11aa3952029ee548777f6))
+
+
+### Bug Fixes
+
+* Optimize schedule loading ([#198](https://github.com/lusu007/dienstplan/issues/198)) ([0f3ff66](https://github.com/lusu007/dienstplan/commit/0f3ff6697148e0b712b6039b3c3240c87bd835a9))
+* Properly generate schedules for past days ([#197](https://github.com/lusu007/dienstplan/issues/197)) ([f3ecff0](https://github.com/lusu007/dienstplan/commit/f3ecff08b03ecc1efa120b44b7fde26d45c32a4d))
+
 ## [0.7.2](https://github.com/lusu007/dienstplan/compare/v0.7.1...v0.7.2) (2025-07-30)
 
 
