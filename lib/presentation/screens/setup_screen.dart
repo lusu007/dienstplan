@@ -139,9 +139,6 @@ class _SetupScreenState extends State<SetupScreen> {
         endDate: endDate,
       );
 
-      // Then save the preferred duty group from setup (can be null for "no preferred")
-      scheduleController.preferredDutyGroup = _selectedDutyGroup;
-
       // Create initial settings to mark setup as completed
       final settingsController =
           await GetIt.instance.getAsync<SettingsController>();
@@ -154,13 +151,17 @@ class _SetupScreenState extends State<SetupScreen> {
       );
       await settingsController.saveSettings(initialSettings);
 
-      // Also save the active config directly using the schedule controller's method
+      // Set the preferred duty group and active config using the schedule controller
+      scheduleController.preferredDutyGroup = _selectedDutyGroup;
       await scheduleController.setActiveConfig(domainConfig);
 
       // Mark setup as completed
       await _configService.markSetupCompleted();
       AppLogger.i(
           'Setup completed successfully for config: ${_selectedConfig!.name}');
+
+      // Wait a moment to ensure all settings are properly saved
+      await Future.delayed(const Duration(milliseconds: 500));
 
       if (!mounted) return;
 
