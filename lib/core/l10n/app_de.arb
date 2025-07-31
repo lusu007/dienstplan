@@ -406,5 +406,59 @@
   "all": "Alle",
   "@all": {
     "description": "Label for showing all items (no filter)"
+  },
+  "shareApp": "App weiterempfehlen",
+  "@shareApp": {
+    "description": "Title for share app option"
+  },
+  "shareAppDescription": "Empfehle die App Kollegen",
+  "@shareAppDescription": {
+    "description": "Description for share app option"
+  },
+  "shareAppTitle": "Dienstplan App Empfehlung",
+  "@shareAppTitle": {
+    "description": "Title for share app email"
+  },
+  "shareAppMessage": "Hey! 👋\n\nIch habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHoffe, sie gefällt dir! 🚔",
+  "@shareAppMessage": {
+    "description": "Message template for sharing the app",
+    "placeholders": {
+      "appStoreUrl": {
+        "type": "String",
+        "example": "https://apps.apple.com/app/dienstplan/id123456789"
+      },
+      "playStoreUrl": {
+        "type": "String",
+        "example": "https://play.google.com/store/apps/details?id=com.scelus.dienstplan"
+      }
+    }
+  },
+  "shareAppSubject": "Dienstplan App Empfehlung",
+  "@shareAppSubject": {
+    "description": "Subject for share app email"
+  },
+  "shareAppError": "Fehler beim Teilen der App",
+  "@shareAppError": {
+    "description": "Error message when sharing app fails"
+  },
+  "shareAppSuccess": "Teilen-Menü geöffnet",
+  "@shareAppSuccess": {
+    "description": "Success message when share sheet is opened"
+  },
+  "shareAppFallback": "App Store Link geteilt",
+  "@shareAppFallback": {
+    "description": "Message when fallback sharing is used"
+  },
+  "other": "Weiteres",
+  "@other": {
+    "description": "Title for other settings section"
+  },
+  "contact": "Kontakt",
+  "@contact": {
+    "description": "Title for contact option"
+  },
+  "contactDescription": "Kontaktiere uns",
+  "@contactDescription": {
+    "description": "Description for contact option"
   }
 } 

@@ -6,6 +6,7 @@ import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
+import 'package:dienstplan/data/services/share_service.dart';
 import 'package:dienstplan/data/data_sources/schedule_local_data_source.dart';
 import 'package:dienstplan/data/data_sources/settings_local_data_source.dart';
 import 'package:dienstplan/data/data_sources/config_local_data_source.dart';
@@ -96,6 +97,9 @@ class InjectionContainer {
       await service.initialize();
       return service;
     });
+
+    // ShareService - Singleton
+    getIt.registerLazySingleton<ShareService>(() => ShareService());
   }
 
   static void _registerDataSources() {

@@ -321,4 +321,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get all => 'All';
+
+  @override
+  String get shareApp => 'Share App';
+
+  @override
+  String get shareAppDescription => 'Recommend the app to colleagues';
+
+  @override
+  String get shareAppTitle => 'Duty Schedule App Recommendation';
+
+  @override
+  String shareAppMessage(String appStoreUrl, String playStoreUrl) {
+    return 'Hey! 👋\n\nI found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nApp Store: $appStoreUrl\nPlay Store: $playStoreUrl\n\nHope you like it! 🚔';
+  }
+
+  @override
+  String get shareAppSubject => 'Duty Schedule App Recommendation';
+
+  @override
+  String get shareAppError => 'Error sharing app';
+
+  @override
+  String get shareAppSuccess => 'Share sheet opened';
+
+  @override
+  String get shareAppFallback => 'App store link shared';
+
+  @override
+  String get other => 'Other';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get contactDescription => 'Get in touch with us';
 }

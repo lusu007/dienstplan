@@ -321,4 +321,39 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get all => 'Alle';
+
+  @override
+  String get shareApp => 'App weiterempfehlen';
+
+  @override
+  String get shareAppDescription => 'Empfehle die App Kollegen';
+
+  @override
+  String get shareAppTitle => 'Dienstplan App Empfehlung';
+
+  @override
+  String shareAppMessage(String appStoreUrl, String playStoreUrl) {
+    return 'Hey! 👋\n\nIch habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nApp Store: $appStoreUrl\nPlay Store: $playStoreUrl\n\nHoffe, sie gefällt dir! 🚔';
+  }
+
+  @override
+  String get shareAppSubject => 'Dienstplan App Empfehlung';
+
+  @override
+  String get shareAppError => 'Fehler beim Teilen der App';
+
+  @override
+  String get shareAppSuccess => 'Teilen-Menü geöffnet';
+
+  @override
+  String get shareAppFallback => 'App Store Link geteilt';
+
+  @override
+  String get other => 'Weiteres';
+
+  @override
+  String get contact => 'Kontakt';
+
+  @override
+  String get contactDescription => 'Kontaktiere uns';
 }

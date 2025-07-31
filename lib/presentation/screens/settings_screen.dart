@@ -5,15 +5,13 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:get_it/get_it.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/toggle_card.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/toggle_card_skeleton.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_about_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_license_page.dart';
+
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/calendar_format_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/duty_schedule_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/language_dialog.dart';
@@ -22,6 +20,9 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/screens/debug_screen.dart';
+import 'package:dienstplan/presentation/screens/about_screen.dart';
+import 'package:dienstplan/data/services/share_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -90,7 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 16),
                   _buildPrivacySectionSkeleton(context, l10n),
                   const SizedBox(height: 16),
-                  _buildLegalSection(context, l10n),
+                  _buildOtherSectionSkeleton(context, l10n),
                 ],
               ),
             );
@@ -125,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _buildPrivacySection(context, l10n),
                 ),
                 const SizedBox(height: 16),
-                _buildLegalSection(context, l10n),
+                _buildOtherSection(context, l10n),
                 const SizedBox(height: 32),
                 _buildFooterSection(context, l10n),
               ],
@@ -179,20 +180,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: l10n.schedule,
           cards: [
             NavigationCard(
-              icon: Icons.calendar_today,
+              icon: Icons.calendar_today_outlined,
               title: l10n.myDutySchedule,
               subtitle: _getDutyScheduleDisplayName(scheduleController, l10n),
               onTap: () => DutyScheduleDialog.show(context, scheduleController),
             ),
             NavigationCard(
-              icon: Icons.favorite,
+              icon: Icons.favorite_outlined,
               title: l10n.myDutyGroup,
               subtitle:
                   _getPreferredDutyGroupDisplayName(scheduleController, l10n),
               onTap: () => MyDutyGroupDialog.show(context, scheduleController),
             ),
             NavigationCard(
-              icon: Icons.view_week,
+              icon: Icons.view_week_outlined,
               title: l10n.calendarFormat,
               subtitle: _getCalendarFormatName(
                   scheduleController.calendarFormat, l10n),
@@ -224,7 +225,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: l10n.app,
           cards: [
             NavigationCard(
-              icon: Icons.language,
+              icon: Icons.language_outlined,
               title: l10n.language,
               subtitle: languageService.currentLocale.languageCode == 'de'
                   ? l10n.german
@@ -232,7 +233,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onTap: () => LanguageDialog.show(context),
             ),
             NavigationCard(
-              icon: Icons.delete_forever,
+              icon: Icons.delete_forever_outlined,
               title: l10n.resetData,
               onTap: () => ResetDialog.show(context, scheduleController),
               iconColor: Colors.red,
@@ -252,14 +253,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: l10n.privacy,
       cards: [
         ToggleCard(
-          icon: Icons.analytics,
+          icon: Icons.analytics_outlined,
           title: l10n.sentryAnalytics,
           subtitle: l10n.sentryAnalyticsDescription,
           value: sentryService.isEnabled,
           onChanged: (value) => sentryService.setEnabled(value),
         ),
         ToggleCard(
-          icon: Icons.videocam,
+          icon: Icons.videocam_outlined,
           title: l10n.sentryReplay,
           subtitle: l10n.sentryReplayDescription,
           value: sentryService.isReplayEnabled,
@@ -272,29 +273,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildLegalSection(BuildContext context, AppLocalizations l10n) {
+  Widget _buildOtherSection(BuildContext context, AppLocalizations l10n) {
     return SettingsSection(
-      title: l10n.legal,
+      title: l10n.other,
       cards: [
         NavigationCard(
           icon: Icons.info_outline,
           title: l10n.about,
-          onTap: () => _showAboutDialog(context),
+          onTap: () => _navigateToAboutScreen(context),
         ),
         NavigationCard(
-          icon: Icons.warning_outlined,
-          title: l10n.disclaimer,
-          onTap: () => _showDisclaimerDialog(context),
+          icon: Icons.email_outlined,
+          title: l10n.contact,
+          subtitle: l10n.contactDescription,
+          onTap: () => _openContact(),
         ),
         NavigationCard(
-          icon: Icons.privacy_tip_outlined,
-          title: l10n.privacyPolicy,
-          onTap: () => _openPrivacyPolicy(),
+          icon: Icons.share_outlined,
+          title: l10n.shareApp,
+          subtitle: l10n.shareAppDescription,
+          onTap: () => _shareApp(),
         ),
-        NavigationCard(
-          icon: Icons.description_outlined,
-          title: l10n.licenses,
-          onTap: () => _showLicenses(context),
+      ],
+    );
+  }
+
+  Widget _buildOtherSectionSkeleton(
+      BuildContext context, AppLocalizations l10n) {
+    return SettingsSection(
+      title: l10n.other,
+      cards: [
+        NavigationCardSkeleton(
+          icon: Icons.info_outline,
+          title: l10n.about,
+          showSubtitleSkeleton: false,
+        ),
+        NavigationCardSkeleton(
+          icon: Icons.email_outlined,
+          title: l10n.contact,
+          showSubtitleSkeleton: false,
+        ),
+        NavigationCardSkeleton(
+          icon: Icons.share_outlined,
+          title: l10n.shareApp,
+          showSubtitleSkeleton: false,
         ),
       ],
     );
@@ -306,17 +328,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: l10n.schedule,
       cards: [
         NavigationCardSkeleton(
-          icon: Icons.calendar_today,
+          icon: Icons.calendar_today_outlined,
           title: l10n.dutySchedule,
           showSubtitleSkeleton: true, // Dynamisch geladen
         ),
         NavigationCardSkeleton(
-          icon: Icons.favorite,
+          icon: Icons.favorite_outlined,
           title: l10n.myDutyGroup,
           showSubtitleSkeleton: true, // Dynamisch geladen
         ),
         NavigationCardSkeleton(
-          icon: Icons.view_week,
+          icon: Icons.view_week_outlined,
           title: l10n.calendarFormat,
           showSubtitleSkeleton: true, // Dynamisch geladen
         ),
@@ -329,12 +351,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: l10n.app,
       cards: [
         NavigationCardSkeleton(
-          icon: Icons.language,
+          icon: Icons.language_outlined,
           title: l10n.language,
           showSubtitleSkeleton: false, // Statisch
         ),
         NavigationCardSkeleton(
-          icon: Icons.delete_forever,
+          icon: Icons.delete_forever_outlined,
           title: l10n.resetData,
           showSubtitleSkeleton: false, // Kein Subtitle
         ),
@@ -350,7 +372,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: l10n.privacy,
       cards: [
         ToggleCardSkeleton(
-          icon: Icons.analytics,
+          icon: Icons.analytics_outlined,
           title: l10n.sentryAnalytics,
           subtitle: l10n.sentryAnalyticsDescription,
           showSubtitleSkeleton: false, // Statisch
@@ -358,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enabled: true,
         ),
         ToggleCardSkeleton(
-          icon: Icons.videocam,
+          icon: Icons.videocam_outlined,
           title: l10n.sentryReplay,
           subtitle: l10n.sentryReplayDescription,
           showSubtitleSkeleton: false, // Statisch
@@ -413,51 +435,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _showAboutDialog(BuildContext context) async {
-    final l10n = AppLocalizations.of(context);
-
-    await AppAboutDialog.show(
-      context: context,
-      appName: AppInfo.appName,
-      appIconPath: AppInfo.appIconPath,
-      appLegalese: AppInfo.appLegalese,
-      contactEmail: AppInfo.contactEmail,
-      children: [
-        const SizedBox(height: 16),
-        Text(l10n.aboutDescription),
-        const SizedBox(height: 16),
-        Text(l10n.aboutDisclaimer),
-      ],
-    );
-  }
-
-  void _showDisclaimerDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    AppDialog.show(
-      context: context,
-      title: l10n.disclaimer,
-      content: SingleChildScrollView(
-        child: Text(l10n.disclaimerLong),
+  void _navigateToAboutScreen(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const AboutScreen(),
       ),
-      showCloseButton: true,
     );
   }
 
-  Future<void> _openPrivacyPolicy() async {
-    final Uri privacyPolicyUri = Uri.parse(AppInfo.privacyPolicyUrl);
-    if (await canLaunchUrl(privacyPolicyUri)) {
-      await launchUrl(privacyPolicyUri, mode: LaunchMode.externalApplication);
+  Future<void> _openContact() async {
+    try {
+      final Uri emailLaunchUri = Uri(
+        scheme: 'mailto',
+        path: AppInfo.contactEmail,
+      );
+      if (await canLaunchUrl(emailLaunchUri)) {
+        await launchUrl(emailLaunchUri);
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e('SettingsScreen: Error opening contact email', e, stackTrace);
     }
   }
 
-  void _showLicenses(BuildContext context) {
-    AppLicensePage.show(
-      context: context,
-      appName: AppInfo.appName,
-      appIconPath: AppInfo.appIconPath,
-      appLegalese: AppInfo.appLegalese,
-    );
+  Future<void> _shareApp() async {
+    try {
+      final l10n = AppLocalizations.of(context);
+      await ShareService.shareApp(l10n);
+    } catch (e, stackTrace) {
+      AppLogger.e('SettingsScreen: Error sharing app', e, stackTrace);
+      if (mounted) {
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.shareAppError),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildFooterSection(BuildContext context, AppLocalizations l10n) {
