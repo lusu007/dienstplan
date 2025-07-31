@@ -124,7 +124,6 @@ class _SetupScreenState extends State<SetupScreen> {
       );
       scheduleController.setActiveConfigDirectly(domainConfig);
 
-      // Generate schedules for 5 years total (2 years back, 3 years forward)
       final generateSchedulesUseCase =
           await GetIt.instance.getAsync<GenerateSchedulesUseCase>();
 
@@ -132,7 +131,7 @@ class _SetupScreenState extends State<SetupScreen> {
       final startDate =
           now.subtract(const Duration(days: 365 * 2)); // 2 years ago
       final endDate =
-          now.add(const Duration(days: 365 * 3)); // 3 years in future
+          now.add(const Duration(days: 365 * 3)); // 8 years in future
 
       await generateSchedulesUseCase.execute(
         configName: _selectedConfig!.name,

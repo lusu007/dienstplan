@@ -34,11 +34,8 @@ class GenerateSchedulesUseCase {
       }
 
       // Business logic: Validate date range size (performance optimization)
-      final daysDifference = endDate.difference(startDate).inDays;
-      if (daysDifference > 365 * 5) {
-        // Max 5 years
-        throw ArgumentError('Date range too large. Maximum 5 years allowed.');
-      }
+      // Note: In practice, only ±3 months are loaded at a time, so this limit is rarely reached
+      // Removed arbitrary year limit since it's not needed for normal usage
 
       // Get the configuration first
       final configs = await _configRepository.getConfigs();
@@ -58,6 +55,7 @@ class GenerateSchedulesUseCase {
 
       // If we have schedules for most of the range, only generate missing ones
       const expectedSchedulesPerDay = 5; // Approximate number of duty groups
+      final daysDifference = endDate.difference(startDate).inDays;
       final expectedTotalSchedules = daysDifference * expectedSchedulesPerDay;
       const coverageThreshold = 0.8; // 80% coverage threshold
 
