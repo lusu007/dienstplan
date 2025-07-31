@@ -28,10 +28,27 @@ class _AppInitializerWidgetState extends State<AppInitializerWidget> {
       AppLogger.i('Checking initial setup');
       final settingsController =
           await GetIt.instance.getAsync<SettingsController>();
-      await settingsController.loadSettings();
-      // For now, assume setup is completed if settings are loaded successfully
-      final isSetupCompleted = settingsController.settings != null;
+
+      // Check if settings are already loaded, if not wait for them
+      if (settingsController.settings == null) {
+        AppLogger.i('Settings not loaded yet, waiting for initialization');
+        // Wait a bit for the controller service to finish initialization
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Try to load settings again
+        await settingsController.loadSettings();
+      }
+
+      // Check if setup is completed by looking for an active config
+      final settings = settingsController.settings;
+      final isSetupCompleted = settings != null &&
+          settings.activeConfigName != null &&
+          settings.activeConfigName!.isNotEmpty;
+
       AppLogger.i('Setup completed: $isSetupCompleted');
+      AppLogger.i('Active config name: ${settings?.activeConfigName}');
+      AppLogger.i('Settings object: ${settings?.toString()}');
+
       if (mounted) {
         setState(() {
           _needsSetup = !isSetupCompleted;

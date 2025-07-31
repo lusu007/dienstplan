@@ -669,23 +669,34 @@ class ScheduleController extends ChangeNotifier {
     try {
       _configs = await getConfigsUseCase.execute();
 
+      // Load all settings once and reuse them
+      final settings = await getSettingsUseCase.execute();
+
       // Load active config from settings
-      await _loadActiveConfig();
+      await _loadActiveConfig(settings);
 
       // Load preferred duty group from settings
-      await _loadMyDutyGroup();
+      await _loadMyDutyGroup(settings);
 
       // Load selected and focused day from settings
-      await _loadSelectedAndFocusedDay();
+      await _loadSelectedAndFocusedDay(settings);
 
       // Load calendar format from settings
-      await _loadCalendarFormat();
+      await _loadCalendarFormat(settings);
 
-      // Load schedules for current month ±3 months as fallback
-      final now = DateTime.now();
-      final startDate = DateTime(now.year, now.month - 3, 1);
-      final endDate = DateTime(now.year, now.month + 4, 0);
-      await loadSchedulesForRange(startDate, endDate);
+      // Only load schedules if we have an active config (not during first setup)
+      if (_activeConfig != null) {
+        AppLogger.i(
+            'ScheduleController: Active config found, loading schedules for current month');
+        // Load schedules for current month ±3 months as fallback
+        final now = DateTime.now();
+        final startDate = DateTime(now.year, now.month - 3, 1);
+        final endDate = DateTime(now.year, now.month + 4, 0);
+        await loadSchedulesForRange(startDate, endDate);
+      } else {
+        AppLogger.i(
+            'ScheduleController: No active config found, skipping schedule loading (first setup)');
+      }
     } catch (e, stackTrace) {
       _error = 'Failed to load configs';
       AppLogger.e('ScheduleController: Error loading configs', e, stackTrace);
@@ -695,54 +706,59 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadActiveConfig() async {
+  Future<void> _loadActiveConfig([Settings? settings]) async {
     try {
-      final settings = await getSettingsUseCase.execute();
-      final configName = settings?.activeConfigName;
+      final currentSettings = settings ?? await getSettingsUseCase.execute();
+      final configName = currentSettings?.activeConfigName;
 
-      if (settings != null && configName != null && configName.isNotEmpty) {
+      if (currentSettings != null &&
+          configName != null &&
+          configName.isNotEmpty) {
         // Try to find the active config by name
         try {
           final activeConfig = _configs.firstWhere(
             (config) => config.name == configName,
           );
           _activeConfig = activeConfig;
+          AppLogger.i(
+              'ScheduleController: Loaded active config from settings: ${activeConfig.name}');
           notifyListeners();
           return;
         } catch (e) {
-          // If config not found, fallback to first config
+          // If config not found, fallback to first config only if we have settings
           if (_configs.isNotEmpty) {
             _activeConfig = _configs.first;
             // Save this as the active config
             await _saveActiveConfig(_activeConfig!.name);
+            AppLogger.i(
+                'ScheduleController: Config not found in settings, using first config: ${_activeConfig!.name}');
             notifyListeners();
             return;
           }
         }
-      } else if (_configs.isNotEmpty && _activeConfig == null) {
-        // Fallback to first config if no active config is set
-        _activeConfig = _configs.first;
-        // Save this as the active config
-        await _saveActiveConfig(_activeConfig!.name);
+      } else {
+        // No settings or no active config name - this is likely first setup
+        // Don't automatically set a config, let the user choose
+        AppLogger.i(
+            'ScheduleController: No active config in settings, waiting for user selection (first setup)');
+        _activeConfig = null;
         notifyListeners();
         return;
       }
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleController: Error loading active config', e, stackTrace);
-      // Fallback to first config if error occurs
-      if (_configs.isNotEmpty && _activeConfig == null) {
-        _activeConfig = _configs.first;
-        notifyListeners();
-      }
+      // Don't set a fallback config on error during first setup
+      _activeConfig = null;
+      notifyListeners();
     }
   }
 
-  Future<void> _loadMyDutyGroup() async {
+  Future<void> _loadMyDutyGroup([Settings? settings]) async {
     try {
-      final settings = await getSettingsUseCase.execute();
-      if (settings != null && settings.myDutyGroup != null) {
-        _myDutyGroup = settings.myDutyGroup;
+      final currentSettings = settings ?? await getSettingsUseCase.execute();
+      if (currentSettings != null && currentSettings.myDutyGroup != null) {
+        _myDutyGroup = currentSettings.myDutyGroup;
         notifyListeners();
       }
     } catch (e, stackTrace) {
@@ -751,12 +767,12 @@ class ScheduleController extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadSelectedAndFocusedDay() async {
+  Future<void> _loadSelectedAndFocusedDay([Settings? settings]) async {
     try {
-      final settings = await getSettingsUseCase.execute();
-      if (settings != null) {
-        _selectedDay = settings.selectedDay;
-        _focusedDay = settings.focusedDay;
+      final currentSettings = settings ?? await getSettingsUseCase.execute();
+      if (currentSettings != null) {
+        _selectedDay = currentSettings.selectedDay;
+        _focusedDay = currentSettings.focusedDay;
         notifyListeners();
       } else {
         // Fallback to current date if no settings
@@ -773,6 +789,20 @@ class ScheduleController extends ChangeNotifier {
       _selectedDay = now;
       _focusedDay = now;
       notifyListeners();
+    }
+  }
+
+  Future<void> _loadCalendarFormat([Settings? settings]) async {
+    try {
+      final currentSettings = settings ?? await getSettingsUseCase.execute();
+      if (currentSettings != null) {
+        _calendarFormat = currentSettings.calendarFormat;
+        // Migrate old format if necessary
+        await _migrateCalendarFormatIfNeeded(currentSettings);
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'ScheduleController: Error loading calendar format', e, stackTrace);
     }
   }
 
@@ -866,20 +896,6 @@ class ScheduleController extends ChangeNotifier {
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleController: Error saving active config', e, stackTrace);
-    }
-  }
-
-  Future<void> _loadCalendarFormat() async {
-    try {
-      final settings = await getSettingsUseCase.execute();
-      if (settings != null) {
-        _calendarFormat = settings.calendarFormat;
-        // Migrate old format if necessary
-        await _migrateCalendarFormatIfNeeded(settings);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-          'ScheduleController: Error loading calendar format', e, stackTrace);
     }
   }
 
