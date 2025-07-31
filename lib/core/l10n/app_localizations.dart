@@ -697,6 +697,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get all;
+
+  /// Title for share app option
+  ///
+  /// In en, this message translates to:
+  /// **'Share App'**
+  String get shareApp;
+
+  /// Description for share app option
+  ///
+  /// In en, this message translates to:
+  /// **'Recommend the app to colleagues'**
+  String get shareAppDescription;
+
+  /// Title for share app email
+  ///
+  /// In en, this message translates to:
+  /// **'Duty Schedule App Recommendation'**
+  String get shareAppTitle;
+
+  /// Message template for sharing the app
+  ///
+  /// In en, this message translates to:
+  /// **'Hey! 👋\n\nI found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHope you like it! 🚔'**
+  String shareAppMessage(String appStoreUrl, String playStoreUrl);
+
+  /// Subject for share app email
+  ///
+  /// In en, this message translates to:
+  /// **'Duty Schedule App Recommendation'**
+  String get shareAppSubject;
+
+  /// Error message when sharing app fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error sharing app'**
+  String get shareAppError;
+
+  /// Success message when share sheet is opened
+  ///
+  /// In en, this message translates to:
+  /// **'Share sheet opened'**
+  String get shareAppSuccess;
+
+  /// Message when fallback sharing is used
+  ///
+  /// In en, this message translates to:
+  /// **'App store link shared'**
+  String get shareAppFallback;
+
+  /// Title for other settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
+
+  /// Title for contact option
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contact;
+
+  /// Description for contact option
+  ///
+  /// In en, this message translates to:
+  /// **'Get in touch with us'**
+  String get contactDescription;
 }
 
 class _AppLocalizationsDelegate

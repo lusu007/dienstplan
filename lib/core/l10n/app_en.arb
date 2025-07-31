@@ -406,5 +406,59 @@
   "all": "All",
   "@all": {
     "description": "Label for showing all items (no filter)"
+  },
+  "shareApp": "Share App",
+  "@shareApp": {
+    "description": "Title for share app option"
+  },
+  "shareAppDescription": "Recommend the app to colleagues",
+  "@shareAppDescription": {
+    "description": "Description for share app option"
+  },
+  "shareAppTitle": "Duty Schedule App Recommendation",
+  "@shareAppTitle": {
+    "description": "Title for share app email"
+  },
+  "shareAppMessage": "Hey! 👋\n\nI found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHope you like it! 🚔",
+  "@shareAppMessage": {
+    "description": "Message template for sharing the app",
+    "placeholders": {
+      "appStoreUrl": {
+        "type": "String",
+        "example": "https://apps.apple.com/app/dienstplan/id6748340130"
+      },
+      "playStoreUrl": {
+        "type": "String",
+        "example": "https://play.google.com/store/apps/details?id=io.scelus.dienstplan"
+      }
+    }
+  },
+  "shareAppSubject": "Duty Schedule App Recommendation",
+  "@shareAppSubject": {
+    "description": "Subject for share app email"
+  },
+  "shareAppError": "Error sharing app",
+  "@shareAppError": {
+    "description": "Error message when sharing app fails"
+  },
+  "shareAppSuccess": "Share sheet opened",
+  "@shareAppSuccess": {
+    "description": "Success message when share sheet is opened"
+  },
+  "shareAppFallback": "App store link shared",
+  "@shareAppFallback": {
+    "description": "Message when fallback sharing is used"
+  },
+  "other": "Other",
+  "@other": {
+    "description": "Title for other settings section"
+  },
+  "contact": "Contact",
+  "@contact": {
+    "description": "Title for contact option"
+  },
+  "contactDescription": "Get in touch with us",
+  "@contactDescription": {
+    "description": "Description for contact option"
   }
 } 
