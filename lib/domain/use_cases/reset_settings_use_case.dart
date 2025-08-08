@@ -36,12 +36,8 @@ class ResetSettingsUseCase {
 
   Settings _createDefaultSettings() {
     // Business logic: Create default settings
-    final now = DateTime.now();
-
-    return Settings(
+    return const Settings(
       calendarFormat: CalendarFormat.month,
-      focusedDay: now,
-      selectedDay: now,
       selectedDutyGroup: null,
       myDutyGroup: null,
     );

@@ -11,14 +11,7 @@ class DatabaseService {
   DatabaseService._internal();
 
   static Database? _database;
-  static const int _currentVersion = 4;
-
-  // Callback for showing migration dialog
-  static Function(String)? _showMigrationDialog;
-
-  static void setMigrationDialogCallback(Function(String) callback) {
-    _showMigrationDialog = callback;
-  }
+  static const int _currentVersion = 5;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -69,8 +62,6 @@ class DatabaseService {
       CREATE TABLE settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         calendar_format TEXT NOT NULL,
-        focused_day TEXT NOT NULL,
-        selected_day TEXT NOT NULL,
         language TEXT,
         selected_duty_group TEXT,
         my_duty_group TEXT,
@@ -126,51 +117,55 @@ class DatabaseService {
       Database db, int oldVersion, int newVersion) async {
     AppLogger.i('Upgrading database from version $oldVersion to $newVersion');
 
-    // For development phase: Clear all data if version is not current
-    if (oldVersion < _currentVersion) {
-      AppLogger.i(
-          'Clearing all data for development migration from version $oldVersion');
-      await _clearAllDataForMigration(db);
-      return;
+    if (oldVersion < 5) {
+      // Migration to version 5: Remove focused_day and selected_day from settings
+      await _migrateToVersion5(db);
     }
   }
 
-  Future<void> _clearAllDataForMigration(Database db) async {
+  Future<void> _migrateToVersion5(Database db) async {
     try {
-      AppLogger.i('Clearing all data for development migration');
+      AppLogger.i(
+          'Migrating to version 5: Removing focused_day and selected_day columns');
 
-      // Notify user about data clearing (this will be handled by the UI)
-      await _notifyUserAboutDataClearing();
+      // Create a new settings table without the date columns
+      await db.execute('''
+        CREATE TABLE settings_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          calendar_format TEXT NOT NULL,
+          language TEXT,
+          selected_duty_group TEXT,
+          my_duty_group TEXT,
+          active_config_name TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        )
+      ''');
 
-      // Completely recreate database to ensure clean schema
-      await _recreateDatabaseCompletely(db);
+      // Copy data from old table to new table (excluding the date columns)
+      await db.execute('''
+        INSERT INTO settings_new (
+          id, calendar_format, language, selected_duty_group, 
+          my_duty_group, active_config_name, created_at, updated_at
+        )
+        SELECT 
+          id, calendar_format, language, selected_duty_group,
+          my_duty_group, active_config_name, created_at, updated_at
+        FROM settings
+      ''');
 
-      AppLogger.i('Successfully cleared all data and recreated schema');
+      // Drop the old table
+      await db.execute('DROP TABLE settings');
+
+      // Rename the new table to the original name
+      await db.execute('ALTER TABLE settings_new RENAME TO settings');
+
+      AppLogger.i(
+          'Successfully migrated to version 5: Removed date columns from settings');
     } catch (e, stackTrace) {
-      AppLogger.e('Failed to clear data for migration', e, stackTrace);
+      AppLogger.e('Error during migration to version 5', e, stackTrace);
       rethrow;
     }
-  }
-
-  Future<void> _recreateDatabaseCompletely(Database db) async {
-    // Drop all tables
-    await db.execute('DROP TABLE IF EXISTS schedules');
-    await db.execute('DROP TABLE IF EXISTS duty_types');
-    await db.execute('DROP TABLE IF EXISTS settings');
-
-    // Recreate tables with current schema
-    await _createDatabase(db, _currentVersion);
-  }
-
-  Future<void> _notifyUserAboutDataClearing() async {
-    // Show migration dialog if callback is set
-    if (_showMigrationDialog != null) {
-      _showMigrationDialog!(
-          'Die App wurde aktualisiert und das Datenbankschema hat sich geändert. Alle Daten wurden für Entwicklungszwecke zurückgesetzt. Bitte konfigurieren Sie die App neu.');
-    }
-
-    AppLogger.i(
-        'User should be notified: Database schema has changed significantly. All data has been cleared for development purposes.');
   }
 
   Future<void> init() async {
@@ -512,7 +507,17 @@ class DatabaseService {
   }
 
   Future<void> clearAllData() async {
-    return clearDatabase();
+    try {
+      AppLogger.i('Clearing all data');
+      final db = await database;
+      await db.delete('schedules');
+      await db.delete('duty_types');
+      await db.delete('settings');
+      AppLogger.i('All data cleared successfully');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error clearing all data', e, stackTrace);
+      rethrow;
+    }
   }
 
   // Additional methods from old DatabaseService

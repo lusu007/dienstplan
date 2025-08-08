@@ -5,7 +5,6 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
 import 'package:dienstplan/core/services/controller_service.dart';
 import 'package:dienstplan/data/services/language_service.dart';
-import 'package:dienstplan/data/services/database_service.dart';
 import 'package:get_it/get_it.dart';
 
 class MyApp extends StatefulWidget {
@@ -23,15 +22,10 @@ class _MyAppState extends State<MyApp> {
   // Global navigator key for showing dialogs
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  // Queue for migration messages
-  final List<String> _migrationMessageQueue = [];
-  bool _isShowingDialog = false;
-
   @override
   void initState() {
     super.initState();
     _initializeControllers();
-    _setupMigrationDialog();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
@@ -46,63 +40,6 @@ class _MyAppState extends State<MyApp> {
         setState(() {});
       }
     });
-  }
-
-  void _setupMigrationDialog() {
-    // Set up the migration dialog callback
-    DatabaseService.setMigrationDialogCallback(_queueMigrationDialog);
-  }
-
-  void _queueMigrationDialog(String message) {
-    _migrationMessageQueue.add(message);
-    _processMigrationQueue();
-  }
-
-  void _processMigrationQueue() {
-    if (_migrationMessageQueue.isEmpty || _isShowingDialog) {
-      return;
-    }
-
-    // Wait for the app to be fully initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        if (mounted && _migrationMessageQueue.isNotEmpty) {
-          _showNextMigrationDialog();
-        }
-      });
-    });
-  }
-
-  void _showNextMigrationDialog() {
-    if (_migrationMessageQueue.isEmpty || _isShowingDialog) {
-      return;
-    }
-
-    _isShowingDialog = true;
-    final message = _migrationMessageQueue.removeAt(0);
-
-    // Show dialog instead of snackbar
-    showDialog(
-      context: _navigatorKey.currentContext!,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Datenbank Migration'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _isShowingDialog = false;
-                // Process next message in queue
-                _processMigrationQueue();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override

@@ -2,8 +2,6 @@ import 'package:table_calendar/table_calendar.dart';
 
 class Settings {
   final CalendarFormat calendarFormat;
-  final DateTime focusedDay;
-  final DateTime selectedDay;
   final String? language;
   final String? selectedDutyGroup;
   final String? myDutyGroup;
@@ -11,8 +9,6 @@ class Settings {
 
   const Settings({
     required this.calendarFormat,
-    required this.focusedDay,
-    required this.selectedDay,
     this.language,
     this.selectedDutyGroup,
     this.myDutyGroup,
@@ -25,8 +21,6 @@ class Settings {
         (format) => format.name == map['calendar_format'],
         orElse: () => CalendarFormat.month,
       ),
-      focusedDay: DateTime.parse(map['focused_day'] as String),
-      selectedDay: DateTime.parse(map['selected_day'] as String),
       language: map['language'] as String?,
       selectedDutyGroup: map['selected_duty_group'] as String?,
       myDutyGroup: map['my_duty_group'] as String?,
@@ -37,8 +31,6 @@ class Settings {
   Map<String, dynamic> toMap() {
     return {
       'calendar_format': calendarFormat.name,
-      'focused_day': focusedDay.toIso8601String(),
-      'selected_day': selectedDay.toIso8601String(),
       if (language != null) 'language': language,
       if (selectedDutyGroup != null) 'selected_duty_group': selectedDutyGroup,
       if (myDutyGroup != null) 'my_duty_group': myDutyGroup,
@@ -48,8 +40,6 @@ class Settings {
 
   Settings copyWith({
     CalendarFormat? calendarFormat,
-    DateTime? focusedDay,
-    DateTime? selectedDay,
     String? language,
     String? selectedDutyGroup,
     String? myDutyGroup,
@@ -57,12 +47,35 @@ class Settings {
   }) {
     return Settings(
       calendarFormat: calendarFormat ?? this.calendarFormat,
-      focusedDay: focusedDay ?? this.focusedDay,
-      selectedDay: selectedDay ?? this.selectedDay,
       language: language ?? this.language,
       selectedDutyGroup: selectedDutyGroup ?? this.selectedDutyGroup,
       myDutyGroup: myDutyGroup ?? this.myDutyGroup,
       activeConfigName: activeConfigName ?? this.activeConfigName,
     );
+  }
+
+  @override
+  String toString() {
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Settings &&
+        other.calendarFormat == calendarFormat &&
+        other.language == language &&
+        other.selectedDutyGroup == selectedDutyGroup &&
+        other.myDutyGroup == myDutyGroup &&
+        other.activeConfigName == activeConfigName;
+  }
+
+  @override
+  int get hashCode {
+    return calendarFormat.hashCode ^
+        language.hashCode ^
+        selectedDutyGroup.hashCode ^
+        myDutyGroup.hashCode ^
+        activeConfigName.hashCode;
   }
 }

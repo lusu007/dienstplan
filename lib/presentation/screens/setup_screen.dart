@@ -143,8 +143,6 @@ class _SetupScreenState extends State<SetupScreen> {
       final settingsController =
           await GetIt.instance.getAsync<SettingsController>();
       final initialSettings = Settings(
-        focusedDay: DateTime.now(),
-        selectedDay: DateTime.now(),
         calendarFormat: CalendarFormat.month,
         myDutyGroup: _selectedDutyGroup,
         activeConfigName: _selectedConfig!.name,
