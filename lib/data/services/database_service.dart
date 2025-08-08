@@ -4,6 +4,7 @@ import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_type.dart';
 import 'package:dienstplan/data/models/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/utils/schedule_key_helper.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -11,7 +12,7 @@ class DatabaseService {
   DatabaseService._internal();
 
   static Database? _database;
-  static const int _currentVersion = 6;
+  static const int _currentVersion = 7;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -45,8 +46,8 @@ class DatabaseService {
 
     await db.execute('''
       CREATE TABLE schedules (
-        id TEXT PRIMARY KEY,
         date TEXT NOT NULL,
+        date_ymd TEXT NOT NULL,
         service TEXT NOT NULL,
         duty_group_id TEXT NOT NULL,
         duty_group_name TEXT NOT NULL,
@@ -54,7 +55,8 @@ class DatabaseService {
         is_all_day INTEGER NOT NULL DEFAULT 0,
         config_name TEXT NOT NULL,
         created_at INTEGER NOT NULL,
-        updated_at INTEGER NOT NULL
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (date_ymd, config_name, duty_group_id, duty_type_id, service)
       )
     ''');
 
@@ -77,7 +79,7 @@ class DatabaseService {
     AppLogger.i('Optimized database tables and indexes created successfully');
   }
 
-  Future<void> _createOptimizedIndexes(Database db) async {
+  Future<void> _createOptimizedIndexes(DatabaseExecutor db) async {
     AppLogger.i('Creating optimized database indexes');
 
     // Composite indexes for common query patterns
@@ -110,10 +112,14 @@ class DatabaseService {
     // SQLite considers date() non-deterministic
     // Regular indexes will be used instead
 
-    // Enforce natural key uniqueness to prevent duplicates
+    // Additional helpful indexes for lookups involving date_ymd
     await db.execute('''
-      CREATE UNIQUE INDEX IF NOT EXISTS idx_schedules_unique_key
-      ON schedules(date, config_name, duty_group_id, duty_type_id, service);
+      CREATE INDEX IF NOT EXISTS idx_schedules_ymd_config
+      ON schedules(date_ymd, config_name);
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_schedules_config_ymd
+      ON schedules(config_name, date_ymd);
     ''');
 
     AppLogger.i('Optimized indexes created successfully');
@@ -122,19 +128,20 @@ class DatabaseService {
   Future<void> _upgradeDatabase(
       Database db, int oldVersion, int newVersion) async {
     AppLogger.i('Upgrading database from version $oldVersion to $newVersion');
-
-    if (oldVersion < 5) {
-      // Migration to version 5: Remove focused_day and selected_day from settings
-      await _migrateToVersion5(db);
-    }
-
-    if (oldVersion < 6) {
-      // Migration to version 6: Fix schedule primary key collisions by incorporating config_name
-      await _migrateToVersion6(db);
-    }
+    await db.transaction((txn) async {
+      if (oldVersion < 5) {
+        await _migrateToVersion5(txn);
+      }
+      if (oldVersion < 6) {
+        await _migrateToVersion6(txn);
+      }
+      if (oldVersion < 7) {
+        await _migrateToVersion7(txn);
+      }
+    });
   }
 
-  Future<void> _migrateToVersion5(Database db) async {
+  Future<void> _migrateToVersion5(DatabaseExecutor db) async {
     try {
       AppLogger.i(
           'Migrating to version 5: Removing focused_day and selected_day columns');
@@ -179,7 +186,7 @@ class DatabaseService {
     }
   }
 
-  Future<void> _migrateToVersion6(Database db) async {
+  Future<void> _migrateToVersion6(DatabaseExecutor db) async {
     try {
       AppLogger.i(
           'Migrating to version 6: Rebuilding schedules table with collision-safe IDs');
@@ -229,6 +236,57 @@ class DatabaseService {
           'Successfully migrated to version 6: schedules IDs updated and duplicates removed');
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 6', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion7(DatabaseExecutor db) async {
+    try {
+      AppLogger.i(
+          'Migrating to version 7: Rebuilding schedules table with composite PK and date_ymd');
+
+      await db.execute('''
+        CREATE TABLE schedules_new_v7 (
+          date TEXT NOT NULL,
+          date_ymd TEXT NOT NULL,
+          service TEXT NOT NULL,
+          duty_group_id TEXT NOT NULL,
+          duty_group_name TEXT NOT NULL,
+          duty_type_id TEXT NOT NULL,
+          is_all_day INTEGER NOT NULL DEFAULT 0,
+          config_name TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          PRIMARY KEY (date_ymd, config_name, duty_group_id, duty_type_id, service)
+        )
+      ''');
+
+      await db.execute('''
+        INSERT OR REPLACE INTO schedules_new_v7 (
+          date, date_ymd, service, duty_group_id, duty_group_name, duty_type_id,
+          is_all_day, config_name, created_at, updated_at
+        )
+        SELECT 
+          date,
+          substr(date, 1, 10) AS date_ymd,
+          service, duty_group_id, duty_group_name, duty_type_id,
+          is_all_day, config_name, created_at, updated_at
+        FROM (
+          SELECT * FROM schedules
+          ORDER BY updated_at DESC
+        )
+        GROUP BY substr(date, 1, 10), config_name, duty_group_id, duty_type_id, service
+      ''');
+
+      await db.execute('DROP TABLE schedules');
+      await db.execute('ALTER TABLE schedules_new_v7 RENAME TO schedules');
+
+      await _createOptimizedIndexes(db);
+
+      AppLogger.i(
+          'Successfully migrated to version 7: schedules now use composite PK and date_ymd');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 7', e, stackTrace);
       rethrow;
     }
   }
@@ -361,16 +419,12 @@ class DatabaseService {
           final currentBatch = schedules.sublist(i, end);
 
           for (final schedule in currentBatch) {
-            // Build collision-safe primary key: YYYY-MM-DD_configName_dutyGroupId_dutyTypeId_service
-            final String ymd =
-                schedule.date.toUtc().toIso8601String().substring(0, 10);
-            final String safeId =
-                '${ymd}_${schedule.configName}_${schedule.dutyGroupId}_${schedule.dutyTypeId}_${schedule.service}';
+            final String ymd = ScheduleKeyHelper.formatDateYmd(schedule.date);
             batch.insert(
               'schedules',
               {
-                'id': safeId,
                 'date': schedule.date.toIso8601String(),
+                'date_ymd': ymd,
                 'service': schedule.service,
                 'duty_group_id': schedule.dutyGroupId,
                 'duty_group_name': schedule.dutyGroupName,
@@ -516,10 +570,18 @@ class DatabaseService {
     try {
       AppLogger.i('Deleting schedule with id: $id');
       final db = await database;
+      final parts = ScheduleKeyHelper.parseScheduleId(id);
       await db.delete(
         'schedules',
-        where: 'id = ?',
-        whereArgs: [id],
+        where:
+            'date_ymd = ? AND config_name = ? AND duty_group_id = ? AND duty_type_id = ? AND service = ?',
+        whereArgs: [
+          parts.dateYmd,
+          parts.configName,
+          parts.dutyGroupId,
+          parts.dutyTypeId,
+          parts.service,
+        ],
       );
       AppLogger.i('Schedule deleted successfully');
     } catch (e, stackTrace) {
