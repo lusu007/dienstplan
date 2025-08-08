@@ -50,6 +50,7 @@ class SettingsRepository {
   domain.Settings _toDomainSettings(data.Settings s) {
     return domain.Settings(
       calendarFormat: s.calendarFormat,
+      language: s.language,
       selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
@@ -59,6 +60,7 @@ class SettingsRepository {
   data.Settings _toDataSettings(domain.Settings s) {
     return data.Settings(
       calendarFormat: s.calendarFormat,
+      language: s.language,
       selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,

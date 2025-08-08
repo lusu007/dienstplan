@@ -44,10 +44,44 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (_languageService == null) {
+      // Render minimal app shell while DI is resolving LanguageService
+      return MaterialApp(
+        title: 'Dienstplan',
+        navigatorKey: _navigatorKey,
+        navigatorObservers: [_routeObserver],
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF005B8C),
+            primary: const Color(0xFF005B8C),
+          ),
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF005B8C),
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+            iconTheme: IconThemeData(color: Colors.white),
+          ),
+        ),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('de'),
+        home: AppInitializerWidget(routeObserver: _routeObserver),
+      );
+    }
+
     return ListenableBuilder(
-      listenable: _languageService ?? LanguageService(),
+      listenable: _languageService!,
       builder: (context, child) {
-        final locale = _languageService?.currentLocale ?? const Locale('de');
+        final locale = _languageService!.currentLocale;
 
         return MaterialApp(
           title: 'Dienstplan',
