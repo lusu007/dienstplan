@@ -149,10 +149,8 @@ class SettingsLocalDataSource {
         );
       } else {
         // Create new settings with default values and the specified key-value
-        final defaultSettings = Settings(
+        const defaultSettings = Settings(
           calendarFormat: CalendarFormat.month,
-          focusedDay: DateTime.now(),
-          selectedDay: DateTime.now(),
         );
         final settingsMap = defaultSettings.toMap();
         settingsMap[key] = value;

@@ -293,12 +293,6 @@ class ScheduleController extends ChangeNotifier {
       _selectedDay = day;
       notifyListeners();
 
-      // Save the selected day to settings
-      _saveSelectedDay(day).catchError((e, stackTrace) {
-        AppLogger.e(
-            'ScheduleController: Error saving selected day', e, stackTrace);
-      });
-
       // Check if we have schedules for this day, if not, load them
       _ensureSchedulesForSelectedDay(day);
     } catch (e, stackTrace) {
@@ -341,17 +335,6 @@ class ScheduleController extends ChangeNotifier {
     // Set both selected and focused day to today
     _selectedDay = now;
     _focusedDay = now;
-
-    // Save both to settings
-    _saveSelectedDay(now).catchError((e, stackTrace) {
-      AppLogger.e(
-          'ScheduleController: Error saving selected day', e, stackTrace);
-    });
-
-    _saveFocusedDay(now).catchError((e, stackTrace) {
-      AppLogger.e(
-          'ScheduleController: Error saving focused day', e, stackTrace);
-    });
 
     // Notify listeners immediately
     notifyListeners();
@@ -398,12 +381,6 @@ class ScheduleController extends ChangeNotifier {
     try {
       final previousFocusedDay = _focusedDay;
       _focusedDay = focusedDay;
-
-      // Save the focused day to settings
-      _saveFocusedDay(focusedDay).catchError((e, stackTrace) {
-        AppLogger.e(
-            'ScheduleController: Error saving focused day', e, stackTrace);
-      });
 
       // Always notify listeners immediately when focused day changes
       notifyListeners();
@@ -769,18 +746,11 @@ class ScheduleController extends ChangeNotifier {
 
   Future<void> _loadSelectedAndFocusedDay([Settings? settings]) async {
     try {
-      final currentSettings = settings ?? await getSettingsUseCase.execute();
-      if (currentSettings != null) {
-        _selectedDay = currentSettings.selectedDay;
-        _focusedDay = currentSettings.focusedDay;
-        notifyListeners();
-      } else {
-        // Fallback to current date if no settings
-        final now = DateTime.now();
-        _selectedDay = now;
-        _focusedDay = now;
-        notifyListeners();
-      }
+      // Always use current date for selected and focused day
+      final now = DateTime.now();
+      _selectedDay = now;
+      _focusedDay = now;
+      notifyListeners();
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleController: Error loading selected and focused day',
           e, stackTrace);
@@ -1225,46 +1195,5 @@ class ScheduleController extends ChangeNotifier {
   /// Get settings cache statistics for debugging
   Map<String, dynamic> getSettingsCacheStatistics() {
     return SettingsCache.cacheStatistics;
-  }
-
-  Future<void> _saveSelectedDay(DateTime selectedDay) async {
-    try {
-      final currentSettings = await getSettingsUseCase.execute();
-      if (currentSettings != null &&
-          currentSettings.selectedDay != selectedDay) {
-        AppLogger.i(
-            'ScheduleController: Selected day changed, saving settings');
-        final updatedSettings = currentSettings.copyWith(
-          selectedDay: selectedDay,
-        );
-        await saveSettingsUseCase.execute(updatedSettings);
-      } else {
-        AppLogger.d(
-            'ScheduleController: Selected day unchanged, skipping save');
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-          'ScheduleController: Error saving selected day', e, stackTrace);
-      // Don't rethrow to prevent UI crashes
-    }
-  }
-
-  Future<void> _saveFocusedDay(DateTime focusedDay) async {
-    try {
-      final currentSettings = await getSettingsUseCase.execute();
-      if (currentSettings != null && currentSettings.focusedDay != focusedDay) {
-        AppLogger.i('ScheduleController: Focused day changed, saving settings');
-        final updatedSettings = currentSettings.copyWith(
-          focusedDay: focusedDay,
-        );
-        await saveSettingsUseCase.execute(updatedSettings);
-      } else {
-        AppLogger.d('ScheduleController: Focused day unchanged, skipping save');
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-          'ScheduleController: Error saving focused day', e, stackTrace);
-      // Don't rethrow to prevent UI crashes
-    }
   }
 }

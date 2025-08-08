@@ -50,8 +50,6 @@ class SettingsRepository {
   domain.Settings _toDomainSettings(data.Settings s) {
     return domain.Settings(
       calendarFormat: s.calendarFormat,
-      focusedDay: s.focusedDay,
-      selectedDay: s.selectedDay,
       selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
@@ -61,8 +59,6 @@ class SettingsRepository {
   data.Settings _toDataSettings(domain.Settings s) {
     return data.Settings(
       calendarFormat: s.calendarFormat,
-      focusedDay: s.focusedDay,
-      selectedDay: s.selectedDay,
       selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
