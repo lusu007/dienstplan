@@ -162,11 +162,17 @@ class _TableCalendarWrapper extends StatefulWidget {
 }
 
 class _TableCalendarWrapperState extends State<_TableCalendarWrapper> {
+  CalendarFormat? _lastFormat;
+  int _lastScheduleCount = 0;
+  DateTime? _lastFocusedDay;
+  DateTime? _lastSelectedDay;
+
   @override
   void initState() {
     super.initState();
     // Listen to controller changes to sync calendar
     widget.scheduleController.addListener(_onControllerChanged);
+    _updateLocalState();
   }
 
   @override
@@ -176,10 +182,32 @@ class _TableCalendarWrapperState extends State<_TableCalendarWrapper> {
   }
 
   void _onControllerChanged() {
-    // Rebuild when controller changes
     if (mounted) {
-      setState(() {});
+      final currentFormat = widget.scheduleController.calendarFormat;
+      final currentScheduleCount = widget.scheduleController.schedules.length;
+      final currentFocusedDay = widget.scheduleController.focusedDay;
+      final currentSelectedDay = widget.scheduleController.selectedDay;
+
+      // Only rebuild if relevant properties changed
+      if (_lastFormat != currentFormat ||
+          _lastScheduleCount != currentScheduleCount ||
+          _lastFocusedDay != currentFocusedDay ||
+          _lastSelectedDay != currentSelectedDay) {
+        _lastFormat = currentFormat;
+        _lastScheduleCount = currentScheduleCount;
+        _lastFocusedDay = currentFocusedDay;
+        _lastSelectedDay = currentSelectedDay;
+
+        setState(() {});
+      }
     }
+  }
+
+  void _updateLocalState() {
+    _lastFormat = widget.scheduleController.calendarFormat;
+    _lastScheduleCount = widget.scheduleController.schedules.length;
+    _lastFocusedDay = widget.scheduleController.focusedDay;
+    _lastSelectedDay = widget.scheduleController.selectedDay;
   }
 
   @override
@@ -187,9 +215,8 @@ class _TableCalendarWrapperState extends State<_TableCalendarWrapper> {
     final calendarFormat = widget.scheduleController.calendarFormat;
     final scheduleCount = widget.scheduleController.schedules.length;
 
-    // Use a key that changes when format or schedules change
-    final calendarKey = ValueKey(
-        'calendar_${calendarFormat}_${scheduleCount}_${DateTime.now().millisecondsSinceEpoch}');
+    // Use a stable key that only changes when format or schedule count changes
+    final calendarKey = ValueKey('calendar_${calendarFormat}_$scheduleCount');
 
     return TableCalendar(
       key: calendarKey,

@@ -56,48 +56,37 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   void _onProviderChanged() {
-    // Always rebuild when controller changes (for format changes, etc.)
-    if (mounted) {
-      setState(() {});
-    }
+    // Only rebuild if there are actual changes
+    final currentFormat = widget.scheduleController.calendarFormat;
+    final currentSelectedDay = widget.scheduleController.selectedDay;
 
-    final selectedDay = widget.scheduleController.selectedDay;
-    if (selectedDay != null) {
-      // Always rebuild the page manager around the selected day to ensure synchronization
-      _pageManager.rebuildDayPagesAroundDay(selectedDay);
-
-      // Force a complete rebuild of the PageView by changing its key
-      setState(() {
-        _pageViewKey = UniqueKey();
-      });
-
-      // Force the PageController to jump to the correct page immediately and after a delay
-      // This ensures the PageView is properly synchronized
-      if (_pageManager.pageController.hasClients) {
-        _pageManager.pageController.jumpToPage(_pageManager.currentPageIndex);
-      }
-
-      // Additional synchronization after a short delay to handle any timing issues
-      Future.delayed(const Duration(milliseconds: 50), () {
-        if (mounted && _pageManager.pageController.hasClients) {
-          _pageManager.pageController.jumpToPage(_pageManager.currentPageIndex);
-        }
-      });
-    }
-
-    // Force a rebuild of the calendar to ensure duty chips are updated
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Check if format changed
+    if (_lastKnownFormat != currentFormat) {
+      _lastKnownFormat = currentFormat;
       if (mounted) {
         setState(() {});
       }
-    });
+      return; // Exit early to avoid multiple rebuilds
+    }
 
-    // Force another rebuild after a delay to ensure all updates are processed
-    Future.delayed(const Duration(milliseconds: 100), () {
+    // Check if selected day changed
+    if (currentSelectedDay != null &&
+        (_pageManager.lastSelectedDay == null ||
+            !_isSameDay(currentSelectedDay, _pageManager.lastSelectedDay!))) {
+      // Update page manager efficiently
+      _pageManager.rebuildDayPagesAroundDay(currentSelectedDay);
+
+      // Single rebuild for day change
       if (mounted) {
         setState(() {});
       }
-    });
+    }
+  }
+
+  bool _isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   void _onPageChanged(int pageIndex) {
@@ -152,17 +141,6 @@ class _CalendarViewState extends State<CalendarView> {
   @override
   Widget build(BuildContext context) {
     final currentFormat = widget.scheduleController.calendarFormat;
-
-    // Check if format changed and force rebuild if needed
-    if (_lastKnownFormat != null && _lastKnownFormat != currentFormat) {
-      // Force rebuild by updating the key
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    }
-    _lastKnownFormat = currentFormat;
 
     return Column(
       children: [
