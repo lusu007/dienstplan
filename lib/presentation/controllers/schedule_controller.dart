@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
@@ -30,6 +31,9 @@ class ScheduleController extends ChangeNotifier {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   bool _isLoading = false;
   String? _error;
+  Timer? _focusedDayDebounceTimer;
+  static const Duration _focusedDayDebounceDuration =
+      Duration(milliseconds: 200);
 
   ScheduleController({
     required this.getSchedulesUseCase,
@@ -385,34 +389,34 @@ class ScheduleController extends ChangeNotifier {
       // Always notify listeners immediately when focused day changes
       notifyListeners();
 
-      // Check if we need to load schedules for a new month
-      if (previousFocusedDay == null ||
-          previousFocusedDay.year != focusedDay.year ||
-          previousFocusedDay.month != focusedDay.month) {
-        AppLogger.i(
-            'ScheduleController: Loading schedules for new month: ${focusedDay.year}-${focusedDay.month}');
-        AppLogger.i(
-            'ScheduleController: setFocusedDay - Active config: ${_activeConfig?.name}');
-        // Load schedules asynchronously without blocking the UI
-        _loadSchedulesForCurrentMonth(focusedDay);
-      } else {
-        // Even if we're in the same month, ensure we have schedules for this specific month
-        // This handles the case where we navigate to a month that hasn't been loaded yet
-        final schedulesForMonth = _schedules.where((schedule) {
-          return schedule.date.year == focusedDay.year &&
-              schedule.date.month == focusedDay.month;
-        }).toList();
+      // Debounce data loading to avoid excessive queries during fast swipes
+      _focusedDayDebounceTimer?.cancel();
+      _focusedDayDebounceTimer = Timer(_focusedDayDebounceDuration, () async {
+        final bool monthChanged = previousFocusedDay == null ||
+            previousFocusedDay.year != focusedDay.year ||
+            previousFocusedDay.month != focusedDay.month;
 
-        AppLogger.i(
-            'ScheduleController: Found ${schedulesForMonth.length} schedules for month ${focusedDay.year}-${focusedDay.month}');
-
-        if (schedulesForMonth.isEmpty) {
+        if (monthChanged) {
           AppLogger.i(
-              'ScheduleController: No schedules found for month ${focusedDay.year}-${focusedDay.month}, loading them');
-          // Load schedules asynchronously without blocking the UI
-          _loadSchedulesForCurrentMonth(focusedDay);
+              'ScheduleController: (debounced) Loading schedules for new month: ${focusedDay.year}-${focusedDay.month}');
+          await _loadSchedulesForCurrentMonth(focusedDay);
+          return;
         }
-      }
+
+        // Ensure data exists for the current month if not already loaded
+        final bool hasMonthData = _schedules.any((schedule) {
+          return schedule.date.year == focusedDay.year &&
+              schedule.date.month == focusedDay.month &&
+              (_activeConfig == null ||
+                  schedule.configName == _activeConfig!.name);
+        });
+
+        if (!hasMonthData) {
+          AppLogger.i(
+              'ScheduleController: (debounced) No schedules found for month ${focusedDay.year}-${focusedDay.month}, loading them');
+          await _loadSchedulesForCurrentMonth(focusedDay);
+        }
+      });
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleController: Error setting focused day', e, stackTrace);
