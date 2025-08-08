@@ -11,7 +11,7 @@ class DatabaseService {
   DatabaseService._internal();
 
   static Database? _database;
-  static const int _currentVersion = 5;
+  static const int _currentVersion = 6;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -82,33 +82,39 @@ class DatabaseService {
 
     // Composite indexes for common query patterns
     await db.execute('''
-      CREATE INDEX idx_schedules_date_config_service 
+      CREATE INDEX IF NOT EXISTS idx_schedules_date_config_service 
       ON schedules(date, config_name, service);
     ''');
 
     await db.execute('''
-      CREATE INDEX idx_schedules_config_date 
+      CREATE INDEX IF NOT EXISTS idx_schedules_config_date 
       ON schedules(config_name, date);
     ''');
 
     await db.execute('''
-      CREATE INDEX idx_schedules_duty_group 
+      CREATE INDEX IF NOT EXISTS idx_schedules_duty_group 
       ON schedules(duty_group_id, date);
     ''');
 
     await db.execute('''
-      CREATE INDEX idx_schedules_all_day 
+      CREATE INDEX IF NOT EXISTS idx_schedules_all_day 
       ON schedules(is_all_day, date);
     ''');
 
     await db.execute('''
-      CREATE INDEX idx_duty_types_config_id 
+      CREATE INDEX IF NOT EXISTS idx_duty_types_config_id 
       ON duty_types(config_name, id);
     ''');
 
     // Note: Partial indexes with date() functions are not supported
     // SQLite considers date() non-deterministic
     // Regular indexes will be used instead
+
+    // Enforce natural key uniqueness to prevent duplicates
+    await db.execute('''
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_schedules_unique_key
+      ON schedules(date, config_name, duty_group_id, duty_type_id, service);
+    ''');
 
     AppLogger.i('Optimized indexes created successfully');
   }
@@ -120,6 +126,11 @@ class DatabaseService {
     if (oldVersion < 5) {
       // Migration to version 5: Remove focused_day and selected_day from settings
       await _migrateToVersion5(db);
+    }
+
+    if (oldVersion < 6) {
+      // Migration to version 6: Fix schedule primary key collisions by incorporating config_name
+      await _migrateToVersion6(db);
     }
   }
 
@@ -164,6 +175,60 @@ class DatabaseService {
           'Successfully migrated to version 5: Removed date columns from settings');
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 5', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion6(Database db) async {
+    try {
+      AppLogger.i(
+          'Migrating to version 6: Rebuilding schedules table with collision-safe IDs');
+
+      // Create a new schedules table
+      await db.execute('''
+        CREATE TABLE schedules_new (
+          id TEXT PRIMARY KEY,
+          date TEXT NOT NULL,
+          service TEXT NOT NULL,
+          duty_group_id TEXT NOT NULL,
+          duty_group_name TEXT NOT NULL,
+          duty_type_id TEXT NOT NULL,
+          is_all_day INTEGER NOT NULL DEFAULT 0,
+          config_name TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        )
+      ''');
+
+      // Copy data with new ID format and deduplicate by (date_ymd, config_name, duty_group_id)
+      // Keep the most recently updated row per key
+      await db.execute('''
+        INSERT OR REPLACE INTO schedules_new (
+          id, date, service, duty_group_id, duty_group_name, duty_type_id,
+          is_all_day, config_name, created_at, updated_at
+        )
+        SELECT 
+          substr(date, 1, 10) || '_' || config_name || '_' || duty_group_id || '_' || duty_type_id || '_' || service AS id,
+          date, service, duty_group_id, duty_group_name, duty_type_id,
+          is_all_day, config_name, created_at, updated_at
+        FROM (
+          SELECT * FROM schedules
+          ORDER BY updated_at DESC
+        )
+        GROUP BY substr(date, 1, 10), config_name, duty_group_id, duty_type_id, service
+      ''');
+
+      // Drop old table and rename new one
+      await db.execute('DROP TABLE schedules');
+      await db.execute('ALTER TABLE schedules_new RENAME TO schedules');
+
+      // Recreate optimized indexes
+      await _createOptimizedIndexes(db);
+
+      AppLogger.i(
+          'Successfully migrated to version 6: schedules IDs updated and duplicates removed');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 6', e, stackTrace);
       rethrow;
     }
   }
@@ -296,11 +361,15 @@ class DatabaseService {
           final currentBatch = schedules.sublist(i, end);
 
           for (final schedule in currentBatch) {
+            // Build collision-safe primary key: YYYY-MM-DD_configName_dutyGroupId_dutyTypeId_service
+            final String ymd =
+                schedule.date.toUtc().toIso8601String().substring(0, 10);
+            final String safeId =
+                '${ymd}_${schedule.configName}_${schedule.dutyGroupId}_${schedule.dutyTypeId}_${schedule.service}';
             batch.insert(
               'schedules',
               {
-                'id':
-                    '${schedule.date.toIso8601String()}_${schedule.dutyGroupId}',
+                'id': safeId,
                 'date': schedule.date.toIso8601String(),
                 'service': schedule.service,
                 'duty_group_id': schedule.dutyGroupId,
