@@ -126,10 +126,14 @@ class _ReactiveCalendarDay extends StatefulWidget {
 }
 
 class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
+  String? _lastDutyAbbreviation;
+  bool _lastIsSelected = false;
+
   @override
   void initState() {
     super.initState();
     widget.scheduleController.addListener(_onControllerChanged);
+    _updateLocalState();
   }
 
   @override
@@ -140,23 +144,40 @@ class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
 
   void _onControllerChanged() {
     if (mounted) {
-      // Single rebuild should be sufficient for duty abbreviation updates
-      setState(() {});
+      final newDutyAbbreviation =
+          CalendarBuildersHelper._getDutyAbbreviationForDate(
+              widget.day, widget.scheduleController);
+      final newIsSelected = _isSelected();
+
+      // Only rebuild if duty abbreviation or selection state changed
+      if (_lastDutyAbbreviation != newDutyAbbreviation ||
+          _lastIsSelected != newIsSelected) {
+        _lastDutyAbbreviation = newDutyAbbreviation;
+        _lastIsSelected = newIsSelected;
+        setState(() {});
+      }
     }
+  }
+
+  void _updateLocalState() {
+    _lastDutyAbbreviation = CalendarBuildersHelper._getDutyAbbreviationForDate(
+        widget.day, widget.scheduleController);
+    _lastIsSelected = _isSelected();
+  }
+
+  bool _isSelected() {
+    return widget.scheduleController.selectedDay != null &&
+        widget.day.year == widget.scheduleController.selectedDay!.year &&
+        widget.day.month == widget.scheduleController.selectedDay!.month &&
+        widget.day.day == widget.scheduleController.selectedDay!.day;
   }
 
   @override
   Widget build(BuildContext context) {
     try {
-      // Get duty abbreviation for the specific date
-      final dutyAbbreviation =
-          CalendarBuildersHelper._getDutyAbbreviationForDate(
-              widget.day, widget.scheduleController);
-
-      final isSelected = widget.scheduleController.selectedDay != null &&
-          widget.day.year == widget.scheduleController.selectedDay!.year &&
-          widget.day.month == widget.scheduleController.selectedDay!.month &&
-          widget.day.day == widget.scheduleController.selectedDay!.day;
+      // Use cached duty abbreviation
+      final dutyAbbreviation = _lastDutyAbbreviation;
+      final isSelected = _lastIsSelected;
 
       // Use a unique key that includes the duty abbreviation to force rebuild when it changes
       return AnimatedCalendarDay(
