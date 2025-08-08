@@ -18,9 +18,11 @@ class ShareService {
       final packageInfo = await PackageInfo.fromPlatform();
       final shareText = _buildShareText(packageInfo, l10n);
 
-      await Share.share(
-        shareText,
-        subject: l10n.shareAppSubject,
+      await SharePlus.instance.share(
+        ShareParams(
+          text: shareText,
+          subject: l10n.shareAppSubject,
+        ),
       );
 
       AppLogger.i('ShareService: App shared successfully via native share');
@@ -48,9 +50,11 @@ class ShareService {
   /// Opens the appropriate app store based on platform
   static Future<void> _openAppStore(AppLocalizations l10n) async {
     try {
-      await Share.share(
-        'Schau dir die Dienstplan App an: $_appStoreUrl',
-        subject: l10n.shareAppSubject,
+      await SharePlus.instance.share(
+        ShareParams(
+          text: 'Schau dir die Dienstplan App an: $_appStoreUrl',
+          subject: l10n.shareAppSubject,
+        ),
       );
 
       AppLogger.i('ShareService: App store shared successfully');
