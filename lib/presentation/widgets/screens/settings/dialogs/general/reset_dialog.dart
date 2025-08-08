@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
 import 'package:get_it/get_it.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 
 class ResetDialog {
-  static void show(BuildContext context, ScheduleController controller) {
+  static void show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     AppDialog.show(
@@ -29,11 +30,16 @@ class ResetDialog {
               textStyle: const TextStyle(fontSize: 14),
             ),
             onPressed: () async {
-              // Get the config service before async operations
+              // Get the config service and provider container before async operations
               final configService = GetIt.instance<ScheduleConfigService>();
+              final container =
+                  ProviderScope.containerOf(context, listen: false);
 
               // Reset the setup completion flag
               await configService.resetSetup();
+
+              // Reset settings via Riverpod notifier
+              await container.read(settingsNotifierProvider.notifier).reset();
 
               if (context.mounted) {
                 Navigator.of(context, rootNavigator: true).pop();

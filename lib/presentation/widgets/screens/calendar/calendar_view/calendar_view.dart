@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_controller.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_navigation_helper.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 
-class CalendarView extends StatefulWidget {
-  final ScheduleController scheduleController;
-
+class CalendarView extends ConsumerStatefulWidget {
   const CalendarView({
     super.key,
-    required this.scheduleController,
   });
 
   @override
-  State<CalendarView> createState() => _CalendarViewState();
+  ConsumerState<CalendarView> createState() => _CalendarViewState();
 }
 
-class _CalendarViewState extends State<CalendarView> {
+class _CalendarViewState extends ConsumerState<CalendarView> {
   final GlobalKey _calendarKey = GlobalKey();
   final GlobalKey _headerKey = GlobalKey();
   late final CalendarViewController _pageManager;
@@ -31,14 +29,14 @@ class _CalendarViewState extends State<CalendarView> {
     _pageManager = CalendarViewController();
 
     // Initialize day pages around current selected day first
-    final selectedDay = widget.scheduleController.selectedDay ?? DateTime.now();
+    final selectedDay =
+        ref.read(scheduleNotifierProvider).valueOrNull?.selectedDay ??
+            DateTime.now();
     _pageManager.initializeDayPages(selectedDay);
 
-    // Listen to controller changes to sync calendar
-    widget.scheduleController.addListener(_onProviderChanged);
-
     // Initialize last known format
-    _lastKnownFormat = widget.scheduleController.calendarFormat;
+    _lastKnownFormat =
+        ref.read(scheduleNotifierProvider).valueOrNull?.calendarFormat;
 
     // Ensure synchronization on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,14 +49,14 @@ class _CalendarViewState extends State<CalendarView> {
   @override
   void dispose() {
     _pageManager.dispose();
-    widget.scheduleController.removeListener(_onProviderChanged);
     super.dispose();
   }
 
   void _onProviderChanged() {
     // Only rebuild if there are actual changes
-    final currentFormat = widget.scheduleController.calendarFormat;
-    final currentSelectedDay = widget.scheduleController.selectedDay;
+    final state = ref.read(scheduleNotifierProvider).valueOrNull;
+    final currentFormat = state?.calendarFormat;
+    final currentSelectedDay = state?.selectedDay;
 
     // Check if format changed
     if (_lastKnownFormat != currentFormat) {
@@ -99,7 +97,8 @@ class _CalendarViewState extends State<CalendarView> {
           'CalendarView: _onPageChanged - pageIndex: $pageIndex, newDay: ${newDay.toIso8601String()}');
 
       // Check if the month has changed
-      final currentFocusedDay = widget.scheduleController.focusedDay;
+      final currentFocusedDay =
+          ref.read(scheduleNotifierProvider).valueOrNull?.focusedDay;
       final monthChanged = currentFocusedDay == null ||
           currentFocusedDay.year != newDay.year ||
           currentFocusedDay.month != newDay.month;
@@ -107,7 +106,7 @@ class _CalendarViewState extends State<CalendarView> {
       if (monthChanged) {
         AppLogger.d(
             'CalendarView: Month changed, updating focused day to ${newDay.toIso8601String()}');
-        widget.scheduleController.setFocusedDay(newDay);
+        ref.read(scheduleNotifierProvider.notifier).setFocusedDay(newDay);
       }
     }
   }
@@ -115,7 +114,8 @@ class _CalendarViewState extends State<CalendarView> {
   void _updatePageViewForCalendarNavigation(DateTime newFocusedDay) {
     // When navigating to a new month, we want to show the selected day in the new month
     // But if the selected day doesn't exist in the new month, we show the focused day
-    final selectedDay = widget.scheduleController.selectedDay;
+    final selectedDay =
+        ref.read(scheduleNotifierProvider).valueOrNull?.selectedDay;
 
     // Determine which day to show in the new month
     DateTime dayToShow;
@@ -140,37 +140,56 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
-    final currentFormat = widget.scheduleController.calendarFormat;
+    // Ensure schedule provider is warmed up
+    ref.watch(scheduleNotifierProvider);
+    final currentFormat =
+        ref.watch(scheduleNotifierProvider).valueOrNull?.calendarFormat ??
+            CalendarFormat.month;
 
     return Column(
       children: [
         const SizedBox(height: 16), // Abstand zur AppBar
         CalendarViewUiBuilder.buildCalendarHeader(
           context: context,
-          scheduleController: widget.scheduleController,
           headerKey: _headerKey,
           onLeftChevronTap: () {
             final newFocusedDay = CalendarNavigationHelper.getPreviousPeriod(
-                widget.scheduleController.focusedDay ?? DateTime.now(),
-                widget.scheduleController.calendarFormat);
-            widget.scheduleController.setFocusedDay(newFocusedDay);
+                ref.read(scheduleNotifierProvider).valueOrNull?.focusedDay ??
+                    DateTime.now(),
+                ref
+                        .read(scheduleNotifierProvider)
+                        .valueOrNull
+                        ?.calendarFormat ??
+                    CalendarFormat.month);
+            ref
+                .read(scheduleNotifierProvider.notifier)
+                .setFocusedDay(newFocusedDay);
             // Don't change the selectedDay - keep the current selection
 
             // Update the PageView to show the current selected day in the new calendar view
-            final currentSelectedDay = widget.scheduleController.selectedDay;
+            final currentSelectedDay =
+                ref.read(scheduleNotifierProvider).valueOrNull?.selectedDay;
             if (currentSelectedDay != null) {
               _updatePageViewForCalendarNavigation(newFocusedDay);
             }
           },
           onRightChevronTap: () {
             final newFocusedDay = CalendarNavigationHelper.getNextPeriod(
-                widget.scheduleController.focusedDay ?? DateTime.now(),
-                widget.scheduleController.calendarFormat);
-            widget.scheduleController.setFocusedDay(newFocusedDay);
+                ref.read(scheduleNotifierProvider).valueOrNull?.focusedDay ??
+                    DateTime.now(),
+                ref
+                        .read(scheduleNotifierProvider)
+                        .valueOrNull
+                        ?.calendarFormat ??
+                    CalendarFormat.month);
+            ref
+                .read(scheduleNotifierProvider.notifier)
+                .setFocusedDay(newFocusedDay);
             // Don't change the selectedDay - keep the current selection
 
             // Update the PageView to show the current selected day in the new calendar view
-            final currentSelectedDay = widget.scheduleController.selectedDay;
+            final currentSelectedDay =
+                ref.read(scheduleNotifierProvider).valueOrNull?.selectedDay;
             if (currentSelectedDay != null) {
               _updatePageViewForCalendarNavigation(newFocusedDay);
             }
@@ -178,12 +197,14 @@ class _CalendarViewState extends State<CalendarView> {
           onDateSelected: (selectedDate) {
             // Only change the focused day, keep the selected day unchanged
             // This allows users to navigate to different months while keeping their original selection
-            widget.scheduleController.setFocusedDay(selectedDate);
+            ref
+                .read(scheduleNotifierProvider.notifier)
+                .setFocusedDay(selectedDate);
             // Don't change selectedDay - preserve the user's original selection
           },
           onTodayButtonPressed: () async {
             // Handle Today button press using the new goToToday method
-            await widget.scheduleController.goToToday();
+            await ref.read(scheduleNotifierProvider.notifier).goToToday();
 
             // Force the PageView to rebuild around the new "today" day
             _pageManager.rebuildDayPagesAroundDay(DateTime.now());
@@ -200,14 +221,9 @@ class _CalendarViewState extends State<CalendarView> {
               'draggable_sheet_calendar_${currentFormat}_${DateTime.now().millisecondsSinceEpoch}'),
           child: CalendarViewUiBuilder.buildTableCalendar(
             context: context,
-            scheduleController: widget.scheduleController,
             calendarKey: _calendarKey,
-            onFormatChanged: (format) async {
-              await widget.scheduleController.setCalendarFormat(format);
-            },
-            onPageChanged: (focusedDay) {
-              widget.scheduleController.setFocusedDay(focusedDay);
-            },
+            onFormatChanged: (format) {},
+            onPageChanged: (focusedDay) {},
             onDaySelected: () {},
           ),
         ),
@@ -219,12 +235,10 @@ class _CalendarViewState extends State<CalendarView> {
               children: [
                 _ServicesSectionWrapper(
                   pageManager: _pageManager,
-                  scheduleController: widget.scheduleController,
                 ),
                 // Filter status text (always visible, never animated)
                 CalendarViewUiBuilder.buildFilterStatusText(
                   context: context,
-                  scheduleController: widget.scheduleController,
                 ),
                 Expanded(
                   child: PageView.builder(
@@ -250,7 +264,6 @@ class _CalendarViewState extends State<CalendarView> {
   Widget _buildSheetContent(DateTime day) {
     return CalendarViewUiBuilder.buildDutyScheduleList(
       context: context,
-      scheduleController: widget.scheduleController,
       shouldAnimate: false,
     );
   }
@@ -258,11 +271,9 @@ class _CalendarViewState extends State<CalendarView> {
 
 class _ServicesSectionWrapper extends StatefulWidget {
   final CalendarViewController pageManager;
-  final ScheduleController scheduleController;
 
   const _ServicesSectionWrapper({
     required this.pageManager,
-    required this.scheduleController,
   });
 
   @override
@@ -291,13 +302,12 @@ class _ServicesSectionWrapperState extends State<_ServicesSectionWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: widget.scheduleController,
-      builder: (context, child) {
-        return CalendarViewUiBuilder.buildServicesSection(
-          selectedDay: widget.scheduleController.selectedDay,
-        );
-      },
-    );
+    return Consumer(builder: (context, ref, _) {
+      final selectedDay =
+          ref.watch(scheduleNotifierProvider).valueOrNull?.selectedDay;
+      return CalendarViewUiBuilder.buildServicesSection(
+        selectedDay: selectedDay,
+      );
+    });
   }
 }

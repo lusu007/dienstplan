@@ -1,50 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 
 class DutyScheduleDialog {
-  static void show(BuildContext context, ScheduleController controller) {
+  static void show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-
-    // Validate controller state before showing dialog
-    if (controller.configs.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No duty schedules available'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
 
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.selectDutySchedule),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ...controller.configs.map((config) => SelectionCard(
-                  title: config.meta.name,
-                  subtitle: config.meta.description.isNotEmpty
-                      ? config.meta.description
-                      : null,
-                  isSelected:
-                      controller.activeConfig?.meta.name == config.meta.name,
-                  onTap: () async {
-                    try {
-                      // Set active config first
+      builder: (dialogContext) => Consumer(builder: (context, ref, _) {
+        final asyncState = ref.watch(scheduleNotifierProvider);
+        final state = asyncState.valueOrNull;
+        final configs = state?.configs ?? const [];
+        if (configs.isEmpty) {
+          return AlertDialog(
+            title: Text(l10n.selectDutySchedule),
+            content: const Text('No duty schedules available'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('OK'),
+              )
+            ],
+          );
+        }
+        return AlertDialog(
+          title: Text(l10n.selectDutySchedule),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...configs.map((config) => SelectionCard(
+                    title: config.meta.name,
+                    subtitle: config.meta.description.isNotEmpty
+                        ? config.meta.description
+                        : null,
+                    isSelected: state?.activeConfigName == config.name,
+                    onTap: () async {
                       try {
-                        await controller.setActiveConfig(config);
-
-                        // Always reset preferred duty group when switching duty plans
-                        // This ensures the user must explicitly choose a preferred duty group for the new plan
-                        controller.preferredDutyGroup = null;
-
-                        // Close dialog after successful operation
+                        await ref
+                            .read(scheduleNotifierProvider.notifier)
+                            .setActiveConfig(config);
+                        await ref
+                            .read(scheduleNotifierProvider.notifier)
+                            .setPreferredDutyGroup(null);
                         if (dialogContext.mounted) {
                           Navigator.of(dialogContext).pop();
                         }
@@ -53,8 +55,6 @@ class DutyScheduleDialog {
                             'DutyScheduleDialog: Error setting active config',
                             e,
                             stackTrace);
-
-                        // Show error message to user
                         if (dialogContext.mounted) {
                           ScaffoldMessenger.of(dialogContext).showSnackBar(
                             SnackBar(
@@ -63,39 +63,17 @@ class DutyScheduleDialog {
                               backgroundColor: Colors.red,
                             ),
                           );
-                        }
-
-                        // Close dialog even on error
-                        if (dialogContext.mounted) {
                           Navigator.of(dialogContext).pop();
                         }
                       }
-                    } catch (e, stackTrace) {
-                      AppLogger.e('DutyScheduleDialog: Unexpected error', e,
-                          stackTrace);
-
-                      // Show error message to user
-                      if (dialogContext.mounted) {
-                        ScaffoldMessenger.of(dialogContext).showSnackBar(
-                          SnackBar(
-                            content: Text('Unexpected error: ${e.toString()}'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-
-                      // Close dialog even on error
-                      if (dialogContext.mounted) {
-                        Navigator.of(dialogContext).pop();
-                      }
-                    }
-                  },
-                  mainColor: AppColors.primary,
-                  useDialogStyle: true,
-                )),
-          ],
-        ),
-      ),
+                    },
+                    mainColor: AppColors.primary,
+                    useDialogStyle: true,
+                  )),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

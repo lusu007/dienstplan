@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 
-class CalendarDayCard extends StatelessWidget {
+class CalendarDayCard extends ConsumerWidget {
   final DateTime day;
-  final ScheduleController scheduleController;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
@@ -14,7 +14,6 @@ class CalendarDayCard extends StatelessWidget {
   const CalendarDayCard({
     super.key,
     required this.day,
-    required this.scheduleController,
     required this.dayType,
     this.width,
     this.height,
@@ -23,8 +22,9 @@ class CalendarDayCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final isSelected = _isDaySelected();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheduleState = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final isSelected = _isDaySelected(scheduleState?.selectedDay);
 
     return AnimatedCalendarDay(
       day: day,
@@ -33,12 +33,11 @@ class CalendarDayCard extends StatelessWidget {
       width: width,
       height: height,
       isSelected: isSelected,
-      onTap: _handleDayTap,
+      onTap: () => _handleDayTap(ref),
     );
   }
 
-  bool _isDaySelected() {
-    final selectedDay = scheduleController.selectedDay;
+  bool _isDaySelected(DateTime? selectedDay) {
     if (selectedDay == null) return false;
 
     return day.year == selectedDay.year &&
@@ -46,10 +45,10 @@ class CalendarDayCard extends StatelessWidget {
         day.day == selectedDay.day;
   }
 
-  void _handleDayTap() {
-    // Trigger day selection
-    scheduleController.setSelectedDay(day);
-    scheduleController.setFocusedDay(day);
+  Future<void> _handleDayTap(WidgetRef ref) async {
+    // Trigger day selection via provider
+    await ref.read(scheduleNotifierProvider.notifier).setSelectedDay(day);
+    ref.read(scheduleNotifierProvider.notifier).setFocusedDay(day);
 
     // Animation callback removed
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
@@ -24,115 +26,77 @@ import 'package:dienstplan/presentation/screens/about_screen.dart';
 import 'package:dienstplan/data/services/share_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  late final Future<ScheduleController> _scheduleControllerFuture;
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   int _footerTapCount = 0;
   DateTime? _lastTapTime;
-
-  @override
-  void initState() {
-    super.initState();
-    // Get the controller and ensure all data is loaded
-    _scheduleControllerFuture = _getFullyLoadedController();
-  }
-
-  Future<ScheduleController> _getFullyLoadedController() async {
-    final controller = await GetIt.instance.getAsync<ScheduleController>();
-
-    // Ensure configs and settings are loaded
-    if (controller.configs.isEmpty ||
-        controller.activeConfig == null ||
-        controller.preferredDutyGroup == null) {
-      await controller.loadConfigs();
-    }
-
-    return controller;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // Refresh the UI after settings screen is closed
-    GetIt.instance.getAsync<ScheduleController>().then((controller) {
-      controller.refreshAfterSettingsClose();
-    }).catchError((e, stackTrace) {
-      AppLogger.e(
-          'SettingsScreen: Error refreshing after close', e, stackTrace);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
+    final scheduleAsync = ref.watch(scheduleNotifierProvider);
+    return scheduleAsync.when(
+      loading: () => Scaffold(
+        appBar: AppBar(title: Text(l10n.settings)),
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ListView(
+            children: [
+              _buildScheduleSectionSkeleton(context, l10n),
+              const SizedBox(height: 16),
+              _buildAppSectionSkeleton(context, l10n),
+              const SizedBox(height: 16),
+              _buildPrivacySectionSkeleton(context, l10n),
+              const SizedBox(height: 16),
+              _buildOtherSectionSkeleton(context, l10n),
+            ],
+          ),
+        ),
       ),
-      body: FutureBuilder<ScheduleController>(
-        future: _scheduleControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show skeleton loader instead of circular progress indicator
-            return Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: ListView(
-                children: [
-                  _buildScheduleSectionSkeleton(context, l10n),
-                  const SizedBox(height: 16),
-                  _buildAppSectionSkeleton(context, l10n),
-                  const SizedBox(height: 16),
-                  _buildPrivacySectionSkeleton(context, l10n),
-                  const SizedBox(height: 16),
-                  _buildOtherSectionSkeleton(context, l10n),
-                ],
+      error: (e, st) => Scaffold(
+        appBar: AppBar(title: Text(l10n.settings)),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error loading settings: $e'),
+            ],
+          ),
+        ),
+      ),
+      data: (state) => Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.settings),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ListView(
+            children: [
+              _buildScheduleSection(context, l10n, state),
+              const SizedBox(height: 16),
+              _buildAppSection(context, l10n),
+              const SizedBox(height: 16),
+              ListenableBuilder(
+                listenable: GetIt.instance<SentryService>(),
+                builder: (context, child) =>
+                    _buildPrivacySection(context, l10n),
               ),
-            );
-          }
-
-          if (snapshot.hasError || !snapshot.hasData) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text('Error loading settings: ${snapshot.error}'),
-                ],
-              ),
-            );
-          }
-
-          final scheduleController = snapshot.data!;
-
-          return Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: ListView(
-              children: [
-                _buildScheduleSection(context, l10n, scheduleController),
-                const SizedBox(height: 16),
-                _buildAppSection(context, l10n, scheduleController),
-                const SizedBox(height: 16),
-                ListenableBuilder(
-                  listenable: GetIt.instance<SentryService>(),
-                  builder: (context, child) =>
-                      _buildPrivacySection(context, l10n),
-                ),
-                const SizedBox(height: 16),
-                _buildOtherSection(context, l10n),
-                const SizedBox(height: 32),
-                _buildFooterSection(context, l10n),
-              ],
-            ),
-          );
-        },
+              const SizedBox(height: 16),
+              _buildOtherSection(context, l10n),
+              const SizedBox(height: 32),
+              _buildFooterSection(context, l10n),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -140,107 +104,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildScheduleSection(
     BuildContext context,
     AppLocalizations l10n,
-    ScheduleController scheduleController,
+    ScheduleUiState state,
   ) {
-    return ListenableBuilder(
-      listenable: scheduleController,
-      builder: (context, child) {
-        // Show skeleton loader if controller is loading
-        if (scheduleController.isLoading) {
-          return _buildScheduleSectionSkeleton(context, l10n);
-        }
-
-        // Show error message if there's an error
-        if (scheduleController.error != null) {
-          return SettingsSection(
-            title: l10n.schedule,
-            cards: [
-              Card(
-                color: Colors.red.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Icon(Icons.error_outline, color: Colors.red.shade700),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Error: ${scheduleController.error}',
-                        style: TextStyle(color: Colors.red.shade700),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-
-        return SettingsSection(
-          title: l10n.schedule,
-          cards: [
-            NavigationCard(
-              icon: Icons.calendar_today_outlined,
-              title: l10n.myDutySchedule,
-              subtitle: _getDutyScheduleDisplayName(scheduleController, l10n),
-              onTap: () => DutyScheduleDialog.show(context, scheduleController),
-            ),
-            NavigationCard(
-              icon: Icons.favorite_outlined,
-              title: l10n.myDutyGroup,
-              subtitle:
-                  _getPreferredDutyGroupDisplayName(scheduleController, l10n),
-              onTap: () => MyDutyGroupDialog.show(context, scheduleController),
-            ),
-            NavigationCard(
-              icon: Icons.view_week_outlined,
-              title: l10n.calendarFormat,
-              subtitle: _getCalendarFormatName(
-                  scheduleController.calendarFormat, l10n),
-              onTap: () =>
-                  CalendarFormatDialog.show(context, scheduleController),
-            ),
-          ],
-        );
-      },
+    return SettingsSection(
+      title: l10n.schedule,
+      cards: [
+        NavigationCard(
+          icon: Icons.calendar_today_outlined,
+          title: l10n.myDutySchedule,
+          subtitle: _getDutyScheduleDisplayName(state, l10n),
+          onTap: () => DutyScheduleDialog.show(context),
+        ),
+        NavigationCard(
+          icon: Icons.favorite_outlined,
+          title: l10n.myDutyGroup,
+          subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
+          onTap: () => MyDutyGroupDialog.show(context),
+        ),
+        NavigationCard(
+          icon: Icons.view_week_outlined,
+          title: l10n.calendarFormat,
+          subtitle: _getCalendarFormatName(
+              state.calendarFormat ?? CalendarFormat.month, l10n),
+          onTap: () => CalendarFormatDialog.show(context),
+        ),
+      ],
     );
   }
 
   Widget _buildAppSection(
     BuildContext context,
     AppLocalizations l10n,
-    ScheduleController scheduleController,
   ) {
     final languageService = GetIt.instance<LanguageService>();
 
-    return ListenableBuilder(
-      listenable: scheduleController,
-      builder: (context, child) {
-        // Show skeleton loader if controller is loading
-        if (scheduleController.isLoading) {
-          return _buildAppSectionSkeleton(context, l10n);
-        }
-
-        return SettingsSection(
-          title: l10n.app,
-          cards: [
-            NavigationCard(
-              icon: Icons.language_outlined,
-              title: l10n.language,
-              subtitle: languageService.currentLocale.languageCode == 'de'
-                  ? l10n.german
-                  : l10n.english,
-              onTap: () => LanguageDialog.show(context),
-            ),
-            NavigationCard(
-              icon: Icons.delete_forever_outlined,
-              title: l10n.resetData,
-              onTap: () => ResetDialog.show(context, scheduleController),
-              iconColor: Colors.red,
-            ),
-          ],
-        );
-      },
+    return SettingsSection(
+      title: l10n.app,
+      cards: [
+        NavigationCard(
+          icon: Icons.language_outlined,
+          title: l10n.language,
+          subtitle: languageService.currentLocale.languageCode == 'de'
+              ? l10n.german
+              : l10n.english,
+          onTap: () => LanguageDialog.show(context),
+        ),
+        NavigationCard(
+          icon: Icons.delete_forever_outlined,
+          title: l10n.resetData,
+          onTap: () => ResetDialog.show(context),
+          iconColor: Colors.red,
+        ),
+      ],
     );
   }
 
@@ -403,14 +318,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _getDutyScheduleDisplayName(
-    ScheduleController scheduleController,
+    ScheduleUiState state,
     AppLocalizations l10n,
   ) {
     try {
-      if (scheduleController.activeConfig == null) {
+      if ((state.activeConfigName ?? '').isEmpty) {
         return l10n.noDutySchedules;
       }
-      return scheduleController.activeConfig!.meta.name;
+      return state.activeConfig?.meta.name ?? state.activeConfigName!;
     } catch (e) {
       AppLogger.e(
           'SettingsScreen: Error getting duty schedule display name', e);
@@ -419,15 +334,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _getPreferredDutyGroupDisplayName(
-    ScheduleController scheduleController,
+    ScheduleUiState state,
     AppLocalizations l10n,
   ) {
     try {
-      if (scheduleController.preferredDutyGroup == null ||
-          scheduleController.preferredDutyGroup!.isEmpty) {
+      if ((state.preferredDutyGroup ?? '').isEmpty) {
         return l10n.noMyDutyGroup;
       }
-      return scheduleController.preferredDutyGroup!;
+      return state.preferredDutyGroup!;
     } catch (e) {
       AppLogger.e(
           'SettingsScreen: Error getting preferred duty group display name', e);

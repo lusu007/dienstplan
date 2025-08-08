@@ -1,34 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/data/models/duty_schedule_config.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/data/services/schedule_config_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
-import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/data/models/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
+import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
+import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/data/services/language_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_button.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
-import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
-import 'package:dienstplan/presentation/app.dart';
-import 'package:dienstplan/presentation/controllers/settings_controller.dart';
-import 'package:dienstplan/domain/entities/settings.dart';
-import 'package:table_calendar/table_calendar.dart';
 
-class SetupScreen extends StatefulWidget {
+class SetupScreen extends ConsumerStatefulWidget {
   const SetupScreen({super.key});
 
   @override
-  State<SetupScreen> createState() => _SetupScreenState();
+  ConsumerState<SetupScreen> createState() => _SetupScreenState();
 }
 
-class _SetupScreenState extends State<SetupScreen> {
+class _SetupScreenState extends ConsumerState<SetupScreen> {
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _selectedConfig;
   String? _selectedDutyGroup;
@@ -103,26 +104,13 @@ class _SetupScreenState extends State<SetupScreen> {
         _isGeneratingSchedules = true;
       });
 
-      final scheduleController =
-          await GetIt.instance.getAsync<ScheduleController>();
-
       // First set the default config and generate schedules
       await _configService.setDefaultConfig(_selectedConfig!);
 
-      // Load configs in schedule controller first
-      await scheduleController.loadConfigs();
-
-      // Set the active config using the use case directly to avoid type mismatch
+      // Set the active config using the use case directly
       final setActiveConfigUseCase =
           await GetIt.instance.getAsync<SetActiveConfigUseCase>();
       await setActiveConfigUseCase.execute(_selectedConfig!.name);
-
-      // Also set the active config directly in the schedule controller
-      // Find the domain entity version of the config
-      final domainConfig = scheduleController.configs.firstWhere(
-        (config) => config.name == _selectedConfig!.name,
-      );
-      scheduleController.setActiveConfigDirectly(domainConfig);
 
       final generateSchedulesUseCase =
           await GetIt.instance.getAsync<GenerateSchedulesUseCase>();
@@ -140,18 +128,14 @@ class _SetupScreenState extends State<SetupScreen> {
       );
 
       // Create initial settings to mark setup as completed
-      final settingsController =
-          await GetIt.instance.getAsync<SettingsController>();
+      final saveSettingsUseCase =
+          await GetIt.instance.getAsync<SaveSettingsUseCase>();
       final initialSettings = Settings(
         calendarFormat: CalendarFormat.month,
         myDutyGroup: _selectedDutyGroup,
         activeConfigName: _selectedConfig!.name,
       );
-      await settingsController.saveSettings(initialSettings);
-
-      // Set the preferred duty group and active config using the schedule controller
-      scheduleController.preferredDutyGroup = _selectedDutyGroup;
-      await scheduleController.setActiveConfig(domainConfig);
+      await saveSettingsUseCase.execute(initialSettings);
 
       // Mark setup as completed
       await _configService.markSetupCompleted();
@@ -163,12 +147,12 @@ class _SetupScreenState extends State<SetupScreen> {
 
       if (!mounted) return;
 
-      // Instead of navigation, restart the app to trigger AppInitializer
-      // This will cause the app to check setup status again and show CalendarScreen
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const MyApp()),
-        (route) => false,
-      );
+      // Invalidate providers so AppInitializerWidget switches to CalendarScreen
+      ref.invalidate(settingsNotifierProvider);
+      ref.invalidate(scheduleNotifierProvider);
+
+      // Optionally, show a short confirmation
+      // and rely on AppInitializerWidget to rebuild automatically
     } catch (e, stackTrace) {
       AppLogger.e('Error saving default config', e, stackTrace);
       if (!mounted) return;

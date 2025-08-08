@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -9,7 +8,7 @@ import 'package:dienstplan/core/config/sentry_config.dart';
 
 class AppInitializer {
   static Future<void> initialize() async {
-    WidgetsFlutterBinding.ensureInitialized();
+    SentryWidgetsFlutterBinding.ensureInitialized();
 
     // Initialize dependency injection
     await InjectionContainer.init();

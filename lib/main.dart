@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:dienstplan/core/initialization/app_initializer.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/presentation/app.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   await AppInitializer.initialize();
@@ -14,6 +15,6 @@ void main() async {
   await AppInitializer.initializeSentry(sentryService);
 
   runApp(SentryWidget(
-    child: const MyApp(),
+    child: const ProviderScope(child: MyApp()),
   ));
 }

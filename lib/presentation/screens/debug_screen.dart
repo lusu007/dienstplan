@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
-import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/data/services/sentry_service.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/data/services/language_service.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:get_it/get_it.dart';
+import 'package:dienstplan/data/services/language_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
-class DebugScreen extends StatefulWidget {
+class DebugScreen extends ConsumerStatefulWidget {
   const DebugScreen({super.key});
 
   @override
-  State<DebugScreen> createState() => _DebugScreenState();
+  ConsumerState<DebugScreen> createState() => _DebugScreenState();
 }
 
-class _DebugScreenState extends State<DebugScreen> {
+class _DebugScreenState extends ConsumerState<DebugScreen> {
   PackageInfo? _packageInfo;
-  ScheduleController? _scheduleController;
   bool _isLoading = true;
 
   @override
@@ -33,12 +32,9 @@ class _DebugScreenState extends State<DebugScreen> {
   Future<void> _loadData() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      final scheduleController =
-          await GetIt.instance.getAsync<ScheduleController>();
 
       setState(() {
         _packageInfo = packageInfo;
-        _scheduleController = scheduleController;
         _isLoading = false;
       });
     } catch (e) {
@@ -172,12 +168,7 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   String _getSentryStatus() {
-    try {
-      final sentryService = GetIt.instance<SentryService>();
-      return sentryService.isEnabled ? 'Enabled' : 'Disabled';
-    } catch (e) {
-      return 'Unknown';
-    }
+    return 'Not Available';
   }
 
   String _getDatabaseStatus() {
@@ -207,73 +198,53 @@ class _DebugScreenState extends State<DebugScreen> {
   }
 
   String _getActiveSchedule() {
-    try {
-      return _scheduleController?.activeConfig?.name ?? 'None';
-    } catch (e) {
-      return 'Error: ${e.toString()}';
-    }
+    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    return scheduleState?.activeConfigName ?? 'None';
   }
 
   String _getLoadedSchedulesCount() {
-    try {
-      return '${_scheduleController?.schedules.length ?? 0} schedules';
-    } catch (e) {
-      return 'Error: ${e.toString()}';
-    }
+    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    return '${scheduleState?.schedules.length ?? 0} schedules';
   }
 
   String _getPreferredDutyGroup() {
-    try {
-      return _scheduleController?.preferredDutyGroup ?? 'None';
-    } catch (e) {
-      return 'Error: ${e.toString()}';
-    }
+    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    return scheduleState?.preferredDutyGroup ?? 'None';
   }
 
   String _getCalendarFormat(AppLocalizations l10n) {
-    try {
-      if (_scheduleController == null) return 'Unknown';
+    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    if (scheduleState == null) return 'Unknown';
 
-      switch (_scheduleController!.calendarFormat) {
-        case CalendarFormat.month:
-          return l10n.calendarFormatMonth;
-        case CalendarFormat.twoWeeks:
-          return l10n.calendarFormatTwoWeeks;
-        case CalendarFormat.week:
-          return l10n.calendarFormatWeek;
-      }
-    } catch (e) {
-      return 'Error: ${e.toString()}';
+    switch (scheduleState.calendarFormat) {
+      case CalendarFormat.month:
+        return 'Month';
+      case CalendarFormat.twoWeeks:
+        return 'Two Weeks';
+      case CalendarFormat.week:
+        return 'Week';
+      default:
+        return 'Unknown';
     }
   }
 
   String _getCurrentLanguage() {
     try {
       final languageService = GetIt.instance<LanguageService>();
-      return languageService.currentLocale.languageCode == 'de'
-          ? 'German'
-          : 'English';
+      return languageService.currentLocale.languageCode;
     } catch (e) {
-      return 'Error: ${e.toString()}';
+      return 'Unknown';
     }
   }
 
   String _getScheduleConfigsCount() {
-    try {
-      return '${_scheduleController?.configs.length ?? 0} configs';
-    } catch (e) {
-      return 'Error: ${e.toString()}';
-    }
+    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    return '${scheduleState?.configs.length ?? 0} configs';
   }
 
   String _getCacheStatus() {
-    try {
-      return _scheduleController?.schedules.isNotEmpty == true
-          ? 'Has cached data'
-          : 'No cached data';
-    } catch (e) {
-      return 'Error: ${e.toString()}';
-    }
+    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    return scheduleState?.schedules.isNotEmpty == true ? 'Active' : 'Empty';
   }
 
   String _getBuildType() {

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
-import 'package:dienstplan/core/services/controller_service.dart';
+// import 'package:dienstplan/core/services/controller_service.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -30,8 +30,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _initializeControllers() {
-    // Initialize controllers in background without blocking the UI
-    ControllerService.initializeControllers();
+    // Controllers are managed via Riverpod now
 
     GetIt.instance.getAsync<LanguageService>().then((service) {
       _languageService = service;

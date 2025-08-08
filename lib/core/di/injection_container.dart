@@ -26,10 +26,6 @@ import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/load_default_config_use_case.dart';
 
-// Controllers
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
-import 'package:dienstplan/presentation/controllers/settings_controller.dart';
-
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 
@@ -55,8 +51,7 @@ class InjectionContainer {
       // Register Use Cases as Factories
       _registerUseCases();
 
-      // Register Controllers as Factories
-      _registerControllers();
+      // Note: Controllers are no longer needed - state is managed via Riverpod providers
 
       AppLogger.i(
           'InjectionContainer: Dependency injection initialized successfully');
@@ -193,44 +188,6 @@ class InjectionContainer {
     getIt.registerFactoryAsync<LoadDefaultConfigUseCase>(() async {
       final repository = await getIt.getAsync<ConfigRepository>();
       return LoadDefaultConfigUseCase(repository);
-    });
-  }
-
-  static void _registerControllers() {
-    AppLogger.d('InjectionContainer: Registering controllers');
-
-    // ScheduleController - Factory (constructor injection)
-    getIt.registerFactoryAsync<ScheduleController>(() async {
-      final getSchedulesUseCase = await getIt.getAsync<GetSchedulesUseCase>();
-      final generateSchedulesUseCase =
-          await getIt.getAsync<GenerateSchedulesUseCase>();
-      final getConfigsUseCase = await getIt.getAsync<GetConfigsUseCase>();
-      final setActiveConfigUseCase =
-          await getIt.getAsync<SetActiveConfigUseCase>();
-      final getSettingsUseCase = await getIt.getAsync<GetSettingsUseCase>();
-      final saveSettingsUseCase = await getIt.getAsync<SaveSettingsUseCase>();
-
-      return ScheduleController(
-        getSchedulesUseCase: getSchedulesUseCase,
-        generateSchedulesUseCase: generateSchedulesUseCase,
-        getConfigsUseCase: getConfigsUseCase,
-        setActiveConfigUseCase: setActiveConfigUseCase,
-        getSettingsUseCase: getSettingsUseCase,
-        saveSettingsUseCase: saveSettingsUseCase,
-      );
-    });
-
-    // SettingsController - Factory (constructor injection)
-    getIt.registerFactoryAsync<SettingsController>(() async {
-      final getSettingsUseCase = await getIt.getAsync<GetSettingsUseCase>();
-      final saveSettingsUseCase = await getIt.getAsync<SaveSettingsUseCase>();
-      final resetSettingsUseCase = await getIt.getAsync<ResetSettingsUseCase>();
-
-      return SettingsController(
-        getSettingsUseCase: getSettingsUseCase,
-        saveSettingsUseCase: saveSettingsUseCase,
-        resetSettingsUseCase: resetSettingsUseCase,
-      );
     });
   }
 
