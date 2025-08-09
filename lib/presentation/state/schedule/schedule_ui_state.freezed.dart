@@ -104,6 +104,8 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res> {
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
       DutyScheduleConfig? activeConfig});
+
+  $DutyScheduleConfigCopyWith<$Res>? get activeConfig;
 }
 
 /// @nodoc
@@ -182,6 +184,20 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
           : activeConfig // ignore: cast_nullable_to_non_nullable
               as DutyScheduleConfig?,
     ));
+  }
+
+  /// Create a copy of ScheduleUiState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DutyScheduleConfigCopyWith<$Res>? get activeConfig {
+    if (_self.activeConfig == null) {
+      return null;
+    }
+
+    return $DutyScheduleConfigCopyWith<$Res>(_self.activeConfig!, (value) {
+      return _then(_self.copyWith(activeConfig: value));
+    });
   }
 }
 
@@ -564,6 +580,9 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res>
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
       DutyScheduleConfig? activeConfig});
+
+  @override
+  $DutyScheduleConfigCopyWith<$Res>? get activeConfig;
 }
 
 /// @nodoc
@@ -642,6 +661,20 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
           : activeConfig // ignore: cast_nullable_to_non_nullable
               as DutyScheduleConfig?,
     ));
+  }
+
+  /// Create a copy of ScheduleUiState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DutyScheduleConfigCopyWith<$Res>? get activeConfig {
+    if (_self.activeConfig == null) {
+      return null;
+    }
+
+    return $DutyScheduleConfigCopyWith<$Res>(_self.activeConfig!, (value) {
+      return _then(_self.copyWith(activeConfig: value));
+    });
   }
 }
 

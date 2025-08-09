@@ -1,31 +1,13 @@
-class Rhythm {
-  final int lengthWeeks;
-  final List<List<String>> pattern;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Rhythm({
-    required this.lengthWeeks,
-    required this.pattern,
-  });
+part 'rhythm.freezed.dart';
 
-  Map<String, dynamic> toMap() {
-    return {
-      'length_weeks': lengthWeeks,
-      'pattern': pattern,
-    };
-  }
+@freezed
+abstract class Rhythm with _$Rhythm {
+  const factory Rhythm({
+    required int lengthWeeks,
+    required List<List<String>> pattern,
+  }) = _Rhythm;
 
-  factory Rhythm.fromMap(Map<String, dynamic> map) {
-    return Rhythm(
-      lengthWeeks: map['length_weeks'] as int,
-      pattern: (map['pattern'] as List<dynamic>)
-          .map((week) =>
-              (week as List<dynamic>).map((day) => day as String).toList())
-          .toList(),
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Rhythm(lengthWeeks: $lengthWeeks, pattern: $pattern)';
-  }
+  const Rhythm._();
 }

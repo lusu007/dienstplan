@@ -1,78 +1,34 @@
-class ScheduleConfig {
-  final Meta meta;
-  final List<Service> services;
-  final String version;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ScheduleConfig({
-    required this.meta,
-    required this.services,
-    required this.version,
-  });
+part 'schedule_config.freezed.dart';
 
-  factory ScheduleConfig.fromJson(Map<String, dynamic> json) {
-    return ScheduleConfig(
-      meta: Meta.fromJson(json['meta'] as Map<String, dynamic>),
-      services: (json['services'] as List)
-          .map((service) => Service.fromJson(service as Map<String, dynamic>))
-          .toList(),
-      version: json['version'] as String,
-    );
-  }
+@freezed
+abstract class ScheduleConfig with _$ScheduleConfig {
+  const factory ScheduleConfig({
+    required ScheduleMeta meta,
+    required List<ScheduleService> services,
+    required String version,
+  }) = _ScheduleConfig;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'meta': meta.toJson(),
-      'services': services.map((service) => service.toJson()).toList(),
-      'version': version,
-    };
-  }
+  const ScheduleConfig._();
 }
 
-class Meta {
-  final String name;
-  final String description;
+@freezed
+abstract class ScheduleMeta with _$ScheduleMeta {
+  const factory ScheduleMeta({
+    required String name,
+    required String description,
+  }) = _ScheduleMeta;
 
-  Meta({
-    required this.name,
-    required this.description,
-  });
-
-  factory Meta.fromJson(Map<String, dynamic> json) {
-    return Meta(
-      name: json['name'] as String,
-      description: json['description'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'description': description,
-    };
-  }
+  const ScheduleMeta._();
 }
 
-class Service {
-  final String name;
-  final List<String> persons;
+@freezed
+abstract class ScheduleService with _$ScheduleService {
+  const factory ScheduleService({
+    required String name,
+    required List<String> persons,
+  }) = _ScheduleService;
 
-  Service({
-    required this.name,
-    required this.persons,
-  });
-
-  factory Service.fromJson(Map<String, dynamic> json) {
-    return Service(
-      name: json['name'] as String,
-      persons:
-          (json['persons'] as List).map((person) => person as String).toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'persons': persons,
-    };
-  }
+  const ScheduleService._();
 }

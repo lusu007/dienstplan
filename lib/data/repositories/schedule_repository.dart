@@ -1,7 +1,7 @@
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/data/services/database_service.dart';
-import 'package:dienstplan/data/models/schedule.dart' as data_model;
+import 'package:dienstplan/data/models/mappers/schedule_mapper.dart' as mapper;
 import 'package:dienstplan/core/utils/logger.dart';
 
 class ScheduleRepository {
@@ -13,7 +13,7 @@ class ScheduleRepository {
     try {
       AppLogger.i('ScheduleRepository: Getting all schedules');
       final dataSchedules = await _databaseService.loadSchedules();
-      final schedules = dataSchedules.map((s) => s.toDomain()).toList();
+      final schedules = dataSchedules.map(mapper.toDomainSchedule).toList();
       AppLogger.i(
           'ScheduleRepository: Retrieved ${schedules.length} schedules');
       return schedules;
@@ -33,7 +33,7 @@ class ScheduleRepository {
           'ScheduleRepository: Getting schedules for date range: $start to $end${configName != null ? ' for config: $configName' : ''}');
       final dataSchedules = await _databaseService
           .loadSchedulesForDateRange(start, end, configName: configName);
-      final schedules = dataSchedules.map((s) => s.toDomain()).toList();
+      final schedules = dataSchedules.map(mapper.toDomainSchedule).toList();
       AppLogger.i(
           'ScheduleRepository: Retrieved ${schedules.length} schedules for date range');
       return schedules;
@@ -47,8 +47,7 @@ class ScheduleRepository {
   Future<void> saveSchedules(List<Schedule> schedules) async {
     try {
       AppLogger.i('ScheduleRepository: Saving ${schedules.length} schedules');
-      final dataSchedules =
-          schedules.map((s) => data_model.Schedule.fromDomain(s)).toList();
+      final dataSchedules = schedules.map(mapper.toDataSchedule).toList();
       await _databaseService.saveSchedules(dataSchedules);
       AppLogger.i('ScheduleRepository: Successfully saved schedules');
     } catch (e, stackTrace) {

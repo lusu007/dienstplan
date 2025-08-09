@@ -6,7 +6,7 @@ part of 'schedule_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$scheduleNotifierHash() => r'2b37a1f59029dead893ab61d8fb9dec2aaa9eb06';
+String _$scheduleNotifierHash() => r'2b3c35c4d6a06b04ebfec9bde273882d12a11969';
 
 /// See also [ScheduleNotifier].
 @ProviderFor(ScheduleNotifier)

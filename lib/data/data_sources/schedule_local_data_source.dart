@@ -1,6 +1,7 @@
 import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/data/models/schedule.dart' as data_model;
+import 'package:dienstplan/data/models/mappers/schedule_mapper.dart' as mapper;
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,7 +26,7 @@ class ScheduleLocalDataSource {
       AppLogger.d(
           'ScheduleLocalDataSource: Retrieved ${schedules.length} schedules');
 
-      return schedules.map((s) => s.toDomain()).toList();
+      return schedules.map(mapper.toDomainSchedule).toList();
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleLocalDataSource: Error getting schedules', e, stackTrace);
@@ -58,7 +59,7 @@ class ScheduleLocalDataSource {
       AppLogger.d(
           'ScheduleLocalDataSource: Retrieved ${schedules.length} schedules for date range');
 
-      return schedules.map((s) => s.toDomain()).toList();
+      return schedules.map(mapper.toDomainSchedule).toList();
     } catch (e, stackTrace) {
       AppLogger.e(
           'ScheduleLocalDataSource: Error getting schedules for date range',
@@ -81,7 +82,7 @@ class ScheduleLocalDataSource {
         final batch = txn.batch();
 
         for (final schedule in schedules) {
-          final dataModel = data_model.Schedule.fromDomain(schedule);
+          final dataModel = mapper.toDataSchedule(schedule);
           batch.insert(
             'schedules',
             dataModel.toMap(),
@@ -108,7 +109,7 @@ class ScheduleLocalDataSource {
           'ScheduleLocalDataSource: Saving single schedule for ${schedule.date}');
 
       final db = await _databaseService.database;
-      final dataModel = data_model.Schedule.fromDomain(schedule);
+      final dataModel = mapper.toDataSchedule(schedule);
 
       await db.insert(
         'schedules',
