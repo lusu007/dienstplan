@@ -40,6 +40,7 @@ import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart' as domain;
+import 'package:dienstplan/domain/services/config_query_service.dart';
 
 part 'riverpod_providers.g.dart';
 
@@ -59,7 +60,7 @@ Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   return service;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<LanguageService> languageService(Ref ref) async {
   final LanguageService service = LanguageService();
   await service.initialize();
@@ -71,9 +72,10 @@ Future<LanguageService> languageService(Ref ref) async {
 Stream<Locale> currentLocale(Ref ref) async* {
   final LanguageService languageService =
       await ref.watch(languageServiceProvider.future);
-  final StreamController<Locale> controller = StreamController<Locale>();
-  void emit() => controller.add(languageService.currentLocale);
+  final StreamController<Locale> controller =
+      StreamController<Locale>.broadcast();
   controller.add(languageService.currentLocale);
+  void emit() => controller.add(languageService.currentLocale);
   languageService.addListener(emit);
   ref.onDispose(() {
     languageService.removeListener(emit);
@@ -240,6 +242,11 @@ ScheduleMergeService scheduleMergeService(Ref ref) {
 @riverpod
 DateRangePolicy dateRangePolicy(Ref ref) {
   return const PlusMinusMonthsPolicy(monthsBefore: 3, monthsAfter: 3);
+}
+
+@riverpod
+ConfigQueryService configQueryService(Ref ref) {
+  return const ConfigQueryService();
 }
 
 // Use cases (additional)

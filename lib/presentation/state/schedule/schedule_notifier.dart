@@ -7,6 +7,7 @@ import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
+import 'package:dienstplan/domain/services/config_query_service.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
@@ -32,6 +33,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
   DateRangePolicy? _dateRangePolicy;
   ScheduleMergeService? _scheduleMergeService;
+  ConfigQueryService? _configQueryService;
 
   @override
   Future<ScheduleUiState> build() async {
@@ -47,6 +49,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         await ref.read(ensureMonthSchedulesUseCaseProvider.future);
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
+    _configQueryService ??= ref.read(configQueryServiceProvider);
     return await _initialize();
   }
 
@@ -83,7 +86,8 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             schedules: const <Schedule>[],
             activeConfigName: activeName,
             preferredDutyGroup: settings?.myDutyGroup,
-            dutyGroups: _extractDutyGroups(configs, activeName),
+            dutyGroups:
+                _configQueryService!.extractDutyGroups(configs, activeName),
             configs: configs,
             activeConfig: configs.isNotEmpty ? configs.first : null,
           );
@@ -95,15 +99,19 @@ class ScheduleNotifier extends _$ScheduleNotifier {
               i++)
             DateTime(now.year, now.month + i, 1),
         ];
-        final List<Schedule> ensured = <Schedule>[];
-        for (final DateTime monthStart in monthsToEnsure) {
-          final List<Schedule> ensuredMonth =
-              await _ensureMonthSchedulesUseCase!.execute(
-            configName: activeName,
-            monthStart: monthStart,
-          );
-          ensured.addAll(ensuredMonth);
-        }
+        final List<Future<List<Schedule>>> ensureFutures =
+            <Future<List<Schedule>>>[
+          for (final DateTime monthStart in monthsToEnsure)
+            _ensureMonthSchedulesUseCase!.execute(
+              configName: activeName,
+              monthStart: monthStart,
+            ),
+        ];
+        final List<List<Schedule>> ensuredChunks =
+            await Future.wait(ensureFutures);
+        final List<Schedule> ensured = <Schedule>[
+          for (final List<Schedule> chunk in ensuredChunks) ...chunk,
+        ];
         if (ensured.isNotEmpty) {
           schedules = _scheduleMergeService!
               .deduplicate(<Schedule>[...schedules, ...ensured]);
@@ -118,35 +126,15 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         schedules: schedules,
         activeConfigName: activeName,
         preferredDutyGroup: settings?.myDutyGroup,
-        dutyGroups: _extractDutyGroups(configs, activeName),
+        dutyGroups: _configQueryService!.extractDutyGroups(configs, activeName),
         configs: configs,
-        activeConfig: configs.firstWhere(
-          (c) => c.name == activeName,
-          orElse: () => configs.isNotEmpty ? configs.first : configs.first,
-        ),
+        activeConfig:
+            _configQueryService!.selectActiveConfig(configs, activeName),
       );
     } catch (e) {
       return ScheduleUiState.initial()
           .copyWith(error: 'Failed to load schedules');
     }
-  }
-
-  List<String> _extractDutyGroups(
-      List<DutyScheduleConfig> configs, String? activeName) {
-    if (activeName == null) {
-      return const <String>[];
-    }
-    DutyScheduleConfig? config;
-    for (final c in configs) {
-      if (c.name == activeName) {
-        config = c;
-        break;
-      }
-    }
-    if (config == null) {
-      return const <String>[];
-    }
-    return config.dutyGroups.map((g) => g.name).toList(growable: false);
   }
 
   // Validation moved into use case
@@ -341,7 +329,8 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       final updated = current.copyWith(
         isLoading: false,
         activeConfigName: config.name,
-        dutyGroups: config.dutyGroups.map((g) => g.name).toList(),
+        dutyGroups: _configQueryService!
+            .extractDutyGroups(<DutyScheduleConfig>[config], config.name),
         activeConfig: config,
       );
       state = AsyncData(updated);

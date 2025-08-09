@@ -4,15 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/data/models/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 // Use cases are accessed via Riverpod providers
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
-import 'package:dienstplan/data/services/schedule_config_service.dart';
 // Language service is accessed via Riverpod providers
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
@@ -38,13 +36,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   int _currentStep = 1;
   bool _isLoading = true;
   bool _isGeneratingSchedules = false;
-  late final ScheduleConfigService _configService;
-  late final SharedPreferences _prefs;
 
   @override
   void initState() {
     super.initState();
-    _initializeServices();
+    _loadConfigs();
   }
 
   @override
@@ -53,17 +49,12 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     super.dispose();
   }
 
-  Future<void> _initializeServices() async {
-    _prefs = await SharedPreferences.getInstance();
-    _configService = ScheduleConfigService(_prefs);
-    _loadConfigs();
-  }
-
   Future<void> _loadConfigs() async {
     try {
       AppLogger.i('Loading duty schedule configurations');
-      await _configService.initialize();
-      final configs = _configService.configs;
+      final getConfigsUseCase =
+          await ref.read(getConfigsUseCaseProvider.future);
+      final configs = await getConfigsUseCase.execute();
       AppLogger.i('Loaded ${configs.length} configurations');
       if (mounted) {
         setState(() {
@@ -105,8 +96,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         _isGeneratingSchedules = true;
       });
 
-      // First set the default config and generate schedules
-      await _configService.setDefaultConfig(_selectedConfig!);
+      // First set the default config via repository
+      final configRepository = await ref.read(configRepositoryProvider.future);
+      await configRepository.setDefaultConfig(_selectedConfig!);
 
       // Set the active config using the use case directly
       final setActiveConfigUseCase =
@@ -119,9 +111,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       final DateTime now = DateTime.now();
       const int initialYears = 2;
       final DateTime startDate =
-          now.subtract(const Duration(days: 365 * initialYears)); // 3 years ago
+          now.subtract(const Duration(days: 365 * initialYears)); // 2 years ago
       final DateTime endDate = now
-          .add(const Duration(days: 365 * initialYears)); // 3 years in future
+          .add(const Duration(days: 365 * initialYears)); // 2 years in future
 
       await generateSchedulesUseCase.execute(
         configName: _selectedConfig!.name,
@@ -140,7 +132,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       await saveSettingsUseCase.execute(initialSettings);
 
       // Mark setup as completed
-      await _configService.markSetupCompleted();
+      final scheduleConfigService =
+          await ref.read(scheduleConfigServiceProvider.future);
+      await scheduleConfigService.markSetupCompleted();
       AppLogger.i(
           'Setup completed successfully for config: ${_selectedConfig!.name}');
 
