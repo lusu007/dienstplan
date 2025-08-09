@@ -1,12 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
+import 'package:dienstplan/core/routing/app_router.dart';
 // import 'package:dienstplan/core/services/controller_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
-import 'package:dienstplan/data/services/language_service.dart';
+// import 'package:dienstplan/data/services/language_service.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -16,15 +17,12 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  final RouteObserver<ModalRoute<void>> _routeObserver =
-      RouteObserver<ModalRoute<void>>();
-
-  // Global navigator key for showing dialogs
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+  late final AppRouter _appRouter;
 
   @override
   void initState() {
     super.initState();
+    _appRouter = AppRouter();
     _initializeControllers();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
@@ -35,105 +33,38 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<LanguageService> languageAsync =
-        ref.watch(languageServiceProvider);
-    return languageAsync.when(
-      loading: () => MaterialApp(
-        title: 'Dienstplan',
-        navigatorKey: _navigatorKey,
-        navigatorObservers: [_routeObserver],
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF005B8C),
-            primary: const Color(0xFF005B8C),
-          ),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF005B8C),
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-            iconTheme: IconThemeData(color: Colors.white),
-          ),
-        ),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('de'),
-        home: AppInitializerWidget(routeObserver: _routeObserver),
-      ),
-      error: (e, st) => MaterialApp(
-        title: 'Dienstplan',
-        navigatorKey: _navigatorKey,
-        navigatorObservers: [_routeObserver],
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF005B8C),
-            primary: const Color(0xFF005B8C),
-          ),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF005B8C),
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-            iconTheme: IconThemeData(color: Colors.white),
-          ),
-        ),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('de'),
-        home: AppInitializerWidget(routeObserver: _routeObserver),
-      ),
-      data: (languageService) => ListenableBuilder(
-        listenable: languageService,
-        builder: (context, child) {
-          final locale = languageService.currentLocale;
-          return MaterialApp(
-            title: 'Dienstplan',
-            navigatorKey: _navigatorKey,
-            navigatorObservers: [_routeObserver],
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF005B8C),
-                primary: const Color(0xFF005B8C),
-              ),
-              useMaterial3: true,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Color(0xFF005B8C),
-                titleTextStyle: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-                iconTheme: IconThemeData(color: Colors.white),
-              ),
-            ),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: locale,
-            home: AppInitializerWidget(routeObserver: _routeObserver),
-          );
-        },
-      ),
+    final ThemeData theme = ref.watch(appThemeProvider);
+    final ThemeMode mode = ref.watch(themeModeProvider);
+    final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
+    return localeAsync.when(
+      loading: () => _buildMaterialApp(
+          theme: theme, mode: mode, locale: const Locale('de')),
+      error: (e, st) => _buildMaterialApp(
+          theme: theme, mode: mode, locale: const Locale('de')),
+      data: (locale) =>
+          _buildMaterialApp(theme: theme, mode: mode, locale: locale),
+    );
+  }
+
+  Widget _buildMaterialApp(
+      {required ThemeData theme,
+      required ThemeMode mode,
+      required Locale locale}) {
+    return MaterialApp.router(
+      title: 'Dienstplan',
+      theme: theme,
+      themeMode: mode,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: locale,
+      routerDelegate: _appRouter.delegate(
+          navigatorObservers: () => <NavigatorObserver>[AutoRouteObserver()]),
+      routeInformationParser: _appRouter.defaultRouteParser(),
     );
   }
 }

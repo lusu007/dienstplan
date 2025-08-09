@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
@@ -7,17 +8,16 @@ import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+@RoutePage()
 class CalendarScreen extends ConsumerStatefulWidget {
-  final RouteObserver<ModalRoute<void>> routeObserver;
-
-  const CalendarScreen({super.key, required this.routeObserver});
+  const CalendarScreen({super.key});
 
   @override
   ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _controller;
   late String _locale;
   LanguageService? _languageService;
@@ -42,7 +42,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    widget.routeObserver.subscribe(this, ModalRoute.of(context)!);
 
     if (_languageService != null) {
       final appLocale = _languageService!.currentLocale.languageCode;
@@ -71,7 +70,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    widget.routeObserver.unsubscribe(this);
     _controller.dispose();
     super.dispose();
   }

@@ -1,5 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/screens/settings_screen.dart';
+import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -22,14 +23,7 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.settings, color: Colors.white),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SettingsScreen(),
-              ),
-            );
-          },
+          onPressed: () => context.router.push(const SettingsRoute()),
         ),
       ],
     );
