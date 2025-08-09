@@ -30,6 +30,9 @@ import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/load_default_config_use_case.dart';
+import 'package:dienstplan/domain/services/schedule_merge_service.dart';
+import 'package:dienstplan/domain/policies/date_range_policy.dart';
+import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 
 part 'riverpod_providers.g.dart';
 
@@ -207,4 +210,25 @@ Future<LoadDefaultConfigUseCase> loadDefaultConfigUseCase(Ref ref) async {
   final ConfigRepository repo =
       await ref.watch(configRepositoryProvider.future);
   return LoadDefaultConfigUseCase(repo);
+}
+
+// Utilities / Services
+@Riverpod(keepAlive: true)
+ScheduleMergeService scheduleMergeService(Ref ref) {
+  return ScheduleMergeService();
+}
+
+@Riverpod(keepAlive: true)
+DateRangePolicy dateRangePolicy(Ref ref) {
+  return const PlusMinusMonthsPolicy(monthsBefore: 3, monthsAfter: 3);
+}
+
+// Use cases (additional)
+@Riverpod(keepAlive: true)
+Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
+  final GetSchedulesUseCase get =
+      await ref.watch(getSchedulesUseCaseProvider.future);
+  final GenerateSchedulesUseCase gen =
+      await ref.watch(generateSchedulesUseCaseProvider.future);
+  return EnsureMonthSchedulesUseCase(get, gen);
 }

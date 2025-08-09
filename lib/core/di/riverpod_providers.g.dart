@@ -402,5 +402,60 @@ final loadDefaultConfigUseCaseProvider =
 // ignore: unused_element
 typedef LoadDefaultConfigUseCaseRef
     = FutureProviderRef<LoadDefaultConfigUseCase>;
+String _$scheduleMergeServiceHash() =>
+    r'd025dcc955c1cc9e7b0235749b77e60daff41d4d';
+
+/// See also [scheduleMergeService].
+@ProviderFor(scheduleMergeService)
+final scheduleMergeServiceProvider = Provider<ScheduleMergeService>.internal(
+  scheduleMergeService,
+  name: r'scheduleMergeServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$scheduleMergeServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ScheduleMergeServiceRef = ProviderRef<ScheduleMergeService>;
+String _$dateRangePolicyHash() => r'cfa08e30bd98fb4307032d84d00e7cc69554263b';
+
+/// See also [dateRangePolicy].
+@ProviderFor(dateRangePolicy)
+final dateRangePolicyProvider = Provider<DateRangePolicy>.internal(
+  dateRangePolicy,
+  name: r'dateRangePolicyProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$dateRangePolicyHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DateRangePolicyRef = ProviderRef<DateRangePolicy>;
+String _$ensureMonthSchedulesUseCaseHash() =>
+    r'a1a6ff027a6b6464deb597592e9ef58980dbbeb0';
+
+/// See also [ensureMonthSchedulesUseCase].
+@ProviderFor(ensureMonthSchedulesUseCase)
+final ensureMonthSchedulesUseCaseProvider =
+    FutureProvider<EnsureMonthSchedulesUseCase>.internal(
+  ensureMonthSchedulesUseCase,
+  name: r'ensureMonthSchedulesUseCaseProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$ensureMonthSchedulesUseCaseHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef EnsureMonthSchedulesUseCaseRef
+    = FutureProviderRef<EnsureMonthSchedulesUseCase>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

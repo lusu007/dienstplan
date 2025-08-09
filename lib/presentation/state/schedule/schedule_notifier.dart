@@ -4,6 +4,10 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
+import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
+import 'package:dienstplan/domain/policies/date_range_policy.dart';
+import 'package:dienstplan/domain/services/schedule_merge_service.dart';
+import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
@@ -21,6 +25,9 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   SetActiveConfigUseCase? _setActiveConfigUseCase;
   GetSettingsUseCase? _getSettingsUseCase;
   SaveSettingsUseCase? _saveSettingsUseCase;
+  EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
+  DateRangePolicy? _dateRangePolicy;
+  ScheduleMergeService? _scheduleMergeService;
 
   @override
   Future<ScheduleUiState> build() async {
@@ -32,13 +39,17 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         await ref.read(setActiveConfigUseCaseProvider.future);
     _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
+    _ensureMonthSchedulesUseCase ??=
+        await ref.read(ensureMonthSchedulesUseCaseProvider.future);
+    _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
+    _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
     return await _initialize();
   }
 
   Future<ScheduleUiState> _initialize() async {
     state = const AsyncLoading();
     try {
-      final now = DateTime.now();
+      final DateTime now = DateTime.now();
       final settings = await _getSettingsUseCase!.execute();
       final configs = await _getConfigsUseCase!.execute();
       final activeName = settings?.activeConfigName ??
@@ -48,37 +59,30 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       final focused = now;
       List<Schedule> schedules = [];
       if (activeName != null) {
-        // Load initial range: current month ±3
-        final DateTime start = DateTime(now.year, now.month - 3, 1);
-        final DateTime end = DateTime(now.year, now.month + 4, 0);
+        final DateRange initialRange =
+            _dateRangePolicy!.computeInitialRange(now);
         schedules = await _getSchedulesUseCase!.executeForDateRange(
-          startDate: start,
-          endDate: end,
+          startDate: initialRange.start,
+          endDate: initialRange.end,
           configName: activeName,
         );
-        // Ensure prev/curr/next of current month have valid schedules for active config
         final List<DateTime> monthsToEnsure = <DateTime>[
           DateTime(now.year, now.month - 1, 1),
           DateTime(now.year, now.month, 1),
           DateTime(now.year, now.month + 1, 1),
         ];
-        final List<Schedule> initialGeneratedSchedules = <Schedule>[];
-        for (final DateTime month in monthsToEnsure) {
-          final DateTime monthEnd = DateTime(month.year, month.month + 1, 0);
-          if (!_hasValidSchedulesForMonth(schedules, month, activeName)) {
-            // Generate missing month for active config
-            final List<Schedule> generated =
-                await _generateSchedulesUseCase!.execute(
-              configName: activeName,
-              startDate: month,
-              endDate: monthEnd,
-            );
-            initialGeneratedSchedules.addAll(generated);
-          }
+        final List<Schedule> ensured = <Schedule>[];
+        for (final DateTime monthStart in monthsToEnsure) {
+          final List<Schedule> ensuredMonth =
+              await _ensureMonthSchedulesUseCase!.execute(
+            configName: activeName,
+            monthStart: monthStart,
+          );
+          ensured.addAll(ensuredMonth);
         }
-        if (initialGeneratedSchedules.isNotEmpty) {
-          schedules =
-              <Schedule>{...schedules, ...initialGeneratedSchedules}.toList();
+        if (ensured.isNotEmpty) {
+          schedules = _scheduleMergeService!
+              .deduplicate(<Schedule>[...schedules, ...ensured]);
         }
       }
       return ScheduleUiState(
@@ -121,24 +125,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     return config.dutyGroups.map((g) => g.name).toList(growable: false);
   }
 
-  bool _hasValidSchedulesForMonth(
-      List<Schedule> schedules, DateTime monthStart, String activeConfigName) {
-    final DateTime monthEnd =
-        DateTime(monthStart.year, monthStart.month + 1, 0);
-
-    for (final Schedule s in schedules) {
-      final bool inMonth =
-          s.date.isAfter(monthStart.subtract(const Duration(days: 1))) &&
-              s.date.isBefore(monthEnd.add(const Duration(days: 1)));
-      if (inMonth &&
-          s.configName == activeConfigName &&
-          s.dutyTypeId.isNotEmpty &&
-          s.dutyTypeId != '-') {
-        return true;
-      }
-    }
-    return false;
-  }
+  // Validation moved into use case
 
   Future<void> setFocusedDay(DateTime day) async {
     final current = state.valueOrNull ?? ScheduleUiState.initial();
@@ -150,105 +137,58 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     final activeName = current.activeConfigName;
     if (activeName != null && activeName.isNotEmpty) {
       try {
-        // Calculate range for focused month ±3
-        final focusedStart = DateTime(day.year, day.month - 3, 1);
-        final focusedEnd = DateTime(day.year, day.month + 4, 0);
+        final DateRange focusedRange =
+            _dateRangePolicy!.computeFocusedRange(day);
 
         // Calculate range for selected day ±3 (if exists)
         final selectedDay = current.selectedDay;
-        DateTime start = focusedStart;
-        DateTime end = focusedEnd;
+        DateRange combinedRange = focusedRange;
 
         if (selectedDay != null) {
-          final selectedStart =
-              DateTime(selectedDay.year, selectedDay.month - 3, 1);
-          final selectedEnd =
-              DateTime(selectedDay.year, selectedDay.month + 4, 0);
-
-          // Combine both ranges (take earliest start and latest end)
-          start = focusedStart.isBefore(selectedStart)
-              ? focusedStart
-              : selectedStart;
-          end = focusedEnd.isAfter(selectedEnd) ? focusedEnd : selectedEnd;
+          final DateRange selectedRange =
+              _dateRangePolicy!.computeSelectedRange(selectedDay);
+          combinedRange = DateRange.union(focusedRange, selectedRange);
         }
 
         // First try to load existing schedules
         final initialSchedules =
             await _getSchedulesUseCase!.executeForDateRange(
-          startDate: start,
-          endDate: end,
+          startDate: combinedRange.start,
+          endDate: combinedRange.end,
           configName: activeName,
         );
-        final allSchedules = <Schedule>[...initialSchedules];
+        final List<Schedule> allSchedules = <Schedule>[...initialSchedules];
 
         // Check if we need to generate schedules for the focused month specifically
         final focusedMonthStart = DateTime(day.year, day.month, 1);
 
         // Ensure focused, previous and next months exist (generate only when empty or without valid items for active config)
-        Future<void> ensureMonthGenerated(
-            DateTime monthStart, String activeConfigName) async {
-          final DateTime monthEnd =
-              DateTime(monthStart.year, monthStart.month + 1, 0);
-
-          // Check if month actually has schedules in UI state (not just allSchedules)
-          final currentStateSchedules = current.schedules
-              .where((s) =>
-                  s.date.year == monthStart.year &&
-                  s.date.month == monthStart.month &&
-                  s.configName == activeConfigName &&
-                  s.dutyTypeId.isNotEmpty &&
-                  s.dutyTypeId != '-')
-              .length;
-
-          // Generate if UI state is missing schedules (regardless of allSchedules)
-          if (currentStateSchedules == 0) {
-            final List<Schedule> generated =
-                await _generateSchedulesUseCase!.execute(
-              configName: activeConfigName,
-              startDate: monthStart,
-              endDate: monthEnd,
-            );
-            allSchedules.addAll(generated);
-          }
+        Future<void> ensureMonthGenerated(DateTime monthStart) async {
+          final List<Schedule> ensured =
+              await _ensureMonthSchedulesUseCase!.execute(
+            configName: activeName,
+            monthStart: monthStart,
+          );
+          allSchedules.addAll(ensured);
         }
 
         // Generate current month and 3 months into the future in parallel using isolate
-        await Future.wait([
-          ensureMonthGenerated(focusedMonthStart, activeName),
-          ensureMonthGenerated(
-              DateTime(day.year, day.month + 1, 1), activeName),
-          ensureMonthGenerated(
-              DateTime(day.year, day.month + 2, 1), activeName),
-          ensureMonthGenerated(
-              DateTime(day.year, day.month + 3, 1), activeName),
+        await Future.wait(<Future<void>>[
+          ensureMonthGenerated(focusedMonthStart),
+          ensureMonthGenerated(DateTime(day.year, day.month + 1, 1)),
+          ensureMonthGenerated(DateTime(day.year, day.month + 2, 1)),
+          ensureMonthGenerated(DateTime(day.year, day.month + 3, 1)),
         ]);
 
         // Update state with new schedules and clear loading
         // Merge with existing schedules to avoid losing data
-        final existingSchedules = current.schedules.toList();
-        final mergedSchedules = <Schedule>[];
-
-        // Add existing schedules that are not in the new range
-        for (final existing in existingSchedules) {
-          final isInNewRange =
-              existing.date.isAfter(start.subtract(const Duration(days: 1))) &&
-                  existing.date.isBefore(end.add(const Duration(days: 1)));
-          if (!isInNewRange) {
-            mergedSchedules.add(existing);
-          }
-        }
-
-        // Add new schedules, avoiding duplicates
-        for (final newSchedule in allSchedules) {
-          final exists = mergedSchedules.any((s) =>
-              s.date.year == newSchedule.date.year &&
-              s.date.month == newSchedule.date.month &&
-              s.date.day == newSchedule.date.day &&
-              s.dutyGroupName == newSchedule.dutyGroupName);
-          if (!exists) {
-            mergedSchedules.add(newSchedule);
-          }
-        }
+        final List<Schedule> existingSchedules = current.schedules.toList();
+        final List<Schedule> mergedSchedules =
+            _scheduleMergeService!.mergeOutsideRange(
+          existing: existingSchedules,
+          incoming: allSchedules,
+          range: combinedRange,
+        );
 
         // Update state with new schedules
         final newState = current.copyWith(
@@ -290,51 +230,45 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         // If selected day schedules are not loaded, load them
         if (!hasSelectedDaySchedules) {
           try {
-            // Load selected day ±3 range
-            final start = DateTime(day.year, day.month - 3, 1);
-            final end = DateTime(day.year, day.month + 4, 0);
+            final DateRange selectedRange =
+                _dateRangePolicy!.computeSelectedRange(day);
 
             // First try to load existing schedules
             List<Schedule> newSchedules =
                 await _getSchedulesUseCase!.executeForDateRange(
-              startDate: start,
-              endDate: end,
+              startDate: selectedRange.start,
+              endDate: selectedRange.end,
               configName: activeName,
             );
 
             // Ensure selected day is present; if not, generate month data
-            final monthStart = DateTime(day.year, day.month, 1);
-            final monthEnd = DateTime(day.year, day.month + 1, 0);
+            final DateTime monthStart = DateTime(day.year, day.month, 1);
             final hasSelectedInLoaded = newSchedules.any((s) =>
                 s.date.year == day.year &&
                 s.date.month == day.month &&
                 s.date.day == day.day);
 
             if (newSchedules.isEmpty || !hasSelectedInLoaded) {
-              final generated = await _generateSchedulesUseCase!.execute(
+              final List<Schedule> ensured =
+                  await _ensureMonthSchedulesUseCase!.execute(
                 configName: activeName,
-                startDate: monthStart,
-                endDate: monthEnd,
+                monthStart: monthStart,
               );
-              newSchedules = [...newSchedules, ...generated];
+              newSchedules = <Schedule>[...newSchedules, ...ensured];
             }
 
-            // Merge with existing schedules, avoiding duplicates
-            final existingSchedules = currentSchedules.toList();
-            for (final schedule in newSchedules) {
-              final exists = existingSchedules.any((s) =>
-                  s.date.year == schedule.date.year &&
-                  s.date.month == schedule.date.month &&
-                  s.date.day == schedule.date.day &&
-                  s.dutyGroupName == schedule.dutyGroupName);
-              if (!exists) {
-                existingSchedules.add(schedule);
-              }
-            }
+            final List<Schedule> existingSchedules = currentSchedules.toList();
+            final DateRange mergeRange = selectedRange;
+            final List<Schedule> merged =
+                _scheduleMergeService!.mergeOutsideRange(
+              existing: existingSchedules,
+              incoming: newSchedules,
+              range: mergeRange,
+            );
 
             state = AsyncData(
               (state.valueOrNull ?? current).copyWith(
-                schedules: existingSchedules,
+                schedules: merged,
                 selectedDay: day,
               ),
             );
@@ -376,15 +310,14 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       state = AsyncData(updated);
 
       // Load schedules for the new config
-      final now = DateTime.now();
-      final start = DateTime(now.year, now.month - 3, 1);
-      final end = DateTime(now.year, now.month + 4, 0);
+      final DateTime now = DateTime.now();
+      final DateRange range = _dateRangePolicy!.computeInitialRange(now);
 
       // First try to load existing schedules
       List<Schedule> schedules =
           await _getSchedulesUseCase!.executeForDateRange(
-        startDate: start,
-        endDate: end,
+        startDate: range.start,
+        endDate: range.end,
         configName: config.name,
       );
 
@@ -392,8 +325,8 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       if (schedules.isEmpty) {
         schedules = await _generateSchedulesUseCase!.execute(
           configName: config.name,
-          startDate: start,
-          endDate: end,
+          startDate: range.start,
+          endDate: range.end,
         );
       }
 

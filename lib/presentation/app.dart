@@ -4,10 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
-// import 'package:dienstplan/core/services/controller_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
-// import 'package:dienstplan/data/services/language_service.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -23,12 +21,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     _appRouter = AppRouter();
-    _initializeControllers();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  }
-
-  void _initializeControllers() {
-    // Controllers are managed via Riverpod now
   }
 
   @override
