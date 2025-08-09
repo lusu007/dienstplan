@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 📂 Checkout code
         uses: actions/checkout@v4
-      
+    
       - name: 🚀 Cache pub deps
         uses: actions/cache@v4
         with:
@@ -29,7 +29,8 @@ jobs:
         with:
           flutter-version: '3.32.7'
           channel: 'stable'
-          
+          cache: true
+
       - name: 📦 Install dependencies
         run: flutter pub get
 
@@ -60,7 +61,7 @@ jobs:
 
       - name: 🛠️ Build Flutter iOS App (no codesign)
         run: flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
-      
+
       - name: 🔧 Patch Podfile for CI signing
         run: |
           # Füge Ruby-Code-Block zum Podfile hinzu, falls noch nicht vorhanden
