@@ -6,7 +6,7 @@ import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 part 'schedule_ui_state.freezed.dart';
 
 @freezed
-class ScheduleUiState with _$ScheduleUiState {
+abstract class ScheduleUiState with _$ScheduleUiState {
   const factory ScheduleUiState({
     required bool isLoading,
     String? error,

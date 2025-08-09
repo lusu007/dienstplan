@@ -4,7 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 part 'settings_ui_state.freezed.dart';
 
 @freezed
-class SettingsUiState with _$SettingsUiState {
+abstract class SettingsUiState with _$SettingsUiState {
   const factory SettingsUiState({
     required bool isLoading,
     String? error,
@@ -20,4 +20,3 @@ class SettingsUiState with _$SettingsUiState {
         isLoading: false,
       );
 }
-

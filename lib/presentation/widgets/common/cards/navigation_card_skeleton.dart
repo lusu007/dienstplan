@@ -93,7 +93,7 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
           margin: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
             color: Colors.grey.shade300
-                .withOpacity(0.3 + (_animation.value * 0.4)),
+                .withValues(alpha: 0.3 + (_animation.value * 0.4)),
             borderRadius: BorderRadius.circular(4),
           ),
         );
