@@ -58,9 +58,11 @@ class CalendarBuildersHelper {
 
       // Get schedules for the specific day and active config
       final schedulesForDay = schedules.where((schedule) {
-        final isSameDay = schedule.date.year == day.year &&
-            schedule.date.month == day.month &&
-            schedule.date.day == day.day;
+        // Normalize dates to avoid timezone issues
+        final scheduleDate = DateTime(
+            schedule.date.year, schedule.date.month, schedule.date.day);
+        final dayDate = DateTime(day.year, day.month, day.day);
+        final isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
 
         // Only consider schedules from the active config
         final isActiveConfig = schedule.configName == activeConfigName;

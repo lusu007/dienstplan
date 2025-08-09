@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,15 +105,81 @@ class CalendarViewUiBuilder {
       final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
         final sel = state?.selectedDay;
         if (sel == null) return false;
-        return s.date.year == sel.year &&
-            s.date.month == sel.month &&
-            s.date.day == sel.day;
+
+        // Normalize dates to avoid timezone issues
+        final scheduleDate = DateTime(s.date.year, s.date.month, s.date.day);
+        final selectedDate = DateTime(sel.year, sel.month, sel.day);
+
+        // Also ensure we're using the correct config
+        final activeConfig = state?.activeConfigName;
+        final isCorrectConfig =
+            activeConfig == null || s.configName == activeConfig;
+
+        return scheduleDate.isAtSameMomentAs(selectedDate) && isCorrectConfig;
       }).toList();
+
+      // Debug logging for schedule display issues
+      if (kDebugMode && state?.selectedDay != null) {
+        final totalSchedules = state!.schedules.length;
+        final configName = state.activeConfigName ?? 'none';
+        debugPrint('CalendarViewUI - Total schedules: $totalSchedules, '
+            'Selected day: ${state.selectedDay}, Config: $configName, '
+            'Filtered schedules: ${selectedDaySchedules.length}');
+
+        // Enhanced debugging for the "every second month" issue
+        if (totalSchedules > 0) {
+          final selectedDate = state.selectedDay!;
+          final monthSchedules = state.schedules
+              .where((s) =>
+                  s.date.year == selectedDate.year &&
+                  s.date.month == selectedDate.month &&
+                  s.configName == configName)
+              .toList();
+          debugPrint(
+              'Month ${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')} has ${monthSchedules.length} schedules');
+
+          if (selectedDaySchedules.isEmpty && monthSchedules.isNotEmpty) {
+            final daySchedules = monthSchedules
+                .where((s) => s.date.day == selectedDate.day)
+                .toList();
+            debugPrint(
+                'Day ${selectedDate.day} has ${daySchedules.length} raw schedules before filtering');
+            if (daySchedules.isNotEmpty) {
+              debugPrint(
+                  'Day schedules sample: ${daySchedules.take(2).map((s) => '${s.date}:${s.dutyTypeId}:${s.configName}').join(', ')}');
+            }
+          }
+
+          if (selectedDaySchedules.isEmpty && totalSchedules > 0) {
+            final sampleDates = state.schedules
+                .take(5)
+                .map((s) => '${s.date} (${s.configName})')
+                .join(', ');
+            debugPrint(
+                'No schedules found for selected day. Sample dates: $sampleDates');
+          }
+        }
+      }
 
       // Only show loading if selected day has no schedules AND we're actually loading
       final hasSchedulesForSelectedDay = selectedDaySchedules.isNotEmpty;
       final isLoadingSelectedDay =
           (state?.isLoading ?? false) && !hasSchedulesForSelectedDay;
+
+      // Trigger data loading if we have no schedules for selected day and not currently loading
+      if (!hasSchedulesForSelectedDay &&
+          !isLoadingSelectedDay &&
+          state?.selectedDay != null &&
+          state?.activeConfigName != null) {
+        // Use post-frame callback to avoid building during build
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            ref
+                .read(scheduleNotifierProvider.notifier)
+                .setSelectedDay(state!.selectedDay);
+          }
+        });
+      }
 
       return DutyScheduleList(
         schedules: selectedDaySchedules,
