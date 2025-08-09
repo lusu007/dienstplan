@@ -49,7 +49,5 @@ class CalendarDayCard extends ConsumerWidget {
     // Trigger day selection via provider
     await ref.read(scheduleNotifierProvider.notifier).setSelectedDay(day);
     ref.read(scheduleNotifierProvider.notifier).setFocusedDay(day);
-
-    // Animation callback removed
   }
 }

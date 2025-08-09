@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -152,8 +153,13 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       ref.invalidate(settingsNotifierProvider);
       ref.invalidate(scheduleNotifierProvider);
 
-      // Optionally, show a short confirmation
-      // and rely on AppInitializerWidget to rebuild automatically
+      // Navigate to the main calendar screen.
+      // This is necessary when SetupScreen is opened via its own route
+      // (e.g., after a reset), where the AppInitializerWidget is not
+      // on the navigation stack to handle the switch.
+      if (mounted) {
+        context.router.replaceAll([const CalendarRoute()]);
+      }
     } catch (e, stackTrace) {
       AppLogger.e('Error saving default config', e, stackTrace);
       if (!mounted) return;

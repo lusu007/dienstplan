@@ -206,8 +206,6 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
             ref
                 .read(scheduleNotifierProvider.notifier)
                 .setFocusedDay(widget.day);
-
-            // Animation callback removed
           } catch (e) {
             // Ignore errors during day selection
           }

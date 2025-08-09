@@ -29,10 +29,6 @@ class GenerateSchedulesUseCase {
         throw ArgumentError('Start date cannot be after end date');
       }
 
-      // Business logic: Validate date range size (performance optimization)
-      // Note: In practice, only ±3 months are loaded at a time, so this limit is rarely reached
-      // Removed arbitrary year limit since it's not needed for normal usage
-
       // Get the configuration first
       final configs = await _configRepository.getConfigs();
       final config = configs.firstWhere(

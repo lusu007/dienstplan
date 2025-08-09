@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
@@ -26,15 +25,6 @@ class EnsureMonthSchedulesUseCase {
     );
     final bool hasValid = _hasValidSchedules(existing, configName);
 
-    // Debug logging for the "every second month" issue
-    debugPrint(
-        'EnsureMonth DEBUG: Month ${monthStart.year}-${monthStart.month.toString().padLeft(2, '0')} - '
-        'Found ${existing.length} existing schedules, hasValid: $hasValid');
-    if (!hasValid && existing.isNotEmpty) {
-      debugPrint(
-          'EnsureMonth DEBUG: Invalid schedules sample: ${existing.take(3).map((s) => '${s.date.day}:${s.dutyTypeId}').join(', ')}');
-    }
-
     if (hasValid) {
       return existing;
     }
@@ -43,8 +33,7 @@ class EnsureMonthSchedulesUseCase {
       startDate: monthStart,
       endDate: monthEnd,
     );
-    debugPrint(
-        'EnsureMonth DEBUG: Generated ${generated.length} new schedules for ${monthStart.year}-${monthStart.month.toString().padLeft(2, '0')}');
+
     return generated;
   }
 
@@ -54,7 +43,6 @@ class EnsureMonthSchedulesUseCase {
         schedules.where((s) => s.configName == configName).toList();
 
     if (configSchedules.isEmpty) {
-      debugPrint('EnsureMonth: No schedules found for config $configName');
       return false;
     }
 
@@ -65,10 +53,6 @@ class EnsureMonthSchedulesUseCase {
 
     // For a valid month, expect at least 25 days of schedules (accounting for month variations)
     final hasReasonableCoverage = uniqueDates.length >= 25;
-
-    debugPrint(
-        'EnsureMonth: Config $configName has ${configSchedules.length} schedules '
-        'covering ${uniqueDates.length} days, valid: $hasReasonableCoverage');
 
     return hasReasonableCoverage;
   }
