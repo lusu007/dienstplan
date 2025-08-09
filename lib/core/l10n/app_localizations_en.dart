@@ -356,4 +356,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactDescription => 'Get in touch with us';
+
+  @override
+  String get genericValidationError => 'Invalid input';
+
+  @override
+  String get genericNotFoundError => 'Requested item was not found';
+
+  @override
+  String get genericConflictError => 'Conflict occurred';
+
+  @override
+  String get genericUnauthorizedError => 'You are not authorized';
+
+  @override
+  String get genericForbiddenError => 'Access is forbidden';
+
+  @override
+  String get genericNetworkError =>
+      'Network error. Please check your connection.';
+
+  @override
+  String get genericTimeoutError => 'The operation timed out';
+
+  @override
+  String get genericStorageError => 'Storage error occurred';
+
+  @override
+  String get genericSerializationError => 'Data processing error';
+
+  @override
+  String get genericCancellationError => 'The operation was cancelled';
+
+  @override
+  String get genericUnknownError => 'An unknown error occurred';
 }

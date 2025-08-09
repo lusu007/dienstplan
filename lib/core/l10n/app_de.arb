@@ -460,5 +460,27 @@
   "contactDescription": "Kontaktiere uns",
   "@contactDescription": {
     "description": "Description for contact option"
-  }
+  },
+
+  "genericValidationError": "Ungültige Eingabe",
+  "@genericValidationError": {"description": "Allgemeine Validierungsfehlermeldung"},
+  "genericNotFoundError": "Das angeforderte Element wurde nicht gefunden",
+  "@genericNotFoundError": {"description": "Allgemeine Nicht-gefunden-Fehlermeldung"},
+  "genericConflictError": "Ein Konflikt ist aufgetreten",
+  "@genericConflictError": {"description": "Allgemeine Konflikt-Fehlermeldung"},
+  "genericUnauthorizedError": "Du bist nicht autorisiert",
+  "@genericUnauthorizedError": {"description": "Allgemeine Nicht autorisiert-Fehlermeldung"},
+  "genericForbiddenError": "Zugriff verweigert",
+  "@genericForbiddenError": {"description": "Allgemeine Verboten-Fehlermeldung"},
+  "genericNetworkError": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
+  "@genericNetworkError": {"description": "Allgemeine Netzwerk-Fehlermeldung"},
+  "genericTimeoutError": "Der Vorgang hat zu lange gedauert",
+  "@genericTimeoutError": {"description": "Allgemeine Timeout-Fehlermeldung"},
+  "genericStorageError": "Speicherfehler ist aufgetreten",
+  "@genericStorageError": {"description": "Allgemeine Speicher-Fehlermeldung"},
+  "genericSerializationError": "Fehler bei der Datenverarbeitung",
+  "@genericSerializationError": {"description": "Allgemeine Serialisierungs-Fehlermeldung"},
+  "genericCancellationError": "Der Vorgang wurde abgebrochen",
+  "@genericCancellationError": {"description": "Allgemeine Abbruch-Fehlermeldung"},
+  "genericUnknownError": "Ein unbekannter Fehler ist aufgetreten"
 } 

@@ -13,6 +13,9 @@ import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
+import 'package:dienstplan/core/errors/failure_presenter.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/domain/failures/failure.dart';
 
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
@@ -51,7 +54,8 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     state = const AsyncLoading();
     try {
       final DateTime now = DateTime.now();
-      final settings = await _getSettingsUseCase!.execute();
+      final settingsResult = await _getSettingsUseCase!.executeSafe();
+      final settings = settingsResult.isSuccess ? settingsResult.value : null;
       final configs = await _getConfigsUseCase!.execute();
       final activeName = settings?.activeConfigName ??
           (configs.isNotEmpty ? configs.first.name : null);
@@ -62,11 +66,29 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       if (activeName != null) {
         final DateRange initialRange =
             _dateRangePolicy!.computeInitialRange(now);
-        schedules = await _getSchedulesUseCase!.executeForDateRange(
+        final schedulesResult =
+            await _getSchedulesUseCase!.executeForDateRangeSafe(
           startDate: initialRange.start,
           endDate: initialRange.end,
           configName: activeName,
         );
+        if (schedulesResult.isFailure) {
+          final message = await _presentFailure(schedulesResult.failure);
+          return ScheduleUiState(
+            isLoading: false,
+            error: message,
+            selectedDay: selected,
+            focusedDay: focused,
+            calendarFormat: format,
+            schedules: const <Schedule>[],
+            activeConfigName: activeName,
+            preferredDutyGroup: settings?.myDutyGroup,
+            dutyGroups: _extractDutyGroups(configs, activeName),
+            configs: configs,
+            activeConfig: configs.isNotEmpty ? configs.first : null,
+          );
+        }
+        schedules = schedulesResult.value;
         final List<DateTime> monthsToEnsure = <DateTime>[
           for (int i = -kInitialEnsureMonthsRadius;
               i <= kInitialEnsureMonthsRadius;
@@ -152,14 +174,19 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           combinedRange = DateRange.union(focusedRange, selectedRange);
         }
 
-        // First try to load existing schedules
-        final initialSchedules =
-            await _getSchedulesUseCase!.executeForDateRange(
+        // First try to load existing schedules (safe)
+        final initialResult =
+            await _getSchedulesUseCase!.executeForDateRangeSafe(
           startDate: combinedRange.start,
           endDate: combinedRange.end,
           configName: activeName,
         );
-        final List<Schedule> allSchedules = <Schedule>[...initialSchedules];
+        if (initialResult.isFailure) {
+          final message = await _presentFailure(initialResult.failure);
+          state = AsyncData(current.copyWith(isLoading: false, error: message));
+          return;
+        }
+        final List<Schedule> allSchedules = <Schedule>[...initialResult.value];
 
         // Ensure focused, previous and next months exist (generate only when empty or without valid items for active config)
         Future<void> ensureMonthGenerated(DateTime monthStart) async {
@@ -230,13 +257,20 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             final DateRange selectedRange =
                 _dateRangePolicy!.computeSelectedRange(day);
 
-            // First try to load existing schedules
-            List<Schedule> newSchedules =
-                await _getSchedulesUseCase!.executeForDateRange(
+            // First try to load existing schedules (safe)
+            final selectedResult =
+                await _getSchedulesUseCase!.executeForDateRangeSafe(
               startDate: selectedRange.start,
               endDate: selectedRange.end,
               configName: activeName,
             );
+            if (selectedResult.isFailure) {
+              final message = await _presentFailure(selectedResult.failure);
+              state = AsyncData((state.valueOrNull ?? current)
+                  .copyWith(error: message, selectedDay: day));
+              return;
+            }
+            List<Schedule> newSchedules = selectedResult.value;
 
             // Ensure selected day is present; if not, generate month data
             final DateTime monthStart = DateTime(day.year, day.month, 1);
@@ -286,10 +320,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setCalendarFormat(CalendarFormat format) async {
     final current = state.valueOrNull ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(calendarFormat: format));
-    final existing = await _getSettingsUseCase!.execute();
+    final settingsResult = await _getSettingsUseCase!.executeSafe();
+    final existing = settingsResult.isSuccess ? settingsResult.value : null;
     if (existing != null) {
       await _saveSettingsUseCase!
-          .execute(existing.copyWith(calendarFormat: format));
+          .executeSafe(existing.copyWith(calendarFormat: format));
     }
   }
 
@@ -297,7 +332,12 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     final current = state.valueOrNull ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(isLoading: true));
     try {
-      await _setActiveConfigUseCase!.execute(config.name);
+      final setResult = await _setActiveConfigUseCase!.executeSafe(config.name);
+      if (setResult.isFailure) {
+        final message = await _presentFailure(setResult.failure);
+        state = AsyncData(current.copyWith(isLoading: false, error: message));
+        return;
+      }
       final updated = current.copyWith(
         isLoading: false,
         activeConfigName: config.name,
@@ -310,13 +350,21 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       final DateTime now = DateTime.now();
       final DateRange range = _dateRangePolicy!.computeInitialRange(now);
 
-      // First try to load existing schedules
-      List<Schedule> schedules =
-          await _getSchedulesUseCase!.executeForDateRange(
+      // First try to load existing schedules (safe)
+      final schedulesResult =
+          await _getSchedulesUseCase!.executeForDateRangeSafe(
         startDate: range.start,
         endDate: range.end,
         configName: config.name,
       );
+      List<Schedule> schedules = <Schedule>[];
+      if (schedulesResult.isSuccess) {
+        schedules = schedulesResult.value;
+      } else {
+        final message = await _presentFailure(schedulesResult.failure);
+        state = AsyncData(current.copyWith(isLoading: false, error: message));
+        return;
+      }
 
       // If no schedules found, generate them
       if (schedules.isEmpty) {
@@ -329,12 +377,19 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
       state = AsyncData(updated.copyWith(schedules: schedules));
 
-      // Save settings
-      final existing = await _getSettingsUseCase!.execute();
+      // Save settings (safe)
+      final settingsResult = await _getSettingsUseCase!.executeSafe();
+      final existing = settingsResult.isSuccess ? settingsResult.value : null;
       if (existing != null) {
-        await _saveSettingsUseCase!.execute(
-          existing.copyWith(activeConfigName: config.name),
-        );
+        final saveResult = await _saveSettingsUseCase!
+            .executeSafe(existing.copyWith(activeConfigName: config.name));
+        if (saveResult.isFailure) {
+          final message = await _presentFailure(saveResult.failure);
+          state = AsyncData(
+            current.copyWith(isLoading: false, error: message),
+          );
+          return;
+        }
       }
     } catch (_) {
       state = AsyncData(current.copyWith(error: 'Failed to set active config'));
@@ -344,16 +399,23 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setPreferredDutyGroup(String? group) async {
     final current = state.valueOrNull ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(preferredDutyGroup: group));
-    final existing = await _getSettingsUseCase!.execute();
+    final settingsResult = await _getSettingsUseCase!.executeSafe();
+    final existing = settingsResult.isSuccess ? settingsResult.value : null;
     if (existing != null) {
       await _saveSettingsUseCase!
-          .execute(existing.copyWith(myDutyGroup: group));
+          .executeSafe(existing.copyWith(myDutyGroup: group));
     }
   }
 
   void setSelectedDutyGroup(String? group) {
     final current = state.valueOrNull ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(selectedDutyGroup: group));
+  }
+
+  Future<String> _presentFailure(Failure failure) async {
+    final languageService = await ref.read(languageServiceProvider.future);
+    final l10n = lookupAppLocalizations(languageService.currentLocale);
+    return const FailurePresenter().present(failure, l10n);
   }
 
   Future<void> goToToday() async {

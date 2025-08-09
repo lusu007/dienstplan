@@ -356,4 +356,39 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get contactDescription => 'Kontaktiere uns';
+
+  @override
+  String get genericValidationError => 'Ungültige Eingabe';
+
+  @override
+  String get genericNotFoundError =>
+      'Das angeforderte Element wurde nicht gefunden';
+
+  @override
+  String get genericConflictError => 'Ein Konflikt ist aufgetreten';
+
+  @override
+  String get genericUnauthorizedError => 'Du bist nicht autorisiert';
+
+  @override
+  String get genericForbiddenError => 'Zugriff verweigert';
+
+  @override
+  String get genericNetworkError =>
+      'Netzwerkfehler. Bitte überprüfe deine Verbindung.';
+
+  @override
+  String get genericTimeoutError => 'Der Vorgang hat zu lange gedauert';
+
+  @override
+  String get genericStorageError => 'Speicherfehler ist aufgetreten';
+
+  @override
+  String get genericSerializationError => 'Fehler bei der Datenverarbeitung';
+
+  @override
+  String get genericCancellationError => 'Der Vorgang wurde abgebrochen';
+
+  @override
+  String get genericUnknownError => 'Ein unbekannter Fehler ist aufgetreten';
 }
