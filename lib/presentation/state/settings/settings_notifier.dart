@@ -1,24 +1,25 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:get_it/get_it.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
+part 'settings_notifier.g.dart';
 
-class SettingsNotifier extends AsyncNotifier<SettingsUiState> {
+@Riverpod(keepAlive: true)
+class SettingsNotifier extends _$SettingsNotifier {
   GetSettingsUseCase? _getSettingsUseCase;
   SaveSettingsUseCase? _saveSettingsUseCase;
   ResetSettingsUseCase? _resetSettingsUseCase;
 
   @override
   Future<SettingsUiState> build() async {
-    _getSettingsUseCase ??= await GetIt.instance.getAsync<GetSettingsUseCase>();
-    _saveSettingsUseCase ??=
-        await GetIt.instance.getAsync<SaveSettingsUseCase>();
+    _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
+    _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _resetSettingsUseCase ??=
-        await GetIt.instance.getAsync<ResetSettingsUseCase>();
+        await ref.read(resetSettingsUseCaseProvider.future);
     final loaded = await _load();
     return loaded;
   }
@@ -97,8 +98,3 @@ class SettingsNotifier extends AsyncNotifier<SettingsUiState> {
     }
   }
 }
-
-final settingsNotifierProvider =
-    AsyncNotifierProvider<SettingsNotifier, SettingsUiState>(
-  SettingsNotifier.new,
-);

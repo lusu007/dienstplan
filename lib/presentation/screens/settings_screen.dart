@@ -4,9 +4,8 @@ import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/data/services/language_service.dart';
-import 'package:dienstplan/data/services/sentry_service.dart';
-import 'package:get_it/get_it.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
+// Sentry service is accessed through providers
 
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
@@ -85,11 +84,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: 16),
               _buildAppSection(context, l10n),
               const SizedBox(height: 16),
-              ListenableBuilder(
-                listenable: GetIt.instance<SentryService>(),
-                builder: (context, child) =>
-                    _buildPrivacySection(context, l10n),
-              ),
+              Consumer(builder: (context, ref, _) {
+                final sentryAsync = ref.watch(sentryServiceProvider);
+                return sentryAsync.when(
+                  loading: () => _buildPrivacySectionSkeleton(context, l10n),
+                  error: (e, st) => _buildPrivacySectionSkeleton(context, l10n),
+                  data: (_) => _buildPrivacySection(context, l10n),
+                );
+              }),
               const SizedBox(height: 16),
               _buildOtherSection(context, l10n),
               const SizedBox(height: 32),
@@ -136,7 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     BuildContext context,
     AppLocalizations l10n,
   ) {
-    final languageService = GetIt.instance<LanguageService>();
+    final languageService = ref.watch(languageServiceProvider).value;
 
     return SettingsSection(
       title: l10n.app,
@@ -144,9 +146,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         NavigationCard(
           icon: Icons.language_outlined,
           title: l10n.language,
-          subtitle: languageService.currentLocale.languageCode == 'de'
-              ? l10n.german
-              : l10n.english,
+          subtitle:
+              (languageService?.currentLocale.languageCode ?? 'de') == 'de'
+                  ? l10n.german
+                  : l10n.english,
           onTap: () => LanguageDialog.show(context),
         ),
         NavigationCard(
@@ -163,7 +166,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     BuildContext context,
     AppLocalizations l10n,
   ) {
-    final sentryService = GetIt.instance<SentryService>();
+    final sentryService = ref.watch(sentryServiceProvider).value;
     return SettingsSection(
       title: l10n.privacy,
       cards: [
@@ -171,17 +174,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           icon: Icons.analytics_outlined,
           title: l10n.sentryAnalytics,
           subtitle: l10n.sentryAnalyticsDescription,
-          value: sentryService.isEnabled,
-          onChanged: (value) => sentryService.setEnabled(value),
+          value: sentryService?.isEnabled ?? false,
+          onChanged: (value) => sentryService?.setEnabled(value),
         ),
         ToggleCard(
           icon: Icons.videocam_outlined,
           title: l10n.sentryReplay,
           subtitle: l10n.sentryReplayDescription,
-          value: sentryService.isReplayEnabled,
-          enabled: sentryService.isEnabled,
-          onChanged: sentryService.isEnabled
-              ? (value) => sentryService.setReplayEnabled(value)
+          value: sentryService?.isReplayEnabled ?? false,
+          enabled: sentryService?.isEnabled ?? false,
+          onChanged: (sentryService?.isEnabled ?? false)
+              ? (value) => sentryService?.setReplayEnabled(value)
               : null,
         ),
       ],
@@ -281,8 +284,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildPrivacySectionSkeleton(
       BuildContext context, AppLocalizations l10n) {
-    final sentryService = GetIt.instance<SentryService>();
-
     return SettingsSection(
       title: l10n.privacy,
       cards: [
@@ -291,7 +292,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           title: l10n.sentryAnalytics,
           subtitle: l10n.sentryAnalyticsDescription,
           showSubtitleSkeleton: false, // Statisch
-          value: sentryService.isEnabled,
+          value: false,
           enabled: true,
         ),
         ToggleCardSkeleton(
@@ -299,8 +300,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           title: l10n.sentryReplay,
           subtitle: l10n.sentryReplayDescription,
           showSubtitleSkeleton: false, // Statisch
-          value: sentryService.isReplayEnabled,
-          enabled: sentryService.isEnabled,
+          value: false,
+          enabled: false,
         ),
       ],
     );
