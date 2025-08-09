@@ -99,14 +99,23 @@ class CalendarViewUiBuilder {
       final asyncState = ref.watch(scheduleNotifierProvider);
       final state = asyncState.valueOrNull;
       final String? selectedGroup = state?.selectedDutyGroup;
+
+      // Filter schedules for selected day
+      final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
+        final sel = state?.selectedDay;
+        if (sel == null) return false;
+        return s.date.year == sel.year &&
+            s.date.month == sel.month &&
+            s.date.day == sel.day;
+      }).toList();
+
+      // Only show loading if selected day has no schedules AND we're actually loading
+      final hasSchedulesForSelectedDay = selectedDaySchedules.isNotEmpty;
+      final isLoadingSelectedDay =
+          (state?.isLoading ?? false) && !hasSchedulesForSelectedDay;
+
       return DutyScheduleList(
-        schedules: (state?.schedules ?? const []).where((s) {
-          final sel = state?.selectedDay;
-          if (sel == null) return false;
-          return s.date.year == sel.year &&
-              s.date.month == sel.month &&
-              s.date.day == sel.day;
-        }).toList(),
+        schedules: selectedDaySchedules,
         selectedDutyGroup: selectedGroup,
         activeConfigName: state?.activeConfigName,
         dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
@@ -117,7 +126,7 @@ class CalendarViewUiBuilder {
               .setSelectedDutyGroup(group);
         },
         shouldAnimate: shouldAnimate,
-        isLoading: state?.isLoading ?? false,
+        isLoading: isLoadingSelectedDay,
       );
     });
   }

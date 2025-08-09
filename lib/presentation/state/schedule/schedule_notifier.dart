@@ -173,11 +173,13 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
         }
 
         // First try to load existing schedules
-        var allSchedules = await _getSchedulesUseCase!.executeForDateRange(
+        final initialSchedules =
+            await _getSchedulesUseCase!.executeForDateRange(
           startDate: start,
           endDate: end,
           configName: activeName,
         );
+        final allSchedules = <Schedule>[...initialSchedules];
 
         // Check if we need to generate schedules for the focused month specifically
         final focusedMonthStart = DateTime(day.year, day.month, 1);
