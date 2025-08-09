@@ -363,6 +363,26 @@
   "@app": {
     "description": "Title for general app settings section"
   },
+  "themeMode": "Theme",
+  "@themeMode": {
+    "description": "Label for theme mode selector"
+  },
+  "themeModeLight": "Light",
+  "@themeModeLight": {
+    "description": "Light theme option"
+  },
+  "themeModeDark": "Dark",
+  "@themeModeDark": {
+    "description": "Dark theme option"
+  },
+  "themeModeSystem": "System",
+  "@themeModeSystem": {
+    "description": "System theme option"
+  },
+  "darkModeNotAvailableYet": "Dark mode is not implemented yet",
+  "@darkModeNotAvailableYet": {
+    "description": "SnackBar text shown when choosing a non-light theme"
+  },
   "legal": "Legal",
   "@legal": {
     "description": "Title for legal section"

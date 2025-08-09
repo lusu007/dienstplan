@@ -1,3 +1,3 @@
 // Database constants
 
-const int kDatabaseCurrentVersion = 7;
+const int kDatabaseCurrentVersion = 8;

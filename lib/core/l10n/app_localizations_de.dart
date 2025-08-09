@@ -287,6 +287,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app => 'Allgemein';
 
   @override
+  String get themeMode => 'Design';
+
+  @override
+  String get themeModeLight => 'Hell';
+
+  @override
+  String get themeModeDark => 'Dunkel';
+
+  @override
+  String get themeModeSystem => 'System';
+
+  @override
+  String get darkModeNotAvailableYet =>
+      'Dunkelmodus ist noch nicht implementiert';
+
+  @override
   String get legal => 'Rechtliches';
 
   @override

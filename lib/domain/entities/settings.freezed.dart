@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'settings_ui_state.dart';
+part of 'settings.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,114 +13,103 @@ part of 'settings_ui_state.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$SettingsUiState {
-  bool get isLoading;
-  String? get error;
+mixin _$Settings {
+  CalendarFormat get calendarFormat;
   String? get language;
-  CalendarFormat? get calendarFormat;
-  String? get activeConfigName;
+  String? get selectedDutyGroup;
   String? get myDutyGroup;
+  String? get activeConfigName;
   ThemePreference? get themePreference;
 
-  /// Create a copy of SettingsUiState
+  /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $SettingsUiStateCopyWith<SettingsUiState> get copyWith =>
-      _$SettingsUiStateCopyWithImpl<SettingsUiState>(
-          this as SettingsUiState, _$identity);
+  $SettingsCopyWith<Settings> get copyWith =>
+      _$SettingsCopyWithImpl<Settings>(this as Settings, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is SettingsUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.language, language) ||
-                other.language == language) &&
+            other is Settings &&
             (identical(other.calendarFormat, calendarFormat) ||
                 other.calendarFormat == calendarFormat) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
+            (identical(other.language, language) ||
+                other.language == language) &&
+            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
+                other.selectedDutyGroup == selectedDutyGroup) &&
             (identical(other.myDutyGroup, myDutyGroup) ||
                 other.myDutyGroup == myDutyGroup) &&
+            (identical(other.activeConfigName, activeConfigName) ||
+                other.activeConfigName == activeConfigName) &&
             (identical(other.themePreference, themePreference) ||
                 other.themePreference == themePreference));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, error, language,
-      calendarFormat, activeConfigName, myDutyGroup, themePreference);
+  int get hashCode => Object.hash(runtimeType, calendarFormat, language,
+      selectedDutyGroup, myDutyGroup, activeConfigName, themePreference);
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference)';
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference)';
   }
 }
 
 /// @nodoc
-abstract mixin class $SettingsUiStateCopyWith<$Res> {
-  factory $SettingsUiStateCopyWith(
-          SettingsUiState value, $Res Function(SettingsUiState) _then) =
-      _$SettingsUiStateCopyWithImpl;
+abstract mixin class $SettingsCopyWith<$Res> {
+  factory $SettingsCopyWith(Settings value, $Res Function(Settings) _then) =
+      _$SettingsCopyWithImpl;
   @useResult
   $Res call(
-      {bool isLoading,
-      String? error,
+      {CalendarFormat calendarFormat,
       String? language,
-      CalendarFormat? calendarFormat,
-      String? activeConfigName,
+      String? selectedDutyGroup,
       String? myDutyGroup,
+      String? activeConfigName,
       ThemePreference? themePreference});
 }
 
 /// @nodoc
-class _$SettingsUiStateCopyWithImpl<$Res>
-    implements $SettingsUiStateCopyWith<$Res> {
-  _$SettingsUiStateCopyWithImpl(this._self, this._then);
+class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
+  _$SettingsCopyWithImpl(this._self, this._then);
 
-  final SettingsUiState _self;
-  final $Res Function(SettingsUiState) _then;
+  final Settings _self;
+  final $Res Function(Settings) _then;
 
-  /// Create a copy of SettingsUiState
+  /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isLoading = null,
-    Object? error = freezed,
+    Object? calendarFormat = null,
     Object? language = freezed,
-    Object? calendarFormat = freezed,
-    Object? activeConfigName = freezed,
+    Object? selectedDutyGroup = freezed,
     Object? myDutyGroup = freezed,
+    Object? activeConfigName = freezed,
     Object? themePreference = freezed,
   }) {
     return _then(_self.copyWith(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
+      calendarFormat: null == calendarFormat
+          ? _self.calendarFormat
+          : calendarFormat // ignore: cast_nullable_to_non_nullable
+              as CalendarFormat,
       language: freezed == language
           ? _self.language
           : language // ignore: cast_nullable_to_non_nullable
               as String?,
-      calendarFormat: freezed == calendarFormat
-          ? _self.calendarFormat
-          : calendarFormat // ignore: cast_nullable_to_non_nullable
-              as CalendarFormat?,
-      activeConfigName: freezed == activeConfigName
-          ? _self.activeConfigName
-          : activeConfigName // ignore: cast_nullable_to_non_nullable
+      selectedDutyGroup: freezed == selectedDutyGroup
+          ? _self.selectedDutyGroup
+          : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
               as String?,
       myDutyGroup: freezed == myDutyGroup
           ? _self.myDutyGroup
           : myDutyGroup // ignore: cast_nullable_to_non_nullable
+              as String?,
+      activeConfigName: freezed == activeConfigName
+          ? _self.activeConfigName
+          : activeConfigName // ignore: cast_nullable_to_non_nullable
               as String?,
       themePreference: freezed == themePreference
           ? _self.themePreference
@@ -130,8 +119,8 @@ class _$SettingsUiStateCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [SettingsUiState].
-extension SettingsUiStatePatterns on SettingsUiState {
+/// Adds pattern-matching-related methods to [Settings].
+extension SettingsPatterns on Settings {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -146,12 +135,12 @@ extension SettingsUiStatePatterns on SettingsUiState {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_SettingsUiState value)? $default, {
+    TResult Function(_Settings value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _SettingsUiState() when $default != null:
+      case _Settings() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -173,11 +162,11 @@ extension SettingsUiStatePatterns on SettingsUiState {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_SettingsUiState value) $default,
+    TResult Function(_Settings value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SettingsUiState():
+      case _Settings():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -198,11 +187,11 @@ extension SettingsUiStatePatterns on SettingsUiState {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_SettingsUiState value)? $default,
+    TResult? Function(_Settings value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SettingsUiState() when $default != null:
+      case _Settings() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -224,26 +213,24 @@ extension SettingsUiStatePatterns on SettingsUiState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            String? error,
+            CalendarFormat calendarFormat,
             String? language,
-            CalendarFormat? calendarFormat,
-            String? activeConfigName,
+            String? selectedDutyGroup,
             String? myDutyGroup,
+            String? activeConfigName,
             ThemePreference? themePreference)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _SettingsUiState() when $default != null:
+      case _Settings() when $default != null:
         return $default(
-            _that.isLoading,
-            _that.error,
-            _that.language,
             _that.calendarFormat,
-            _that.activeConfigName,
+            _that.language,
+            _that.selectedDutyGroup,
             _that.myDutyGroup,
+            _that.activeConfigName,
             _that.themePreference);
       case _:
         return orElse();
@@ -266,25 +253,23 @@ extension SettingsUiStatePatterns on SettingsUiState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            String? error,
+            CalendarFormat calendarFormat,
             String? language,
-            CalendarFormat? calendarFormat,
-            String? activeConfigName,
+            String? selectedDutyGroup,
             String? myDutyGroup,
+            String? activeConfigName,
             ThemePreference? themePreference)
         $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SettingsUiState():
+      case _Settings():
         return $default(
-            _that.isLoading,
-            _that.error,
-            _that.language,
             _that.calendarFormat,
-            _that.activeConfigName,
+            _that.language,
+            _that.selectedDutyGroup,
             _that.myDutyGroup,
+            _that.activeConfigName,
             _that.themePreference);
       case _:
         throw StateError('Unexpected subclass');
@@ -306,25 +291,23 @@ extension SettingsUiStatePatterns on SettingsUiState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            bool isLoading,
-            String? error,
+            CalendarFormat calendarFormat,
             String? language,
-            CalendarFormat? calendarFormat,
-            String? activeConfigName,
+            String? selectedDutyGroup,
             String? myDutyGroup,
+            String? activeConfigName,
             ThemePreference? themePreference)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SettingsUiState() when $default != null:
+      case _Settings() when $default != null:
         return $default(
-            _that.isLoading,
-            _that.error,
-            _that.language,
             _that.calendarFormat,
-            _that.activeConfigName,
+            _that.language,
+            _that.selectedDutyGroup,
             _that.myDutyGroup,
+            _that.activeConfigName,
             _that.themePreference);
       case _:
         return null;
@@ -334,133 +317,121 @@ extension SettingsUiStatePatterns on SettingsUiState {
 
 /// @nodoc
 
-class _SettingsUiState extends SettingsUiState {
-  const _SettingsUiState(
-      {required this.isLoading,
-      this.error,
+class _Settings extends Settings {
+  const _Settings(
+      {required this.calendarFormat,
       this.language,
-      this.calendarFormat,
-      this.activeConfigName,
+      this.selectedDutyGroup,
       this.myDutyGroup,
+      this.activeConfigName,
       this.themePreference})
       : super._();
 
   @override
-  final bool isLoading;
-  @override
-  final String? error;
+  final CalendarFormat calendarFormat;
   @override
   final String? language;
   @override
-  final CalendarFormat? calendarFormat;
-  @override
-  final String? activeConfigName;
+  final String? selectedDutyGroup;
   @override
   final String? myDutyGroup;
   @override
+  final String? activeConfigName;
+  @override
   final ThemePreference? themePreference;
 
-  /// Create a copy of SettingsUiState
+  /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$SettingsUiStateCopyWith<_SettingsUiState> get copyWith =>
-      __$SettingsUiStateCopyWithImpl<_SettingsUiState>(this, _$identity);
+  _$SettingsCopyWith<_Settings> get copyWith =>
+      __$SettingsCopyWithImpl<_Settings>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _SettingsUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.language, language) ||
-                other.language == language) &&
+            other is _Settings &&
             (identical(other.calendarFormat, calendarFormat) ||
                 other.calendarFormat == calendarFormat) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
+            (identical(other.language, language) ||
+                other.language == language) &&
+            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
+                other.selectedDutyGroup == selectedDutyGroup) &&
             (identical(other.myDutyGroup, myDutyGroup) ||
                 other.myDutyGroup == myDutyGroup) &&
+            (identical(other.activeConfigName, activeConfigName) ||
+                other.activeConfigName == activeConfigName) &&
             (identical(other.themePreference, themePreference) ||
                 other.themePreference == themePreference));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, error, language,
-      calendarFormat, activeConfigName, myDutyGroup, themePreference);
+  int get hashCode => Object.hash(runtimeType, calendarFormat, language,
+      selectedDutyGroup, myDutyGroup, activeConfigName, themePreference);
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference)';
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$SettingsUiStateCopyWith<$Res>
-    implements $SettingsUiStateCopyWith<$Res> {
-  factory _$SettingsUiStateCopyWith(
-          _SettingsUiState value, $Res Function(_SettingsUiState) _then) =
-      __$SettingsUiStateCopyWithImpl;
+abstract mixin class _$SettingsCopyWith<$Res>
+    implements $SettingsCopyWith<$Res> {
+  factory _$SettingsCopyWith(_Settings value, $Res Function(_Settings) _then) =
+      __$SettingsCopyWithImpl;
   @override
   @useResult
   $Res call(
-      {bool isLoading,
-      String? error,
+      {CalendarFormat calendarFormat,
       String? language,
-      CalendarFormat? calendarFormat,
-      String? activeConfigName,
+      String? selectedDutyGroup,
       String? myDutyGroup,
+      String? activeConfigName,
       ThemePreference? themePreference});
 }
 
 /// @nodoc
-class __$SettingsUiStateCopyWithImpl<$Res>
-    implements _$SettingsUiStateCopyWith<$Res> {
-  __$SettingsUiStateCopyWithImpl(this._self, this._then);
+class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
+  __$SettingsCopyWithImpl(this._self, this._then);
 
-  final _SettingsUiState _self;
-  final $Res Function(_SettingsUiState) _then;
+  final _Settings _self;
+  final $Res Function(_Settings) _then;
 
-  /// Create a copy of SettingsUiState
+  /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? isLoading = null,
-    Object? error = freezed,
+    Object? calendarFormat = null,
     Object? language = freezed,
-    Object? calendarFormat = freezed,
-    Object? activeConfigName = freezed,
+    Object? selectedDutyGroup = freezed,
     Object? myDutyGroup = freezed,
+    Object? activeConfigName = freezed,
     Object? themePreference = freezed,
   }) {
-    return _then(_SettingsUiState(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
+    return _then(_Settings(
+      calendarFormat: null == calendarFormat
+          ? _self.calendarFormat
+          : calendarFormat // ignore: cast_nullable_to_non_nullable
+              as CalendarFormat,
       language: freezed == language
           ? _self.language
           : language // ignore: cast_nullable_to_non_nullable
               as String?,
-      calendarFormat: freezed == calendarFormat
-          ? _self.calendarFormat
-          : calendarFormat // ignore: cast_nullable_to_non_nullable
-              as CalendarFormat?,
-      activeConfigName: freezed == activeConfigName
-          ? _self.activeConfigName
-          : activeConfigName // ignore: cast_nullable_to_non_nullable
+      selectedDutyGroup: freezed == selectedDutyGroup
+          ? _self.selectedDutyGroup
+          : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
               as String?,
       myDutyGroup: freezed == myDutyGroup
           ? _self.myDutyGroup
           : myDutyGroup // ignore: cast_nullable_to_non_nullable
+              as String?,
+      activeConfigName: freezed == activeConfigName
+          ? _self.activeConfigName
+          : activeConfigName // ignore: cast_nullable_to_non_nullable
               as String?,
       themePreference: freezed == themePreference
           ? _self.themePreference

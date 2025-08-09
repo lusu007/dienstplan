@@ -69,6 +69,7 @@ class DatabaseService {
         selected_duty_group TEXT,
         my_duty_group TEXT,
         active_config_name TEXT,
+        theme_mode TEXT,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
@@ -138,6 +139,9 @@ class DatabaseService {
       }
       if (oldVersion < 7) {
         await _migrateToVersion7(txn);
+      }
+      if (oldVersion < 8) {
+        await _migrateToVersion8(txn);
       }
     });
   }
@@ -289,6 +293,19 @@ class DatabaseService {
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 7', e, stackTrace);
       rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion8(DatabaseExecutor db) async {
+    try {
+      AppLogger.i('Migrating to version 8: Add theme_mode to settings');
+      await db.execute('''
+        ALTER TABLE settings ADD COLUMN theme_mode TEXT
+      ''');
+      AppLogger.i('Successfully migrated to version 8: theme_mode added');
+    } catch (e, stackTrace) {
+      // Column might already exist if user reinstalled or partial migration
+      AppLogger.e('Error during migration to version 8', e, stackTrace);
     }
   }
 

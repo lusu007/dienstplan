@@ -39,6 +39,7 @@ import 'package:dienstplan/domain/use_cases/load_default_config_use_case.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
 
 part 'riverpod_providers.g.dart';
 
@@ -82,9 +83,20 @@ Stream<Locale> currentLocale(Ref ref) async* {
 }
 
 @Riverpod(keepAlive: true)
-ThemeMode themeMode(Ref ref) {
-  // TODO: read persisted theme setting when available
-  return ThemeMode.system;
+Future<ThemeMode> themeMode(Ref ref) async {
+  final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
+  final settings = await getSettings.execute();
+  switch (settings?.themePreference) {
+    case ThemePreference.light:
+      return ThemeMode.light;
+    case ThemePreference.dark:
+      // Temporary override: dark not implemented -> use light for now
+      return ThemeMode.light;
+    case ThemePreference.system:
+    case null:
+      // Temporary override: system not implemented -> use light for now
+      return ThemeMode.light;
+  }
 }
 
 @Riverpod(keepAlive: true)

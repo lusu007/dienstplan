@@ -37,8 +37,8 @@ A modern, cross-platform mobile application designed specifically for police off
 
 ### 🏗 Technical Features
 - **Clean Architecture**: Separation of concerns with domain, data, and presentation layers
-- **Dependency Injection**: GetIt-based service locator for testable components
-- **State Management**: Provider pattern with ChangeNotifier for reactive UI
+- **Dependency Injection**: Riverpod-based providers for testable and composable components
+- **State Management**: Riverpod (AsyncNotifier/codegen) with Freezed unions for robust UI states
 - **Database Migration**: Automatic schema updates with user notifications
 - **Error Handling**: Comprehensive error tracking and user-friendly error messages
 
@@ -163,19 +163,19 @@ flutter build apk --release
 ```
 
 ### Key Dependencies
-- **State Management**: `provider: ^6.1.1`
-- **Dependency Injection**: `get_it: ^8.0.3`
-- **Database**: `sqflite: ^2.3.0`
-- **Calendar**: `table_calendar: ^3.0.9`
+- **State Management**: `flutter_riverpod: ^2.6.1`, `riverpod_annotation: ^2.6.1`, `freezed_annotation: ^3.1.0`
+- **Dependency Injection**: via Riverpod providers (no separate service locator)
+- **Database**: `sqflite: ^2.4.2`
+- **Calendar**: `table_calendar: ^3.2.0`
 - **Localization**: `flutter_localizations`
-- **Error Tracking**: `sentry_flutter: ^9.4.0`
+- **Error Tracking**: `sentry_flutter: ^9.6.0`
 
 ### Architecture Patterns
 - **Clean Architecture**: Separation of concerns with clear layer boundaries
 - **Repository Pattern**: Abstract data access with concrete implementations
 - **Use Case Pattern**: Business logic encapsulation
-- **Provider Pattern**: State management with ChangeNotifier
-- **Dependency Injection**: Service locator pattern with GetIt
+- **Riverpod**: State management and dependency injection via providers
+- **Dependency Injection**: Implemented with Riverpod providers (no service locator)
 
 ---
 

@@ -7,6 +7,7 @@ import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/repositories/settings_repository.dart'
     as domain_repo;
+import 'package:flutter/material.dart';
 
 class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   final DatabaseService _databaseService;
@@ -98,6 +99,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
+      themePreference: _mapThemeModeToPreference(s.themeMode),
     );
   }
 
@@ -108,6 +110,33 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
+      themeMode: _mapPreferenceToThemeMode(s.themePreference),
     );
+  }
+
+  ThemeMode? _mapPreferenceToThemeMode(domain.ThemePreference? pref) {
+    switch (pref) {
+      case domain.ThemePreference.system:
+        return ThemeMode.system;
+      case domain.ThemePreference.light:
+        return ThemeMode.light;
+      case domain.ThemePreference.dark:
+        return ThemeMode.dark;
+      default:
+        return null;
+    }
+  }
+
+  domain.ThemePreference? _mapThemeModeToPreference(ThemeMode? mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return domain.ThemePreference.system;
+      case ThemeMode.light:
+        return domain.ThemePreference.light;
+      case ThemeMode.dark:
+        return domain.ThemePreference.dark;
+      default:
+        return null;
+    }
   }
 }

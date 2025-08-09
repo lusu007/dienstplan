@@ -35,6 +35,7 @@ class SettingsNotifier extends _$SettingsNotifier {
         calendarFormat: settings?.calendarFormat,
         activeConfigName: settings?.activeConfigName,
         myDutyGroup: settings?.myDutyGroup,
+        themePreference: settings?.themePreference,
       );
     } catch (e) {
       return current.copyWith(
@@ -48,6 +49,15 @@ class SettingsNotifier extends _$SettingsNotifier {
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
       await _saveSettings(existing.copyWith(language: language));
+    }
+  }
+
+  Future<void> setThemePreference(ThemePreference preference) async {
+    final current = state.valueOrNull ?? SettingsUiState.initial();
+    state = AsyncData(current.copyWith(themePreference: preference));
+    final existing = await _getSettingsUseCase!.execute();
+    if (existing != null) {
+      await _saveSettings(existing.copyWith(themePreference: preference));
     }
   }
 

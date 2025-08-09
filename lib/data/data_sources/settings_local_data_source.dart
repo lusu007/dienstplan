@@ -1,8 +1,10 @@
 import 'package:dienstplan/data/services/database_service.dart';
-import 'package:dienstplan/domain/entities/settings.dart';
+import 'package:dienstplan/domain/entities/settings.dart' as domain;
+import 'package:dienstplan/data/models/settings.dart' as data;
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/material.dart';
 
 class SettingsLocalDataSource {
   final DatabaseService _databaseService;
@@ -10,7 +12,7 @@ class SettingsLocalDataSource {
   SettingsLocalDataSource(this._databaseService);
 
   /// Get settings from local storage
-  Future<Settings?> getSettings() async {
+  Future<domain.Settings?> getSettings() async {
     try {
       AppLogger.d('SettingsLocalDataSource: Getting settings');
 
@@ -25,7 +27,8 @@ class SettingsLocalDataSource {
         return null;
       }
 
-      final settings = Settings.fromMap(maps.first);
+      final dataSettings = data.Settings.fromMap(maps.first);
+      final settings = _toDomain(dataSettings);
       AppLogger.d('SettingsLocalDataSource: Retrieved settings');
 
       return settings;
@@ -37,7 +40,7 @@ class SettingsLocalDataSource {
   }
 
   /// Save settings to local storage
-  Future<void> saveSettings(Settings settings) async {
+  Future<void> saveSettings(domain.Settings settings) async {
     try {
       AppLogger.d('SettingsLocalDataSource: Saving settings');
 
@@ -46,9 +49,10 @@ class SettingsLocalDataSource {
       // Clear existing settings and insert new ones
       await db.transaction((txn) async {
         await txn.delete('settings');
+        final toSave = _toData(settings).toMap();
         await txn.insert(
           'settings',
-          settings.toMap(),
+          toSave,
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
       });
@@ -149,7 +153,7 @@ class SettingsLocalDataSource {
         );
       } else {
         // Create new settings with default values and the specified key-value
-        const defaultSettings = Settings(
+        const defaultSettings = data.Settings(
           calendarFormat: CalendarFormat.month,
         );
         final settingsMap = defaultSettings.toMap();
@@ -168,6 +172,54 @@ class SettingsLocalDataSource {
       AppLogger.e(
           'SettingsLocalDataSource: Error setting value', e, stackTrace);
       rethrow;
+    }
+  }
+
+  domain.Settings _toDomain(data.Settings s) {
+    return domain.Settings(
+      calendarFormat: s.calendarFormat,
+      language: s.language,
+      selectedDutyGroup: s.selectedDutyGroup,
+      myDutyGroup: s.myDutyGroup,
+      activeConfigName: s.activeConfigName,
+      themePreference: _mapThemeModeToPreference(s.themeMode),
+    );
+  }
+
+  data.Settings _toData(domain.Settings s) {
+    return data.Settings(
+      calendarFormat: s.calendarFormat,
+      language: s.language,
+      selectedDutyGroup: s.selectedDutyGroup,
+      myDutyGroup: s.myDutyGroup,
+      activeConfigName: s.activeConfigName,
+      themeMode: _mapPreferenceToThemeMode(s.themePreference),
+    );
+  }
+
+  ThemeMode? _mapPreferenceToThemeMode(domain.ThemePreference? pref) {
+    switch (pref) {
+      case domain.ThemePreference.system:
+        return ThemeMode.system;
+      case domain.ThemePreference.light:
+        return ThemeMode.light;
+      case domain.ThemePreference.dark:
+        return ThemeMode.dark;
+      default:
+        return null;
+    }
+  }
+
+  domain.ThemePreference? _mapThemeModeToPreference(ThemeMode? mode) {
+    switch (mode) {
+      case ThemeMode.system:
+        return domain.ThemePreference.system;
+      case ThemeMode.light:
+        return domain.ThemePreference.light;
+      case ThemeMode.dark:
+        return domain.ThemePreference.dark;
+      default:
+        return null;
     }
   }
 }
