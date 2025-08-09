@@ -1,4 +1,4 @@
-import 'package:dienstplan/data/services/database_service.dart';
+import 'package:dienstplan/data/daos/settings_dao.dart';
 import 'package:dienstplan/domain/entities/settings.dart' as domain;
 import 'package:dienstplan/data/models/settings.dart' as data;
 import 'package:dienstplan/core/utils/logger.dart';
@@ -10,18 +10,17 @@ import 'package:dienstplan/domain/repositories/settings_repository.dart'
 import 'package:flutter/material.dart';
 
 class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
-  final DatabaseService _databaseService;
+  final SettingsDao _settingsDao;
   final ExceptionMapper _exceptionMapper;
 
-  SettingsRepositoryImpl(this._databaseService,
-      {ExceptionMapper? exceptionMapper})
+  SettingsRepositoryImpl(this._settingsDao, {ExceptionMapper? exceptionMapper})
       : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   @override
   Future<domain.Settings?> getSettings() async {
     try {
       AppLogger.i('SettingsRepository: Getting settings');
-      final dataSettings = await _databaseService.loadSettings();
+      final dataSettings = await _settingsDao.load();
       if (dataSettings == null) {
         AppLogger.i('SettingsRepository: No settings found');
         return null;
@@ -50,7 +49,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
     try {
       AppLogger.i('SettingsRepository: Saving settings');
       final dataSettings = _toDataSettings(settings);
-      await _databaseService.saveSettings(dataSettings);
+      await _settingsDao.save(dataSettings);
       AppLogger.i('SettingsRepository: Successfully saved settings');
     } catch (e, stackTrace) {
       AppLogger.e('SettingsRepository: Error saving settings', e, stackTrace);
@@ -73,7 +72,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   Future<void> clearSettings() async {
     try {
       AppLogger.i('SettingsRepository: Clearing settings');
-      await _databaseService.clearSettings();
+      await _settingsDao.clear();
       AppLogger.i('SettingsRepository: Successfully cleared settings');
     } catch (e, stackTrace) {
       AppLogger.e('SettingsRepository: Error clearing settings', e, stackTrace);

@@ -16,6 +16,13 @@ import 'package:dienstplan/data/data_sources/schedule_local_data_source.dart';
 import 'package:dienstplan/data/data_sources/settings_local_data_source.dart';
 import 'package:dienstplan/data/data_sources/config_local_data_source.dart';
 
+// DAOs
+import 'package:dienstplan/data/daos/schedules_dao.dart';
+import 'package:dienstplan/data/daos/settings_dao.dart';
+import 'package:dienstplan/data/daos/duty_types_dao.dart';
+import 'package:dienstplan/data/daos/maintenance_dao.dart';
+import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
+
 // Repositories (interfaces + implementations)
 import 'package:dienstplan/domain/repositories/schedule_repository.dart';
 import 'package:dienstplan/domain/repositories/settings_repository.dart';
@@ -50,6 +57,37 @@ Future<DatabaseService> databaseService(Ref ref) async {
   final DatabaseService service = DatabaseService();
   await service.init();
   return service;
+}
+
+// Low-level DAOs built on top of DatabaseService
+@riverpod
+Future<SchedulesDao> schedulesDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return SchedulesDao(db);
+}
+
+@riverpod
+Future<SettingsDao> settingsDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return SettingsDao(db);
+}
+
+@riverpod
+Future<DutyTypesDao> dutyTypesDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return DutyTypesDao(db);
+}
+
+@riverpod
+Future<MaintenanceDao> maintenanceDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return MaintenanceDao(db);
+}
+
+@riverpod
+Future<SchedulesAdminDao> schedulesAdminDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return SchedulesAdminDao(db);
 }
 
 @Riverpod(keepAlive: true)
@@ -157,14 +195,15 @@ Future<ConfigLocalDataSource> configLocalDataSource(Ref ref) async {
 // Repositories
 @riverpod
 Future<ScheduleRepository> scheduleRepository(Ref ref) async {
-  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
-  return data_repos.ScheduleRepositoryImpl(db);
+  final SchedulesDao schedules = await ref.watch(schedulesDaoProvider.future);
+  final DutyTypesDao dutyTypes = await ref.watch(dutyTypesDaoProvider.future);
+  return data_repos.ScheduleRepositoryImpl(schedules, dutyTypes);
 }
 
 @riverpod
 Future<SettingsRepository> settingsRepository(Ref ref) async {
-  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
-  return data_repos.SettingsRepositoryImpl(db);
+  final SettingsDao dao = await ref.watch(settingsDaoProvider.future);
+  return data_repos.SettingsRepositoryImpl(dao);
 }
 
 @riverpod
