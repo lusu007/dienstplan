@@ -5,8 +5,10 @@ import 'package:dienstplan/core/config/sentry_config.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:flutter/scheduler.dart';
 
 class AppInitializer {
+  static bool _sentryInitialized = false;
   static Future<ProviderContainer> initialize() async {
     SentryWidgetsFlutterBinding.ensureInitialized();
 
@@ -22,20 +24,32 @@ class AppInitializer {
     await container.read(sentryServiceProvider.future);
     await container.read(languageServiceProvider.future);
 
-    // Initialize schedule generation isolate
-    AppLogger.i('Initializing schedule generation isolate');
-    await ScheduleGenerationIsolate.initialize();
-    AppLogger.i('Schedule generation isolate initialized');
+    // Initialize heavy tasks after first frame to avoid jank
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      try {
+        AppLogger.i('Initializing schedule generation isolate');
+        await ScheduleGenerationIsolate.initialize();
+        AppLogger.i('Schedule generation isolate initialized');
+        // Warm up database lazily
+        await container.read(databaseServiceProvider.future);
+      } catch (e, stackTrace) {
+        AppLogger.e('Error during post-frame initialization', e, stackTrace);
+      }
+    });
 
     return container;
   }
 
   static Future<void> initializeSentry(SentryService sentryService) async {
+    if (_sentryInitialized) {
+      return;
+    }
     await SentryFlutter.init(
-      (options) {
+      (SentryFlutterOptions options) {
         options.dsn = SentryConfig.dsn;
         SentryConfig.configureOptions(options, sentryService);
       },
     );
+    _sentryInitialized = true;
   }
 }

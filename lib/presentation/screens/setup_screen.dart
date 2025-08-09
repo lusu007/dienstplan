@@ -116,11 +116,12 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       final generateSchedulesUseCase =
           await ref.read(generateSchedulesUseCaseProvider.future);
 
-      final now = DateTime.now();
-      final startDate =
-          now.subtract(const Duration(days: 365 * 2)); // 2 years ago
-      final endDate =
-          now.add(const Duration(days: 365 * 3)); // 8 years in future
+      final DateTime now = DateTime.now();
+      const int initialYears = 2;
+      final DateTime startDate =
+          now.subtract(const Duration(days: 365 * initialYears)); // 3 years ago
+      final DateTime endDate = now
+          .add(const Duration(days: 365 * initialYears)); // 3 years in future
 
       await generateSchedulesUseCase.execute(
         configName: _selectedConfig!.name,

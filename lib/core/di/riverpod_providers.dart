@@ -39,19 +39,19 @@ import 'package:dienstplan/domain/use_cases/load_default_config_use_case.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
-import 'package:dienstplan/domain/entities/settings.dart';
+import 'package:dienstplan/domain/entities/settings.dart' as domain;
 
 part 'riverpod_providers.g.dart';
 
 // Services
-@riverpod
+@Riverpod(keepAlive: true)
 Future<DatabaseService> databaseService(Ref ref) async {
   final DatabaseService service = DatabaseService();
   await service.init();
   return service;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final ScheduleConfigService service = ScheduleConfigService(prefs);
@@ -84,15 +84,16 @@ Stream<Locale> currentLocale(Ref ref) async* {
 
 @riverpod
 Future<ThemeMode> themeMode(Ref ref) async {
-  final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
-  final settings = await getSettings.execute();
+  final GetSettingsUseCase getSettings =
+      await ref.watch(getSettingsUseCaseProvider.future);
+  final domain.Settings? settings = await getSettings.execute();
   switch (settings?.themePreference) {
-    case ThemePreference.light:
+    case domain.ThemePreference.light:
       return ThemeMode.light;
-    case ThemePreference.dark:
+    case domain.ThemePreference.dark:
       // Temporary override: dark not implemented -> use light for now
       return ThemeMode.light;
-    case ThemePreference.system:
+    case domain.ThemePreference.system:
     case null:
       // Temporary override: system not implemented -> use light for now
       return ThemeMode.light;
@@ -119,7 +120,7 @@ ThemeData appTheme(Ref ref) {
   );
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<SentryService> sentryService(Ref ref) async {
   final SentryService service = SentryService();
   await service.initialize();

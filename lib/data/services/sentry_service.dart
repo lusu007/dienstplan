@@ -95,8 +95,8 @@ class SentryService extends ChangeNotifier {
 
   Future<void> _applyConfiguration() async {
     try {
-      // Note: Sentry configuration is handled in main.dart
-      // This method is called when settings change to update the configuration
+      // Note: Actual SDK init is idempotent in AppInitializer.initializeSentry.
+      // This method only logs current configuration and not re-init the SDK.
       AppLogger.i(
           'Sentry configuration updated - enabled: $_isEnabled, replay: $_isReplayEnabled');
     } catch (e, stackTrace) {

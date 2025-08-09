@@ -56,12 +56,6 @@ class ThemeModeDialog {
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.cancel),
-            ),
-          ],
         );
       },
     );

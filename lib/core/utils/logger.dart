@@ -84,13 +84,13 @@ class AppLogger {
       await _currentLogFile!
           .writeAsString('$logMessage\n', mode: FileMode.append);
 
-      // Send to Sentry if available and enabled
+      // Send to Sentry if available, enabled, and SDK initialized
       try {
         // Check if Sentry service is available and enabled via injected container
         final sentryService =
             _providerContainer?.read(sentryServiceProvider).valueOrNull;
 
-        if (sentryService != null && sentryService.isEnabled) {
+        if (sentryService != null && sentryService.isEnabled && Sentry.isEnabled) {
           final sentryLevel = _mapToSentryLevel(level);
           if (error != null) {
             Sentry.logger.error(

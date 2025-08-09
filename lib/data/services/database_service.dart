@@ -310,13 +310,8 @@ class DatabaseService {
   }
 
   Future<void> init() async {
-    try {
-      AppLogger.i('Initializing optimized database connection');
-      await database;
-    } catch (e, stackTrace) {
-      AppLogger.e('Error initializing optimized database', e, stackTrace);
-      rethrow;
-    }
+    // Defer opening the database until first real use to avoid startup jank
+    AppLogger.d('Deferring database initialization until first access');
   }
 
   // Optimized batch operations
