@@ -21,13 +21,15 @@ class NavigationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.grey.shade300,
+          color: scheme.outlineVariant,
           width: 1,
         ),
       ),
@@ -37,16 +39,19 @@ class NavigationCard extends StatelessWidget {
         leading: Icon(icon, color: iconColor, size: 40),
         title: Text(
           title,
-          style: const TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: AppColors.black,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         subtitle: subtitle != null
             ? Text(
                 subtitle!,
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 15,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               )
             : null,
         trailing: trailing,

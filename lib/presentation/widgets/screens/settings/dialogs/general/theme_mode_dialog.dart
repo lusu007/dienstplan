@@ -64,10 +64,5 @@ class ThemeModeDialog {
   static void _applySelection(BuildContext context, WidgetRef ref,
       ThemePreference preference, AppLocalizations l10n) {
     ref.read(settingsNotifierProvider.notifier).setThemePreference(preference);
-    if (preference != ThemePreference.light) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.darkModeNotAvailableYet)),
-      );
-    }
   }
 }

@@ -57,7 +57,9 @@ class SettingsNotifier extends _$SettingsNotifier {
     state = AsyncData(current.copyWith(themePreference: preference));
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
+      // Save and trigger UI to recompute theme mode immediately
       await _saveSettings(existing.copyWith(themePreference: preference));
+      ref.invalidate(themeModeProvider);
     }
   }
 

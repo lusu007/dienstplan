@@ -43,6 +43,7 @@ import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart' as domain;
 import 'package:dienstplan/domain/services/config_query_service.dart';
+import 'package:dienstplan/core/constants/app_colors.dart';
 
 part 'riverpod_providers.g.dart';
 
@@ -126,24 +127,48 @@ Future<ThemeMode> themeMode(Ref ref) async {
     case domain.ThemePreference.light:
       return ThemeMode.light;
     case domain.ThemePreference.dark:
-      // Temporary override: dark not implemented -> use light for now
-      return ThemeMode.light;
+      return ThemeMode.dark;
     case domain.ThemePreference.system:
+      return ThemeMode.system;
     case null:
-      // Temporary override: system not implemented -> use light for now
+      // Default to light theme on first start
       return ThemeMode.light;
   }
 }
 
 @riverpod
 ThemeData appTheme(Ref ref) {
+  // Light theme
   return ThemeData(
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF005B8C),
+      brightness: Brightness.light,
     ),
     useMaterial3: true,
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF005B8C),
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+      ),
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+  );
+}
+
+@riverpod
+ThemeData appDarkTheme(Ref ref) {
+  // Dark theme
+  final ColorScheme darkScheme = ColorScheme.fromSeed(
+    seedColor: AppColors.primary,
+    brightness: Brightness.dark,
+  ).copyWith(primary: AppColors.primary);
+  return ThemeData(
+    colorScheme: darkScheme,
+    useMaterial3: true,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.primary,
       titleTextStyle: TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,

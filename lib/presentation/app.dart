@@ -27,6 +27,24 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ref.watch(appThemeProvider);
+    // Build dark theme locally with pinned primary color (blue)
+    final ColorScheme darkScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF005B8C),
+      brightness: Brightness.dark,
+    ).copyWith(primary: const Color(0xFF005B8C));
+    final ThemeData darkTheme = ThemeData(
+      colorScheme: darkScheme,
+      useMaterial3: true,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF005B8C),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+    );
     final AsyncValue<ThemeMode> modeAsync = ref.watch(themeModeProvider);
     final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
     // Combine async values with fallbacks
@@ -38,16 +56,19 @@ class _MyAppState extends ConsumerState<MyApp> {
       data: (l) => l,
       orElse: () => const Locale('de'),
     );
-    return _buildMaterialApp(theme: theme, mode: mode, locale: locale);
+    return _buildMaterialApp(
+        theme: theme, darkTheme: darkTheme, mode: mode, locale: locale);
   }
 
   Widget _buildMaterialApp(
       {required ThemeData theme,
+      required ThemeData darkTheme,
       required ThemeMode mode,
       required Locale locale}) {
     return MaterialApp.router(
       title: 'Dienstplan',
       theme: theme,
+      darkTheme: darkTheme,
       themeMode: mode,
       localizationsDelegates: const [
         AppLocalizations.delegate,

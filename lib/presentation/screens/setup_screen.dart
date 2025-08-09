@@ -412,7 +412,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       loading: () => Scaffold(
         appBar: AppBar(
           title: const Text(AppInfo.appName),
-          backgroundColor: AppColors.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           automaticallyImplyLeading: false,
         ),
@@ -421,7 +421,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       error: (e, st) => Scaffold(
         appBar: AppBar(
           title: const Text(AppInfo.appName),
-          backgroundColor: AppColors.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           automaticallyImplyLeading: false,
         ),
@@ -433,7 +433,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           return Scaffold(
             appBar: AppBar(
               title: const Text(AppInfo.appName),
-              backgroundColor: AppColors.primary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               elevation: 0,
               automaticallyImplyLeading: false,
               actions: [

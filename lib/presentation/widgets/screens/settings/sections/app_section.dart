@@ -43,7 +43,7 @@ class AppSection extends ConsumerWidget {
           icon: Icons.delete_forever_outlined,
           title: l10n.resetData,
           onTap: () => ResetDialog.show(context),
-          iconColor: Colors.red,
+          iconColor: Theme.of(context).colorScheme.error,
         ),
       ],
     );

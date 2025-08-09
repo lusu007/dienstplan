@@ -62,10 +62,11 @@ class OtherSection extends ConsumerWidget {
       await shareService.shareApp(l10n);
     } catch (e, stackTrace) {
       AppLogger.e('OtherSection: Error sharing app', e, stackTrace);
+      if (!context.mounted) return;
       messenger.showSnackBar(
         SnackBar(
           content: Text(l10n.shareAppError),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }

@@ -33,7 +33,7 @@ class DutyGroupSelectorWidget extends StatelessWidget {
             '${l10n.filteredBy}: ${selectedDutyGroup ?? (allOptionText ?? l10n.all)}',
             style: TextStyle(
               fontSize: 12.0,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -76,7 +76,8 @@ class DutyGroupSelectorWidget extends StatelessWidget {
       label: Text(
         displayText,
         style: TextStyle(
-          color: isSelected ? Colors.white : mainColor,
+          color:
+              isSelected ? Theme.of(context).colorScheme.onPrimary : mainColor,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
         ),
       ),
@@ -86,11 +87,13 @@ class DutyGroupSelectorWidget extends StatelessWidget {
           onDutyGroupSelected!(selected ? dutyGroup : null);
         }
       },
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).cardColor,
       selectedColor: mainColor,
-      checkmarkColor: Colors.white,
+      checkmarkColor: Theme.of(context).colorScheme.onPrimary,
       side: BorderSide(
-        color: isSelected ? mainColor : Colors.grey.shade300,
+        color: isSelected
+            ? mainColor
+            : Theme.of(context).colorScheme.outlineVariant,
         width: isSelected ? 2 : 1,
       ),
       elevation: isSelected ? 2 : 1,

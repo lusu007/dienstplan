@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
+// Removed AppColors direct usage for adaptive theming
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class SelectionCard extends StatelessWidget {
@@ -40,23 +40,37 @@ class SelectionCard extends StatelessWidget {
     final effectiveMinVerticalPadding = minVerticalPadding ?? 20;
 
     if (useDialogStyle) {
-      return _buildDialogStyle(effectiveMainColor, effectiveContentPadding);
-    } else {
-      return _buildGeneralStyle(effectiveMainColor, effectiveIconSize,
-          effectiveContentPadding, effectiveMinVerticalPadding);
+      return _buildDialogStyle(
+        context,
+        effectiveMainColor,
+        effectiveContentPadding,
+      );
     }
+    return _buildGeneralStyle(
+      context,
+      effectiveMainColor,
+      effectiveIconSize,
+      effectiveContentPadding,
+      effectiveMinVerticalPadding,
+    );
   }
 
-  Widget _buildDialogStyle(Color mainColor, EdgeInsets contentPadding) {
+  Widget _buildDialogStyle(
+    BuildContext context,
+    Color mainColor,
+    EdgeInsets contentPadding,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: isSelected
             ? mainColor.withAlpha(kAlphaCardSelected)
-            : AppColors.white,
+            : theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected ? mainColor : Colors.grey.shade300,
+          color: isSelected ? mainColor : scheme.outlineVariant,
           width: isSelected ? 2.5 : 1,
         ),
       ),
@@ -64,25 +78,25 @@ class SelectionCard extends StatelessWidget {
         contentPadding: contentPadding,
         leading: Icon(
           isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-          color: isSelected ? mainColor : AppColors.grey,
+          color: isSelected ? mainColor : scheme.onSurfaceVariant,
           size: 28,
         ),
         title: Text(
           title,
-          style: TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: isSelected ? mainColor : AppColors.black,
+            color: isSelected ? mainColor : theme.colorScheme.onSurface,
           ),
         ),
         subtitle: subtitle != null
             ? Text(
                 subtitle!,
-                style: TextStyle(
+                style: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: 15,
                   color: isSelected
                       ? mainColor.withValues(alpha: 0.8)
-                      : Colors.black54,
+                      : theme.colorScheme.onSurfaceVariant,
                 ),
               )
             : null,
@@ -91,16 +105,24 @@ class SelectionCard extends StatelessWidget {
     );
   }
 
-  Widget _buildGeneralStyle(Color mainColor, double iconSize,
-      EdgeInsets contentPadding, double minVerticalPadding) {
+  Widget _buildGeneralStyle(
+    BuildContext context,
+    Color mainColor,
+    double iconSize,
+    EdgeInsets contentPadding,
+    double minVerticalPadding,
+  ) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color:
-            isSelected ? mainColor.withAlpha(kAlphaCardSelected) : Colors.white,
+        color: isSelected
+            ? mainColor.withAlpha(kAlphaCardSelected)
+            : theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isSelected ? mainColor : Colors.grey.shade300,
+          color: isSelected ? mainColor : scheme.outlineVariant,
           width: isSelected ? 2.5 : 1,
         ),
         boxShadow: isSelected
@@ -121,16 +143,19 @@ class SelectionCard extends StatelessWidget {
             : null,
         title: Text(
           title,
-          style: const TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Colors.black,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         subtitle: subtitle != null
             ? Text(
                 subtitle!,
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 15,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               )
             : null,
         trailing: SizedBox(

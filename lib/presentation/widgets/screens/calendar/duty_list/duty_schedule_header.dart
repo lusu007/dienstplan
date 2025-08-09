@@ -22,11 +22,11 @@ class DutyScheduleHeader extends StatelessWidget {
           Text(
             l10n.services,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
           ),
           Text(
             selectedDay != null
@@ -35,7 +35,10 @@ class DutyScheduleHeader extends StatelessWidget {
                 : l10n.noServicesForDay,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withAlpha((0.9 * 255).toInt()),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onPrimary
+                      .withAlpha((0.9 * 255).toInt()),
                 ),
           ),
         ],

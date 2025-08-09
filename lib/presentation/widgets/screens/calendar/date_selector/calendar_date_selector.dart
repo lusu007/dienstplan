@@ -140,9 +140,9 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
       builder: (context, child) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.45,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -221,7 +221,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
       width: 40,
       height: 4,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Theme.of(context).colorScheme.outlineVariant,
         borderRadius: BorderRadius.circular(2),
       ),
     );
@@ -530,11 +530,11 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
           children: [
             Text(
               monthYearText,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
             ),
             const SizedBox(width: 8),
             Icon(

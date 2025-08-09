@@ -16,13 +16,16 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         l10n.dutySchedule,
-        style: const TextStyle(color: Colors.white),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
       automaticallyImplyLeading: false,
       actions: [
         IconButton(
-          icon: const Icon(Icons.settings, color: Colors.white),
+          icon: Icon(Icons.settings,
+              color: Theme.of(context).colorScheme.onPrimary),
           onPressed: () => context.router.push(const SettingsRoute()),
         ),
       ],

@@ -217,7 +217,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         width: widget.width ?? 40.0,
         height: widget.height ?? 40.0,
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
@@ -225,7 +225,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
             '${widget.day.day}',
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ),
