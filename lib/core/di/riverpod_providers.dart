@@ -11,11 +11,6 @@ import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/data/services/share_service.dart';
 
-// Data sources
-import 'package:dienstplan/data/data_sources/schedule_local_data_source.dart';
-import 'package:dienstplan/data/data_sources/settings_local_data_source.dart';
-import 'package:dienstplan/data/data_sources/config_local_data_source.dart';
-
 // DAOs
 import 'package:dienstplan/data/daos/schedules_dao.dart';
 import 'package:dienstplan/data/daos/settings_dao.dart';
@@ -145,7 +140,6 @@ ThemeData appTheme(Ref ref) {
   return ThemeData(
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF005B8C),
-      primary: const Color(0xFF005B8C),
     ),
     useMaterial3: true,
     appBarTheme: const AppBarTheme(
@@ -167,29 +161,9 @@ Future<SentryService> sentryService(Ref ref) async {
   return service;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 ShareService shareService(Ref ref) {
   return ShareService();
-}
-
-// Data sources
-@riverpod
-Future<ScheduleLocalDataSource> scheduleLocalDataSource(Ref ref) async {
-  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
-  return ScheduleLocalDataSource(db);
-}
-
-@riverpod
-Future<SettingsLocalDataSource> settingsLocalDataSource(Ref ref) async {
-  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
-  return SettingsLocalDataSource(db);
-}
-
-@riverpod
-Future<ConfigLocalDataSource> configLocalDataSource(Ref ref) async {
-  final ScheduleConfigService cfg =
-      await ref.watch(scheduleConfigServiceProvider.future);
-  return ConfigLocalDataSource(cfg);
 }
 
 // Repositories

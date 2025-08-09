@@ -5,6 +5,7 @@ import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/screens/calendar_screen.dart';
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/presentation/widgets/common/error_display.dart';
 
 @RoutePage(name: 'AppInitializerRoute')
 class AppInitializerWidget extends ConsumerStatefulWidget {
@@ -33,7 +34,18 @@ class _AppInitializerWidgetState extends ConsumerState<AppInitializerWidget> {
       },
       error: (err, st) {
         AppLogger.e('Error checking initial setup', err, st);
-        return const SetupScreen();
+        // Show error but with fallback to setup screen for recovery
+        return Scaffold(
+          appBar: AppBar(title: const Text('Dienstplan')),
+          body: CenteredErrorDisplay(
+            error: err,
+            stackTrace: st,
+            onRetry: () {
+              // Invalidate the settings provider to retry loading
+              ref.invalidate(settingsNotifierProvider);
+            },
+          ),
+        );
       },
     );
   }

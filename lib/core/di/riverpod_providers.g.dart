@@ -71,6 +71,42 @@ final dutyTypesDaoProvider = AutoDisposeFutureProvider<DutyTypesDao>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DutyTypesDaoRef = AutoDisposeFutureProviderRef<DutyTypesDao>;
+String _$maintenanceDaoHash() => r'c7b50b2f513c05906fdf19e0b8cd9e1019c017d7';
+
+/// See also [maintenanceDao].
+@ProviderFor(maintenanceDao)
+final maintenanceDaoProvider =
+    AutoDisposeFutureProvider<MaintenanceDao>.internal(
+  maintenanceDao,
+  name: r'maintenanceDaoProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$maintenanceDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef MaintenanceDaoRef = AutoDisposeFutureProviderRef<MaintenanceDao>;
+String _$schedulesAdminDaoHash() => r'364472462048526c0a0336d7e8bc21265d9c1276';
+
+/// See also [schedulesAdminDao].
+@ProviderFor(schedulesAdminDao)
+final schedulesAdminDaoProvider =
+    AutoDisposeFutureProvider<SchedulesAdminDao>.internal(
+  schedulesAdminDao,
+  name: r'schedulesAdminDaoProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$schedulesAdminDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SchedulesAdminDaoRef = AutoDisposeFutureProviderRef<SchedulesAdminDao>;
 String _$scheduleConfigServiceHash() =>
     r'e1e7c37d1c9e41a9a5433738dca15e9e4278abdf';
 
@@ -140,7 +176,7 @@ final themeModeProvider = AutoDisposeFutureProvider<ThemeMode>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ThemeModeRef = AutoDisposeFutureProviderRef<ThemeMode>;
-String _$appThemeHash() => r'bff6c6c2a6048961ea86042f45b8788d4d68e55e';
+String _$appThemeHash() => r'53be3148d51c8dad3b2625714abe749a71e509ef';
 
 /// See also [appTheme].
 @ProviderFor(appTheme)
@@ -173,11 +209,11 @@ final sentryServiceProvider = FutureProvider<SentryService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SentryServiceRef = FutureProviderRef<SentryService>;
-String _$shareServiceHash() => r'5d5beedc43a1ceeee51e61f110a45f856e9b99af';
+String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
 
 /// See also [shareService].
 @ProviderFor(shareService)
-final shareServiceProvider = AutoDisposeProvider<ShareService>.internal(
+final shareServiceProvider = Provider<ShareService>.internal(
   shareService,
   name: r'shareServiceProvider',
   debugGetCreateSourceHash:
@@ -188,67 +224,7 @@ final shareServiceProvider = AutoDisposeProvider<ShareService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ShareServiceRef = AutoDisposeProviderRef<ShareService>;
-String _$scheduleLocalDataSourceHash() =>
-    r'ca8e988aa6b0893ad77d1bfefa1d5867c2c3210d';
-
-/// See also [scheduleLocalDataSource].
-@ProviderFor(scheduleLocalDataSource)
-final scheduleLocalDataSourceProvider =
-    AutoDisposeFutureProvider<ScheduleLocalDataSource>.internal(
-  scheduleLocalDataSource,
-  name: r'scheduleLocalDataSourceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$scheduleLocalDataSourceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ScheduleLocalDataSourceRef
-    = AutoDisposeFutureProviderRef<ScheduleLocalDataSource>;
-String _$settingsLocalDataSourceHash() =>
-    r'545a3212084407bcea52e321bbe705c9fd62886e';
-
-/// See also [settingsLocalDataSource].
-@ProviderFor(settingsLocalDataSource)
-final settingsLocalDataSourceProvider =
-    AutoDisposeFutureProvider<SettingsLocalDataSource>.internal(
-  settingsLocalDataSource,
-  name: r'settingsLocalDataSourceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$settingsLocalDataSourceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SettingsLocalDataSourceRef
-    = AutoDisposeFutureProviderRef<SettingsLocalDataSource>;
-String _$configLocalDataSourceHash() =>
-    r'4ba895b55e2b6aeae989800306d631fb39999869';
-
-/// See also [configLocalDataSource].
-@ProviderFor(configLocalDataSource)
-final configLocalDataSourceProvider =
-    AutoDisposeFutureProvider<ConfigLocalDataSource>.internal(
-  configLocalDataSource,
-  name: r'configLocalDataSourceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$configLocalDataSourceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ConfigLocalDataSourceRef
-    = AutoDisposeFutureProviderRef<ConfigLocalDataSource>;
+typedef ShareServiceRef = ProviderRef<ShareService>;
 String _$scheduleRepositoryHash() =>
     r'fa5bf5b634dd91faa6925ae2afd7fe3fabe833ea';
 

@@ -26,16 +26,26 @@ class MaintenanceDao {
           'MaintenanceDao: Cleaning up data older than $daysToKeep days');
       final db = await _databaseService.database;
       final cutoffDate = DateTime.now().subtract(Duration(days: daysToKeep));
+      // Use date_ymd for better index utilization
+      final cutoffYmd = _formatDateYmd(cutoffDate);
       final deleted = await db.delete(
         'schedules',
-        where: 'date < ?',
-        whereArgs: <Object?>[cutoffDate.toIso8601String()],
+        where: 'date_ymd < ?',
+        whereArgs: <Object?>[cutoffYmd],
       );
       AppLogger.i('MaintenanceDao: Deleted $deleted old schedules');
     } catch (e, stackTrace) {
       AppLogger.e('MaintenanceDao: Error cleaning up old data', e, stackTrace);
       rethrow;
     }
+  }
+
+  String _formatDateYmd(DateTime date) {
+    final DateTime utc = date.toUtc();
+    final String y = utc.year.toString().padLeft(4, '0');
+    final String m = utc.month.toString().padLeft(2, '0');
+    final String d = utc.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
   }
 
   Future<bool> hasData() async {

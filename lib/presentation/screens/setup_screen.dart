@@ -19,6 +19,7 @@ import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart
 import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_button.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
+import 'package:dienstplan/presentation/widgets/common/error_display.dart';
 
 @RoutePage()
 class SetupScreen extends ConsumerStatefulWidget {
@@ -36,6 +37,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   int _currentStep = 1;
   bool _isLoading = true;
   bool _isGeneratingSchedules = false;
+  Object? _loadingError;
+  StackTrace? _loadingErrorStackTrace;
 
   @override
   void initState() {
@@ -67,6 +70,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
+          _loadingError = e;
+          _loadingErrorStackTrace = stackTrace;
         });
       }
     }
@@ -105,20 +110,20 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           await ref.read(setActiveConfigUseCaseProvider.future);
       await setActiveConfigUseCase.execute(_selectedConfig!.name);
 
+      // Use policy-based approach for initial range instead of hardcoded years
+      final dateRangePolicy = ref.read(dateRangePolicyProvider);
+      final DateTime now = DateTime.now();
+      final initialRange = dateRangePolicy.computeInitialRange(now);
+
+      // For setup, ensure we have schedules for the initial range
+      // Additional months will be generated on-demand as needed
       final generateSchedulesUseCase =
           await ref.read(generateSchedulesUseCaseProvider.future);
 
-      final DateTime now = DateTime.now();
-      const int initialYears = 2;
-      final DateTime startDate =
-          now.subtract(const Duration(days: 365 * initialYears)); // 2 years ago
-      final DateTime endDate = now
-          .add(const Duration(days: 365 * initialYears)); // 2 years in future
-
       await generateSchedulesUseCase.execute(
         configName: _selectedConfig!.name,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: initialRange.start,
+        endDate: initialRange.end,
       );
 
       // Create initial settings to mark setup as completed
@@ -155,10 +160,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       setState(() {
         _isGeneratingSchedules = false;
       });
-      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.errorSavingDefaultConfig),
+          content: ErrorMessage(error: e, stackTrace: stackTrace),
           backgroundColor: Colors.red,
         ),
       );
@@ -189,6 +193,20 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           if (_isLoading)
             // Show skeleton loading cards
             ...List.generate(3, (index) => _buildSkeletonCard())
+          else if (_loadingError != null)
+            // Show error display with retry option
+            ErrorDisplay(
+              error: _loadingError!,
+              stackTrace: _loadingErrorStackTrace,
+              onRetry: () {
+                setState(() {
+                  _isLoading = true;
+                  _loadingError = null;
+                  _loadingErrorStackTrace = null;
+                });
+                _loadConfigs();
+              },
+            )
           else
             // Show actual configs
             ..._configs.map((config) {

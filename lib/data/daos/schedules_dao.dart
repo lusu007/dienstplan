@@ -32,20 +32,20 @@ class SchedulesDao {
       }
 
       if (startDate != null) {
-        whereClause += ' AND date >= ?';
-        whereArgs.add(startDate.toIso8601String());
+        whereClause += ' AND date_ymd >= ?';
+        whereArgs.add(ScheduleKeyHelper.formatDateYmd(startDate));
       }
 
       if (endDate != null) {
-        whereClause += ' AND date <= ?';
-        whereArgs.add(endDate.toIso8601String());
+        whereClause += ' AND date_ymd <= ?';
+        whereArgs.add(ScheduleKeyHelper.formatDateYmd(endDate));
       }
 
       final List<Map<String, Object?>> rows = await db.query(
         'schedules',
         where: whereClause,
         whereArgs: whereArgs,
-        orderBy: 'date ASC, service ASC',
+        orderBy: 'date_ymd ASC, service ASC',
         limit: limit,
         offset: offset,
       );
@@ -68,10 +68,11 @@ class SchedulesDao {
       AppLogger.i('SchedulesDao: Loading schedules for range');
       final Database db = await _databaseService.database;
 
-      String whereClause = 'date BETWEEN ? AND ?';
+      // Use date_ymd for better index utilization when possible
+      String whereClause = 'date_ymd BETWEEN ? AND ?';
       final List<Object?> whereArgs = <Object?>[
-        startDate.toIso8601String(),
-        endDate.toIso8601String(),
+        ScheduleKeyHelper.formatDateYmd(startDate),
+        ScheduleKeyHelper.formatDateYmd(endDate),
       ];
 
       if (configName != null) {
@@ -83,7 +84,7 @@ class SchedulesDao {
         'schedules',
         where: whereClause,
         whereArgs: whereArgs,
-        orderBy: 'date ASC, service ASC',
+        orderBy: 'date_ymd ASC, service ASC',
       );
 
       return rows
@@ -161,6 +162,118 @@ class SchedulesDao {
       AppLogger.i('SchedulesDao: Deleted schedule');
     } catch (e, stackTrace) {
       AppLogger.e('SchedulesDao: Error deleting schedule', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  /// Optimized query for schedules on a specific day using date_ymd index
+  Future<List<data_model.Schedule>> loadSchedulesForDay({
+    required DateTime day,
+    String? configName,
+  }) async {
+    try {
+      AppLogger.i('SchedulesDao: Loading schedules for specific day');
+      final Database db = await _databaseService.database;
+
+      String whereClause = 'date_ymd = ?';
+      final List<Object?> whereArgs = <Object?>[
+        ScheduleKeyHelper.formatDateYmd(day),
+      ];
+
+      if (configName != null) {
+        whereClause += ' AND config_name = ?';
+        whereArgs.add(configName);
+      }
+
+      final List<Map<String, Object?>> rows = await db.query(
+        'schedules',
+        where: whereClause,
+        whereArgs: whereArgs,
+        orderBy: 'service ASC',
+      );
+
+      return rows
+          .map((Map<String, Object?> m) => data_model.Schedule.fromMap(m))
+          .toList();
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'SchedulesDao: Error loading schedules for day', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  /// Optimized query for schedules in a specific month using date_ymd index
+  Future<List<data_model.Schedule>> loadSchedulesForMonth({
+    required DateTime month,
+    String? configName,
+  }) async {
+    try {
+      AppLogger.i('SchedulesDao: Loading schedules for specific month');
+      final Database db = await _databaseService.database;
+
+      // Format month start and end for precise matching
+      final DateTime monthStart = DateTime(month.year, month.month, 1);
+      final DateTime monthEnd = DateTime(month.year, month.month + 1, 0);
+
+      String whereClause = 'date_ymd >= ? AND date_ymd <= ?';
+      final List<Object?> whereArgs = <Object?>[
+        ScheduleKeyHelper.formatDateYmd(monthStart),
+        ScheduleKeyHelper.formatDateYmd(monthEnd),
+      ];
+
+      if (configName != null) {
+        whereClause += ' AND config_name = ?';
+        whereArgs.add(configName);
+      }
+
+      final List<Map<String, Object?>> rows = await db.query(
+        'schedules',
+        where: whereClause,
+        whereArgs: whereArgs,
+        orderBy: 'date_ymd ASC, service ASC',
+      );
+
+      return rows
+          .map((Map<String, Object?> m) => data_model.Schedule.fromMap(m))
+          .toList();
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'SchedulesDao: Error loading schedules for month', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  /// Count schedules for a specific month (useful for coverage checks)
+  Future<int> countSchedulesForMonth({
+    required DateTime month,
+    String? configName,
+  }) async {
+    try {
+      final Database db = await _databaseService.database;
+
+      final DateTime monthStart = DateTime(month.year, month.month, 1);
+      final DateTime monthEnd = DateTime(month.year, month.month + 1, 0);
+
+      String whereClause = 'date_ymd >= ? AND date_ymd <= ?';
+      final List<Object?> whereArgs = <Object?>[
+        ScheduleKeyHelper.formatDateYmd(monthStart),
+        ScheduleKeyHelper.formatDateYmd(monthEnd),
+      ];
+
+      if (configName != null) {
+        whereClause += ' AND config_name = ?';
+        whereArgs.add(configName);
+      }
+
+      final result = await db.rawQuery(
+        'SELECT COUNT(*) FROM schedules WHERE $whereClause',
+        whereArgs,
+      );
+
+      return Sqflite.firstIntValue(result) ?? 0;
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'SchedulesDao: Error counting schedules for month', e, stackTrace);
       rethrow;
     }
   }
