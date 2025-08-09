@@ -25,8 +25,8 @@ class LanguageSelectorButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              side: BorderSide(color: Theme.of(context).colorScheme.onPrimary),
+              foregroundColor: Colors.white,
+              side: const BorderSide(color: Colors.white),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -46,9 +46,8 @@ class LanguageSelectorButton extends StatelessWidget {
               languageService.currentLocale.languageCode == 'de'
                   ? l10n.german
                   : l10n.english,
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         );

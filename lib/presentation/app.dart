@@ -6,6 +6,8 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/domain/entities/settings.dart' as domain;
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -46,12 +48,27 @@ class _MyAppState extends ConsumerState<MyApp> {
       ),
     );
     final AsyncValue<ThemeMode> modeAsync = ref.watch(themeModeProvider);
+    final domain.ThemePreference? uiThemePref =
+        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
     final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
     // Combine async values with fallbacks
-    final ThemeMode mode = modeAsync.maybeWhen(
-      data: (m) => m,
-      orElse: () => ThemeMode.system,
-    );
+    ThemeMode deriveFromPref(domain.ThemePreference pref) {
+      switch (pref) {
+        case domain.ThemePreference.light:
+          return ThemeMode.light;
+        case domain.ThemePreference.dark:
+          return ThemeMode.dark;
+        case domain.ThemePreference.system:
+          return ThemeMode.system;
+      }
+    }
+
+    final ThemeMode mode = uiThemePref != null
+        ? deriveFromPref(uiThemePref)
+        : modeAsync.maybeWhen(
+            data: (m) => m,
+            orElse: () => ThemeMode.system,
+          );
     final Locale locale = localeAsync.maybeWhen(
       data: (l) => l,
       orElse: () => const Locale('de'),

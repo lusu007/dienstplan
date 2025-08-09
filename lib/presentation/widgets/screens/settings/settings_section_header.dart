@@ -15,7 +15,7 @@ class SettingsSectionHeader extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
       ),
     );

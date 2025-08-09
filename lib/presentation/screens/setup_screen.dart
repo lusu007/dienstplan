@@ -18,6 +18,7 @@ import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_button.dart';
+import 'package:dienstplan/presentation/widgets/common/primary_app_bar.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/presentation/widgets/common/error_display.dart';
@@ -35,7 +36,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   DutyScheduleConfig? _selectedConfig;
   String? _selectedDutyGroup;
   bool _hasMadeDutyGroupSelection = false;
-  int _currentStep = 1;
+  int _currentStep = 1; // 1: Theme, 2: Config, 3: Duty Group
   bool _isLoading = true;
   bool _isGeneratingSchedules = false;
   Object? _loadingError;
@@ -79,19 +80,30 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   }
 
   void _nextStep() {
-    if (_selectedConfig != null) {
-      setState(() {
+    setState(() {
+      if (_currentStep == 1) {
+        // Theme selected → go to config selection
         _currentStep = 2;
+        return;
+      }
+      if (_currentStep == 2 && _selectedConfig != null) {
+        // Config selected → go to duty group selection
+        _currentStep = 3;
         _selectedDutyGroup = null;
         _hasMadeDutyGroupSelection = false;
-      });
-    }
+        return;
+      }
+    });
   }
 
   void _previousStep() {
     setState(() {
-      _currentStep = 1;
-      _selectedDutyGroup = null;
+      if (_currentStep > 1) {
+        _currentStep -= 1;
+      }
+      if (_currentStep < 3) {
+        _selectedDutyGroup = null;
+      }
     });
   }
 
@@ -127,13 +139,18 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         endDate: initialRange.end,
       );
 
-      // Create initial settings to mark setup as completed
+      // Create initial settings to mark setup as completed (preserve chosen theme)
+      final getSettingsUseCase =
+          await ref.read(getSettingsUseCaseProvider.future);
+      final existingSettings = await getSettingsUseCase.execute();
       final saveSettingsUseCase =
           await ref.read(saveSettingsUseCaseProvider.future);
       final initialSettings = Settings(
-        calendarFormat: CalendarFormat.month,
+        calendarFormat:
+            existingSettings?.calendarFormat ?? CalendarFormat.month,
         myDutyGroup: _selectedDutyGroup,
         activeConfigName: _selectedConfig!.name,
+        themePreference: existingSettings?.themePreference,
       );
       await saveSettingsUseCase.execute(initialSettings);
 
@@ -168,8 +185,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          backgroundColor: Theme.of(context).colorScheme.surface,
           content: ErrorMessage(error: e, stackTrace: stackTrace),
-          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
@@ -184,7 +202,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         children: [
           const SizedBox(height: 16),
           Text(
-            l10n.welcome,
+            l10n.myDutySchedule,
             style: const TextStyle(
               fontSize: 36.0,
               fontWeight: FontWeight.bold,
@@ -234,6 +252,61 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           ActionButton(
             text: l10n.continueButton,
             onPressed: _selectedConfig == null ? null : _nextStep,
+            mainColor: AppColors.primary,
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeStepContent() {
+    final l10n = AppLocalizations.of(context);
+    final themePref =
+        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
+    final ThemePreference current = themePref ?? ThemePreference.light;
+    const Color mainColor = AppColors.primary;
+
+    Widget buildThemeCard(IconData icon, String title, ThemePreference pref) {
+      final bool isSelected = current == pref;
+      return SelectionCard(
+        title: title,
+        leadingIcon: icon,
+        isSelected: isSelected,
+        onTap: () {
+          ref.read(settingsNotifierProvider.notifier).setThemePreference(pref);
+        },
+        mainColor: mainColor,
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          Text(
+            l10n.welcome,
+            style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.themeModeDescription,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 24),
+          buildThemeCard(Icons.wb_sunny_outlined, l10n.themeModeLight,
+              ThemePreference.light),
+          buildThemeCard(
+              Icons.nightlight_round, l10n.themeModeDark, ThemePreference.dark),
+          buildThemeCard(Icons.brightness_auto, l10n.themeModeSystem,
+              ThemePreference.system),
+          const SizedBox(height: 32),
+          ActionButton(
+            text: l10n.continueButton,
+            onPressed: _nextStep,
             mainColor: AppColors.primary,
           ),
           const SizedBox(height: 16),
@@ -409,33 +482,20 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   Widget build(BuildContext context) {
     final languageAsync = ref.watch(languageServiceProvider);
     return languageAsync.when(
-      loading: () => Scaffold(
-        appBar: AppBar(
-          title: const Text(AppInfo.appName),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-        ),
-        body: const Center(child: CircularProgressIndicator()),
+      loading: () => const Scaffold(
+        appBar: PrimaryAppBar(titleText: AppInfo.appName),
+        body: Center(child: CircularProgressIndicator()),
       ),
-      error: (e, st) => Scaffold(
-        appBar: AppBar(
-          title: const Text(AppInfo.appName),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-        ),
-        body: _buildStep1Content(),
+      error: (e, st) => const Scaffold(
+        appBar: PrimaryAppBar(titleText: AppInfo.appName),
+        body: Center(child: CircularProgressIndicator()),
       ),
       data: (languageService) => ListenableBuilder(
         listenable: languageService,
         builder: (context, child) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text(AppInfo.appName),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              elevation: 0,
-              automaticallyImplyLeading: false,
+            appBar: PrimaryAppBar(
+              titleText: AppInfo.appName,
               actions: [
                 LanguageSelectorButton(
                   languageService: languageService,
@@ -452,14 +512,16 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   children: [
                     StepIndicator(
                       currentStep: _currentStep,
-                      totalSteps: 2,
+                      totalSteps: 3,
                       activeColor: AppColors.primary,
                     ),
                     const SizedBox(height: 24),
                     Expanded(
                       child: _currentStep == 1
-                          ? _buildStep1Content()
-                          : _buildStep2Content(),
+                          ? _buildThemeStepContent()
+                          : (_currentStep == 2
+                              ? _buildStep1Content()
+                              : _buildStep2Content()),
                     ),
                   ],
                 ),

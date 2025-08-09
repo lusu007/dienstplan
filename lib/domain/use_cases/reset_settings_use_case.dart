@@ -40,6 +40,7 @@ class ResetSettingsUseCase {
       calendarFormat: CalendarFormat.month,
       selectedDutyGroup: null,
       myDutyGroup: null,
+      themePreference: null,
     );
   }
 }

@@ -94,6 +94,8 @@ class SettingsNotifier extends _$SettingsNotifier {
     state = const AsyncLoading();
     try {
       await _resetSettingsUseCase!.execute();
+      // Ensure all theme consumers recompute after reset
+      ref.invalidate(themeModeProvider);
       state = AsyncData(await _load());
     } catch (_) {
       final current = state.valueOrNull ?? SettingsUiState.initial();

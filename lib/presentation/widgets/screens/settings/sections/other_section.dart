@@ -65,8 +65,12 @@ class OtherSection extends ConsumerWidget {
       if (!context.mounted) return;
       messenger.showSnackBar(
         SnackBar(
-          content: Text(l10n.shareAppError),
-          backgroundColor: Theme.of(context).colorScheme.error,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          content: Text(
+            l10n.shareAppError,
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          ),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
