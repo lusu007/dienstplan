@@ -1,5 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
@@ -11,8 +11,10 @@ import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+part 'schedule_notifier.g.dart';
 
-class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
+@Riverpod(keepAlive: true)
+class ScheduleNotifier extends _$ScheduleNotifier {
   GetSchedulesUseCase? _getSchedulesUseCase;
   GenerateSchedulesUseCase? _generateSchedulesUseCase;
   GetConfigsUseCase? _getConfigsUseCase;
@@ -22,16 +24,14 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
 
   @override
   Future<ScheduleUiState> build() async {
-    _getSchedulesUseCase ??=
-        await GetIt.instance.getAsync<GetSchedulesUseCase>();
+    _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
     _generateSchedulesUseCase ??=
-        await GetIt.instance.getAsync<GenerateSchedulesUseCase>();
-    _getConfigsUseCase ??= await GetIt.instance.getAsync<GetConfigsUseCase>();
+        await ref.read(generateSchedulesUseCaseProvider.future);
+    _getConfigsUseCase ??= await ref.read(getConfigsUseCaseProvider.future);
     _setActiveConfigUseCase ??=
-        await GetIt.instance.getAsync<SetActiveConfigUseCase>();
-    _getSettingsUseCase ??= await GetIt.instance.getAsync<GetSettingsUseCase>();
-    _saveSettingsUseCase ??=
-        await GetIt.instance.getAsync<SaveSettingsUseCase>();
+        await ref.read(setActiveConfigUseCaseProvider.future);
+    _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
+    _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     return await _initialize();
   }
 
@@ -452,8 +452,3 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
     }
   }
 }
-
-final scheduleNotifierProvider =
-    AsyncNotifierProvider<ScheduleNotifier, ScheduleUiState>(
-  ScheduleNotifier.new,
-);

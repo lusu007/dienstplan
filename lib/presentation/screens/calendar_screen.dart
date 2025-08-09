@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
-import 'package:get_it/get_it.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/data/services/language_service.dart';
@@ -56,7 +56,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   }
 
   Future<void> _initializeServices() async {
-    _languageService = GetIt.instance<LanguageService>();
+    _languageService = await ref.read(languageServiceProvider.future);
     if (mounted) setState(() {});
   }
 

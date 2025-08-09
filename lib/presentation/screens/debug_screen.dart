@@ -6,8 +6,7 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
-import 'package:get_it/get_it.dart';
-import 'package:dienstplan/data/services/language_service.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -230,8 +229,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   String _getCurrentLanguage() {
     try {
-      final languageService = GetIt.instance<LanguageService>();
-      return languageService.currentLocale.languageCode;
+      final languageService = ref.read(languageServiceProvider).valueOrNull;
+      return languageService?.currentLocale.languageCode ?? 'Unknown';
     } catch (e) {
       return 'Unknown';
     }

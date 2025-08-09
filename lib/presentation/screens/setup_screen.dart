@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
-import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
-import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
+// Use cases are accessed via Riverpod providers
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
-import 'package:dienstplan/data/services/language_service.dart';
+// Language service is accessed via Riverpod providers
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
@@ -109,11 +107,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
       // Set the active config using the use case directly
       final setActiveConfigUseCase =
-          await GetIt.instance.getAsync<SetActiveConfigUseCase>();
+          await ref.read(setActiveConfigUseCaseProvider.future);
       await setActiveConfigUseCase.execute(_selectedConfig!.name);
 
       final generateSchedulesUseCase =
-          await GetIt.instance.getAsync<GenerateSchedulesUseCase>();
+          await ref.read(generateSchedulesUseCaseProvider.future);
 
       final now = DateTime.now();
       final startDate =
@@ -129,7 +127,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
       // Create initial settings to mark setup as completed
       final saveSettingsUseCase =
-          await GetIt.instance.getAsync<SaveSettingsUseCase>();
+          await ref.read(saveSettingsUseCaseProvider.future);
       final initialSettings = Settings(
         calendarFormat: CalendarFormat.month,
         myDutyGroup: _selectedDutyGroup,
@@ -387,49 +385,67 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final languageService = GetIt.instance<LanguageService>();
-
-    return ListenableBuilder(
-      listenable: languageService,
-      builder: (context, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text(AppInfo.appName),
-            backgroundColor: AppColors.primary,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            actions: [
-              LanguageSelectorButton(
-                languageService: languageService,
-                disabled: _isGeneratingSchedules,
-                onLanguageChanged:
-                    null, // Remove callback to prevent double update
-              ),
-            ],
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  StepIndicator(
-                    currentStep: _currentStep,
-                    totalSteps: 2,
-                    activeColor: AppColors.primary,
-                  ),
-                  const SizedBox(height: 24),
-                  Expanded(
-                    child: _currentStep == 1
-                        ? _buildStep1Content()
-                        : _buildStep2Content(),
-                  ),
-                ],
+    final languageAsync = ref.watch(languageServiceProvider);
+    return languageAsync.when(
+      loading: () => Scaffold(
+        appBar: AppBar(
+          title: const Text(AppInfo.appName),
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, st) => Scaffold(
+        appBar: AppBar(
+          title: const Text(AppInfo.appName),
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+        ),
+        body: _buildStep1Content(),
+      ),
+      data: (languageService) => ListenableBuilder(
+        listenable: languageService,
+        builder: (context, child) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text(AppInfo.appName),
+              backgroundColor: AppColors.primary,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              actions: [
+                LanguageSelectorButton(
+                  languageService: languageService,
+                  disabled: _isGeneratingSchedules,
+                  onLanguageChanged: null,
+                ),
+              ],
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    StepIndicator(
+                      currentStep: _currentStep,
+                      totalSteps: 2,
+                      activeColor: AppColors.primary,
+                    ),
+                    const SizedBox(height: 24),
+                    Expanded(
+                      child: _currentStep == 1
+                          ? _buildStep1Content()
+                          : _buildStep2Content(),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

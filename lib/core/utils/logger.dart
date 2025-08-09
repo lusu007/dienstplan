@@ -4,14 +4,19 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'package:dienstplan/data/services/sentry_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 
 class AppLogger {
   static const String _logDirName = 'logs';
   static Directory? _logDir;
   static File? _currentLogFile;
   static const int _maxLogFiles = 5;
+  static ProviderContainer? _providerContainer;
+
+  static void setProviderContainer(ProviderContainer container) {
+    _providerContainer = container;
+  }
 
   static Future<void> initialize() async {
     try {
@@ -80,10 +85,9 @@ class AppLogger {
 
       // Send to Sentry if available and enabled
       try {
-        // Check if Sentry service is available and enabled
-        final sentryService = GetIt.instance.isRegistered<SentryService>()
-            ? GetIt.instance<SentryService>()
-            : null;
+        // Check if Sentry service is available and enabled via injected container
+        final sentryService =
+            _providerContainer?.read(sentryServiceProvider).valueOrNull;
 
         if (sentryService != null && sentryService.isEnabled) {
           final sentryLevel = _mapToSentryLevel(level);
