@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class CalendarDayBuilder extends StatelessWidget {
   final DateTime day;
@@ -100,7 +101,7 @@ class CalendarDayBuilder extends StatelessWidget {
         );
       case CalendarDayType.today:
         return BoxDecoration(
-          color: theme.colorScheme.primary.withAlpha(128),
+          color: theme.colorScheme.primary.withAlpha(kAlphaToday),
           borderRadius: BorderRadius.circular(8),
         );
     }

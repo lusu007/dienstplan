@@ -1,4 +1,5 @@
 import 'package:dienstplan/domain/value_objects/date_range.dart';
+import 'package:dienstplan/core/constants/schedule_constants.dart';
 
 abstract class DateRangePolicy {
   DateRange computeInitialRange(DateTime anchor);
@@ -11,8 +12,8 @@ class PlusMinusMonthsPolicy implements DateRangePolicy {
   final int monthsAfter;
 
   const PlusMinusMonthsPolicy({
-    this.monthsBefore = 3,
-    this.monthsAfter = 3,
+    this.monthsBefore = kMonthsPrefetchRadius,
+    this.monthsAfter = kMonthsPrefetchRadius,
   });
 
   @override

@@ -6,12 +6,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/core/constants/logger_constants.dart';
 
 class AppLogger {
   static const String _logDirName = 'logs';
   static Directory? _logDir;
   static File? _currentLogFile;
-  static const int _maxLogFiles = 5;
+  static const int _maxLogFiles = kMaxLogFiles;
   static ProviderContainer? _providerContainer;
 
   static void setProviderContainer(ProviderContainer container) {

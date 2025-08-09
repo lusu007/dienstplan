@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dienstplan/core/constants/prefs_keys.dart';
+import 'package:dienstplan/core/constants/locale_constants.dart';
 
 class LanguageService extends ChangeNotifier {
-  static const String _languageKey = 'language';
+  static const String _languageKey = kPrefsKeyLanguage;
   late SharedPreferences _prefs;
-  Locale _currentLocale = const Locale('de');
+  Locale _currentLocale = const Locale(kDefaultLanguageCode);
 
   Locale get currentLocale => _currentLocale;
 
@@ -40,7 +42,7 @@ class LanguageService extends ChangeNotifier {
 
   Future<void> resetToDefault() async {
     _currentLocale = const Locale('de');
-    await _prefs.setString(_languageKey, 'de');
+    await _prefs.setString(_languageKey, kDefaultLanguageCode);
     notifyListeners();
   }
 }

@@ -13,6 +13,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
 // Language service is accessed via Riverpod providers
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
@@ -143,7 +144,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           'Setup completed successfully for config: ${_selectedConfig!.name}');
 
       // Wait a moment to ensure all settings are properly saved
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(kUiDelayShort);
 
       if (!mounted) return;
 

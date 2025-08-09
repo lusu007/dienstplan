@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class DutyItemUiBuilder {
   static Widget buildFilterStatusText({
@@ -41,7 +42,9 @@ class DutyItemUiBuilder {
             height: 72,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
-              color: isSelected ? mainColor.withAlpha(20) : Colors.white,
+              color: isSelected
+                  ? mainColor.withAlpha(kAlphaCardSelected)
+                  : Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: isSelected ? mainColor : Colors.grey.shade300,
@@ -50,14 +53,14 @@ class DutyItemUiBuilder {
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: mainColor.withAlpha(46),
+                        color: mainColor.withAlpha(kAlphaShadowStrong),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
                     ]
                   : [
                       BoxShadow(
-                        color: Colors.black.withAlpha(8),
+                        color: Colors.black.withAlpha(kAlphaShadowWeak),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -69,7 +72,7 @@ class DutyItemUiBuilder {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: mainColor.withAlpha(50),
+                    color: mainColor.withAlpha(kAlphaBadge),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(

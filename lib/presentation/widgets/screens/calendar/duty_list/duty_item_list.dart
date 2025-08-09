@@ -3,6 +3,7 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class DutyItemList extends StatelessWidget {
   final List<Schedule> schedules;
@@ -141,7 +142,7 @@ class DutyItemList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
                 color: selectedDutyGroupName == dutyGroupName
-                    ? mainColor.withAlpha(20)
+                    ? mainColor.withAlpha(kAlphaCardSelected)
                     : Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
@@ -153,14 +154,14 @@ class DutyItemList extends StatelessWidget {
                 boxShadow: selectedDutyGroupName == dutyGroupName
                     ? [
                         BoxShadow(
-                          color: mainColor.withAlpha(46),
+                          color: mainColor.withAlpha(kAlphaShadowStrong),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
                       ]
                     : [
                         BoxShadow(
-                          color: Colors.black.withAlpha(8),
+                          color: Colors.black.withAlpha(kAlphaShadowWeak),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -172,7 +173,7 @@ class DutyItemList extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: mainColor.withAlpha(50),
+                      color: mainColor.withAlpha(kAlphaBadge),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(

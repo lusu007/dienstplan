@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class SelectionCard extends StatelessWidget {
   final String title;
@@ -50,7 +51,9 @@ class SelectionCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? mainColor.withValues(alpha: 0.1) : AppColors.white,
+        color: isSelected
+            ? mainColor.withAlpha(kAlphaCardSelected)
+            : AppColors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isSelected ? mainColor : Colors.grey.shade300,
@@ -93,7 +96,8 @@ class SelectionCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? mainColor.withAlpha(20) : Colors.white,
+        color:
+            isSelected ? mainColor.withAlpha(kAlphaCardSelected) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isSelected ? mainColor : Colors.grey.shade300,
@@ -102,7 +106,7 @@ class SelectionCard extends StatelessWidget {
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: mainColor.withAlpha(46),
+                  color: mainColor.withAlpha(kAlphaShadowStrong),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),

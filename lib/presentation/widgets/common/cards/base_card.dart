@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class BaseCard extends StatelessWidget {
   final Widget child;
@@ -65,14 +66,14 @@ class BaseCard extends StatelessWidget {
     EdgeInsets? padding,
   }) {
     return BaseCard(
-      backgroundColor: mainColor.withAlpha(20),
+      backgroundColor: mainColor.withAlpha(kAlphaCardSelected),
       borderColor: mainColor,
       borderWidth: 2.5,
       margin: margin,
       padding: padding,
       boxShadow: [
         BoxShadow(
-          color: mainColor.withAlpha(46),
+          color: mainColor.withAlpha(kAlphaShadowStrong),
           blurRadius: 12,
           offset: const Offset(0, 4),
         ),

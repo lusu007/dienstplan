@@ -4,6 +4,7 @@ import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_type.dart';
 import 'package:dienstplan/data/models/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/constants/database_constants.dart';
 import 'package:dienstplan/core/utils/schedule_key_helper.dart';
 
 class DatabaseService {
@@ -12,7 +13,7 @@ class DatabaseService {
   DatabaseService._internal();
 
   static Database? _database;
-  static const int _currentVersion = 7;
+  static const int _currentVersion = kDatabaseCurrentVersion;
 
   Future<Database> get database async {
     if (_database != null) return _database!;

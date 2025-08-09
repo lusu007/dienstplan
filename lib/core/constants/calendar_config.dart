@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class CalendarConfig {
   static CalendarStyle createCalendarStyle(BuildContext context) {
@@ -9,7 +10,7 @@ class CalendarConfig {
         shape: BoxShape.circle,
       ),
       todayDecoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(128),
+        color: Theme.of(context).colorScheme.primary.withAlpha(kAlphaToday),
         shape: BoxShape.circle,
       ),
     );
@@ -22,7 +23,7 @@ class CalendarConfig {
       leftChevronVisible: false,
       rightChevronVisible: false,
       titleTextFormatter: null,
-      titleTextStyle: TextStyle(fontSize: 0),
+      titleTextStyle: TextStyle(fontSize: kHiddenFontSize),
     );
   }
 
