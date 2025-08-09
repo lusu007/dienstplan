@@ -12,6 +12,7 @@ import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
+import 'package:dienstplan/core/constants/schedule_constants.dart';
 
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
@@ -67,9 +68,10 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           configName: activeName,
         );
         final List<DateTime> monthsToEnsure = <DateTime>[
-          DateTime(now.year, now.month - 1, 1),
-          DateTime(now.year, now.month, 1),
-          DateTime(now.year, now.month + 1, 1),
+          for (int i = -kInitialEnsureMonthsRadius;
+              i <= kInitialEnsureMonthsRadius;
+              i++)
+            DateTime(now.year, now.month + i, 1),
         ];
         final List<Schedule> ensured = <Schedule>[];
         for (final DateTime monthStart in monthsToEnsure) {
@@ -159,9 +161,6 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         );
         final List<Schedule> allSchedules = <Schedule>[...initialSchedules];
 
-        // Check if we need to generate schedules for the focused month specifically
-        final focusedMonthStart = DateTime(day.year, day.month, 1);
-
         // Ensure focused, previous and next months exist (generate only when empty or without valid items for active config)
         Future<void> ensureMonthGenerated(DateTime monthStart) async {
           final List<Schedule> ensured =
@@ -172,12 +171,10 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           allSchedules.addAll(ensured);
         }
 
-        // Generate current month and 3 months into the future in parallel using isolate
+        // Generate focused month and next N months in parallel using isolate
         await Future.wait(<Future<void>>[
-          ensureMonthGenerated(focusedMonthStart),
-          ensureMonthGenerated(DateTime(day.year, day.month + 1, 1)),
-          ensureMonthGenerated(DateTime(day.year, day.month + 2, 1)),
-          ensureMonthGenerated(DateTime(day.year, day.month + 3, 1)),
+          for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+            ensureMonthGenerated(DateTime(day.year, day.month + i, 1)),
         ]);
 
         // Update state with new schedules and clear loading

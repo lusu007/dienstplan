@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
@@ -27,7 +28,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: kAnimDefault,
       vsync: this,
     );
 

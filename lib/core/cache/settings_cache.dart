@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/constants/cache_constants.dart';
 
 /// Cache for settings to reduce database queries during startup
 class SettingsCache {
   static Settings? _cachedSettings;
   static DateTime? _lastCacheTime;
-  static const Duration _cacheValidity = Duration(minutes: 5);
+  static const Duration _cacheValidity = kSettingsCacheTtl;
   static const Duration _startupCacheValidity =
-      Duration(seconds: 30); // More aggressive during startup
+      kSettingsStartupCacheTtl; // More aggressive during startup
   static Completer<Settings?>? _loadingCompleter;
   static bool _isStartupPhase = true;
 

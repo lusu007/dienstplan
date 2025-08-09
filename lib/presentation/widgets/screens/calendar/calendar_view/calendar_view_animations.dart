@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/animation_constants.dart';
 
 mixin CalendarViewAnimations<T extends StatefulWidget> on State<T> {
   bool _shouldAnimateScheduleList = false;
@@ -12,7 +13,7 @@ mixin CalendarViewAnimations<T extends StatefulWidget> on State<T> {
     });
 
     // Reset animation flag after animation completes
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(kAnimDefault, () {
       if (mounted) {
         setState(() {
           _shouldAnimateScheduleList = false;

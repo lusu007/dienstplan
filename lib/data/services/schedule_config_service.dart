@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/constants/prefs_keys.dart';
 
 class ScheduleConfigService extends ChangeNotifier {
   final SharedPreferences _prefs;
@@ -15,7 +16,7 @@ class ScheduleConfigService extends ChangeNotifier {
   DutyScheduleConfig? _defaultConfig;
   late Directory _configsPath;
   static const String _configDirName = 'configs';
-  static const String _setupCompletedKey = 'setup_completed';
+  static const String _setupCompletedKey = kPrefsKeySetupCompleted;
 
   ScheduleConfigService(this._prefs);
 
@@ -236,7 +237,7 @@ class ScheduleConfigService extends ChangeNotifier {
   Future<void> setDefaultConfig(DutyScheduleConfig config) async {
     try {
       AppLogger.i('Setting default config: ${config.name}');
-      await _prefs.setString('default_config', config.name);
+      await _prefs.setString(kPrefsKeyDefaultConfig, config.name);
       _defaultConfig = config;
       AppLogger.i('Default config saved to SharedPreferences');
     } catch (e) {
@@ -259,7 +260,7 @@ class ScheduleConfigService extends ChangeNotifier {
   Future<void> resetSetup() async {
     try {
       AppLogger.i('Resetting setup state');
-      await _prefs.remove('default_config');
+      await _prefs.remove(kPrefsKeyDefaultConfig);
       await _prefs.remove(_setupCompletedKey);
       _defaultConfig = null;
       AppLogger.i('Setup state reset');
@@ -271,7 +272,7 @@ class ScheduleConfigService extends ChangeNotifier {
 
   Future<DutyScheduleConfig?> _loadDefaultConfig() async {
     try {
-      final defaultConfigName = _prefs.getString('default_config');
+      final defaultConfigName = _prefs.getString(kPrefsKeyDefaultConfig);
       if (defaultConfigName == null) return null;
 
       return _configs.firstWhere(

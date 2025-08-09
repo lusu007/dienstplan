@@ -1,4 +1,5 @@
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/constants/cache_constants.dart';
 
 abstract class BaseCache<T> {
   final String cacheName;
@@ -7,7 +8,7 @@ abstract class BaseCache<T> {
 
   BaseCache({
     required this.cacheName,
-    this.defaultTtl = const Duration(minutes: 30),
+    this.defaultTtl = kBaseCacheDefaultTtl,
     this.maxSize = 100,
   });
 

@@ -3,6 +3,7 @@ import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/data/repositories/schedule_repository.dart';
 import 'package:dienstplan/data/repositories/config_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
 class GenerateSchedulesUseCase {
@@ -49,10 +50,13 @@ class GenerateSchedulesUseCase {
       );
 
       // If we have schedules for most of the range, only generate missing ones
-      const expectedSchedulesPerDay = 5; // Approximate number of duty groups
+      const int expectedSchedulesPerDay =
+          kExpectedSchedulesPerDay; // Approximate number of duty groups
       final daysDifference = endDate.difference(startDate).inDays;
-      final expectedTotalSchedules = daysDifference * expectedSchedulesPerDay;
-      const coverageThreshold = 0.8; // 80% coverage threshold
+      final int expectedTotalSchedules =
+          daysDifference * expectedSchedulesPerDay;
+      const double coverageThreshold =
+          kCoverageThreshold; // 80% coverage threshold
 
       if (existingSchedules.length >=
           expectedTotalSchedules * coverageThreshold) {

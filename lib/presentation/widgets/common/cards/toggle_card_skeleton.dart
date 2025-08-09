@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/core/constants/animation_constants.dart';
 
 class ToggleCardSkeleton extends StatefulWidget {
   final IconData icon;
@@ -32,7 +33,7 @@ class _ToggleCardSkeletonState extends State<ToggleCardSkeleton>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: kAnimSkeleton,
       vsync: this,
     );
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/ui_constants.dart';
+import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:intl/intl.dart';
 
 class CalendarDateSelector extends StatefulWidget {
@@ -38,7 +40,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: kAnimDefault,
       vsync: this,
     );
     _fadeAnimation = Tween<double>(
@@ -236,7 +238,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
             onPressed: _displayedYear > 2018 && _monthPageController != null
                 ? () {
                     _monthPageController!.previousPage(
-                      duration: const Duration(milliseconds: 300),
+                      duration: kAnimDefault,
                       curve: Curves.easeInOut,
                     );
                   }
@@ -283,7 +285,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
             onPressed: _displayedYear < 2100 && _monthPageController != null
                 ? () {
                     _monthPageController!.nextPage(
-                      duration: const Duration(milliseconds: 300),
+                      duration: kAnimDefault,
                       curve: Curves.easeInOut,
                     );
                   }
@@ -304,7 +306,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
             onPressed: _yearBlockStart > 2018 && _yearPageController != null
                 ? () {
                     _yearPageController!.previousPage(
-                      duration: const Duration(milliseconds: 300),
+                      duration: kAnimDefault,
                       curve: Curves.easeInOut,
                     );
                   }
@@ -351,7 +353,7 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                 _yearBlockStart + 11 < 2100 && _yearPageController != null
                     ? () {
                         _yearPageController!.nextPage(
-                          duration: const Duration(milliseconds: 300),
+                          duration: kAnimDefault,
                           curve: Curves.easeInOut,
                         );
                       }
@@ -398,7 +400,10 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
               color: isFocusedMonth
                   ? Theme.of(context).colorScheme.primary
                   : (isCurrentMonth
-                      ? Theme.of(context).colorScheme.primary.withAlpha(128)
+                      ? Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withAlpha(kAlphaToday)
                       : Colors.transparent),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -455,7 +460,10 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                   ? (isFocusedYear
                       ? Theme.of(context).colorScheme.primary
                       : (isCurrentYear
-                          ? Theme.of(context).colorScheme.primary.withAlpha(128)
+                          ? Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withAlpha(kAlphaToday)
                           : Colors.transparent))
                   : Colors.grey.withAlpha((0.1 * 255).toInt()),
               borderRadius: BorderRadius.circular(12),

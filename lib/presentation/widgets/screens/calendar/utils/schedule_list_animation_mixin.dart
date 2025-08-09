@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/animation_constants.dart';
 
 mixin ScheduleListAnimationMixin<T extends StatefulWidget> on State<T> {
   late AnimationController animationController;
@@ -8,7 +9,7 @@ mixin ScheduleListAnimationMixin<T extends StatefulWidget> on State<T> {
 
   void initializeAnimations(TickerProvider vsync) {
     animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: kAnimFast,
       vsync: vsync,
     );
 
@@ -40,7 +41,7 @@ mixin ScheduleListAnimationMixin<T extends StatefulWidget> on State<T> {
       animationController.forward();
 
       // Reset the flag after animation completes
-      Future.delayed(const Duration(milliseconds: 250), () {
+      Future.delayed(kAnimDebounce, () {
         if (mounted) {
           setState(() {
             hasAnimated = false;
