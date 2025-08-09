@@ -104,15 +104,38 @@ class CalendarViewUiBuilder {
       final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
         final sel = state?.selectedDay;
         if (sel == null) return false;
-        return s.date.year == sel.year &&
-            s.date.month == sel.month &&
-            s.date.day == sel.day;
+
+        // Normalize dates to avoid timezone issues
+        final scheduleDate = DateTime(s.date.year, s.date.month, s.date.day);
+        final selectedDate = DateTime(sel.year, sel.month, sel.day);
+
+        // Also ensure we're using the correct config
+        final activeConfig = state?.activeConfigName;
+        final isCorrectConfig =
+            activeConfig == null || s.configName == activeConfig;
+
+        return scheduleDate.isAtSameMomentAs(selectedDate) && isCorrectConfig;
       }).toList();
 
       // Only show loading if selected day has no schedules AND we're actually loading
       final hasSchedulesForSelectedDay = selectedDaySchedules.isNotEmpty;
       final isLoadingSelectedDay =
           (state?.isLoading ?? false) && !hasSchedulesForSelectedDay;
+
+      // Trigger data loading if we have no schedules for selected day and not currently loading
+      if (!hasSchedulesForSelectedDay &&
+          !isLoadingSelectedDay &&
+          state?.selectedDay != null &&
+          state?.activeConfigName != null) {
+        // Use post-frame callback to avoid building during build
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            ref
+                .read(scheduleNotifierProvider.notifier)
+                .setSelectedDay(state!.selectedDay);
+          }
+        });
+      }
 
       return DutyScheduleList(
         schedules: selectedDaySchedules,

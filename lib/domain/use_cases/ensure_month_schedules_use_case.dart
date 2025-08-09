@@ -24,6 +24,7 @@ class EnsureMonthSchedulesUseCase {
       configName: configName,
     );
     final bool hasValid = _hasValidSchedules(existing, configName);
+
     if (hasValid) {
       return existing;
     }
@@ -32,17 +33,27 @@ class EnsureMonthSchedulesUseCase {
       startDate: monthStart,
       endDate: monthEnd,
     );
+
     return generated;
   }
 
   bool _hasValidSchedules(List<Schedule> schedules, String configName) {
-    for (final Schedule s in schedules) {
-      if (s.configName == configName &&
-          s.dutyTypeId.isNotEmpty &&
-          s.dutyTypeId != '-') {
-        return true;
-      }
+    // Check if we have any schedules for the correct config (including free days with "-")
+    final configSchedules =
+        schedules.where((s) => s.configName == configName).toList();
+
+    if (configSchedules.isEmpty) {
+      return false;
     }
-    return false;
+
+    // Count unique dates - a valid month should have schedules for most days
+    final uniqueDates = configSchedules
+        .map((s) => DateTime(s.date.year, s.date.month, s.date.day))
+        .toSet();
+
+    // For a valid month, expect at least 25 days of schedules (accounting for month variations)
+    final hasReasonableCoverage = uniqueDates.length >= 25;
+
+    return hasReasonableCoverage;
   }
 }

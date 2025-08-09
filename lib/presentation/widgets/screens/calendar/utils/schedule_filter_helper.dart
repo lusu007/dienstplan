@@ -13,9 +13,13 @@ class ScheduleFilterHelper {
     }
 
     final filteredSchedules = schedules.where((schedule) {
-      final isSameDay = schedule.date.year == selectedDay.year &&
-          schedule.date.month == selectedDay.month &&
-          schedule.date.day == selectedDay.day;
+      // Normalize dates to avoid timezone issues
+      final scheduleDate =
+          DateTime(schedule.date.year, schedule.date.month, schedule.date.day);
+      final selectedDate =
+          DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+      final isSameDay = scheduleDate.isAtSameMomentAs(selectedDate);
+
       final isActiveConfig = schedule.configName == activeConfig.meta.name;
       final isSelectedDutyGroup = selectedDutyGroup == null ||
           schedule.dutyGroupName == selectedDutyGroup;

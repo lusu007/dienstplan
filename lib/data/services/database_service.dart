@@ -20,8 +20,35 @@ class DatabaseService {
       version: _currentVersion,
       onCreate: _createDatabase,
       onUpgrade: _upgradeDatabase,
+      onOpen: _configureDatabase,
     );
     return _database!;
+  }
+
+  Future<void> _configureDatabase(Database db) async {
+    AppLogger.i('Configuring database with performance optimizations');
+
+    try {
+      // Enable WAL mode for better write performance and concurrent reads
+      await db.rawQuery('PRAGMA journal_mode=WAL');
+
+      // Set synchronous to NORMAL for better performance while maintaining data safety
+      await db.rawQuery('PRAGMA synchronous=NORMAL');
+
+      // Enable foreign key constraints for data integrity
+      await db.rawQuery('PRAGMA foreign_keys=ON');
+
+      // Additional performance optimizations
+      await db
+          .rawQuery('PRAGMA cache_size=10000'); // Increase cache size (10MB)
+      await db.rawQuery(
+          'PRAGMA temp_store=MEMORY'); // Store temporary tables in memory
+
+      AppLogger.i('Database performance optimizations applied');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error applying database optimizations', e, stackTrace);
+      // Continue without optimizations rather than failing completely
+    }
   }
 
   Future<void> _createDatabase(Database db, int version) async {
