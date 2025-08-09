@@ -50,7 +50,7 @@ class SelectionCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? mainColor.withOpacity(0.1) : AppColors.white,
+        color: isSelected ? mainColor.withValues(alpha: 0.1) : AppColors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isSelected ? mainColor : Colors.grey.shade300,
@@ -77,8 +77,9 @@ class SelectionCard extends StatelessWidget {
                 subtitle!,
                 style: TextStyle(
                   fontSize: 15,
-                  color:
-                      isSelected ? mainColor.withOpacity(0.8) : Colors.black54,
+                  color: isSelected
+                      ? mainColor.withValues(alpha: 0.8)
+                      : Colors.black54,
                 ),
               )
             : null,
