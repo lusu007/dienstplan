@@ -42,12 +42,11 @@ final scheduleConfigServiceProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ScheduleConfigServiceRef = FutureProviderRef<ScheduleConfigService>;
-String _$languageServiceHash() => r'6b365cc3d0c97f3f4429f199947d03eade218be1';
+String _$languageServiceHash() => r'7a5e6d1f64f2dcbbed73ac955594882881122816';
 
 /// See also [languageService].
 @ProviderFor(languageService)
-final languageServiceProvider =
-    AutoDisposeFutureProvider<LanguageService>.internal(
+final languageServiceProvider = FutureProvider<LanguageService>.internal(
   languageService,
   name: r'languageServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -59,7 +58,7 @@ final languageServiceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef LanguageServiceRef = AutoDisposeFutureProviderRef<LanguageService>;
+typedef LanguageServiceRef = FutureProviderRef<LanguageService>;
 String _$currentLocaleHash() => r'e0c340c5146add203f0e53deb3534a6a02798913';
 
 /// See also [currentLocale].
@@ -454,6 +453,25 @@ final dateRangePolicyProvider = AutoDisposeProvider<DateRangePolicy>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DateRangePolicyRef = AutoDisposeProviderRef<DateRangePolicy>;
+String _$configQueryServiceHash() =>
+    r'3bbd10deb49c014e9eb60d18d5c37e655f267d1b';
+
+/// See also [configQueryService].
+@ProviderFor(configQueryService)
+final configQueryServiceProvider =
+    AutoDisposeProvider<ConfigQueryService>.internal(
+  configQueryService,
+  name: r'configQueryServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$configQueryServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ConfigQueryServiceRef = AutoDisposeProviderRef<ConfigQueryService>;
 String _$ensureMonthSchedulesUseCaseHash() =>
     r'6fa0fa93ee9d14338bb7a8b8a72390c72e88a23b';
 

@@ -13,6 +13,9 @@ import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedu
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/other_section_skeleton.dart';
+import 'package:dienstplan/core/errors/failure_presenter.dart';
+import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -54,7 +57,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               const Icon(Icons.error_outline, size: 48, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading settings: $e'),
+              Builder(builder: (context) {
+                const presenter = FailurePresenter();
+                return FutureBuilder(
+                  future: ref.read(languageServiceProvider.future),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox.shrink();
+                    }
+                    final l10nResolved = AppLocalizations.of(context);
+                    final Failure failure = e is Failure
+                        ? e
+                        : const UnknownFailure(technicalMessage: 'unknown');
+                    final String message =
+                        presenter.present(failure, l10nResolved);
+                    return Text(message, textAlign: TextAlign.center);
+                  },
+                );
+              }),
             ],
           ),
         ),

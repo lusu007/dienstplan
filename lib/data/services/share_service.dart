@@ -13,10 +13,10 @@ class ShareService {
   ///
   /// This will show the native share sheet with all available apps
   /// including WhatsApp, SMS, Email, and other messaging apps
-  static Future<void> shareApp(AppLocalizations l10n) async {
+  Future<void> shareApp(AppLocalizations l10n) async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      final shareText = _buildShareText(packageInfo, l10n);
+      final String shareText = _buildShareText(packageInfo, l10n);
 
       await SharePlus.instance.share(
         ShareParams(
@@ -34,13 +34,12 @@ class ShareService {
   }
 
   /// Opens the app store directly as fallback
-  static Future<void> openAppStore(AppLocalizations l10n) async {
+  Future<void> openAppStore(AppLocalizations l10n) async {
     await _openAppStore(l10n);
   }
 
   /// Builds the share text with app information
-  static String _buildShareText(
-      PackageInfo packageInfo, AppLocalizations l10n) {
+  String _buildShareText(PackageInfo packageInfo, AppLocalizations l10n) {
     return l10n.shareAppMessage(
       _appStoreUrl,
       _playStoreUrl,
@@ -48,7 +47,7 @@ class ShareService {
   }
 
   /// Opens the appropriate app store based on platform
-  static Future<void> _openAppStore(AppLocalizations l10n) async {
+  Future<void> _openAppStore(AppLocalizations l10n) async {
     try {
       await SharePlus.instance.share(
         ShareParams(

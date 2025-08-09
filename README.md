@@ -95,6 +95,18 @@ lib/
     └── widgets/           # Reusable UI components
 ```
 
+### Riverpod Dependency Injection
+- **No GetIt**: The app does not use GetIt. DI is handled via Riverpod providers.
+- **Providers**: Defined in `lib/core/di/riverpod_providers.dart` and generated into `lib/core/di/riverpod_providers.g.dart`.
+- **KeepAlive**: Long-lived services (e.g., `databaseService`, `languageService`, `sentryService`, `scheduleConfigService`) are marked with `@Riverpod(keepAlive: true)` to avoid re-initialization between screens.
+- **Usage**: Consumers access dependencies via `ref.read(someProvider)` / `ref.watch(someProvider)` (or `.future` for async providers).
+
+### App Startup Path
+- Entry point: `lib/main.dart`
+- Bootstrap: `AppInitializer.initialize()` creates a shared `ProviderContainer`, warms critical services, and returns the container.
+- Sentry: Initialized via `AppInitializer.initializeSentry(...)` before `runApp`.
+- Root widget: `presentation/app.dart` wrapped in `UncontrolledProviderScope` using the prebuilt container.
+
 ### Schedule Configuration Format
 Duty schedules are defined using JSON configuration files in `assets/schedules/`. The format supports comprehensive schedule management.
 

@@ -90,7 +90,9 @@ class AppLogger {
         final sentryService =
             _providerContainer?.read(sentryServiceProvider).valueOrNull;
 
-        if (sentryService != null && sentryService.isEnabled && Sentry.isEnabled) {
+        if (sentryService != null &&
+            sentryService.isEnabled &&
+            Sentry.isEnabled) {
           final sentryLevel = _mapToSentryLevel(level);
           if (error != null) {
             Sentry.logger.error(
