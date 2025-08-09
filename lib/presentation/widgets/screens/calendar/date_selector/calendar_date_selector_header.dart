@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
-class CalendarDateSelectorHeader extends StatefulWidget {
-  final ScheduleController scheduleController;
+class CalendarDateSelectorHeader extends ConsumerWidget {
   final VoidCallback onLeftChevronTap;
   final VoidCallback onRightChevronTap;
   final Locale locale;
@@ -13,7 +13,6 @@ class CalendarDateSelectorHeader extends StatefulWidget {
 
   const CalendarDateSelectorHeader({
     super.key,
-    required this.scheduleController,
     required this.onLeftChevronTap,
     required this.onRightChevronTap,
     required this.locale,
@@ -22,35 +21,10 @@ class CalendarDateSelectorHeader extends StatefulWidget {
   });
 
   @override
-  State<CalendarDateSelectorHeader> createState() =>
-      _CalendarDateSelectorHeaderState();
-}
-
-class _CalendarDateSelectorHeaderState
-    extends State<CalendarDateSelectorHeader> {
-  @override
-  void initState() {
-    super.initState();
-    // Listen to controller changes
-    widget.scheduleController.addListener(_onControllerChanged);
-  }
-
-  @override
-  void dispose() {
-    // Remove listener
-    widget.scheduleController.removeListener(_onControllerChanged);
-    super.dispose();
-  }
-
-  void _onControllerChanged() {
-    // Rebuild when controller changes
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final focusedDay = widget.scheduleController.focusedDay ?? DateTime.now();
+    final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final focusedDay = state?.focusedDay ?? DateTime.now();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -60,7 +34,7 @@ class _CalendarDateSelectorHeaderState
           _buildNavigationButton(
             context: context,
             icon: Icons.chevron_left,
-            onTap: widget.onLeftChevronTap,
+            onTap: onLeftChevronTap,
             tooltip: l10n.previousPeriod,
           ),
 
@@ -74,11 +48,11 @@ class _CalendarDateSelectorHeaderState
                 children: [
                   CalendarDateSelector(
                     currentDate: focusedDay,
-                    onDateSelected: widget.onDateSelected,
-                    locale: widget.locale,
-                    selectedDay: widget.scheduleController.selectedDay,
+                    onDateSelected: onDateSelected,
+                    locale: locale,
+                    selectedDay: state?.selectedDay,
                   ),
-                  _buildTodayButton(context, l10n),
+                  _buildTodayButton(context, l10n, ref),
                 ],
               ),
             ),
@@ -90,7 +64,7 @@ class _CalendarDateSelectorHeaderState
           _buildNavigationButton(
             context: context,
             icon: Icons.chevron_right,
-            onTap: widget.onRightChevronTap,
+            onTap: onRightChevronTap,
             tooltip: l10n.nextPeriod,
           ),
         ],
@@ -98,26 +72,17 @@ class _CalendarDateSelectorHeaderState
     );
   }
 
-  Widget _buildTodayButton(BuildContext context, AppLocalizations l10n) {
+  Widget _buildTodayButton(
+      BuildContext context, AppLocalizations l10n, WidgetRef ref) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () async {
-          // Use the new goToToday method
-          await widget.scheduleController.goToToday();
+          // Use notifier to jump to today and refresh schedules
+          await ref.read(scheduleNotifierProvider.notifier).goToToday();
 
           // Call the callback if provided
-          widget.onTodayButtonPressed?.call();
-
-          // Force multiple rebuilds to ensure proper synchronization
-          // This ensures the PageView is rebuilt around the new "today" day
-          for (int i = 0; i < 3; i++) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                setState(() {});
-              }
-            });
-          }
+          onTodayButtonPressed?.call();
         },
         borderRadius: BorderRadius.circular(8),
         child: Container(

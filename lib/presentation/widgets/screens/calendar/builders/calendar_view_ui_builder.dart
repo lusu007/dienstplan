@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_builders_helper.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
+
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/domain/entities/schedule.dart';
 
 class CalendarViewUiBuilder {
   static Widget buildCalendarHeader({
     required BuildContext context,
-    required ScheduleController scheduleController,
     required GlobalKey headerKey,
     required VoidCallback onLeftChevronTap,
     required VoidCallback onRightChevronTap,
@@ -20,7 +23,6 @@ class CalendarViewUiBuilder {
   }) {
     return CalendarDateSelectorHeader(
       key: headerKey,
-      scheduleController: scheduleController,
       onLeftChevronTap: onLeftChevronTap,
       onRightChevronTap: onRightChevronTap,
       locale: Localizations.localeOf(context),
@@ -31,14 +33,12 @@ class CalendarViewUiBuilder {
 
   static Widget buildTableCalendar({
     required BuildContext context,
-    required ScheduleController scheduleController,
     required GlobalKey calendarKey,
     required Function(CalendarFormat) onFormatChanged,
     required Function(DateTime) onPageChanged,
     required VoidCallback onDaySelected,
   }) {
     return _TableCalendarWrapper(
-      scheduleController: scheduleController,
       calendarKey: calendarKey,
       onFormatChanged: onFormatChanged,
       onPageChanged: onPageChanged,
@@ -93,62 +93,76 @@ class CalendarViewUiBuilder {
 
   static Widget buildDutyScheduleList({
     required BuildContext context,
-    required ScheduleController scheduleController,
     bool shouldAnimate = false,
   }) {
-    // Only use selectedDutyGroup if it's explicitly set by user action
-    // Don't automatically use preferredDutyGroup for filtering
-    final selectedGroup =
-        scheduleController.selectedDutyGroup?.isNotEmpty == true
-            ? scheduleController.selectedDutyGroup
-            : null;
+    return Consumer(builder: (context, ref, __) {
+      final asyncState = ref.watch(scheduleNotifierProvider);
+      final state = asyncState.valueOrNull;
+      final String? selectedGroup = state?.selectedDutyGroup;
 
-    return DutyScheduleList(
-      schedules: scheduleController.schedulesForSelectedDay.cast(),
-      selectedDutyGroup: selectedGroup,
-      activeConfigName: scheduleController.activeConfig?.name,
-      dutyTypeOrder: scheduleController.activeConfig?.dutyTypeOrder,
-      dutyTypes: scheduleController.activeConfig?.dutyTypes,
-      onDutyGroupSelected: (group) {
-        scheduleController.setSelectedDutyGroup(group ?? '');
-      },
-      shouldAnimate: shouldAnimate,
-      isLoading: scheduleController.isLoading,
-    );
+      // Filter schedules for selected day
+      final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
+        final sel = state?.selectedDay;
+        if (sel == null) return false;
+        return s.date.year == sel.year &&
+            s.date.month == sel.month &&
+            s.date.day == sel.day;
+      }).toList();
+
+      // Only show loading if selected day has no schedules AND we're actually loading
+      final hasSchedulesForSelectedDay = selectedDaySchedules.isNotEmpty;
+      final isLoadingSelectedDay =
+          (state?.isLoading ?? false) && !hasSchedulesForSelectedDay;
+
+      return DutyScheduleList(
+        schedules: selectedDaySchedules,
+        selectedDutyGroup: selectedGroup,
+        activeConfigName: state?.activeConfigName,
+        dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
+        dutyTypes: state?.activeConfig?.dutyTypes,
+        onDutyGroupSelected: (group) {
+          ref
+              .read(scheduleNotifierProvider.notifier)
+              .setSelectedDutyGroup(group);
+        },
+        shouldAnimate: shouldAnimate,
+        isLoading: isLoadingSelectedDay,
+      );
+    });
   }
 
   static Widget buildFilterStatusText({
     required BuildContext context,
-    required ScheduleController scheduleController,
   }) {
     final l10n = AppLocalizations.of(context);
-    final filterText = scheduleController.selectedDutyGroup?.isNotEmpty == true
-        ? scheduleController.selectedDutyGroup!
-        : l10n.all;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Text(
-        '${l10n.filteredBy}: $filterText',
-        style: TextStyle(
-          fontSize: 12.0,
-          color: Colors.grey.shade600,
-          fontStyle: FontStyle.italic,
+    return Consumer(builder: (context, ref, __) {
+      final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+      final filterText = (state?.selectedDutyGroup ?? '').isNotEmpty
+          ? state!.selectedDutyGroup!
+          : l10n.all;
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Text(
+          '${l10n.filteredBy}: $filterText',
+          style: TextStyle(
+            fontSize: 12.0,
+            color: Colors.grey.shade600,
+            fontStyle: FontStyle.italic,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
-class _TableCalendarWrapper extends StatefulWidget {
-  final ScheduleController scheduleController;
+class _TableCalendarWrapper extends ConsumerWidget {
   final GlobalKey calendarKey;
   final Function(CalendarFormat) onFormatChanged;
   final Function(DateTime) onPageChanged;
   final VoidCallback onDaySelected;
 
   const _TableCalendarWrapper({
-    required this.scheduleController,
     required this.calendarKey,
     required this.onFormatChanged,
     required this.onPageChanged,
@@ -156,87 +170,87 @@ class _TableCalendarWrapper extends StatefulWidget {
   });
 
   @override
-  State<_TableCalendarWrapper> createState() {
-    return _TableCalendarWrapperState();
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final calendarFormat = state?.calendarFormat ?? CalendarFormat.month;
+    final focusedDay = state?.focusedDay ?? DateTime.now();
 
-class _TableCalendarWrapperState extends State<_TableCalendarWrapper> {
-  CalendarFormat? _lastFormat;
-  int _lastScheduleCount = 0;
-  DateTime? _lastFocusedDay;
-  DateTime? _lastSelectedDay;
-
-  @override
-  void initState() {
-    super.initState();
-    // Listen to controller changes to sync calendar
-    widget.scheduleController.addListener(_onControllerChanged);
-    _updateLocalState();
-  }
-
-  @override
-  void dispose() {
-    widget.scheduleController.removeListener(_onControllerChanged);
-    super.dispose();
-  }
-
-  void _onControllerChanged() {
-    if (mounted) {
-      final currentFormat = widget.scheduleController.calendarFormat;
-      final currentScheduleCount = widget.scheduleController.schedules.length;
-      final currentFocusedDay = widget.scheduleController.focusedDay;
-      final currentSelectedDay = widget.scheduleController.selectedDay;
-
-      // Only rebuild if relevant properties changed
-      if (_lastFormat != currentFormat ||
-          _lastScheduleCount != currentScheduleCount ||
-          _lastFocusedDay != currentFocusedDay ||
-          _lastSelectedDay != currentSelectedDay) {
-        _lastFormat = currentFormat;
-        _lastScheduleCount = currentScheduleCount;
-        _lastFocusedDay = currentFocusedDay;
-        _lastSelectedDay = currentSelectedDay;
-
-        setState(() {});
-      }
-    }
-  }
-
-  void _updateLocalState() {
-    _lastFormat = widget.scheduleController.calendarFormat;
-    _lastScheduleCount = widget.scheduleController.schedules.length;
-    _lastFocusedDay = widget.scheduleController.focusedDay;
-    _lastSelectedDay = widget.scheduleController.selectedDay;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final calendarFormat = widget.scheduleController.calendarFormat;
-    final scheduleCount = widget.scheduleController.schedules.length;
-
-    // Use a stable key that only changes when format or schedule count changes
-    final calendarKey = ValueKey('calendar_${calendarFormat}_$scheduleCount');
+    // Create unique hash from schedule content of the visible calendar area
+    // Include previous, current and next months so "out days" changes also trigger rebuilds
+    final DateTime hashStartMonth =
+        DateTime(focusedDay.year, focusedDay.month - 1, 1);
+    final DateTime hashEndMonth =
+        DateTime(focusedDay.year, focusedDay.month + 2, 0); // end of next month
+    final List<Schedule> visibleSchedulesForHash = (state?.schedules ??
+            const <Schedule>[])
+        .where((schedule) =>
+            schedule.date
+                .isAfter(hashStartMonth.subtract(const Duration(days: 1))) &&
+            schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))))
+        .toList();
+    visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
 
     return TableCalendar(
-      key: calendarKey,
       firstDay: CalendarConfig.firstDay,
       lastDay: CalendarConfig.lastDay,
-      focusedDay: widget.scheduleController.focusedDay ?? DateTime.now(),
+      focusedDay: focusedDay,
       calendarFormat: calendarFormat,
       startingDayOfWeek: CalendarConfig.startingDayOfWeek,
       selectedDayPredicate: (day) {
-        return isSameDay(widget.scheduleController.selectedDay, day);
+        return isSameDay(state?.selectedDay, day);
       },
-      onDaySelected: (selectedDay, focusedDay) {
-        // This callback is not used since we handle day selection in the calendar builders
-        // The calendar builders directly call the controller methods
+      onDaySelected: (selectedDay, focusedDay) async {
+        await ref
+            .read(scheduleNotifierProvider.notifier)
+            .setSelectedDay(selectedDay);
+        ref.read(scheduleNotifierProvider.notifier).setFocusedDay(focusedDay);
+        onDaySelected();
       },
-      onFormatChanged: widget.onFormatChanged,
-      onPageChanged: widget.onPageChanged,
-      calendarBuilders: CalendarBuildersHelper.createCalendarBuilders(
-        widget.scheduleController,
-        onDaySelected: widget.onDaySelected,
+      onFormatChanged: (format) {
+        // Single source of truth: notifier handles persistence and state
+        ref.read(scheduleNotifierProvider.notifier).setCalendarFormat(format);
+        onFormatChanged(format);
+      },
+      onPageChanged: (focusedDay) async {
+        // Single source of truth: notifier loads/generates months
+        await ref
+            .read(scheduleNotifierProvider.notifier)
+            .setFocusedDay(focusedDay);
+        onPageChanged(focusedDay);
+      },
+      calendarBuilders: CalendarBuilders(
+        defaultBuilder: (context, day, focusedDay) {
+          return ReactiveCalendarDay(
+            day: day,
+            dayType: CalendarDayType.default_,
+            onDaySelected: onDaySelected,
+          );
+        },
+        outsideBuilder: (context, day, focusedDay) {
+          return ReactiveCalendarDay(
+            day: day,
+            dayType: CalendarDayType.outside,
+            onDaySelected: onDaySelected,
+          );
+        },
+        selectedBuilder: (context, day, focusedDay) {
+          return ReactiveCalendarDay(
+            day: day,
+            dayType: CalendarDayType.selected,
+            width: 40.0,
+            height: 50.0,
+            onDaySelected: onDaySelected,
+          );
+        },
+        todayBuilder: (context, day, focusedDay) {
+          return ReactiveCalendarDay(
+            day: day,
+            dayType: CalendarDayType.today,
+            width: 40.0,
+            height: 50.0,
+            onDaySelected: onDaySelected,
+          );
+        },
       ),
       calendarStyle: CalendarConfig.createCalendarStyle(context),
       headerStyle: CalendarConfig.createHeaderStyle(),

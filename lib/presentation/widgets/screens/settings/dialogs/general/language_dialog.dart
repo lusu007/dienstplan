@@ -4,6 +4,8 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 
 class LanguageDialog {
   static void show(BuildContext context) {
@@ -12,34 +14,43 @@ class LanguageDialog {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.selectLanguage),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SelectionCard(
-              title: l10n.german,
-              isSelected: languageService.currentLocale.languageCode == 'de',
-              onTap: () {
-                languageService.setLanguage('de');
-                Navigator.pop(context);
-              },
-              mainColor: AppColors.primary,
-              useDialogStyle: true,
-            ),
-            SelectionCard(
-              title: l10n.english,
-              isSelected: languageService.currentLocale.languageCode == 'en',
-              onTap: () {
-                languageService.setLanguage('en');
-                Navigator.pop(context);
-              },
-              mainColor: AppColors.primary,
-              useDialogStyle: true,
-            ),
-          ],
-        ),
-      ),
+      builder: (context) => Consumer(
+          builder: (context, ref, _) => AlertDialog(
+                title: Text(l10n.selectLanguage),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SelectionCard(
+                      title: l10n.german,
+                      isSelected:
+                          languageService.currentLocale.languageCode == 'de',
+                      onTap: () async {
+                        languageService.setLanguage('de');
+                        await ref
+                            .read(settingsNotifierProvider.notifier)
+                            .setLanguage('de');
+                        if (context.mounted) Navigator.pop(context);
+                      },
+                      mainColor: AppColors.primary,
+                      useDialogStyle: true,
+                    ),
+                    SelectionCard(
+                      title: l10n.english,
+                      isSelected:
+                          languageService.currentLocale.languageCode == 'en',
+                      onTap: () async {
+                        languageService.setLanguage('en');
+                        await ref
+                            .read(settingsNotifierProvider.notifier)
+                            .setLanguage('en');
+                        if (context.mounted) Navigator.pop(context);
+                      },
+                      mainColor: AppColors.primary,
+                      useDialogStyle: true,
+                    ),
+                  ],
+                ),
+              )),
     );
   }
 }

@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
-import 'package:dienstplan/presentation/controllers/schedule_controller.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 
 class CalendarBuildersHelper {
-  static CalendarBuilders createCalendarBuilders(
-    ScheduleController scheduleController, {
+  static CalendarBuilders createCalendarBuilders({
     VoidCallback? onDaySelected,
   }) {
     return CalendarBuilders(
       defaultBuilder: (context, day, focusedDay) {
-        return _ReactiveCalendarDay(
+        return ReactiveCalendarDay(
           day: day,
-          scheduleController: scheduleController,
           dayType: CalendarDayType.default_,
           onDaySelected: onDaySelected,
         );
       },
       outsideBuilder: (context, day, focusedDay) {
-        return _ReactiveCalendarDay(
+        return ReactiveCalendarDay(
           day: day,
-          scheduleController: scheduleController,
           dayType: CalendarDayType.outside,
           onDaySelected: onDaySelected,
         );
       },
       selectedBuilder: (context, day, focusedDay) {
-        return _ReactiveCalendarDay(
+        return ReactiveCalendarDay(
           day: day,
-          scheduleController: scheduleController,
           dayType: CalendarDayType.selected,
           width: 40.0,
           height: 50.0,
@@ -37,9 +34,8 @@ class CalendarBuildersHelper {
         );
       },
       todayBuilder: (context, day, focusedDay) {
-        return _ReactiveCalendarDay(
+        return ReactiveCalendarDay(
           day: day,
-          scheduleController: scheduleController,
           dayType: CalendarDayType.today,
           width: 40.0,
           height: 50.0,
@@ -50,17 +46,18 @@ class CalendarBuildersHelper {
   }
 
   static String _getDutyAbbreviationForDate(
-      DateTime day, ScheduleController scheduleController) {
+    DateTime day, {
+    required List<Schedule> schedules,
+    required String? activeConfigName,
+    required String? preferredGroup,
+  }) {
     try {
-      // First check if we have an active config
-      if (scheduleController.activeConfig == null) {
+      if (activeConfigName == null || activeConfigName.isEmpty) {
         return '';
       }
 
-      final activeConfigName = scheduleController.activeConfig!.name;
-
       // Get schedules for the specific day and active config
-      final schedulesForDay = scheduleController.schedules.where((schedule) {
+      final schedulesForDay = schedules.where((schedule) {
         final isSameDay = schedule.date.year == day.year &&
             schedule.date.month == day.month &&
             schedule.date.day == day.day;
@@ -71,20 +68,20 @@ class CalendarBuildersHelper {
         return isSameDay && isActiveConfig;
       }).toList();
 
-      // If no schedules found for the active config, return empty string
+      // If no schedules found for the active config, return empty string (no chip)
       if (schedulesForDay.isEmpty) {
         return '';
       }
 
-      final preferredGroup = scheduleController.preferredDutyGroup;
+      final preferredGroupName = preferredGroup;
 
-      // Only show duty abbreviation if a preferred group is set
-      if (preferredGroup != null && preferredGroup.isNotEmpty) {
+      // Try to show duty abbreviation for preferred group first
+      if (preferredGroupName != null && preferredGroupName.isNotEmpty) {
         Schedule? preferredSchedule;
         try {
           preferredSchedule = schedulesForDay.firstWhere(
             (s) =>
-                s.dutyGroupName == preferredGroup &&
+                s.dutyGroupName == preferredGroupName &&
                 s.dutyTypeId.isNotEmpty &&
                 s.dutyTypeId != '-',
           );
@@ -94,9 +91,35 @@ class CalendarBuildersHelper {
         if (preferredSchedule != null) {
           return preferredSchedule.dutyTypeId;
         }
+
+        // If preferred group has "-" or empty, check if it's a free day for that group
+        try {
+          final preferredGroupSchedule = schedulesForDay.firstWhere(
+            (s) => s.dutyGroupName == preferredGroupName,
+          );
+          if (preferredGroupSchedule.dutyTypeId == '-' ||
+              preferredGroupSchedule.dutyTypeId.isEmpty) {
+            return ''; // Free day for preferred group - no chip
+          }
+        } catch (_) {
+          // No schedule for preferred group
+        }
       }
 
-      // If no preferred group is set or no preferred schedule found, show nothing
+      // If no preferred group is set or no preferred schedule found,
+      // show the first available duty type for this day (only if no preferred group is set)
+      if (preferredGroupName == null || preferredGroupName.isEmpty) {
+        try {
+          final firstSchedule = schedulesForDay.firstWhere(
+            (s) => s.dutyTypeId.isNotEmpty && s.dutyTypeId != '-',
+          );
+
+          return firstSchedule.dutyTypeId;
+        } catch (e) {
+          return '';
+        }
+      }
+
       return '';
     } catch (e) {
       return '';
@@ -104,17 +127,16 @@ class CalendarBuildersHelper {
   }
 }
 
-class _ReactiveCalendarDay extends StatefulWidget {
+class ReactiveCalendarDay extends ConsumerStatefulWidget {
   final DateTime day;
-  final ScheduleController scheduleController;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
   final VoidCallback? onDaySelected;
 
-  const _ReactiveCalendarDay({
+  const ReactiveCalendarDay({
+    super.key,
     required this.day,
-    required this.scheduleController,
     required this.dayType,
     this.width,
     this.height,
@@ -122,77 +144,66 @@ class _ReactiveCalendarDay extends StatefulWidget {
   });
 
   @override
-  State<_ReactiveCalendarDay> createState() => _ReactiveCalendarDayState();
+  ConsumerState<ReactiveCalendarDay> createState() =>
+      _ReactiveCalendarDayState();
 }
 
-class _ReactiveCalendarDayState extends State<_ReactiveCalendarDay> {
-  String? _lastDutyAbbreviation;
-  bool _lastIsSelected = false;
-
+class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
   @override
   void initState() {
     super.initState();
-    widget.scheduleController.addListener(_onControllerChanged);
-    _updateLocalState();
   }
 
   @override
   void dispose() {
-    widget.scheduleController.removeListener(_onControllerChanged);
     super.dispose();
   }
 
-  void _onControllerChanged() {
-    if (mounted) {
-      final newDutyAbbreviation =
-          CalendarBuildersHelper._getDutyAbbreviationForDate(
-              widget.day, widget.scheduleController);
-      final newIsSelected = _isSelected();
-
-      // Only rebuild if duty abbreviation or selection state changed
-      if (_lastDutyAbbreviation != newDutyAbbreviation ||
-          _lastIsSelected != newIsSelected) {
-        _lastDutyAbbreviation = newDutyAbbreviation;
-        _lastIsSelected = newIsSelected;
-        setState(() {});
-      }
-    }
-  }
-
-  void _updateLocalState() {
-    _lastDutyAbbreviation = CalendarBuildersHelper._getDutyAbbreviationForDate(
-        widget.day, widget.scheduleController);
-    _lastIsSelected = _isSelected();
-  }
-
   bool _isSelected() {
-    return widget.scheduleController.selectedDay != null &&
-        widget.day.year == widget.scheduleController.selectedDay!.year &&
-        widget.day.month == widget.scheduleController.selectedDay!.month &&
-        widget.day.day == widget.scheduleController.selectedDay!.day;
+    final state = ref.read(scheduleNotifierProvider).valueOrNull;
+    final sel = state?.selectedDay;
+    return sel != null &&
+        widget.day.year == sel.year &&
+        widget.day.month == sel.month &&
+        widget.day.day == sel.day;
   }
 
   @override
   Widget build(BuildContext context) {
-    try {
-      // Use cached duty abbreviation
-      final dutyAbbreviation = _lastDutyAbbreviation;
-      final isSelected = _lastIsSelected;
+    // Watch the provider to trigger rebuilds when state changes
+    final state = ref.watch(scheduleNotifierProvider).valueOrNull;
 
-      // Use a unique key that includes the duty abbreviation to force rebuild when it changes
+    // Calculate duty abbreviation directly on each build to ensure it's always current
+    final schedules = state?.schedules ?? const [];
+    final activeConfig = state?.activeConfigName;
+    final preferredGroup = state?.preferredDutyGroup;
+
+    final dutyAbbreviation = CalendarBuildersHelper._getDutyAbbreviationForDate(
+      widget.day,
+      schedules: schedules,
+      activeConfigName: activeConfig,
+      preferredGroup: preferredGroup,
+    );
+
+    final isSelected = _isSelected();
+
+    try {
       return AnimatedCalendarDay(
-        key: ValueKey('${widget.day.toIso8601String()}_$dutyAbbreviation'),
         day: widget.day,
         dutyAbbreviation: dutyAbbreviation,
         dayType: widget.dayType,
         width: widget.width,
         height: widget.height,
         isSelected: isSelected,
-        onTap: () {
+        onTap: () async {
           try {
-            // Trigger day selection
-            widget.scheduleController.setSelectedDay(widget.day);
-            widget.scheduleController.setFocusedDay(widget.day);
+            // Trigger day selection via provider
+            await ref
+                .read(scheduleNotifierProvider.notifier)
+                .setSelectedDay(widget.day);
+            ref
+                .read(scheduleNotifierProvider.notifier)
+                .setFocusedDay(widget.day);
 
             // Animation callback removed
           } catch (e) {
