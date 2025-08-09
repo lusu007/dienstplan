@@ -1,5 +1,5 @@
 import 'package:dienstplan/domain/entities/schedule.dart';
-import 'package:dienstplan/data/repositories/schedule_repository.dart';
+import 'package:dienstplan/domain/repositories/schedule_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/core/errors/exception_mapper.dart';

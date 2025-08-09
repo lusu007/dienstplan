@@ -16,10 +16,16 @@ import 'package:dienstplan/data/data_sources/schedule_local_data_source.dart';
 import 'package:dienstplan/data/data_sources/settings_local_data_source.dart';
 import 'package:dienstplan/data/data_sources/config_local_data_source.dart';
 
-// Repositories
-import 'package:dienstplan/data/repositories/schedule_repository.dart';
-import 'package:dienstplan/data/repositories/settings_repository.dart';
-import 'package:dienstplan/data/repositories/config_repository.dart';
+// Repositories (interfaces + implementations)
+import 'package:dienstplan/domain/repositories/schedule_repository.dart';
+import 'package:dienstplan/domain/repositories/settings_repository.dart';
+import 'package:dienstplan/domain/repositories/config_repository.dart';
+import 'package:dienstplan/data/repositories/schedule_repository.dart'
+    as data_repos;
+import 'package:dienstplan/data/repositories/settings_repository.dart'
+    as data_repos;
+import 'package:dienstplan/data/repositories/config_repository.dart'
+    as data_repos;
 
 // Use cases
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
@@ -137,20 +143,20 @@ Future<ConfigLocalDataSource> configLocalDataSource(Ref ref) async {
 @Riverpod(keepAlive: true)
 Future<ScheduleRepository> scheduleRepository(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
-  return ScheduleRepository(db);
+  return data_repos.ScheduleRepositoryImpl(db);
 }
 
 @Riverpod(keepAlive: true)
 Future<SettingsRepository> settingsRepository(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
-  return SettingsRepository(db);
+  return data_repos.SettingsRepositoryImpl(db);
 }
 
 @Riverpod(keepAlive: true)
 Future<ConfigRepository> configRepository(Ref ref) async {
   final ScheduleConfigService cfg =
       await ref.watch(scheduleConfigServiceProvider.future);
-  return ConfigRepository(cfg);
+  return data_repos.ConfigRepositoryImpl(cfg);
 }
 
 // Use cases
