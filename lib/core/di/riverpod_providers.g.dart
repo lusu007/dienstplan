@@ -6,11 +6,12 @@ part of 'riverpod_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$databaseServiceHash() => r'4b70714b1829eff89e609997d21e60bf44d5fd20';
+String _$databaseServiceHash() => r'9cda77d5976b80b2895163ddc04da52ade51eece';
 
 /// See also [databaseService].
 @ProviderFor(databaseService)
-final databaseServiceProvider = FutureProvider<DatabaseService>.internal(
+final databaseServiceProvider =
+    AutoDisposeFutureProvider<DatabaseService>.internal(
   databaseService,
   name: r'databaseServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,14 +23,14 @@ final databaseServiceProvider = FutureProvider<DatabaseService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef DatabaseServiceRef = FutureProviderRef<DatabaseService>;
+typedef DatabaseServiceRef = AutoDisposeFutureProviderRef<DatabaseService>;
 String _$scheduleConfigServiceHash() =>
-    r'e1e7c37d1c9e41a9a5433738dca15e9e4278abdf';
+    r'374b2d1e5443c6afc2e3d5bd4254c0656622963e';
 
 /// See also [scheduleConfigService].
 @ProviderFor(scheduleConfigService)
 final scheduleConfigServiceProvider =
-    FutureProvider<ScheduleConfigService>.internal(
+    AutoDisposeFutureProvider<ScheduleConfigService>.internal(
   scheduleConfigService,
   name: r'scheduleConfigServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -41,12 +42,14 @@ final scheduleConfigServiceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ScheduleConfigServiceRef = FutureProviderRef<ScheduleConfigService>;
-String _$languageServiceHash() => r'7a5e6d1f64f2dcbbed73ac955594882881122816';
+typedef ScheduleConfigServiceRef
+    = AutoDisposeFutureProviderRef<ScheduleConfigService>;
+String _$languageServiceHash() => r'6b365cc3d0c97f3f4429f199947d03eade218be1';
 
 /// See also [languageService].
 @ProviderFor(languageService)
-final languageServiceProvider = FutureProvider<LanguageService>.internal(
+final languageServiceProvider =
+    AutoDisposeFutureProvider<LanguageService>.internal(
   languageService,
   name: r'languageServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -58,12 +61,12 @@ final languageServiceProvider = FutureProvider<LanguageService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef LanguageServiceRef = FutureProviderRef<LanguageService>;
-String _$currentLocaleHash() => r'059251815f0e91eeaf6f979b04b7fad03a7f2b47';
+typedef LanguageServiceRef = AutoDisposeFutureProviderRef<LanguageService>;
+String _$currentLocaleHash() => r'e0c340c5146add203f0e53deb3534a6a02798913';
 
 /// See also [currentLocale].
 @ProviderFor(currentLocale)
-final currentLocaleProvider = StreamProvider<Locale>.internal(
+final currentLocaleProvider = AutoDisposeStreamProvider<Locale>.internal(
   currentLocale,
   name: r'currentLocaleProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -75,12 +78,12 @@ final currentLocaleProvider = StreamProvider<Locale>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CurrentLocaleRef = StreamProviderRef<Locale>;
-String _$themeModeHash() => r'a87e10d56412bf7af2796455948e0293133e38fe';
+typedef CurrentLocaleRef = AutoDisposeStreamProviderRef<Locale>;
+String _$themeModeHash() => r'9040d24bf7f1a74d249cbe378fd1bf03d0121975';
 
 /// See also [themeMode].
 @ProviderFor(themeMode)
-final themeModeProvider = FutureProvider<ThemeMode>.internal(
+final themeModeProvider = AutoDisposeFutureProvider<ThemeMode>.internal(
   themeMode,
   name: r'themeModeProvider',
   debugGetCreateSourceHash:
@@ -91,12 +94,12 @@ final themeModeProvider = FutureProvider<ThemeMode>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ThemeModeRef = FutureProviderRef<ThemeMode>;
-String _$appThemeHash() => r'a7b7c1924a855c4d99996bc985d648ae449774aa';
+typedef ThemeModeRef = AutoDisposeFutureProviderRef<ThemeMode>;
+String _$appThemeHash() => r'bff6c6c2a6048961ea86042f45b8788d4d68e55e';
 
 /// See also [appTheme].
 @ProviderFor(appTheme)
-final appThemeProvider = Provider<ThemeData>.internal(
+final appThemeProvider = AutoDisposeProvider<ThemeData>.internal(
   appTheme,
   name: r'appThemeProvider',
   debugGetCreateSourceHash:
@@ -107,12 +110,12 @@ final appThemeProvider = Provider<ThemeData>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef AppThemeRef = ProviderRef<ThemeData>;
-String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
+typedef AppThemeRef = AutoDisposeProviderRef<ThemeData>;
+String _$sentryServiceHash() => r'86c37a978b5dfde76f87a1bd3382a44bba1a7744';
 
 /// See also [sentryService].
 @ProviderFor(sentryService)
-final sentryServiceProvider = FutureProvider<SentryService>.internal(
+final sentryServiceProvider = AutoDisposeFutureProvider<SentryService>.internal(
   sentryService,
   name: r'sentryServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -124,12 +127,12 @@ final sentryServiceProvider = FutureProvider<SentryService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SentryServiceRef = FutureProviderRef<SentryService>;
-String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
+typedef SentryServiceRef = AutoDisposeFutureProviderRef<SentryService>;
+String _$shareServiceHash() => r'5d5beedc43a1ceeee51e61f110a45f856e9b99af';
 
 /// See also [shareService].
 @ProviderFor(shareService)
-final shareServiceProvider = Provider<ShareService>.internal(
+final shareServiceProvider = AutoDisposeProvider<ShareService>.internal(
   shareService,
   name: r'shareServiceProvider',
   debugGetCreateSourceHash:
@@ -140,14 +143,14 @@ final shareServiceProvider = Provider<ShareService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ShareServiceRef = ProviderRef<ShareService>;
+typedef ShareServiceRef = AutoDisposeProviderRef<ShareService>;
 String _$scheduleLocalDataSourceHash() =>
-    r'bc1c604fdca70c1ce6c982c687dec033a3ba9e6f';
+    r'ca8e988aa6b0893ad77d1bfefa1d5867c2c3210d';
 
 /// See also [scheduleLocalDataSource].
 @ProviderFor(scheduleLocalDataSource)
 final scheduleLocalDataSourceProvider =
-    FutureProvider<ScheduleLocalDataSource>.internal(
+    AutoDisposeFutureProvider<ScheduleLocalDataSource>.internal(
   scheduleLocalDataSource,
   name: r'scheduleLocalDataSourceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -159,14 +162,15 @@ final scheduleLocalDataSourceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ScheduleLocalDataSourceRef = FutureProviderRef<ScheduleLocalDataSource>;
+typedef ScheduleLocalDataSourceRef
+    = AutoDisposeFutureProviderRef<ScheduleLocalDataSource>;
 String _$settingsLocalDataSourceHash() =>
-    r'66c2bd540b3452e42f925b9d8a0580b7c535986e';
+    r'545a3212084407bcea52e321bbe705c9fd62886e';
 
 /// See also [settingsLocalDataSource].
 @ProviderFor(settingsLocalDataSource)
 final settingsLocalDataSourceProvider =
-    FutureProvider<SettingsLocalDataSource>.internal(
+    AutoDisposeFutureProvider<SettingsLocalDataSource>.internal(
   settingsLocalDataSource,
   name: r'settingsLocalDataSourceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -178,14 +182,15 @@ final settingsLocalDataSourceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SettingsLocalDataSourceRef = FutureProviderRef<SettingsLocalDataSource>;
+typedef SettingsLocalDataSourceRef
+    = AutoDisposeFutureProviderRef<SettingsLocalDataSource>;
 String _$configLocalDataSourceHash() =>
-    r'b9ab52f1a14f62d0c180807d008ec96bf6407e95';
+    r'4ba895b55e2b6aeae989800306d631fb39999869';
 
 /// See also [configLocalDataSource].
 @ProviderFor(configLocalDataSource)
 final configLocalDataSourceProvider =
-    FutureProvider<ConfigLocalDataSource>.internal(
+    AutoDisposeFutureProvider<ConfigLocalDataSource>.internal(
   configLocalDataSource,
   name: r'configLocalDataSourceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -197,13 +202,15 @@ final configLocalDataSourceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ConfigLocalDataSourceRef = FutureProviderRef<ConfigLocalDataSource>;
+typedef ConfigLocalDataSourceRef
+    = AutoDisposeFutureProviderRef<ConfigLocalDataSource>;
 String _$scheduleRepositoryHash() =>
-    r'2fe0c2d57eac7ea010f25f4feee18810a96e9b9e';
+    r'ffa558a3c0ce8baf20abc7edd00f719cfbd25bc4';
 
 /// See also [scheduleRepository].
 @ProviderFor(scheduleRepository)
-final scheduleRepositoryProvider = FutureProvider<ScheduleRepository>.internal(
+final scheduleRepositoryProvider =
+    AutoDisposeFutureProvider<ScheduleRepository>.internal(
   scheduleRepository,
   name: r'scheduleRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -215,13 +222,15 @@ final scheduleRepositoryProvider = FutureProvider<ScheduleRepository>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ScheduleRepositoryRef = FutureProviderRef<ScheduleRepository>;
+typedef ScheduleRepositoryRef
+    = AutoDisposeFutureProviderRef<ScheduleRepository>;
 String _$settingsRepositoryHash() =>
-    r'9293b51bdaadc026f158b682ca7e9c1f9635bde5';
+    r'79900cfd186a9ea466d80026ffb3d1ae9f157b91';
 
 /// See also [settingsRepository].
 @ProviderFor(settingsRepository)
-final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
+final settingsRepositoryProvider =
+    AutoDisposeFutureProvider<SettingsRepository>.internal(
   settingsRepository,
   name: r'settingsRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -233,12 +242,14 @@ final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SettingsRepositoryRef = FutureProviderRef<SettingsRepository>;
-String _$configRepositoryHash() => r'7a6c6fcd1939f701b317fae9a4ab766eb5810e21';
+typedef SettingsRepositoryRef
+    = AutoDisposeFutureProviderRef<SettingsRepository>;
+String _$configRepositoryHash() => r'440bff749a354e5110271371491471b123d94b33';
 
 /// See also [configRepository].
 @ProviderFor(configRepository)
-final configRepositoryProvider = FutureProvider<ConfigRepository>.internal(
+final configRepositoryProvider =
+    AutoDisposeFutureProvider<ConfigRepository>.internal(
   configRepository,
   name: r'configRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -250,14 +261,14 @@ final configRepositoryProvider = FutureProvider<ConfigRepository>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ConfigRepositoryRef = FutureProviderRef<ConfigRepository>;
+typedef ConfigRepositoryRef = AutoDisposeFutureProviderRef<ConfigRepository>;
 String _$getSchedulesUseCaseHash() =>
-    r'957e2a94538b8d1d8b0ba399d6049a6c4ca6a9a4';
+    r'56d340caa864d78e6a0475892da7374ead3863d5';
 
 /// See also [getSchedulesUseCase].
 @ProviderFor(getSchedulesUseCase)
 final getSchedulesUseCaseProvider =
-    FutureProvider<GetSchedulesUseCase>.internal(
+    AutoDisposeFutureProvider<GetSchedulesUseCase>.internal(
   getSchedulesUseCase,
   name: r'getSchedulesUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -269,14 +280,15 @@ final getSchedulesUseCaseProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GetSchedulesUseCaseRef = FutureProviderRef<GetSchedulesUseCase>;
+typedef GetSchedulesUseCaseRef
+    = AutoDisposeFutureProviderRef<GetSchedulesUseCase>;
 String _$generateSchedulesUseCaseHash() =>
-    r'4b0218bbcafa8a2d6d561e10412cd8a245dcdb14';
+    r'874c6ae60aedc505bde3f82dd256a1433cedc421';
 
 /// See also [generateSchedulesUseCase].
 @ProviderFor(generateSchedulesUseCase)
 final generateSchedulesUseCaseProvider =
-    FutureProvider<GenerateSchedulesUseCase>.internal(
+    AutoDisposeFutureProvider<GenerateSchedulesUseCase>.internal(
   generateSchedulesUseCase,
   name: r'generateSchedulesUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -289,13 +301,14 @@ final generateSchedulesUseCaseProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GenerateSchedulesUseCaseRef
-    = FutureProviderRef<GenerateSchedulesUseCase>;
+    = AutoDisposeFutureProviderRef<GenerateSchedulesUseCase>;
 String _$getSettingsUseCaseHash() =>
-    r'a7a888d8e805dbefe73f7b5b5583673a2763991f';
+    r'10f652a22347a13cf24ec272bd25aa0ccbf2ebbd';
 
 /// See also [getSettingsUseCase].
 @ProviderFor(getSettingsUseCase)
-final getSettingsUseCaseProvider = FutureProvider<GetSettingsUseCase>.internal(
+final getSettingsUseCaseProvider =
+    AutoDisposeFutureProvider<GetSettingsUseCase>.internal(
   getSettingsUseCase,
   name: r'getSettingsUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -307,14 +320,15 @@ final getSettingsUseCaseProvider = FutureProvider<GetSettingsUseCase>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GetSettingsUseCaseRef = FutureProviderRef<GetSettingsUseCase>;
+typedef GetSettingsUseCaseRef
+    = AutoDisposeFutureProviderRef<GetSettingsUseCase>;
 String _$saveSettingsUseCaseHash() =>
-    r'e482f1b1e535d19c4b0dcbcaa46cd611932c2c27';
+    r'e6fb3271d9d975ce57edbea7265a593aaeec5100';
 
 /// See also [saveSettingsUseCase].
 @ProviderFor(saveSettingsUseCase)
 final saveSettingsUseCaseProvider =
-    FutureProvider<SaveSettingsUseCase>.internal(
+    AutoDisposeFutureProvider<SaveSettingsUseCase>.internal(
   saveSettingsUseCase,
   name: r'saveSettingsUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -326,14 +340,15 @@ final saveSettingsUseCaseProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SaveSettingsUseCaseRef = FutureProviderRef<SaveSettingsUseCase>;
+typedef SaveSettingsUseCaseRef
+    = AutoDisposeFutureProviderRef<SaveSettingsUseCase>;
 String _$resetSettingsUseCaseHash() =>
-    r'8cd603f2f7a4a82d621cfbaab890c816e3a64e0c';
+    r'd0b674822db80c3c24f1d2a003cd5d435b9d19c2';
 
 /// See also [resetSettingsUseCase].
 @ProviderFor(resetSettingsUseCase)
 final resetSettingsUseCaseProvider =
-    FutureProvider<ResetSettingsUseCase>.internal(
+    AutoDisposeFutureProvider<ResetSettingsUseCase>.internal(
   resetSettingsUseCase,
   name: r'resetSettingsUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -345,12 +360,14 @@ final resetSettingsUseCaseProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ResetSettingsUseCaseRef = FutureProviderRef<ResetSettingsUseCase>;
-String _$getConfigsUseCaseHash() => r'6b61b3cd5cf5023022d49dd0a1c53e791f6e9381';
+typedef ResetSettingsUseCaseRef
+    = AutoDisposeFutureProviderRef<ResetSettingsUseCase>;
+String _$getConfigsUseCaseHash() => r'c5cf41e41bbd51d13a93e5c79f7f3e4b032cb918';
 
 /// See also [getConfigsUseCase].
 @ProviderFor(getConfigsUseCase)
-final getConfigsUseCaseProvider = FutureProvider<GetConfigsUseCase>.internal(
+final getConfigsUseCaseProvider =
+    AutoDisposeFutureProvider<GetConfigsUseCase>.internal(
   getConfigsUseCase,
   name: r'getConfigsUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -362,14 +379,14 @@ final getConfigsUseCaseProvider = FutureProvider<GetConfigsUseCase>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GetConfigsUseCaseRef = FutureProviderRef<GetConfigsUseCase>;
+typedef GetConfigsUseCaseRef = AutoDisposeFutureProviderRef<GetConfigsUseCase>;
 String _$setActiveConfigUseCaseHash() =>
-    r'126bed553e69d9b973c2f30cb70a0aab1830bafb';
+    r'd34ae1da55cd543bdf7ae3c8a247dd7e691b8b69';
 
 /// See also [setActiveConfigUseCase].
 @ProviderFor(setActiveConfigUseCase)
 final setActiveConfigUseCaseProvider =
-    FutureProvider<SetActiveConfigUseCase>.internal(
+    AutoDisposeFutureProvider<SetActiveConfigUseCase>.internal(
   setActiveConfigUseCase,
   name: r'setActiveConfigUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -381,14 +398,15 @@ final setActiveConfigUseCaseProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SetActiveConfigUseCaseRef = FutureProviderRef<SetActiveConfigUseCase>;
+typedef SetActiveConfigUseCaseRef
+    = AutoDisposeFutureProviderRef<SetActiveConfigUseCase>;
 String _$loadDefaultConfigUseCaseHash() =>
-    r'5b496de5256372b79bb3a1936d7f16c172dd1070';
+    r'9442b2cd68d7f9d5431de98b86b2754d05932c74';
 
 /// See also [loadDefaultConfigUseCase].
 @ProviderFor(loadDefaultConfigUseCase)
 final loadDefaultConfigUseCaseProvider =
-    FutureProvider<LoadDefaultConfigUseCase>.internal(
+    AutoDisposeFutureProvider<LoadDefaultConfigUseCase>.internal(
   loadDefaultConfigUseCase,
   name: r'loadDefaultConfigUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -401,13 +419,14 @@ final loadDefaultConfigUseCaseProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LoadDefaultConfigUseCaseRef
-    = FutureProviderRef<LoadDefaultConfigUseCase>;
+    = AutoDisposeFutureProviderRef<LoadDefaultConfigUseCase>;
 String _$scheduleMergeServiceHash() =>
-    r'd025dcc955c1cc9e7b0235749b77e60daff41d4d';
+    r'1329084894b6b3282eaea9f02398d399839f9a3d';
 
 /// See also [scheduleMergeService].
 @ProviderFor(scheduleMergeService)
-final scheduleMergeServiceProvider = Provider<ScheduleMergeService>.internal(
+final scheduleMergeServiceProvider =
+    AutoDisposeProvider<ScheduleMergeService>.internal(
   scheduleMergeService,
   name: r'scheduleMergeServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -419,12 +438,12 @@ final scheduleMergeServiceProvider = Provider<ScheduleMergeService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ScheduleMergeServiceRef = ProviderRef<ScheduleMergeService>;
-String _$dateRangePolicyHash() => r'cfa08e30bd98fb4307032d84d00e7cc69554263b';
+typedef ScheduleMergeServiceRef = AutoDisposeProviderRef<ScheduleMergeService>;
+String _$dateRangePolicyHash() => r'5b1ef2d79621ce28df46dfb1a59009d336d0f102';
 
 /// See also [dateRangePolicy].
 @ProviderFor(dateRangePolicy)
-final dateRangePolicyProvider = Provider<DateRangePolicy>.internal(
+final dateRangePolicyProvider = AutoDisposeProvider<DateRangePolicy>.internal(
   dateRangePolicy,
   name: r'dateRangePolicyProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -436,14 +455,14 @@ final dateRangePolicyProvider = Provider<DateRangePolicy>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef DateRangePolicyRef = ProviderRef<DateRangePolicy>;
+typedef DateRangePolicyRef = AutoDisposeProviderRef<DateRangePolicy>;
 String _$ensureMonthSchedulesUseCaseHash() =>
-    r'a1a6ff027a6b6464deb597592e9ef58980dbbeb0';
+    r'6fa0fa93ee9d14338bb7a8b8a72390c72e88a23b';
 
 /// See also [ensureMonthSchedulesUseCase].
 @ProviderFor(ensureMonthSchedulesUseCase)
 final ensureMonthSchedulesUseCaseProvider =
-    FutureProvider<EnsureMonthSchedulesUseCase>.internal(
+    AutoDisposeFutureProvider<EnsureMonthSchedulesUseCase>.internal(
   ensureMonthSchedulesUseCase,
   name: r'ensureMonthSchedulesUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -456,6 +475,6 @@ final ensureMonthSchedulesUseCaseProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef EnsureMonthSchedulesUseCaseRef
-    = FutureProviderRef<EnsureMonthSchedulesUseCase>;
+    = AutoDisposeFutureProviderRef<EnsureMonthSchedulesUseCase>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

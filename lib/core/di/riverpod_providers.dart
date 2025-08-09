@@ -44,14 +44,14 @@ import 'package:dienstplan/domain/entities/settings.dart';
 part 'riverpod_providers.g.dart';
 
 // Services
-@Riverpod(keepAlive: true)
+@riverpod
 Future<DatabaseService> databaseService(Ref ref) async {
   final DatabaseService service = DatabaseService();
   await service.init();
   return service;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final ScheduleConfigService service = ScheduleConfigService(prefs);
@@ -59,7 +59,7 @@ Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   return service;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<LanguageService> languageService(Ref ref) async {
   final LanguageService service = LanguageService();
   await service.initialize();
@@ -67,7 +67,7 @@ Future<LanguageService> languageService(Ref ref) async {
 }
 
 // UI/Locale/Theme providers
-@Riverpod(keepAlive: true)
+@riverpod
 Stream<Locale> currentLocale(Ref ref) async* {
   final LanguageService languageService =
       await ref.watch(languageServiceProvider.future);
@@ -82,7 +82,7 @@ Stream<Locale> currentLocale(Ref ref) async* {
   yield* controller.stream;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ThemeMode> themeMode(Ref ref) async {
   final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
   final settings = await getSettings.execute();
@@ -99,7 +99,7 @@ Future<ThemeMode> themeMode(Ref ref) async {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 ThemeData appTheme(Ref ref) {
   return ThemeData(
     colorScheme: ColorScheme.fromSeed(
@@ -119,32 +119,32 @@ ThemeData appTheme(Ref ref) {
   );
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<SentryService> sentryService(Ref ref) async {
   final SentryService service = SentryService();
   await service.initialize();
   return service;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 ShareService shareService(Ref ref) {
   return ShareService();
 }
 
 // Data sources
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ScheduleLocalDataSource> scheduleLocalDataSource(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
   return ScheduleLocalDataSource(db);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<SettingsLocalDataSource> settingsLocalDataSource(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
   return SettingsLocalDataSource(db);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ConfigLocalDataSource> configLocalDataSource(Ref ref) async {
   final ScheduleConfigService cfg =
       await ref.watch(scheduleConfigServiceProvider.future);
@@ -152,19 +152,19 @@ Future<ConfigLocalDataSource> configLocalDataSource(Ref ref) async {
 }
 
 // Repositories
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ScheduleRepository> scheduleRepository(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
   return data_repos.ScheduleRepositoryImpl(db);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<SettingsRepository> settingsRepository(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
   return data_repos.SettingsRepositoryImpl(db);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ConfigRepository> configRepository(Ref ref) async {
   final ScheduleConfigService cfg =
       await ref.watch(scheduleConfigServiceProvider.future);
@@ -172,14 +172,14 @@ Future<ConfigRepository> configRepository(Ref ref) async {
 }
 
 // Use cases
-@Riverpod(keepAlive: true)
+@riverpod
 Future<GetSchedulesUseCase> getSchedulesUseCase(Ref ref) async {
   final ScheduleRepository repo =
       await ref.watch(scheduleRepositoryProvider.future);
   return GetSchedulesUseCase(repo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<GenerateSchedulesUseCase> generateSchedulesUseCase(Ref ref) async {
   final ScheduleRepository scheduleRepo =
       await ref.watch(scheduleRepositoryProvider.future);
@@ -188,42 +188,42 @@ Future<GenerateSchedulesUseCase> generateSchedulesUseCase(Ref ref) async {
   return GenerateSchedulesUseCase(scheduleRepo, configRepo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<GetSettingsUseCase> getSettingsUseCase(Ref ref) async {
   final SettingsRepository repo =
       await ref.watch(settingsRepositoryProvider.future);
   return GetSettingsUseCase(repo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<SaveSettingsUseCase> saveSettingsUseCase(Ref ref) async {
   final SettingsRepository repo =
       await ref.watch(settingsRepositoryProvider.future);
   return SaveSettingsUseCase(repo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<ResetSettingsUseCase> resetSettingsUseCase(Ref ref) async {
   final SettingsRepository repo =
       await ref.watch(settingsRepositoryProvider.future);
   return ResetSettingsUseCase(repo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<GetConfigsUseCase> getConfigsUseCase(Ref ref) async {
   final ConfigRepository repo =
       await ref.watch(configRepositoryProvider.future);
   return GetConfigsUseCase(repo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<SetActiveConfigUseCase> setActiveConfigUseCase(Ref ref) async {
   final ConfigRepository repo =
       await ref.watch(configRepositoryProvider.future);
   return SetActiveConfigUseCase(repo);
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<LoadDefaultConfigUseCase> loadDefaultConfigUseCase(Ref ref) async {
   final ConfigRepository repo =
       await ref.watch(configRepositoryProvider.future);
@@ -231,18 +231,18 @@ Future<LoadDefaultConfigUseCase> loadDefaultConfigUseCase(Ref ref) async {
 }
 
 // Utilities / Services
-@Riverpod(keepAlive: true)
+@riverpod
 ScheduleMergeService scheduleMergeService(Ref ref) {
   return ScheduleMergeService();
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 DateRangePolicy dateRangePolicy(Ref ref) {
   return const PlusMinusMonthsPolicy(monthsBefore: 3, monthsAfter: 3);
 }
 
 // Use cases (additional)
-@Riverpod(keepAlive: true)
+@riverpod
 Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
   final GetSchedulesUseCase get =
       await ref.watch(getSchedulesUseCaseProvider.future);
