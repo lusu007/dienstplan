@@ -21,7 +21,7 @@ import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 part 'schedule_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class ScheduleNotifier extends _$ScheduleNotifier {
   GetSchedulesUseCase? _getSchedulesUseCase;
   GenerateSchedulesUseCase? _generateSchedulesUseCase;

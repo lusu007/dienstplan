@@ -6,12 +6,12 @@ part of 'schedule_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$scheduleNotifierHash() => r'32a3eaadda48b252de33d6a1077911540c9f6076';
+String _$scheduleNotifierHash() => r'c862699f941a3c0b0abab04fcd2730ebb1fed3d8';
 
 /// See also [ScheduleNotifier].
 @ProviderFor(ScheduleNotifier)
-final scheduleNotifierProvider =
-    AsyncNotifierProvider<ScheduleNotifier, ScheduleUiState>.internal(
+final scheduleNotifierProvider = AutoDisposeAsyncNotifierProvider<
+    ScheduleNotifier, ScheduleUiState>.internal(
   ScheduleNotifier.new,
   name: r'scheduleNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final scheduleNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$ScheduleNotifier = AsyncNotifier<ScheduleUiState>;
+typedef _$ScheduleNotifier = AutoDisposeAsyncNotifier<ScheduleUiState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

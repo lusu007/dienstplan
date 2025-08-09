@@ -8,7 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 part 'settings_notifier.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class SettingsNotifier extends _$SettingsNotifier {
   GetSettingsUseCase? _getSettingsUseCase;
   SaveSettingsUseCase? _saveSettingsUseCase;
