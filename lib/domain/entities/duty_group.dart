@@ -1,36 +1,15 @@
-class DutyGroup {
-  final String id;
-  final String name;
-  final String rhythm;
-  final int offsetWeeks;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  DutyGroup({
-    required this.id,
-    required this.name,
-    required this.rhythm,
-    required this.offsetWeeks,
-  });
+part 'duty_group.freezed.dart';
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'rhythm': rhythm,
-      'offset_weeks': offsetWeeks,
-    };
-  }
+@freezed
+abstract class DutyGroup with _$DutyGroup {
+  const factory DutyGroup({
+    required String id,
+    required String name,
+    required String rhythm,
+    required double offsetWeeks,
+  }) = _DutyGroup;
 
-  factory DutyGroup.fromMap(Map<String, dynamic> map) {
-    return DutyGroup(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      rhythm: map['rhythm'] as String,
-      offsetWeeks: map['offset_weeks'] as int,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'DutyGroup(id: $id, name: $name, rhythm: $rhythm, offsetWeeks: $offsetWeeks)';
-  }
+  const DutyGroup._();
 }

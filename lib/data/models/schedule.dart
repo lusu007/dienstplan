@@ -1,5 +1,3 @@
-import 'package:dienstplan/domain/entities/schedule.dart' as domain;
-
 class Schedule {
   final DateTime date;
   final String service;
@@ -70,31 +68,5 @@ class Schedule {
   @override
   String toString() {
     return 'Schedule(date: ${date.toUtc().toIso8601String()}, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName)';
-  }
-
-  /// Convert data model to domain entity
-  domain.Schedule toDomain() {
-    return domain.Schedule(
-      date: date,
-      service: service,
-      dutyGroupId: dutyGroupId,
-      dutyTypeId: dutyTypeId,
-      dutyGroupName: dutyGroupName,
-      configName: configName,
-      isAllDay: isAllDay,
-    );
-  }
-
-  /// Convert domain entity to data model
-  factory Schedule.fromDomain(domain.Schedule schedule) {
-    return Schedule(
-      date: schedule.date,
-      service: schedule.service,
-      dutyGroupId: schedule.dutyGroupId,
-      dutyTypeId: schedule.dutyTypeId,
-      dutyGroupName: schedule.dutyGroupName,
-      configName: schedule.configName,
-      isAllDay: schedule.isAllDay,
-    );
   }
 }

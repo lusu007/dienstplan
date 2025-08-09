@@ -1,8 +1,7 @@
 import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart' as domain;
 import 'package:dienstplan/data/models/duty_schedule_config.dart' as data;
-import 'package:dienstplan/domain/entities/duty_type.dart' as domain_duty_type;
-import 'package:dienstplan/data/models/duty_type.dart' as data_duty_type;
+import 'package:dienstplan/data/models/mappers/config_mapper.dart' as mapper;
 import 'package:dienstplan/core/utils/logger.dart';
 
 class ConfigRepository {
@@ -65,99 +64,10 @@ class ConfigRepository {
   }
 
   domain.DutyScheduleConfig _toDomainConfig(data.DutyScheduleConfig config) {
-    return domain.DutyScheduleConfig(
-      version: config.version,
-      meta: _toDomainMeta(config.meta),
-      dutyTypes: config.dutyTypes
-          .map((key, value) => MapEntry(key, _toDomainDutyType(value))),
-      dutyTypeOrder: config.dutyTypeOrder,
-      rhythms: config.rhythms
-          .map((key, value) => MapEntry(key, _toDomainRhythm(value))),
-      dutyGroups: config.dutyGroups.map(_toDomainDutyGroup).toList(),
-    );
+    return mapper.toDomainConfig(config);
   }
 
   data.DutyScheduleConfig _toDataConfig(domain.DutyScheduleConfig config) {
-    return data.DutyScheduleConfig(
-      version: config.version,
-      meta: _toDataMeta(config.meta),
-      dutyTypes: config.dutyTypes
-          .map((key, value) => MapEntry(key, _toDataDutyType(value))),
-      dutyTypeOrder: config.dutyTypeOrder,
-      rhythms: config.rhythms
-          .map((key, value) => MapEntry(key, _toDataRhythm(value))),
-      dutyGroups: config.dutyGroups.map(_toDataDutyGroup).toList(),
-    );
-  }
-
-  domain.Meta _toDomainMeta(data.Meta meta) {
-    return domain.Meta(
-      name: meta.name,
-      description: meta.description,
-      startDate: meta.startDate,
-      startWeekDay: meta.startWeekDay,
-      days: meta.days,
-      icon: meta.icon,
-    );
-  }
-
-  data.Meta _toDataMeta(domain.Meta meta) {
-    return data.Meta(
-      name: meta.name,
-      description: meta.description,
-      startDate: meta.startDate,
-      startWeekDay: meta.startWeekDay,
-      days: meta.days,
-      icon: meta.icon,
-    );
-  }
-
-  domain_duty_type.DutyType _toDomainDutyType(
-      data_duty_type.DutyType dutyType) {
-    return domain_duty_type.DutyType(
-      label: dutyType.label,
-      isAllDay: dutyType.isAllDay,
-      icon: dutyType.icon,
-    );
-  }
-
-  data_duty_type.DutyType _toDataDutyType(domain_duty_type.DutyType dutyType) {
-    return data_duty_type.DutyType(
-      label: dutyType.label,
-      isAllDay: dutyType.isAllDay,
-      icon: dutyType.icon,
-    );
-  }
-
-  domain.Rhythm _toDomainRhythm(data.Rhythm rhythm) {
-    return domain.Rhythm(
-      lengthWeeks: rhythm.lengthWeeks,
-      pattern: rhythm.pattern,
-    );
-  }
-
-  data.Rhythm _toDataRhythm(domain.Rhythm rhythm) {
-    return data.Rhythm(
-      lengthWeeks: rhythm.lengthWeeks,
-      pattern: rhythm.pattern,
-    );
-  }
-
-  domain.DutyGroup _toDomainDutyGroup(data.DutyGroup dutyGroup) {
-    return domain.DutyGroup(
-      id: dutyGroup.id,
-      name: dutyGroup.name,
-      rhythm: dutyGroup.rhythm,
-      offsetWeeks: dutyGroup.offsetWeeks,
-    );
-  }
-
-  data.DutyGroup _toDataDutyGroup(domain.DutyGroup dutyGroup) {
-    return data.DutyGroup(
-      id: dutyGroup.id,
-      name: dutyGroup.name,
-      rhythm: dutyGroup.rhythm,
-      offsetWeeks: dutyGroup.offsetWeeks,
-    );
+    return mapper.toDataConfig(config);
   }
 }
