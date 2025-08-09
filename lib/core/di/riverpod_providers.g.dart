@@ -76,11 +76,11 @@ final currentLocaleProvider = StreamProvider<Locale>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentLocaleRef = StreamProviderRef<Locale>;
-String _$themeModeHash() => r'2f59cd95587745bfd1801103b5d444333cada6c5';
+String _$themeModeHash() => r'a87e10d56412bf7af2796455948e0293133e38fe';
 
 /// See also [themeMode].
 @ProviderFor(themeMode)
-final themeModeProvider = Provider<ThemeMode>.internal(
+final themeModeProvider = FutureProvider<ThemeMode>.internal(
   themeMode,
   name: r'themeModeProvider',
   debugGetCreateSourceHash:
@@ -91,7 +91,7 @@ final themeModeProvider = Provider<ThemeMode>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ThemeModeRef = ProviderRef<ThemeMode>;
+typedef ThemeModeRef = FutureProviderRef<ThemeMode>;
 String _$appThemeHash() => r'a7b7c1924a855c4d99996bc985d648ae449774aa';
 
 /// See also [appTheme].

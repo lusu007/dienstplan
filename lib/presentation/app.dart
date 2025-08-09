@@ -27,16 +27,18 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ref.watch(appThemeProvider);
-    final ThemeMode mode = ref.watch(themeModeProvider);
+    final AsyncValue<ThemeMode> modeAsync = ref.watch(themeModeProvider);
     final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
-    return localeAsync.when(
-      loading: () => _buildMaterialApp(
-          theme: theme, mode: mode, locale: const Locale('de')),
-      error: (e, st) => _buildMaterialApp(
-          theme: theme, mode: mode, locale: const Locale('de')),
-      data: (locale) =>
-          _buildMaterialApp(theme: theme, mode: mode, locale: locale),
+    // Combine async values with fallbacks
+    final ThemeMode mode = modeAsync.maybeWhen(
+      data: (m) => m,
+      orElse: () => ThemeMode.system,
     );
+    final Locale locale = localeAsync.maybeWhen(
+      data: (l) => l,
+      orElse: () => const Locale('de'),
+    );
+    return _buildMaterialApp(theme: theme, mode: mode, locale: locale);
   }
 
   Widget _buildMaterialApp(

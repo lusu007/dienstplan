@@ -632,6 +632,36 @@ abstract class AppLocalizations {
   /// **'General'**
   String get app;
 
+  /// Label for theme mode selector
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get themeMode;
+
+  /// Light theme option
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeModeLight;
+
+  /// Dark theme option
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeModeDark;
+
+  /// System theme option
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeModeSystem;
+
+  /// SnackBar text shown when choosing a non-light theme
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode is not implemented yet'**
+  String get darkModeNotAvailableYet;
+
   /// Title for legal section
   ///
   /// In en, this message translates to:

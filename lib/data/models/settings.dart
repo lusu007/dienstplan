@@ -1,4 +1,5 @@
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/material.dart';
 
 class Settings {
   final CalendarFormat calendarFormat;
@@ -6,6 +7,7 @@ class Settings {
   final String? selectedDutyGroup;
   final String? myDutyGroup;
   final String? activeConfigName;
+  final ThemeMode? themeMode;
 
   const Settings({
     required this.calendarFormat,
@@ -13,6 +15,7 @@ class Settings {
     this.selectedDutyGroup,
     this.myDutyGroup,
     this.activeConfigName,
+    this.themeMode,
   });
 
   factory Settings.fromMap(Map<String, dynamic> map) {
@@ -25,6 +28,7 @@ class Settings {
       selectedDutyGroup: map['selected_duty_group'] as String?,
       myDutyGroup: map['my_duty_group'] as String?,
       activeConfigName: map['active_config_name'] as String?,
+      themeMode: _parseThemeMode(map['theme_mode'] as String?),
     );
   }
 
@@ -35,6 +39,7 @@ class Settings {
       if (selectedDutyGroup != null) 'selected_duty_group': selectedDutyGroup,
       if (myDutyGroup != null) 'my_duty_group': myDutyGroup,
       if (activeConfigName != null) 'active_config_name': activeConfigName,
+      if (themeMode != null) 'theme_mode': themeMode!.name,
     };
   }
 
@@ -44,6 +49,7 @@ class Settings {
     String? selectedDutyGroup,
     String? myDutyGroup,
     String? activeConfigName,
+    ThemeMode? themeMode,
   }) {
     return Settings(
       calendarFormat: calendarFormat ?? this.calendarFormat,
@@ -51,12 +57,13 @@ class Settings {
       selectedDutyGroup: selectedDutyGroup ?? this.selectedDutyGroup,
       myDutyGroup: myDutyGroup ?? this.myDutyGroup,
       activeConfigName: activeConfigName ?? this.activeConfigName,
+      themeMode: themeMode ?? this.themeMode,
     );
   }
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName)';
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name})';
   }
 
   @override
@@ -67,7 +74,8 @@ class Settings {
         other.language == language &&
         other.selectedDutyGroup == selectedDutyGroup &&
         other.myDutyGroup == myDutyGroup &&
-        other.activeConfigName == activeConfigName;
+        other.activeConfigName == activeConfigName &&
+        other.themeMode == themeMode;
   }
 
   @override
@@ -76,6 +84,21 @@ class Settings {
         language.hashCode ^
         selectedDutyGroup.hashCode ^
         myDutyGroup.hashCode ^
-        activeConfigName.hashCode;
+        activeConfigName.hashCode ^
+        themeMode.hashCode;
+  }
+
+  static ThemeMode? _parseThemeMode(String? value) {
+    if (value == null) return null;
+    switch (value) {
+      case 'system':
+        return ThemeMode.system;
+      case 'light':
+        return ThemeMode.light;
+      case 'dark':
+        return ThemeMode.dark;
+      default:
+        return null;
+    }
   }
 }

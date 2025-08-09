@@ -7,6 +7,7 @@ class NavigationCard extends StatelessWidget {
   final String? subtitle;
   final VoidCallback? onTap;
   final Color iconColor;
+  final Widget? trailing;
 
   const NavigationCard({
     super.key,
@@ -15,6 +16,7 @@ class NavigationCard extends StatelessWidget {
     this.subtitle,
     this.onTap,
     this.iconColor = AppColors.primary,
+    this.trailing,
   });
 
   @override
@@ -47,6 +49,7 @@ class NavigationCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 15, color: Colors.black87),
               )
             : null,
+        trailing: trailing,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

@@ -20,6 +20,9 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/language_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_duty_group_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/theme_mode_dialog.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 // ignore: unused_import
@@ -144,6 +147,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     AppLocalizations l10n,
   ) {
     final languageService = ref.watch(languageServiceProvider).value;
+    final themePref =
+        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
 
     return SettingsSection(
       title: l10n.app,
@@ -158,6 +163,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           onTap: () => LanguageDialog.show(context),
         ),
         NavigationCard(
+          icon: Icons.color_lens_outlined,
+          title: l10n.themeMode,
+          subtitle: _themeSubtitle(l10n, themePref),
+          trailing: _buildThemeIndicator(themePref),
+          onTap: () => ThemeModeDialog.show(context, ref),
+        ),
+        NavigationCard(
           icon: Icons.delete_forever_outlined,
           title: l10n.resetData,
           onTap: () => ResetDialog.show(context),
@@ -165,6 +177,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ],
     );
+  }
+
+  String _themeSubtitle(AppLocalizations l10n, ThemePreference? pref) {
+    switch (pref) {
+      case ThemePreference.light:
+        return l10n.themeModeLight;
+      case ThemePreference.dark:
+        return l10n.themeModeDark;
+      case ThemePreference.system:
+      case null:
+        return l10n.themeModeSystem;
+    }
+  }
+
+  Widget _buildThemeIndicator(ThemePreference? pref) {
+    switch (pref) {
+      case ThemePreference.light:
+        return const Icon(Icons.wb_sunny_outlined, color: Colors.amber);
+      case ThemePreference.dark:
+        return const Icon(Icons.nightlight_round, color: Colors.indigo);
+      case ThemePreference.system:
+      case null:
+        return const Icon(Icons.brightness_auto, color: Colors.grey);
+    }
   }
 
   Widget _buildPrivacySection(
