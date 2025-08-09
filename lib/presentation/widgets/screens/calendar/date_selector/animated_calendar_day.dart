@@ -28,10 +28,6 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Debug: verify what duty abbreviation arrives here during rebuilds
-    // ignore: avoid_print
-    print(
-        '[AnimatedCalendarDay] day=${widget.day.toIso8601String()} type=${widget.dayType} dutyAbbr="${widget.dutyAbbreviation ?? ''}" isSelected=${widget.isSelected}');
 
     // Use fixed sizing for portrait mode only
     final effectiveWidth = widget.width ?? 40.0;

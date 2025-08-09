@@ -8,6 +8,7 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/a
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
+
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 
@@ -163,14 +164,7 @@ class _TableCalendarWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(scheduleNotifierProvider).valueOrNull;
     final calendarFormat = state?.calendarFormat ?? CalendarFormat.month;
-    final scheduleCount = (state?.schedules ?? const []).length;
     final focusedDay = state?.focusedDay ?? DateTime.now();
-
-    // Create a hash-based key that forces complete rebuild when any schedule data changes
-    final activeConfig = state?.activeConfigName ?? '';
-    final isLoading = state?.isLoading ?? false;
-    final selectedDay = state?.selectedDay;
-    final preferredDutyGroup = state?.preferredDutyGroup ?? '';
 
     // Create unique hash from schedule content of the visible calendar area
     // Include previous, current and next months so "out days" changes also trigger rebuilds
@@ -186,16 +180,8 @@ class _TableCalendarWrapper extends ConsumerWidget {
             schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))))
         .toList();
     visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
-    final String scheduleHash = visibleSchedulesForHash
-        .map((s) =>
-            '${s.date.year}-${s.date.month}-${s.date.day}_${s.dutyGroupName}_${s.dutyTypeId}')
-        .join('|');
-
-    final keyed = ValueKey(
-        'calendar_${calendarFormat}_${focusedDay.year}_${focusedDay.month}_${scheduleCount}_${activeConfig}_${selectedDay?.toIso8601String()}_${isLoading}_${preferredDutyGroup}_${scheduleHash.hashCode}');
 
     return TableCalendar(
-      key: keyed,
       firstDay: CalendarConfig.firstDay,
       lastDay: CalendarConfig.lastDay,
       focusedDay: focusedDay,
@@ -225,22 +211,14 @@ class _TableCalendarWrapper extends ConsumerWidget {
       },
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) {
-          print(
-              '🔍 DefaultBuilder called for: ${day.day}/${day.month}/${day.year}, scheduleCount: $scheduleCount, hash: ${scheduleHash.hashCode}');
           return ReactiveCalendarDay(
-            key: ValueKey(
-                'default_${day.toIso8601String()}_${scheduleCount}_${isLoading}_${scheduleHash.hashCode}'),
             day: day,
             dayType: CalendarDayType.default_,
             onDaySelected: onDaySelected,
           );
         },
         outsideBuilder: (context, day, focusedDay) {
-          print(
-              '🔍 OutsideBuilder called for: ${day.day}/${day.month}/${day.year}, scheduleCount: $scheduleCount');
           return ReactiveCalendarDay(
-            key: ValueKey(
-                'outside_${day.toIso8601String()}_${scheduleCount}_${isLoading}_${scheduleHash.hashCode}'),
             day: day,
             dayType: CalendarDayType.outside,
             onDaySelected: onDaySelected,
@@ -248,8 +226,6 @@ class _TableCalendarWrapper extends ConsumerWidget {
         },
         selectedBuilder: (context, day, focusedDay) {
           return ReactiveCalendarDay(
-            key: ValueKey(
-                'selected_${day.toIso8601String()}_${scheduleCount}_${isLoading}_${scheduleHash.hashCode}'),
             day: day,
             dayType: CalendarDayType.selected,
             width: 40.0,
@@ -259,8 +235,6 @@ class _TableCalendarWrapper extends ConsumerWidget {
         },
         todayBuilder: (context, day, focusedDay) {
           return ReactiveCalendarDay(
-            key: ValueKey(
-                'today_${day.toIso8601String()}_${scheduleCount}_${isLoading}_${scheduleHash.hashCode}'),
             day: day,
             dayType: CalendarDayType.today,
             width: 40.0,

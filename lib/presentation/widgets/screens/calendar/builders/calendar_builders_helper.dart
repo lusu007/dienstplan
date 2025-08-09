@@ -68,43 +68,12 @@ class CalendarBuildersHelper {
         return isSameDay && isActiveConfig;
       }).toList();
 
-      // Debug for January 2030 specifically
-      if (day.year == 2030 && day.month == 1 && day.day <= 5) {
-        print('🔍 DEBUG: Filtering schedules for ${day.day}/1/2030');
-        print('   📊 Total schedules to filter: ${schedules.length}');
-        print('   🎯 ActiveConfig filter: "$activeConfigName"');
-
-        // Show sample of available schedules
-        final sampleSchedules = schedules.take(10).toList();
-        for (final schedule in sampleSchedules) {
-          print(
-              '   📅 Sample schedule: ${schedule.date.day}/${schedule.date.month}/${schedule.date.year} - ${schedule.configName}');
-        }
-
-        print('   🎯 Found ${schedulesForDay.length} schedules for this day');
-        for (final schedule in schedulesForDay) {
-          print(
-              '   ✅ Matching: ${schedule.date.day}/${schedule.date.month}/${schedule.date.year} - ${schedule.dutyGroupName} - ${schedule.dutyTypeId}');
-        }
-      }
-
       // If no schedules found for the active config, return empty string (no chip)
       if (schedulesForDay.isEmpty) {
         return '';
       }
 
       final preferredGroupName = preferredGroup;
-
-      // Debug log for chip generation
-      if (day.day <= 5) {
-        // Only log first 5 days to avoid spam
-        print(
-            '🎯 Day ${day.day}: Found ${schedulesForDay.length} schedules, preferred group: "$preferredGroupName"');
-        for (final schedule in schedulesForDay) {
-          print(
-              '   - Group: "${schedule.dutyGroupName}", Type: "${schedule.dutyTypeId}"');
-        }
-      }
 
       // Try to show duty abbreviation for preferred group first
       if (preferredGroupName != null && preferredGroupName.isNotEmpty) {
@@ -120,10 +89,6 @@ class CalendarBuildersHelper {
           preferredSchedule = null;
         }
         if (preferredSchedule != null) {
-          if (day.day <= 5) {
-            print(
-                '   → Using preferred group schedule: "${preferredSchedule.dutyTypeId}"');
-          }
           return preferredSchedule.dutyTypeId;
         }
 
@@ -134,9 +99,6 @@ class CalendarBuildersHelper {
           );
           if (preferredGroupSchedule.dutyTypeId == '-' ||
               preferredGroupSchedule.dutyTypeId.isEmpty) {
-            if (day.day <= 5) {
-              print('   → Preferred group has free day ("-"), returning empty');
-            }
             return ''; // Free day for preferred group - no chip
           }
         } catch (_) {
@@ -151,24 +113,13 @@ class CalendarBuildersHelper {
           final firstSchedule = schedulesForDay.firstWhere(
             (s) => s.dutyTypeId.isNotEmpty && s.dutyTypeId != '-',
           );
-          if (day.day <= 5) {
-            print(
-                '   → No preferred group, using first valid schedule: "${firstSchedule.dutyTypeId}"');
-          }
+
           return firstSchedule.dutyTypeId;
         } catch (e) {
-          // If no valid schedule found, return empty string (no chip)
-          if (day.day <= 5) {
-            print('   → No valid schedules found, returning empty');
-          }
           return '';
         }
       }
 
-      // If preferred group is set but has no valid duty, don't show other group's duties
-      if (day.day <= 5) {
-        print('   → Preferred group set but no valid duty, returning empty');
-      }
       return '';
     } catch (e) {
       return '';
@@ -227,12 +178,6 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
     final activeConfig = state?.activeConfigName;
     final preferredGroup = state?.preferredDutyGroup;
 
-    print(
-        '🔍 ReactiveCalendarDay building for ${widget.day.day}/${widget.day.month}/${widget.day.year}');
-    print('   📊 Total schedules: ${schedules.length}');
-    print('   🎯 ActiveConfig: $activeConfig');
-    print('   👥 PreferredGroup: $preferredGroup');
-
     final dutyAbbreviation = CalendarBuildersHelper._getDutyAbbreviationForDate(
       widget.day,
       schedules: schedules,
@@ -240,20 +185,10 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
       preferredGroup: preferredGroup,
     );
 
-    print('   🏷️ Calculated dutyAbbreviation: "$dutyAbbreviation"');
-
     final isSelected = _isSelected();
-
-    // Use a unique key that includes all relevant state to force rebuild when navigation changes
-    final focusedDay = state?.focusedDay;
-    final scheduleCount = state?.schedules.length ?? 0;
-    final isLoading = state?.isLoading ?? false;
-    final key = ValueKey(
-        '${widget.day.toIso8601String()}_${dutyAbbreviation}_${focusedDay?.toIso8601String()}_${scheduleCount}_${activeConfig ?? ''}_${preferredGroup ?? ''}_$isLoading');
 
     try {
       return AnimatedCalendarDay(
-        key: key,
         day: widget.day,
         dutyAbbreviation: dutyAbbreviation,
         dayType: widget.dayType,

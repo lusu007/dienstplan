@@ -153,9 +153,7 @@ class InjectionContainer {
     getIt.registerFactoryAsync<GenerateSchedulesUseCase>(() async {
       final scheduleRepository = await getIt.getAsync<ScheduleRepository>();
       final configRepository = await getIt.getAsync<ConfigRepository>();
-      final scheduleConfigService = getIt<ScheduleConfigService>();
-      return GenerateSchedulesUseCase(
-          scheduleRepository, configRepository, scheduleConfigService);
+      return GenerateSchedulesUseCase(scheduleRepository, configRepository);
     });
 
     // Settings Use Cases - Factories

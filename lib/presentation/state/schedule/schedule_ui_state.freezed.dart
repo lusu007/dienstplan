@@ -26,6 +26,7 @@ mixin _$ScheduleUiState {
   List<String> get dutyGroups;
   List<DutyScheduleConfig> get configs;
   DutyScheduleConfig? get activeConfig;
+  int get scheduleGeneration;
 
   /// Create a copy of ScheduleUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -60,7 +61,9 @@ mixin _$ScheduleUiState {
                 .equals(other.dutyGroups, dutyGroups) &&
             const DeepCollectionEquality().equals(other.configs, configs) &&
             (identical(other.activeConfig, activeConfig) ||
-                other.activeConfig == activeConfig));
+                other.activeConfig == activeConfig) &&
+            (identical(other.scheduleGeneration, scheduleGeneration) ||
+                other.scheduleGeneration == scheduleGeneration));
   }
 
   @override
@@ -77,11 +80,12 @@ mixin _$ScheduleUiState {
       selectedDutyGroup,
       const DeepCollectionEquality().hash(dutyGroups),
       const DeepCollectionEquality().hash(configs),
-      activeConfig);
+      activeConfig,
+      scheduleGeneration);
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, scheduleGeneration: $scheduleGeneration)';
   }
 }
 
@@ -103,7 +107,8 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res> {
       String? selectedDutyGroup,
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
-      DutyScheduleConfig? activeConfig});
+      DutyScheduleConfig? activeConfig,
+      int scheduleGeneration});
 }
 
 /// @nodoc
@@ -131,6 +136,7 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
     Object? dutyGroups = null,
     Object? configs = null,
     Object? activeConfig = freezed,
+    Object? scheduleGeneration = null,
   }) {
     return _then(_self.copyWith(
       isLoading: null == isLoading
@@ -181,6 +187,10 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
           ? _self.activeConfig
           : activeConfig // ignore: cast_nullable_to_non_nullable
               as DutyScheduleConfig?,
+      scheduleGeneration: null == scheduleGeneration
+          ? _self.scheduleGeneration
+          : scheduleGeneration // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -290,7 +300,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             String? selectedDutyGroup,
             List<String> dutyGroups,
             List<DutyScheduleConfig> configs,
-            DutyScheduleConfig? activeConfig)?
+            DutyScheduleConfig? activeConfig,
+            int scheduleGeneration)?
         $default, {
     required TResult orElse(),
   }) {
@@ -309,7 +320,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             _that.selectedDutyGroup,
             _that.dutyGroups,
             _that.configs,
-            _that.activeConfig);
+            _that.activeConfig,
+            _that.scheduleGeneration);
       case _:
         return orElse();
     }
@@ -342,7 +354,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             String? selectedDutyGroup,
             List<String> dutyGroups,
             List<DutyScheduleConfig> configs,
-            DutyScheduleConfig? activeConfig)
+            DutyScheduleConfig? activeConfig,
+            int scheduleGeneration)
         $default,
   ) {
     final _that = this;
@@ -360,7 +373,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             _that.selectedDutyGroup,
             _that.dutyGroups,
             _that.configs,
-            _that.activeConfig);
+            _that.activeConfig,
+            _that.scheduleGeneration);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -392,7 +406,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             String? selectedDutyGroup,
             List<String> dutyGroups,
             List<DutyScheduleConfig> configs,
-            DutyScheduleConfig? activeConfig)?
+            DutyScheduleConfig? activeConfig,
+            int scheduleGeneration)?
         $default,
   ) {
     final _that = this;
@@ -410,7 +425,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             _that.selectedDutyGroup,
             _that.dutyGroups,
             _that.configs,
-            _that.activeConfig);
+            _that.activeConfig,
+            _that.scheduleGeneration);
       case _:
         return null;
     }
@@ -432,7 +448,8 @@ class _ScheduleUiState extends ScheduleUiState {
       this.selectedDutyGroup,
       final List<String> dutyGroups = const <String>[],
       final List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
-      this.activeConfig})
+      this.activeConfig,
+      this.scheduleGeneration = 0})
       : _schedules = schedules,
         _dutyGroups = dutyGroups,
         _configs = configs,
@@ -483,6 +500,9 @@ class _ScheduleUiState extends ScheduleUiState {
 
   @override
   final DutyScheduleConfig? activeConfig;
+  @override
+  @JsonKey()
+  final int scheduleGeneration;
 
   /// Create a copy of ScheduleUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -518,7 +538,9 @@ class _ScheduleUiState extends ScheduleUiState {
                 .equals(other._dutyGroups, _dutyGroups) &&
             const DeepCollectionEquality().equals(other._configs, _configs) &&
             (identical(other.activeConfig, activeConfig) ||
-                other.activeConfig == activeConfig));
+                other.activeConfig == activeConfig) &&
+            (identical(other.scheduleGeneration, scheduleGeneration) ||
+                other.scheduleGeneration == scheduleGeneration));
   }
 
   @override
@@ -535,11 +557,12 @@ class _ScheduleUiState extends ScheduleUiState {
       selectedDutyGroup,
       const DeepCollectionEquality().hash(_dutyGroups),
       const DeepCollectionEquality().hash(_configs),
-      activeConfig);
+      activeConfig,
+      scheduleGeneration);
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, scheduleGeneration: $scheduleGeneration)';
   }
 }
 
@@ -563,7 +586,8 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res>
       String? selectedDutyGroup,
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
-      DutyScheduleConfig? activeConfig});
+      DutyScheduleConfig? activeConfig,
+      int scheduleGeneration});
 }
 
 /// @nodoc
@@ -591,6 +615,7 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
     Object? dutyGroups = null,
     Object? configs = null,
     Object? activeConfig = freezed,
+    Object? scheduleGeneration = null,
   }) {
     return _then(_ScheduleUiState(
       isLoading: null == isLoading
@@ -641,6 +666,10 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
           ? _self.activeConfig
           : activeConfig // ignore: cast_nullable_to_non_nullable
               as DutyScheduleConfig?,
+      scheduleGeneration: null == scheduleGeneration
+          ? _self.scheduleGeneration
+          : scheduleGeneration // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }

@@ -8,6 +8,7 @@ import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
+
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 
@@ -124,6 +125,7 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
       List<Schedule> schedules, DateTime monthStart, String activeConfigName) {
     final DateTime monthEnd =
         DateTime(monthStart.year, monthStart.month + 1, 0);
+
     for (final Schedule s in schedules) {
       final bool inMonth =
           s.date.isAfter(monthStart.subtract(const Duration(days: 1))) &&
@@ -140,8 +142,6 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
 
   Future<void> setFocusedDay(DateTime day) async {
     final current = state.valueOrNull ?? ScheduleUiState.initial();
-
-    print('🔍 setFocusedDay called for: ${day.year}-${day.month}-${day.day}');
 
     // Set loading state while fetching new schedules
     state = AsyncData(current.copyWith(isLoading: true, focusedDay: day));
@@ -172,11 +172,6 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
           end = focusedEnd.isAfter(selectedEnd) ? focusedEnd : selectedEnd;
         }
 
-        print(
-            '📅 Loading range: focused month ${day.year}-${day.month} ±3, selected day ${selectedDay?.year}-${selectedDay?.month} ±3');
-        print(
-            '📊 Final range: ${start.month}/${start.year} to ${end.month}/${end.year}');
-
         // First try to load existing schedules
         var allSchedules = await _getSchedulesUseCase!.executeForDateRange(
           startDate: start,
@@ -186,27 +181,25 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
 
         // Check if we need to generate schedules for the focused month specifically
         final focusedMonthStart = DateTime(day.year, day.month, 1);
-        final focusedMonthEnd = DateTime(day.year, day.month + 1, 0);
-
-        final schedulesForFocusedMonth = allSchedules.where((schedule) {
-          return schedule.date.isAfter(
-                  focusedMonthStart.subtract(const Duration(days: 1))) &&
-              schedule.date
-                  .isBefore(focusedMonthEnd.add(const Duration(days: 1)));
-        }).toList();
-
-        print(
-            '🔍 Focused month: ${day.year}-${day.month}, found ${schedulesForFocusedMonth.length} schedules');
-        print(
-            '📊 Total schedules in range ${start.month}/${start.year} to ${end.month}/${end.year}: ${allSchedules.length}');
 
         // Ensure focused, previous and next months exist (generate only when empty or without valid items for active config)
         Future<void> ensureMonthGenerated(
             DateTime monthStart, String activeConfigName) async {
           final DateTime monthEnd =
               DateTime(monthStart.year, monthStart.month + 1, 0);
-          if (!_hasValidSchedulesForMonth(
-              allSchedules, monthStart, activeConfigName)) {
+
+          // Check if month actually has schedules in UI state (not just allSchedules)
+          final currentStateSchedules = current.schedules
+              .where((s) =>
+                  s.date.year == monthStart.year &&
+                  s.date.month == monthStart.month &&
+                  s.configName == activeConfigName &&
+                  s.dutyTypeId.isNotEmpty &&
+                  s.dutyTypeId != '-')
+              .length;
+
+          // Generate if UI state is missing schedules (regardless of allSchedules)
+          if (currentStateSchedules == 0) {
             final List<Schedule> generated =
                 await _generateSchedulesUseCase!.execute(
               configName: activeConfigName,
@@ -217,13 +210,16 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
           }
         }
 
-        // Focused month
-        await ensureMonthGenerated(focusedMonthStart, activeName);
-        // Adjacent months (to ensure smooth chevron/date-switch navigation)
-        await ensureMonthGenerated(
-            DateTime(day.year, day.month - 1, 1), activeName);
-        await ensureMonthGenerated(
-            DateTime(day.year, day.month + 1, 1), activeName);
+        // Generate current month and 3 months into the future in parallel using isolate
+        await Future.wait([
+          ensureMonthGenerated(focusedMonthStart, activeName),
+          ensureMonthGenerated(
+              DateTime(day.year, day.month + 1, 1), activeName),
+          ensureMonthGenerated(
+              DateTime(day.year, day.month + 2, 1), activeName),
+          ensureMonthGenerated(
+              DateTime(day.year, day.month + 3, 1), activeName),
+        ]);
 
         // Update state with new schedules and clear loading
         // Merge with existing schedules to avoid losing data
@@ -252,11 +248,13 @@ class ScheduleNotifier extends AsyncNotifier<ScheduleUiState> {
           }
         }
 
-        state = AsyncData(current.copyWith(
+        // Update state with new schedules
+        final newState = current.copyWith(
           schedules: mergedSchedules,
           focusedDay: day,
           isLoading: false,
-        ));
+        );
+        state = AsyncData(newState);
       } catch (e) {
         // Handle error and clear loading state
         state = AsyncData(current.copyWith(
