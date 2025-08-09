@@ -763,6 +763,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get in touch with us'**
   String get contactDescription;
+
+  /// Generic validation error message
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid input'**
+  String get genericValidationError;
+
+  /// Generic not found error message
+  ///
+  /// In en, this message translates to:
+  /// **'Requested item was not found'**
+  String get genericNotFoundError;
+
+  /// Generic conflict error message
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict occurred'**
+  String get genericConflictError;
+
+  /// Generic unauthorized error message
+  ///
+  /// In en, this message translates to:
+  /// **'You are not authorized'**
+  String get genericUnauthorizedError;
+
+  /// Generic forbidden error message
+  ///
+  /// In en, this message translates to:
+  /// **'Access is forbidden'**
+  String get genericForbiddenError;
+
+  /// Generic network error message
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please check your connection.'**
+  String get genericNetworkError;
+
+  /// Generic timeout error message
+  ///
+  /// In en, this message translates to:
+  /// **'The operation timed out'**
+  String get genericTimeoutError;
+
+  /// Generic storage error message
+  ///
+  /// In en, this message translates to:
+  /// **'Storage error occurred'**
+  String get genericStorageError;
+
+  /// Generic serialization error message
+  ///
+  /// In en, this message translates to:
+  /// **'Data processing error'**
+  String get genericSerializationError;
+
+  /// Generic cancellation error message
+  ///
+  /// In en, this message translates to:
+  /// **'The operation was cancelled'**
+  String get genericCancellationError;
+
+  /// No description provided for @genericUnknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred'**
+  String get genericUnknownError;
 }
 
 class _AppLocalizationsDelegate

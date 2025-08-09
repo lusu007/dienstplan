@@ -460,5 +460,27 @@
   "contactDescription": "Get in touch with us",
   "@contactDescription": {
     "description": "Description for contact option"
-  }
+  },
+
+  "genericValidationError": "Invalid input",
+  "@genericValidationError": {"description": "Generic validation error message"},
+  "genericNotFoundError": "Requested item was not found",
+  "@genericNotFoundError": {"description": "Generic not found error message"},
+  "genericConflictError": "Conflict occurred",
+  "@genericConflictError": {"description": "Generic conflict error message"},
+  "genericUnauthorizedError": "You are not authorized",
+  "@genericUnauthorizedError": {"description": "Generic unauthorized error message"},
+  "genericForbiddenError": "Access is forbidden",
+  "@genericForbiddenError": {"description": "Generic forbidden error message"},
+  "genericNetworkError": "Network error. Please check your connection.",
+  "@genericNetworkError": {"description": "Generic network error message"},
+  "genericTimeoutError": "The operation timed out",
+  "@genericTimeoutError": {"description": "Generic timeout error message"},
+  "genericStorageError": "Storage error occurred",
+  "@genericStorageError": {"description": "Generic storage error message"},
+  "genericSerializationError": "Data processing error",
+  "@genericSerializationError": {"description": "Generic serialization error message"},
+  "genericCancellationError": "The operation was cancelled",
+  "@genericCancellationError": {"description": "Generic cancellation error message"},
+  "genericUnknownError": "An unknown error occurred"
 } 

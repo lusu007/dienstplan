@@ -1,11 +1,17 @@
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/data/repositories/config_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/domain/failures/result.dart';
+import 'package:dienstplan/core/errors/exception_mapper.dart';
+import 'package:dienstplan/domain/failures/failure.dart';
 
 class SetActiveConfigUseCase {
   final ConfigRepository _configRepository;
+  final ExceptionMapper _exceptionMapper;
 
-  SetActiveConfigUseCase(this._configRepository);
+  SetActiveConfigUseCase(this._configRepository,
+      {ExceptionMapper? exceptionMapper})
+      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   Future<void> execute(String configName) async {
     try {
@@ -42,6 +48,16 @@ class SetActiveConfigUseCase {
       AppLogger.e(
           'SetActiveConfigUseCase: Error setting active config', e, stackTrace);
       rethrow;
+    }
+  }
+
+  Future<Result<void>> executeSafe(String configName) async {
+    try {
+      await execute(configName);
+      return Result.success<void>(null);
+    } catch (e, stackTrace) {
+      final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
+      return Result.createFailure<void>(failure);
     }
   }
 
