@@ -6,14 +6,17 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/domain/repositories/config_repository.dart'
+    as domain_repo;
 
-class ConfigRepository {
+class ConfigRepositoryImpl implements domain_repo.ConfigRepository {
   final ScheduleConfigService _configService;
   final ExceptionMapper _exceptionMapper;
 
-  ConfigRepository(this._configService, {ExceptionMapper? exceptionMapper})
+  ConfigRepositoryImpl(this._configService, {ExceptionMapper? exceptionMapper})
       : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
+  @override
   Future<List<domain.DutyScheduleConfig>> getConfigs() async {
     try {
       AppLogger.i('ConfigRepository: Getting configs');
@@ -28,6 +31,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<Result<List<domain.DutyScheduleConfig>>> getConfigsSafe() async {
     try {
       final configs = await getConfigs();
@@ -38,6 +42,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<domain.DutyScheduleConfig?> getDefaultConfig() async {
     try {
       AppLogger.i('ConfigRepository: Getting default config');
@@ -53,6 +58,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<Result<domain.DutyScheduleConfig?>> getDefaultConfigSafe() async {
     try {
       final config = await getDefaultConfig();
@@ -63,6 +69,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<void> saveConfig(domain.DutyScheduleConfig config) async {
     try {
       AppLogger.i('ConfigRepository: Saving config: ${config.name}');
@@ -75,6 +82,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<Result<void>> saveConfigSafe(domain.DutyScheduleConfig config) async {
     try {
       await saveConfig(config);
@@ -85,6 +93,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<void> setDefaultConfig(domain.DutyScheduleConfig config) async {
     try {
       AppLogger.i('ConfigRepository: Setting default config: ${config.name}');
@@ -98,6 +107,7 @@ class ConfigRepository {
     }
   }
 
+  @override
   Future<Result<void>> setDefaultConfigSafe(
       domain.DutyScheduleConfig config) async {
     try {

@@ -1,5 +1,7 @@
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
+import 'package:dienstplan/domain/repositories/schedule_repository.dart'
+    as domain_repo;
 import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/data/models/mappers/schedule_mapper.dart' as mapper;
 import 'package:dienstplan/core/utils/logger.dart';
@@ -7,13 +9,15 @@ import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 
-class ScheduleRepository {
+class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   final DatabaseService _databaseService;
   final ExceptionMapper _exceptionMapper;
 
-  ScheduleRepository(this._databaseService, {ExceptionMapper? exceptionMapper})
+  ScheduleRepositoryImpl(this._databaseService,
+      {ExceptionMapper? exceptionMapper})
       : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
+  @override
   Future<List<Schedule>> getSchedules() async {
     try {
       AppLogger.i('ScheduleRepository: Getting all schedules');
@@ -28,6 +32,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<Result<List<Schedule>>> getSchedulesSafe() async {
     try {
       final result = await getSchedules();
@@ -38,6 +43,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<List<Schedule>> getSchedulesForDateRange({
     required DateTime start,
     required DateTime end,
@@ -59,6 +65,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<Result<List<Schedule>>> getSchedulesForDateRangeSafe({
     required DateTime start,
     required DateTime end,
@@ -77,6 +84,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<void> saveSchedules(List<Schedule> schedules) async {
     try {
       AppLogger.i('ScheduleRepository: Saving ${schedules.length} schedules');
@@ -89,6 +97,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<Result<void>> saveSchedulesSafe(List<Schedule> schedules) async {
     try {
       await saveSchedules(schedules);
@@ -99,6 +108,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<void> clearSchedules() async {
     try {
       AppLogger.i('ScheduleRepository: Clearing all schedules');
@@ -111,6 +121,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<Result<void>> clearSchedulesSafe() async {
     try {
       await clearSchedules();
@@ -121,6 +132,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<List<DutyType>> getDutyTypes({required String configName}) async {
     try {
       AppLogger.i(
@@ -143,6 +155,7 @@ class ScheduleRepository {
     }
   }
 
+  @override
   Future<Result<List<DutyType>>> getDutyTypesSafe(
       {required String configName}) async {
     try {

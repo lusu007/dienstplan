@@ -199,7 +199,7 @@ final configLocalDataSourceProvider =
 // ignore: unused_element
 typedef ConfigLocalDataSourceRef = FutureProviderRef<ConfigLocalDataSource>;
 String _$scheduleRepositoryHash() =>
-    r'9773ea860cfab67cd21284b98f950173845aee08';
+    r'2fe0c2d57eac7ea010f25f4feee18810a96e9b9e';
 
 /// See also [scheduleRepository].
 @ProviderFor(scheduleRepository)
@@ -217,7 +217,7 @@ final scheduleRepositoryProvider = FutureProvider<ScheduleRepository>.internal(
 // ignore: unused_element
 typedef ScheduleRepositoryRef = FutureProviderRef<ScheduleRepository>;
 String _$settingsRepositoryHash() =>
-    r'20b12f8a4b818a9b4a533784ef2ee5fcd02f1a35';
+    r'9293b51bdaadc026f158b682ca7e9c1f9635bde5';
 
 /// See also [settingsRepository].
 @ProviderFor(settingsRepository)
@@ -234,7 +234,7 @@ final settingsRepositoryProvider = FutureProvider<SettingsRepository>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SettingsRepositoryRef = FutureProviderRef<SettingsRepository>;
-String _$configRepositoryHash() => r'd01c75286832cd4ba03674afe5fdba014b54316f';
+String _$configRepositoryHash() => r'7a6c6fcd1939f701b317fae9a4ab766eb5810e21';
 
 /// See also [configRepository].
 @ProviderFor(configRepository)

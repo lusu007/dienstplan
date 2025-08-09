@@ -5,14 +5,18 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/domain/repositories/settings_repository.dart'
+    as domain_repo;
 
-class SettingsRepository {
+class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   final DatabaseService _databaseService;
   final ExceptionMapper _exceptionMapper;
 
-  SettingsRepository(this._databaseService, {ExceptionMapper? exceptionMapper})
+  SettingsRepositoryImpl(this._databaseService,
+      {ExceptionMapper? exceptionMapper})
       : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
+  @override
   Future<domain.Settings?> getSettings() async {
     try {
       AppLogger.i('SettingsRepository: Getting settings');
@@ -29,6 +33,7 @@ class SettingsRepository {
     }
   }
 
+  @override
   Future<Result<domain.Settings?>> getSettingsSafe() async {
     try {
       final settings = await getSettings();
@@ -39,6 +44,7 @@ class SettingsRepository {
     }
   }
 
+  @override
   Future<void> saveSettings(domain.Settings settings) async {
     try {
       AppLogger.i('SettingsRepository: Saving settings');
@@ -51,6 +57,7 @@ class SettingsRepository {
     }
   }
 
+  @override
   Future<Result<void>> saveSettingsSafe(domain.Settings settings) async {
     try {
       await saveSettings(settings);
@@ -61,6 +68,7 @@ class SettingsRepository {
     }
   }
 
+  @override
   Future<void> clearSettings() async {
     try {
       AppLogger.i('SettingsRepository: Clearing settings');
@@ -72,6 +80,7 @@ class SettingsRepository {
     }
   }
 
+  @override
   Future<Result<void>> clearSettingsSafe() async {
     try {
       await clearSettings();
