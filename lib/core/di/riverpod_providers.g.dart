@@ -6,12 +6,11 @@ part of 'riverpod_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$databaseServiceHash() => r'9cda77d5976b80b2895163ddc04da52ade51eece';
+String _$databaseServiceHash() => r'4b70714b1829eff89e609997d21e60bf44d5fd20';
 
 /// See also [databaseService].
 @ProviderFor(databaseService)
-final databaseServiceProvider =
-    AutoDisposeFutureProvider<DatabaseService>.internal(
+final databaseServiceProvider = FutureProvider<DatabaseService>.internal(
   databaseService,
   name: r'databaseServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -23,14 +22,14 @@ final databaseServiceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef DatabaseServiceRef = AutoDisposeFutureProviderRef<DatabaseService>;
+typedef DatabaseServiceRef = FutureProviderRef<DatabaseService>;
 String _$scheduleConfigServiceHash() =>
-    r'374b2d1e5443c6afc2e3d5bd4254c0656622963e';
+    r'e1e7c37d1c9e41a9a5433738dca15e9e4278abdf';
 
 /// See also [scheduleConfigService].
 @ProviderFor(scheduleConfigService)
 final scheduleConfigServiceProvider =
-    AutoDisposeFutureProvider<ScheduleConfigService>.internal(
+    FutureProvider<ScheduleConfigService>.internal(
   scheduleConfigService,
   name: r'scheduleConfigServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -42,8 +41,7 @@ final scheduleConfigServiceProvider =
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef ScheduleConfigServiceRef
-    = AutoDisposeFutureProviderRef<ScheduleConfigService>;
+typedef ScheduleConfigServiceRef = FutureProviderRef<ScheduleConfigService>;
 String _$languageServiceHash() => r'6b365cc3d0c97f3f4429f199947d03eade218be1';
 
 /// See also [languageService].
@@ -79,7 +77,7 @@ final currentLocaleProvider = AutoDisposeStreamProvider<Locale>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentLocaleRef = AutoDisposeStreamProviderRef<Locale>;
-String _$themeModeHash() => r'9040d24bf7f1a74d249cbe378fd1bf03d0121975';
+String _$themeModeHash() => r'eb57febdf445c01324ede35a2bea0188daa64d90';
 
 /// See also [themeMode].
 @ProviderFor(themeMode)
@@ -111,11 +109,11 @@ final appThemeProvider = AutoDisposeProvider<ThemeData>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AppThemeRef = AutoDisposeProviderRef<ThemeData>;
-String _$sentryServiceHash() => r'86c37a978b5dfde76f87a1bd3382a44bba1a7744';
+String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
 
 /// See also [sentryService].
 @ProviderFor(sentryService)
-final sentryServiceProvider = AutoDisposeFutureProvider<SentryService>.internal(
+final sentryServiceProvider = FutureProvider<SentryService>.internal(
   sentryService,
   name: r'sentryServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -127,7 +125,7 @@ final sentryServiceProvider = AutoDisposeFutureProvider<SentryService>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef SentryServiceRef = AutoDisposeFutureProviderRef<SentryService>;
+typedef SentryServiceRef = FutureProviderRef<SentryService>;
 String _$shareServiceHash() => r'5d5beedc43a1ceeee51e61f110a45f856e9b99af';
 
 /// See also [shareService].
