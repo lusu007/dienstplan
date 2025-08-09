@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,6 +12,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 
+@RoutePage()
 class DebugScreen extends ConsumerStatefulWidget {
   const DebugScreen({super.key});
 

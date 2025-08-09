@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Accessed via riverpod provider
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+// ignore: unused_import
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
@@ -45,11 +48,7 @@ class ResetDialog {
                     content: Text(l10n.resetDataSuccess),
                   ),
                 );
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) => const SetupScreen(),
-                  ),
-                );
+                context.router.replaceAll([const SetupRoute()]);
               }
             },
             child: Text(l10n.reset),

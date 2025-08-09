@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
@@ -20,11 +22,14 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+// ignore: unused_import
 import 'package:dienstplan/presentation/screens/debug_screen.dart';
+// ignore: unused_import
 import 'package:dienstplan/presentation/screens/about_screen.dart';
 import 'package:dienstplan/data/services/share_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+@RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -351,11 +356,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _navigateToAboutScreen(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AboutScreen(),
-      ),
-    );
+    context.router.push(const AboutRoute());
   }
 
   Future<void> _openContact() async {
@@ -445,12 +446,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     // Open debug screen after 7 taps
     if (_footerTapCount >= 7) {
       _footerTapCount = 0; // Reset counter
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DebugScreen(),
-        ),
-      );
+      context.router.push(const DebugRoute());
     }
   }
 }

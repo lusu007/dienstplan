@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
@@ -20,6 +21,7 @@ import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 
+@RoutePage()
 class SetupScreen extends ConsumerStatefulWidget {
   const SetupScreen({super.key});
 

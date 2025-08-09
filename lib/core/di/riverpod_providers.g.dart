@@ -59,6 +59,55 @@ final languageServiceProvider = FutureProvider<LanguageService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LanguageServiceRef = FutureProviderRef<LanguageService>;
+String _$currentLocaleHash() => r'059251815f0e91eeaf6f979b04b7fad03a7f2b47';
+
+/// See also [currentLocale].
+@ProviderFor(currentLocale)
+final currentLocaleProvider = StreamProvider<Locale>.internal(
+  currentLocale,
+  name: r'currentLocaleProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentLocaleHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CurrentLocaleRef = StreamProviderRef<Locale>;
+String _$themeModeHash() => r'2f59cd95587745bfd1801103b5d444333cada6c5';
+
+/// See also [themeMode].
+@ProviderFor(themeMode)
+final themeModeProvider = Provider<ThemeMode>.internal(
+  themeMode,
+  name: r'themeModeProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$themeModeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ThemeModeRef = ProviderRef<ThemeMode>;
+String _$appThemeHash() => r'a7b7c1924a855c4d99996bc985d648ae449774aa';
+
+/// See also [appTheme].
+@ProviderFor(appTheme)
+final appThemeProvider = Provider<ThemeData>.internal(
+  appTheme,
+  name: r'appThemeProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appThemeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AppThemeRef = ProviderRef<ThemeData>;
 String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
 
 /// See also [sentryService].

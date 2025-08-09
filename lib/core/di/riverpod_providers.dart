@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,6 +54,48 @@ Future<LanguageService> languageService(Ref ref) async {
   final LanguageService service = LanguageService();
   await service.initialize();
   return service;
+}
+
+// UI/Locale/Theme providers
+@Riverpod(keepAlive: true)
+Stream<Locale> currentLocale(Ref ref) async* {
+  final LanguageService languageService =
+      await ref.watch(languageServiceProvider.future);
+  final StreamController<Locale> controller = StreamController<Locale>();
+  void emit() => controller.add(languageService.currentLocale);
+  controller.add(languageService.currentLocale);
+  languageService.addListener(emit);
+  ref.onDispose(() {
+    languageService.removeListener(emit);
+    controller.close();
+  });
+  yield* controller.stream;
+}
+
+@Riverpod(keepAlive: true)
+ThemeMode themeMode(Ref ref) {
+  // TODO: read persisted theme setting when available
+  return ThemeMode.system;
+}
+
+@Riverpod(keepAlive: true)
+ThemeData appTheme(Ref ref) {
+  return ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFF005B8C),
+      primary: const Color(0xFF005B8C),
+    ),
+    useMaterial3: true,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFF005B8C),
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+      ),
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
+  );
 }
 
 @Riverpod(keepAlive: true)
