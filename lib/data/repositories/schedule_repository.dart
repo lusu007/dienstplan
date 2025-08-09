@@ -2,7 +2,8 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/domain/repositories/schedule_repository.dart'
     as domain_repo;
-import 'package:dienstplan/data/services/database_service.dart';
+import 'package:dienstplan/data/daos/schedules_dao.dart';
+import 'package:dienstplan/data/daos/duty_types_dao.dart';
 import 'package:dienstplan/data/models/mappers/schedule_mapper.dart' as mapper;
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/failures/result.dart';
@@ -10,10 +11,11 @@ import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 
 class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
-  final DatabaseService _databaseService;
+  final SchedulesDao _schedulesDao;
+  final DutyTypesDao _dutyTypesDao;
   final ExceptionMapper _exceptionMapper;
 
-  ScheduleRepositoryImpl(this._databaseService,
+  ScheduleRepositoryImpl(this._schedulesDao, this._dutyTypesDao,
       {ExceptionMapper? exceptionMapper})
       : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
@@ -21,7 +23,7 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   Future<List<Schedule>> getSchedules() async {
     try {
       AppLogger.i('ScheduleRepository: Getting all schedules');
-      final dataSchedules = await _databaseService.loadSchedules();
+      final dataSchedules = await _schedulesDao.loadSchedules();
       final schedules = dataSchedules.map(mapper.toDomainSchedule).toList();
       AppLogger.i(
           'ScheduleRepository: Retrieved ${schedules.length} schedules');
@@ -52,8 +54,11 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
     try {
       AppLogger.i(
           'ScheduleRepository: Getting schedules for date range: $start to $end${configName != null ? ' for config: $configName' : ''}');
-      final dataSchedules = await _databaseService
-          .loadSchedulesForDateRange(start, end, configName: configName);
+      final dataSchedules = await _schedulesDao.loadSchedulesForRange(
+        startDate: start,
+        endDate: end,
+        configName: configName,
+      );
       final schedules = dataSchedules.map(mapper.toDomainSchedule).toList();
       AppLogger.i(
           'ScheduleRepository: Retrieved ${schedules.length} schedules for date range');
@@ -89,7 +94,7 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
     try {
       AppLogger.i('ScheduleRepository: Saving ${schedules.length} schedules');
       final dataSchedules = schedules.map(mapper.toDataSchedule).toList();
-      await _databaseService.saveSchedules(dataSchedules);
+      await _schedulesDao.saveSchedules(dataSchedules);
       AppLogger.i('ScheduleRepository: Successfully saved schedules');
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleRepository: Error saving schedules', e, stackTrace);
@@ -112,7 +117,7 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   Future<void> clearSchedules() async {
     try {
       AppLogger.i('ScheduleRepository: Clearing all schedules');
-      await _databaseService.clearDatabase();
+      await _schedulesDao.clear();
       AppLogger.i('ScheduleRepository: Successfully cleared all schedules');
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -137,7 +142,7 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
     try {
       AppLogger.i(
           'ScheduleRepository: Getting duty types for config: $configName');
-      final dataDutyTypesMap = await _databaseService.loadDutyTypes(configName);
+      final dataDutyTypesMap = await _dutyTypesDao.loadForConfig(configName);
       final dutyTypes = dataDutyTypesMap.values
           .map((dt) => DutyType(
                 label: dt.label,

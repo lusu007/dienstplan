@@ -23,6 +23,54 @@ final databaseServiceProvider = FutureProvider<DatabaseService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef DatabaseServiceRef = FutureProviderRef<DatabaseService>;
+String _$schedulesDaoHash() => r'04807b9767fa099dedfe88aed356c028d7ed74b8';
+
+/// See also [schedulesDao].
+@ProviderFor(schedulesDao)
+final schedulesDaoProvider = AutoDisposeFutureProvider<SchedulesDao>.internal(
+  schedulesDao,
+  name: r'schedulesDaoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$schedulesDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SchedulesDaoRef = AutoDisposeFutureProviderRef<SchedulesDao>;
+String _$settingsDaoHash() => r'5c5a5dd3827b1d704fd1098298ef22cd6c39ad85';
+
+/// See also [settingsDao].
+@ProviderFor(settingsDao)
+final settingsDaoProvider = AutoDisposeFutureProvider<SettingsDao>.internal(
+  settingsDao,
+  name: r'settingsDaoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$settingsDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SettingsDaoRef = AutoDisposeFutureProviderRef<SettingsDao>;
+String _$dutyTypesDaoHash() => r'246b1106d6cfb10bb0c000d7a8064d41308254a8';
+
+/// See also [dutyTypesDao].
+@ProviderFor(dutyTypesDao)
+final dutyTypesDaoProvider = AutoDisposeFutureProvider<DutyTypesDao>.internal(
+  dutyTypesDao,
+  name: r'dutyTypesDaoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$dutyTypesDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef DutyTypesDaoRef = AutoDisposeFutureProviderRef<DutyTypesDao>;
 String _$scheduleConfigServiceHash() =>
     r'e1e7c37d1c9e41a9a5433738dca15e9e4278abdf';
 
@@ -59,7 +107,7 @@ final languageServiceProvider = FutureProvider<LanguageService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LanguageServiceRef = FutureProviderRef<LanguageService>;
-String _$currentLocaleHash() => r'e0c340c5146add203f0e53deb3534a6a02798913';
+String _$currentLocaleHash() => r'd0a4fd9ce7251dd9223ed358e73c9430989c43eb';
 
 /// See also [currentLocale].
 @ProviderFor(currentLocale)
@@ -202,7 +250,7 @@ final configLocalDataSourceProvider =
 typedef ConfigLocalDataSourceRef
     = AutoDisposeFutureProviderRef<ConfigLocalDataSource>;
 String _$scheduleRepositoryHash() =>
-    r'ffa558a3c0ce8baf20abc7edd00f719cfbd25bc4';
+    r'fa5bf5b634dd91faa6925ae2afd7fe3fabe833ea';
 
 /// See also [scheduleRepository].
 @ProviderFor(scheduleRepository)
@@ -222,7 +270,7 @@ final scheduleRepositoryProvider =
 typedef ScheduleRepositoryRef
     = AutoDisposeFutureProviderRef<ScheduleRepository>;
 String _$settingsRepositoryHash() =>
-    r'79900cfd186a9ea466d80026ffb3d1ae9f157b91';
+    r'3e3bf3608489e6dee17ae04fd8353851d040cff5';
 
 /// See also [settingsRepository].
 @ProviderFor(settingsRepository)
