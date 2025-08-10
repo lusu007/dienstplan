@@ -210,8 +210,23 @@ class _TableCalendarWrapper extends ConsumerWidget {
             schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))))
         .toList();
     visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
+    // Build a compact hash of visible data to force TableCalendar to rebuild
+    final String visibleSignature = visibleSchedulesForHash
+        .map((s) =>
+            '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}')
+        .join(';');
+    final int tableCalendarKeyHash = Object.hash(
+      focusedDay.year,
+      focusedDay.month,
+      visibleSignature.hashCode,
+      state?.activeConfigName,
+      state?.preferredDutyGroup,
+      state?.partnerConfigName,
+      state?.partnerDutyGroup,
+    );
 
     return TableCalendar(
+      key: ValueKey<int>(tableCalendarKeyHash),
       firstDay: CalendarConfig.firstDay,
       lastDay: CalendarConfig.lastDay,
       focusedDay: focusedDay,
@@ -225,6 +240,9 @@ class _TableCalendarWrapper extends ConsumerWidget {
             .read(scheduleNotifierProvider.notifier)
             .setSelectedDay(selectedDay);
         ref.read(scheduleNotifierProvider.notifier).setFocusedDay(focusedDay);
+        await ref
+            .read(scheduleNotifierProvider.notifier)
+            .ensureActiveDay(selectedDay);
         onDaySelected();
       },
       onFormatChanged: (format) {

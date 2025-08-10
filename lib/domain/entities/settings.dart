@@ -14,6 +14,10 @@ abstract class Settings with _$Settings {
     String? myDutyGroup,
     String? activeConfigName,
     ThemePreference? themePreference,
+    // Partner duty group feature
+    String? partnerConfigName,
+    String? partnerDutyGroup,
+    int? partnerAccentColorValue,
   }) = _Settings;
 
   const Settings._();

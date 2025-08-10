@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/partner_accent_palette.dart';
+import 'package:dienstplan/presentation/extensions/partner_accent_color_extensions.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
@@ -8,6 +10,9 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/duty_schedule_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_duty_group_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/calendar_format_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_group_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_config_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_color_dialog.dart';
 
 class ScheduleSection extends StatelessWidget {
   final ScheduleUiState state;
@@ -17,27 +22,60 @@ class ScheduleSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    return SettingsSection(
-      title: l10n.schedule,
-      cards: [
-        NavigationCard(
-          icon: Icons.calendar_today_outlined,
-          title: l10n.myDutySchedule,
-          subtitle: _getDutyScheduleDisplayName(state, l10n),
-          onTap: () => DutyScheduleDialog.show(context),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SettingsSection(
+          title: l10n.schedule,
+          cards: [
+            NavigationCard(
+              icon: Icons.calendar_month_outlined,
+              title: l10n.myDutySchedule,
+              subtitle: _getDutyScheduleDisplayName(state, l10n),
+              onTap: () => DutyScheduleDialog.show(context),
+            ),
+            NavigationCard(
+              icon: Icons.favorite_outlined,
+              title: l10n.myDutyGroup,
+              subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
+              onTap: () => MyDutyGroupDialog.show(context),
+            ),
+            NavigationCard(
+              icon: Icons.view_week_outlined,
+              title: l10n.calendarFormat,
+              subtitle: _getCalendarFormatName(
+                  state.calendarFormat ?? CalendarFormat.month, l10n),
+              onTap: () => CalendarFormatDialog.show(context),
+            ),
+          ],
         ),
-        NavigationCard(
-          icon: Icons.favorite_outlined,
-          title: l10n.myDutyGroup,
-          subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
-          onTap: () => MyDutyGroupDialog.show(context),
-        ),
-        NavigationCard(
-          icon: Icons.view_week_outlined,
-          title: l10n.calendarFormat,
-          subtitle: _getCalendarFormatName(
-              state.calendarFormat ?? CalendarFormat.month, l10n),
-          onTap: () => CalendarFormatDialog.show(context),
+        const SizedBox(height: 16),
+        SettingsSection(
+          title: l10n.partnerDutySchedule,
+          cards: [
+            NavigationCard(
+              icon: Icons.calendar_month_outlined,
+              title: l10n.partnerDutySchedule,
+              subtitle: state.partnerConfigName?.isNotEmpty == true
+                  ? state.partnerConfigName!
+                  : l10n.noDutySchedule,
+              onTap: () => PartnerConfigDialog.show(context),
+            ),
+            NavigationCard(
+              icon: Icons.group_outlined,
+              title: l10n.partnerDutyGroup,
+              subtitle: _getPartnerGroupDisplayName(state, l10n),
+              onTap: () => PartnerGroupDialog.show(context),
+            ),
+            NavigationCard(
+              icon: Icons.color_lens_outlined,
+              title: l10n.accentColor,
+              subtitle: _getPartnerAccentColorName(state, l10n),
+              trailing:
+                  _buildAccentColorChip(context, state.partnerAccentColorValue),
+              onTap: () => PartnerColorDialog.show(context),
+            ),
+          ],
         ),
       ],
     );
@@ -52,6 +90,31 @@ class ScheduleSection extends StatelessWidget {
       case CalendarFormat.week:
         return l10n.calendarFormatWeek;
     }
+  }
+
+  String _getPartnerAccentColorName(
+      ScheduleUiState state, AppLocalizations l10n) {
+    final int value =
+        state.partnerAccentColorValue ?? kDefaultPartnerAccentColorValue;
+    final PartnerAccentColor? match = PartnerAccentColor.fromValue(value);
+    if (match != null) return match.toLabel(l10n);
+    return '#${value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
+  }
+
+  Widget _buildAccentColorChip(BuildContext context, int? colorValue) {
+    final Color color = Color(colorValue ?? kDefaultPartnerAccentColorValue);
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
+    );
   }
 
   String _getDutyScheduleDisplayName(
@@ -84,6 +147,20 @@ class ScheduleSection extends StatelessWidget {
           'ScheduleSection: Error getting preferred duty group display name',
           e);
       return l10n.noMyDutyGroup;
+    }
+  }
+
+  String _getPartnerGroupDisplayName(
+    ScheduleUiState state,
+    AppLocalizations l10n,
+  ) {
+    try {
+      if ((state.partnerDutyGroup ?? '').isEmpty) {
+        return l10n.noPartnerGroup;
+      }
+      return state.partnerDutyGroup!;
+    } catch (_) {
+      return l10n.noPartnerGroup;
     }
   }
 }

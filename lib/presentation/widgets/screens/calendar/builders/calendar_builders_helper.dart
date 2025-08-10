@@ -127,6 +127,58 @@ class CalendarBuildersHelper {
       return '';
     }
   }
+
+  static String _getPartnerDutyAbbreviationForDate(
+    DateTime day, {
+    required List<Schedule> schedules,
+    required String? partnerConfigName,
+    required String? partnerGroup,
+  }) {
+    try {
+      if (partnerConfigName == null || partnerConfigName.isEmpty) {
+        return '';
+      }
+      final DateTime dayDate = DateTime(day.year, day.month, day.day);
+      final List<Schedule> schedulesForDay = schedules.where((schedule) {
+        final scheduleDate = DateTime(
+            schedule.date.year, schedule.date.month, schedule.date.day);
+        final bool isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
+        final bool isPartnerConfig = schedule.configName == partnerConfigName;
+        return isSameDay && isPartnerConfig;
+      }).toList();
+      if (schedulesForDay.isEmpty) {
+        return '';
+      }
+      if (partnerGroup != null && partnerGroup.isNotEmpty) {
+        try {
+          final Schedule matched = schedulesForDay.firstWhere((s) =>
+              s.dutyGroupName == partnerGroup &&
+              s.dutyTypeId.isNotEmpty &&
+              s.dutyTypeId != '-');
+          return matched.dutyTypeId;
+        } catch (_) {
+          // If partner group exists but is off that day, show nothing
+          try {
+            final Schedule off = schedulesForDay
+                .firstWhere((s) => s.dutyGroupName == partnerGroup);
+            if (off.dutyTypeId == '-' || off.dutyTypeId.isEmpty) {
+              return '';
+            }
+          } catch (_) {}
+        }
+      }
+      // If no partner group specified, pick the first non-empty duty
+      try {
+        final Schedule first = schedulesForDay
+            .firstWhere((s) => s.dutyTypeId.isNotEmpty && s.dutyTypeId != '-');
+        return first.dutyTypeId;
+      } catch (_) {
+        return '';
+      }
+    } catch (_) {
+      return '';
+    }
+  }
 }
 
 class ReactiveCalendarDay extends ConsumerStatefulWidget {
@@ -187,12 +239,24 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
       preferredGroup: preferredGroup,
     );
 
+    final partnerConfigName = state?.partnerConfigName;
+    final partnerGroup = state?.partnerDutyGroup;
+    final partnerAbbreviation =
+        CalendarBuildersHelper._getPartnerDutyAbbreviationForDate(
+      widget.day,
+      schedules: schedules,
+      partnerConfigName: partnerConfigName,
+      partnerGroup: partnerGroup,
+    );
+
     final isSelected = _isSelected();
 
     try {
       return AnimatedCalendarDay(
         day: widget.day,
         dutyAbbreviation: dutyAbbreviation,
+        partnerDutyAbbreviation: partnerAbbreviation,
+        partnerAccentColorValue: state?.partnerAccentColorValue,
         dayType: widget.dayType,
         width: widget.width,
         height: widget.height,

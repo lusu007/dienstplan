@@ -99,6 +99,9 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
       themePreference: _mapThemeModeToPreference(s.themeMode),
+      partnerConfigName: s.partnerConfigName,
+      partnerDutyGroup: s.partnerDutyGroup,
+      partnerAccentColorValue: s.partnerAccentColorValue,
     );
   }
 
@@ -110,6 +113,9 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
       themeMode: _mapPreferenceToThemeMode(s.themePreference),
+      partnerConfigName: s.partnerConfigName,
+      partnerDutyGroup: s.partnerDutyGroup,
+      partnerAccentColorValue: s.partnerAccentColorValue,
     );
   }
 

@@ -9,9 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Duty Schedule';
-
-  @override
   String get settings => 'Settings';
 
   @override
@@ -48,9 +45,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
-  String get edit => 'Edit';
-
-  @override
   String get add => 'Add';
 
   @override
@@ -60,70 +54,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get success => 'Success';
 
   @override
-  String get loading => 'Loading...';
-
-  @override
   String get noDutySchedules => 'No duty schedules available';
-
-  @override
-  String get createNewDutySchedule => 'Create New Duty Schedule';
-
-  @override
-  String get dutyScheduleName => 'Duty Schedule Name';
-
-  @override
-  String get dutyScheduleDescription => 'Description';
-
-  @override
-  String get dutyScheduleStartDate => 'Start Date';
-
-  @override
-  String get dutyScheduleStartWeekDay => 'Start Week Day';
-
-  @override
-  String get dutyScheduleDays => 'Days';
-
-  @override
-  String get dutyScheduleDutyTypes => 'Duty Types';
-
-  @override
-  String get dutyScheduleRhythms => 'Rhythms';
-
-  @override
-  String get dutyScheduleGroups => 'Duty Groups';
-
-  @override
-  String get dutyTypeLabel => 'Label';
-
-  @override
-  String get dutyTypeStartTime => 'Start Time';
-
-  @override
-  String get dutyTypeEndTime => 'End Time';
-
-  @override
-  String get dutyTypeAllDay => 'All Day';
-
-  @override
-  String get rhythmLengthWeeks => 'Length in Weeks';
-
-  @override
-  String get rhythmPattern => 'Pattern';
-
-  @override
-  String get groupName => 'Name';
-
-  @override
-  String get groupRhythm => 'Rhythm';
-
-  @override
-  String get groupOffsetWeeks => 'Offset in Weeks';
-
-  @override
-  String get firstTimeSetup => 'First Time Setup';
-
-  @override
-  String get selectDefaultDutySchedule => 'Select Default Duty Schedule';
 
   @override
   String get continueButton => 'Continue';
@@ -134,34 +65,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get welcomeMessage =>
       'Let\'s set up your duty schedule. Therefore choose your duty schedule.';
-
-  @override
-  String get settingsSaved => 'Settings saved';
-
-  @override
-  String get settingsSaveError => 'Error saving settings';
-
-  @override
-  String get dutyScheduleSaved => 'Duty schedule saved';
-
-  @override
-  String get dutyScheduleSaveError => 'Error saving duty schedule';
-
-  @override
-  String get dutyScheduleDeleted => 'Duty schedule deleted';
-
-  @override
-  String get dutyScheduleDeleteError => 'Error deleting duty schedule';
-
-  @override
-  String get confirmDelete =>
-      'Are you sure you want to delete this duty schedule?';
-
-  @override
-  String get yes => 'Yes';
-
-  @override
-  String get no => 'No';
 
   @override
   String get calendarFormat => 'Calendar Format';
@@ -177,9 +80,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetData => 'Reset App';
-
-  @override
-  String get resetDataWarning => '⚠️ All data will be permanently deleted';
 
   @override
   String get resetDataConfirmation =>
@@ -203,22 +103,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noServicesForDay => 'No services for this day';
 
   @override
-  String get allDay => 'All day';
-
-  @override
   String get licenses => 'Licenses';
 
   @override
-  String get footer => 'Info';
-
-  @override
-  String get copyright => 'Copyright';
-
-  @override
   String get version => 'Version';
-
-  @override
-  String get author => 'Author';
 
   @override
   String get previousPeriod => 'Previous period';
@@ -228,6 +116,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get today => 'Today';
+
+  @override
+  String get partnerDutyGroup => 'Partner Duty Group';
+
+  @override
+  String get partnerDutySchedule => 'Partner Duty Schedule';
+
+  @override
+  String get noPartnerGroup => 'No partner group';
+
+  @override
+  String get accentColor => 'Accent Color';
+
+  @override
+  String get accentWarmOrange => 'Warm Orange';
+
+  @override
+  String get accentPink => 'Pink';
+
+  @override
+  String get accentViolet => 'Violet';
+
+  @override
+  String get accentFreshGreen => 'Fresh Green';
+
+  @override
+  String get accentTurquoiseGreen => 'Turquoise Green';
+
+  @override
+  String get accentSunnyYellow => 'Sunny Yellow';
+
+  @override
+  String get accentRed => 'Red';
+
+  @override
+  String get accentLightGrey => 'Light Grey';
+
+  @override
+  String get noDutySchedule => 'No duty schedule';
+
+  @override
+  String get selectPartnerDutyGroup => 'Select Partner Duty Group';
 
   @override
   String get about => 'About';
@@ -255,17 +185,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get back => 'Back';
 
   @override
-  String get errorSavingDefaultConfig => 'Error saving default configuration';
-
-  @override
   String get myDutyGroup => 'My Duty Group';
 
   @override
   String get selectMyDutyGroup => 'Select My Duty Group';
-
-  @override
-  String get myDutyGroupDescription =>
-      'This duty group will be used for future functionality';
 
   @override
   String get noMyDutyGroup => 'No duty group selected';
@@ -276,9 +199,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noMyDutyGroupDescription =>
       'No duty group abbreviations will be shown on the calendar';
-
-  @override
-  String get general => 'General';
 
   @override
   String get schedule => 'Schedule';
@@ -303,9 +223,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose how the app should look. You can change this at any time in Settings.';
 
   @override
-  String get darkModeNotAvailableYet => 'Dark mode is not implemented yet';
-
-  @override
   String get legal => 'Legal';
 
   @override
@@ -313,10 +230,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get disclaimer => 'Disclaimer';
-
-  @override
-  String get myDutyGroupResetNotice =>
-      'Your duty group was reset because it is not available in the new schedule.';
 
   @override
   String get sentryAnalytics => 'Analytics & Error Reporting';
@@ -348,9 +261,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareAppDescription => 'Recommend the app to colleagues';
 
   @override
-  String get shareAppTitle => 'Duty Schedule App Recommendation';
-
-  @override
   String shareAppMessage(String appStoreUrl, String playStoreUrl) {
     return 'Hey! 👋\n\nI found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nApp Store: $appStoreUrl\nPlay Store: $playStoreUrl\n\nHope you like it! 🚔';
   }
@@ -360,12 +270,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareAppError => 'Error sharing app';
-
-  @override
-  String get shareAppSuccess => 'Share sheet opened';
-
-  @override
-  String get shareAppFallback => 'App store link shared';
 
   @override
   String get other => 'Other';

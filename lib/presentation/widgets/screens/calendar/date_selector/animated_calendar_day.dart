@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/partner_accent_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
   final String? dutyAbbreviation;
+  final String? partnerDutyAbbreviation;
+  final int? partnerAccentColorValue;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
@@ -14,6 +17,8 @@ class AnimatedCalendarDay extends StatefulWidget {
     super.key,
     required this.day,
     this.dutyAbbreviation,
+    this.partnerDutyAbbreviation,
+    this.partnerAccentColorValue,
     required this.dayType,
     this.width,
     this.height,
@@ -38,6 +43,14 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     final containerDecoration = _getContainerDecoration(theme);
     final dutyBadgeDecoration = _getDutyBadgeDecoration(theme);
     final dutyBadgeTextStyle = _getDutyBadgeTextStyle(theme);
+    final partnerBadgeDecoration = _getPartnerBadgeDecoration(theme);
+    final partnerBadgeTextStyle = _getPartnerBadgeTextStyle(theme);
+
+    final bool hasPrimary =
+        widget.dutyAbbreviation != null && widget.dutyAbbreviation!.isNotEmpty;
+    final bool hasPartner = widget.partnerDutyAbbreviation != null &&
+        widget.partnerDutyAbbreviation!.isNotEmpty;
+    final bool hasBoth = hasPrimary && hasPartner;
 
     return InkWell(
       onTap: () {
@@ -56,16 +69,47 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
               '${widget.day.day}',
               style: dayStyle,
             ),
-            if (widget.dutyAbbreviation != null &&
-                widget.dutyAbbreviation!.isNotEmpty)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1.0),
-                decoration: dutyBadgeDecoration,
-                child: Text(
-                  widget.dutyAbbreviation!,
-                  style: dutyBadgeTextStyle.copyWith(
-                    fontSize: 10.0,
+            if (hasPrimary || hasPartner)
+              Padding(
+                padding: const EdgeInsets.only(top: 2.0),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.dutyAbbreviation != null &&
+                          widget.dutyAbbreviation!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 3.0, vertical: 1.0),
+                          decoration: dutyBadgeDecoration,
+                          child: Text(
+                            widget.dutyAbbreviation!,
+                            style: dutyBadgeTextStyle.copyWith(
+                              fontSize: hasBoth ? 9.0 : 10.0,
+                            ),
+                          ),
+                        ),
+                      if ((widget.dutyAbbreviation != null &&
+                              widget.dutyAbbreviation!.isNotEmpty) &&
+                          (widget.partnerDutyAbbreviation != null &&
+                              widget.partnerDutyAbbreviation!.isNotEmpty))
+                        const SizedBox(width: 2),
+                      if (widget.partnerDutyAbbreviation != null &&
+                          widget.partnerDutyAbbreviation!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 3.0, vertical: 1.0),
+                          decoration: partnerBadgeDecoration,
+                          child: Text(
+                            widget.partnerDutyAbbreviation!,
+                            style: partnerBadgeTextStyle.copyWith(
+                              fontSize: hasBoth ? 9.0 : 10.0,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -142,6 +186,55 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         return BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(4),
+        );
+    }
+  }
+
+  BoxDecoration _getPartnerBadgeDecoration(ThemeData theme) {
+    final Color partnerColor = Color(
+      widget.partnerAccentColorValue ?? kDefaultPartnerAccentColorValue,
+    );
+    // Partner chip: use configured accent or secondary color scheme variant
+    switch (widget.dayType) {
+      case CalendarDayType.default_:
+      case CalendarDayType.today:
+        return BoxDecoration(
+          color: partnerColor,
+          borderRadius: BorderRadius.circular(4),
+        );
+      case CalendarDayType.outside:
+        return BoxDecoration(
+          color: theme.brightness == Brightness.dark
+              ? Colors.grey.shade400.withValues(alpha: 0.8)
+              : theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(4),
+        );
+      case CalendarDayType.selected:
+        return BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(4),
+        );
+    }
+  }
+
+  TextStyle _getPartnerBadgeTextStyle(ThemeData theme) {
+    final Color partnerColor = Color(
+      widget.partnerAccentColorValue ?? kDefaultPartnerAccentColorValue,
+    );
+    switch (widget.dayType) {
+      case CalendarDayType.default_:
+      case CalendarDayType.outside:
+      case CalendarDayType.today:
+        return const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        );
+      case CalendarDayType.selected:
+        return TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: partnerColor,
         );
     }
   }

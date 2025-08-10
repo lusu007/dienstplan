@@ -14,6 +14,10 @@ abstract class SettingsUiState with _$SettingsUiState {
     String? activeConfigName,
     String? myDutyGroup,
     ThemePreference? themePreference,
+    // Partner duty group UI values
+    String? partnerConfigName,
+    String? partnerDutyGroup,
+    int? partnerAccentColorValue,
   }) = _SettingsUiState;
 
   const SettingsUiState._();

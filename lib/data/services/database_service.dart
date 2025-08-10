@@ -93,6 +93,9 @@ class DatabaseService {
         my_duty_group TEXT,
         active_config_name TEXT,
         theme_mode TEXT,
+        partner_config_name TEXT,
+        partner_duty_group TEXT,
+        partner_accent_color INTEGER,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
@@ -165,6 +168,9 @@ class DatabaseService {
       }
       if (oldVersion < 8) {
         await _migrateToVersion8(txn);
+      }
+      if (oldVersion < 9) {
+        await _migrateToVersion9(txn);
       }
     });
   }
@@ -329,6 +335,24 @@ class DatabaseService {
     } catch (e, stackTrace) {
       // Column might already exist if user reinstalled or partial migration
       AppLogger.e('Error during migration to version 8', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion9(DatabaseExecutor db) async {
+    try {
+      AppLogger.i('Migrating to version 9: Add partner fields to settings');
+      await db.execute('''
+        ALTER TABLE settings ADD COLUMN partner_config_name TEXT
+      ''');
+      await db.execute('''
+        ALTER TABLE settings ADD COLUMN partner_duty_group TEXT
+      ''');
+      await db.execute('''
+        ALTER TABLE settings ADD COLUMN partner_accent_color INTEGER
+      ''');
+      AppLogger.i('Successfully migrated to version 9: partner fields added');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 9', e, stackTrace);
     }
   }
 

@@ -20,7 +20,10 @@ mixin _$SettingsUiState {
   CalendarFormat? get calendarFormat;
   String? get activeConfigName;
   String? get myDutyGroup;
-  ThemePreference? get themePreference;
+  ThemePreference? get themePreference; // Partner duty group UI values
+  String? get partnerConfigName;
+  String? get partnerDutyGroup;
+  int? get partnerAccentColorValue;
 
   /// Create a copy of SettingsUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -47,16 +50,33 @@ mixin _$SettingsUiState {
             (identical(other.myDutyGroup, myDutyGroup) ||
                 other.myDutyGroup == myDutyGroup) &&
             (identical(other.themePreference, themePreference) ||
-                other.themePreference == themePreference));
+                other.themePreference == themePreference) &&
+            (identical(other.partnerConfigName, partnerConfigName) ||
+                other.partnerConfigName == partnerConfigName) &&
+            (identical(other.partnerDutyGroup, partnerDutyGroup) ||
+                other.partnerDutyGroup == partnerDutyGroup) &&
+            (identical(
+                    other.partnerAccentColorValue, partnerAccentColorValue) ||
+                other.partnerAccentColorValue == partnerAccentColorValue));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, error, language,
-      calendarFormat, activeConfigName, myDutyGroup, themePreference);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      language,
+      calendarFormat,
+      activeConfigName,
+      myDutyGroup,
+      themePreference,
+      partnerConfigName,
+      partnerDutyGroup,
+      partnerAccentColorValue);
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
   }
 }
 
@@ -73,7 +93,10 @@ abstract mixin class $SettingsUiStateCopyWith<$Res> {
       CalendarFormat? calendarFormat,
       String? activeConfigName,
       String? myDutyGroup,
-      ThemePreference? themePreference});
+      ThemePreference? themePreference,
+      String? partnerConfigName,
+      String? partnerDutyGroup,
+      int? partnerAccentColorValue});
 }
 
 /// @nodoc
@@ -96,6 +119,9 @@ class _$SettingsUiStateCopyWithImpl<$Res>
     Object? activeConfigName = freezed,
     Object? myDutyGroup = freezed,
     Object? themePreference = freezed,
+    Object? partnerConfigName = freezed,
+    Object? partnerDutyGroup = freezed,
+    Object? partnerAccentColorValue = freezed,
   }) {
     return _then(_self.copyWith(
       isLoading: null == isLoading
@@ -126,6 +152,18 @@ class _$SettingsUiStateCopyWithImpl<$Res>
           ? _self.themePreference
           : themePreference // ignore: cast_nullable_to_non_nullable
               as ThemePreference?,
+      partnerConfigName: freezed == partnerConfigName
+          ? _self.partnerConfigName
+          : partnerConfigName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      partnerDutyGroup: freezed == partnerDutyGroup
+          ? _self.partnerDutyGroup
+          : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
+              as String?,
+      partnerAccentColorValue: freezed == partnerAccentColorValue
+          ? _self.partnerAccentColorValue
+          : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -230,7 +268,10 @@ extension SettingsUiStatePatterns on SettingsUiState {
             CalendarFormat? calendarFormat,
             String? activeConfigName,
             String? myDutyGroup,
-            ThemePreference? themePreference)?
+            ThemePreference? themePreference,
+            String? partnerConfigName,
+            String? partnerDutyGroup,
+            int? partnerAccentColorValue)?
         $default, {
     required TResult orElse(),
   }) {
@@ -244,7 +285,10 @@ extension SettingsUiStatePatterns on SettingsUiState {
             _that.calendarFormat,
             _that.activeConfigName,
             _that.myDutyGroup,
-            _that.themePreference);
+            _that.themePreference,
+            _that.partnerConfigName,
+            _that.partnerDutyGroup,
+            _that.partnerAccentColorValue);
       case _:
         return orElse();
     }
@@ -272,7 +316,10 @@ extension SettingsUiStatePatterns on SettingsUiState {
             CalendarFormat? calendarFormat,
             String? activeConfigName,
             String? myDutyGroup,
-            ThemePreference? themePreference)
+            ThemePreference? themePreference,
+            String? partnerConfigName,
+            String? partnerDutyGroup,
+            int? partnerAccentColorValue)
         $default,
   ) {
     final _that = this;
@@ -285,7 +332,10 @@ extension SettingsUiStatePatterns on SettingsUiState {
             _that.calendarFormat,
             _that.activeConfigName,
             _that.myDutyGroup,
-            _that.themePreference);
+            _that.themePreference,
+            _that.partnerConfigName,
+            _that.partnerDutyGroup,
+            _that.partnerAccentColorValue);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -312,7 +362,10 @@ extension SettingsUiStatePatterns on SettingsUiState {
             CalendarFormat? calendarFormat,
             String? activeConfigName,
             String? myDutyGroup,
-            ThemePreference? themePreference)?
+            ThemePreference? themePreference,
+            String? partnerConfigName,
+            String? partnerDutyGroup,
+            int? partnerAccentColorValue)?
         $default,
   ) {
     final _that = this;
@@ -325,7 +378,10 @@ extension SettingsUiStatePatterns on SettingsUiState {
             _that.calendarFormat,
             _that.activeConfigName,
             _that.myDutyGroup,
-            _that.themePreference);
+            _that.themePreference,
+            _that.partnerConfigName,
+            _that.partnerDutyGroup,
+            _that.partnerAccentColorValue);
       case _:
         return null;
     }
@@ -342,7 +398,10 @@ class _SettingsUiState extends SettingsUiState {
       this.calendarFormat,
       this.activeConfigName,
       this.myDutyGroup,
-      this.themePreference})
+      this.themePreference,
+      this.partnerConfigName,
+      this.partnerDutyGroup,
+      this.partnerAccentColorValue})
       : super._();
 
   @override
@@ -359,6 +418,13 @@ class _SettingsUiState extends SettingsUiState {
   final String? myDutyGroup;
   @override
   final ThemePreference? themePreference;
+// Partner duty group UI values
+  @override
+  final String? partnerConfigName;
+  @override
+  final String? partnerDutyGroup;
+  @override
+  final int? partnerAccentColorValue;
 
   /// Create a copy of SettingsUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -385,16 +451,33 @@ class _SettingsUiState extends SettingsUiState {
             (identical(other.myDutyGroup, myDutyGroup) ||
                 other.myDutyGroup == myDutyGroup) &&
             (identical(other.themePreference, themePreference) ||
-                other.themePreference == themePreference));
+                other.themePreference == themePreference) &&
+            (identical(other.partnerConfigName, partnerConfigName) ||
+                other.partnerConfigName == partnerConfigName) &&
+            (identical(other.partnerDutyGroup, partnerDutyGroup) ||
+                other.partnerDutyGroup == partnerDutyGroup) &&
+            (identical(
+                    other.partnerAccentColorValue, partnerAccentColorValue) ||
+                other.partnerAccentColorValue == partnerAccentColorValue));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, error, language,
-      calendarFormat, activeConfigName, myDutyGroup, themePreference);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      language,
+      calendarFormat,
+      activeConfigName,
+      myDutyGroup,
+      themePreference,
+      partnerConfigName,
+      partnerDutyGroup,
+      partnerAccentColorValue);
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
   }
 }
 
@@ -413,7 +496,10 @@ abstract mixin class _$SettingsUiStateCopyWith<$Res>
       CalendarFormat? calendarFormat,
       String? activeConfigName,
       String? myDutyGroup,
-      ThemePreference? themePreference});
+      ThemePreference? themePreference,
+      String? partnerConfigName,
+      String? partnerDutyGroup,
+      int? partnerAccentColorValue});
 }
 
 /// @nodoc
@@ -436,6 +522,9 @@ class __$SettingsUiStateCopyWithImpl<$Res>
     Object? activeConfigName = freezed,
     Object? myDutyGroup = freezed,
     Object? themePreference = freezed,
+    Object? partnerConfigName = freezed,
+    Object? partnerDutyGroup = freezed,
+    Object? partnerAccentColorValue = freezed,
   }) {
     return _then(_SettingsUiState(
       isLoading: null == isLoading
@@ -466,6 +555,18 @@ class __$SettingsUiStateCopyWithImpl<$Res>
           ? _self.themePreference
           : themePreference // ignore: cast_nullable_to_non_nullable
               as ThemePreference?,
+      partnerConfigName: freezed == partnerConfigName
+          ? _self.partnerConfigName
+          : partnerConfigName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      partnerDutyGroup: freezed == partnerDutyGroup
+          ? _self.partnerDutyGroup
+          : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
+              as String?,
+      partnerAccentColorValue: freezed == partnerAccentColorValue
+          ? _self.partnerAccentColorValue
+          : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }

@@ -160,7 +160,7 @@ final currentLocaleProvider = AutoDisposeStreamProvider<Locale>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentLocaleRef = AutoDisposeStreamProviderRef<Locale>;
-String _$themeModeHash() => r'eb57febdf445c01324ede35a2bea0188daa64d90';
+String _$themeModeHash() => r'dda9d7999fad7cc0ae5fbfb278c6784fe57c032c';
 
 /// See also [themeMode].
 @ProviderFor(themeMode)
@@ -176,7 +176,7 @@ final themeModeProvider = AutoDisposeFutureProvider<ThemeMode>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ThemeModeRef = AutoDisposeFutureProviderRef<ThemeMode>;
-String _$appThemeHash() => r'53be3148d51c8dad3b2625714abe749a71e509ef';
+String _$appThemeHash() => r'f1f2fc12a6aac23948f40a83326b4893b31abe85';
 
 /// See also [appTheme].
 @ProviderFor(appTheme)
@@ -192,6 +192,22 @@ final appThemeProvider = AutoDisposeProvider<ThemeData>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AppThemeRef = AutoDisposeProviderRef<ThemeData>;
+String _$appDarkThemeHash() => r'6b354eebb54f0573f8d1cfbd4cc3cccbcb9ec2f4';
+
+/// See also [appDarkTheme].
+@ProviderFor(appDarkTheme)
+final appDarkThemeProvider = AutoDisposeProvider<ThemeData>.internal(
+  appDarkTheme,
+  name: r'appDarkThemeProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appDarkThemeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AppDarkThemeRef = AutoDisposeProviderRef<ThemeData>;
 String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
 
 /// See also [sentryService].
