@@ -399,5 +399,17 @@
   "genericUnknownError": "Ein unbekannter Fehler ist aufgetreten",
   "@genericUnknownError": {
     "description": "Allgemeine unbekannte Fehlermeldung"
+  },
+  "contribute": "Beitragen",
+  "@contribute": {
+    "description": "Title for contribute option"
+  },
+  "contributeDescription": "Hilf bei der Entwicklung der App",
+  "@contributeDescription": {
+    "description": "Description for contribute option"
+  },
+  "weLoveOss": "Wir ❤️ Open Source",
+  "@weLoveOss": {
+    "description": "Message about loving open source software"
   }
 }

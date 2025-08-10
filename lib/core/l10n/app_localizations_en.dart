@@ -313,4 +313,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get genericUnknownError => 'An unknown error occurred';
+
+  @override
+  String get contribute => 'Contribute';
+
+  @override
+  String get contributeDescription => 'Help with app development';
+
+  @override
+  String get weLoveOss => 'We ❤️ Open Source';
 }

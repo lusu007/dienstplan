@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class SettingsFooter extends StatefulWidget {
   const SettingsFooter({super.key});
@@ -16,6 +17,7 @@ class _SettingsFooterState extends State<SettingsFooter> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: _handleFooterTap,
       child: Column(
@@ -50,6 +52,14 @@ class _SettingsFooterState extends State<SettingsFooter> {
                 ),
               );
             },
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.weLoveOss,
+            style: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),

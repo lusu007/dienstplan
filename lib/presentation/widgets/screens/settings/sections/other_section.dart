@@ -31,6 +31,12 @@ class OtherSection extends ConsumerWidget {
           onTap: () => _openContact(context),
         ),
         NavigationCard(
+          icon: Icons.favorite_outline,
+          title: l10n.contribute,
+          subtitle: l10n.contributeDescription,
+          onTap: () => _openContribute(context),
+        ),
+        NavigationCard(
           icon: Icons.share_outlined,
           title: l10n.shareApp,
           subtitle: l10n.shareAppDescription,
@@ -73,6 +79,18 @@ class OtherSection extends ConsumerWidget {
           behavior: SnackBarBehavior.floating,
         ),
       );
+    }
+  }
+
+  Future<void> _openContribute(BuildContext context) async {
+    try {
+      final Uri contributeUri =
+          Uri.parse('https://github.com/lusu007/dienstplan');
+      if (await canLaunchUrl(contributeUri)) {
+        await launchUrl(contributeUri);
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e('OtherSection: Error opening contribute link', e, stackTrace);
     }
   }
 }
