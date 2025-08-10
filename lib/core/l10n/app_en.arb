@@ -20,7 +20,7 @@
   "@english": {
     "description": "English language option"
   },
-  "dutySchedule": "Duty Schedule",
+  "dutySchedule": "My Duty Schedule",
   "@dutySchedule": {
     "description": "Title for duty schedule"
   },
@@ -157,9 +157,17 @@
   "@noPartnerGroup": {
     "description": "Shown when no partner group is selected"
   },
-  "accentColor": "Accent Color",
+  "accentColor": "Partner Accent Color",
   "@accentColor": {
     "description": "Generic accent color title"
+  },
+  "myAccentColor": "My Accent Color",
+  "@myAccentColor": {
+    "description": "Title for my accent color"
+  },
+  "accentPrimaryBlue": "Primary Blue",
+  "@accentPrimaryBlue": {
+    "description": "Primary blue accent color"
   },
   "accentWarmOrange": "Warm Orange",
   "@accentWarmOrange": {

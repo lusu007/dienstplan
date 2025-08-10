@@ -24,6 +24,8 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     String? partnerConfigName,
     String? partnerDutyGroup,
     int? partnerAccentColorValue,
+    // My accent color state
+    int? myAccentColorValue,
   }) = _ScheduleUiState;
 
   const ScheduleUiState._();
@@ -38,5 +40,6 @@ abstract class ScheduleUiState with _$ScheduleUiState {
         partnerConfigName: null,
         partnerDutyGroup: null,
         partnerAccentColorValue: null,
+        myAccentColorValue: null,
       );
 }

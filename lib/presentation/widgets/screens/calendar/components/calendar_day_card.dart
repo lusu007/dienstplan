@@ -29,6 +29,8 @@ class CalendarDayCard extends ConsumerWidget {
     return AnimatedCalendarDay(
       day: day,
       dutyAbbreviation: dutyAbbreviation ?? '',
+      partnerAccentColorValue: scheduleState?.partnerAccentColorValue,
+      myAccentColorValue: scheduleState?.myAccentColorValue,
       dayType: dayType,
       width: width,
       height: height,

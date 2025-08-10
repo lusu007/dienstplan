@@ -18,6 +18,8 @@ abstract class SettingsUiState with _$SettingsUiState {
     String? partnerConfigName,
     String? partnerDutyGroup,
     int? partnerAccentColorValue,
+    // My accent color UI value
+    int? myAccentColorValue,
   }) = _SettingsUiState;
 
   const SettingsUiState._();

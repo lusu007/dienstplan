@@ -18,6 +18,8 @@ abstract class Settings with _$Settings {
     String? partnerConfigName,
     String? partnerDutyGroup,
     int? partnerAccentColorValue,
+    // My accent color feature
+    int? myAccentColorValue,
   }) = _Settings;
 
   const Settings._();

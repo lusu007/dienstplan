@@ -131,7 +131,7 @@ abstract class AppLocalizations {
   /// Title for duty schedule
   ///
   /// In en, this message translates to:
-  /// **'Duty Schedule'**
+  /// **'My Duty Schedule'**
   String get dutySchedule;
 
   /// Title for duty schedule in settings
@@ -329,8 +329,20 @@ abstract class AppLocalizations {
   /// Generic accent color title
   ///
   /// In en, this message translates to:
-  /// **'Accent Color'**
+  /// **'Partner Accent Color'**
   String get accentColor;
+
+  /// Title for my accent color
+  ///
+  /// In en, this message translates to:
+  /// **'My Accent Color'**
+  String get myAccentColor;
+
+  /// Primary blue accent color
+  ///
+  /// In en, this message translates to:
+  /// **'Primary Blue'**
+  String get accentPrimaryBlue;
 
   /// Warm orange accent color
   ///

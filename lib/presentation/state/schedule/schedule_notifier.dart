@@ -90,6 +90,10 @@ class ScheduleNotifier extends _$ScheduleNotifier {
                 _configQueryService!.extractDutyGroups(configs, activeName),
             configs: configs,
             activeConfig: configs.isNotEmpty ? configs.first : null,
+            partnerConfigName: settings?.partnerConfigName,
+            partnerDutyGroup: settings?.partnerDutyGroup,
+            partnerAccentColorValue: settings?.partnerAccentColorValue,
+            myAccentColorValue: settings?.myAccentColorValue,
           );
         }
         schedules = schedulesResult.value;
@@ -166,6 +170,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         partnerConfigName: settings?.partnerConfigName,
         partnerDutyGroup: settings?.partnerDutyGroup,
         partnerAccentColorValue: settings?.partnerAccentColorValue,
+        myAccentColorValue: settings?.myAccentColorValue,
       );
     } catch (e) {
       return ScheduleUiState.initial()
@@ -604,6 +609,17 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     if (existing != null) {
       await _saveSettingsUseCase!
           .executeSafe(existing.copyWith(partnerAccentColorValue: colorValue));
+    }
+  }
+
+  Future<void> setMyAccentColor(int? colorValue) async {
+    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    state = AsyncData(current.copyWith(myAccentColorValue: colorValue));
+    final settingsResult = await _getSettingsUseCase!.executeSafe();
+    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+    if (existing != null) {
+      await _saveSettingsUseCase!
+          .executeSafe(existing.copyWith(myAccentColorValue: colorValue));
     }
   }
 

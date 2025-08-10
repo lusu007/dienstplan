@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/partner_accent_palette.dart';
+import 'package:dienstplan/core/constants/my_accent_palette.dart';
 import 'package:dienstplan/presentation/extensions/partner_accent_color_extensions.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:dienstplan/presentation/extensions/my_accent_color_extensions.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
@@ -9,7 +10,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/duty_schedule_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_duty_group_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/calendar_format_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_accent_color_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_group_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_config_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_color_dialog.dart';
@@ -41,11 +42,12 @@ class ScheduleSection extends StatelessWidget {
               onTap: () => MyDutyGroupDialog.show(context),
             ),
             NavigationCard(
-              icon: Icons.view_week_outlined,
-              title: l10n.calendarFormat,
-              subtitle: _getCalendarFormatName(
-                  state.calendarFormat ?? CalendarFormat.month, l10n),
-              onTap: () => CalendarFormatDialog.show(context),
+              icon: Icons.color_lens_outlined,
+              title: l10n.myAccentColor,
+              subtitle: _getMyAccentColorName(state, l10n),
+              trailing:
+                  _buildMyAccentColorChip(context, state.myAccentColorValue),
+              onTap: () => MyAccentColorDialog.show(context),
             ),
           ],
         ),
@@ -79,17 +81,6 @@ class ScheduleSection extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _getCalendarFormatName(CalendarFormat format, AppLocalizations l10n) {
-    switch (format) {
-      case CalendarFormat.month:
-        return l10n.calendarFormatMonth;
-      case CalendarFormat.twoWeeks:
-        return l10n.calendarFormatTwoWeeks;
-      case CalendarFormat.week:
-        return l10n.calendarFormatWeek;
-    }
   }
 
   String _getPartnerAccentColorName(
@@ -148,6 +139,29 @@ class ScheduleSection extends StatelessWidget {
           e);
       return l10n.noMyDutyGroup;
     }
+  }
+
+  String _getMyAccentColorName(ScheduleUiState state, AppLocalizations l10n) {
+    final int value = state.myAccentColorValue ?? kDefaultMyAccentColorValue;
+    final MyAccentColor? match = MyAccentColor.fromValue(value);
+    if (match != null) return match.toLabel(l10n);
+    return '#${value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
+  }
+
+  Widget _buildMyAccentColorChip(BuildContext context, int? colorValue) {
+    final Color color = Color(colorValue ?? kDefaultMyAccentColorValue);
+    return Container(
+      width: 24,
+      height: 24,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant,
+          width: 1,
+        ),
+      ),
+    );
   }
 
   String _getPartnerGroupDisplayName(

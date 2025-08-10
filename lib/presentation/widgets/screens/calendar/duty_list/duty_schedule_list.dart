@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/partner_accent_palette.dart';
+import 'package:dienstplan/core/constants/my_accent_palette.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -42,6 +43,8 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
   int? _partnerAccentColorValue;
   String? _myDutyGroupName;
   String? _partnerDutyGroupName;
+  int? _myAccentColorValue;
+  Map<String, DutyType>? _dutyTypes;
   List<Schedule> _getFilteredSchedules() {
     return widget.schedules.where((schedule) {
       final isActiveConfig = widget.activeConfigName == null ||
@@ -85,6 +88,12 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
     _partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
     _partnerDutyGroupName = scheduleState?.partnerDutyGroup;
     _myDutyGroupName = scheduleState?.preferredDutyGroup;
+    _myAccentColorValue = scheduleState?.myAccentColorValue;
+
+    // Convert duty types list to map for easier lookup
+    if (scheduleState?.activeConfig != null) {
+      _dutyTypes = scheduleState!.activeConfig!.dutyTypes;
+    }
 
     if (widget.isLoading || widget.schedules.isEmpty) {
       return _buildSkeletonLoader();
@@ -108,6 +117,9 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
   Widget _buildDutyList(List<Schedule> schedules) {
     final Color partnerColor = Color(
       _partnerAccentColorValue ?? kDefaultPartnerAccentColorValue,
+    );
+    final Color myAccentColor = Color(
+      _myAccentColorValue ?? kDefaultMyAccentColorValue,
     );
     return ListView.builder(
       controller: widget.scrollController,
@@ -133,7 +145,7 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
             _myDutyGroupName!.isNotEmpty &&
             schedule.dutyGroupName == _myDutyGroupName);
         final Color baseColor =
-            isPartner ? partnerColor : (isOwn ? primaryColor : outlineColor);
+            isPartner ? partnerColor : (isOwn ? myAccentColor : outlineColor);
         final Color borderColor = isSelected ? primaryColor : baseColor;
         final Color badgeColor = baseColor;
         // isSelected moved up before use
@@ -169,8 +181,10 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        Icons.schedule,
-                        color: badgeColor,
+                        _getDutyTypeIcon(schedule.dutyTypeId),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onSurface
+                            : badgeColor,
                         size: 24,
                       ),
                     ),
@@ -219,6 +233,11 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
         );
       },
     );
+  }
+
+  IconData _getDutyTypeIcon(String dutyTypeId) {
+    // Use the icon from the duty type configuration if available
+    return DutyItemUiBuilder.getDutyTypeIcon(dutyTypeId, _dutyTypes);
   }
 
   Widget _buildSkeletonLoader() {

@@ -12,6 +12,7 @@ class Settings {
   final String? partnerConfigName;
   final String? partnerDutyGroup;
   final int? partnerAccentColorValue;
+  final int? myAccentColorValue;
 
   const Settings({
     required this.calendarFormat,
@@ -23,6 +24,7 @@ class Settings {
     this.partnerConfigName,
     this.partnerDutyGroup,
     this.partnerAccentColorValue,
+    this.myAccentColorValue,
   });
 
   factory Settings.fromMap(Map<String, dynamic> map) {
@@ -39,6 +41,7 @@ class Settings {
       partnerConfigName: map['partner_config_name'] as String?,
       partnerDutyGroup: map['partner_duty_group'] as String?,
       partnerAccentColorValue: map['partner_accent_color'] as int?,
+      myAccentColorValue: map['my_accent_color'] as int?,
     );
   }
 
@@ -54,6 +57,7 @@ class Settings {
       if (partnerDutyGroup != null) 'partner_duty_group': partnerDutyGroup,
       if (partnerAccentColorValue != null)
         'partner_accent_color': partnerAccentColorValue,
+      if (myAccentColorValue != null) 'my_accent_color': myAccentColorValue,
     };
   }
 
@@ -67,6 +71,7 @@ class Settings {
     String? partnerConfigName,
     String? partnerDutyGroup,
     int? partnerAccentColorValue,
+    int? myAccentColorValue,
   }) {
     return Settings(
       calendarFormat: calendarFormat ?? this.calendarFormat,
@@ -79,12 +84,13 @@ class Settings {
       partnerDutyGroup: partnerDutyGroup ?? this.partnerDutyGroup,
       partnerAccentColorValue:
           partnerAccentColorValue ?? this.partnerAccentColorValue,
+      myAccentColorValue: myAccentColorValue ?? this.myAccentColorValue,
     );
   }
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
   }
 
   @override
@@ -99,7 +105,8 @@ class Settings {
         other.themeMode == themeMode &&
         other.partnerConfigName == partnerConfigName &&
         other.partnerDutyGroup == partnerDutyGroup &&
-        other.partnerAccentColorValue == partnerAccentColorValue;
+        other.partnerAccentColorValue == partnerAccentColorValue &&
+        other.myAccentColorValue == myAccentColorValue;
   }
 
   @override
@@ -112,7 +119,8 @@ class Settings {
         themeMode.hashCode ^
         partnerConfigName.hashCode ^
         partnerDutyGroup.hashCode ^
-        partnerAccentColorValue.hashCode;
+        partnerAccentColorValue.hashCode ^
+        myAccentColorValue.hashCode;
   }
 
   static ThemeMode? _parseThemeMode(String? value) {
