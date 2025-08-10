@@ -117,7 +117,9 @@ class CalendarDayBuilder extends StatelessWidget {
         );
       case CalendarDayType.outside:
         return BoxDecoration(
-          color: theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
+          color: theme.brightness == Brightness.dark
+              ? Colors.grey.shade400.withValues(alpha: 0.8)
+              : theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.selected:

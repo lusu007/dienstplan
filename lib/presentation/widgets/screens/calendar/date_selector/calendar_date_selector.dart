@@ -221,7 +221,9 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
       width: 40,
       height: 4,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.outlineVariant,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey.shade400
+            : Theme.of(context).colorScheme.outlineVariant,
         borderRadius: BorderRadius.circular(2),
       ),
     );
@@ -262,17 +264,21 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withAlpha((0.1 * 255).toInt()),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     yearText,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.primary,
                         ),
                     textAlign: TextAlign.center,
                   ),
@@ -329,17 +335,21 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withAlpha((0.1 * 255).toInt()),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '$_yearBlockStart – ${_yearBlockStart + 11}',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.primary,
                         ),
                     textAlign: TextAlign.center,
                   ),
@@ -519,10 +529,12 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Theme.of(context)
-              .colorScheme
-              .primary
-              .withAlpha((0.1 * 255).toInt()),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context)
+                  .colorScheme
+                  .primary
+                  .withAlpha((0.1 * 255).toInt()),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -533,13 +545,17 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.onSurface,
                   ),
             ),
             const SizedBox(width: 8),
             Icon(
               Icons.keyboard_arrow_down,
-              color: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.primary,
               size: 20,
             ),
           ],
