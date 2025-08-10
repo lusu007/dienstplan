@@ -5,6 +5,7 @@ import 'package:dienstplan/core/config/sentry_config.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:flutter/scheduler.dart';
 
 class AppInitializer {
@@ -23,6 +24,8 @@ class AppInitializer {
     // Warm critical services
     await container.read(sentryServiceProvider.future);
     await container.read(languageServiceProvider.future);
+    // Pre-warm settings to avoid theme flash on startup
+    await container.read(settingsNotifierProvider.future);
 
     // Initialize heavy tasks after first frame to avoid jank
     SchedulerBinding.instance.addPostFrameCallback((_) async {
