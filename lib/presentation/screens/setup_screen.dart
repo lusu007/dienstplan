@@ -145,12 +145,18 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       final existingSettings = await getSettingsUseCase.execute();
       final saveSettingsUseCase =
           await ref.read(saveSettingsUseCaseProvider.future);
+
+      // Get the theme preference that was selected during setup
+      final currentThemePreference =
+          ref.read(settingsNotifierProvider).valueOrNull?.themePreference ??
+              ThemePreference.light;
+
       final initialSettings = Settings(
         calendarFormat:
             existingSettings?.calendarFormat ?? CalendarFormat.month,
         myDutyGroup: _selectedDutyGroup,
         activeConfigName: _selectedConfig!.name,
-        themePreference: existingSettings?.themePreference,
+        themePreference: currentThemePreference,
       );
       await saveSettingsUseCase.execute(initialSettings);
 
@@ -166,8 +172,27 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
       if (!mounted) return;
 
+      // Ensure the theme preference is properly saved before navigation
+      final themePreferenceForTransition =
+          ref.read(settingsNotifierProvider).valueOrNull?.themePreference ??
+              ThemePreference.light;
+
+      // Update the final settings with the correct theme preference
+      final finalSettings = Settings(
+        calendarFormat: CalendarFormat.month,
+        myDutyGroup: _selectedDutyGroup,
+        activeConfigName: _selectedConfig!.name,
+        themePreference: themePreferenceForTransition,
+      );
+      await saveSettingsUseCase.execute(finalSettings);
+
+      // Ensure the theme preference is properly set in the notifier
+      await ref
+          .read(settingsNotifierProvider.notifier)
+          .setThemePreference(themePreferenceForTransition);
+
       // Invalidate providers so AppInitializerWidget switches to CalendarScreen
-      ref.invalidate(settingsNotifierProvider);
+      // Don't invalidate settingsNotifierProvider to prevent theme flashing
       ref.invalidate(scheduleNotifierProvider);
 
       // Navigate to the main calendar screen.
@@ -273,8 +298,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         title: title,
         leadingIcon: icon,
         isSelected: isSelected,
-        onTap: () {
-          ref.read(settingsNotifierProvider.notifier).setThemePreference(pref);
+        onTap: () async {
+          // Immediately save the theme preference when selected in setup
+          await ref
+              .read(settingsNotifierProvider.notifier)
+              .setThemePreference(pref);
         },
         mainColor: mainColor,
       );

@@ -26,7 +26,6 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<SettingsUiState> _load() async {
-    final current = state.valueOrNull ?? SettingsUiState.initial();
     state = const AsyncLoading();
     try {
       final settings = await _getSettingsUseCase!.execute();
@@ -36,14 +35,14 @@ class SettingsNotifier extends _$SettingsNotifier {
         calendarFormat: settings?.calendarFormat,
         activeConfigName: settings?.activeConfigName,
         myDutyGroup: settings?.myDutyGroup,
-        themePreference: settings?.themePreference,
+        themePreference: settings?.themePreference ?? ThemePreference.light,
         partnerConfigName: settings?.partnerConfigName,
         partnerDutyGroup: settings?.partnerDutyGroup,
         partnerAccentColorValue: settings?.partnerAccentColorValue,
       );
     } catch (e) {
-      return current.copyWith(
-          isLoading: false, error: 'Failed to load settings');
+      return SettingsUiState.initial()
+          .copyWith(error: 'Failed to load settings');
     }
   }
 
@@ -53,6 +52,14 @@ class SettingsNotifier extends _$SettingsNotifier {
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
       await _saveSettings(existing.copyWith(language: language));
+    } else {
+      // Create new settings with the language if none exist
+      final newSettings = Settings(
+        calendarFormat: CalendarFormat.month,
+        language: language,
+        themePreference: ThemePreference.light,
+      );
+      await _saveSettings(newSettings);
     }
   }
 
@@ -71,6 +78,13 @@ class SettingsNotifier extends _$SettingsNotifier {
       final existing = await _getSettingsUseCase!.execute();
       if (existing != null) {
         await _saveSettings(existing.copyWith(themePreference: preference));
+      } else {
+        // Create new settings with the theme preference if none exist
+        final newSettings = Settings(
+          calendarFormat: CalendarFormat.month,
+          themePreference: preference,
+        );
+        await _saveSettings(newSettings);
       }
     } catch (e) {
       // Silently handle errors for background saves
@@ -84,6 +98,13 @@ class SettingsNotifier extends _$SettingsNotifier {
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
       await _saveSettings(existing.copyWith(calendarFormat: format));
+    } else {
+      // Create new settings with the calendar format if none exist
+      final newSettings = Settings(
+        calendarFormat: format,
+        themePreference: ThemePreference.light,
+      );
+      await _saveSettings(newSettings);
     }
   }
 
@@ -93,6 +114,14 @@ class SettingsNotifier extends _$SettingsNotifier {
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
       await _saveSettings(existing.copyWith(activeConfigName: name));
+    } else {
+      // Create new settings with the active config if none exist
+      final newSettings = Settings(
+        calendarFormat: CalendarFormat.month,
+        activeConfigName: name,
+        themePreference: ThemePreference.light,
+      );
+      await _saveSettings(newSettings);
     }
   }
 
@@ -102,6 +131,14 @@ class SettingsNotifier extends _$SettingsNotifier {
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
       await _saveSettings(existing.copyWith(myDutyGroup: group));
+    } else {
+      // Create new settings with the duty group if none exist
+      final newSettings = Settings(
+        calendarFormat: CalendarFormat.month,
+        myDutyGroup: group,
+        themePreference: ThemePreference.light,
+      );
+      await _saveSettings(newSettings);
     }
   }
 

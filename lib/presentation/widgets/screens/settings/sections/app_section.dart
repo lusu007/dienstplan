@@ -17,27 +17,11 @@ class AppSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final languageService = ref.watch(languageServiceProvider).value;
-    final ThemePreference? themePref =
-        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
-    final AsyncValue<ThemeMode> themeModeAsync = ref.watch(themeModeProvider);
+    final settingsState = ref.watch(settingsNotifierProvider);
 
-    // Resolve an effective preference for first render when settings state isn't loaded yet
-    ThemePreference? effectivePref = themePref;
-    if (effectivePref == null) {
-      themeModeAsync.whenData((mode) {
-        switch (mode) {
-          case ThemeMode.light:
-            effectivePref = ThemePreference.light;
-            break;
-          case ThemeMode.dark:
-            effectivePref = ThemePreference.dark;
-            break;
-          case ThemeMode.system:
-            effectivePref = ThemePreference.system;
-            break;
-        }
-      });
-    }
+    // Use settings preference directly, fallback to light mode
+    final ThemePreference effectivePref =
+        settingsState.valueOrNull?.themePreference ?? ThemePreference.light;
 
     return SettingsSection(
       title: l10n.app,
@@ -68,26 +52,24 @@ class AppSection extends ConsumerWidget {
     );
   }
 
-  String _themeSubtitle(AppLocalizations l10n, ThemePreference? pref) {
+  String _themeSubtitle(AppLocalizations l10n, ThemePreference pref) {
     switch (pref) {
       case ThemePreference.light:
         return l10n.themeModeLight;
       case ThemePreference.dark:
         return l10n.themeModeDark;
       case ThemePreference.system:
-      case null:
         return l10n.themeModeSystem;
     }
   }
 
-  Widget _buildThemeIndicator(ThemePreference? pref) {
+  Widget _buildThemeIndicator(ThemePreference pref) {
     switch (pref) {
       case ThemePreference.light:
         return const Icon(Icons.wb_sunny_outlined, color: Colors.amber);
       case ThemePreference.dark:
         return const Icon(Icons.nightlight_round, color: Colors.indigo);
       case ThemePreference.system:
-      case null:
         return const Icon(Icons.brightness_auto, color: Colors.grey);
     }
   }

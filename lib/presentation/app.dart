@@ -29,29 +29,30 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ref.watch(appThemeProvider);
-    // Build dark theme locally with pinned primary color (blue)
-    final ColorScheme darkScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF005B8C),
-      brightness: Brightness.dark,
-    ).copyWith(primary: const Color(0xFF005B8C));
-    final ThemeData darkTheme = ThemeData(
-      colorScheme: darkScheme,
-      useMaterial3: true,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF005B8C),
-        titleTextStyle: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-        iconTheme: IconThemeData(color: Colors.white),
-      ),
-    );
-    final AsyncValue<ThemeMode> modeAsync = ref.watch(themeModeProvider);
-    final domain.ThemePreference? uiThemePref =
-        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
+    final ThemeData darkTheme = ref.watch(appDarkThemeProvider);
+    
+    // Use settings notifier directly for immediate theme resolution
+    final settingsState = ref.watch(settingsNotifierProvider);
     final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
-    // Combine async values with fallbacks
+    
+    // Handle loading state gracefully
+    if (settingsState.isLoading) {
+      // Show loading with light theme to prevent dark mode flash
+      final Locale locale = localeAsync.maybeWhen(
+        data: (l) => l,
+        orElse: () => const Locale('de'),
+      );
+      return _buildMaterialApp(
+        theme: theme, 
+        darkTheme: darkTheme, 
+        mode: ThemeMode.light, 
+        locale: locale
+      );
+    }
+    
+    final domain.ThemePreference? uiThemePref = settingsState.valueOrNull?.themePreference;
+    
+    // Determine theme mode with immediate fallback to light mode
     ThemeMode deriveFromPref(domain.ThemePreference pref) {
       switch (pref) {
         case domain.ThemePreference.light:
@@ -63,12 +64,12 @@ class _MyAppState extends ConsumerState<MyApp> {
       }
     }
 
+    // Use settings preference if available, otherwise default to light mode
+    // This prevents the dark mode flash on startup
     final ThemeMode mode = uiThemePref != null
         ? deriveFromPref(uiThemePref)
-        : modeAsync.maybeWhen(
-            data: (m) => m,
-            orElse: () => ThemeMode.system,
-          );
+        : ThemeMode.light;
+        
     final Locale locale = localeAsync.maybeWhen(
       data: (l) => l,
       orElse: () => const Locale('de'),
