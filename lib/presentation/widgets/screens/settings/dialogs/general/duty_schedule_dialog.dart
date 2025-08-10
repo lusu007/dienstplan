@@ -58,9 +58,16 @@ class DutyScheduleDialog {
                         if (dialogContext.mounted) {
                           ScaffoldMessenger.of(dialogContext).showSnackBar(
                             SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.surface,
                               content: Text(
-                                  'Error setting active config: ${e.toString()}'),
-                              backgroundColor: Colors.red,
+                                'Error setting active config: ${e.toString()}',
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              behavior: SnackBarBehavior.floating,
                             ),
                           );
                           Navigator.of(dialogContext).pop();

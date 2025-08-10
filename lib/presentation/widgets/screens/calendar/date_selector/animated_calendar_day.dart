@@ -83,10 +83,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           fontWeight: FontWeight.w500,
         );
       case CalendarDayType.outside:
-        return const TextStyle(
+        return TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
-          color: Colors.grey,
+          color: theme.colorScheme.onSurfaceVariant,
         );
       case CalendarDayType.selected:
         return const TextStyle(
@@ -133,7 +133,9 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         );
       case CalendarDayType.outside:
         return BoxDecoration(
-          color: Colors.grey.withValues(alpha: 0.7),
+          color: theme.brightness == Brightness.dark
+              ? Colors.grey.shade400.withValues(alpha: 0.8)
+              : theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.selected:

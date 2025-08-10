@@ -45,7 +45,14 @@ class ResetDialog {
                 Navigator.of(context, rootNavigator: true).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(l10n.resetDataSuccess),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    content: Text(
+                      l10n.resetDataSuccess,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    behavior: SnackBarBehavior.floating,
                   ),
                 );
                 context.router.replaceAll([const SetupRoute()]);

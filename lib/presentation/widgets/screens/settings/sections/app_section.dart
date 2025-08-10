@@ -19,6 +19,25 @@ class AppSection extends ConsumerWidget {
     final languageService = ref.watch(languageServiceProvider).value;
     final ThemePreference? themePref =
         ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
+    final AsyncValue<ThemeMode> themeModeAsync = ref.watch(themeModeProvider);
+
+    // Resolve an effective preference for first render when settings state isn't loaded yet
+    ThemePreference? effectivePref = themePref;
+    if (effectivePref == null) {
+      themeModeAsync.whenData((mode) {
+        switch (mode) {
+          case ThemeMode.light:
+            effectivePref = ThemePreference.light;
+            break;
+          case ThemeMode.dark:
+            effectivePref = ThemePreference.dark;
+            break;
+          case ThemeMode.system:
+            effectivePref = ThemePreference.system;
+            break;
+        }
+      });
+    }
 
     return SettingsSection(
       title: l10n.app,
@@ -35,8 +54,8 @@ class AppSection extends ConsumerWidget {
         NavigationCard(
           icon: Icons.color_lens_outlined,
           title: l10n.themeMode,
-          subtitle: _themeSubtitle(l10n, themePref),
-          trailing: _buildThemeIndicator(themePref),
+          subtitle: _themeSubtitle(l10n, effectivePref),
+          trailing: _buildThemeIndicator(effectivePref),
           onTap: () => ThemeModeDialog.show(context, ref),
         ),
         NavigationCard(

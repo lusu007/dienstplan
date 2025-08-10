@@ -6,6 +6,8 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/domain/entities/settings.dart' as domain;
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -27,27 +29,63 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ref.watch(appThemeProvider);
+    // Build dark theme locally with pinned primary color (blue)
+    final ColorScheme darkScheme = ColorScheme.fromSeed(
+      seedColor: const Color(0xFF005B8C),
+      brightness: Brightness.dark,
+    ).copyWith(primary: const Color(0xFF005B8C));
+    final ThemeData darkTheme = ThemeData(
+      colorScheme: darkScheme,
+      useMaterial3: true,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF005B8C),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+    );
     final AsyncValue<ThemeMode> modeAsync = ref.watch(themeModeProvider);
+    final domain.ThemePreference? uiThemePref =
+        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
     final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
     // Combine async values with fallbacks
-    final ThemeMode mode = modeAsync.maybeWhen(
-      data: (m) => m,
-      orElse: () => ThemeMode.system,
-    );
+    ThemeMode deriveFromPref(domain.ThemePreference pref) {
+      switch (pref) {
+        case domain.ThemePreference.light:
+          return ThemeMode.light;
+        case domain.ThemePreference.dark:
+          return ThemeMode.dark;
+        case domain.ThemePreference.system:
+          return ThemeMode.system;
+      }
+    }
+
+    final ThemeMode mode = uiThemePref != null
+        ? deriveFromPref(uiThemePref)
+        : modeAsync.maybeWhen(
+            data: (m) => m,
+            orElse: () => ThemeMode.system,
+          );
     final Locale locale = localeAsync.maybeWhen(
       data: (l) => l,
       orElse: () => const Locale('de'),
     );
-    return _buildMaterialApp(theme: theme, mode: mode, locale: locale);
+    return _buildMaterialApp(
+        theme: theme, darkTheme: darkTheme, mode: mode, locale: locale);
   }
 
   Widget _buildMaterialApp(
       {required ThemeData theme,
+      required ThemeData darkTheme,
       required ThemeMode mode,
       required Locale locale}) {
     return MaterialApp.router(
       title: 'Dienstplan',
       theme: theme,
+      darkTheme: darkTheme,
       themeMode: mode,
       localizationsDelegates: const [
         AppLocalizations.delegate,

@@ -25,6 +25,7 @@ class DutyItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DutyItemUiBuilder.buildDutyItem(
+      context: context,
       schedule: schedule,
       serviceName: serviceName,
       icon: icon,

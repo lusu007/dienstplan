@@ -34,9 +34,9 @@ class DutyScheduleHeader extends StatelessWidget {
                     DateFormat('dd.MM.yyyy').format(selectedDay!))
                 : l10n.noServicesForDay,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withAlpha((0.9 * 255).toInt()),
-                ),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
           ),
         ],
       ),

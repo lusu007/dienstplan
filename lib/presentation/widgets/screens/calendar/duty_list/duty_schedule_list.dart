@@ -114,9 +114,9 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
       height: 72,
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Row(
         children: [
@@ -124,7 +124,7 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: Theme.of(context).colorScheme.outlineVariant,
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -138,7 +138,7 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
                   height: 16,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: Theme.of(context).colorScheme.outlineVariant,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -147,7 +147,8 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
                   height: 12,
                   width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

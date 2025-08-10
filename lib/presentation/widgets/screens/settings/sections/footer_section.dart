@@ -25,7 +25,7 @@ class _SettingsFooterState extends State<SettingsFooter> {
             AppInfo.appLegalese,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade500,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),
@@ -37,7 +37,7 @@ class _SettingsFooterState extends State<SettingsFooter> {
                   snapshot.data!,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey.shade500,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 );
               }
@@ -45,7 +45,7 @@ class _SettingsFooterState extends State<SettingsFooter> {
                 width: 80,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: Theme.of(context).colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(6),
                 ),
               );

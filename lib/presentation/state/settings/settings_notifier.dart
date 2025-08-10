@@ -6,6 +6,7 @@ import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'dart:async';
 part 'settings_notifier.g.dart';
 
 @riverpod
@@ -54,10 +55,23 @@ class SettingsNotifier extends _$SettingsNotifier {
 
   Future<void> setThemePreference(ThemePreference preference) async {
     final current = state.valueOrNull ?? SettingsUiState.initial();
+    // Update UI immediately
     state = AsyncData(current.copyWith(themePreference: preference));
-    final existing = await _getSettingsUseCase!.execute();
-    if (existing != null) {
-      await _saveSettings(existing.copyWith(themePreference: preference));
+
+    // Save in background without blocking UI
+    unawaited(_saveThemePreferenceInBackground(preference));
+  }
+
+  Future<void> _saveThemePreferenceInBackground(
+      ThemePreference preference) async {
+    try {
+      final existing = await _getSettingsUseCase!.execute();
+      if (existing != null) {
+        await _saveSettings(existing.copyWith(themePreference: preference));
+      }
+    } catch (e) {
+      // Silently handle errors for background saves
+      // The UI state is already updated, so we don't need to revert
     }
   }
 
@@ -92,6 +106,8 @@ class SettingsNotifier extends _$SettingsNotifier {
     state = const AsyncLoading();
     try {
       await _resetSettingsUseCase!.execute();
+      // Ensure all theme consumers recompute after reset
+      ref.invalidate(themeModeProvider);
       state = AsyncData(await _load());
     } catch (_) {
       final current = state.valueOrNull ?? SettingsUiState.initial();

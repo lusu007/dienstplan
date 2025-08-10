@@ -299,6 +299,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeModeSystem => 'System';
 
   @override
+  String get themeModeDescription =>
+      'Choose how the app should look. You can change this at any time in Settings.';
+
+  @override
   String get darkModeNotAvailableYet => 'Dark mode is not implemented yet';
 
   @override

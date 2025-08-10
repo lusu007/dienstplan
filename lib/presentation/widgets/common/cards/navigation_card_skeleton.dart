@@ -46,13 +46,15 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.grey.shade300,
+          color: scheme.outlineVariant,
           width: 1,
         ),
       ),
@@ -62,10 +64,10 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
         leading: Icon(widget.icon, color: AppColors.primary, size: 40),
         title: Text(
           widget.title,
-          style: const TextStyle(
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: AppColors.black,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         subtitle: widget.showSubtitleSkeleton
@@ -73,7 +75,10 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
             : widget.subtitle != null
                 ? Text(
                     widget.subtitle!,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   )
                 : null,
         shape: RoundedRectangleBorder(
@@ -93,8 +98,10 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
           width: double.infinity,
           margin: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-            color: Colors.grey.shade300
-                .withValues(alpha: 0.3 + (_animation.value * 0.4)),
+            color: Theme.of(context)
+                .colorScheme
+                .outlineVariant
+                .withValues(alpha: 0.2 + (_animation.value * 0.3)),
             borderRadius: BorderRadius.circular(4),
           ),
         );

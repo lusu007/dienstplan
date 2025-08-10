@@ -6,68 +6,70 @@ import 'package:dienstplan/domain/entities/settings.dart';
 
 class ThemeModeDialog {
   static Future<void> show(BuildContext context, WidgetRef ref) async {
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => const _ThemeModeDialogContent(),
+    );
+  }
+}
+
+class _ThemeModeDialogContent extends ConsumerStatefulWidget {
+  const _ThemeModeDialogContent();
+
+  @override
+  ConsumerState<_ThemeModeDialogContent> createState() =>
+      _ThemeModeDialogContentState();
+}
+
+class _ThemeModeDialogContentState
+    extends ConsumerState<_ThemeModeDialogContent> {
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final state = ref.read(settingsNotifierProvider).valueOrNull;
+    final state = ref.watch(settingsNotifierProvider).valueOrNull;
     final ThemePreference current =
         state?.themePreference ?? ThemePreference.light;
 
-    ThemePreference selected = current;
-
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(l10n.themeMode),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RadioListTile<ThemePreference>(
-                title: Text(l10n.themeModeLight),
-                value: ThemePreference.light,
-                groupValue: selected,
-                onChanged: (val) {
-                  if (val == null) return;
-                  selected = val;
-                  Navigator.of(ctx).pop();
-                  _applySelection(context, ref, selected, l10n);
-                },
-              ),
-              RadioListTile<ThemePreference>(
-                title: Text(l10n.themeModeDark),
-                value: ThemePreference.dark,
-                groupValue: selected,
-                onChanged: (val) {
-                  if (val == null) return;
-                  selected = val;
-                  Navigator.of(ctx).pop();
-                  _applySelection(context, ref, selected, l10n);
-                },
-              ),
-              RadioListTile<ThemePreference>(
-                title: Text(l10n.themeModeSystem),
-                value: ThemePreference.system,
-                groupValue: selected,
-                onChanged: (val) {
-                  if (val == null) return;
-                  selected = val;
-                  Navigator.of(ctx).pop();
-                  _applySelection(context, ref, selected, l10n);
-                },
-              ),
-            ],
+    return AlertDialog(
+      title: Text(l10n.themeMode),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RadioListTile<ThemePreference>(
+            title: Text(l10n.themeModeLight),
+            value: ThemePreference.light,
+            groupValue: current,
+            onChanged: (val) {
+              if (val == null) return;
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .setThemePreference(val);
+            },
           ),
-        );
-      },
+          RadioListTile<ThemePreference>(
+            title: Text(l10n.themeModeDark),
+            value: ThemePreference.dark,
+            groupValue: current,
+            onChanged: (val) {
+              if (val == null) return;
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .setThemePreference(val);
+            },
+          ),
+          RadioListTile<ThemePreference>(
+            title: Text(l10n.themeModeSystem),
+            value: ThemePreference.system,
+            groupValue: current,
+            onChanged: (val) {
+              if (val == null) return;
+              ref
+                  .read(settingsNotifierProvider.notifier)
+                  .setThemePreference(val);
+            },
+          ),
+        ],
+      ),
     );
-  }
-
-  static void _applySelection(BuildContext context, WidgetRef ref,
-      ThemePreference preference, AppLocalizations l10n) {
-    ref.read(settingsNotifierProvider.notifier).setThemePreference(preference);
-    if (preference != ThemePreference.light) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.darkModeNotAvailableYet)),
-      );
-    }
   }
 }

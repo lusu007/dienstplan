@@ -383,6 +383,10 @@
   "@themeModeSystem": {
     "description": "System theme option"
   },
+  "themeModeDescription": "Wähle, wie die App aussehen soll. Du kannst das jederzeit in den Einstellungen ändern.",
+  "@themeModeDescription": {
+    "description": "Beschreibungstext für den Design-Auswahlschritt"
+  },
   "darkModeNotAvailableYet": "Dunkelmodus ist noch nicht implementiert",
   "@darkModeNotAvailableYet": {
     "description": "SnackBar text shown when choosing a non-light theme"

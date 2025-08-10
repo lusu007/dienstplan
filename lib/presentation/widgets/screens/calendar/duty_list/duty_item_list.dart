@@ -37,7 +37,7 @@ class DutyItemList extends StatelessWidget {
             l10n.noServicesForDay,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey.shade600,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         );
@@ -59,7 +59,7 @@ class DutyItemList extends StatelessWidget {
                     : '${l10n.filteredBy}: ${l10n.all}',
                 style: TextStyle(
                   fontSize: 12.0,
-                  color: Colors.grey.shade600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -143,12 +143,12 @@ class DutyItemList extends StatelessWidget {
               decoration: BoxDecoration(
                 color: selectedDutyGroupName == dutyGroupName
                     ? mainColor.withAlpha(kAlphaCardSelected)
-                    : Colors.white,
+                    : Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: selectedDutyGroupName == dutyGroupName
                       ? mainColor
-                      : Colors.grey.shade300,
+                      : Theme.of(context).colorScheme.outlineVariant,
                   width: selectedDutyGroupName == dutyGroupName ? 2.5 : 1,
                 ),
                 boxShadow: selectedDutyGroupName == dutyGroupName
@@ -161,7 +161,10 @@ class DutyItemList extends StatelessWidget {
                       ]
                     : [
                         BoxShadow(
-                          color: Colors.black.withAlpha(kAlphaShadowWeak),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .shadow
+                              .withAlpha(kAlphaShadowWeak),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -191,21 +194,28 @@ class DutyItemList extends StatelessWidget {
                         Expanded(
                           child: Text(
                             dutyTypeName,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           dutyGroupName,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black87,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
                         ),
                       ],
                     ),

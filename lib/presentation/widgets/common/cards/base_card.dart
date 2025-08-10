@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class BaseCard extends StatelessWidget {
@@ -24,14 +23,16 @@ class BaseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: margin ?? const EdgeInsets.only(bottom: 8),
       padding: padding,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.white,
+        color: backgroundColor ?? theme.cardColor,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: borderColor ?? Colors.grey.shade300,
+          color: borderColor ?? scheme.outlineVariant,
           width: borderWidth,
         ),
         boxShadow: boxShadow,

@@ -656,6 +656,12 @@ abstract class AppLocalizations {
   /// **'System'**
   String get themeModeSystem;
 
+  /// Description text for theme selection step
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how the app should look. You can change this at any time in Settings.'**
+  String get themeModeDescription;
+
   /// SnackBar text shown when choosing a non-light theme
   ///
   /// In en, this message translates to:
