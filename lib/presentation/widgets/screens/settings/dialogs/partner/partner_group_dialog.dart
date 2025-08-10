@@ -7,6 +7,21 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 class PartnerGroupDialog {
   static Future<void> show(BuildContext context) async {
     final container = ProviderScope.containerOf(context, listen: false);
+
+    // Safety check: prevent dialog from opening if no partner duty plan is selected
+    final state = container.read(scheduleNotifierProvider).valueOrNull;
+    if (state?.partnerConfigName == null || state!.partnerConfigName!.isEmpty) {
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.selectPartnerDutyScheduleFirst),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
     await showDialog(
       context: context,
       builder: (dialogContext) => Consumer(
@@ -39,13 +54,16 @@ class PartnerGroupDialog {
                             title: group,
                             isSelected: state?.partnerDutyGroup == group,
                             onTap: () async {
+                              // Close dialog immediately
+                              Navigator.of(context).pop();
+
+                              // Perform operations after dialog is closed
                               await notifier.setPartnerDutyGroup(group,
                                   silent: true);
                               if (initialFocused != null) {
                                 await notifier.setFocusedDay(initialFocused,
                                     shouldLoad: false);
                               }
-                              // Keep dialog open; user dismisses by tapping outside
                             },
                             useDialogStyle: true,
                           )),
@@ -53,13 +71,16 @@ class PartnerGroupDialog {
                         title: l10n.noPartnerGroup,
                         isSelected: (state?.partnerDutyGroup ?? '').isEmpty,
                         onTap: () async {
+                          // Close dialog immediately
+                          Navigator.of(context).pop();
+
+                          // Perform operations after dialog is closed
                           await notifier.setPartnerDutyGroup(null,
                               silent: true);
                           if (initialFocused != null) {
                             await notifier.setFocusedDay(initialFocused,
                                 shouldLoad: false);
                           }
-                          // Keep dialog open; user dismisses by tapping outside
                         },
                         useDialogStyle: true,
                       ),

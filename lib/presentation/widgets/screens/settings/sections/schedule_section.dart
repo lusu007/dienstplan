@@ -27,7 +27,7 @@ class ScheduleSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSection(
-          title: l10n.schedule,
+          title: l10n.myDutySchedule,
           cards: [
             NavigationCard(
               icon: Icons.calendar_month_outlined,
@@ -68,6 +68,7 @@ class ScheduleSection extends StatelessWidget {
               title: l10n.partnerDutyGroup,
               subtitle: _getPartnerGroupDisplayName(state, l10n),
               onTap: () => PartnerGroupDialog.show(context),
+              enabled: _isPartnerDutyGroupEnabled(state),
             ),
             NavigationCard(
               icon: Icons.color_lens_outlined,
@@ -169,6 +170,10 @@ class ScheduleSection extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     try {
+      // If no partner duty plan is selected, show a helpful message
+      if ((state.partnerConfigName ?? '').isEmpty) {
+        return l10n.noDutySchedule;
+      }
       if ((state.partnerDutyGroup ?? '').isEmpty) {
         return l10n.noPartnerGroup;
       }
@@ -176,5 +181,9 @@ class ScheduleSection extends StatelessWidget {
     } catch (_) {
       return l10n.noPartnerGroup;
     }
+  }
+
+  bool _isPartnerDutyGroupEnabled(ScheduleUiState state) {
+    return (state.partnerConfigName ?? '').isNotEmpty;
   }
 }

@@ -18,14 +18,14 @@ class PartnerConfigDialog {
           if (configs.isEmpty) {
             final l10n = AppLocalizations.of(context);
             return AlertDialog(
-              title: Text(l10n.myDutySchedule),
+              title: Text(l10n.partnerDutySchedule),
               content: Text(l10n.noDutySchedules),
             );
           }
 
           final l10n = AppLocalizations.of(context);
           return AlertDialog(
-            title: Text(l10n.myDutySchedule),
+            title: Text(l10n.partnerDutySchedule),
             content: SizedBox(
               width: double.maxFinite,
               child: SingleChildScrollView(
@@ -41,13 +41,19 @@ class PartnerConfigDialog {
                               : null,
                           isSelected: state?.partnerConfigName == c.name,
                           onTap: () async {
+                            // Close dialog immediately
+                            Navigator.of(context).pop();
+
+                            // Perform operations after dialog is closed
                             await notifier.setPartnerConfigName(c.name,
+                                silent: true);
+                            // Reset partner duty group when duty plan changes
+                            await notifier.setPartnerDutyGroup(null,
                                 silent: true);
                             if (initialFocused != null) {
                               await notifier.setFocusedDay(initialFocused,
                                   shouldLoad: false);
                             }
-                            // Keep dialog open; user dismisses by tapping outside
                           },
                           useDialogStyle: true,
                         )),
@@ -55,12 +61,17 @@ class PartnerConfigDialog {
                       title: l10n.noDutySchedule,
                       isSelected: (state?.partnerConfigName ?? '').isEmpty,
                       onTap: () async {
+                        // Close dialog immediately
+                        Navigator.of(context).pop();
+
+                        // Perform operations after dialog is closed
                         await notifier.setPartnerConfigName(null, silent: true);
+                        // Reset partner duty group when duty plan is cleared
+                        await notifier.setPartnerDutyGroup(null, silent: true);
                         if (initialFocused != null) {
                           await notifier.setFocusedDay(initialFocused,
                               shouldLoad: false);
                         }
-                        // Keep dialog open; user dismisses by tapping outside
                       },
                       useDialogStyle: true,
                     ),

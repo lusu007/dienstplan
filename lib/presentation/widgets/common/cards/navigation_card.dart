@@ -8,6 +8,7 @@ class NavigationCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Color iconColor;
   final Widget? trailing;
+  final bool enabled;
 
   const NavigationCard({
     super.key,
@@ -17,32 +18,44 @@ class NavigationCard extends StatelessWidget {
     this.onTap,
     this.iconColor = AppColors.primary,
     this.trailing,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
+
+    final effectiveIconColor = enabled ? iconColor : scheme.onSurfaceVariant;
+    final effectiveTitleColor =
+        enabled ? scheme.onSurface : scheme.onSurfaceVariant;
+    final effectiveSubtitleColor = enabled
+        ? scheme.onSurfaceVariant
+        : scheme.onSurfaceVariant.withValues(alpha: 0.6);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: theme.cardColor,
+        color:
+            enabled ? theme.cardColor : theme.cardColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: scheme.outlineVariant,
+          color: enabled
+              ? scheme.outlineVariant
+              : scheme.outlineVariant.withValues(alpha: 0.5),
           width: 1,
         ),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20),
         minVerticalPadding: 20,
-        leading: Icon(icon, color: iconColor, size: 40),
+        leading: Icon(icon, color: effectiveIconColor, size: 40),
         title: Text(
           title,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: theme.colorScheme.onSurface,
+            color: effectiveTitleColor,
           ),
         ),
         subtitle: subtitle != null
@@ -50,11 +63,13 @@ class NavigationCard extends StatelessWidget {
                 subtitle!,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontSize: 15,
-                  color: theme.colorScheme.onSurfaceVariant,
+                  color: effectiveSubtitleColor,
                 ),
               )
             : null,
-        trailing: trailing,
+        trailing: trailing != null && !enabled
+            ? Opacity(opacity: 0.5, child: trailing!)
+            : trailing,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

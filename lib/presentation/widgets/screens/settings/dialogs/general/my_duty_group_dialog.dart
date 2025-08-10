@@ -41,26 +41,26 @@ class MyDutyGroupDialog {
           );
         }
         return AlertDialog(
-          title: Text(l10n.selectMyDutyGroup),
-          content: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.6,
-              minHeight: 200,
-            ),
+          title: Text(l10n.myDutyGroup),
+          content: SizedBox(
+            width: double.maxFinite,
             child: SingleChildScrollView(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(l10n.selectMyDutyGroup),
+                  const SizedBox(height: 8),
                   ...dutyGroups.map((group) => SelectionCard(
                         title: group,
                         isSelected: state?.preferredDutyGroup == group,
                         onTap: () async {
+                          // Close dialog immediately
+                          Navigator.of(context).pop();
+
+                          // Perform operations after dialog is closed
                           await ref
                               .read(scheduleNotifierProvider.notifier)
                               .setPreferredDutyGroup(group);
-                          if (context.mounted) {
-                            Navigator.pop(context);
-                          }
                         },
                         mainColor: AppColors.primary,
                         useDialogStyle: true,
@@ -69,12 +69,13 @@ class MyDutyGroupDialog {
                     title: l10n.noDutyGroup,
                     isSelected: (state?.preferredDutyGroup ?? '').isEmpty,
                     onTap: () async {
+                      // Close dialog immediately
+                      Navigator.of(context).pop();
+
+                      // Perform operations after dialog is closed
                       await ref
                           .read(scheduleNotifierProvider.notifier)
                           .setPreferredDutyGroup(null);
-                      if (context.mounted) {
-                        Navigator.pop(context);
-                      }
                     },
                     mainColor: AppColors.primary,
                     useDialogStyle: true,

@@ -166,6 +166,10 @@
   "@selectPartnerDutyGroup": {
     "description": "Titel zum Auswählen der Partner Dienstgruppe"
   },
+  "selectPartnerDutyScheduleFirst": "Bitte wähle zuerst einen Partner Dienstplan aus",
+  "@selectPartnerDutyScheduleFirst": {
+    "description": "Nachricht, die angezeigt wird, wenn kein Partner Dienstplan ausgewählt ist"
+  },
   "accentColor": "Partner Akzentfarbe",
   "@accentColor": {
     "description": "Titel für Akzentfarbe"

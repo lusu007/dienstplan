@@ -29,55 +29,64 @@ class DutyScheduleDialog {
           );
         }
         return AlertDialog(
-          title: Text(l10n.selectDutySchedule),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ...configs.map((config) => SelectionCard(
-                    title: config.meta.name,
-                    subtitle: config.meta.description.isNotEmpty
-                        ? config.meta.description
-                        : null,
-                    isSelected: state?.activeConfigName == config.name,
-                    onTap: () async {
-                      try {
-                        await ref
-                            .read(scheduleNotifierProvider.notifier)
-                            .setActiveConfig(config);
-                        await ref
-                            .read(scheduleNotifierProvider.notifier)
-                            .setPreferredDutyGroup(null);
-                        if (dialogContext.mounted) {
-                          Navigator.of(dialogContext).pop();
-                        }
-                      } catch (e, stackTrace) {
-                        AppLogger.e(
-                            'DutyScheduleDialog: Error setting active config',
-                            e,
-                            stackTrace);
-                        if (dialogContext.mounted) {
-                          ScaffoldMessenger.of(dialogContext).showSnackBar(
-                            SnackBar(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.surface,
-                              content: Text(
-                                'Error setting active config: ${e.toString()}',
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+          title: Text(l10n.myDutySchedule),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.selectDutySchedule),
+                  const SizedBox(height: 8),
+                  ...configs.map((config) => SelectionCard(
+                        title: config.meta.name,
+                        subtitle: config.meta.description.isNotEmpty
+                            ? config.meta.description
+                            : null,
+                        isSelected: state?.activeConfigName == config.name,
+                        onTap: () async {
+                          try {
+                            // Close dialog immediately
+                            Navigator.of(context).pop();
+
+                            // Perform operations after dialog is closed
+                            await ref
+                                .read(scheduleNotifierProvider.notifier)
+                                .setActiveConfig(config);
+                            await ref
+                                .read(scheduleNotifierProvider.notifier)
+                                .setPreferredDutyGroup(null);
+                          } catch (e, stackTrace) {
+                            AppLogger.e(
+                                'DutyScheduleDialog: Error setting active config',
+                                e,
+                                stackTrace);
+                            // Show error in parent context since dialog is closed
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                  content: Text(
+                                    'Error setting active config: ${e.toString()}',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
                                 ),
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          Navigator.of(dialogContext).pop();
-                        }
-                      }
-                    },
-                    mainColor: AppColors.primary,
-                    useDialogStyle: true,
-                  )),
-            ],
+                              );
+                            }
+                          }
+                        },
+                        mainColor: AppColors.primary,
+                        useDialogStyle: true,
+                      )),
+                ],
+              ),
+            ),
           ),
         );
       }),

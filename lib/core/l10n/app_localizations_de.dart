@@ -166,6 +166,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectPartnerDutyGroup => 'Partner Dienstgruppe auswählen';
 
   @override
+  String get selectPartnerDutyScheduleFirst =>
+      'Bitte wähle zuerst einen Partner Dienstplan aus';
+
+  @override
   String get about => 'Über';
 
   @override

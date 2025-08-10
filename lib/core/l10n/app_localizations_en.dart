@@ -166,6 +166,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectPartnerDutyGroup => 'Select Partner Duty Group';
 
   @override
+  String get selectPartnerDutyScheduleFirst =>
+      'Please select a partner duty schedule first';
+
+  @override
   String get about => 'About';
 
   @override
