@@ -4,6 +4,7 @@ import 'package:dienstplan/core/constants/ui_constants.dart';
 class CalendarDayBuilder extends StatelessWidget {
   final DateTime day;
   final String? dutyAbbreviation;
+  final String? partnerDutyAbbreviation;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
@@ -12,6 +13,7 @@ class CalendarDayBuilder extends StatelessWidget {
     super.key,
     required this.day,
     this.dutyAbbreviation,
+    this.partnerDutyAbbreviation,
     required this.dayType,
     this.width,
     this.height,
@@ -42,15 +44,54 @@ class CalendarDayBuilder extends StatelessWidget {
             '${day.day}',
             style: dayStyle,
           ),
-          if (dutyAbbreviation != null && dutyAbbreviation!.isNotEmpty)
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 4.0, vertical: 1.0),
-              decoration: dutyBadgeDecoration,
-              child: Text(
-                dutyAbbreviation!,
-                style: dutyBadgeTextStyle.copyWith(
-                  fontSize: 10.0,
+          if ((dutyAbbreviation != null && dutyAbbreviation!.isNotEmpty) ||
+              (partnerDutyAbbreviation != null &&
+                  partnerDutyAbbreviation!.isNotEmpty))
+            Padding(
+              padding: const EdgeInsets.only(top: 2.0),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (dutyAbbreviation != null &&
+                        dutyAbbreviation!.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 3.0, vertical: 1.0),
+                        decoration: dutyBadgeDecoration,
+                        child: Text(
+                          dutyAbbreviation!,
+                          style: dutyBadgeTextStyle.copyWith(
+                            fontSize: 9.0,
+                          ),
+                        ),
+                      ),
+                    if ((dutyAbbreviation != null &&
+                            dutyAbbreviation!.isNotEmpty) &&
+                        (partnerDutyAbbreviation != null &&
+                            partnerDutyAbbreviation!.isNotEmpty))
+                      const SizedBox(width: 2),
+                    if (partnerDutyAbbreviation != null &&
+                        partnerDutyAbbreviation!.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 3.0, vertical: 1.0),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondary,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          partnerDutyAbbreviation!,
+                          style: const TextStyle(
+                            fontSize: 9.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

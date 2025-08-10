@@ -1,9 +1,5 @@
 {
   "@@locale": "en",
-  "appTitle": "Duty Schedule",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "settings": "Settings",
   "@settings": {
     "description": "Title for the settings screen"
@@ -52,10 +48,6 @@
   "@delete": {
     "description": "Delete button text"
   },
-  "edit": "Edit",
-  "@edit": {
-    "description": "Edit button text"
-  },
   "add": "Add",
   "@add": {
     "description": "Add button text"
@@ -68,93 +60,9 @@
   "@success": {
     "description": "Success message title"
   },
-  "loading": "Loading...",
-  "@loading": {
-    "description": "Loading indicator text"
-  },
   "noDutySchedules": "No duty schedules available",
   "@noDutySchedules": {
     "description": "Message shown when no duty schedules are available"
-  },
-  "createNewDutySchedule": "Create New Duty Schedule",
-  "@createNewDutySchedule": {
-    "description": "Title for creating a new duty schedule"
-  },
-  "dutyScheduleName": "Duty Schedule Name",
-  "@dutyScheduleName": {
-    "description": "Label for duty schedule name field"
-  },
-  "dutyScheduleDescription": "Description",
-  "@dutyScheduleDescription": {
-    "description": "Label for duty schedule description field"
-  },
-  "dutyScheduleStartDate": "Start Date",
-  "@dutyScheduleStartDate": {
-    "description": "Label for duty schedule start date field"
-  },
-  "dutyScheduleStartWeekDay": "Start Week Day",
-  "@dutyScheduleStartWeekDay": {
-    "description": "Label for duty schedule start week day field"
-  },
-  "dutyScheduleDays": "Days",
-  "@dutyScheduleDays": {
-    "description": "Label for duty schedule days field"
-  },
-  "dutyScheduleDutyTypes": "Duty Types",
-  "@dutyScheduleDutyTypes": {
-    "description": "Label for duty schedule duty types field"
-  },
-  "dutyScheduleRhythms": "Rhythms",
-  "@dutyScheduleRhythms": {
-    "description": "Label for duty schedule rhythms field"
-  },
-  "dutyScheduleGroups": "Duty Groups",
-  "@dutyScheduleGroups": {
-    "description": "Label for duty schedule groups field"
-  },
-  "dutyTypeLabel": "Label",
-  "@dutyTypeLabel": {
-    "description": "Label for duty type name field"
-  },
-  "dutyTypeStartTime": "Start Time",
-  "@dutyTypeStartTime": {
-    "description": "Label for duty type start time field"
-  },
-  "dutyTypeEndTime": "End Time",
-  "@dutyTypeEndTime": {
-    "description": "Label for duty type end time field"
-  },
-  "dutyTypeAllDay": "All Day",
-  "@dutyTypeAllDay": {
-    "description": "Label for duty type all day checkbox"
-  },
-  "rhythmLengthWeeks": "Length in Weeks",
-  "@rhythmLengthWeeks": {
-    "description": "Label for rhythm length in weeks field"
-  },
-  "rhythmPattern": "Pattern",
-  "@rhythmPattern": {
-    "description": "Label for rhythm pattern field"
-  },
-  "groupName": "Name",
-  "@groupName": {
-    "description": "Label for group name field"
-  },
-  "groupRhythm": "Rhythm",
-  "@groupRhythm": {
-    "description": "Label for group rhythm field"
-  },
-  "groupOffsetWeeks": "Offset in Weeks",
-  "@groupOffsetWeeks": {
-    "description": "Label for group offset in weeks field"
-  },
-  "firstTimeSetup": "First Time Setup",
-  "@firstTimeSetup": {
-    "description": "Title for first time setup screen"
-  },
-  "selectDefaultDutySchedule": "Select Default Duty Schedule",
-  "@selectDefaultDutySchedule": {
-    "description": "Title for selecting default duty schedule"
   },
   "continueButton": "Continue",
   "@continueButton": {
@@ -167,42 +75,6 @@
   "welcomeMessage": "Let's set up your duty schedule. Therefore choose your duty schedule.",
   "@welcomeMessage": {
     "description": "Welcome message text"
-  },
-  "settingsSaved": "Settings saved",
-  "@settingsSaved": {
-    "description": "Message shown when settings are saved successfully"
-  },
-  "settingsSaveError": "Error saving settings",
-  "@settingsSaveError": {
-    "description": "Error message when settings save fails"
-  },
-  "dutyScheduleSaved": "Duty schedule saved",
-  "@dutyScheduleSaved": {
-    "description": "Message shown when duty schedule is saved successfully"
-  },
-  "dutyScheduleSaveError": "Error saving duty schedule",
-  "@dutyScheduleSaveError": {
-    "description": "Error message when duty schedule save fails"
-  },
-  "dutyScheduleDeleted": "Duty schedule deleted",
-  "@dutyScheduleDeleted": {
-    "description": "Message shown when duty schedule is deleted successfully"
-  },
-  "dutyScheduleDeleteError": "Error deleting duty schedule",
-  "@dutyScheduleDeleteError": {
-    "description": "Error message when duty schedule deletion fails"
-  },
-  "confirmDelete": "Are you sure you want to delete this duty schedule?",
-  "@confirmDelete": {
-    "description": "Confirmation message for deleting a duty schedule"
-  },
-  "yes": "Yes",
-  "@yes": {
-    "description": "Yes button text"
-  },
-  "no": "No",
-  "@no": {
-    "description": "No button text"
   },
   "calendarFormat": "Calendar Format",
   "@calendarFormat": {
@@ -223,10 +95,6 @@
   "resetData": "Reset App",
   "@resetData": {
     "description": "Reset app button text"
-  },
-  "resetDataWarning": "⚠️ All data will be permanently deleted",
-  "@resetDataWarning": {
-    "description": "Warning message for reset app action"
   },
   "resetDataConfirmation": "Are you sure you want to reset the app? This cannot be undone.",
   "@resetDataConfirmation": {
@@ -257,29 +125,13 @@
   "@noServicesForDay": {
     "description": "Message shown when no services are available for a day"
   },
-  "allDay": "All day",
-  "@allDay": {
-    "description": "Label for all-day service"
-  },
   "licenses": "Licenses",
   "@licenses": {
     "description": "Title for licenses page"
   },
-  "footer": "Info",
-  "@footer": {
-    "description": "Title for footer section in settings"
-  },
-  "copyright": "Copyright",
-  "@copyright": {
-    "description": "Copyright label"
-  },
   "version": "Version",
   "@version": {
     "description": "Version label"
-  },
-  "author": "Author",
-  "@author": {
-    "description": "Author label"
   },
   "@previousPeriod": {
     "description": "Tooltip for the previous period navigation button"
@@ -293,7 +145,62 @@
     "description": "Tooltip for the today button"
   },
   "today": "Today",
-
+  "partnerDutyGroup": "Partner Duty Group",
+  "@partnerDutyGroup": {
+    "description": "Title for partner duty group setting"
+  },
+  "partnerDutySchedule": "Partner Duty Schedule",
+  "@partnerDutySchedule": {
+    "description": "Section title for partner duty schedule settings"
+  },
+  "noPartnerGroup": "No partner group",
+  "@noPartnerGroup": {
+    "description": "Shown when no partner group is selected"
+  },
+  "accentColor": "Accent Color",
+  "@accentColor": {
+    "description": "Generic accent color title"
+  },
+  "accentAmber": "Amber",
+  "@accentAmber": {
+    "description": "Amber color name"
+  },
+  "accentPurple": "Purple",
+  "@accentPurple": {
+    "description": "Purple color name"
+  },
+  "accentGreen": "Green",
+  "@accentGreen": {
+    "description": "Green color name"
+  },
+  "accentPink": "Pink",
+  "@accentPink": {
+    "description": "Pink color name"
+  },
+  "accentTeal": "Teal",
+  "@accentTeal": {
+    "description": "Teal color name"
+  },
+  "accentIndigo": "Indigo",
+  "@accentIndigo": {
+    "description": "Indigo color name"
+  },
+  "accentRed": "Red",
+  "@accentRed": {
+    "description": "Red color name"
+  },
+  "accentBlueGrey": "Blue Grey",
+  "@accentBlueGrey": {
+    "description": "Blue Grey color name"
+  },
+  "noDutySchedule": "No duty schedule",
+  "@noDutySchedule": {
+    "description": "Option to select no duty schedule"
+  },
+  "selectPartnerDutyGroup": "Select Partner Duty Group",
+  "@selectPartnerDutyGroup": {
+    "description": "Title for selecting partner duty group"
+  },
   "about": "About",
   "@about": {
     "description": "Title for the about dialog"
@@ -322,11 +229,6 @@
   "@back": {
     "description": "Back button text"
   },
-  "errorSavingDefaultConfig": "Error saving default configuration",
-  "@errorSavingDefaultConfig": {
-    "description": "Error message when saving default configuration fails"
-  },
-
   "myDutyGroup": "My Duty Group",
   "@myDutyGroup": {
     "description": "Label for my duty group setting"
@@ -334,10 +236,6 @@
   "selectMyDutyGroup": "Select My Duty Group",
   "@selectMyDutyGroup": {
     "description": "Title for my duty group selection dialog"
-  },
-  "myDutyGroupDescription": "This duty group will be used for future functionality",
-  "@myDutyGroupDescription": {
-    "description": "Description for my duty group setting"
   },
   "noMyDutyGroup": "No duty group selected",
   "@noMyDutyGroup": {
@@ -350,10 +248,6 @@
   "noMyDutyGroupDescription": "No duty group abbreviations will be shown on the calendar",
   "@noMyDutyGroupDescription": {
     "description": "Description for no my duty group option"
-  },
-  "general": "General",
-  "@general": {
-    "description": "Title for general settings section"
   },
   "schedule": "Schedule",
   "@schedule": {
@@ -383,10 +277,6 @@
   "@themeModeDescription": {
     "description": "Description text for theme selection step"
   },
-  "darkModeNotAvailableYet": "Dark mode is not implemented yet",
-  "@darkModeNotAvailableYet": {
-    "description": "SnackBar text shown when choosing a non-light theme"
-  },
   "legal": "Legal",
   "@legal": {
     "description": "Title for legal section"
@@ -398,10 +288,6 @@
   "disclaimer": "Disclaimer",
   "@disclaimer": {
     "description": "Title for disclaimer option"
-  },
-  "myDutyGroupResetNotice": "Your duty group was reset because it is not available in the new schedule.",
-  "@myDutyGroupResetNotice": {
-    "description": "Notice when the my duty group is reset on schedule change"
   },
   "sentryAnalytics": "Analytics & Error Reporting",
   "@sentryAnalytics": {
@@ -439,10 +325,6 @@
   "@shareAppDescription": {
     "description": "Description for share app option"
   },
-  "shareAppTitle": "Duty Schedule App Recommendation",
-  "@shareAppTitle": {
-    "description": "Title for share app email"
-  },
   "shareAppMessage": "Hey! 👋\n\nI found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHope you like it! 🚔",
   "@shareAppMessage": {
     "description": "Message template for sharing the app",
@@ -465,14 +347,6 @@
   "@shareAppError": {
     "description": "Error message when sharing app fails"
   },
-  "shareAppSuccess": "Share sheet opened",
-  "@shareAppSuccess": {
-    "description": "Success message when share sheet is opened"
-  },
-  "shareAppFallback": "App store link shared",
-  "@shareAppFallback": {
-    "description": "Message when fallback sharing is used"
-  },
   "other": "Other",
   "@other": {
     "description": "Title for other settings section"
@@ -485,26 +359,48 @@
   "@contactDescription": {
     "description": "Description for contact option"
   },
-
   "genericValidationError": "Invalid input",
-  "@genericValidationError": {"description": "Generic validation error message"},
+  "@genericValidationError": {
+    "description": "Generic validation error message"
+  },
   "genericNotFoundError": "Requested item was not found",
-  "@genericNotFoundError": {"description": "Generic not found error message"},
+  "@genericNotFoundError": {
+    "description": "Generic not found error message"
+  },
   "genericConflictError": "Conflict occurred",
-  "@genericConflictError": {"description": "Generic conflict error message"},
+  "@genericConflictError": {
+    "description": "Generic conflict error message"
+  },
   "genericUnauthorizedError": "You are not authorized",
-  "@genericUnauthorizedError": {"description": "Generic unauthorized error message"},
+  "@genericUnauthorizedError": {
+    "description": "Generic unauthorized error message"
+  },
   "genericForbiddenError": "Access is forbidden",
-  "@genericForbiddenError": {"description": "Generic forbidden error message"},
+  "@genericForbiddenError": {
+    "description": "Generic forbidden error message"
+  },
   "genericNetworkError": "Network error. Please check your connection.",
-  "@genericNetworkError": {"description": "Generic network error message"},
+  "@genericNetworkError": {
+    "description": "Generic network error message"
+  },
   "genericTimeoutError": "The operation timed out",
-  "@genericTimeoutError": {"description": "Generic timeout error message"},
+  "@genericTimeoutError": {
+    "description": "Generic timeout error message"
+  },
   "genericStorageError": "Storage error occurred",
-  "@genericStorageError": {"description": "Generic storage error message"},
+  "@genericStorageError": {
+    "description": "Generic storage error message"
+  },
   "genericSerializationError": "Data processing error",
-  "@genericSerializationError": {"description": "Generic serialization error message"},
+  "@genericSerializationError": {
+    "description": "Generic serialization error message"
+  },
   "genericCancellationError": "The operation was cancelled",
-  "@genericCancellationError": {"description": "Generic cancellation error message"},
-  "genericUnknownError": "An unknown error occurred"
-} 
+  "@genericCancellationError": {
+    "description": "Generic cancellation error message"
+  },
+  "genericUnknownError": "An unknown error occurred",
+  "@genericUnknownError": {
+    "description": "Generic unknown error message"
+  }
+}

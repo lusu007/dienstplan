@@ -20,6 +20,10 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     @Default(<String>[]) List<String> dutyGroups,
     @Default(<DutyScheduleConfig>[]) List<DutyScheduleConfig> configs,
     DutyScheduleConfig? activeConfig,
+    // Partner group extended state
+    String? partnerConfigName,
+    String? partnerDutyGroup,
+    int? partnerAccentColorValue,
   }) = _ScheduleUiState;
 
   const ScheduleUiState._();
@@ -31,5 +35,8 @@ abstract class ScheduleUiState with _$ScheduleUiState {
         calendarFormat: CalendarFormat.month,
         activeConfigName: '',
         preferredDutyGroup: '',
+        partnerConfigName: null,
+        partnerDutyGroup: null,
+        partnerAccentColorValue: null,
       );
 }

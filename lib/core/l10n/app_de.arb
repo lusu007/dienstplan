@@ -1,9 +1,5 @@
 {
   "@@locale": "de",
-  "appTitle": "Dienstplan",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "settings": "Einstellungen",
   "@settings": {
     "description": "Title for the settings screen"
@@ -52,10 +48,6 @@
   "@delete": {
     "description": "Delete button text"
   },
-  "edit": "Bearbeiten",
-  "@edit": {
-    "description": "Edit button text"
-  },
   "add": "Hinzufügen",
   "@add": {
     "description": "Add button text"
@@ -68,99 +60,14 @@
   "@success": {
     "description": "Success message title"
   },
-  "loading": "Laden...",
-  "@loading": {
-    "description": "Loading indicator text"
-  },
   "noDutySchedules": "Keine Dienstpläne verfügbar",
   "@noDutySchedules": {
     "description": "Message shown when no duty schedules are available"
-  },
-  "createNewDutySchedule": "Neuen Dienstplan erstellen",
-  "@createNewDutySchedule": {
-    "description": "Title for creating a new duty schedule"
-  },
-  "dutyScheduleName": "Name des Dienstplans",
-  "@dutyScheduleName": {
-    "description": "Label for duty schedule name field"
-  },
-  "dutyScheduleDescription": "Beschreibung",
-  "@dutyScheduleDescription": {
-    "description": "Label for duty schedule description field"
-  },
-  "dutyScheduleStartDate": "Startdatum",
-  "@dutyScheduleStartDate": {
-    "description": "Label for duty schedule start date field"
-  },
-  "dutyScheduleStartWeekDay": "Startwochentag",
-  "@dutyScheduleStartWeekDay": {
-    "description": "Label for duty schedule start week day field"
-  },
-  "dutyScheduleDays": "Tage",
-  "@dutyScheduleDays": {
-    "description": "Label for duty schedule days field"
-  },
-  "dutyScheduleDutyTypes": "Diensttypen",
-  "@dutyScheduleDutyTypes": {
-    "description": "Label for duty schedule duty types field"
-  },
-  "dutyScheduleRhythms": "Rhythmen",
-  "@dutyScheduleRhythms": {
-    "description": "Label for duty schedule rhythms field"
-  },
-  "dutyScheduleGroups": "Dienstgruppen",
-  "@dutyScheduleGroups": {
-    "description": "Label for duty schedule groups field"
-  },
-  "dutyTypeLabel": "Bezeichnung",
-  "@dutyTypeLabel": {
-    "description": "Label for duty type name field"
-  },
-  "dutyTypeStartTime": "Startzeit",
-  "@dutyTypeStartTime": {
-    "description": "Label for duty type start time field"
-  },
-  "dutyTypeEndTime": "Endzeit",
-  "@dutyTypeEndTime": {
-    "description": "Label for duty type end time field"
-  },
-  "dutyTypeAllDay": "Ganztägig",
-  "@dutyTypeAllDay": {
-    "description": "Label for duty type all day checkbox"
-  },
-  "rhythmLengthWeeks": "Länge in Wochen",
-  "@rhythmLengthWeeks": {
-    "description": "Label for rhythm length in weeks field"
-  },
-  "rhythmPattern": "Muster",
-  "@rhythmPattern": {
-    "description": "Label for rhythm pattern field"
-  },
-  "groupName": "Name",
-  "@groupName": {
-    "description": "Label for group name field"
-  },
-  "groupRhythm": "Rhythmus",
-  "@groupRhythm": {
-    "description": "Label for group rhythm field"
-  },
-  "groupOffsetWeeks": "Versatz in Wochen",
-  "@groupOffsetWeeks": {
-    "description": "Label for group offset in weeks field"
-  },
-  "firstTimeSetup": "Erste Einrichtung",
-  "@firstTimeSetup": {
-    "description": "Title for first time setup screen"
-  },
-  "selectDefaultDutySchedule": "Standard-Dienstplan auswählen",
-  "@selectDefaultDutySchedule": {
-    "description": "Title for selecting default duty schedule"
   },
   "continueButton": "Weiter",
   "@continueButton": {
     "description": "Continue button text"
   },
-
   "welcome": "Hallo! 👋",
   "@welcome": {
     "description": "Welcome message title"
@@ -168,42 +75,6 @@
   "welcomeMessage": "Lass uns deinen Dienstplan einrichten. Wähle dafür deinen Dienstplan aus.",
   "@welcomeMessage": {
     "description": "Welcome message text"
-  },
-  "settingsSaved": "Einstellungen gespeichert",
-  "@settingsSaved": {
-    "description": "Message shown when settings are saved successfully"
-  },
-  "settingsSaveError": "Fehler beim Speichern der Einstellungen",
-  "@settingsSaveError": {
-    "description": "Error message when settings save fails"
-  },
-  "dutyScheduleSaved": "Dienstplan gespeichert",
-  "@dutyScheduleSaved": {
-    "description": "Message shown when duty schedule is saved successfully"
-  },
-  "dutyScheduleSaveError": "Fehler beim Speichern des Dienstplans",
-  "@dutyScheduleSaveError": {
-    "description": "Error message when duty schedule save fails"
-  },
-  "dutyScheduleDeleted": "Dienstplan gelöscht",
-  "@dutyScheduleDeleted": {
-    "description": "Message shown when duty schedule is deleted successfully"
-  },
-  "dutyScheduleDeleteError": "Fehler beim Löschen des Dienstplans",
-  "@dutyScheduleDeleteError": {
-    "description": "Error message when duty schedule deletion fails"
-  },
-  "confirmDelete": "Möchtest du diesen Dienstplan wirklich löschen?",
-  "@confirmDelete": {
-    "description": "Confirmation message for deleting a duty schedule"
-  },
-  "yes": "Ja",
-  "@yes": {
-    "description": "Yes button text"
-  },
-  "no": "Nein",
-  "@no": {
-    "description": "No button text"
   },
   "calendarFormat": "Kalenderformat",
   "@calendarFormat": {
@@ -224,10 +95,6 @@
   "resetData": "App zurücksetzen",
   "@resetData": {
     "description": "Reset app button text"
-  },
-  "resetDataWarning": "⚠️ Alle Daten werden unwiderruflich gelöscht",
-  "@resetDataWarning": {
-    "description": "Warning message for reset app action"
   },
   "resetDataConfirmation": "Möchtest du wirklich die App zurücksetzen? Dies kann nicht rückgängig gemacht werden.",
   "@resetDataConfirmation": {
@@ -258,29 +125,13 @@
   "@noServicesForDay": {
     "description": "Message shown when no services are available for a day"
   },
-  "allDay": "Ganztägig",
-  "@allDay": {
-    "description": "Label for all-day service"
-  },
   "licenses": "Lizenzen",
   "@licenses": {
     "description": "Title for licenses page"
   },
-  "footer": "Info",
-  "@footer": {
-    "description": "Title for footer section in settings"
-  },
-  "copyright": "Copyright",
-  "@copyright": {
-    "description": "Copyright label"
-  },
   "version": "Version",
   "@version": {
     "description": "Version label"
-  },
-  "author": "Autor",
-  "@author": {
-    "description": "Author label"
   },
   "disclaimer": "Haftungsausschluss",
   "@disclaimer": {
@@ -298,6 +149,59 @@
     "description": "Tooltip for the today button"
   },
   "today": "Heute",
+  "partnerDutyGroup": "Partner Dienstgruppe",
+  "partnerDutySchedule": "Partner Dienstplan",
+  "@partnerDutyGroup": {
+    "description": "Titel für Partner Dienstgruppe Einstellung"
+  },
+  "noPartnerGroup": "Keine Partner Dienstgruppe",
+  "@noPartnerGroup": {
+    "description": "Angezeigt, wenn keine Partner Dienstgruppe gewählt ist"
+  },
+  "noDutySchedule": "Kein Dienstplan",
+  "@noDutySchedule": {
+    "description": "Option um keinen Dienstplan zu wählen"
+  },
+  "selectPartnerDutyGroup": "Partner Dienstgruppe auswählen",
+  "@selectPartnerDutyGroup": {
+    "description": "Titel zum Auswählen der Partner Dienstgruppe"
+  },
+  "accentColor": "Akzentfarbe",
+  "@accentColor": {
+    "description": "Titel für Akzentfarbe"
+  },
+  "accentAmber": "Bernstein",
+  "@accentAmber": {
+    "description": "Farbname Bernstein"
+  },
+  "accentPurple": "Violett",
+  "@accentPurple": {
+    "description": "Farbname Violett"
+  },
+  "accentGreen": "Grün",
+  "@accentGreen": {
+    "description": "Farbname Grün"
+  },
+  "accentPink": "Pink",
+  "@accentPink": {
+    "description": "Farbname Pink"
+  },
+  "accentTeal": "Türkis",
+  "@accentTeal": {
+    "description": "Farbname Türkis"
+  },
+  "accentIndigo": "Indigo",
+  "@accentIndigo": {
+    "description": "Farbname Indigo"
+  },
+  "accentRed": "Rot",
+  "@accentRed": {
+    "description": "Farbname Rot"
+  },
+  "accentBlueGrey": "Blaugrau",
+  "@accentBlueGrey": {
+    "description": "Farbname Blaugrau"
+  },
   "about": "Über",
   "@about": {
     "description": "Title for the about dialog"
@@ -326,11 +230,6 @@
   "@back": {
     "description": "Back button text"
   },
-  "errorSavingDefaultConfig": "Fehler beim Speichern der Standard-Konfiguration",
-  "@errorSavingDefaultConfig": {
-    "description": "Error message when saving default configuration fails"
-  },
-
   "myDutyGroup": "Meine Dienstgruppe",
   "@myDutyGroup": {
     "description": "Label for my duty group setting"
@@ -338,10 +237,6 @@
   "selectMyDutyGroup": "Meine Dienstgruppe auswählen",
   "@selectMyDutyGroup": {
     "description": "Title for my duty group selection dialog"
-  },
-  "myDutyGroupDescription": "Diese Dienstgruppe wird für zukünftige Funktionen verwendet",
-  "@myDutyGroupDescription": {
-    "description": "Description for my duty group setting"
   },
   "noMyDutyGroup": "Keine Dienstgruppe ausgewählt",
   "@noMyDutyGroup": {
@@ -354,10 +249,6 @@
   "noMyDutyGroupDescription": "Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt",
   "@noMyDutyGroupDescription": {
     "description": "Description for no my duty group option"
-  },
-  "general": "Allgemein",
-  "@general": {
-    "description": "Title for general settings section"
   },
   "schedule": "Dienstplan",
   "@schedule": {
@@ -387,10 +278,6 @@
   "@themeModeDescription": {
     "description": "Beschreibungstext für den Design-Auswahlschritt"
   },
-  "darkModeNotAvailableYet": "Dunkelmodus ist noch nicht implementiert",
-  "@darkModeNotAvailableYet": {
-    "description": "SnackBar text shown when choosing a non-light theme"
-  },
   "legal": "Rechtliches",
   "@legal": {
     "description": "Title for legal section"
@@ -398,10 +285,6 @@
   "privacyPolicy": "Datenschutzerklärung",
   "@privacyPolicy": {
     "description": "Title for privacy policy option"
-  },
-  "myDutyGroupResetNotice": "Deine Dienstgruppe wurde zurückgesetzt, da sie im neuen Dienstplan nicht verfügbar ist.",
-  "@myDutyGroupResetNotice": {
-    "description": "Hinweis, wenn die meine Dienstgruppe beim Dienstplanwechsel zurückgesetzt wird"
   },
   "sentryAnalytics": "Analysen & Fehlerberichte",
   "@sentryAnalytics": {
@@ -439,10 +322,6 @@
   "@shareAppDescription": {
     "description": "Description for share app option"
   },
-  "shareAppTitle": "Dienstplan App Empfehlung",
-  "@shareAppTitle": {
-    "description": "Title for share app email"
-  },
   "shareAppMessage": "Hey! 👋\n\nIch habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHoffe, sie gefällt dir! 🚔",
   "@shareAppMessage": {
     "description": "Message template for sharing the app",
@@ -465,14 +344,6 @@
   "@shareAppError": {
     "description": "Error message when sharing app fails"
   },
-  "shareAppSuccess": "Teilen-Menü geöffnet",
-  "@shareAppSuccess": {
-    "description": "Success message when share sheet is opened"
-  },
-  "shareAppFallback": "App Store Link geteilt",
-  "@shareAppFallback": {
-    "description": "Message when fallback sharing is used"
-  },
   "other": "Weiteres",
   "@other": {
     "description": "Title for other settings section"
@@ -485,26 +356,48 @@
   "@contactDescription": {
     "description": "Description for contact option"
   },
-
   "genericValidationError": "Ungültige Eingabe",
-  "@genericValidationError": {"description": "Allgemeine Validierungsfehlermeldung"},
+  "@genericValidationError": {
+    "description": "Allgemeine Validierungsfehlermeldung"
+  },
   "genericNotFoundError": "Das angeforderte Element wurde nicht gefunden",
-  "@genericNotFoundError": {"description": "Allgemeine Nicht-gefunden-Fehlermeldung"},
+  "@genericNotFoundError": {
+    "description": "Allgemeine Nicht-gefunden-Fehlermeldung"
+  },
   "genericConflictError": "Ein Konflikt ist aufgetreten",
-  "@genericConflictError": {"description": "Allgemeine Konflikt-Fehlermeldung"},
+  "@genericConflictError": {
+    "description": "Allgemeine Konflikt-Fehlermeldung"
+  },
   "genericUnauthorizedError": "Du bist nicht autorisiert",
-  "@genericUnauthorizedError": {"description": "Allgemeine Nicht autorisiert-Fehlermeldung"},
+  "@genericUnauthorizedError": {
+    "description": "Allgemeine Nicht autorisiert-Fehlermeldung"
+  },
   "genericForbiddenError": "Zugriff verweigert",
-  "@genericForbiddenError": {"description": "Allgemeine Verboten-Fehlermeldung"},
+  "@genericForbiddenError": {
+    "description": "Allgemeine Verboten-Fehlermeldung"
+  },
   "genericNetworkError": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
-  "@genericNetworkError": {"description": "Allgemeine Netzwerk-Fehlermeldung"},
+  "@genericNetworkError": {
+    "description": "Allgemeine Netzwerk-Fehlermeldung"
+  },
   "genericTimeoutError": "Der Vorgang hat zu lange gedauert",
-  "@genericTimeoutError": {"description": "Allgemeine Timeout-Fehlermeldung"},
+  "@genericTimeoutError": {
+    "description": "Allgemeine Timeout-Fehlermeldung"
+  },
   "genericStorageError": "Speicherfehler ist aufgetreten",
-  "@genericStorageError": {"description": "Allgemeine Speicher-Fehlermeldung"},
+  "@genericStorageError": {
+    "description": "Allgemeine Speicher-Fehlermeldung"
+  },
   "genericSerializationError": "Fehler bei der Datenverarbeitung",
-  "@genericSerializationError": {"description": "Allgemeine Serialisierungs-Fehlermeldung"},
+  "@genericSerializationError": {
+    "description": "Allgemeine Serialisierungs-Fehlermeldung"
+  },
   "genericCancellationError": "Der Vorgang wurde abgebrochen",
-  "@genericCancellationError": {"description": "Allgemeine Abbruch-Fehlermeldung"},
-  "genericUnknownError": "Ein unbekannter Fehler ist aufgetreten"
-} 
+  "@genericCancellationError": {
+    "description": "Allgemeine Abbruch-Fehlermeldung"
+  },
+  "genericUnknownError": "Ein unbekannter Fehler ist aufgetreten",
+  "@genericUnknownError": {
+    "description": "Allgemeine unbekannte Fehlermeldung"
+  }
+}

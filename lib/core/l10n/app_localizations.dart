@@ -98,12 +98,6 @@ abstract class AppLocalizations {
     Locale('en')
   ];
 
-  /// The title of the application
-  ///
-  /// In en, this message translates to:
-  /// **'Duty Schedule'**
-  String get appTitle;
-
   /// Title for the settings screen
   ///
   /// In en, this message translates to:
@@ -176,12 +170,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// Edit button text
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get edit;
-
   /// Add button text
   ///
   /// In en, this message translates to:
@@ -200,137 +188,11 @@ abstract class AppLocalizations {
   /// **'Success'**
   String get success;
 
-  /// Loading indicator text
-  ///
-  /// In en, this message translates to:
-  /// **'Loading...'**
-  String get loading;
-
   /// Message shown when no duty schedules are available
   ///
   /// In en, this message translates to:
   /// **'No duty schedules available'**
   String get noDutySchedules;
-
-  /// Title for creating a new duty schedule
-  ///
-  /// In en, this message translates to:
-  /// **'Create New Duty Schedule'**
-  String get createNewDutySchedule;
-
-  /// Label for duty schedule name field
-  ///
-  /// In en, this message translates to:
-  /// **'Duty Schedule Name'**
-  String get dutyScheduleName;
-
-  /// Label for duty schedule description field
-  ///
-  /// In en, this message translates to:
-  /// **'Description'**
-  String get dutyScheduleDescription;
-
-  /// Label for duty schedule start date field
-  ///
-  /// In en, this message translates to:
-  /// **'Start Date'**
-  String get dutyScheduleStartDate;
-
-  /// Label for duty schedule start week day field
-  ///
-  /// In en, this message translates to:
-  /// **'Start Week Day'**
-  String get dutyScheduleStartWeekDay;
-
-  /// Label for duty schedule days field
-  ///
-  /// In en, this message translates to:
-  /// **'Days'**
-  String get dutyScheduleDays;
-
-  /// Label for duty schedule duty types field
-  ///
-  /// In en, this message translates to:
-  /// **'Duty Types'**
-  String get dutyScheduleDutyTypes;
-
-  /// Label for duty schedule rhythms field
-  ///
-  /// In en, this message translates to:
-  /// **'Rhythms'**
-  String get dutyScheduleRhythms;
-
-  /// Label for duty schedule groups field
-  ///
-  /// In en, this message translates to:
-  /// **'Duty Groups'**
-  String get dutyScheduleGroups;
-
-  /// Label for duty type name field
-  ///
-  /// In en, this message translates to:
-  /// **'Label'**
-  String get dutyTypeLabel;
-
-  /// Label for duty type start time field
-  ///
-  /// In en, this message translates to:
-  /// **'Start Time'**
-  String get dutyTypeStartTime;
-
-  /// Label for duty type end time field
-  ///
-  /// In en, this message translates to:
-  /// **'End Time'**
-  String get dutyTypeEndTime;
-
-  /// Label for duty type all day checkbox
-  ///
-  /// In en, this message translates to:
-  /// **'All Day'**
-  String get dutyTypeAllDay;
-
-  /// Label for rhythm length in weeks field
-  ///
-  /// In en, this message translates to:
-  /// **'Length in Weeks'**
-  String get rhythmLengthWeeks;
-
-  /// Label for rhythm pattern field
-  ///
-  /// In en, this message translates to:
-  /// **'Pattern'**
-  String get rhythmPattern;
-
-  /// Label for group name field
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get groupName;
-
-  /// Label for group rhythm field
-  ///
-  /// In en, this message translates to:
-  /// **'Rhythm'**
-  String get groupRhythm;
-
-  /// Label for group offset in weeks field
-  ///
-  /// In en, this message translates to:
-  /// **'Offset in Weeks'**
-  String get groupOffsetWeeks;
-
-  /// Title for first time setup screen
-  ///
-  /// In en, this message translates to:
-  /// **'First Time Setup'**
-  String get firstTimeSetup;
-
-  /// Title for selecting default duty schedule
-  ///
-  /// In en, this message translates to:
-  /// **'Select Default Duty Schedule'**
-  String get selectDefaultDutySchedule;
 
   /// Continue button text
   ///
@@ -349,60 +211,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Let\'s set up your duty schedule. Therefore choose your duty schedule.'**
   String get welcomeMessage;
-
-  /// Message shown when settings are saved successfully
-  ///
-  /// In en, this message translates to:
-  /// **'Settings saved'**
-  String get settingsSaved;
-
-  /// Error message when settings save fails
-  ///
-  /// In en, this message translates to:
-  /// **'Error saving settings'**
-  String get settingsSaveError;
-
-  /// Message shown when duty schedule is saved successfully
-  ///
-  /// In en, this message translates to:
-  /// **'Duty schedule saved'**
-  String get dutyScheduleSaved;
-
-  /// Error message when duty schedule save fails
-  ///
-  /// In en, this message translates to:
-  /// **'Error saving duty schedule'**
-  String get dutyScheduleSaveError;
-
-  /// Message shown when duty schedule is deleted successfully
-  ///
-  /// In en, this message translates to:
-  /// **'Duty schedule deleted'**
-  String get dutyScheduleDeleted;
-
-  /// Error message when duty schedule deletion fails
-  ///
-  /// In en, this message translates to:
-  /// **'Error deleting duty schedule'**
-  String get dutyScheduleDeleteError;
-
-  /// Confirmation message for deleting a duty schedule
-  ///
-  /// In en, this message translates to:
-  /// **'Are you sure you want to delete this duty schedule?'**
-  String get confirmDelete;
-
-  /// Yes button text
-  ///
-  /// In en, this message translates to:
-  /// **'Yes'**
-  String get yes;
-
-  /// No button text
-  ///
-  /// In en, this message translates to:
-  /// **'No'**
-  String get no;
 
   /// Label for calendar format selection
   ///
@@ -433,12 +241,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset App'**
   String get resetData;
-
-  /// Warning message for reset app action
-  ///
-  /// In en, this message translates to:
-  /// **'⚠️ All data will be permanently deleted'**
-  String get resetDataWarning;
 
   /// Confirmation message for reset app action
   ///
@@ -476,41 +278,17 @@ abstract class AppLocalizations {
   /// **'No services for this day'**
   String get noServicesForDay;
 
-  /// Label for all-day service
-  ///
-  /// In en, this message translates to:
-  /// **'All day'**
-  String get allDay;
-
   /// Title for licenses page
   ///
   /// In en, this message translates to:
   /// **'Licenses'**
   String get licenses;
 
-  /// Title for footer section in settings
-  ///
-  /// In en, this message translates to:
-  /// **'Info'**
-  String get footer;
-
-  /// Copyright label
-  ///
-  /// In en, this message translates to:
-  /// **'Copyright'**
-  String get copyright;
-
   /// Version label
   ///
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
-
-  /// Author label
-  ///
-  /// In en, this message translates to:
-  /// **'Author'**
-  String get author;
 
   /// Tooltip for the previous period navigation button
   ///
@@ -529,6 +307,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
+
+  /// Title for partner duty group setting
+  ///
+  /// In en, this message translates to:
+  /// **'Partner Duty Group'**
+  String get partnerDutyGroup;
+
+  /// Section title for partner duty schedule settings
+  ///
+  /// In en, this message translates to:
+  /// **'Partner Duty Schedule'**
+  String get partnerDutySchedule;
+
+  /// Shown when no partner group is selected
+  ///
+  /// In en, this message translates to:
+  /// **'No partner group'**
+  String get noPartnerGroup;
+
+  /// Generic accent color title
+  ///
+  /// In en, this message translates to:
+  /// **'Accent Color'**
+  String get accentColor;
+
+  /// Amber color name
+  ///
+  /// In en, this message translates to:
+  /// **'Amber'**
+  String get accentAmber;
+
+  /// Purple color name
+  ///
+  /// In en, this message translates to:
+  /// **'Purple'**
+  String get accentPurple;
+
+  /// Green color name
+  ///
+  /// In en, this message translates to:
+  /// **'Green'**
+  String get accentGreen;
+
+  /// Pink color name
+  ///
+  /// In en, this message translates to:
+  /// **'Pink'**
+  String get accentPink;
+
+  /// Teal color name
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get accentTeal;
+
+  /// Indigo color name
+  ///
+  /// In en, this message translates to:
+  /// **'Indigo'**
+  String get accentIndigo;
+
+  /// Red color name
+  ///
+  /// In en, this message translates to:
+  /// **'Red'**
+  String get accentRed;
+
+  /// Blue Grey color name
+  ///
+  /// In en, this message translates to:
+  /// **'Blue Grey'**
+  String get accentBlueGrey;
+
+  /// Option to select no duty schedule
+  ///
+  /// In en, this message translates to:
+  /// **'No duty schedule'**
+  String get noDutySchedule;
+
+  /// Title for selecting partner duty group
+  ///
+  /// In en, this message translates to:
+  /// **'Select Partner Duty Group'**
+  String get selectPartnerDutyGroup;
 
   /// Title for the about dialog
   ///
@@ -572,12 +434,6 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get back;
 
-  /// Error message when saving default configuration fails
-  ///
-  /// In en, this message translates to:
-  /// **'Error saving default configuration'**
-  String get errorSavingDefaultConfig;
-
   /// Label for my duty group setting
   ///
   /// In en, this message translates to:
@@ -589,12 +445,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select My Duty Group'**
   String get selectMyDutyGroup;
-
-  /// Description for my duty group setting
-  ///
-  /// In en, this message translates to:
-  /// **'This duty group will be used for future functionality'**
-  String get myDutyGroupDescription;
 
   /// Text shown when no my duty group is selected
   ///
@@ -613,12 +463,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No duty group abbreviations will be shown on the calendar'**
   String get noMyDutyGroupDescription;
-
-  /// Title for general settings section
-  ///
-  /// In en, this message translates to:
-  /// **'General'**
-  String get general;
 
   /// Title for schedule settings section
   ///
@@ -662,12 +506,6 @@ abstract class AppLocalizations {
   /// **'Choose how the app should look. You can change this at any time in Settings.'**
   String get themeModeDescription;
 
-  /// SnackBar text shown when choosing a non-light theme
-  ///
-  /// In en, this message translates to:
-  /// **'Dark mode is not implemented yet'**
-  String get darkModeNotAvailableYet;
-
   /// Title for legal section
   ///
   /// In en, this message translates to:
@@ -685,12 +523,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disclaimer'**
   String get disclaimer;
-
-  /// Notice when the my duty group is reset on schedule change
-  ///
-  /// In en, this message translates to:
-  /// **'Your duty group was reset because it is not available in the new schedule.'**
-  String get myDutyGroupResetNotice;
 
   /// Title for Sentry analytics and error reporting setting
   ///
@@ -746,12 +578,6 @@ abstract class AppLocalizations {
   /// **'Recommend the app to colleagues'**
   String get shareAppDescription;
 
-  /// Title for share app email
-  ///
-  /// In en, this message translates to:
-  /// **'Duty Schedule App Recommendation'**
-  String get shareAppTitle;
-
   /// Message template for sharing the app
   ///
   /// In en, this message translates to:
@@ -769,18 +595,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error sharing app'**
   String get shareAppError;
-
-  /// Success message when share sheet is opened
-  ///
-  /// In en, this message translates to:
-  /// **'Share sheet opened'**
-  String get shareAppSuccess;
-
-  /// Message when fallback sharing is used
-  ///
-  /// In en, this message translates to:
-  /// **'App store link shared'**
-  String get shareAppFallback;
 
   /// Title for other settings section
   ///
@@ -860,7 +674,7 @@ abstract class AppLocalizations {
   /// **'The operation was cancelled'**
   String get genericCancellationError;
 
-  /// No description provided for @genericUnknownError.
+  /// Generic unknown error message
   ///
   /// In en, this message translates to:
   /// **'An unknown error occurred'**

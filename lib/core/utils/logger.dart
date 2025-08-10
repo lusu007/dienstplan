@@ -70,14 +70,18 @@ class AppLogger {
       final timestamp = DateTime.now().toIso8601String();
       final logMessage = '[$level] TIME: $timestamp $message';
 
-      // Always print to console for debugging
-      if (error != null) {
-        print('$logMessage ERROR: $error');
-        if (stackTrace != null) {
-          print(stackTrace);
+      // Reduce console noise in release/profile: print only warnings+errors
+      const bool isRelease = bool.fromEnvironment('dart.vm.product');
+      final bool isErrorLevel = level == 'E' || level == 'W';
+      if (!isRelease || isErrorLevel) {
+        if (error != null) {
+          print('$logMessage ERROR: $error');
+          if (stackTrace != null) {
+            print(stackTrace);
+          }
+        } else {
+          print(logMessage);
         }
-      } else {
-        print(logMessage);
       }
 
       // Write to local log file

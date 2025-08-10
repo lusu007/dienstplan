@@ -37,6 +37,9 @@ class SettingsNotifier extends _$SettingsNotifier {
         activeConfigName: settings?.activeConfigName,
         myDutyGroup: settings?.myDutyGroup,
         themePreference: settings?.themePreference,
+        partnerConfigName: settings?.partnerConfigName,
+        partnerDutyGroup: settings?.partnerDutyGroup,
+        partnerAccentColorValue: settings?.partnerAccentColorValue,
       );
     } catch (e) {
       return current.copyWith(
