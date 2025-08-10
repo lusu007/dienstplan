@@ -24,7 +24,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get english => 'Englisch';
 
   @override
-  String get dutySchedule => 'Dienstplan';
+  String get dutySchedule => 'Mein Dienstplan';
 
   @override
   String get myDutySchedule => 'Mein Dienstplan';
@@ -127,7 +127,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noPartnerGroup => 'Keine Partner Dienstgruppe';
 
   @override
-  String get accentColor => 'Akzentfarbe';
+  String get accentColor => 'Partner Akzentfarbe';
+
+  @override
+  String get myAccentColor => 'Meine Akzentfarbe';
+
+  @override
+  String get accentPrimaryBlue => 'Primäres Blau';
 
   @override
   String get accentWarmOrange => 'Warm Orange';

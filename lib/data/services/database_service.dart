@@ -172,6 +172,9 @@ class DatabaseService {
       if (oldVersion < 9) {
         await _migrateToVersion9(txn);
       }
+      if (oldVersion < 10) {
+        await _migrateToVersion10(txn);
+      }
     });
   }
 
@@ -353,6 +356,18 @@ class DatabaseService {
       AppLogger.i('Successfully migrated to version 9: partner fields added');
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 9', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion10(DatabaseExecutor db) async {
+    try {
+      AppLogger.i('Migrating to version 10: Add my accent color to settings');
+      await db.execute('''
+        ALTER TABLE settings ADD COLUMN my_accent_color INTEGER
+      ''');
+      AppLogger.i('Successfully migrated to version 10: my accent color added');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 10', e, stackTrace);
     }
   }
 

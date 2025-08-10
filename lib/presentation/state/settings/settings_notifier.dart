@@ -39,6 +39,7 @@ class SettingsNotifier extends _$SettingsNotifier {
         partnerConfigName: settings?.partnerConfigName,
         partnerDutyGroup: settings?.partnerDutyGroup,
         partnerAccentColorValue: settings?.partnerAccentColorValue,
+        myAccentColorValue: settings?.myAccentColorValue,
       );
     } catch (e) {
       return SettingsUiState.initial()

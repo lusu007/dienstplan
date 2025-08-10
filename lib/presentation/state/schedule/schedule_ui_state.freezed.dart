@@ -28,7 +28,8 @@ mixin _$ScheduleUiState {
   DutyScheduleConfig? get activeConfig; // Partner group extended state
   String? get partnerConfigName;
   String? get partnerDutyGroup;
-  int? get partnerAccentColorValue;
+  int? get partnerAccentColorValue; // My accent color state
+  int? get myAccentColorValue;
 
   /// Create a copy of ScheduleUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -70,7 +71,9 @@ mixin _$ScheduleUiState {
                 other.partnerDutyGroup == partnerDutyGroup) &&
             (identical(
                     other.partnerAccentColorValue, partnerAccentColorValue) ||
-                other.partnerAccentColorValue == partnerAccentColorValue));
+                other.partnerAccentColorValue == partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, myAccentColorValue) ||
+                other.myAccentColorValue == myAccentColorValue));
   }
 
   @override
@@ -90,11 +93,12 @@ mixin _$ScheduleUiState {
       activeConfig,
       partnerConfigName,
       partnerDutyGroup,
-      partnerAccentColorValue);
+      partnerAccentColorValue,
+      myAccentColorValue);
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
   }
 }
 
@@ -119,7 +123,8 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res> {
       DutyScheduleConfig? activeConfig,
       String? partnerConfigName,
       String? partnerDutyGroup,
-      int? partnerAccentColorValue});
+      int? partnerAccentColorValue,
+      int? myAccentColorValue});
 
   $DutyScheduleConfigCopyWith<$Res>? get activeConfig;
 }
@@ -152,6 +157,7 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
     Object? partnerConfigName = freezed,
     Object? partnerDutyGroup = freezed,
     Object? partnerAccentColorValue = freezed,
+    Object? myAccentColorValue = freezed,
   }) {
     return _then(_self.copyWith(
       isLoading: null == isLoading
@@ -213,6 +219,10 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
       partnerAccentColorValue: freezed == partnerAccentColorValue
           ? _self.partnerAccentColorValue
           : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+              as int?,
+      myAccentColorValue: freezed == myAccentColorValue
+          ? _self.myAccentColorValue
+          : myAccentColorValue // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }
@@ -340,7 +350,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             DutyScheduleConfig? activeConfig,
             String? partnerConfigName,
             String? partnerDutyGroup,
-            int? partnerAccentColorValue)?
+            int? partnerAccentColorValue,
+            int? myAccentColorValue)?
         $default, {
     required TResult orElse(),
   }) {
@@ -362,7 +373,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             _that.activeConfig,
             _that.partnerConfigName,
             _that.partnerDutyGroup,
-            _that.partnerAccentColorValue);
+            _that.partnerAccentColorValue,
+            _that.myAccentColorValue);
       case _:
         return orElse();
     }
@@ -398,7 +410,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             DutyScheduleConfig? activeConfig,
             String? partnerConfigName,
             String? partnerDutyGroup,
-            int? partnerAccentColorValue)
+            int? partnerAccentColorValue,
+            int? myAccentColorValue)
         $default,
   ) {
     final _that = this;
@@ -419,7 +432,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             _that.activeConfig,
             _that.partnerConfigName,
             _that.partnerDutyGroup,
-            _that.partnerAccentColorValue);
+            _that.partnerAccentColorValue,
+            _that.myAccentColorValue);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -454,7 +468,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             DutyScheduleConfig? activeConfig,
             String? partnerConfigName,
             String? partnerDutyGroup,
-            int? partnerAccentColorValue)?
+            int? partnerAccentColorValue,
+            int? myAccentColorValue)?
         $default,
   ) {
     final _that = this;
@@ -475,7 +490,8 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
             _that.activeConfig,
             _that.partnerConfigName,
             _that.partnerDutyGroup,
-            _that.partnerAccentColorValue);
+            _that.partnerAccentColorValue,
+            _that.myAccentColorValue);
       case _:
         return null;
     }
@@ -500,7 +516,8 @@ class _ScheduleUiState extends ScheduleUiState {
       this.activeConfig,
       this.partnerConfigName,
       this.partnerDutyGroup,
-      this.partnerAccentColorValue})
+      this.partnerAccentColorValue,
+      this.myAccentColorValue})
       : _schedules = schedules,
         _dutyGroups = dutyGroups,
         _configs = configs,
@@ -558,6 +575,9 @@ class _ScheduleUiState extends ScheduleUiState {
   final String? partnerDutyGroup;
   @override
   final int? partnerAccentColorValue;
+// My accent color state
+  @override
+  final int? myAccentColorValue;
 
   /// Create a copy of ScheduleUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -600,7 +620,9 @@ class _ScheduleUiState extends ScheduleUiState {
                 other.partnerDutyGroup == partnerDutyGroup) &&
             (identical(
                     other.partnerAccentColorValue, partnerAccentColorValue) ||
-                other.partnerAccentColorValue == partnerAccentColorValue));
+                other.partnerAccentColorValue == partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, myAccentColorValue) ||
+                other.myAccentColorValue == myAccentColorValue));
   }
 
   @override
@@ -620,11 +642,12 @@ class _ScheduleUiState extends ScheduleUiState {
       activeConfig,
       partnerConfigName,
       partnerDutyGroup,
-      partnerAccentColorValue);
+      partnerAccentColorValue,
+      myAccentColorValue);
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
   }
 }
 
@@ -651,7 +674,8 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res>
       DutyScheduleConfig? activeConfig,
       String? partnerConfigName,
       String? partnerDutyGroup,
-      int? partnerAccentColorValue});
+      int? partnerAccentColorValue,
+      int? myAccentColorValue});
 
   @override
   $DutyScheduleConfigCopyWith<$Res>? get activeConfig;
@@ -685,6 +709,7 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
     Object? partnerConfigName = freezed,
     Object? partnerDutyGroup = freezed,
     Object? partnerAccentColorValue = freezed,
+    Object? myAccentColorValue = freezed,
   }) {
     return _then(_ScheduleUiState(
       isLoading: null == isLoading
@@ -746,6 +771,10 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
       partnerAccentColorValue: freezed == partnerAccentColorValue
           ? _self.partnerAccentColorValue
           : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+              as int?,
+      myAccentColorValue: freezed == myAccentColorValue
+          ? _self.myAccentColorValue
+          : myAccentColorValue // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }

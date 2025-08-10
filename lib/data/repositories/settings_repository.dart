@@ -102,6 +102,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       partnerConfigName: s.partnerConfigName,
       partnerDutyGroup: s.partnerDutyGroup,
       partnerAccentColorValue: s.partnerAccentColorValue,
+      myAccentColorValue: s.myAccentColorValue,
     );
   }
 
@@ -116,6 +117,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       partnerConfigName: s.partnerConfigName,
       partnerDutyGroup: s.partnerDutyGroup,
       partnerAccentColorValue: s.partnerAccentColorValue,
+      myAccentColorValue: s.myAccentColorValue,
     );
   }
 

@@ -23,7 +23,8 @@ mixin _$SettingsUiState {
   ThemePreference? get themePreference; // Partner duty group UI values
   String? get partnerConfigName;
   String? get partnerDutyGroup;
-  int? get partnerAccentColorValue;
+  int? get partnerAccentColorValue; // My accent color UI value
+  int? get myAccentColorValue;
 
   /// Create a copy of SettingsUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -57,7 +58,9 @@ mixin _$SettingsUiState {
                 other.partnerDutyGroup == partnerDutyGroup) &&
             (identical(
                     other.partnerAccentColorValue, partnerAccentColorValue) ||
-                other.partnerAccentColorValue == partnerAccentColorValue));
+                other.partnerAccentColorValue == partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, myAccentColorValue) ||
+                other.myAccentColorValue == myAccentColorValue));
   }
 
   @override
@@ -72,11 +75,12 @@ mixin _$SettingsUiState {
       themePreference,
       partnerConfigName,
       partnerDutyGroup,
-      partnerAccentColorValue);
+      partnerAccentColorValue,
+      myAccentColorValue);
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
   }
 }
 
@@ -96,7 +100,8 @@ abstract mixin class $SettingsUiStateCopyWith<$Res> {
       ThemePreference? themePreference,
       String? partnerConfigName,
       String? partnerDutyGroup,
-      int? partnerAccentColorValue});
+      int? partnerAccentColorValue,
+      int? myAccentColorValue});
 }
 
 /// @nodoc
@@ -122,6 +127,7 @@ class _$SettingsUiStateCopyWithImpl<$Res>
     Object? partnerConfigName = freezed,
     Object? partnerDutyGroup = freezed,
     Object? partnerAccentColorValue = freezed,
+    Object? myAccentColorValue = freezed,
   }) {
     return _then(_self.copyWith(
       isLoading: null == isLoading
@@ -163,6 +169,10 @@ class _$SettingsUiStateCopyWithImpl<$Res>
       partnerAccentColorValue: freezed == partnerAccentColorValue
           ? _self.partnerAccentColorValue
           : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+              as int?,
+      myAccentColorValue: freezed == myAccentColorValue
+          ? _self.myAccentColorValue
+          : myAccentColorValue // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }
@@ -271,7 +281,8 @@ extension SettingsUiStatePatterns on SettingsUiState {
             ThemePreference? themePreference,
             String? partnerConfigName,
             String? partnerDutyGroup,
-            int? partnerAccentColorValue)?
+            int? partnerAccentColorValue,
+            int? myAccentColorValue)?
         $default, {
     required TResult orElse(),
   }) {
@@ -288,7 +299,8 @@ extension SettingsUiStatePatterns on SettingsUiState {
             _that.themePreference,
             _that.partnerConfigName,
             _that.partnerDutyGroup,
-            _that.partnerAccentColorValue);
+            _that.partnerAccentColorValue,
+            _that.myAccentColorValue);
       case _:
         return orElse();
     }
@@ -319,7 +331,8 @@ extension SettingsUiStatePatterns on SettingsUiState {
             ThemePreference? themePreference,
             String? partnerConfigName,
             String? partnerDutyGroup,
-            int? partnerAccentColorValue)
+            int? partnerAccentColorValue,
+            int? myAccentColorValue)
         $default,
   ) {
     final _that = this;
@@ -335,7 +348,8 @@ extension SettingsUiStatePatterns on SettingsUiState {
             _that.themePreference,
             _that.partnerConfigName,
             _that.partnerDutyGroup,
-            _that.partnerAccentColorValue);
+            _that.partnerAccentColorValue,
+            _that.myAccentColorValue);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -365,7 +379,8 @@ extension SettingsUiStatePatterns on SettingsUiState {
             ThemePreference? themePreference,
             String? partnerConfigName,
             String? partnerDutyGroup,
-            int? partnerAccentColorValue)?
+            int? partnerAccentColorValue,
+            int? myAccentColorValue)?
         $default,
   ) {
     final _that = this;
@@ -381,7 +396,8 @@ extension SettingsUiStatePatterns on SettingsUiState {
             _that.themePreference,
             _that.partnerConfigName,
             _that.partnerDutyGroup,
-            _that.partnerAccentColorValue);
+            _that.partnerAccentColorValue,
+            _that.myAccentColorValue);
       case _:
         return null;
     }
@@ -401,7 +417,8 @@ class _SettingsUiState extends SettingsUiState {
       this.themePreference,
       this.partnerConfigName,
       this.partnerDutyGroup,
-      this.partnerAccentColorValue})
+      this.partnerAccentColorValue,
+      this.myAccentColorValue})
       : super._();
 
   @override
@@ -425,6 +442,9 @@ class _SettingsUiState extends SettingsUiState {
   final String? partnerDutyGroup;
   @override
   final int? partnerAccentColorValue;
+// My accent color UI value
+  @override
+  final int? myAccentColorValue;
 
   /// Create a copy of SettingsUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -458,7 +478,9 @@ class _SettingsUiState extends SettingsUiState {
                 other.partnerDutyGroup == partnerDutyGroup) &&
             (identical(
                     other.partnerAccentColorValue, partnerAccentColorValue) ||
-                other.partnerAccentColorValue == partnerAccentColorValue));
+                other.partnerAccentColorValue == partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, myAccentColorValue) ||
+                other.myAccentColorValue == myAccentColorValue));
   }
 
   @override
@@ -473,11 +495,12 @@ class _SettingsUiState extends SettingsUiState {
       themePreference,
       partnerConfigName,
       partnerDutyGroup,
-      partnerAccentColorValue);
+      partnerAccentColorValue,
+      myAccentColorValue);
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
   }
 }
 
@@ -499,7 +522,8 @@ abstract mixin class _$SettingsUiStateCopyWith<$Res>
       ThemePreference? themePreference,
       String? partnerConfigName,
       String? partnerDutyGroup,
-      int? partnerAccentColorValue});
+      int? partnerAccentColorValue,
+      int? myAccentColorValue});
 }
 
 /// @nodoc
@@ -525,6 +549,7 @@ class __$SettingsUiStateCopyWithImpl<$Res>
     Object? partnerConfigName = freezed,
     Object? partnerDutyGroup = freezed,
     Object? partnerAccentColorValue = freezed,
+    Object? myAccentColorValue = freezed,
   }) {
     return _then(_SettingsUiState(
       isLoading: null == isLoading
@@ -566,6 +591,10 @@ class __$SettingsUiStateCopyWithImpl<$Res>
       partnerAccentColorValue: freezed == partnerAccentColorValue
           ? _self.partnerAccentColorValue
           : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+              as int?,
+      myAccentColorValue: freezed == myAccentColorValue
+          ? _self.myAccentColorValue
+          : myAccentColorValue // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/partner_accent_palette.dart';
+import 'package:dienstplan/core/constants/my_accent_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class AnimatedCalendarDay extends StatefulWidget {
@@ -7,6 +8,7 @@ class AnimatedCalendarDay extends StatefulWidget {
   final String? dutyAbbreviation;
   final String? partnerDutyAbbreviation;
   final int? partnerAccentColorValue;
+  final int? myAccentColorValue;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
@@ -19,6 +21,7 @@ class AnimatedCalendarDay extends StatefulWidget {
     this.dutyAbbreviation,
     this.partnerDutyAbbreviation,
     this.partnerAccentColorValue,
+    this.myAccentColorValue,
     required this.dayType,
     this.width,
     this.height,
@@ -168,11 +171,14 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   }
 
   BoxDecoration _getDutyBadgeDecoration(ThemeData theme) {
+    final Color myAccentColor = Color(
+      widget.myAccentColorValue ?? kDefaultMyAccentColorValue,
+    );
     switch (widget.dayType) {
       case CalendarDayType.default_:
       case CalendarDayType.today:
         return BoxDecoration(
-          color: theme.colorScheme.primary,
+          color: myAccentColor,
           borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.outside:
@@ -240,6 +246,9 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   }
 
   TextStyle _getDutyBadgeTextStyle(ThemeData theme) {
+    final Color myAccentColor = Color(
+      widget.myAccentColorValue ?? kDefaultMyAccentColorValue,
+    );
     switch (widget.dayType) {
       case CalendarDayType.default_:
       case CalendarDayType.outside:
@@ -253,7 +262,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         return TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: theme.colorScheme.primary,
+          color: myAccentColor,
         );
     }
   }
