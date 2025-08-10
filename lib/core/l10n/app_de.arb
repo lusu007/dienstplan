@@ -423,5 +423,37 @@
   "weLoveOss": "Wir ❤️ Open Source",
   "@weLoveOss": {
     "description": "Message about loving open source software"
+  },
+  "partnerSetupTitle": "Partner Dienstplan",
+  "@partnerSetupTitle": {
+    "description": "Title for partner setup step"
+  },
+  "partnerSetupDescription": "Optional: Richte den Dienstplan deines Partners ein, um auch dessen Dienste anzuzeigen.",
+  "@partnerSetupDescription": {
+    "description": "Description for partner setup step"
+  },
+  "skipPartnerSetup": "Überspringen",
+  "@skipPartnerSetup": {
+    "description": "Skip button for optional partner setup"
+  },
+  "selectPartnerConfig": "Partner Dienstplan auswählen",
+  "@selectPartnerConfig": {
+    "description": "Title for partner config selection"
+  },
+  "selectPartnerConfigMessage": "Wähle den Dienstplan deines Partners aus.",
+  "@selectPartnerConfigMessage": {
+    "description": "Message for partner config selection"
+  },
+  "noPartnerConfig": "Kein Partner Dienstplan",
+  "@noPartnerConfig": {
+    "description": "Option to not set a partner config"
+  },
+  "noPartnerConfigDescription": "Es wird kein Partner Dienstplan angezeigt",
+  "@noPartnerConfigDescription": {
+    "description": "Description for no partner config option"
+  },
+  "selectPartnerDutyGroupMessage": "Wähle die Dienstgruppe deines Partners aus.",
+  "@selectPartnerDutyGroupMessage": {
+    "description": "Message for partner duty group selection"
   }
 }
