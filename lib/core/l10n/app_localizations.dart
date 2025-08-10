@@ -679,6 +679,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An unknown error occurred'**
   String get genericUnknownError;
+
+  /// Title for contribute option
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute'**
+  String get contribute;
+
+  /// Description for contribute option
+  ///
+  /// In en, this message translates to:
+  /// **'Help with app development'**
+  String get contributeDescription;
+
+  /// Message about loving open source software
+  ///
+  /// In en, this message translates to:
+  /// **'We ❤️ Open Source'**
+  String get weLoveOss;
 }
 
 class _AppLocalizationsDelegate

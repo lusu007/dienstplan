@@ -314,4 +314,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get genericUnknownError => 'Ein unbekannter Fehler ist aufgetreten';
+
+  @override
+  String get contribute => 'Beitragen';
+
+  @override
+  String get contributeDescription => 'Hilf bei der Entwicklung der App';
+
+  @override
+  String get weLoveOss => 'Wir ❤️ Open Source';
 }

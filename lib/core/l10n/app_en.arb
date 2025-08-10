@@ -402,5 +402,17 @@
   "genericUnknownError": "An unknown error occurred",
   "@genericUnknownError": {
     "description": "Generic unknown error message"
+  },
+  "contribute": "Contribute",
+  "@contribute": {
+    "description": "Title for contribute option"
+  },
+  "contributeDescription": "Help with app development",
+  "@contributeDescription": {
+    "description": "Description for contribute option"
+  },
+  "weLoveOss": "We ❤️ Open Source",
+  "@weLoveOss": {
+    "description": "Message about loving open source software"
   }
 }
