@@ -5,23 +5,21 @@ extension PartnerAccentColorX on PartnerAccentColor {
   String toLabel(AppLocalizations l10n) {
     switch (this) {
       case PartnerAccentColor.amber:
-        return l10n.accentAmber;
+        return l10n.accentWarmOrange;
       case PartnerAccentColor.purple:
-        return l10n.accentPurple;
+        return l10n.accentViolet;
       case PartnerAccentColor.green:
-        return l10n.accentGreen;
+        return l10n.accentFreshGreen;
       case PartnerAccentColor.pink:
         return l10n.accentPink;
       case PartnerAccentColor.teal:
-        return l10n.accentTeal;
+        return l10n.accentTurquoiseGreen;
       case PartnerAccentColor.indigo:
-        return l10n.accentIndigo;
+        return l10n.accentSunnyYellow;
       case PartnerAccentColor.red:
         return l10n.accentRed;
       case PartnerAccentColor.blueGrey:
-        return l10n.accentBlueGrey;
+        return l10n.accentLightGrey;
     }
   }
 }
-
-

@@ -170,37 +170,37 @@
   "@accentColor": {
     "description": "Titel für Akzentfarbe"
   },
-  "accentAmber": "Bernstein",
-  "@accentAmber": {
-    "description": "Farbname Bernstein"
-  },
-  "accentPurple": "Violett",
-  "@accentPurple": {
-    "description": "Farbname Violett"
-  },
-  "accentGreen": "Grün",
-  "@accentGreen": {
-    "description": "Farbname Grün"
+  "accentWarmOrange": "Warm Orange",
+  "@accentWarmOrange": {
+    "description": "Akzentfarbe Warm Orange"
   },
   "accentPink": "Pink",
   "@accentPink": {
     "description": "Farbname Pink"
   },
-  "accentTeal": "Türkis",
-  "@accentTeal": {
-    "description": "Farbname Türkis"
+  "accentViolet": "Violett",
+  "@accentViolet": {
+    "description": "Akzentfarbe Violett"
   },
-  "accentIndigo": "Indigo",
-  "@accentIndigo": {
-    "description": "Farbname Indigo"
+  "accentFreshGreen": "Frisches Grün",
+  "@accentFreshGreen": {
+    "description": "Akzentfarbe Frisches Grün"
+  },
+  "accentTurquoiseGreen": "Türkisgrün",
+  "@accentTurquoiseGreen": {
+    "description": "Akzentfarbe Türkisgrün"
+  },
+  "accentSunnyYellow": "Sonnengelb",
+  "@accentSunnyYellow": {
+    "description": "Akzentfarbe Sonnengelb"
   },
   "accentRed": "Rot",
   "@accentRed": {
     "description": "Farbname Rot"
   },
-  "accentBlueGrey": "Blaugrau",
-  "@accentBlueGrey": {
-    "description": "Farbname Blaugrau"
+  "accentLightGrey": "Hellgrau",
+  "@accentLightGrey": {
+    "description": "Akzentfarbe Hellgrau"
   },
   "about": "Über",
   "@about": {

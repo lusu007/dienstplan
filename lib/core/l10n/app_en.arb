@@ -161,37 +161,37 @@
   "@accentColor": {
     "description": "Generic accent color title"
   },
-  "accentAmber": "Amber",
-  "@accentAmber": {
-    "description": "Amber color name"
-  },
-  "accentPurple": "Purple",
-  "@accentPurple": {
-    "description": "Purple color name"
-  },
-  "accentGreen": "Green",
-  "@accentGreen": {
-    "description": "Green color name"
+  "accentWarmOrange": "Warm Orange",
+  "@accentWarmOrange": {
+    "description": "Warm orange accent color"
   },
   "accentPink": "Pink",
   "@accentPink": {
     "description": "Pink color name"
   },
-  "accentTeal": "Teal",
-  "@accentTeal": {
-    "description": "Teal color name"
+  "accentViolet": "Violet",
+  "@accentViolet": {
+    "description": "Violet accent color"
   },
-  "accentIndigo": "Indigo",
-  "@accentIndigo": {
-    "description": "Indigo color name"
+  "accentFreshGreen": "Fresh Green",
+  "@accentFreshGreen": {
+    "description": "Fresh green accent color"
+  },
+  "accentTurquoiseGreen": "Turquoise Green",
+  "@accentTurquoiseGreen": {
+    "description": "Turquoise green accent color"
+  },
+  "accentSunnyYellow": "Sunny Yellow",
+  "@accentSunnyYellow": {
+    "description": "Sunny yellow accent color"
   },
   "accentRed": "Red",
   "@accentRed": {
     "description": "Red color name"
   },
-  "accentBlueGrey": "Blue Grey",
-  "@accentBlueGrey": {
-    "description": "Blue Grey color name"
+  "accentLightGrey": "Light Grey",
+  "@accentLightGrey": {
+    "description": "Light grey accent color"
   },
   "noDutySchedule": "No duty schedule",
   "@noDutySchedule": {

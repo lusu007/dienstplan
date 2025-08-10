@@ -45,9 +45,7 @@ class PartnerGroupDialog {
                                 await notifier.setFocusedDay(initialFocused,
                                     shouldLoad: false);
                               }
-                              if (dialogContext.mounted) {
-                                Navigator.of(dialogContext).pop();
-                              }
+                              // Keep dialog open; user dismisses by tapping outside
                             },
                             useDialogStyle: true,
                           )),
@@ -61,9 +59,7 @@ class PartnerGroupDialog {
                             await notifier.setFocusedDay(initialFocused,
                                 shouldLoad: false);
                           }
-                          if (dialogContext.mounted) {
-                            Navigator.of(dialogContext).pop();
-                          }
+                          // Keep dialog open; user dismisses by tapping outside
                         },
                         useDialogStyle: true,
                       ),

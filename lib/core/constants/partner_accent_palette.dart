@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 enum PartnerAccentColor {
-  amber(0xFF8C3D00, 'accentAmber'),
-  purple(0xFF6A1B9A, 'accentPurple'),
-  green(0xFF2E7D32, 'accentGreen'),
-  pink(0xFFAD1457, 'accentPink'),
-  teal(0xFF00796B, 'accentTeal'),
-  indigo(0xFF283593, 'accentIndigo'),
-  red(0xFFB71C1C, 'accentRed'),
-  blueGrey(0xFF455A64, 'accentBlueGrey');
+  // Mapped to the requested palette
+  // Keep enum case names for backwards compatibility, update values and l10n keys
+  amber(0xFFFF7A33, 'accentWarmOrange'), // Warm Orange
+  purple(0xFFA55EEA, 'accentViolet'), // Violett
+  green(0xFF5FBF3A, 'accentFreshGreen'), // Frisches Grün
+  pink(0xFFE94B8C, 'accentPink'), // Pink
+  teal(0xFF00B89F, 'accentTurquoiseGreen'), // Türkisgrün
+  indigo(0xFFFFC933, 'accentSunnyYellow'), // Sonnengelb
+  red(0xFFE74C3C, 'accentRed'), // Rot
+  blueGrey(0xFFB0BEC5, 'accentLightGrey'); // Hellgrau
 
   final int argb;
   final String l10nKey;
@@ -26,5 +28,5 @@ enum PartnerAccentColor {
 }
 
 // Default partner accent color used when none is selected explicitly
-const int kDefaultPartnerAccentColorValue = 0xFF283593; // indigo
+const int kDefaultPartnerAccentColorValue = 0xFF00B89F; // teal (Türkisgrün)
 const Color kDefaultPartnerAccentColor = Color(kDefaultPartnerAccentColorValue);

@@ -332,23 +332,11 @@ abstract class AppLocalizations {
   /// **'Accent Color'**
   String get accentColor;
 
-  /// Amber color name
+  /// Warm orange accent color
   ///
   /// In en, this message translates to:
-  /// **'Amber'**
-  String get accentAmber;
-
-  /// Purple color name
-  ///
-  /// In en, this message translates to:
-  /// **'Purple'**
-  String get accentPurple;
-
-  /// Green color name
-  ///
-  /// In en, this message translates to:
-  /// **'Green'**
-  String get accentGreen;
+  /// **'Warm Orange'**
+  String get accentWarmOrange;
 
   /// Pink color name
   ///
@@ -356,17 +344,29 @@ abstract class AppLocalizations {
   /// **'Pink'**
   String get accentPink;
 
-  /// Teal color name
+  /// Violet accent color
   ///
   /// In en, this message translates to:
-  /// **'Teal'**
-  String get accentTeal;
+  /// **'Violet'**
+  String get accentViolet;
 
-  /// Indigo color name
+  /// Fresh green accent color
   ///
   /// In en, this message translates to:
-  /// **'Indigo'**
-  String get accentIndigo;
+  /// **'Fresh Green'**
+  String get accentFreshGreen;
+
+  /// Turquoise green accent color
+  ///
+  /// In en, this message translates to:
+  /// **'Turquoise Green'**
+  String get accentTurquoiseGreen;
+
+  /// Sunny yellow accent color
+  ///
+  /// In en, this message translates to:
+  /// **'Sunny Yellow'**
+  String get accentSunnyYellow;
 
   /// Red color name
   ///
@@ -374,11 +374,11 @@ abstract class AppLocalizations {
   /// **'Red'**
   String get accentRed;
 
-  /// Blue Grey color name
+  /// Light grey accent color
   ///
   /// In en, this message translates to:
-  /// **'Blue Grey'**
-  String get accentBlueGrey;
+  /// **'Light Grey'**
+  String get accentLightGrey;
 
   /// Option to select no duty schedule
   ///
