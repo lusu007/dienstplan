@@ -108,18 +108,9 @@ class CalendarBuildersHelper {
         }
       }
 
-      // If no preferred group is set or no preferred schedule found,
-      // show the first available duty type for this day (only if no preferred group is set)
+      // If no preferred group is set, don't show any duty chips
       if (preferredGroupName == null || preferredGroupName.isEmpty) {
-        try {
-          final firstSchedule = schedulesForDay.firstWhere(
-            (s) => s.dutyTypeId.isNotEmpty && s.dutyTypeId != '-',
-          );
-
-          return firstSchedule.dutyTypeId;
-        } catch (e) {
-          return '';
-        }
+        return '';
       }
 
       return '';
@@ -167,14 +158,8 @@ class CalendarBuildersHelper {
           } catch (_) {}
         }
       }
-      // If no partner group specified, pick the first non-empty duty
-      try {
-        final Schedule first = schedulesForDay
-            .firstWhere((s) => s.dutyTypeId.isNotEmpty && s.dutyTypeId != '-');
-        return first.dutyTypeId;
-      } catch (_) {
-        return '';
-      }
+      // If no partner group specified, don't show any duty chips
+      return '';
     } catch (_) {
       return '';
     }

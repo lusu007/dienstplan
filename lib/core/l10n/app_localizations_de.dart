@@ -192,6 +192,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.';
 
   @override
+  String get myDutyGroupMessage =>
+      'Du kannst deine Dienstgruppe hier ändern oder beibehalten.';
+
+  @override
   String get back => 'Zurück';
 
   @override

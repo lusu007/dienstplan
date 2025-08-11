@@ -446,6 +446,12 @@ abstract class AppLocalizations {
   /// **'Select your duty group so we can show you the right information.'**
   String get selectDutyGroupMessage;
 
+  /// Message when user already has a duty group set
+  ///
+  /// In en, this message translates to:
+  /// **'You can change or keep your duty group here.'**
+  String get myDutyGroupMessage;
+
   /// Back button text
   ///
   /// In en, this message translates to:

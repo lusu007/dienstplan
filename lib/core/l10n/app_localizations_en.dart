@@ -192,6 +192,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select your duty group so we can show you the right information.';
 
   @override
+  String get myDutyGroupMessage =>
+      'You can change or keep your duty group here.';
+
+  @override
   String get back => 'Back';
 
   @override

@@ -28,7 +28,7 @@ class _ThemeModeDialogContentState
     final l10n = AppLocalizations.of(context);
     final state = ref.watch(settingsNotifierProvider).valueOrNull;
     final ThemePreference current =
-        state?.themePreference ?? ThemePreference.light;
+        state?.themePreference ?? ThemePreference.system;
 
     return AlertDialog(
       title: Text(l10n.themeMode),

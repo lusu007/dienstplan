@@ -238,6 +238,10 @@
   "@selectDutyGroupMessage": {
     "description": "Message for duty group selection step"
   },
+  "myDutyGroupMessage": "Du kannst deine Dienstgruppe hier ändern oder beibehalten.",
+  "@myDutyGroupMessage": {
+    "description": "Message when user already has a duty group set"
+  },
   "back": "Zurück",
   "@back": {
     "description": "Back button text"

@@ -35,7 +35,7 @@ class SettingsNotifier extends _$SettingsNotifier {
         calendarFormat: settings?.calendarFormat,
         activeConfigName: settings?.activeConfigName,
         myDutyGroup: settings?.myDutyGroup,
-        themePreference: settings?.themePreference ?? ThemePreference.light,
+        themePreference: settings?.themePreference ?? ThemePreference.system,
         partnerConfigName: settings?.partnerConfigName,
         partnerDutyGroup: settings?.partnerDutyGroup,
         partnerAccentColorValue: settings?.partnerAccentColorValue,
@@ -58,7 +58,7 @@ class SettingsNotifier extends _$SettingsNotifier {
       final newSettings = Settings(
         calendarFormat: CalendarFormat.month,
         language: language,
-        themePreference: ThemePreference.light,
+        themePreference: ThemePreference.system,
       );
       await _saveSettings(newSettings);
     }
@@ -103,7 +103,7 @@ class SettingsNotifier extends _$SettingsNotifier {
       // Create new settings with the calendar format if none exist
       final newSettings = Settings(
         calendarFormat: format,
-        themePreference: ThemePreference.light,
+        themePreference: ThemePreference.system,
       );
       await _saveSettings(newSettings);
     }
@@ -120,7 +120,7 @@ class SettingsNotifier extends _$SettingsNotifier {
       final newSettings = Settings(
         calendarFormat: CalendarFormat.month,
         activeConfigName: name,
-        themePreference: ThemePreference.light,
+        themePreference: ThemePreference.system,
       );
       await _saveSettings(newSettings);
     }
@@ -137,7 +137,7 @@ class SettingsNotifier extends _$SettingsNotifier {
       final newSettings = Settings(
         calendarFormat: CalendarFormat.month,
         myDutyGroup: group,
-        themePreference: ThemePreference.light,
+        themePreference: ThemePreference.system,
       );
       await _saveSettings(newSettings);
     }
