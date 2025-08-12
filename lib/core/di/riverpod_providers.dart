@@ -139,11 +139,12 @@ Future<ThemeMode> themeMode(Ref ref) async {
 @riverpod
 ThemeData appTheme(Ref ref) {
   // Light theme
+  final ColorScheme lightScheme = ColorScheme.fromSeed(
+    seedColor: const Color(0xFF005B8C),
+    brightness: Brightness.light,
+  );
   return ThemeData(
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF005B8C),
-      brightness: Brightness.light,
-    ),
+    colorScheme: lightScheme,
     useMaterial3: true,
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF005B8C),
@@ -153,6 +154,41 @@ ThemeData appTheme(Ref ref) {
         fontSize: 20,
       ),
       iconTheme: IconThemeData(color: Colors.white),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: lightScheme.surface,
+      contentTextStyle: TextStyle(
+        color: lightScheme.onSurface,
+      ),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: lightScheme.surface,
+      surfaceTintColor: lightScheme.surfaceTint,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: lightScheme.surface,
+      surfaceTintColor: lightScheme.surfaceTint,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+    ),
+    cardTheme: CardThemeData(
+      color: lightScheme.surface,
+      surfaceTintColor: lightScheme.surfaceTint,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 8),
     ),
   );
 }
@@ -175,6 +211,41 @@ ThemeData appDarkTheme(Ref ref) {
         fontSize: 20,
       ),
       iconTheme: IconThemeData(color: Colors.white),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: darkScheme.surface,
+      contentTextStyle: TextStyle(
+        color: darkScheme.onSurface,
+      ),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: darkScheme.surface,
+      surfaceTintColor: darkScheme.surfaceTint,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: darkScheme.surface,
+      surfaceTintColor: darkScheme.surfaceTint,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+    ),
+    cardTheme: CardThemeData(
+      color: darkScheme.surface,
+      surfaceTintColor: darkScheme.surfaceTint,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 8),
     ),
   );
 }

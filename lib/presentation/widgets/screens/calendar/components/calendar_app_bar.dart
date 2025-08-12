@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
-import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/core/utils/app_info.dart';
 
 class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CalendarAppBar({super.key});
@@ -11,12 +11,10 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
     return AppBar(
-      title: Text(
-        l10n.dutySchedule,
-        style: const TextStyle(color: Colors.white),
+      title: const Text(
+        AppInfo.appName,
+        style: TextStyle(color: Colors.white),
       ),
       backgroundColor: Theme.of(context).colorScheme.primary,
       automaticallyImplyLeading: false,
