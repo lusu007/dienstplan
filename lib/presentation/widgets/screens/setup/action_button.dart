@@ -27,6 +27,7 @@ class ActionButton extends StatelessWidget {
     final effectiveMainColor =
         mainColor ?? Theme.of(context).colorScheme.primary;
     final effectiveLoadingText = loadingText ?? text;
+    final isDisabled = onPressed == null || isLoading;
 
     if (isPrimary) {
       return SizedBox(
@@ -34,13 +35,18 @@ class ActionButton extends StatelessWidget {
         height: height,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: effectiveMainColor,
-            foregroundColor: Colors.white,
+            backgroundColor: isDisabled
+                ? effectiveMainColor.withValues(alpha: 0.5)
+                : effectiveMainColor,
+            foregroundColor:
+                isDisabled ? Colors.white.withValues(alpha: 0.7) : Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             minimumSize: Size.fromHeight(height),
             textStyle: TextStyle(fontSize: fontSize),
+            animationDuration: Duration.zero,
+            enableFeedback: !isDisabled,
           ),
           onPressed: isLoading ? null : onPressed,
           child: _buildButtonContent(effectiveLoadingText),
@@ -52,13 +58,21 @@ class ActionButton extends StatelessWidget {
         height: height,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-            foregroundColor: effectiveMainColor,
-            side: BorderSide(color: effectiveMainColor),
+            foregroundColor: isDisabled
+                ? effectiveMainColor.withValues(alpha: 0.5)
+                : effectiveMainColor,
+            side: BorderSide(
+              color: isDisabled
+                  ? effectiveMainColor.withValues(alpha: 0.5)
+                  : effectiveMainColor,
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             minimumSize: Size.fromHeight(height),
             textStyle: TextStyle(fontSize: fontSize),
+            animationDuration: Duration.zero,
+            enableFeedback: !isDisabled,
           ),
           onPressed: isLoading ? null : onPressed,
           child: _buildButtonContent(effectiveLoadingText),

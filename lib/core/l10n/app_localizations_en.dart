@@ -192,6 +192,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select your duty group so we can show you the right information.';
 
   @override
+  String get myDutyGroupMessage =>
+      'You can change or keep your duty group here.';
+
+  @override
   String get back => 'Back';
 
   @override
@@ -332,4 +336,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weLoveOss => 'We ❤️ Open Source';
+
+  @override
+  String get partnerSetupTitle => 'Partner Duty Schedule';
+
+  @override
+  String get partnerSetupDescription =>
+      'Optional: Set up your partner\'s duty schedule to also display their duties.';
+
+  @override
+  String get skipPartnerSetup => 'Skip';
+
+  @override
+  String get selectPartnerConfig => 'Select Partner Duty Schedule';
+
+  @override
+  String get selectPartnerConfigMessage =>
+      'Select your partner\'s duty schedule.';
+
+  @override
+  String get noPartnerConfig => 'No Partner Duty Schedule';
+
+  @override
+  String get noPartnerConfigDescription =>
+      'No partner duty schedule will be displayed';
+
+  @override
+  String get selectPartnerDutyGroupMessage =>
+      'Select your partner\'s duty group.';
 }

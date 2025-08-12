@@ -237,6 +237,10 @@
   "@selectDutyGroupMessage": {
     "description": "Message for duty group selection step"
   },
+  "myDutyGroupMessage": "You can change or keep your duty group here.",
+  "@myDutyGroupMessage": {
+    "description": "Message when user already has a duty group set"
+  },
   "back": "Back",
   "@back": {
     "description": "Back button text"
@@ -426,5 +430,37 @@
   "weLoveOss": "We ❤️ Open Source",
   "@weLoveOss": {
     "description": "Message about loving open source software"
+  },
+  "partnerSetupTitle": "Partner Duty Schedule",
+  "@partnerSetupTitle": {
+    "description": "Title for partner setup step"
+  },
+  "partnerSetupDescription": "Optional: Set up your partner's duty schedule to also display their duties.",
+  "@partnerSetupDescription": {
+    "description": "Description for partner setup step"
+  },
+  "skipPartnerSetup": "Skip",
+  "@skipPartnerSetup": {
+    "description": "Skip button for optional partner setup"
+  },
+  "selectPartnerConfig": "Select Partner Duty Schedule",
+  "@selectPartnerConfig": {
+    "description": "Title for partner config selection"
+  },
+  "selectPartnerConfigMessage": "Select your partner's duty schedule.",
+  "@selectPartnerConfigMessage": {
+    "description": "Message for partner config selection"
+  },
+  "noPartnerConfig": "No Partner Duty Schedule",
+  "@noPartnerConfig": {
+    "description": "Option to not set a partner config"
+  },
+  "noPartnerConfigDescription": "No partner duty schedule will be displayed",
+  "@noPartnerConfigDescription": {
+    "description": "Description for no partner config option"
+  },
+  "selectPartnerDutyGroupMessage": "Select your partner's duty group.",
+  "@selectPartnerDutyGroupMessage": {
+    "description": "Message for partner duty group selection"
   }
 }

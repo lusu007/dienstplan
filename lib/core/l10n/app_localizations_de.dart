@@ -192,6 +192,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.';
 
   @override
+  String get myDutyGroupMessage =>
+      'Du kannst deine Dienstgruppe hier ändern oder beibehalten.';
+
+  @override
   String get back => 'Zurück';
 
   @override
@@ -333,4 +337,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get weLoveOss => 'Wir ❤️ Open Source';
+
+  @override
+  String get partnerSetupTitle => 'Partner Dienstplan';
+
+  @override
+  String get partnerSetupDescription =>
+      'Optional: Richte den Dienstplan deines Partners ein, um auch dessen Dienste anzuzeigen.';
+
+  @override
+  String get skipPartnerSetup => 'Überspringen';
+
+  @override
+  String get selectPartnerConfig => 'Partner Dienstplan auswählen';
+
+  @override
+  String get selectPartnerConfigMessage =>
+      'Wähle den Dienstplan deines Partners aus.';
+
+  @override
+  String get noPartnerConfig => 'Kein Partner Dienstplan';
+
+  @override
+  String get noPartnerConfigDescription =>
+      'Es wird kein Partner Dienstplan angezeigt';
+
+  @override
+  String get selectPartnerDutyGroupMessage =>
+      'Wähle die Dienstgruppe deines Partners aus.';
 }

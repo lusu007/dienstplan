@@ -17,6 +17,7 @@ import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
+import 'package:dienstplan/presentation/widgets/screens/setup/setup_back_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_button.dart';
 import 'package:dienstplan/presentation/widgets/common/primary_app_bar.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
@@ -35,12 +36,16 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _selectedConfig;
   String? _selectedDutyGroup;
-  bool _hasMadeDutyGroupSelection = false;
-  int _currentStep = 1; // 1: Theme, 2: Config, 3: Duty Group
+  DutyScheduleConfig? _selectedPartnerConfig;
+  String? _selectedPartnerDutyGroup;
+  ThemePreference _selectedTheme = ThemePreference.system;
+  int _currentStep =
+      1; // 1: Theme, 2: Config, 3: Duty Group, 4: Partner Config (half), 5: Partner Duty Group (half)
   bool _isLoading = true;
   bool _isGeneratingSchedules = false;
   Object? _loadingError;
   StackTrace? _loadingErrorStackTrace;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -50,7 +55,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   @override
   void dispose() {
-    // Clean up any resources if needed
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -89,20 +94,86 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       if (_currentStep == 2 && _selectedConfig != null) {
         // Config selected → go to duty group selection
         _currentStep = 3;
-        _selectedDutyGroup = null;
-        _hasMadeDutyGroupSelection = false;
+        // Pre-select current duty group if it exists
+        final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+        final currentDutyGroup = scheduleState?.preferredDutyGroup;
+        _selectedDutyGroup = currentDutyGroup;
+        return;
+      }
+      if (_currentStep == 3) {
+        // Duty group selected → go to partner config setup (optional)
+        _currentStep = 4;
+        _selectedPartnerConfig = null;
+        _selectedPartnerDutyGroup = null;
+        return;
+      }
+      if (_currentStep == 4) {
+        // Partner config selected → go to partner duty group selection (if config selected)
+        if (_selectedPartnerConfig != null) {
+          _currentStep = 5;
+          _selectedPartnerDutyGroup = null;
+        } else {
+          // No partner config selected, complete setup directly
+          if (!_isGeneratingSchedules) {
+            _saveDefaultConfig();
+          }
+        }
+        return;
+      }
+      if (_currentStep == 5) {
+        // Partner duty group selected → complete setup
+        if (!_isGeneratingSchedules) {
+          _saveDefaultConfig();
+        }
         return;
       }
     });
+  }
+
+  void _scrollToTop() {
+    // Add a small delay to ensure the widget is fully built
+    Future.delayed(const Duration(milliseconds: 50), () {
+      if (_scrollController.hasClients) {
+        try {
+          _scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        } catch (e) {
+          // If animation fails, try immediate scroll
+          try {
+            _scrollController.jumpTo(0);
+          } catch (e2) {
+            // If both fail, ignore the error
+            AppLogger.d('Scroll to top failed: $e2');
+          }
+        }
+      }
+    });
+  }
+
+  void _nextStepWithScroll() {
+    _scrollToTop();
+    _nextStep();
   }
 
   void _previousStep() {
     setState(() {
       if (_currentStep > 1) {
         _currentStep -= 1;
+        _scrollToTop();
       }
       if (_currentStep < 3) {
+        // Reset duty group selection when going back before step 3
         _selectedDutyGroup = null;
+      }
+      if (_currentStep < 4) {
+        _selectedPartnerConfig = null;
+        _selectedPartnerDutyGroup = null;
+      }
+      if (_currentStep < 5) {
+        _selectedPartnerDutyGroup = null;
       }
     });
   }
@@ -114,30 +185,35 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         _isGeneratingSchedules = true;
       });
 
-      // First set the default config via repository
-      final configRepository = await ref.read(configRepositoryProvider.future);
-      await configRepository.setDefaultConfig(_selectedConfig!);
+      // First set the default config via repository (if one is selected)
+      if (_selectedConfig != null) {
+        final configRepository =
+            await ref.read(configRepositoryProvider.future);
+        await configRepository.setDefaultConfig(_selectedConfig!);
 
-      // Set the active config using the use case directly
-      final setActiveConfigUseCase =
-          await ref.read(setActiveConfigUseCaseProvider.future);
-      await setActiveConfigUseCase.execute(_selectedConfig!.name);
+        // Set the active config using the use case directly
+        final setActiveConfigUseCase =
+            await ref.read(setActiveConfigUseCaseProvider.future);
+        await setActiveConfigUseCase.execute(_selectedConfig!.name);
+      }
 
       // Use policy-based approach for initial range instead of hardcoded years
       final dateRangePolicy = ref.read(dateRangePolicyProvider);
       final DateTime now = DateTime.now();
       final initialRange = dateRangePolicy.computeInitialRange(now);
 
-      // For setup, ensure we have schedules for the initial range
+      // For setup, ensure we have schedules for the initial range (if config is selected)
       // Additional months will be generated on-demand as needed
-      final generateSchedulesUseCase =
-          await ref.read(generateSchedulesUseCaseProvider.future);
+      if (_selectedConfig != null) {
+        final generateSchedulesUseCase =
+            await ref.read(generateSchedulesUseCaseProvider.future);
 
-      await generateSchedulesUseCase.execute(
-        configName: _selectedConfig!.name,
-        startDate: initialRange.start,
-        endDate: initialRange.end,
-      );
+        await generateSchedulesUseCase.execute(
+          configName: _selectedConfig!.name,
+          startDate: initialRange.start,
+          endDate: initialRange.end,
+        );
+      }
 
       // Create initial settings to mark setup as completed (preserve chosen theme)
       final getSettingsUseCase =
@@ -147,16 +223,16 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           await ref.read(saveSettingsUseCaseProvider.future);
 
       // Get the theme preference that was selected during setup
-      final currentThemePreference =
-          ref.read(settingsNotifierProvider).valueOrNull?.themePreference ??
-              ThemePreference.light;
+      final currentThemePreference = _selectedTheme;
 
       final initialSettings = Settings(
         calendarFormat:
             existingSettings?.calendarFormat ?? CalendarFormat.month,
         myDutyGroup: _selectedDutyGroup,
-        activeConfigName: _selectedConfig!.name,
+        activeConfigName: _selectedConfig?.name,
         themePreference: currentThemePreference,
+        partnerConfigName: _selectedPartnerConfig?.name,
+        partnerDutyGroup: _selectedPartnerDutyGroup,
       );
       await saveSettingsUseCase.execute(initialSettings);
 
@@ -165,7 +241,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           await ref.read(scheduleConfigServiceProvider.future);
       await scheduleConfigService.markSetupCompleted();
       AppLogger.i(
-          'Setup completed successfully for config: ${_selectedConfig!.name}');
+          'Setup completed successfully for config: ${_selectedConfig?.name ?? "none"}');
 
       // Wait a moment to ensure all settings are properly saved
       await Future.delayed(kUiDelayShort);
@@ -173,9 +249,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       if (!mounted) return;
 
       // Ensure the theme preference is properly saved before navigation
-      final themePreferenceForTransition =
-          ref.read(settingsNotifierProvider).valueOrNull?.themePreference ??
-              ThemePreference.light;
+      final themePreferenceForTransition = _selectedTheme;
 
       // Update the final settings with the correct theme preference
       final finalSettings = Settings(
@@ -183,6 +257,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         myDutyGroup: _selectedDutyGroup,
         activeConfigName: _selectedConfig!.name,
         themePreference: themePreferenceForTransition,
+        partnerConfigName: _selectedPartnerConfig?.name,
+        partnerDutyGroup: _selectedPartnerDutyGroup,
       );
       await saveSettingsUseCase.execute(finalSettings);
 
@@ -222,6 +298,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -267,19 +344,13 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 isSelected: _selectedConfig == config,
                 onTap: () {
                   setState(() {
-                    _selectedConfig = config;
+                    _selectedConfig = _selectedConfig == config ? null : config;
                   });
                 },
                 mainColor: AppColors.primary,
               );
             }),
           const SizedBox(height: 32),
-          ActionButton(
-            text: l10n.continueButton,
-            onPressed: _selectedConfig == null ? null : _nextStep,
-            mainColor: AppColors.primary,
-          ),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -287,28 +358,31 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   Widget _buildThemeStepContent() {
     final l10n = AppLocalizations.of(context);
-    final themePref =
-        ref.watch(settingsNotifierProvider).valueOrNull?.themePreference;
-    final ThemePreference current = themePref ?? ThemePreference.light;
     const Color mainColor = AppColors.primary;
 
     Widget buildThemeCard(IconData icon, String title, ThemePreference pref) {
-      final bool isSelected = current == pref;
+      final bool isSelected = _selectedTheme == pref;
       return SelectionCard(
         title: title,
         leadingIcon: icon,
         isSelected: isSelected,
         onTap: () async {
-          // Immediately save the theme preference when selected in setup
+          final newTheme =
+              _selectedTheme == pref ? ThemePreference.system : pref;
+          setState(() {
+            _selectedTheme = newTheme;
+          });
+          // Immediately apply the theme change
           await ref
               .read(settingsNotifierProvider.notifier)
-              .setThemePreference(pref);
+              .setThemePreference(newTheme);
         },
         mainColor: mainColor,
       );
     }
 
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -332,12 +406,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           buildThemeCard(Icons.brightness_auto, l10n.themeModeSystem,
               ThemePreference.system),
           const SizedBox(height: 32),
-          ActionButton(
-            text: l10n.continueButton,
-            onPressed: _nextStep,
-            mainColor: AppColors.primary,
-          ),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -403,18 +471,23 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   Widget _buildStep2Content() {
     final l10n = AppLocalizations.of(context);
+    final scheduleState = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final currentDutyGroup = scheduleState?.preferredDutyGroup;
+    final hasExistingDutyGroup =
+        currentDutyGroup != null && currentDutyGroup.isNotEmpty;
 
     if (_selectedConfig == null) return const SizedBox.shrink();
 
     final dutyGroups = _selectedConfig!.dutyGroups;
 
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 16),
           Text(
-            l10n.selectDutyGroup,
+            l10n.myDutyGroup,
             style: const TextStyle(
               fontSize: 36.0,
               fontWeight: FontWeight.bold,
@@ -422,7 +495,117 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.selectDutyGroupMessage,
+            hasExistingDutyGroup
+                ? l10n.myDutyGroupMessage
+                : l10n.selectDutyGroupMessage,
+            style: const TextStyle(fontSize: 18.0),
+          ),
+          const SizedBox(height: 32),
+          ...dutyGroups.map((group) => SelectionCard(
+                title: group.name,
+                leadingIcon: Icons.group,
+                isSelected: _selectedDutyGroup == group.name,
+                onTap: () {
+                  setState(() {
+                    _selectedDutyGroup =
+                        _selectedDutyGroup == group.name ? null : group.name;
+                  });
+                },
+                mainColor: AppColors.primary,
+              )),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStep4Content() {
+    final l10n = AppLocalizations.of(context);
+
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          Text(
+            l10n.partnerSetupTitle,
+            style: const TextStyle(
+              fontSize: 36.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.partnerSetupDescription,
+            style: const TextStyle(fontSize: 18.0),
+          ),
+          const SizedBox(height: 32),
+          if (_isLoading)
+            // Show skeleton loading cards
+            ...List.generate(3, (index) => _buildSkeletonCard())
+          else if (_loadingError != null)
+            // Show error display with retry option
+            ErrorDisplay(
+              error: _loadingError!,
+              stackTrace: _loadingErrorStackTrace,
+              onRetry: () {
+                setState(() {
+                  _isLoading = true;
+                  _loadingError = null;
+                  _loadingErrorStackTrace = null;
+                });
+                _loadConfigs();
+              },
+            )
+          else
+            // Show actual configs
+            ..._configs.map((config) {
+              final IconData icon = _getConfigIcon(config);
+              return SelectionCard(
+                title: config.meta.name,
+                subtitle: config.meta.description,
+                leadingIcon: icon,
+                isSelected: _selectedPartnerConfig == config,
+                onTap: () {
+                  setState(() {
+                    _selectedPartnerConfig =
+                        _selectedPartnerConfig == config ? null : config;
+                    _selectedPartnerDutyGroup = null;
+                  });
+                },
+                mainColor: AppColors.primary,
+              );
+            }),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStep5Content() {
+    final l10n = AppLocalizations.of(context);
+
+    if (_selectedPartnerConfig == null) return const SizedBox.shrink();
+
+    final dutyGroups = _selectedPartnerConfig!.dutyGroups;
+
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 16),
+          Text(
+            l10n.selectPartnerDutyGroup,
+            style: const TextStyle(
+              fontSize: 36.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.selectPartnerDutyGroupMessage,
             style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 32),
@@ -435,11 +618,13 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 return SelectionCard(
                   title: group.name,
                   leadingIcon: Icons.group,
-                  isSelected: _selectedDutyGroup == group.name,
+                  isSelected: _selectedPartnerDutyGroup == group.name,
                   onTap: () {
                     setState(() {
-                      _selectedDutyGroup = group.name;
-                      _hasMadeDutyGroupSelection = true;
+                      _selectedPartnerDutyGroup =
+                          _selectedPartnerDutyGroup == group.name
+                              ? null
+                              : group.name;
                     });
                   },
                   mainColor: AppColors.primary,
@@ -448,15 +633,20 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
               // Last item is "no preferred duty group"
               return SelectionCard(
-                title: l10n.noDutyGroup,
+                title: l10n.noPartnerGroup,
                 subtitle: l10n.noMyDutyGroupDescription,
                 leadingIcon: Icons.clear,
-                isSelected:
-                    _selectedDutyGroup == null && _hasMadeDutyGroupSelection,
+                isSelected: _selectedPartnerDutyGroup == null,
                 onTap: () {
                   setState(() {
-                    _selectedDutyGroup = null;
-                    _hasMadeDutyGroupSelection = true;
+                    // Toggle between null (no partner group) and a special value to indicate deselection
+                    if (_selectedPartnerDutyGroup == null) {
+                      // If no partner group is selected, deselect it by setting to a special value
+                      _selectedPartnerDutyGroup = 'DESELECTED';
+                    } else {
+                      // If something else is selected, select no partner group
+                      _selectedPartnerDutyGroup = null;
+                    }
                   });
                 },
                 mainColor: AppColors.primary,
@@ -464,34 +654,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             },
           ),
           const SizedBox(height: 32),
-          Row(
-            children: [
-              Expanded(
-                child: ActionButton(
-                  text: l10n.back,
-                  onPressed: _previousStep,
-                  isPrimary: false,
-                  mainColor: AppColors.primary,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: ActionButton(
-                  text: l10n.continueButton,
-                  onPressed: !_hasMadeDutyGroupSelection
-                      ? null
-                      : () {
-                          if (!_isGeneratingSchedules) {
-                            _saveDefaultConfig();
-                          }
-                        },
-                  isLoading: _isGeneratingSchedules,
-                  mainColor: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -540,8 +702,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   children: [
                     StepIndicator(
                       currentStep: _currentStep,
-                      totalSteps: 3,
+                      totalSteps: _selectedPartnerConfig != null ? 5 : 4,
                       activeColor: AppColors.primary,
+                      halfSteps: _selectedPartnerConfig != null
+                          ? [3, 4]
+                          : null, // Only show half steps when partner config is selected
                     ),
                     const SizedBox(height: 24),
                     Expanded(
@@ -549,8 +714,14 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                           ? _buildThemeStepContent()
                           : (_currentStep == 2
                               ? _buildStep1Content()
-                              : _buildStep2Content()),
+                              : (_currentStep == 3
+                                  ? _buildStep2Content()
+                                  : (_currentStep == 4
+                                      ? _buildStep4Content()
+                                      : _buildStep5Content()))),
                     ),
+                    const SizedBox(height: 24),
+                    _buildStepButtons(),
                   ],
                 ),
               ),
@@ -559,5 +730,106 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         },
       ),
     );
+  }
+
+  Widget _buildStepButtons() {
+    final l10n = AppLocalizations.of(context);
+
+    switch (_currentStep) {
+      case 1:
+        return ActionButton(
+          text: l10n.continueButton,
+          onPressed: _nextStepWithScroll,
+          mainColor: AppColors.primary,
+        );
+      case 2:
+        return Row(
+          children: [
+            SetupBackButton(
+              onPressed: _currentStep > 1 ? _previousStep : null,
+              mainColor: AppColors.primary,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ActionButton(
+                text: l10n.continueButton,
+                onPressed: _selectedConfig == null ? null : _nextStepWithScroll,
+                mainColor: AppColors.primary,
+              ),
+            ),
+          ],
+        );
+      case 3:
+        return Row(
+          children: [
+            SetupBackButton(
+              onPressed: _currentStep > 1 ? _previousStep : null,
+              mainColor: AppColors.primary,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ActionButton(
+                text: _selectedDutyGroup != null
+                    ? l10n.continueButton
+                    : l10n.skipPartnerSetup,
+                onPressed: _selectedDutyGroup != null
+                    ? _nextStepWithScroll
+                    : _nextStepWithScroll,
+                mainColor: AppColors.primary,
+              ),
+            ),
+          ],
+        );
+      case 4:
+        return Row(
+          children: [
+            SetupBackButton(
+              onPressed: _currentStep > 1 ? _previousStep : null,
+              mainColor: AppColors.primary,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ActionButton(
+                text: _selectedPartnerConfig != null
+                    ? l10n.continueButton
+                    : l10n.skipPartnerSetup,
+                onPressed: _selectedPartnerConfig != null
+                    ? _nextStepWithScroll
+                    : () {
+                        if (!_isGeneratingSchedules) {
+                          _saveDefaultConfig();
+                        }
+                      },
+                isLoading: _isGeneratingSchedules,
+                mainColor: AppColors.primary,
+              ),
+            ),
+          ],
+        );
+      case 5:
+        return Row(
+          children: [
+            SetupBackButton(
+              onPressed: _currentStep > 1 ? _previousStep : null,
+              mainColor: AppColors.primary,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ActionButton(
+                text: l10n.continueButton,
+                onPressed: () {
+                  if (!_isGeneratingSchedules) {
+                    _saveDefaultConfig();
+                  }
+                },
+                isLoading: _isGeneratingSchedules,
+                mainColor: AppColors.primary,
+              ),
+            ),
+          ],
+        );
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }

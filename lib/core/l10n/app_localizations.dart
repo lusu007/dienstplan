@@ -446,6 +446,12 @@ abstract class AppLocalizations {
   /// **'Select your duty group so we can show you the right information.'**
   String get selectDutyGroupMessage;
 
+  /// Message when user already has a duty group set
+  ///
+  /// In en, this message translates to:
+  /// **'You can change or keep your duty group here.'**
+  String get myDutyGroupMessage;
+
   /// Back button text
   ///
   /// In en, this message translates to:
@@ -715,6 +721,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We ❤️ Open Source'**
   String get weLoveOss;
+
+  /// Title for partner setup step
+  ///
+  /// In en, this message translates to:
+  /// **'Partner Duty Schedule'**
+  String get partnerSetupTitle;
+
+  /// Description for partner setup step
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: Set up your partner\'s duty schedule to also display their duties.'**
+  String get partnerSetupDescription;
+
+  /// Skip button for optional partner setup
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skipPartnerSetup;
+
+  /// Title for partner config selection
+  ///
+  /// In en, this message translates to:
+  /// **'Select Partner Duty Schedule'**
+  String get selectPartnerConfig;
+
+  /// Message for partner config selection
+  ///
+  /// In en, this message translates to:
+  /// **'Select your partner\'s duty schedule.'**
+  String get selectPartnerConfigMessage;
+
+  /// Option to not set a partner config
+  ///
+  /// In en, this message translates to:
+  /// **'No Partner Duty Schedule'**
+  String get noPartnerConfig;
+
+  /// Description for no partner config option
+  ///
+  /// In en, this message translates to:
+  /// **'No partner duty schedule will be displayed'**
+  String get noPartnerConfigDescription;
+
+  /// Message for partner duty group selection
+  ///
+  /// In en, this message translates to:
+  /// **'Select your partner\'s duty group.'**
+  String get selectPartnerDutyGroupMessage;
 }
 
 class _AppLocalizationsDelegate
