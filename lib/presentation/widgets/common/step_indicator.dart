@@ -33,11 +33,12 @@ class StepIndicator extends StatelessWidget {
       final isHalfStep = halfSteps?.contains(i) ?? false;
       final isNextHalfStep = halfSteps?.contains(i + 1) ?? false;
 
+      // Simple approach: make half steps smaller to compensate for spacing
+      final halfStepFlex = isHalfStep ? 1 : 2;
+
       widgets.add(
         Expanded(
-          flex: isHalfStep
-              ? 1
-              : 2, // Half steps have flex 1, normal steps have flex 2
+          flex: halfStepFlex,
           child: Container(
             height: height,
             decoration: BoxDecoration(
@@ -50,9 +51,8 @@ class StepIndicator extends StatelessWidget {
 
       // Add spacing between steps (except after the last step)
       if (i < totalSteps - 1) {
-        // Reduce spacing between half steps
-        final currentSpacing =
-            (isHalfStep && isNextHalfStep) ? spacing / 3 : spacing;
+        // No spacing between half steps to make them equal to one full step
+        final currentSpacing = (isHalfStep && isNextHalfStep) ? 0.0 : spacing;
         widgets.add(SizedBox(width: currentSpacing));
       }
     }
