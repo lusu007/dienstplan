@@ -1,8 +1,38 @@
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 
-class SentryService extends ChangeNotifier {
+class SentryState {
+  final bool isEnabled;
+  final bool isReplayEnabled;
+
+  const SentryState({
+    required this.isEnabled,
+    required this.isReplayEnabled,
+  });
+
+  SentryState copyWith({
+    bool? isEnabled,
+    bool? isReplayEnabled,
+  }) {
+    return SentryState(
+      isEnabled: isEnabled ?? this.isEnabled,
+      isReplayEnabled: isReplayEnabled ?? this.isReplayEnabled,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is SentryState &&
+        other.isEnabled == isEnabled &&
+        other.isReplayEnabled == isReplayEnabled;
+  }
+
+  @override
+  int get hashCode => isEnabled.hashCode ^ isReplayEnabled.hashCode;
+}
+
+class SentryService {
   static const String _sentryEnabledKey = 'sentry_enabled';
   static const String _sentryReplayEnabledKey = 'sentry_replay_enabled';
 
@@ -40,7 +70,6 @@ class SentryService extends ChangeNotifier {
       }
 
       await _applyConfiguration();
-      notifyListeners();
 
       AppLogger.i('Sentry enabled set to: $enabled');
     } catch (e, stackTrace) {
@@ -54,7 +83,6 @@ class SentryService extends ChangeNotifier {
       await _prefs.setBool(_sentryReplayEnabledKey, enabled);
 
       await _applyConfiguration();
-      notifyListeners();
 
       AppLogger.i('Sentry replay enabled set to: $enabled');
     } catch (e, stackTrace) {

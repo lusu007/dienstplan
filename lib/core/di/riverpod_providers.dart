@@ -257,6 +257,15 @@ Future<SentryService> sentryService(Ref ref) async {
   return service;
 }
 
+@riverpod
+Future<SentryState> sentryState(Ref ref) async {
+  final service = await ref.watch(sentryServiceProvider.future);
+  return SentryState(
+    isEnabled: service.isEnabled,
+    isReplayEnabled: service.isReplayEnabled,
+  );
+}
+
 @Riverpod(keepAlive: true)
 ShareService shareService(Ref ref) {
   return ShareService();

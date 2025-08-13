@@ -176,7 +176,7 @@ final themeModeProvider = AutoDisposeFutureProvider<ThemeMode>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ThemeModeRef = AutoDisposeFutureProviderRef<ThemeMode>;
-String _$appThemeHash() => r'f1f2fc12a6aac23948f40a83326b4893b31abe85';
+String _$appThemeHash() => r'454b3d0b42eea01c9b9904767ed1fa1cb1f72736';
 
 /// See also [appTheme].
 @ProviderFor(appTheme)
@@ -192,7 +192,7 @@ final appThemeProvider = AutoDisposeProvider<ThemeData>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AppThemeRef = AutoDisposeProviderRef<ThemeData>;
-String _$appDarkThemeHash() => r'6b354eebb54f0573f8d1cfbd4cc3cccbcb9ec2f4';
+String _$appDarkThemeHash() => r'33cb551912c40fc143ef06166fe3bd3e0526bbb0';
 
 /// See also [appDarkTheme].
 @ProviderFor(appDarkTheme)
@@ -225,6 +225,22 @@ final sentryServiceProvider = FutureProvider<SentryService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SentryServiceRef = FutureProviderRef<SentryService>;
+String _$sentryStateHash() => r'8ccc406f1ec2372f7761c9ab5db407e93d2eefa8';
+
+/// See also [sentryState].
+@ProviderFor(sentryState)
+final sentryStateProvider = AutoDisposeFutureProvider<SentryState>.internal(
+  sentryState,
+  name: r'sentryStateProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$sentryStateHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SentryStateRef = AutoDisposeFutureProviderRef<SentryState>;
 String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
 
 /// See also [shareService].

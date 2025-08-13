@@ -12,9 +12,9 @@ class PrivacySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final sentryAsync = ref.watch(sentryServiceProvider);
+    final sentryStateAsync = ref.watch(sentryStateProvider);
 
-    return sentryAsync.when(
+    return sentryStateAsync.when(
       loading: () => SettingsSection(
         title: l10n.privacy,
         cards: [
@@ -57,28 +57,42 @@ class PrivacySection extends ConsumerWidget {
           ),
         ],
       ),
-      data: (sentryService) => SettingsSection(
+      data: (sentryState) => SettingsSection(
         title: l10n.privacy,
         cards: [
           ToggleCard(
             icon: Icons.analytics_outlined,
             title: l10n.sentryAnalytics,
             subtitle: l10n.sentryAnalyticsDescription,
-            value: sentryService.isEnabled,
-            onChanged: (value) => sentryService.setEnabled(value),
+            value: sentryState.isEnabled,
+            onChanged: (value) => _handleAnalyticsToggle(ref, value),
           ),
           ToggleCard(
             icon: Icons.videocam_outlined,
             title: l10n.sentryReplay,
             subtitle: l10n.sentryReplayDescription,
-            value: sentryService.isReplayEnabled,
-            enabled: sentryService.isEnabled,
-            onChanged: sentryService.isEnabled
-                ? (value) => sentryService.setReplayEnabled(value)
+            value: sentryState.isReplayEnabled,
+            enabled: sentryState.isEnabled,
+            onChanged: sentryState.isEnabled
+                ? (value) => _handleReplayToggle(ref, value)
                 : null,
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _handleAnalyticsToggle(WidgetRef ref, bool value) async {
+    final service = await ref.read(sentryServiceProvider.future);
+    await service.setEnabled(value);
+    // Invalidate the state provider to trigger a rebuild
+    ref.invalidate(sentryStateProvider);
+  }
+
+  Future<void> _handleReplayToggle(WidgetRef ref, bool value) async {
+    final service = await ref.read(sentryServiceProvider.future);
+    await service.setReplayEnabled(value);
+    // Invalidate the state provider to trigger a rebuild
+    ref.invalidate(sentryStateProvider);
   }
 }
