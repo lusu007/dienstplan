@@ -140,15 +140,22 @@ class DatabaseService {
     // SQLite considers date() non-deterministic
     // Regular indexes will be used instead
 
-    // Additional helpful indexes for lookups involving date_ymd
-    await db.execute('''
-      CREATE INDEX IF NOT EXISTS idx_schedules_ymd_config
-      ON schedules(date_ymd, config_name);
-    ''');
-    await db.execute('''
-      CREATE INDEX IF NOT EXISTS idx_schedules_config_ymd
-      ON schedules(config_name, date_ymd);
-    ''');
+    // Check if date_ymd column exists before creating indexes on it
+    try {
+      await db.execute('SELECT date_ymd FROM schedules LIMIT 1');
+
+      // Additional helpful indexes for lookups involving date_ymd
+      await db.execute('''
+        CREATE INDEX IF NOT EXISTS idx_schedules_ymd_config
+        ON schedules(date_ymd, config_name);
+      ''');
+      await db.execute('''
+        CREATE INDEX IF NOT EXISTS idx_schedules_config_ymd
+        ON schedules(config_name, date_ymd);
+      ''');
+    } catch (e) {
+      AppLogger.i('date_ymd column not available, skipping date_ymd indexes');
+    }
 
     AppLogger.i('Optimized indexes created successfully');
   }
@@ -175,6 +182,9 @@ class DatabaseService {
       if (oldVersion < 10) {
         await _migrateToVersion10(txn);
       }
+
+      // Create any missing indexes after all migrations are complete
+      await _createOptimizedIndexes(txn);
     });
   }
 
@@ -266,9 +276,6 @@ class DatabaseService {
       await db.execute('DROP TABLE schedules');
       await db.execute('ALTER TABLE schedules_new RENAME TO schedules');
 
-      // Recreate optimized indexes
-      await _createOptimizedIndexes(db);
-
       AppLogger.i(
           'Successfully migrated to version 6: schedules IDs updated and duplicates removed');
     } catch (e, stackTrace) {
@@ -317,8 +324,6 @@ class DatabaseService {
 
       await db.execute('DROP TABLE schedules');
       await db.execute('ALTER TABLE schedules_new_v7 RENAME TO schedules');
-
-      await _createOptimizedIndexes(db);
 
       AppLogger.i(
           'Successfully migrated to version 7: schedules now use composite PK and date_ymd');
