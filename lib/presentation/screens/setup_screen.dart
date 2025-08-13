@@ -149,7 +149,10 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             Expanded(
               child: ActionButton(
                 text: l10n.continueButton,
-                onPressed: state.isSetupCompleted ? null : _nextStepWithScroll,
+                onPressed: state.isSetupCompleted ||
+                        state.selectedPartnerDutyGroup == null
+                    ? null
+                    : _nextStepWithScroll,
                 isLoading: state.isGeneratingSchedules,
                 mainColor: AppColors.primary,
               ),
