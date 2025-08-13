@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/lusu007/dienstplan/compare/v0.8.0...v0.8.1) (2025-08-13)
+
+
+### Bug Fixes
+
+* Migration from 0.7.2 to 0.8.0 wasnt possible ([#237](https://github.com/lusu007/dienstplan/issues/237)) ([f83631b](https://github.com/lusu007/dienstplan/commit/f83631b51b7b9128538552a38aea252eb5abc49f))
+
 ## [0.8.0](https://github.com/lusu007/dienstplan/compare/v0.7.2...v0.8.0) (2025-08-13)
 
 
