@@ -4,6 +4,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/setup_step_wrapper.dart';
+import 'package:dienstplan/presentation/widgets/screens/setup/components/step_header.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 
 class ThemeStepComponent extends ConsumerWidget {
@@ -41,19 +42,10 @@ class ThemeStepComponent extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 16),
-          Text(
-            l10n.welcome,
-            style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+          StepHeader(
+            title: l10n.welcome,
+            description: l10n.themeModeDescription,
           ),
-          const SizedBox(height: 16),
-          Text(
-            l10n.themeModeDescription,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 24),
           _buildThemeCard(Icons.wb_sunny_outlined, l10n.themeModeLight,
               ThemePreference.light),
           _buildThemeCard(

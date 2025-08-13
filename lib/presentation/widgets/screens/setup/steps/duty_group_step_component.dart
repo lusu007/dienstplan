@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
-import 'package:dienstplan/presentation/widgets/screens/setup/components/setup_step_wrapper.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/step_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/duty_group_card.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
@@ -33,27 +32,35 @@ class DutyGroupStepComponent extends ConsumerWidget {
 
     final dutyGroups = selectedConfig!.dutyGroups;
 
-    return SetupStepWrapper(
-      scrollController: scrollController,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          StepHeader(
-            title: l10n.myDutyGroup,
-            description: hasExistingDutyGroup
-                ? l10n.myDutyGroupMessage
-                : l10n.selectDutyGroupMessage,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        StepHeader(
+          title: l10n.myDutyGroup,
+          description: hasExistingDutyGroup
+              ? l10n.myDutyGroupMessage
+              : l10n.selectDutyGroupMessage,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: dutyGroups
+                  .map((group) => DutyGroupCard(
+                        dutyGroupName: group.name,
+                        isSelected: selectedDutyGroup == group.name,
+                        onTap: () {
+                          onDutyGroupChanged(selectedDutyGroup == group.name
+                              ? null
+                              : group.name);
+                        },
+                      ))
+                  .toList(),
+            ),
           ),
-          ...dutyGroups.map((group) => DutyGroupCard(
-                dutyGroupName: group.name,
-                isSelected: selectedDutyGroup == group.name,
-                onTap: () {
-                  onDutyGroupChanged(
-                      selectedDutyGroup == group.name ? null : group.name);
-                },
-              )),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
