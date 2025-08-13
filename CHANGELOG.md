@@ -1,5 +1,48 @@
 # Changelog
 
+## [0.8.0](https://github.com/lusu007/dienstplan/compare/v0.7.2...v0.8.0) (2025-08-13)
+
+
+### Features
+
+* Accent color for own duty schedule ([#226](https://github.com/lusu007/dienstplan/issues/226)) ([efe4747](https://github.com/lusu007/dienstplan/commit/efe4747470507a8bb7856e08e3bd578869705738))
+* Add contribute button to settings page ([#225](https://github.com/lusu007/dienstplan/issues/225)) ([998e4f3](https://github.com/lusu007/dienstplan/commit/998e4f3a8d5a00e11ca9a18c8da336633540c304))
+* Add partner duty group ([#222](https://github.com/lusu007/dienstplan/issues/222)) ([aecd1a7](https://github.com/lusu007/dienstplan/commit/aecd1a79208f951e7b04c886f78ce7ff21479b20))
+* Add share app feature ([#195](https://github.com/lusu007/dienstplan/issues/195)) ([03afcba](https://github.com/lusu007/dienstplan/commit/03afcba980fb430f6bd11aa3952029ee548777f6))
+* Dark mode ([#221](https://github.com/lusu007/dienstplan/issues/221)) ([17ac95e](https://github.com/lusu007/dienstplan/commit/17ac95e722712a58cd267b013b83b3dc9b8f57c3))
+* Implement generic error handling ([#211](https://github.com/lusu007/dienstplan/issues/211)) ([b2dda2b](https://github.com/lusu007/dienstplan/commit/b2dda2b5a56f6c274c6394515919266852a398aa))
+* Implement new state management with riverpod ([#205](https://github.com/lusu007/dienstplan/issues/205)) ([ad8602e](https://github.com/lusu007/dienstplan/commit/ad8602e36f71038315f8c11151fe4f3af9d13d1f))
+* Revamp setup process ([#228](https://github.com/lusu007/dienstplan/issues/228)) ([ec1668c](https://github.com/lusu007/dienstplan/commit/ec1668c2e172cbbfeb41896c50e195d23c169515))
+* Rework database service ([#219](https://github.com/lusu007/dienstplan/issues/219)) ([249d7db](https://github.com/lusu007/dienstplan/commit/249d7db4eaab8961261854d797f447bcf808a873))
+* Use auto-route for routing ([#207](https://github.com/lusu007/dienstplan/issues/207)) ([cf12293](https://github.com/lusu007/dienstplan/commit/cf12293f9cfbdb2a07d13008e3382d827f2ab7e5))
+* Use code generation in doamin layer ([#210](https://github.com/lusu007/dienstplan/issues/210)) ([9c08524](https://github.com/lusu007/dienstplan/commit/9c08524033072a9d735ab4b39cf842a0be8df043))
+
+
+### Bug Fixes
+
+* Dont keep every service alive ([#215](https://github.com/lusu007/dienstplan/issues/215)) ([811d74c](https://github.com/lusu007/dienstplan/commit/811d74c5eee5d323861d17c07c1bc4add375487e))
+* Dont load multiple sentry instances ([#217](https://github.com/lusu007/dienstplan/issues/217)) ([a401844](https://github.com/lusu007/dienstplan/commit/a401844bb831f93ccd945201fbfba1e10182e752))
+* extract magic strings and numbers ([#209](https://github.com/lusu007/dienstplan/issues/209)) ([c711173](https://github.com/lusu007/dienstplan/commit/c7111735184ab20fdee456f44eb8360c60b193c4))
+* Fix multiple issues with dark mode and dialogs ([#227](https://github.com/lusu007/dienstplan/issues/227)) ([9259db7](https://github.com/lusu007/dienstplan/commit/9259db771c96055d69bfe0cb6748a8d40a2f2839))
+* Make notifier more slim ([#208](https://github.com/lusu007/dienstplan/issues/208)) ([71f4771](https://github.com/lusu007/dienstplan/commit/71f47717f46319e3408ba0276ed8b18aa3acf66a))
+* Make settings screen modular ([#216](https://github.com/lusu007/dienstplan/issues/216)) ([2a393ce](https://github.com/lusu007/dienstplan/commit/2a393cef9b184ef7ea3819b31d9395221acca7a6))
+* more optimizations ([#220](https://github.com/lusu007/dienstplan/issues/220)) ([8bd61e1](https://github.com/lusu007/dienstplan/commit/8bd61e12f669bb696e0030937c9f0a6a70bb51af))
+* Multiple small improvements ([#218](https://github.com/lusu007/dienstplan/issues/218)) ([84bd2d3](https://github.com/lusu007/dienstplan/commit/84bd2d3468b00b3471acf147f01320d14352443e))
+* Optimize indices ([#202](https://github.com/lusu007/dienstplan/issues/202)) ([7435e4c](https://github.com/lusu007/dienstplan/commit/7435e4c1e4fd319e7c0427e9324843d05166afca))
+* Optimize schedule loading ([#198](https://github.com/lusu007/dienstplan/issues/198)) ([0f3ff66](https://github.com/lusu007/dienstplan/commit/0f3ff6697148e0b712b6039b3c3240c87bd835a9))
+* Optimze with debouncing ([#203](https://github.com/lusu007/dienstplan/issues/203)) ([f3dd183](https://github.com/lusu007/dienstplan/commit/f3dd1831ba4da635432d57f7204b42dbec6a6c98))
+* optmize indexes ([#204](https://github.com/lusu007/dienstplan/issues/204)) ([23b3a3c](https://github.com/lusu007/dienstplan/commit/23b3a3c59a33b56c87dc911894ec17c84ac4728b))
+* Properly generate schedules for past days ([#197](https://github.com/lusu007/dienstplan/issues/197)) ([f3ecff0](https://github.com/lusu007/dienstplan/commit/f3ecff08b03ecc1efa120b44b7fde26d45c32a4d))
+* Reduce amount of widget rebuilds ([#201](https://github.com/lusu007/dienstplan/issues/201)) ([1e56574](https://github.com/lusu007/dienstplan/commit/1e565744bd74bb6966502658125d08dcf2c8b462))
+* Remove some quirks and flickers in theme selection ([#223](https://github.com/lusu007/dienstplan/issues/223)) ([0f1601b](https://github.com/lusu007/dienstplan/commit/0f1601b4e9e773fa66bd717949ae519e640ad9ec))
+* replace GetIt/Provider with Riverpod DI and state management ([#214](https://github.com/lusu007/dienstplan/issues/214)) ([2d87ccf](https://github.com/lusu007/dienstplan/commit/2d87ccfc18c70df69373d39bb8e6364948adac60))
+* Sentry settings are now toggable again ([#232](https://github.com/lusu007/dienstplan/issues/232)) ([026ba6b](https://github.com/lusu007/dienstplan/commit/026ba6b99c9f9af5e3129c0b86bbf51ca343fbd1))
+* Show current date on startup ([#200](https://github.com/lusu007/dienstplan/issues/200)) ([7d5d347](https://github.com/lusu007/dienstplan/commit/7d5d34712f57dc2eb24b88bc7a6cfb1634ea91b2))
+* Some fixes ([#224](https://github.com/lusu007/dienstplan/issues/224)) ([a272a1e](https://github.com/lusu007/dienstplan/commit/a272a1e84bbb7eae4fbc62b30c55df9b3b58c50e))
+* Switch DI to riverpod ([#206](https://github.com/lusu007/dienstplan/issues/206)) ([42bcd92](https://github.com/lusu007/dienstplan/commit/42bcd92e52854dc7593bbc2500b07609a28f0c94))
+* Use correct title in calendar screen ([#230](https://github.com/lusu007/dienstplan/issues/230)) ([7cd9742](https://github.com/lusu007/dienstplan/commit/7cd97420b1a02d5481f9fffcbb1cd6b8f539a923))
+* Use riverpod and freezed for setup ([#229](https://github.com/lusu007/dienstplan/issues/229)) ([2cf18c2](https://github.com/lusu007/dienstplan/commit/2cf18c2d15c949b9a88b071faded85169d697c45))
+
 ## [0.7.2](https://github.com/lusu007/dienstplan/compare/v0.7.1...v0.7.2) (2025-07-30)
 
 
