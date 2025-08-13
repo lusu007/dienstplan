@@ -144,7 +144,6 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> reset() async {
-    state = const AsyncLoading();
     try {
       await _resetSettingsUseCase!.execute();
       // Ensure all theme consumers recompute after reset
