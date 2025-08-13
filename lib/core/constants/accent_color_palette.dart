@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-enum MyAccentColor {
-  // Primary blue as default
+enum AccentColor {
+  // Primary blue as first color
   primaryBlue(0xFF005B8C, 'accentPrimaryBlue'), // Primäres Blau
   // Additional colors for variety
   amber(0xFFFF7A33, 'accentWarmOrange'), // Warm Orange
@@ -15,19 +15,26 @@ enum MyAccentColor {
 
   final int argb;
   final String l10nKey;
-  const MyAccentColor(this.argb, this.l10nKey);
+  const AccentColor(this.argb, this.l10nKey);
 
   Color toColor() => Color(argb);
 
-  static MyAccentColor? fromValue(int? value) {
+  static AccentColor? fromValue(int? value) {
     if (value == null) return null;
-    for (final MyAccentColor c in MyAccentColor.values) {
+    for (final AccentColor c in AccentColor.values) {
       if (c.argb == value) return c;
     }
     return null;
   }
 }
 
-// Default my accent color - primary blue
-const int kDefaultMyAccentColorValue = 0xFF005B8C; // primary blue
-const Color kDefaultMyAccentColor = Color(kDefaultMyAccentColorValue);
+// Default colors for different contexts
+class AccentColorDefaults {
+  // My accent color default - primary blue
+  static const int myAccentColorValue = 0xFF005B8C; // primary blue
+  static const Color myAccentColor = Color(myAccentColorValue);
+
+  // Partner accent color default - turquoise green
+  static const int partnerAccentColorValue = 0xFF00B89F; // teal (Türkisgrün)
+  static const Color partnerAccentColor = Color(partnerAccentColorValue);
+}

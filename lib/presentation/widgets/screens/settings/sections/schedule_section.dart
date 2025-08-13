@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/partner_accent_palette.dart';
-import 'package:dienstplan/core/constants/my_accent_palette.dart';
-import 'package:dienstplan/presentation/extensions/partner_accent_color_extensions.dart';
-import 'package:dienstplan/presentation/extensions/my_accent_color_extensions.dart';
+import 'package:dienstplan/core/constants/accent_color_palette.dart';
+import 'package:dienstplan/presentation/extensions/accent_color_extensions.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
@@ -86,15 +84,16 @@ class ScheduleSection extends StatelessWidget {
 
   String _getPartnerAccentColorName(
       ScheduleUiState state, AppLocalizations l10n) {
-    final int value =
-        state.partnerAccentColorValue ?? kDefaultPartnerAccentColorValue;
-    final PartnerAccentColor? match = PartnerAccentColor.fromValue(value);
+    final int value = state.partnerAccentColorValue ??
+        AccentColorDefaults.partnerAccentColorValue;
+    final AccentColor? match = AccentColor.fromValue(value);
     if (match != null) return match.toLabel(l10n);
     return '#${value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
   }
 
   Widget _buildAccentColorChip(BuildContext context, int? colorValue) {
-    final Color color = Color(colorValue ?? kDefaultPartnerAccentColorValue);
+    final Color color =
+        Color(colorValue ?? AccentColorDefaults.partnerAccentColorValue);
     return Container(
       width: 24,
       height: 24,
@@ -143,14 +142,16 @@ class ScheduleSection extends StatelessWidget {
   }
 
   String _getMyAccentColorName(ScheduleUiState state, AppLocalizations l10n) {
-    final int value = state.myAccentColorValue ?? kDefaultMyAccentColorValue;
-    final MyAccentColor? match = MyAccentColor.fromValue(value);
+    final int value =
+        state.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue;
+    final AccentColor? match = AccentColor.fromValue(value);
     if (match != null) return match.toLabel(l10n);
     return '#${value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
   }
 
   Widget _buildMyAccentColorChip(BuildContext context, int? colorValue) {
-    final Color color = Color(colorValue ?? kDefaultMyAccentColorValue);
+    final Color color =
+        Color(colorValue ?? AccentColorDefaults.myAccentColorValue);
     return Container(
       width: 24,
       height: 24,

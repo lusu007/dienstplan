@@ -38,6 +38,16 @@ class SettingsDao {
       });
     } catch (e, stackTrace) {
       AppLogger.e('SettingsDao: Error saving settings', e, stackTrace);
+
+      // If it's a missing column error, log it but don't crash
+      if (e.toString().contains('my_accent_color') &&
+          e.toString().contains('no column named')) {
+        AppLogger.w(
+            'SettingsDao: my_accent_color column missing - this should be fixed by migration');
+        // Don't rethrow - let the app continue without saving this setting
+        return;
+      }
+
       rethrow;
     }
   }

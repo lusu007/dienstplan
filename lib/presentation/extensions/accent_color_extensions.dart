@@ -1,26 +1,26 @@
-import 'package:dienstplan/core/constants/my_accent_palette.dart';
+import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
-extension MyAccentColorExtensions on MyAccentColor {
+extension AccentColorX on AccentColor {
   String toLabel(AppLocalizations l10n) {
     switch (this) {
-      case MyAccentColor.primaryBlue:
+      case AccentColor.primaryBlue:
         return l10n.accentPrimaryBlue;
-      case MyAccentColor.amber:
+      case AccentColor.amber:
         return l10n.accentWarmOrange;
-      case MyAccentColor.purple:
+      case AccentColor.purple:
         return l10n.accentViolet;
-      case MyAccentColor.green:
+      case AccentColor.green:
         return l10n.accentFreshGreen;
-      case MyAccentColor.pink:
+      case AccentColor.pink:
         return l10n.accentPink;
-      case MyAccentColor.teal:
+      case AccentColor.teal:
         return l10n.accentTurquoiseGreen;
-      case MyAccentColor.indigo:
+      case AccentColor.indigo:
         return l10n.accentSunnyYellow;
-      case MyAccentColor.red:
+      case AccentColor.red:
         return l10n.accentRed;
-      case MyAccentColor.blueGrey:
+      case AccentColor.blueGrey:
         return l10n.accentLightGrey;
     }
   }

@@ -1,4 +1,4 @@
-import 'package:dienstplan/core/constants/my_accent_palette.dart';
+import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
@@ -12,7 +12,9 @@ class MyAccentColorDialog {
         builder: (context, ref, _) {
           final state = ref.watch(scheduleNotifierProvider).valueOrNull;
           final l10n = AppLocalizations.of(context);
-          final int? selected = state?.myAccentColorValue;
+          // Use default color if no color is explicitly selected
+          final int selected = state?.myAccentColorValue ??
+              AccentColorDefaults.myAccentColorValue;
           return AlertDialog(
             title: Text(l10n.myAccentColor),
             content: SizedBox(
@@ -20,7 +22,7 @@ class MyAccentColorDialog {
               child: Wrap(
                 spacing: 12,
                 runSpacing: 12,
-                children: MyAccentColor.values
+                children: AccentColor.values
                     .map((entry) => _ColorDot(
                           color: entry.toColor(),
                           isSelected: selected == entry.argb,
@@ -67,7 +69,7 @@ class _ColorDot extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(
             color: isSelected ? Colors.white : Colors.transparent,
-            width: 3,
+            width: isSelected ? 3 : 0,
           ),
           boxShadow: [
             BoxShadow(
@@ -77,6 +79,13 @@ class _ColorDot extends StatelessWidget {
             ),
           ],
         ),
+        child: isSelected
+            ? const Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 20,
+              )
+            : null,
       ),
     );
   }

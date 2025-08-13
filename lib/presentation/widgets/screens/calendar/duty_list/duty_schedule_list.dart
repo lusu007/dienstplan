@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/partner_accent_palette.dart';
-import 'package:dienstplan/core/constants/my_accent_palette.dart';
+import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -116,10 +115,10 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
 
   Widget _buildDutyList(List<Schedule> schedules) {
     final Color partnerColor = Color(
-      _partnerAccentColorValue ?? kDefaultPartnerAccentColorValue,
+      _partnerAccentColorValue ?? AccentColorDefaults.partnerAccentColorValue,
     );
     final Color myAccentColor = Color(
-      _myAccentColorValue ?? kDefaultMyAccentColorValue,
+      _myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
     );
     return ListView.builder(
       controller: widget.scrollController,
