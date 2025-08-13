@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/partner_accent_palette.dart';
-import 'package:dienstplan/core/constants/my_accent_palette.dart';
+import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class AnimatedCalendarDay extends StatefulWidget {
@@ -172,7 +171,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   BoxDecoration _getDutyBadgeDecoration(ThemeData theme) {
     final Color myAccentColor = Color(
-      widget.myAccentColorValue ?? kDefaultMyAccentColorValue,
+      widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
     );
     switch (widget.dayType) {
       case CalendarDayType.default_:
@@ -198,7 +197,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   BoxDecoration _getPartnerBadgeDecoration(ThemeData theme) {
     final Color partnerColor = Color(
-      widget.partnerAccentColorValue ?? kDefaultPartnerAccentColorValue,
+      widget.partnerAccentColorValue ??
+          AccentColorDefaults.partnerAccentColorValue,
     );
     // Partner chip: use configured accent or secondary color scheme variant
     switch (widget.dayType) {
@@ -225,7 +225,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   TextStyle _getPartnerBadgeTextStyle(ThemeData theme) {
     final Color partnerColor = Color(
-      widget.partnerAccentColorValue ?? kDefaultPartnerAccentColorValue,
+      widget.partnerAccentColorValue ??
+          AccentColorDefaults.partnerAccentColorValue,
     );
     switch (widget.dayType) {
       case CalendarDayType.default_:
@@ -247,7 +248,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   TextStyle _getDutyBadgeTextStyle(ThemeData theme) {
     final Color myAccentColor = Color(
-      widget.myAccentColorValue ?? kDefaultMyAccentColorValue,
+      widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
     );
     switch (widget.dayType) {
       case CalendarDayType.default_:

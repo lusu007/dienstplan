@@ -362,12 +362,26 @@ class DatabaseService {
   Future<void> _migrateToVersion10(DatabaseExecutor db) async {
     try {
       AppLogger.i('Migrating to version 10: Add my accent color to settings');
-      await db.execute('''
-        ALTER TABLE settings ADD COLUMN my_accent_color INTEGER
-      ''');
-      AppLogger.i('Successfully migrated to version 10: my accent color added');
+
+      // First check if the column already exists
+      final columns = await db.rawQuery('PRAGMA table_info(settings)');
+      final hasMyAccentColor =
+          columns.any((col) => col['name'] == 'my_accent_color');
+
+      if (!hasMyAccentColor) {
+        await db.execute('''
+          ALTER TABLE settings ADD COLUMN my_accent_color INTEGER
+        ''');
+        AppLogger.i(
+            'Successfully migrated to version 10: my accent color added');
+      } else {
+        AppLogger.i(
+            'Column my_accent_color already exists, skipping migration');
+      }
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 10', e, stackTrace);
+      // Don't rethrow - let the migration continue
+      AppLogger.i('Migration to version 10 failed, but continuing...');
     }
   }
 
