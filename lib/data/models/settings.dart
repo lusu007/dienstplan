@@ -33,15 +33,15 @@ class Settings {
         (format) => format.name == map['calendar_format'],
         orElse: () => CalendarFormat.month,
       ),
-      language: map['language'] as String?,
-      selectedDutyGroup: map['selected_duty_group'] as String?,
-      myDutyGroup: map['my_duty_group'] as String?,
-      activeConfigName: map['active_config_name'] as String?,
-      themeMode: _parseThemeMode(map['theme_mode'] as String?),
-      partnerConfigName: map['partner_config_name'] as String?,
-      partnerDutyGroup: map['partner_duty_group'] as String?,
-      partnerAccentColorValue: map['partner_accent_color'] as int?,
-      myAccentColorValue: map['my_accent_color'] as int?,
+      language: _safeStringCast(map['language']),
+      selectedDutyGroup: _safeStringCast(map['selected_duty_group']),
+      myDutyGroup: _safeStringCast(map['my_duty_group']),
+      activeConfigName: _safeStringCast(map['active_config_name']),
+      themeMode: _parseThemeMode(_safeStringCast(map['theme_mode'])),
+      partnerConfigName: _safeStringCast(map['partner_config_name']),
+      partnerDutyGroup: _safeStringCast(map['partner_duty_group']),
+      partnerAccentColorValue: _safeIntCast(map['partner_accent_color']),
+      myAccentColorValue: _safeIntCast(map['my_accent_color']),
     );
   }
 
@@ -121,6 +121,22 @@ class Settings {
         partnerDutyGroup.hashCode ^
         partnerAccentColorValue.hashCode ^
         myAccentColorValue.hashCode;
+  }
+
+  static String? _safeStringCast(dynamic value) {
+    if (value == null) return null;
+    if (value is String) return value;
+    return value.toString();
+  }
+
+  static int? _safeIntCast(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    if (value is String) {
+      final parsed = int.tryParse(value);
+      return parsed;
+    }
+    return null;
   }
 
   static ThemeMode? _parseThemeMode(String? value) {
