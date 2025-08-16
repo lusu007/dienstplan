@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/lusu007/dienstplan/compare/v0.8.1...v0.8.2) (2025-08-16)
+
+
+### Bug Fixes
+
+* Safe cast Strings and Ints ([#239](https://github.com/lusu007/dienstplan/issues/239)) ([251fb27](https://github.com/lusu007/dienstplan/commit/251fb277862d70aae0d28e3eb434aec7cb02f3e1))
+
 ## [0.8.1](https://github.com/lusu007/dienstplan/compare/v0.8.0...v0.8.1) (2025-08-13)
 
 
