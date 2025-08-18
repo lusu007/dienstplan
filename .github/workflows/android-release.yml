@@ -72,25 +72,28 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: ⬆️ Upload APK to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🚀 Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/app/outputs/flutter-apk/app-prod-release.apk
-          asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.apk
-          asset_content_type: application/vnd.android.package-archive
-
-      - name: ⬆️ Upload AAB to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
-          asset_name: dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.aab
-          asset_content_type: application/octet-stream
+          files: |
+            build/app/outputs/flutter-apk/app-prod-release.apk
+            build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## 🚀 Production Release
+            
+            **Version:** ${{ github.ref_name }}
+            **Build:** ${{ github.run_number }}
+            
+            ### 📱 Downloads
+            - **APK:** `dienstplan-${{ github.ref_name }}-prod-${{ github.run_number }}.apk`
+            - **AAB:** `dienstplan-${{ github.ref_name }}-prod-${{ github.run_number }}.aab`
+            
+            ### 🔧 Changes
+            - Production build with build number ${{ github.run_number }}
+            - Signed with production keystore
+            - Ready for Google Play Store deployment
 
       - name: 🏪 Upload to Play Store
         uses: r0adkll/upload-google-play@v1
@@ -99,5 +102,4 @@ jobs:
           packageName: io.scelus.dienstplan
           releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           track: production
-          status: completed
-          changesNotSentForReview: true 
+          status: completed 
