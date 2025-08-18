@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/lusu007/dienstplan/compare/v0.8.1...v0.9.0) (2025-08-18)
+
+
+### Features
+
+* Add police authorities ([#241](https://github.com/lusu007/dienstplan/issues/241)) ([e92a43f](https://github.com/lusu007/dienstplan/commit/e92a43f189407562a1e39e9c69bd98ec167ea9b7))
+
+
+### Bug Fixes
+
+* Safe cast Strings and Ints ([#239](https://github.com/lusu007/dienstplan/issues/239)) ([251fb27](https://github.com/lusu007/dienstplan/commit/251fb277862d70aae0d28e3eb434aec7cb02f3e1))
+* Use correct store links ([#242](https://github.com/lusu007/dienstplan/issues/242)) ([b30705b](https://github.com/lusu007/dienstplan/commit/b30705bbb94c0829f1b40f75b49bcd1f24af9cab))
+
 ## [0.8.1](https://github.com/lusu007/dienstplan/compare/v0.8.0...v0.8.1) (2025-08-13)
 
 
