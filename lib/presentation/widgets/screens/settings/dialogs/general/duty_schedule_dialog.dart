@@ -7,6 +7,32 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 
 class DutyScheduleDialog {
+  static Widget _buildConfigTitle(dynamic config) {
+    if (config.meta.policeAuthority != null &&
+        config.meta.policeAuthority!.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            config.meta.policeAuthority!,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(config.meta.name),
+        ],
+      );
+    }
+    return Text(config.meta.name);
+  }
+
+  static String? _buildConfigSubtitle(dynamic config) {
+    return config.meta.description.isNotEmpty ? config.meta.description : null;
+  }
+
   static void show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
@@ -39,10 +65,8 @@ class DutyScheduleDialog {
                   Text(l10n.selectDutySchedule),
                   const SizedBox(height: 8),
                   ...configs.map((config) => SelectionCard(
-                        title: config.meta.name,
-                        subtitle: config.meta.description.isNotEmpty
-                            ? config.meta.description
-                            : null,
+                        title: _buildConfigTitle(config),
+                        subtitle: _buildConfigSubtitle(config),
                         isSelected: state?.activeConfigName == config.name,
                         onTap: () async {
                           try {

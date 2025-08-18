@@ -5,6 +5,32 @@ import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class PartnerConfigDialog {
+  static Widget _buildConfigTitle(dynamic config) {
+    if (config.meta.policeAuthority != null &&
+        config.meta.policeAuthority!.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            config.meta.policeAuthority!,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(config.meta.name),
+        ],
+      );
+    }
+    return Text(config.meta.name);
+  }
+
+  static String? _buildConfigSubtitle(dynamic config) {
+    return config.meta.description.isNotEmpty ? config.meta.description : null;
+  }
+
   static Future<void> show(BuildContext context) async {
     final container = ProviderScope.containerOf(context, listen: false);
     await showDialog(
@@ -35,10 +61,8 @@ class PartnerConfigDialog {
                     Text(l10n.selectDutySchedule),
                     const SizedBox(height: 8),
                     ...configs.map((c) => SelectionCard(
-                          title: c.meta.name,
-                          subtitle: c.meta.description.isNotEmpty
-                              ? c.meta.description
-                              : null,
+                          title: _buildConfigTitle(c),
+                          subtitle: _buildConfigSubtitle(c),
                           isSelected: state?.partnerConfigName == c.name,
                           onTap: () async {
                             // Close dialog immediately

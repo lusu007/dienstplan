@@ -17,6 +17,7 @@ import 'package:dienstplan/data/daos/settings_dao.dart';
 import 'package:dienstplan/data/daos/duty_types_dao.dart';
 import 'package:dienstplan/data/daos/maintenance_dao.dart';
 import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
+import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
 
 // Repositories (interfaces + implementations)
 import 'package:dienstplan/domain/repositories/schedule_repository.dart';
@@ -86,10 +87,18 @@ Future<SchedulesAdminDao> schedulesAdminDao(Ref ref) async {
   return SchedulesAdminDao(db);
 }
 
+@riverpod
+Future<ScheduleConfigsDao> scheduleConfigsDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return ScheduleConfigsDao(db);
+}
+
 @Riverpod(keepAlive: true)
 Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final ScheduleConfigService service = ScheduleConfigService(prefs);
+  final ScheduleConfigsDao dao =
+      await ref.watch(scheduleConfigsDaoProvider.future);
+  final ScheduleConfigService service = ScheduleConfigService(prefs, dao);
   await service.initialize();
   return service;
 }

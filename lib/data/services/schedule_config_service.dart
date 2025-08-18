@@ -7,18 +7,20 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart';
+import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/prefs_keys.dart';
 
 class ScheduleConfigService extends ChangeNotifier {
   final SharedPreferences _prefs;
+  final ScheduleConfigsDao _scheduleConfigsDao;
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _defaultConfig;
   late Directory _configsPath;
   static const String _configDirName = 'configs';
   static const String _setupCompletedKey = kPrefsKeySetupCompleted;
 
-  ScheduleConfigService(this._prefs);
+  ScheduleConfigService(this._prefs, this._scheduleConfigsDao);
 
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get defaultConfig => _defaultConfig;
@@ -110,9 +112,23 @@ class ScheduleConfigService extends ChangeNotifier {
 
   Future<void> saveConfig(DutyScheduleConfig config) async {
     try {
+      // Save to file system
       final file = File('${_configsPath.path}/${config.name}.json');
       final json = config.toMap();
       await file.writeAsString(jsonEncode(json));
+
+      // Save to database
+      await _scheduleConfigsDao.saveScheduleConfig(
+        name: config.name,
+        version: config.version,
+        displayName: config.meta.name,
+        description: config.meta.description,
+        policeAuthority: config.meta.policeAuthority,
+        icon: config.meta.icon,
+        startDate: config.meta.startDate,
+        startWeekDay: config.meta.startWeekDay,
+        days: config.meta.days,
+      );
     } catch (e) {
       AppLogger.e('Error saving config: $e');
       rethrow;

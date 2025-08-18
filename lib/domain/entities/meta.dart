@@ -11,6 +11,7 @@ abstract class Meta with _$Meta {
     required String startWeekDay,
     required List<String> days,
     String? icon,
+    String? policeAuthority,
   }) = _Meta;
 
   const Meta._();

@@ -1,12 +1,13 @@
 {
-    "version": "1.1",
+    "version": "1.2",
     "meta": {
-      "name": "Bereitschaftspolizei",
+      "name": "Bereitschaftspolizei Züge",
       "created_by": "Lukas",
-      "description": "Rotationsplan für die Züge der Bereitschaftspolizei inkl. Sonderlagen",
+      "description": "Rotationsplan für die Züge der Bereitschaftspolizei der Polizei Bremen",
       "icon": "shield",
       "start_week_day": "Monday",
       "start_date": "2025-06-30",
+      "police_authority": "Polizei Bremen",
       "days": [
         "Mo",
         "Di",

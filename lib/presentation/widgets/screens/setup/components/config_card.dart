@@ -28,12 +28,35 @@ class ConfigCard extends StatelessWidget {
     final IconData icon = _getConfigIcon();
 
     return SelectionCard(
-      title: config.meta.name,
-      subtitle: config.meta.description,
+      title: _buildTitle(),
+      subtitle:
+          config.meta.description.isNotEmpty ? config.meta.description : null,
       leadingIcon: icon,
       isSelected: isSelected,
       onTap: onTap,
       mainColor: AppColors.primary,
     );
+  }
+
+  Widget _buildTitle() {
+    if (config.meta.policeAuthority != null &&
+        config.meta.policeAuthority!.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            config.meta.policeAuthority!,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(config.meta.name),
+        ],
+      );
+    }
+    return Text(config.meta.name);
   }
 }

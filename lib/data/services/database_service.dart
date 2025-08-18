@@ -101,6 +101,22 @@ class DatabaseService {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE schedule_configs (
+        name TEXT PRIMARY KEY,
+        version TEXT NOT NULL,
+        display_name TEXT NOT NULL,
+        description TEXT,
+        police_authority TEXT,
+        icon TEXT,
+        start_date TEXT NOT NULL,
+        start_week_day TEXT NOT NULL,
+        days TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )
+    ''');
+
     // Create optimized indexes
     await _createOptimizedIndexes(db);
 
@@ -181,6 +197,9 @@ class DatabaseService {
       }
       if (oldVersion < 10) {
         await _migrateToVersion10(txn);
+      }
+      if (oldVersion < 11) {
+        await _migrateToVersion11(txn);
       }
 
       // Create any missing indexes after all migrations are complete
@@ -387,6 +406,43 @@ class DatabaseService {
       AppLogger.e('Error during migration to version 10', e, stackTrace);
       // Don't rethrow - let the migration continue
       AppLogger.i('Migration to version 10 failed, but continuing...');
+    }
+  }
+
+  Future<void> _migrateToVersion11(DatabaseExecutor db) async {
+    try {
+      AppLogger.i('Migrating to version 11: Add schedule_configs table');
+
+      // Check if the table already exists
+      final tables = await db.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='schedule_configs'");
+
+      if (tables.isEmpty) {
+        await db.execute('''
+          CREATE TABLE schedule_configs (
+            name TEXT PRIMARY KEY,
+            version TEXT NOT NULL,
+            display_name TEXT NOT NULL,
+            description TEXT,
+            police_authority TEXT,
+            icon TEXT,
+            start_date TEXT NOT NULL,
+            start_week_day TEXT NOT NULL,
+            days TEXT NOT NULL,
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NOT NULL
+          )
+        ''');
+        AppLogger.i(
+            'Successfully migrated to version 11: schedule_configs table added');
+      } else {
+        AppLogger.i(
+            'Table schedule_configs already exists, skipping migration');
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 11', e, stackTrace);
+      // Don't rethrow - let the migration continue
+      AppLogger.i('Migration to version 11 failed, but continuing...');
     }
   }
 
