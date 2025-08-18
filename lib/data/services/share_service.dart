@@ -5,9 +5,9 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class ShareService {
   static const String _appStoreUrl =
-      'https://apps.apple.com/app/dienstplan/id123456789';
+      'https://apps.apple.com/app/dienstplan/id6748340130';
   static const String _playStoreUrl =
-      'https://play.google.com/store/apps/details?id=com.scelus.dienstplan';
+      'https://play.google.com/store/apps/details?id=io.scelus.dienstplan';
 
   /// Shares the app using the native share functionality
   ///
