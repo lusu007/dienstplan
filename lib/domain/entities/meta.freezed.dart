@@ -20,6 +20,7 @@ mixin _$Meta {
   String get startWeekDay;
   List<String> get days;
   String? get icon;
+  String? get policeAuthority;
 
   /// Create a copy of Meta
   /// with the given fields replaced by the non-null parameter values.
@@ -41,16 +42,25 @@ mixin _$Meta {
             (identical(other.startWeekDay, startWeekDay) ||
                 other.startWeekDay == startWeekDay) &&
             const DeepCollectionEquality().equals(other.days, days) &&
-            (identical(other.icon, icon) || other.icon == icon));
+            (identical(other.icon, icon) || other.icon == icon) &&
+            (identical(other.policeAuthority, policeAuthority) ||
+                other.policeAuthority == policeAuthority));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, startDate,
-      startWeekDay, const DeepCollectionEquality().hash(days), icon);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      description,
+      startDate,
+      startWeekDay,
+      const DeepCollectionEquality().hash(days),
+      icon,
+      policeAuthority);
 
   @override
   String toString() {
-    return 'Meta(name: $name, description: $description, startDate: $startDate, startWeekDay: $startWeekDay, days: $days, icon: $icon)';
+    return 'Meta(name: $name, description: $description, startDate: $startDate, startWeekDay: $startWeekDay, days: $days, icon: $icon, policeAuthority: $policeAuthority)';
   }
 }
 
@@ -65,7 +75,8 @@ abstract mixin class $MetaCopyWith<$Res> {
       DateTime startDate,
       String startWeekDay,
       List<String> days,
-      String? icon});
+      String? icon,
+      String? policeAuthority});
 }
 
 /// @nodoc
@@ -86,6 +97,7 @@ class _$MetaCopyWithImpl<$Res> implements $MetaCopyWith<$Res> {
     Object? startWeekDay = null,
     Object? days = null,
     Object? icon = freezed,
+    Object? policeAuthority = freezed,
   }) {
     return _then(_self.copyWith(
       name: null == name
@@ -111,6 +123,10 @@ class _$MetaCopyWithImpl<$Res> implements $MetaCopyWith<$Res> {
       icon: freezed == icon
           ? _self.icon
           : icon // ignore: cast_nullable_to_non_nullable
+              as String?,
+      policeAuthority: freezed == policeAuthority
+          ? _self.policeAuthority
+          : policeAuthority // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -209,8 +225,14 @@ extension MetaPatterns on Meta {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String name, String description, DateTime startDate,
-            String startWeekDay, List<String> days, String? icon)?
+    TResult Function(
+            String name,
+            String description,
+            DateTime startDate,
+            String startWeekDay,
+            List<String> days,
+            String? icon,
+            String? policeAuthority)?
         $default, {
     required TResult orElse(),
   }) {
@@ -218,7 +240,7 @@ extension MetaPatterns on Meta {
     switch (_that) {
       case _Meta() when $default != null:
         return $default(_that.name, _that.description, _that.startDate,
-            _that.startWeekDay, _that.days, _that.icon);
+            _that.startWeekDay, _that.days, _that.icon, _that.policeAuthority);
       case _:
         return orElse();
     }
@@ -239,15 +261,21 @@ extension MetaPatterns on Meta {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String name, String description, DateTime startDate,
-            String startWeekDay, List<String> days, String? icon)
+    TResult Function(
+            String name,
+            String description,
+            DateTime startDate,
+            String startWeekDay,
+            List<String> days,
+            String? icon,
+            String? policeAuthority)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Meta():
         return $default(_that.name, _that.description, _that.startDate,
-            _that.startWeekDay, _that.days, _that.icon);
+            _that.startWeekDay, _that.days, _that.icon, _that.policeAuthority);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -267,15 +295,21 @@ extension MetaPatterns on Meta {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String name, String description, DateTime startDate,
-            String startWeekDay, List<String> days, String? icon)?
+    TResult? Function(
+            String name,
+            String description,
+            DateTime startDate,
+            String startWeekDay,
+            List<String> days,
+            String? icon,
+            String? policeAuthority)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Meta() when $default != null:
         return $default(_that.name, _that.description, _that.startDate,
-            _that.startWeekDay, _that.days, _that.icon);
+            _that.startWeekDay, _that.days, _that.icon, _that.policeAuthority);
       case _:
         return null;
     }
@@ -291,7 +325,8 @@ class _Meta extends Meta {
       required this.startDate,
       required this.startWeekDay,
       required final List<String> days,
-      this.icon})
+      this.icon,
+      this.policeAuthority})
       : _days = days,
         super._();
 
@@ -313,6 +348,8 @@ class _Meta extends Meta {
 
   @override
   final String? icon;
+  @override
+  final String? policeAuthority;
 
   /// Create a copy of Meta
   /// with the given fields replaced by the non-null parameter values.
@@ -335,16 +372,25 @@ class _Meta extends Meta {
             (identical(other.startWeekDay, startWeekDay) ||
                 other.startWeekDay == startWeekDay) &&
             const DeepCollectionEquality().equals(other._days, _days) &&
-            (identical(other.icon, icon) || other.icon == icon));
+            (identical(other.icon, icon) || other.icon == icon) &&
+            (identical(other.policeAuthority, policeAuthority) ||
+                other.policeAuthority == policeAuthority));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, startDate,
-      startWeekDay, const DeepCollectionEquality().hash(_days), icon);
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      description,
+      startDate,
+      startWeekDay,
+      const DeepCollectionEquality().hash(_days),
+      icon,
+      policeAuthority);
 
   @override
   String toString() {
-    return 'Meta(name: $name, description: $description, startDate: $startDate, startWeekDay: $startWeekDay, days: $days, icon: $icon)';
+    return 'Meta(name: $name, description: $description, startDate: $startDate, startWeekDay: $startWeekDay, days: $days, icon: $icon, policeAuthority: $policeAuthority)';
   }
 }
 
@@ -360,7 +406,8 @@ abstract mixin class _$MetaCopyWith<$Res> implements $MetaCopyWith<$Res> {
       DateTime startDate,
       String startWeekDay,
       List<String> days,
-      String? icon});
+      String? icon,
+      String? policeAuthority});
 }
 
 /// @nodoc
@@ -381,6 +428,7 @@ class __$MetaCopyWithImpl<$Res> implements _$MetaCopyWith<$Res> {
     Object? startWeekDay = null,
     Object? days = null,
     Object? icon = freezed,
+    Object? policeAuthority = freezed,
   }) {
     return _then(_Meta(
       name: null == name
@@ -406,6 +454,10 @@ class __$MetaCopyWithImpl<$Res> implements _$MetaCopyWith<$Res> {
       icon: freezed == icon
           ? _self.icon
           : icon // ignore: cast_nullable_to_non_nullable
+              as String?,
+      policeAuthority: freezed == policeAuthority
+          ? _self.policeAuthority
+          : policeAuthority // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

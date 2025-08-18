@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class SelectionCard extends StatelessWidget {
-  final String title;
+  final dynamic title; // Can be String or Widget
   final String? subtitle;
   final IconData? leadingIcon;
   final bool isSelected;
@@ -81,14 +81,16 @@ class SelectionCard extends StatelessWidget {
           color: isSelected ? mainColor : scheme.onSurfaceVariant,
           size: 28,
         ),
-        title: Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: isSelected ? mainColor : theme.colorScheme.onSurface,
-          ),
-        ),
+        title: title is Widget
+            ? title
+            : Text(
+                title as String,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: isSelected ? mainColor : theme.colorScheme.onSurface,
+                ),
+              ),
         subtitle: subtitle != null
             ? Text(
                 subtitle!,
@@ -141,14 +143,16 @@ class SelectionCard extends StatelessWidget {
         leading: leadingIcon != null
             ? Icon(leadingIcon, color: mainColor, size: iconSize)
             : null,
-        title: Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
+        title: title is Widget
+            ? title
+            : Text(
+                title as String,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
         subtitle: subtitle != null
             ? Text(
                 subtitle!,

@@ -107,8 +107,28 @@ final schedulesAdminDaoProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SchedulesAdminDaoRef = AutoDisposeFutureProviderRef<SchedulesAdminDao>;
+String _$scheduleConfigsDaoHash() =>
+    r'ecac450006a3623baa28efbf479217677fef2517';
+
+/// See also [scheduleConfigsDao].
+@ProviderFor(scheduleConfigsDao)
+final scheduleConfigsDaoProvider =
+    AutoDisposeFutureProvider<ScheduleConfigsDao>.internal(
+  scheduleConfigsDao,
+  name: r'scheduleConfigsDaoProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$scheduleConfigsDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ScheduleConfigsDaoRef
+    = AutoDisposeFutureProviderRef<ScheduleConfigsDao>;
 String _$scheduleConfigServiceHash() =>
-    r'e1e7c37d1c9e41a9a5433738dca15e9e4278abdf';
+    r'40a20755643c3617b174c766feb5fcbde5d9aedd';
 
 /// See also [scheduleConfigService].
 @ProviderFor(scheduleConfigService)

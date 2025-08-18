@@ -118,6 +118,7 @@ class Meta {
   final String startWeekDay;
   final List<String> days;
   final String? icon;
+  final String? policeAuthority;
 
   Meta({
     required this.name,
@@ -126,6 +127,7 @@ class Meta {
     required this.startWeekDay,
     required this.days,
     this.icon,
+    this.policeAuthority,
   });
 
   factory Meta.fromMap(Map<String, dynamic> map) {
@@ -136,6 +138,7 @@ class Meta {
       startWeekDay: map['start_week_day'] as String,
       days: List<String>.from(map['days'] as List),
       icon: map['icon'] as String?,
+      policeAuthority: map['police_authority'] as String?,
     );
   }
 
@@ -147,6 +150,7 @@ class Meta {
       'start_week_day': startWeekDay,
       'days': days,
       if (icon != null) 'icon': icon,
+      if (policeAuthority != null) 'police_authority': policeAuthority,
     };
   }
 }

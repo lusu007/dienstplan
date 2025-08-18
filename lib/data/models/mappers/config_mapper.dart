@@ -40,6 +40,7 @@ domain_meta.Meta toDomainMeta(data_dsc.Meta input) {
     startWeekDay: input.startWeekDay,
     days: input.days,
     icon: input.icon,
+    policeAuthority: input.policeAuthority,
   );
 }
 
@@ -51,6 +52,7 @@ data_dsc.Meta toDataMeta(domain_meta.Meta input) {
     startWeekDay: input.startWeekDay,
     days: input.days,
     icon: input.icon,
+    policeAuthority: input.policeAuthority,
   );
 }
 
