@@ -24,6 +24,29 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     _appRouter = AppRouter();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    _configureSystemUI();
+  }
+
+  void _configureSystemUI() {
+    // Configure system UI overlay style to handle navigation bar properly
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        // Status bar configuration
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+        // Navigation bar configuration
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
+    );
+    
+    // Enable edge-to-edge display
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
   }
 
   @override
