@@ -30,13 +30,11 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
 
     // Initialize day pages around current selected day first
     final selectedDay =
-        ref.read(scheduleNotifierProvider).value?.selectedDay ??
-            DateTime.now();
+        ref.read(scheduleNotifierProvider).value?.selectedDay ?? DateTime.now();
     _pageManager.initializeDayPages(selectedDay);
 
     // Initialize last known format
-    _lastKnownFormat =
-        ref.read(scheduleNotifierProvider).value?.calendarFormat;
+    _lastKnownFormat = ref.read(scheduleNotifierProvider).value?.calendarFormat;
 
     // Ensure synchronization on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -114,8 +112,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   void _updatePageViewForCalendarNavigation(DateTime newFocusedDay) {
     // When navigating to a new month, we want to show the selected day in the new month
     // But if the selected day doesn't exist in the new month, we show the focused day
-    final selectedDay =
-        ref.read(scheduleNotifierProvider).value?.selectedDay;
+    final selectedDay = ref.read(scheduleNotifierProvider).value?.selectedDay;
 
     // Determine which day to show in the new month
     DateTime dayToShow;
@@ -156,10 +153,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
             final newFocusedDay = CalendarNavigationHelper.getPreviousPeriod(
                 ref.read(scheduleNotifierProvider).value?.focusedDay ??
                     DateTime.now(),
-                ref
-                        .read(scheduleNotifierProvider)
-                        .value
-                        ?.calendarFormat ??
+                ref.read(scheduleNotifierProvider).value?.calendarFormat ??
                     CalendarFormat.month);
             ref
                 .read(scheduleNotifierProvider.notifier)
@@ -177,10 +171,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
             final newFocusedDay = CalendarNavigationHelper.getNextPeriod(
                 ref.read(scheduleNotifierProvider).value?.focusedDay ??
                     DateTime.now(),
-                ref
-                        .read(scheduleNotifierProvider)
-                        .value
-                        ?.calendarFormat ??
+                ref.read(scheduleNotifierProvider).value?.calendarFormat ??
                     CalendarFormat.month);
             ref
                 .read(scheduleNotifierProvider.notifier)

@@ -179,8 +179,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> _ensureActiveConfigInState() async {
-    final ScheduleUiState current =
-        state.value ?? ScheduleUiState.initial();
+    final ScheduleUiState current = state.value ?? ScheduleUiState.initial();
     final String? existingActive = current.activeConfigName;
     if (existingActive != null && existingActive.isNotEmpty) {
       return;
@@ -624,8 +623,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> applyPartnerSelectionChanges() async {
-    final ScheduleUiState current =
-        state.value ?? ScheduleUiState.initial();
+    final ScheduleUiState current = state.value ?? ScheduleUiState.initial();
     await _ensureActiveConfigInState();
     final DateTime dayToEnsure =
         (state.value?.selectedDay ?? current.selectedDay) ??
@@ -691,8 +689,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         replaceConfigName: partnerConfig,
       );
 
-      state =
-          AsyncData((state.value ?? current).copyWith(schedules: merged));
+      state = AsyncData((state.value ?? current).copyWith(schedules: merged));
     } catch (_) {
       // Silent fail; UI remains functional
     }
@@ -749,8 +746,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         replaceConfigName: activeName,
       );
 
-      state =
-          AsyncData((state.value ?? current).copyWith(schedules: merged));
+      state = AsyncData((state.value ?? current).copyWith(schedules: merged));
     } catch (_) {
       // Silent fail; UI remains functional
     }
@@ -802,8 +798,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         range: selectedRange,
         replaceConfigName: activeName,
       );
-      state =
-          AsyncData((state.value ?? current).copyWith(schedules: merged));
+      state = AsyncData((state.value ?? current).copyWith(schedules: merged));
     } catch (_) {
       // ignore errors
     }
@@ -835,8 +830,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       await setFocusedDay(DateTime(now.year, now.month, 1));
 
       // Clear loading state
-      state =
-          AsyncData((state.value ?? current).copyWith(isLoading: false));
+      state = AsyncData((state.value ?? current).copyWith(isLoading: false));
     } catch (e) {
       // Handle error and clear loading state
       state = AsyncData(current.copyWith(
