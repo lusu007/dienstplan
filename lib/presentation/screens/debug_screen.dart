@@ -82,7 +82,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                           'Loaded Schedules', _getLoadedSchedulesCount()),
                       _buildInfoRow(
                           'Preferred Duty Group', _getPreferredDutyGroup()),
-                      _buildInfoRow('Calendar Format', _getCalendarFormat(l10n)),
+                      _buildInfoRow(
+                          'Calendar Format', _getCalendarFormat(l10n)),
                       _buildInfoRow('Language', _getCurrentLanguage()),
                     ]),
                     const SizedBox(height: 24),
