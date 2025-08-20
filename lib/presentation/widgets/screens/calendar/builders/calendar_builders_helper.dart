@@ -199,7 +199,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
   }
 
   bool _isSelected() {
-    final state = ref.read(scheduleNotifierProvider).valueOrNull;
+    final state = ref.read(scheduleNotifierProvider).value;
     final sel = state?.selectedDay;
     return sel != null &&
         widget.day.year == sel.year &&
@@ -210,7 +210,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
   @override
   Widget build(BuildContext context) {
     // Watch the provider to trigger rebuilds when state changes
-    final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final state = ref.watch(scheduleNotifierProvider).value;
 
     // Calculate duty abbreviation directly on each build to ensure it's always current
     final schedules = state?.schedules ?? const [];

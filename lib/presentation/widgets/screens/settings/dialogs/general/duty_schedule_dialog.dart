@@ -40,7 +40,7 @@ class DutyScheduleDialog {
       context: context,
       builder: (dialogContext) => Consumer(builder: (context, ref, _) {
         final asyncState = ref.watch(scheduleNotifierProvider);
-        final state = asyncState.valueOrNull;
+        final state = asyncState.value;
         final configs = state?.configs ?? const [];
         if (configs.isEmpty) {
           return AlertDialog(

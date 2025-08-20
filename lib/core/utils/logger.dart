@@ -92,7 +92,7 @@ class AppLogger {
       try {
         // Check if Sentry service is available and enabled via injected container
         final sentryService =
-            _providerContainer?.read(sentryServiceProvider).valueOrNull;
+            _providerContainer?.read(sentryServiceProvider).value;
 
         if (sentryService != null &&
             sentryService.isEnabled &&

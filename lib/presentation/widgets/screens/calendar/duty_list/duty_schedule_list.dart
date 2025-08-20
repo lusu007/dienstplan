@@ -82,7 +82,7 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
     // Read partner config and color via Riverpod
     final scheduleState = ProviderScope.containerOf(context, listen: true)
         .read(scheduleNotifierProvider)
-        .valueOrNull;
+        .value;
     _partnerConfigName = scheduleState?.partnerConfigName;
     _partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
     _partnerDutyGroupName = scheduleState?.partnerDutyGroup;

@@ -6,567 +6,1175 @@ part of 'riverpod_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(databaseService)
+const databaseServiceProvider = DatabaseServiceProvider._();
+
+final class DatabaseServiceProvider extends $FunctionalProvider<
+        AsyncValue<DatabaseService>, DatabaseService, FutureOr<DatabaseService>>
+    with $FutureModifier<DatabaseService>, $FutureProvider<DatabaseService> {
+  const DatabaseServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'databaseServiceProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$databaseServiceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DatabaseService> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DatabaseService> create(Ref ref) {
+    return databaseService(ref);
+  }
+}
+
 String _$databaseServiceHash() => r'4b70714b1829eff89e609997d21e60bf44d5fd20';
 
-/// See also [databaseService].
-@ProviderFor(databaseService)
-final databaseServiceProvider = FutureProvider<DatabaseService>.internal(
-  databaseService,
-  name: r'databaseServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$databaseServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(schedulesDao)
+const schedulesDaoProvider = SchedulesDaoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef DatabaseServiceRef = FutureProviderRef<DatabaseService>;
+final class SchedulesDaoProvider extends $FunctionalProvider<
+        AsyncValue<SchedulesDao>, SchedulesDao, FutureOr<SchedulesDao>>
+    with $FutureModifier<SchedulesDao>, $FutureProvider<SchedulesDao> {
+  const SchedulesDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'schedulesDaoProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$schedulesDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SchedulesDao> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SchedulesDao> create(Ref ref) {
+    return schedulesDao(ref);
+  }
+}
+
 String _$schedulesDaoHash() => r'04807b9767fa099dedfe88aed356c028d7ed74b8';
 
-/// See also [schedulesDao].
-@ProviderFor(schedulesDao)
-final schedulesDaoProvider = AutoDisposeFutureProvider<SchedulesDao>.internal(
-  schedulesDao,
-  name: r'schedulesDaoProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$schedulesDaoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(settingsDao)
+const settingsDaoProvider = SettingsDaoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SchedulesDaoRef = AutoDisposeFutureProviderRef<SchedulesDao>;
+final class SettingsDaoProvider extends $FunctionalProvider<
+        AsyncValue<SettingsDao>, SettingsDao, FutureOr<SettingsDao>>
+    with $FutureModifier<SettingsDao>, $FutureProvider<SettingsDao> {
+  const SettingsDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'settingsDaoProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$settingsDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SettingsDao> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SettingsDao> create(Ref ref) {
+    return settingsDao(ref);
+  }
+}
+
 String _$settingsDaoHash() => r'5c5a5dd3827b1d704fd1098298ef22cd6c39ad85';
 
-/// See also [settingsDao].
-@ProviderFor(settingsDao)
-final settingsDaoProvider = AutoDisposeFutureProvider<SettingsDao>.internal(
-  settingsDao,
-  name: r'settingsDaoProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$settingsDaoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(dutyTypesDao)
+const dutyTypesDaoProvider = DutyTypesDaoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SettingsDaoRef = AutoDisposeFutureProviderRef<SettingsDao>;
+final class DutyTypesDaoProvider extends $FunctionalProvider<
+        AsyncValue<DutyTypesDao>, DutyTypesDao, FutureOr<DutyTypesDao>>
+    with $FutureModifier<DutyTypesDao>, $FutureProvider<DutyTypesDao> {
+  const DutyTypesDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'dutyTypesDaoProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$dutyTypesDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DutyTypesDao> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DutyTypesDao> create(Ref ref) {
+    return dutyTypesDao(ref);
+  }
+}
+
 String _$dutyTypesDaoHash() => r'246b1106d6cfb10bb0c000d7a8064d41308254a8';
 
-/// See also [dutyTypesDao].
-@ProviderFor(dutyTypesDao)
-final dutyTypesDaoProvider = AutoDisposeFutureProvider<DutyTypesDao>.internal(
-  dutyTypesDao,
-  name: r'dutyTypesDaoProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$dutyTypesDaoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(maintenanceDao)
+const maintenanceDaoProvider = MaintenanceDaoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef DutyTypesDaoRef = AutoDisposeFutureProviderRef<DutyTypesDao>;
+final class MaintenanceDaoProvider extends $FunctionalProvider<
+        AsyncValue<MaintenanceDao>, MaintenanceDao, FutureOr<MaintenanceDao>>
+    with $FutureModifier<MaintenanceDao>, $FutureProvider<MaintenanceDao> {
+  const MaintenanceDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'maintenanceDaoProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$maintenanceDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<MaintenanceDao> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<MaintenanceDao> create(Ref ref) {
+    return maintenanceDao(ref);
+  }
+}
+
 String _$maintenanceDaoHash() => r'c7b50b2f513c05906fdf19e0b8cd9e1019c017d7';
 
-/// See also [maintenanceDao].
-@ProviderFor(maintenanceDao)
-final maintenanceDaoProvider =
-    AutoDisposeFutureProvider<MaintenanceDao>.internal(
-  maintenanceDao,
-  name: r'maintenanceDaoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$maintenanceDaoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(schedulesAdminDao)
+const schedulesAdminDaoProvider = SchedulesAdminDaoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef MaintenanceDaoRef = AutoDisposeFutureProviderRef<MaintenanceDao>;
+final class SchedulesAdminDaoProvider extends $FunctionalProvider<
+        AsyncValue<SchedulesAdminDao>,
+        SchedulesAdminDao,
+        FutureOr<SchedulesAdminDao>>
+    with
+        $FutureModifier<SchedulesAdminDao>,
+        $FutureProvider<SchedulesAdminDao> {
+  const SchedulesAdminDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'schedulesAdminDaoProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$schedulesAdminDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SchedulesAdminDao> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SchedulesAdminDao> create(Ref ref) {
+    return schedulesAdminDao(ref);
+  }
+}
+
 String _$schedulesAdminDaoHash() => r'364472462048526c0a0336d7e8bc21265d9c1276';
 
-/// See also [schedulesAdminDao].
-@ProviderFor(schedulesAdminDao)
-final schedulesAdminDaoProvider =
-    AutoDisposeFutureProvider<SchedulesAdminDao>.internal(
-  schedulesAdminDao,
-  name: r'schedulesAdminDaoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$schedulesAdminDaoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(scheduleConfigsDao)
+const scheduleConfigsDaoProvider = ScheduleConfigsDaoProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SchedulesAdminDaoRef = AutoDisposeFutureProviderRef<SchedulesAdminDao>;
+final class ScheduleConfigsDaoProvider extends $FunctionalProvider<
+        AsyncValue<ScheduleConfigsDao>,
+        ScheduleConfigsDao,
+        FutureOr<ScheduleConfigsDao>>
+    with
+        $FutureModifier<ScheduleConfigsDao>,
+        $FutureProvider<ScheduleConfigsDao> {
+  const ScheduleConfigsDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'scheduleConfigsDaoProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleConfigsDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ScheduleConfigsDao> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ScheduleConfigsDao> create(Ref ref) {
+    return scheduleConfigsDao(ref);
+  }
+}
+
 String _$scheduleConfigsDaoHash() =>
     r'ecac450006a3623baa28efbf479217677fef2517';
 
-/// See also [scheduleConfigsDao].
-@ProviderFor(scheduleConfigsDao)
-final scheduleConfigsDaoProvider =
-    AutoDisposeFutureProvider<ScheduleConfigsDao>.internal(
-  scheduleConfigsDao,
-  name: r'scheduleConfigsDaoProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$scheduleConfigsDaoHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(scheduleConfigService)
+const scheduleConfigServiceProvider = ScheduleConfigServiceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ScheduleConfigsDaoRef
-    = AutoDisposeFutureProviderRef<ScheduleConfigsDao>;
+final class ScheduleConfigServiceProvider extends $FunctionalProvider<
+        AsyncValue<ScheduleConfigService>,
+        ScheduleConfigService,
+        FutureOr<ScheduleConfigService>>
+    with
+        $FutureModifier<ScheduleConfigService>,
+        $FutureProvider<ScheduleConfigService> {
+  const ScheduleConfigServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'scheduleConfigServiceProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleConfigServiceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ScheduleConfigService> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ScheduleConfigService> create(Ref ref) {
+    return scheduleConfigService(ref);
+  }
+}
+
 String _$scheduleConfigServiceHash() =>
     r'40a20755643c3617b174c766feb5fcbde5d9aedd';
 
-/// See also [scheduleConfigService].
-@ProviderFor(scheduleConfigService)
-final scheduleConfigServiceProvider =
-    FutureProvider<ScheduleConfigService>.internal(
-  scheduleConfigService,
-  name: r'scheduleConfigServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$scheduleConfigServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(languageService)
+const languageServiceProvider = LanguageServiceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ScheduleConfigServiceRef = FutureProviderRef<ScheduleConfigService>;
+final class LanguageServiceProvider extends $FunctionalProvider<
+        AsyncValue<LanguageService>, LanguageService, FutureOr<LanguageService>>
+    with $FutureModifier<LanguageService>, $FutureProvider<LanguageService> {
+  const LanguageServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'languageServiceProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$languageServiceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<LanguageService> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<LanguageService> create(Ref ref) {
+    return languageService(ref);
+  }
+}
+
 String _$languageServiceHash() => r'7a5e6d1f64f2dcbbed73ac955594882881122816';
 
-/// See also [languageService].
-@ProviderFor(languageService)
-final languageServiceProvider = FutureProvider<LanguageService>.internal(
-  languageService,
-  name: r'languageServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$languageServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(currentLocale)
+const currentLocaleProvider = CurrentLocaleProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LanguageServiceRef = FutureProviderRef<LanguageService>;
+final class CurrentLocaleProvider
+    extends $FunctionalProvider<AsyncValue<Locale>, Locale, Stream<Locale>>
+    with $FutureModifier<Locale>, $StreamProvider<Locale> {
+  const CurrentLocaleProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'currentLocaleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$currentLocaleHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<Locale> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<Locale> create(Ref ref) {
+    return currentLocale(ref);
+  }
+}
+
 String _$currentLocaleHash() => r'd0a4fd9ce7251dd9223ed358e73c9430989c43eb';
 
-/// See also [currentLocale].
-@ProviderFor(currentLocale)
-final currentLocaleProvider = AutoDisposeStreamProvider<Locale>.internal(
-  currentLocale,
-  name: r'currentLocaleProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$currentLocaleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(themeMode)
+const themeModeProvider = ThemeModeProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CurrentLocaleRef = AutoDisposeStreamProviderRef<Locale>;
+final class ThemeModeProvider extends $FunctionalProvider<AsyncValue<ThemeMode>,
+        ThemeMode, FutureOr<ThemeMode>>
+    with $FutureModifier<ThemeMode>, $FutureProvider<ThemeMode> {
+  const ThemeModeProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'themeModeProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$themeModeHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ThemeMode> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ThemeMode> create(Ref ref) {
+    return themeMode(ref);
+  }
+}
+
 String _$themeModeHash() => r'dda9d7999fad7cc0ae5fbfb278c6784fe57c032c';
 
-/// See also [themeMode].
-@ProviderFor(themeMode)
-final themeModeProvider = AutoDisposeFutureProvider<ThemeMode>.internal(
-  themeMode,
-  name: r'themeModeProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$themeModeHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(appTheme)
+const appThemeProvider = AppThemeProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ThemeModeRef = AutoDisposeFutureProviderRef<ThemeMode>;
+final class AppThemeProvider
+    extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
+    with $Provider<ThemeData> {
+  const AppThemeProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'appThemeProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$appThemeHash();
+
+  @$internal
+  @override
+  $ProviderElement<ThemeData> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ThemeData create(Ref ref) {
+    return appTheme(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ThemeData value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ThemeData>(value),
+    );
+  }
+}
+
 String _$appThemeHash() => r'454b3d0b42eea01c9b9904767ed1fa1cb1f72736';
 
-/// See also [appTheme].
-@ProviderFor(appTheme)
-final appThemeProvider = AutoDisposeProvider<ThemeData>.internal(
-  appTheme,
-  name: r'appThemeProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$appThemeHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(appDarkTheme)
+const appDarkThemeProvider = AppDarkThemeProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AppThemeRef = AutoDisposeProviderRef<ThemeData>;
+final class AppDarkThemeProvider
+    extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
+    with $Provider<ThemeData> {
+  const AppDarkThemeProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'appDarkThemeProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$appDarkThemeHash();
+
+  @$internal
+  @override
+  $ProviderElement<ThemeData> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ThemeData create(Ref ref) {
+    return appDarkTheme(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ThemeData value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ThemeData>(value),
+    );
+  }
+}
+
 String _$appDarkThemeHash() => r'33cb551912c40fc143ef06166fe3bd3e0526bbb0';
 
-/// See also [appDarkTheme].
-@ProviderFor(appDarkTheme)
-final appDarkThemeProvider = AutoDisposeProvider<ThemeData>.internal(
-  appDarkTheme,
-  name: r'appDarkThemeProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$appDarkThemeHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(sentryService)
+const sentryServiceProvider = SentryServiceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AppDarkThemeRef = AutoDisposeProviderRef<ThemeData>;
+final class SentryServiceProvider extends $FunctionalProvider<
+        AsyncValue<SentryService>, SentryService, FutureOr<SentryService>>
+    with $FutureModifier<SentryService>, $FutureProvider<SentryService> {
+  const SentryServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'sentryServiceProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$sentryServiceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SentryService> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SentryService> create(Ref ref) {
+    return sentryService(ref);
+  }
+}
+
 String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
 
-/// See also [sentryService].
-@ProviderFor(sentryService)
-final sentryServiceProvider = FutureProvider<SentryService>.internal(
-  sentryService,
-  name: r'sentryServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$sentryServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(sentryState)
+const sentryStateProvider = SentryStateProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SentryServiceRef = FutureProviderRef<SentryService>;
+final class SentryStateProvider extends $FunctionalProvider<
+        AsyncValue<SentryState>, SentryState, FutureOr<SentryState>>
+    with $FutureModifier<SentryState>, $FutureProvider<SentryState> {
+  const SentryStateProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'sentryStateProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$sentryStateHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SentryState> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SentryState> create(Ref ref) {
+    return sentryState(ref);
+  }
+}
+
 String _$sentryStateHash() => r'8ccc406f1ec2372f7761c9ab5db407e93d2eefa8';
 
-/// See also [sentryState].
-@ProviderFor(sentryState)
-final sentryStateProvider = AutoDisposeFutureProvider<SentryState>.internal(
-  sentryState,
-  name: r'sentryStateProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$sentryStateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(shareService)
+const shareServiceProvider = ShareServiceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SentryStateRef = AutoDisposeFutureProviderRef<SentryState>;
+final class ShareServiceProvider
+    extends $FunctionalProvider<ShareService, ShareService, ShareService>
+    with $Provider<ShareService> {
+  const ShareServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'shareServiceProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$shareServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ShareService> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ShareService create(Ref ref) {
+    return shareService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ShareService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ShareService>(value),
+    );
+  }
+}
+
 String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
 
-/// See also [shareService].
-@ProviderFor(shareService)
-final shareServiceProvider = Provider<ShareService>.internal(
-  shareService,
-  name: r'shareServiceProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$shareServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(scheduleRepository)
+const scheduleRepositoryProvider = ScheduleRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ShareServiceRef = ProviderRef<ShareService>;
+final class ScheduleRepositoryProvider extends $FunctionalProvider<
+        AsyncValue<ScheduleRepository>,
+        ScheduleRepository,
+        FutureOr<ScheduleRepository>>
+    with
+        $FutureModifier<ScheduleRepository>,
+        $FutureProvider<ScheduleRepository> {
+  const ScheduleRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'scheduleRepositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleRepositoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ScheduleRepository> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ScheduleRepository> create(Ref ref) {
+    return scheduleRepository(ref);
+  }
+}
+
 String _$scheduleRepositoryHash() =>
     r'fa5bf5b634dd91faa6925ae2afd7fe3fabe833ea';
 
-/// See also [scheduleRepository].
-@ProviderFor(scheduleRepository)
-final scheduleRepositoryProvider =
-    AutoDisposeFutureProvider<ScheduleRepository>.internal(
-  scheduleRepository,
-  name: r'scheduleRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$scheduleRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(settingsRepository)
+const settingsRepositoryProvider = SettingsRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ScheduleRepositoryRef
-    = AutoDisposeFutureProviderRef<ScheduleRepository>;
+final class SettingsRepositoryProvider extends $FunctionalProvider<
+        AsyncValue<SettingsRepository>,
+        SettingsRepository,
+        FutureOr<SettingsRepository>>
+    with
+        $FutureModifier<SettingsRepository>,
+        $FutureProvider<SettingsRepository> {
+  const SettingsRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'settingsRepositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$settingsRepositoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SettingsRepository> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SettingsRepository> create(Ref ref) {
+    return settingsRepository(ref);
+  }
+}
+
 String _$settingsRepositoryHash() =>
     r'3e3bf3608489e6dee17ae04fd8353851d040cff5';
 
-/// See also [settingsRepository].
-@ProviderFor(settingsRepository)
-final settingsRepositoryProvider =
-    AutoDisposeFutureProvider<SettingsRepository>.internal(
-  settingsRepository,
-  name: r'settingsRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$settingsRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(configRepository)
+const configRepositoryProvider = ConfigRepositoryProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SettingsRepositoryRef
-    = AutoDisposeFutureProviderRef<SettingsRepository>;
+final class ConfigRepositoryProvider extends $FunctionalProvider<
+        AsyncValue<ConfigRepository>,
+        ConfigRepository,
+        FutureOr<ConfigRepository>>
+    with $FutureModifier<ConfigRepository>, $FutureProvider<ConfigRepository> {
+  const ConfigRepositoryProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'configRepositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$configRepositoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ConfigRepository> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ConfigRepository> create(Ref ref) {
+    return configRepository(ref);
+  }
+}
+
 String _$configRepositoryHash() => r'440bff749a354e5110271371491471b123d94b33';
 
-/// See also [configRepository].
-@ProviderFor(configRepository)
-final configRepositoryProvider =
-    AutoDisposeFutureProvider<ConfigRepository>.internal(
-  configRepository,
-  name: r'configRepositoryProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$configRepositoryHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(getSchedulesUseCase)
+const getSchedulesUseCaseProvider = GetSchedulesUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ConfigRepositoryRef = AutoDisposeFutureProviderRef<ConfigRepository>;
+final class GetSchedulesUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<GetSchedulesUseCase>,
+        GetSchedulesUseCase,
+        FutureOr<GetSchedulesUseCase>>
+    with
+        $FutureModifier<GetSchedulesUseCase>,
+        $FutureProvider<GetSchedulesUseCase> {
+  const GetSchedulesUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'getSchedulesUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$getSchedulesUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GetSchedulesUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GetSchedulesUseCase> create(Ref ref) {
+    return getSchedulesUseCase(ref);
+  }
+}
+
 String _$getSchedulesUseCaseHash() =>
     r'56d340caa864d78e6a0475892da7374ead3863d5';
 
-/// See also [getSchedulesUseCase].
-@ProviderFor(getSchedulesUseCase)
-final getSchedulesUseCaseProvider =
-    AutoDisposeFutureProvider<GetSchedulesUseCase>.internal(
-  getSchedulesUseCase,
-  name: r'getSchedulesUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$getSchedulesUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(generateSchedulesUseCase)
+const generateSchedulesUseCaseProvider = GenerateSchedulesUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetSchedulesUseCaseRef
-    = AutoDisposeFutureProviderRef<GetSchedulesUseCase>;
+final class GenerateSchedulesUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<GenerateSchedulesUseCase>,
+        GenerateSchedulesUseCase,
+        FutureOr<GenerateSchedulesUseCase>>
+    with
+        $FutureModifier<GenerateSchedulesUseCase>,
+        $FutureProvider<GenerateSchedulesUseCase> {
+  const GenerateSchedulesUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'generateSchedulesUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$generateSchedulesUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GenerateSchedulesUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GenerateSchedulesUseCase> create(Ref ref) {
+    return generateSchedulesUseCase(ref);
+  }
+}
+
 String _$generateSchedulesUseCaseHash() =>
     r'874c6ae60aedc505bde3f82dd256a1433cedc421';
 
-/// See also [generateSchedulesUseCase].
-@ProviderFor(generateSchedulesUseCase)
-final generateSchedulesUseCaseProvider =
-    AutoDisposeFutureProvider<GenerateSchedulesUseCase>.internal(
-  generateSchedulesUseCase,
-  name: r'generateSchedulesUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$generateSchedulesUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(getSettingsUseCase)
+const getSettingsUseCaseProvider = GetSettingsUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GenerateSchedulesUseCaseRef
-    = AutoDisposeFutureProviderRef<GenerateSchedulesUseCase>;
+final class GetSettingsUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<GetSettingsUseCase>,
+        GetSettingsUseCase,
+        FutureOr<GetSettingsUseCase>>
+    with
+        $FutureModifier<GetSettingsUseCase>,
+        $FutureProvider<GetSettingsUseCase> {
+  const GetSettingsUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'getSettingsUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$getSettingsUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GetSettingsUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GetSettingsUseCase> create(Ref ref) {
+    return getSettingsUseCase(ref);
+  }
+}
+
 String _$getSettingsUseCaseHash() =>
     r'10f652a22347a13cf24ec272bd25aa0ccbf2ebbd';
 
-/// See also [getSettingsUseCase].
-@ProviderFor(getSettingsUseCase)
-final getSettingsUseCaseProvider =
-    AutoDisposeFutureProvider<GetSettingsUseCase>.internal(
-  getSettingsUseCase,
-  name: r'getSettingsUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$getSettingsUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(saveSettingsUseCase)
+const saveSettingsUseCaseProvider = SaveSettingsUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetSettingsUseCaseRef
-    = AutoDisposeFutureProviderRef<GetSettingsUseCase>;
+final class SaveSettingsUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<SaveSettingsUseCase>,
+        SaveSettingsUseCase,
+        FutureOr<SaveSettingsUseCase>>
+    with
+        $FutureModifier<SaveSettingsUseCase>,
+        $FutureProvider<SaveSettingsUseCase> {
+  const SaveSettingsUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'saveSettingsUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$saveSettingsUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SaveSettingsUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SaveSettingsUseCase> create(Ref ref) {
+    return saveSettingsUseCase(ref);
+  }
+}
+
 String _$saveSettingsUseCaseHash() =>
     r'e6fb3271d9d975ce57edbea7265a593aaeec5100';
 
-/// See also [saveSettingsUseCase].
-@ProviderFor(saveSettingsUseCase)
-final saveSettingsUseCaseProvider =
-    AutoDisposeFutureProvider<SaveSettingsUseCase>.internal(
-  saveSettingsUseCase,
-  name: r'saveSettingsUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$saveSettingsUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(resetSettingsUseCase)
+const resetSettingsUseCaseProvider = ResetSettingsUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SaveSettingsUseCaseRef
-    = AutoDisposeFutureProviderRef<SaveSettingsUseCase>;
+final class ResetSettingsUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<ResetSettingsUseCase>,
+        ResetSettingsUseCase,
+        FutureOr<ResetSettingsUseCase>>
+    with
+        $FutureModifier<ResetSettingsUseCase>,
+        $FutureProvider<ResetSettingsUseCase> {
+  const ResetSettingsUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'resetSettingsUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$resetSettingsUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ResetSettingsUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ResetSettingsUseCase> create(Ref ref) {
+    return resetSettingsUseCase(ref);
+  }
+}
+
 String _$resetSettingsUseCaseHash() =>
     r'd0b674822db80c3c24f1d2a003cd5d435b9d19c2';
 
-/// See also [resetSettingsUseCase].
-@ProviderFor(resetSettingsUseCase)
-final resetSettingsUseCaseProvider =
-    AutoDisposeFutureProvider<ResetSettingsUseCase>.internal(
-  resetSettingsUseCase,
-  name: r'resetSettingsUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$resetSettingsUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(getConfigsUseCase)
+const getConfigsUseCaseProvider = GetConfigsUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ResetSettingsUseCaseRef
-    = AutoDisposeFutureProviderRef<ResetSettingsUseCase>;
+final class GetConfigsUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<GetConfigsUseCase>,
+        GetConfigsUseCase,
+        FutureOr<GetConfigsUseCase>>
+    with
+        $FutureModifier<GetConfigsUseCase>,
+        $FutureProvider<GetConfigsUseCase> {
+  const GetConfigsUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'getConfigsUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$getConfigsUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GetConfigsUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GetConfigsUseCase> create(Ref ref) {
+    return getConfigsUseCase(ref);
+  }
+}
+
 String _$getConfigsUseCaseHash() => r'c5cf41e41bbd51d13a93e5c79f7f3e4b032cb918';
 
-/// See also [getConfigsUseCase].
-@ProviderFor(getConfigsUseCase)
-final getConfigsUseCaseProvider =
-    AutoDisposeFutureProvider<GetConfigsUseCase>.internal(
-  getConfigsUseCase,
-  name: r'getConfigsUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$getConfigsUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(setActiveConfigUseCase)
+const setActiveConfigUseCaseProvider = SetActiveConfigUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef GetConfigsUseCaseRef = AutoDisposeFutureProviderRef<GetConfigsUseCase>;
+final class SetActiveConfigUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<SetActiveConfigUseCase>,
+        SetActiveConfigUseCase,
+        FutureOr<SetActiveConfigUseCase>>
+    with
+        $FutureModifier<SetActiveConfigUseCase>,
+        $FutureProvider<SetActiveConfigUseCase> {
+  const SetActiveConfigUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'setActiveConfigUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$setActiveConfigUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SetActiveConfigUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SetActiveConfigUseCase> create(Ref ref) {
+    return setActiveConfigUseCase(ref);
+  }
+}
+
 String _$setActiveConfigUseCaseHash() =>
     r'd34ae1da55cd543bdf7ae3c8a247dd7e691b8b69';
 
-/// See also [setActiveConfigUseCase].
-@ProviderFor(setActiveConfigUseCase)
-final setActiveConfigUseCaseProvider =
-    AutoDisposeFutureProvider<SetActiveConfigUseCase>.internal(
-  setActiveConfigUseCase,
-  name: r'setActiveConfigUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$setActiveConfigUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(loadDefaultConfigUseCase)
+const loadDefaultConfigUseCaseProvider = LoadDefaultConfigUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SetActiveConfigUseCaseRef
-    = AutoDisposeFutureProviderRef<SetActiveConfigUseCase>;
+final class LoadDefaultConfigUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<LoadDefaultConfigUseCase>,
+        LoadDefaultConfigUseCase,
+        FutureOr<LoadDefaultConfigUseCase>>
+    with
+        $FutureModifier<LoadDefaultConfigUseCase>,
+        $FutureProvider<LoadDefaultConfigUseCase> {
+  const LoadDefaultConfigUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'loadDefaultConfigUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$loadDefaultConfigUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<LoadDefaultConfigUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<LoadDefaultConfigUseCase> create(Ref ref) {
+    return loadDefaultConfigUseCase(ref);
+  }
+}
+
 String _$loadDefaultConfigUseCaseHash() =>
     r'9442b2cd68d7f9d5431de98b86b2754d05932c74';
 
-/// See also [loadDefaultConfigUseCase].
-@ProviderFor(loadDefaultConfigUseCase)
-final loadDefaultConfigUseCaseProvider =
-    AutoDisposeFutureProvider<LoadDefaultConfigUseCase>.internal(
-  loadDefaultConfigUseCase,
-  name: r'loadDefaultConfigUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$loadDefaultConfigUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(scheduleMergeService)
+const scheduleMergeServiceProvider = ScheduleMergeServiceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef LoadDefaultConfigUseCaseRef
-    = AutoDisposeFutureProviderRef<LoadDefaultConfigUseCase>;
+final class ScheduleMergeServiceProvider extends $FunctionalProvider<
+    ScheduleMergeService,
+    ScheduleMergeService,
+    ScheduleMergeService> with $Provider<ScheduleMergeService> {
+  const ScheduleMergeServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'scheduleMergeServiceProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleMergeServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ScheduleMergeService> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ScheduleMergeService create(Ref ref) {
+    return scheduleMergeService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ScheduleMergeService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ScheduleMergeService>(value),
+    );
+  }
+}
+
 String _$scheduleMergeServiceHash() =>
     r'1329084894b6b3282eaea9f02398d399839f9a3d';
 
-/// See also [scheduleMergeService].
-@ProviderFor(scheduleMergeService)
-final scheduleMergeServiceProvider =
-    AutoDisposeProvider<ScheduleMergeService>.internal(
-  scheduleMergeService,
-  name: r'scheduleMergeServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$scheduleMergeServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(dateRangePolicy)
+const dateRangePolicyProvider = DateRangePolicyProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ScheduleMergeServiceRef = AutoDisposeProviderRef<ScheduleMergeService>;
+final class DateRangePolicyProvider extends $FunctionalProvider<DateRangePolicy,
+    DateRangePolicy, DateRangePolicy> with $Provider<DateRangePolicy> {
+  const DateRangePolicyProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'dateRangePolicyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$dateRangePolicyHash();
+
+  @$internal
+  @override
+  $ProviderElement<DateRangePolicy> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  DateRangePolicy create(Ref ref) {
+    return dateRangePolicy(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DateRangePolicy value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DateRangePolicy>(value),
+    );
+  }
+}
+
 String _$dateRangePolicyHash() => r'5b1ef2d79621ce28df46dfb1a59009d336d0f102';
 
-/// See also [dateRangePolicy].
-@ProviderFor(dateRangePolicy)
-final dateRangePolicyProvider = AutoDisposeProvider<DateRangePolicy>.internal(
-  dateRangePolicy,
-  name: r'dateRangePolicyProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$dateRangePolicyHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(configQueryService)
+const configQueryServiceProvider = ConfigQueryServiceProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef DateRangePolicyRef = AutoDisposeProviderRef<DateRangePolicy>;
+final class ConfigQueryServiceProvider extends $FunctionalProvider<
+    ConfigQueryService,
+    ConfigQueryService,
+    ConfigQueryService> with $Provider<ConfigQueryService> {
+  const ConfigQueryServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'configQueryServiceProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$configQueryServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<ConfigQueryService> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ConfigQueryService create(Ref ref) {
+    return configQueryService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ConfigQueryService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ConfigQueryService>(value),
+    );
+  }
+}
+
 String _$configQueryServiceHash() =>
     r'3bbd10deb49c014e9eb60d18d5c37e655f267d1b';
 
-/// See also [configQueryService].
-@ProviderFor(configQueryService)
-final configQueryServiceProvider =
-    AutoDisposeProvider<ConfigQueryService>.internal(
-  configQueryService,
-  name: r'configQueryServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$configQueryServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(ensureMonthSchedulesUseCase)
+const ensureMonthSchedulesUseCaseProvider =
+    EnsureMonthSchedulesUseCaseProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ConfigQueryServiceRef = AutoDisposeProviderRef<ConfigQueryService>;
+final class EnsureMonthSchedulesUseCaseProvider extends $FunctionalProvider<
+        AsyncValue<EnsureMonthSchedulesUseCase>,
+        EnsureMonthSchedulesUseCase,
+        FutureOr<EnsureMonthSchedulesUseCase>>
+    with
+        $FutureModifier<EnsureMonthSchedulesUseCase>,
+        $FutureProvider<EnsureMonthSchedulesUseCase> {
+  const EnsureMonthSchedulesUseCaseProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'ensureMonthSchedulesUseCaseProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$ensureMonthSchedulesUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<EnsureMonthSchedulesUseCase> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<EnsureMonthSchedulesUseCase> create(Ref ref) {
+    return ensureMonthSchedulesUseCase(ref);
+  }
+}
+
 String _$ensureMonthSchedulesUseCaseHash() =>
     r'6fa0fa93ee9d14338bb7a8b8a72390c72e88a23b';
 
-/// See also [ensureMonthSchedulesUseCase].
-@ProviderFor(ensureMonthSchedulesUseCase)
-final ensureMonthSchedulesUseCaseProvider =
-    AutoDisposeFutureProvider<EnsureMonthSchedulesUseCase>.internal(
-  ensureMonthSchedulesUseCase,
-  name: r'ensureMonthSchedulesUseCaseProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$ensureMonthSchedulesUseCaseHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef EnsureMonthSchedulesUseCaseRef
-    = AutoDisposeFutureProviderRef<EnsureMonthSchedulesUseCase>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

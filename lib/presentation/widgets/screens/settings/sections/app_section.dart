@@ -23,11 +23,11 @@ class AppSection extends ConsumerWidget {
 
     // Use settings preference directly, fallback to light mode
     final ThemePreference effectivePref =
-        settingsState.valueOrNull?.themePreference ?? ThemePreference.system;
+        settingsState.value?.themePreference ?? ThemePreference.system;
 
     // Get calendar format from settings
     final CalendarFormat calendarFormat =
-        settingsState.valueOrNull?.calendarFormat ?? CalendarFormat.month;
+        settingsState.value?.calendarFormat ?? CalendarFormat.month;
 
     return SettingsSection(
       title: l10n.app,

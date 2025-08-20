@@ -95,7 +95,7 @@ class CalendarViewUiBuilder {
   }) {
     return Consumer(builder: (context, ref, __) {
       final asyncState = ref.watch(scheduleNotifierProvider);
-      final state = asyncState.valueOrNull;
+      final state = asyncState.value;
       final String? selectedGroup = state?.selectedDutyGroup;
 
       // Filter schedules for selected day
@@ -157,7 +157,7 @@ class CalendarViewUiBuilder {
   }) {
     final l10n = AppLocalizations.of(context);
     return Consumer(builder: (context, ref, __) {
-      final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+      final state = ref.watch(scheduleNotifierProvider).value;
       final filterText = (state?.selectedDutyGroup ?? '').isNotEmpty
           ? state!.selectedDutyGroup!
           : l10n.all;
@@ -192,7 +192,7 @@ class _TableCalendarWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final state = ref.watch(scheduleNotifierProvider).value;
     final calendarFormat = state?.calendarFormat ?? CalendarFormat.month;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 

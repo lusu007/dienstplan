@@ -13,7 +13,7 @@ class MyDutyGroupDialog {
       context: context,
       builder: (context) => Consumer(builder: (context, ref, _) {
         final asyncState = ref.watch(scheduleNotifierProvider);
-        final state = asyncState.valueOrNull;
+        final state = asyncState.value;
         final dutyGroups = state?.dutyGroups ?? const <String>[];
         if ((state?.activeConfigName ?? '').isEmpty) {
           return AlertDialog(

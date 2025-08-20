@@ -14,7 +14,7 @@ class CalendarFormatDialog {
       context: context,
       builder: (context) => Consumer(builder: (context, ref, _) {
         final asyncState = ref.watch(scheduleNotifierProvider);
-        final state = asyncState.valueOrNull;
+        final state = asyncState.value;
         return AlertDialog(
           title: Text(l10n.calendarFormat),
           content: Column(

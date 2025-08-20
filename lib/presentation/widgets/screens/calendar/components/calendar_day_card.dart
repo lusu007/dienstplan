@@ -23,7 +23,7 @@ class CalendarDayCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheduleState = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.watch(scheduleNotifierProvider).value;
     final isSelected = _isDaySelected(scheduleState?.selectedDay);
 
     return AnimatedCalendarDay(
