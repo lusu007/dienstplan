@@ -41,7 +41,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         systemNavigationBarDividerColor: Colors.transparent,
       ),
     );
-    
+
     // Enable edge-to-edge display
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
