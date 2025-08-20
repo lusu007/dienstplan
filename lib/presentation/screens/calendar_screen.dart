@@ -8,8 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 
-@RoutePage()
+@RoutePage(name: 'CalendarRoute')
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
@@ -81,7 +82,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
     ref.watch(scheduleNotifierProvider);
     return const Scaffold(
       appBar: CalendarAppBar(),
-      body: CalendarView(),
+      body: SafeAreaWrapper(
+        child: CalendarView(),
+      ),
     );
   }
 }

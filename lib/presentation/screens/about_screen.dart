@@ -6,6 +6,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/a
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_license_page.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
+import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
@@ -20,18 +21,20 @@ class AboutScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.about),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // App Info Section
-            _buildAppInfoSection(context, l10n),
-            const SizedBox(height: 16),
+      body: SafeAreaWrapper(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // App Info Section
+              _buildAppInfoSection(context, l10n),
+              const SizedBox(height: 16),
 
-            // Legal Section
-            _buildLegalSection(context, l10n),
-          ],
+              // Legal Section
+              _buildLegalSection(context, l10n),
+            ],
+          ),
         ),
       ),
     );

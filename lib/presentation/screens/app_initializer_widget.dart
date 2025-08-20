@@ -6,6 +6,7 @@ import 'package:dienstplan/presentation/screens/calendar_screen.dart';
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/widgets/common/error_display.dart';
+import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 
 @RoutePage(name: 'AppInitializerRoute')
 class AppInitializerWidget extends ConsumerStatefulWidget {
@@ -37,13 +38,15 @@ class _AppInitializerWidgetState extends ConsumerState<AppInitializerWidget> {
         // Show error but with fallback to setup screen for recovery
         return Scaffold(
           appBar: AppBar(title: const Text('Dienstplan')),
-          body: CenteredErrorDisplay(
-            error: err,
-            stackTrace: st,
-            onRetry: () {
-              // Invalidate the settings provider to retry loading
-              ref.invalidate(settingsNotifierProvider);
-            },
+          body: SafeAreaWrapper(
+            child: CenteredErrorDisplay(
+              error: err,
+              stackTrace: st,
+              onRetry: () {
+                // Invalidate the settings provider to retry loading
+                ref.invalidate(settingsNotifierProvider);
+              },
+            ),
           ),
         );
       },

@@ -8,6 +8,7 @@ import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -56,60 +57,62 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSection('App Information', [
-                    _buildInfoRow('App Name', _packageInfo?.appName ?? 'N/A'),
-                    _buildInfoRow(
-                        'Package Name', _packageInfo?.packageName ?? 'N/A'),
-                    _buildInfoRow('Version', _packageInfo?.version ?? 'N/A'),
-                    _buildInfoRow(
-                        'Build Number', _packageInfo?.buildNumber ?? 'N/A'),
-                    _buildInfoRow('Full Version',
-                        '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}'),
-                  ]),
-                  const SizedBox(height: 24),
-                  _buildSection('App-Specific Info', [
-                    _buildInfoRow('Active Schedule', _getActiveSchedule()),
-                    _buildInfoRow(
-                        'Loaded Schedules', _getLoadedSchedulesCount()),
-                    _buildInfoRow(
-                        'Preferred Duty Group', _getPreferredDutyGroup()),
-                    _buildInfoRow('Calendar Format', _getCalendarFormat(l10n)),
-                    _buildInfoRow('Language', _getCurrentLanguage()),
-                  ]),
-                  const SizedBox(height: 24),
-                  _buildSection('Database & Storage', [
-                    _buildInfoRow(
-                        'Schedule Configs', _getScheduleConfigsCount()),
-                    _buildInfoRow('Cache Status', _getCacheStatus()),
-                  ]),
-                  const SizedBox(height: 24),
-                  _buildSection('Technical Details', [
-                    _buildInfoRow('Flutter Version', _getFlutterVersion()),
-                    _buildInfoRow('Dart Version', _getDartVersion()),
-                    _buildInfoRow('Platform', _getPlatform()),
-                    _buildInfoRow('Build Type', _getBuildType()),
-                  ]),
-                  const SizedBox(height: 24),
-                  _buildSection('Development Info', [
-                    _buildInfoRow('Contact Email', AppInfo.contactEmail),
-                    _buildInfoRow('Privacy Policy', AppInfo.privacyPolicyUrl),
-                    _buildInfoRow('Copyright', AppInfo.appLegalese),
-                  ]),
-                  const SizedBox(height: 24),
-                  _buildSection('Services Status', [
-                    _buildInfoRow('Sentry Enabled', _getSentryStatus()),
-                    _buildInfoRow('Database Status', _getDatabaseStatus()),
-                  ]),
-                ],
+      body: SafeAreaWrapper(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSection('App Information', [
+                      _buildInfoRow('App Name', _packageInfo?.appName ?? 'N/A'),
+                      _buildInfoRow(
+                          'Package Name', _packageInfo?.packageName ?? 'N/A'),
+                      _buildInfoRow('Version', _packageInfo?.version ?? 'N/A'),
+                      _buildInfoRow(
+                          'Build Number', _packageInfo?.buildNumber ?? 'N/A'),
+                      _buildInfoRow('Full Version',
+                          '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}'),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSection('App-Specific Info', [
+                      _buildInfoRow('Active Schedule', _getActiveSchedule()),
+                      _buildInfoRow(
+                          'Loaded Schedules', _getLoadedSchedulesCount()),
+                      _buildInfoRow(
+                          'Preferred Duty Group', _getPreferredDutyGroup()),
+                      _buildInfoRow('Calendar Format', _getCalendarFormat(l10n)),
+                      _buildInfoRow('Language', _getCurrentLanguage()),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSection('Database & Storage', [
+                      _buildInfoRow(
+                          'Schedule Configs', _getScheduleConfigsCount()),
+                      _buildInfoRow('Cache Status', _getCacheStatus()),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSection('Technical Details', [
+                      _buildInfoRow('Flutter Version', _getFlutterVersion()),
+                      _buildInfoRow('Dart Version', _getDartVersion()),
+                      _buildInfoRow('Platform', _getPlatform()),
+                      _buildInfoRow('Build Type', _getBuildType()),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSection('Development Info', [
+                      _buildInfoRow('Contact Email', AppInfo.contactEmail),
+                      _buildInfoRow('Privacy Policy', AppInfo.privacyPolicyUrl),
+                      _buildInfoRow('Copyright', AppInfo.appLegalese),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSection('Services Status', [
+                      _buildInfoRow('Sentry Enabled', _getSentryStatus()),
+                      _buildInfoRow('Database Status', _getDatabaseStatus()),
+                    ]),
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 
