@@ -26,7 +26,7 @@ class _ThemeModeDialogContentState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final state = ref.watch(settingsNotifierProvider).valueOrNull;
+    final state = ref.watch(settingsNotifierProvider).value;
     final ThemePreference current =
         state?.themePreference ?? ThemePreference.system;
 

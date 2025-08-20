@@ -37,7 +37,7 @@ class PartnerConfigDialog {
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+          final state = ref.watch(scheduleNotifierProvider).value;
           final notifier = ref.read(scheduleNotifierProvider.notifier);
           final DateTime? initialFocused = state?.focusedDay;
           final configs = state?.configs ?? const [];

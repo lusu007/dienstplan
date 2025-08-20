@@ -9,7 +9,7 @@ class PartnerGroupDialog {
     final container = ProviderScope.containerOf(context, listen: false);
 
     // Safety check: prevent dialog from opening if no partner duty plan is selected
-    final state = container.read(scheduleNotifierProvider).valueOrNull;
+    final state = container.read(scheduleNotifierProvider).value;
     if (state?.partnerConfigName == null || state!.partnerConfigName!.isEmpty) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -26,7 +26,7 @@ class PartnerGroupDialog {
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+          final state = ref.watch(scheduleNotifierProvider).value;
           final notifier = ref.read(scheduleNotifierProvider.notifier);
           final DateTime? initialFocused = state?.focusedDay;
           final l10n = AppLocalizations.of(context);

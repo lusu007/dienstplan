@@ -73,7 +73,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     }
 
     final domain.ThemePreference? uiThemePref =
-        settingsState.valueOrNull?.themePreference;
+        settingsState.value?.themePreference;
 
     // Determine theme mode with immediate fallback to light mode
     ThemeMode deriveFromPref(domain.ThemePreference pref) {

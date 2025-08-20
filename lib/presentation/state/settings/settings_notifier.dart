@@ -48,7 +48,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> setLanguage(String language) async {
-    final current = state.valueOrNull ?? SettingsUiState.initial();
+    final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(language: language));
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
@@ -65,7 +65,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> setThemePreference(ThemePreference preference) async {
-    final current = state.valueOrNull ?? SettingsUiState.initial();
+    final current = state.value ?? SettingsUiState.initial();
     // Update UI immediately
     state = AsyncData(current.copyWith(themePreference: preference));
 
@@ -94,7 +94,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> setCalendarFormat(CalendarFormat format) async {
-    final current = state.valueOrNull ?? SettingsUiState.initial();
+    final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(calendarFormat: format));
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
@@ -110,7 +110,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> setActiveConfigName(String name) async {
-    final current = state.valueOrNull ?? SettingsUiState.initial();
+    final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(activeConfigName: name));
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
@@ -127,7 +127,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> setMyDutyGroup(String? group) async {
-    final current = state.valueOrNull ?? SettingsUiState.initial();
+    final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(myDutyGroup: group));
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
@@ -150,7 +150,7 @@ class SettingsNotifier extends _$SettingsNotifier {
       ref.invalidate(themeModeProvider);
       state = AsyncData(await _load());
     } catch (_) {
-      final current = state.valueOrNull ?? SettingsUiState.initial();
+      final current = state.value ?? SettingsUiState.initial();
       state = AsyncData(current.copyWith(error: 'Failed to reset settings'));
     }
   }
@@ -159,7 +159,7 @@ class SettingsNotifier extends _$SettingsNotifier {
     try {
       await _saveSettingsUseCase!.execute(settings);
     } catch (_) {
-      final current = state.valueOrNull ?? SettingsUiState.initial();
+      final current = state.value ?? SettingsUiState.initial();
       state = AsyncData(current.copyWith(error: 'Failed to save settings'));
     }
   }

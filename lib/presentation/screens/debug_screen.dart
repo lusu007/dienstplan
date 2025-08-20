@@ -203,22 +203,22 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   }
 
   String _getActiveSchedule() {
-    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.read(scheduleNotifierProvider).value;
     return scheduleState?.activeConfigName ?? 'None';
   }
 
   String _getLoadedSchedulesCount() {
-    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.read(scheduleNotifierProvider).value;
     return '${scheduleState?.schedules.length ?? 0} schedules';
   }
 
   String _getPreferredDutyGroup() {
-    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.read(scheduleNotifierProvider).value;
     return scheduleState?.preferredDutyGroup ?? 'None';
   }
 
   String _getCalendarFormat(AppLocalizations l10n) {
-    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.read(scheduleNotifierProvider).value;
     if (scheduleState == null) return 'Unknown';
 
     switch (scheduleState.calendarFormat) {
@@ -235,7 +235,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   String _getCurrentLanguage() {
     try {
-      final languageService = ref.read(languageServiceProvider).valueOrNull;
+      final languageService = ref.read(languageServiceProvider).value;
       return languageService?.currentLocale.languageCode ?? 'Unknown';
     } catch (e) {
       return 'Unknown';
@@ -243,12 +243,12 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   }
 
   String _getScheduleConfigsCount() {
-    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.read(scheduleNotifierProvider).value;
     return '${scheduleState?.configs.length ?? 0} configs';
   }
 
   String _getCacheStatus() {
-    final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.read(scheduleNotifierProvider).value;
     return scheduleState?.schedules.isNotEmpty == true ? 'Active' : 'Empty';
   }
 

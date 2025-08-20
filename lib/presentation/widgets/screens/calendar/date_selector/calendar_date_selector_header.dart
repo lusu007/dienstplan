@@ -23,7 +23,7 @@ class CalendarDateSelectorHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final state = ref.watch(scheduleNotifierProvider).value;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 
     return Container(

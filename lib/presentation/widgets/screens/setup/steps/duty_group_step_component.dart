@@ -23,7 +23,7 @@ class DutyGroupStepComponent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final scheduleState = ref.watch(scheduleNotifierProvider).valueOrNull;
+    final scheduleState = ref.watch(scheduleNotifierProvider).value;
     final currentDutyGroup = scheduleState?.preferredDutyGroup;
     final hasExistingDutyGroup =
         currentDutyGroup != null && currentDutyGroup.isNotEmpty;

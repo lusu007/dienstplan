@@ -180,7 +180,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
   Future<void> _ensureActiveConfigInState() async {
     final ScheduleUiState current =
-        state.valueOrNull ?? ScheduleUiState.initial();
+        state.value ?? ScheduleUiState.initial();
     final String? existingActive = current.activeConfigName;
     if (existingActive != null && existingActive.isNotEmpty) {
       return;
@@ -192,7 +192,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       final String? activeName = settings?.activeConfigName ??
           (configs.isNotEmpty ? configs.first.name : null);
       if (activeName != null && activeName.isNotEmpty) {
-        final updated = (state.valueOrNull ?? current).copyWith(
+        final updated = (state.value ?? current).copyWith(
           activeConfigName: activeName,
           activeConfig:
               _configQueryService!.selectActiveConfig(configs, activeName),
@@ -209,7 +209,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   // Validation moved into use case
 
   Future<void> setFocusedDay(DateTime day, {bool shouldLoad = true}) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
 
     if (!shouldLoad) {
       state = AsyncData(current.copyWith(focusedDay: day));
@@ -252,7 +252,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
         // Also load partner config schedules for the same range
         final String? partnerConfig =
-            (state.valueOrNull ?? current).partnerConfigName;
+            (state.value ?? current).partnerConfigName;
         if (partnerConfig != null && partnerConfig.isNotEmpty) {
           final partnerResult =
               await _getSchedulesUseCase!.executeForDateRangeSafe(
@@ -332,7 +332,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setSelectedDay(DateTime? day) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(selectedDay: day));
 
     // If a day is selected and we have an active config, ensure its schedules are loaded
@@ -360,7 +360,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             );
             if (selectedResult.isFailure) {
               final message = await _presentFailure(selectedResult.failure);
-              state = AsyncData((state.valueOrNull ?? current)
+              state = AsyncData((state.value ?? current)
                   .copyWith(error: message, selectedDay: day));
               return;
             }
@@ -368,7 +368,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
             // Also load partner schedules for selected range
             final String? partnerConfig =
-                (state.valueOrNull ?? current).partnerConfigName;
+                (state.value ?? current).partnerConfigName;
             if (partnerConfig != null && partnerConfig.isNotEmpty) {
               final partnerResult =
                   await _getSchedulesUseCase!.executeForDateRangeSafe(
@@ -400,7 +400,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
               newSchedules = <Schedule>[...newSchedules, ...ensured];
               // Ensure partner month as well
               final String? partnerConfig =
-                  (state.valueOrNull ?? current).partnerConfigName;
+                  (state.value ?? current).partnerConfigName;
               if (partnerConfig != null && partnerConfig.isNotEmpty) {
                 final List<Schedule> ensuredPartner =
                     await _ensureMonthSchedulesUseCase!.execute(
@@ -421,7 +421,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             );
 
             state = AsyncData(
-              (state.valueOrNull ?? current).copyWith(
+              (state.value ?? current).copyWith(
                 schedules: merged,
                 selectedDay: day,
               ),
@@ -429,7 +429,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           } catch (e) {
             // Handle error but don't break the UI
             state = AsyncData(
-              (state.valueOrNull ?? current).copyWith(
+              (state.value ?? current).copyWith(
                 error: 'Failed to load schedules for selected day',
                 selectedDay: day,
               ),
@@ -441,7 +441,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setCalendarFormat(CalendarFormat format) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(calendarFormat: format));
     final settingsResult = await _getSettingsUseCase!.executeSafe();
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
@@ -452,7 +452,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setActiveConfig(DutyScheduleConfig config) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(isLoading: true));
     try {
       final setResult = await _setActiveConfigUseCase!.executeSafe(config.name);
@@ -521,7 +521,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setPreferredDutyGroup(String? group) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(preferredDutyGroup: group));
     final settingsResult = await _getSettingsUseCase!.executeSafe();
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
@@ -533,7 +533,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
   Future<void> setPartnerConfigName(String? configName,
       {bool silent = false}) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     final bool isClearing = (configName == null || configName.isEmpty);
     state = AsyncData(current.copyWith(
       partnerConfigName: configName,
@@ -554,15 +554,15 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     }
     // Sequence strictly: 1) ensure active selected day, 2) ensure active focused range, 3) ensure partner focused range
     final DateTime dayToEnsure =
-        (state.valueOrNull?.selectedDay ?? current.selectedDay) ??
-            (state.valueOrNull?.focusedDay ?? current.focusedDay) ??
+        (state.value?.selectedDay ?? current.selectedDay) ??
+            (state.value?.focusedDay ?? current.focusedDay) ??
             DateTime.now();
     await _ensureActiveConfigInState();
     await ensureActiveDay(dayToEnsure);
     // Trigger immediate rebuild
-    state = AsyncData((state.valueOrNull ?? current).copyWith());
+    state = AsyncData((state.value ?? current).copyWith());
     // Optionally bump focused day to force visible cell rebuilds
-    final DateTime? focused = (state.valueOrNull ?? current).focusedDay;
+    final DateTime? focused = (state.value ?? current).focusedDay;
     if (focused != null) {
       await setFocusedDay(focused);
     }
@@ -571,7 +571,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setPartnerDutyGroup(String? group, {bool silent = false}) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(partnerDutyGroup: group));
     final settingsResult = await _getSettingsUseCase!.executeSafe();
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
@@ -585,15 +585,15 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     }
     // Sequence strictly: 1) ensure active selected day, 2) ensure active focused range, 3) ensure partner focused range
     final DateTime dayToEnsure =
-        (state.valueOrNull?.selectedDay ?? current.selectedDay) ??
-            (state.valueOrNull?.focusedDay ?? current.focusedDay) ??
+        (state.value?.selectedDay ?? current.selectedDay) ??
+            (state.value?.focusedDay ?? current.focusedDay) ??
             DateTime.now();
     await _ensureActiveConfigInState();
     await ensureActiveDay(dayToEnsure);
     // Trigger immediate rebuild
-    state = AsyncData((state.valueOrNull ?? current).copyWith());
+    state = AsyncData((state.value ?? current).copyWith());
     // Optionally bump focused day to force visible cell rebuilds
-    final DateTime? focused = (state.valueOrNull ?? current).focusedDay;
+    final DateTime? focused = (state.value ?? current).focusedDay;
     if (focused != null) {
       await setFocusedDay(focused);
     }
@@ -602,7 +602,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setPartnerAccentColor(int? colorValue) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(partnerAccentColorValue: colorValue));
     final settingsResult = await _getSettingsUseCase!.executeSafe();
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
@@ -613,7 +613,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> setMyAccentColor(int? colorValue) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(myAccentColorValue: colorValue));
     final settingsResult = await _getSettingsUseCase!.executeSafe();
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
@@ -625,15 +625,15 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
   Future<void> applyPartnerSelectionChanges() async {
     final ScheduleUiState current =
-        state.valueOrNull ?? ScheduleUiState.initial();
+        state.value ?? ScheduleUiState.initial();
     await _ensureActiveConfigInState();
     final DateTime dayToEnsure =
-        (state.valueOrNull?.selectedDay ?? current.selectedDay) ??
-            (state.valueOrNull?.focusedDay ?? current.focusedDay) ??
+        (state.value?.selectedDay ?? current.selectedDay) ??
+            (state.value?.focusedDay ?? current.focusedDay) ??
             DateTime.now();
     await ensureActiveDay(dayToEnsure);
-    state = AsyncData((state.valueOrNull ?? current).copyWith());
-    final DateTime? focused = (state.valueOrNull ?? current).focusedDay;
+    state = AsyncData((state.value ?? current).copyWith());
+    final DateTime? focused = (state.value ?? current).focusedDay;
     if (focused != null) {
       await setFocusedDay(focused, shouldLoad: false);
     }
@@ -642,7 +642,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   Future<void> _ensurePartnerDataForFocusedRange() async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     final String? partnerConfig = current.partnerConfigName;
     if (partnerConfig == null || partnerConfig.isEmpty) return;
 
@@ -682,7 +682,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       ]);
 
       final List<Schedule> existingNow =
-          (state.valueOrNull?.schedules ?? current.schedules).toList();
+          (state.value?.schedules ?? current.schedules).toList();
       final List<Schedule> merged =
           _scheduleMergeService!.mergeReplacingConfigInRange(
         existing: existingNow,
@@ -692,14 +692,14 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       );
 
       state =
-          AsyncData((state.valueOrNull ?? current).copyWith(schedules: merged));
+          AsyncData((state.value ?? current).copyWith(schedules: merged));
     } catch (_) {
       // Silent fail; UI remains functional
     }
   }
 
   Future<void> _ensureActiveDataForFocusedRange() async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     final String? activeName = current.activeConfigName;
     if (activeName == null || activeName.isEmpty) return;
 
@@ -740,7 +740,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       ]);
 
       final List<Schedule> existingNow =
-          (state.valueOrNull?.schedules ?? current.schedules).toList();
+          (state.value?.schedules ?? current.schedules).toList();
       final List<Schedule> merged =
           _scheduleMergeService!.mergeReplacingConfigInRange(
         existing: existingNow,
@@ -750,16 +750,16 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       );
 
       state =
-          AsyncData((state.valueOrNull ?? current).copyWith(schedules: merged));
+          AsyncData((state.value ?? current).copyWith(schedules: merged));
     } catch (_) {
       // Silent fail; UI remains functional
     }
   }
 
   Future<void> ensureActiveDay(DateTime day) async {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     await _ensureActiveConfigInState();
-    final String? activeName = (state.valueOrNull ?? current).activeConfigName;
+    final String? activeName = (state.value ?? current).activeConfigName;
     if (activeName == null || activeName.isEmpty) return;
 
     // If we already have any schedule for that day and active config, skip
@@ -797,20 +797,20 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
       final List<Schedule> merged =
           _scheduleMergeService!.mergeReplacingConfigInRange(
-        existing: (state.valueOrNull?.schedules ?? current.schedules).toList(),
+        existing: (state.value?.schedules ?? current.schedules).toList(),
         incoming: incoming,
         range: selectedRange,
         replaceConfigName: activeName,
       );
       state =
-          AsyncData((state.valueOrNull ?? current).copyWith(schedules: merged));
+          AsyncData((state.value ?? current).copyWith(schedules: merged));
     } catch (_) {
       // ignore errors
     }
   }
 
   void setSelectedDutyGroup(String? group) {
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(selectedDutyGroup: group));
   }
 
@@ -824,7 +824,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     final now = DateTime.now();
 
     // Set loading state
-    final current = state.valueOrNull ?? ScheduleUiState.initial();
+    final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
@@ -836,7 +836,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
       // Clear loading state
       state =
-          AsyncData((state.valueOrNull ?? current).copyWith(isLoading: false));
+          AsyncData((state.value ?? current).copyWith(isLoading: false));
     } catch (e) {
       // Handle error and clear loading state
       state = AsyncData(current.copyWith(

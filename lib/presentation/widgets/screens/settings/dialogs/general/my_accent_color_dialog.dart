@@ -10,7 +10,7 @@ class MyAccentColorDialog {
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(scheduleNotifierProvider).valueOrNull;
+          final state = ref.watch(scheduleNotifierProvider).value;
           final l10n = AppLocalizations.of(context);
           // Use default color if no color is explicitly selected
           final int selected = state?.myAccentColorValue ??

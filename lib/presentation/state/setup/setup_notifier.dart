@@ -74,7 +74,7 @@ class SetupNotifier extends _$SetupNotifier {
   }
 
   Future<void> setTheme(ThemePreference theme) async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedTheme: theme));
 
     // Apply theme immediately
@@ -82,17 +82,17 @@ class SetupNotifier extends _$SetupNotifier {
   }
 
   Future<void> setConfig(DutyScheduleConfig? config) async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedConfig: config));
   }
 
   Future<void> setDutyGroup(String? dutyGroup) async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedDutyGroup: dutyGroup));
   }
 
   Future<void> setPartnerConfig(DutyScheduleConfig? config) async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(
       selectedPartnerConfig: config,
       selectedPartnerDutyGroup: null,
@@ -100,12 +100,12 @@ class SetupNotifier extends _$SetupNotifier {
   }
 
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedPartnerDutyGroup: dutyGroup));
   }
 
   Future<void> nextStep() async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
 
     if (current.currentStep == 1) {
       state = AsyncData(current.copyWith(currentStep: 2));
@@ -114,7 +114,7 @@ class SetupNotifier extends _$SetupNotifier {
 
     if (current.currentStep == 2 && current.selectedConfig != null) {
       // Pre-select current duty group if it exists
-      final scheduleState = ref.read(scheduleNotifierProvider).valueOrNull;
+      final scheduleState = ref.read(scheduleNotifierProvider).value;
       final currentDutyGroup = scheduleState?.preferredDutyGroup;
 
       state = AsyncData(current.copyWith(
@@ -153,7 +153,7 @@ class SetupNotifier extends _$SetupNotifier {
   }
 
   Future<void> previousStep() async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
 
     if (current.currentStep > 1) {
       final int newStep = current.currentStep - 1;
@@ -188,7 +188,7 @@ class SetupNotifier extends _$SetupNotifier {
   }
 
   Future<void> _saveDefaultConfig() async {
-    final current = state.valueOrNull ?? SetupUiState.initial();
+    final current = state.value ?? SetupUiState.initial();
 
     try {
       AppLogger.i('Starting setup completion process');

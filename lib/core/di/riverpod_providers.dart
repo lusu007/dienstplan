@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dienstplan/data/services/language_service.dart';
+import 'package:dienstplan/domain/entities/settings.dart' as domain;
+import 'package:dienstplan/core/constants/app_colors.dart';
 
 // Services
 import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
-import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/data/services/share_service.dart';
 
@@ -42,9 +43,7 @@ import 'package:dienstplan/domain/use_cases/load_default_config_use_case.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
-import 'package:dienstplan/domain/entities/settings.dart' as domain;
 import 'package:dienstplan/domain/services/config_query_service.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 
 part 'riverpod_providers.g.dart';
 
