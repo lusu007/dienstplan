@@ -286,6 +286,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareAppError => 'Fehler beim Teilen der App';
 
   @override
+  String get shareAppImageMessage =>
+      'Ich habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nHoffe, sie gefällt dir! 🚔';
+
+  @override
   String get other => 'Weiteres';
 
   @override

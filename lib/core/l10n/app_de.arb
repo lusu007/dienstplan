@@ -360,6 +360,10 @@
   "@shareAppError": {
     "description": "Error message when sharing app fails"
   },
+  "shareAppImageMessage": "Ich habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nHoffe, sie gefällt dir! 🚔",
+  "@shareAppImageMessage": {
+    "description": "Message for the share image (without links)"
+  },
   "other": "Weiteres",
   "@other": {
     "description": "Title for other settings section"

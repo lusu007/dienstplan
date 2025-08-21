@@ -620,6 +620,12 @@ abstract class AppLocalizations {
   /// **'Error sharing app'**
   String get shareAppError;
 
+  /// Message for the share image (without links)
+  ///
+  /// In en, this message translates to:
+  /// **'I found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nHope you like it! 🚔'**
+  String get shareAppImageMessage;
+
   /// Title for other settings section
   ///
   /// In en, this message translates to:

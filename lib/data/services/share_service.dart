@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 /// Service for sharing app content across different platforms
@@ -120,28 +121,60 @@ class ShareService {
         backgroundPaint,
       );
 
-      // Add app logo area (placeholder circle)
-      final logoPaint = Paint()
-        ..color = Colors.white.withValues(alpha: 0.9)
-        ..style = PaintingStyle.fill;
-
-      const double logoRadius = 80;
-      canvas.drawCircle(
-        const Offset(width / 2, height * 0.25),
-        logoRadius,
-        logoPaint,
+      // Draw background box for logo
+      const double logoSize = 480;
+      final Rect logoBoxRect = Rect.fromCenter(
+        center: const Offset(width / 2, height * 0.25),
+        width: logoSize,
+        height: logoSize,
       );
 
-      // Add police/duty icon in the logo area
-      final iconPaint = Paint()
-        ..color = const Color(0xFF1565C0)
+      final boxPaint = Paint()
+        ..color = const Color(0xFFFEFEFE) // Light theme surface color
         ..style = PaintingStyle.fill;
 
-      canvas.drawCircle(
-        const Offset(width / 2, height * 0.25),
-        logoRadius * 0.6,
-        iconPaint,
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          logoBoxRect,
+          const Radius.circular(20),
+        ),
+        boxPaint,
       );
+
+      // Load and draw the app logo
+      try {
+        final ByteData logoData = await rootBundle.load(AppInfo.appIconPath);
+        final ui.Codec codec =
+            await ui.instantiateImageCodec(logoData.buffer.asUint8List());
+        final ui.FrameInfo frameInfo = await codec.getNextFrame();
+        final ui.Image logoImage = frameInfo.image;
+
+        final Rect logoRect = Rect.fromCenter(
+          center: const Offset(width / 2, height * 0.25),
+          width: logoSize,
+          height: logoSize,
+        );
+
+        canvas.drawImageRect(
+          logoImage,
+          Rect.fromLTWH(
+              0, 0, logoImage.width.toDouble(), logoImage.height.toDouble()),
+          logoRect,
+          Paint(),
+        );
+      } catch (e) {
+        // Fallback to simple circle if logo loading fails
+        final logoPaint = Paint()
+          ..color = const Color(0xFF1565C0)
+          ..style = PaintingStyle.fill;
+
+        const double logoRadius = 80;
+        canvas.drawCircle(
+          const Offset(width / 2, height * 0.25),
+          logoRadius,
+          logoPaint,
+        );
+      }
 
       // Add text content
       final textPainter = TextPainter(
@@ -149,20 +182,20 @@ class ShareService {
           children: [
             // App title
             const TextSpan(
-              text: 'Dienstplan App\n\n',
+              text: '${AppInfo.appName} App\n\n',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 48,
+                fontSize: 64,
                 fontWeight: FontWeight.bold,
                 height: 1.2,
               ),
             ),
-            // Share message
+            // Share message (without links since they're in the text)
             TextSpan(
-              text: text.replaceAll('Hey! 👋\n\n', '').replaceAll('🚔', ''),
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.95),
-                fontSize: 28,
+              text: l10n.shareAppImageMessage,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 42,
                 height: 1.4,
               ),
             ),

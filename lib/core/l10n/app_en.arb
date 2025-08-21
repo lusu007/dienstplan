@@ -363,6 +363,10 @@
   "@shareAppError": {
     "description": "Error message when sharing app fails"
   },
+  "shareAppImageMessage": "I found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nHope you like it! 🚔",
+  "@shareAppImageMessage": {
+    "description": "Message for the share image (without links)"
+  },
   "other": "Other",
   "@other": {
     "description": "Title for other settings section"
