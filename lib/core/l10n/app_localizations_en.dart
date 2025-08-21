@@ -286,6 +286,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareAppError => 'Error sharing app';
 
   @override
+  String get shareAppImageMessage =>
+      'I found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nHope you like it! 🚔';
+
+  @override
   String get other => 'Other';
 
   @override
