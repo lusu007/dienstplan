@@ -145,7 +145,7 @@
         "id": "OST",
         "name": "Ostzug",
         "rhythm": "bepo_standard",
-        "offset_weeks": 6
+        "offset_weeks": 1
       },
       {
         "id": "SUD",
