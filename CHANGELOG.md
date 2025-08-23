@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/lusu007/dienstplan/compare/v0.9.1...v0.9.2) (2025-08-23)
+
+
+### Bug Fixes
+
+* Invalidate old schedules and generate new ones on version change ([#259](https://github.com/lusu007/dienstplan/issues/259)) ([b405466](https://github.com/lusu007/dienstplan/commit/b405466930b368bb0f0ab73fafeb1452ced4e4ab))
+
 ## [0.9.1](https://github.com/lusu007/dienstplan/compare/v0.9.0...v0.9.1) (2025-08-23)
 
 
