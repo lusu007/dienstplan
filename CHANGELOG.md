@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.1](https://github.com/lusu007/dienstplan/compare/v0.9.0...v0.9.1) (2025-08-23)
+
+
+### Bug Fixes
+
+* Formatting is not valid in some files ([#251](https://github.com/lusu007/dienstplan/issues/251)) ([f4e6252](https://github.com/lusu007/dienstplan/commit/f4e6252fa1b7a1e85f66448adee4f542c9454e2f))
+* Sharing App into WhatsApp status is possible ([#252](https://github.com/lusu007/dienstplan/issues/252)) ([911cd0f](https://github.com/lusu007/dienstplan/commit/911cd0fde7326a156d1e4d420ef9315d43292272))
+* UI hides behind Android navigation pane ([#249](https://github.com/lusu007/dienstplan/issues/249)) ([63dc70e](https://github.com/lusu007/dienstplan/commit/63dc70e33768402d6030ed39a39ecd3d977bf019))
+* Verkehrszug and Ostzug have the same pattern ([#258](https://github.com/lusu007/dienstplan/issues/258)) ([427286a](https://github.com/lusu007/dienstplan/commit/427286a6007fd984ab39d1da093295966590e968))
+
 ## [0.9.0](https://github.com/lusu007/dienstplan/compare/v0.8.1...v0.9.0) (2025-08-18)
 
 
