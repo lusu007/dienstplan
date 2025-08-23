@@ -775,6 +775,19 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select your partner\'s duty group.'**
   String get selectPartnerDutyGroupMessage;
+
+  /// Notification message for single schedule update
+  ///
+  /// In en, this message translates to:
+  /// **'Duty schedule \"{configName}\" has been updated (Version {oldVersion} → {newVersion}). All services will be regenerated.'**
+  String scheduleUpdateNotification(
+      String configName, String oldVersion, String newVersion);
+
+  /// Notification message for multiple schedule updates
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple duty schedules have been updated: {configNames}. All services will be regenerated.'**
+  String multipleScheduleUpdatesNotification(String configNames);
 }
 
 class _AppLocalizationsDelegate

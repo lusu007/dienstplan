@@ -24,6 +24,9 @@ abstract class ScheduleRepository {
   Future<void> clearSchedules();
   Future<Result<void>> clearSchedulesSafe();
 
+  Future<void> deleteSchedulesByConfigName(String configName);
+  Future<Result<void>> deleteSchedulesByConfigNameSafe(String configName);
+
   Future<List<DutyType>> getDutyTypes({required String configName});
   Future<Result<List<DutyType>>> getDutyTypesSafe({required String configName});
 }

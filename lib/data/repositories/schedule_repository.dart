@@ -138,6 +138,33 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   }
 
   @override
+  Future<void> deleteSchedulesByConfigName(String configName) async {
+    try {
+      AppLogger.i(
+          'ScheduleRepository: Deleting schedules for config: $configName');
+      await _schedulesDao.deleteSchedulesByConfigName(configName);
+      AppLogger.i(
+          'ScheduleRepository: Successfully deleted schedules for config: $configName');
+    } catch (e, stackTrace) {
+      AppLogger.e('ScheduleRepository: Error deleting schedules for config', e,
+          stackTrace);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Result<void>> deleteSchedulesByConfigNameSafe(
+      String configName) async {
+    try {
+      await deleteSchedulesByConfigName(configName);
+      return Result.success<void>(null);
+    } catch (e, stackTrace) {
+      final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
+      return Result.createFailure<void>(failure);
+    }
+  }
+
+  @override
   Future<List<DutyType>> getDutyTypes({required String configName}) async {
     try {
       AppLogger.i(

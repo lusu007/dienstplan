@@ -11,6 +11,7 @@ import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/data/services/share_service.dart';
+import 'package:dienstplan/data/services/notification_service.dart';
 
 // DAOs
 import 'package:dienstplan/data/daos/schedules_dao.dart';
@@ -95,9 +96,12 @@ Future<ScheduleConfigsDao> scheduleConfigsDao(Ref ref) async {
 @Riverpod(keepAlive: true)
 Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final ScheduleConfigsDao dao =
+  final ScheduleConfigsDao configsDao =
       await ref.watch(scheduleConfigsDaoProvider.future);
-  final ScheduleConfigService service = ScheduleConfigService(prefs, dao);
+  final SchedulesDao schedulesDao =
+      await ref.watch(schedulesDaoProvider.future);
+  final ScheduleConfigService service =
+      ScheduleConfigService(prefs, configsDao, schedulesDao);
   await service.initialize();
   return service;
 }
@@ -277,6 +281,11 @@ Future<SentryState> sentryState(Ref ref) async {
 @Riverpod(keepAlive: true)
 ShareService shareService(Ref ref) {
   return ShareService();
+}
+
+@riverpod
+NotificationService notificationService(Ref ref) {
+  return NotificationService();
 }
 
 // Repositories

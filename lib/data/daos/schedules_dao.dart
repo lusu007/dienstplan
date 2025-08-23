@@ -288,4 +288,23 @@ class SchedulesDao {
       rethrow;
     }
   }
+
+  /// Delete all schedules for a specific config
+  Future<void> deleteSchedulesByConfigName(String configName) async {
+    try {
+      AppLogger.i('SchedulesDao: Deleting schedules for config: $configName');
+      final Database db = await _databaseService.database;
+      final int deletedCount = await db.delete(
+        'schedules',
+        where: 'config_name = ?',
+        whereArgs: <Object?>[configName],
+      );
+      AppLogger.i(
+          'SchedulesDao: Deleted $deletedCount schedules for config: $configName');
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'SchedulesDao: Error deleting schedules for config', e, stackTrace);
+      rethrow;
+    }
+  }
 }

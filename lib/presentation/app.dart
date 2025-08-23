@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/domain/entities/settings.dart' as domain;
+import 'package:dienstplan/data/services/notification_service.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -121,6 +122,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       routerDelegate: _appRouter.delegate(
           navigatorObservers: () => <NavigatorObserver>[AutoRouteObserver()]),
       routeInformationParser: _appRouter.defaultRouteParser(),
+      scaffoldMessengerKey: NotificationService.scaffoldMessengerKey,
     );
   }
 }
