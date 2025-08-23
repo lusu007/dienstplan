@@ -1,12 +1,12 @@
 {
-    "version": "1.2",
+    "version": "1.3",
     "meta": {
       "name": "Bereitschaftspolizei Züge",
       "created_by": "Lukas",
       "description": "Rotationsplan für die Züge der Bereitschaftspolizei der Polizei Bremen",
       "icon": "shield",
       "start_week_day": "Monday",
-      "start_date": "2025-06-30",
+      "start_date": "2025-08-18",
       "police_authority": "Polizei Bremen",
       "days": [
         "Mo",
@@ -145,31 +145,31 @@
         "id": "OST",
         "name": "Ostzug",
         "rhythm": "bepo_standard",
-        "offset_weeks": 6
+        "offset_weeks": 5
       },
       {
         "id": "SUD",
         "name": "Südzug",
         "rhythm": "bepo_standard",
-        "offset_weeks": 5
+        "offset_weeks": 4
       },
       {
         "id": "MW1",
         "name": "MitteWest 1",
         "rhythm": "bepo_standard",
-        "offset_weeks": 4
+        "offset_weeks": 3
       },
       {
         "id": "MW2",
         "name": "MitteWest 2",
         "rhythm": "bepo_standard",
-        "offset_weeks": 2
+        "offset_weeks": 1
       },
       {
         "id": "NOR",
         "name": "Nordzug",
         "rhythm": "bepo_standard",
-        "offset_weeks": 3
+        "offset_weeks": 2
       }
     ]
   }
