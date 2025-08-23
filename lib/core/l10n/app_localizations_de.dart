@@ -369,4 +369,15 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get selectPartnerDutyGroupMessage =>
       'Wähle die Dienstgruppe deines Partners aus.';
+
+  @override
+  String scheduleUpdateNotification(
+      String configName, String oldVersion, String newVersion) {
+    return 'Dienstplan \"$configName\" wurde aktualisiert (Version $oldVersion → $newVersion). Alle Dienste werden neu generiert.';
+  }
+
+  @override
+  String multipleScheduleUpdatesNotification(String configNames) {
+    return 'Mehrere Dienstpläne wurden aktualisiert: $configNames. Alle Dienste werden neu generiert.';
+  }
 }

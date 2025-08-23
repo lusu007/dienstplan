@@ -8,19 +8,24 @@ import 'package:flutter/services.dart';
 import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart';
 import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
+import 'package:dienstplan/data/daos/schedules_dao.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/prefs_keys.dart';
+import 'package:dienstplan/data/services/notification_service.dart';
+import 'package:dienstplan/core/l10n/app_localizations_de.dart';
 
 class ScheduleConfigService extends ChangeNotifier {
   final SharedPreferences _prefs;
   final ScheduleConfigsDao _scheduleConfigsDao;
+  final SchedulesDao _schedulesDao;
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _defaultConfig;
   late Directory _configsPath;
   static const String _configDirName = 'configs';
   static const String _setupCompletedKey = kPrefsKeySetupCompleted;
 
-  ScheduleConfigService(this._prefs, this._scheduleConfigsDao);
+  ScheduleConfigService(
+      this._prefs, this._scheduleConfigsDao, this._schedulesDao);
 
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get defaultConfig => _defaultConfig;
@@ -35,6 +40,7 @@ class ScheduleConfigService extends ChangeNotifier {
         await _configsPath.create(recursive: true);
       }
       await _loadConfigs();
+      await _checkVersionsAndInvalidateSchedules();
     } catch (e, stackTrace) {
       AppLogger.e('Error initializing ScheduleConfigService', e, stackTrace);
       rethrow;
@@ -298,6 +304,116 @@ class ScheduleConfigService extends ChangeNotifier {
     } catch (e) {
       AppLogger.e('Error loading default config', e);
       return null;
+    }
+  }
+
+  Future<void> _checkVersionsAndInvalidateSchedules() async {
+    try {
+      AppLogger.i('Checking schedule config versions');
+
+      final List<Map<String, String>> updatedConfigs = [];
+
+      for (final config in _configs) {
+        // Get stored version from database
+        final storedConfigData =
+            await _scheduleConfigsDao.getScheduleConfigByName(config.name);
+
+        if (storedConfigData != null) {
+          final storedVersion = storedConfigData['version'] as String;
+
+          // Check if version has changed
+          if (storedVersion != config.version) {
+            AppLogger.i(
+                'Version mismatch for config ${config.name}: stored=$storedVersion, current=${config.version}. Invalidating schedules.');
+
+            // Delete all schedules for this config
+            await _schedulesDao.deleteSchedulesByConfigName(config.name);
+
+            // Update the stored config with new version
+            await _scheduleConfigsDao.saveScheduleConfig(
+              name: config.name,
+              version: config.version,
+              displayName: config.meta.name,
+              description: config.meta.description,
+              policeAuthority: config.meta.policeAuthority,
+              icon: config.meta.icon,
+              startDate: config.meta.startDate,
+              startWeekDay: config.meta.startWeekDay,
+              days: config.meta.days,
+            );
+
+            // Track updated config for notification
+            updatedConfigs.add({
+              'name': config.meta.name,
+              'oldVersion': storedVersion,
+              'newVersion': config.version,
+            });
+
+            AppLogger.i(
+                'Updated config ${config.name} to version ${config.version}');
+          } else {
+            AppLogger.i(
+                'Config ${config.name} version ${config.version} is up to date');
+          }
+        } else {
+          // Config not in database yet, save it
+          AppLogger.i(
+              'New config ${config.name} version ${config.version}, saving to database');
+          await _scheduleConfigsDao.saveScheduleConfig(
+            name: config.name,
+            version: config.version,
+            displayName: config.meta.name,
+            description: config.meta.description,
+            policeAuthority: config.meta.policeAuthority,
+            icon: config.meta.icon,
+            startDate: config.meta.startDate,
+            startWeekDay: config.meta.startWeekDay,
+            days: config.meta.days,
+          );
+        }
+      }
+
+      // Show notifications for updated configs
+      if (updatedConfigs.isNotEmpty) {
+        _showUpdateNotifications(updatedConfigs);
+      }
+
+      AppLogger.i('Schedule config version check completed');
+    } catch (e, stackTrace) {
+      AppLogger.e(
+          'Error checking versions and invalidating schedules', e, stackTrace);
+      // Don't rethrow - we don't want to prevent app startup due to version check failure
+    }
+  }
+
+  void _showUpdateNotifications(List<Map<String, String>> updatedConfigs) {
+    try {
+      final notificationService = NotificationService();
+
+      // Get the current locale for localization
+      // Note: We'll need to get this from the app context or a service
+      // For now, we'll use a default German localization
+      final l10n = AppLocalizationsDe();
+
+      if (updatedConfigs.length == 1) {
+        // Single config update
+        final config = updatedConfigs.first;
+        notificationService.showScheduleUpdateNotification(
+          configName: config['name']!,
+          oldVersion: config['oldVersion']!,
+          newVersion: config['newVersion']!,
+          l10n: l10n,
+        );
+      } else {
+        // Multiple config updates
+        final configNames = updatedConfigs.map((c) => c['name']!).toList();
+        notificationService.showMultipleScheduleUpdatesNotification(
+          configNames: configNames,
+          l10n: l10n,
+        );
+      }
+    } catch (e, stackTrace) {
+      AppLogger.e('Error showing update notifications', e, stackTrace);
     }
   }
 }

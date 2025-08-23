@@ -463,5 +463,33 @@
   "selectPartnerDutyGroupMessage": "Wähle die Dienstgruppe deines Partners aus.",
   "@selectPartnerDutyGroupMessage": {
     "description": "Message for partner duty group selection"
+  },
+  "scheduleUpdateNotification": "Dienstplan \"{configName}\" wurde aktualisiert (Version {oldVersion} → {newVersion}). Alle Dienste werden neu generiert.",
+  "@scheduleUpdateNotification": {
+    "description": "Benachrichtigungsnachricht für einzelne Dienstplan-Aktualisierung",
+    "placeholders": {
+      "configName": {
+        "type": "String",
+        "example": "BEPO Züge"
+      },
+      "oldVersion": {
+        "type": "String",
+        "example": "1.2"
+      },
+      "newVersion": {
+        "type": "String",
+        "example": "1.3"
+      }
+    }
+  },
+  "multipleScheduleUpdatesNotification": "Mehrere Dienstpläne wurden aktualisiert: {configNames}. Alle Dienste werden neu generiert.",
+  "@multipleScheduleUpdatesNotification": {
+    "description": "Benachrichtigungsnachricht für mehrere Dienstplan-Aktualisierungen",
+    "placeholders": {
+      "configNames": {
+        "type": "String",
+        "example": "BEPO Züge, SEK"
+      }
+    }
   }
 }

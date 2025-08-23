@@ -290,7 +290,7 @@ final class ScheduleConfigServiceProvider extends $FunctionalProvider<
 }
 
 String _$scheduleConfigServiceHash() =>
-    r'40a20755643c3617b174c766feb5fcbde5d9aedd';
+    r'95de82c5f03d157c3e329fb6fa90cc7c0cc77230';
 
 @ProviderFor(languageService)
 const languageServiceProvider = LanguageServiceProvider._();
@@ -582,6 +582,50 @@ final class ShareServiceProvider
 }
 
 String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
+
+@ProviderFor(notificationService)
+const notificationServiceProvider = NotificationServiceProvider._();
+
+final class NotificationServiceProvider extends $FunctionalProvider<
+    NotificationService,
+    NotificationService,
+    NotificationService> with $Provider<NotificationService> {
+  const NotificationServiceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'notificationServiceProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationServiceHash();
+
+  @$internal
+  @override
+  $ProviderElement<NotificationService> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  NotificationService create(Ref ref) {
+    return notificationService(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NotificationService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NotificationService>(value),
+    );
+  }
+}
+
+String _$notificationServiceHash() =>
+    r'cda5ea9d196dce85bee56839a4a0f035021752e3';
 
 @ProviderFor(scheduleRepository)
 const scheduleRepositoryProvider = ScheduleRepositoryProvider._();

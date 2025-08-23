@@ -368,4 +368,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get selectPartnerDutyGroupMessage =>
       'Select your partner\'s duty group.';
+
+  @override
+  String scheduleUpdateNotification(
+      String configName, String oldVersion, String newVersion) {
+    return 'Duty schedule \"$configName\" has been updated (Version $oldVersion → $newVersion). All services will be regenerated.';
+  }
+
+  @override
+  String multipleScheduleUpdatesNotification(String configNames) {
+    return 'Multiple duty schedules have been updated: $configNames. All services will be regenerated.';
+  }
 }
