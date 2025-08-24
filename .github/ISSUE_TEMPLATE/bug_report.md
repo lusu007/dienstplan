@@ -1,36 +1,34 @@
 ---
 name: Bug Report
 about: Create a report to help us improve
-title: '[BUG] '
-labels: bug
+title: 'fix: '
+labels: ['type: bug', 'commit: fix']
 assignees: ''
 ---
 
-## Bug Description
+## 🐛 Bug Description
 <!-- A clear and concise description of what the bug is -->
 
-## Steps to Reproduce
-1. <!-- First Step -->
-2. <!-- Second Step -->
-3. <!-- And so on... -->
+## 🔄 Steps to Reproduce
+<!-- How can we reproduce this issue? -->
+1. 
+2. 
+3. 
 
-## Expected Behavior
-<!-- What you expected to happen -->
+## ✅ Expected Behavior
+<!-- What should happen? -->
 
-## Actual Behavior
-<!-- What actually happened -->
+## ❌ Actual Behavior
+<!-- What actually happened? -->
 
-## Environment
-- App Version: <!-- e.g. 1.0.0 -->
-- Device: <!-- e.g. Samsung Galaxy S21 -->
-- OS Version: <!-- e.g. Android 12 -->
-- Flutter Version: <!-- e.g. 3.19.0 -->
+## 📱 Environment
+- **App Version**: 
+- **Device**: 
+- **OS Version**: 
+- **Flutter Version**: 
 
-## Screenshots
+## 📸 Screenshots
 <!-- If applicable, add screenshots to help explain your problem -->
 
-## Additional Context
-<!-- Add any other context about the problem here -->
-
-## Possible Solution
-<!-- If you have suggestions on how to fix the issue --> 
+## 💡 Additional Context
+<!-- Any other context about the problem here --> 

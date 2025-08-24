@@ -1,0 +1,68 @@
+name: 🔧 Code Refactor
+description: Request code refactoring or improvements
+title: "refactor: "
+labels: ["type: enhancement", "commit: refactor"]
+body:
+  - type: textarea
+    id: refactoring-request
+    attributes:
+      label: 🔧 Refactoring Request
+      description: What code needs to be refactored?
+      placeholder: Describe what code needs to be refactored...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-issues
+    attributes:
+      label: 🔍 Current Issues
+      description: What problems exist with the current code?
+      placeholder: Describe the problems with the current code...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: 💡 Proposed Solution
+      description: How should the code be refactored?
+      placeholder: Describe how you think the code should be refactored...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: benefits
+    attributes:
+      label: 🎯 Benefits
+      description: What benefits will this refactoring provide?
+      options:
+        - label: Better performance
+        - label: Improved readability
+        - label: Reduced complexity
+        - label: Better maintainability
+        - label: Code reusability
+        - label: Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: affected-areas
+    attributes:
+      label: 📁 Affected Areas
+      description: What parts of the codebase will be affected?
+      options:
+        - label: Single file
+        - label: Multiple files
+        - label: Entire module
+        - label: Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the refactoring request
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false

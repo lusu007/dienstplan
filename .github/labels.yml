@@ -1,0 +1,109 @@
+# Standard labels from github-labels repository
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "priority: critical"
+  color: "b60205"
+  description: "Critical priority - needs immediate attention"
+
+- name: "priority: high"
+  color: "d93f0b"
+  description: "High priority - should be addressed soon"
+
+- name: "priority: low"
+  color: "0e8a16"
+  description: "Low priority - can be addressed when convenient"
+
+- name: "priority: medium"
+  color: "fbca04"
+  description: "Medium priority - normal priority level"
+
+- name: "status: can't reproduce"
+  color: "fec1c1"
+  description: "Issue cannot be reproduced"
+
+- name: "status: confirmed"
+  color: "215cea"
+  description: "Issue has been confirmed"
+
+- name: "status: duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "status: needs information"
+  color: "fef2c0"
+  description: "More information is needed to proceed"
+
+- name: "status: wont do/fix"
+  color: "eeeeee"
+  description: "This will not be worked on"
+
+- name: "type: bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "type: discussion"
+  color: "d4c5f9"
+  description: "General discussion or questions"
+
+- name: "type: documentation"
+  color: "006b75"
+  description: "Documentation improvements or updates"
+
+- name: "type: enhancement"
+  color: "84b6eb"
+  description: "Improvements to existing functionality"
+
+- name: "type: epic"
+  color: "3E4B9E"
+  description: "A theme of work that contain sub-tasks"
+
+- name: "type: feature request"
+  color: "fbca04"
+  description: "New feature or request"
+
+- name: "type: question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+# Additional conventional commit labels
+- name: "commit: feat"
+  color: "1d76db"
+  description: "New feature (conventional commit)"
+
+- name: "commit: fix"
+  color: "d73a4a"
+  description: "Bug fix (conventional commit)"
+
+- name: "commit: docs"
+  color: "006b75"
+  description: "Documentation changes (conventional commit)"
+
+- name: "commit: style"
+  color: "fef2c0"
+  description: "Code style changes (conventional commit)"
+
+- name: "commit: refactor"
+  color: "84b6eb"
+  description: "Code refactoring (conventional commit)"
+
+- name: "commit: perf"
+  color: "0e8a16"
+  description: "Performance improvements (conventional commit)"
+
+- name: "commit: test"
+  color: "d4c5f9"
+  description: "Test changes (conventional commit)"
+
+- name: "commit: chore"
+  color: "cfd3d7"
+  description: "Build/tooling changes (conventional commit)"
+
+- name: "breaking change"
+  color: "b60205"
+  description: "Introduces breaking changes"

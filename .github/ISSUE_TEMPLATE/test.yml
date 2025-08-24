@@ -1,0 +1,64 @@
+name: 🧪 Test Update
+description: Request test improvements or report test issues
+title: "test: "
+labels: ["type: enhancement", "commit: test"]
+body:
+  - type: textarea
+    id: test-issue
+    attributes:
+      label: 🧪 Test Issue/Improvement
+      description: What testing issue or improvement are you reporting?
+      placeholder: Describe the testing issue or improvement you're reporting...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-test-coverage
+    attributes:
+      label: 📊 Current Test Coverage
+      description: Describe the current test situation
+      placeholder: |
+        - Test Type: 
+        - Coverage: 
+        - Missing Tests: 
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: test-requirements
+    attributes:
+      label: 🎯 Test Requirements
+      description: What specific testing is needed?
+      options:
+        - label: Unit tests
+        - label: Integration tests
+        - label: Widget tests
+        - label: End-to-end tests
+        - label: Performance tests
+        - label: Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: test-scope
+    attributes:
+      label: 📁 Test Scope
+      description: What functionality should be tested?
+      options:
+        - label: New feature
+        - label: Bug fix
+        - label: Refactored code
+        - label: API endpoints
+        - label: UI components
+        - label: Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the testing request
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false

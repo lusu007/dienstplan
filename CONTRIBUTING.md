@@ -46,6 +46,46 @@ git push origin feature/your-feature-name
 
 Then create a PR on GitHub with a clear description of your changes.
 
+#### Conventional Commits
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages:
+
+**Format:**
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation only changes
+- `style:` - Changes that do not affect the meaning of the code
+- `refactor:` - Code change that neither fixes a bug nor adds a feature
+- `perf:` - Code change that improves performance
+- `test:` - Adding missing tests or correcting existing tests
+- `chore:` - Changes to the build process or auxiliary tools
+
+**Examples:**
+```bash
+feat: add user authentication system
+fix(ui): resolve button alignment issue
+docs(readme): update installation instructions
+refactor(service): simplify data processing logic
+perf(api): optimize database queries
+test(auth): add unit tests for login functionality
+chore(deps): update dependencies to latest versions
+```
+
+**Breaking Changes:**
+Use `!` after the type/scope to indicate breaking changes:
+```bash
+feat!: change API response format
+fix(api)!: remove deprecated endpoint
+```
+
 ---
 
 ## 📝 Code Standards

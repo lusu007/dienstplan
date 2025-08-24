@@ -1,0 +1,59 @@
+name: 💡 Feature Request
+description: Suggest an idea for this project
+title: "feat: "
+labels: ["type: feature request", "commit: feat"]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: 💡 Feature Description
+      description: A clear and concise description of the feature you'd like to see
+      placeholder: Describe the feature you'd like to see implemented...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: 🎯 Problem Statement
+      description: What problem does this feature solve?
+      placeholder: Describe the problem this feature would solve...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: 💭 Proposed Solution
+      description: How should this feature work?
+      placeholder: Describe how you envision this feature working...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternative-solutions
+    attributes:
+      label: 🔄 Alternative Solutions
+      description: Any alternative solutions you've considered?
+      placeholder: Describe any alternative approaches you've thought about...
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups-screenshots
+    attributes:
+      label: 📸 Mockups/Screenshots
+      description: If applicable, add mockups or screenshots
+      placeholder: You can drag and drop images here or paste image URLs...
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the feature request
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false
