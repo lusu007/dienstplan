@@ -107,3 +107,16 @@
 - name: "breaking change"
   color: "b60205"
   description: "Introduces breaking changes"
+
+# Autorelease labels
+- name: "autorelease: pending"
+  color: "ededed"
+  description: "Indicates a PR is waiting for an automated release"
+
+- name: "autorelease: tagged"
+  color: "26a641"
+  description: "Indicates a PR has been included in an automated release"
+
+- name: "autorelease: snapshot"
+  color: "0969da"
+  description: "Indicates a PR should trigger a snapshot release"
