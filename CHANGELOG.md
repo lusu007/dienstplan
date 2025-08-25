@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.3](https://github.com/lusu007/dienstplan/compare/v0.9.2...v0.9.3) (2025-08-25)
+
+
+### Bug Fixes
+
+* Add settings footer back into settings screen ([#264](https://github.com/lusu007/dienstplan/issues/264)) ([bc74a0a](https://github.com/lusu007/dienstplan/commit/bc74a0a6a366d4d87b8ec034009b15a47ea10374))
+* Cleanup old schedules files on version update ([#262](https://github.com/lusu007/dienstplan/issues/262)) ([f0d1575](https://github.com/lusu007/dienstplan/commit/f0d157584cb2f8a4cb09356f07fed709e5e246a6))
+
 ## [0.9.2](https://github.com/lusu007/dienstplan/compare/v0.9.1...v0.9.2) (2025-08-23)
 
 
