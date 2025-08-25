@@ -32,6 +32,14 @@ class ScheduleConfigService extends ChangeNotifier {
   bool get hasDefaultConfig => _defaultConfig != null;
   bool get isSetupCompleted => _prefs.getBool(_setupCompletedKey) ?? false;
 
+  /// Debug method to log current config state
+  void logConfigState() {
+    AppLogger.i('Current config state:');
+    for (final config in _configs) {
+      AppLogger.i('  - ${config.name} (version ${config.version})');
+    }
+  }
+
   Future<void> initialize() async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
@@ -40,7 +48,9 @@ class ScheduleConfigService extends ChangeNotifier {
         await _configsPath.create(recursive: true);
       }
       await _loadConfigs();
+      await _cleanupOldConfigFiles();
       await _checkVersionsAndInvalidateSchedules();
+      logConfigState();
     } catch (e, stackTrace) {
       AppLogger.e('Error initializing ScheduleConfigService', e, stackTrace);
       rethrow;
@@ -69,7 +79,11 @@ class ScheduleConfigService extends ChangeNotifier {
 
   Future<List<DutyScheduleConfig>> _loadConfigFiles() async {
     final List<DutyScheduleConfig> configs = [];
+    final Map<String, DutyScheduleConfig> configsByName = {};
+
     try {
+      AppLogger.i('Loading schedule configs from assets and app directory');
+
       // Load from assets first
       final manifestContent = await rootBundle.loadString('AssetManifest.json');
       final Map<String, dynamic> manifestMap = json.decode(manifestContent);
@@ -78,12 +92,18 @@ class ScheduleConfigService extends ChangeNotifier {
           .where((String key) => key.endsWith('.json'))
           .toList();
 
+      AppLogger.i('Found ${scheduleFiles.length} schedule files in assets');
+
       for (final file in scheduleFiles) {
         try {
           final jsonString = await rootBundle.loadString(file);
           final json = jsonDecode(jsonString) as Map<String, dynamic>;
           final config = DutyScheduleConfig.fromMap(json);
-          configs.add(config);
+
+          // Always use asset version (newest) for configs
+          configsByName[config.name] = config;
+          AppLogger.i(
+              'Loaded config from assets: ${config.name} (version ${config.version})');
 
           // Save to app directory for future use
           final fileName = path.basename(file);
@@ -94,22 +114,35 @@ class ScheduleConfigService extends ChangeNotifier {
         }
       }
 
-      // Then load from app directory
+      // Then load from app directory, but only if not already loaded from assets
       final files = await _configsPath.list().toList();
+      AppLogger.i('Found ${files.length} files in app directory');
+
       for (final file in files) {
         if (file is File && file.path.endsWith('.json')) {
           try {
             final jsonString = await file.readAsString();
             final json = jsonDecode(jsonString) as Map<String, dynamic>;
             final config = DutyScheduleConfig.fromMap(json);
-            if (!configs.any((c) => c.name == config.name)) {
-              configs.add(config);
+
+            // Only add if not already loaded from assets (asset version takes precedence)
+            if (!configsByName.containsKey(config.name)) {
+              configsByName[config.name] = config;
+              AppLogger.i(
+                  'Loaded config from app directory: ${config.name} (version ${config.version})');
+            } else {
+              AppLogger.i(
+                  'Skipped duplicate config from app directory: ${config.name} (asset version takes precedence)');
             }
           } catch (e) {
             AppLogger.e('Error loading config file ${file.path}: $e');
           }
         }
       }
+
+      // Convert map values to list
+      configs.addAll(configsByName.values);
+      AppLogger.i('Total configs loaded: ${configs.length}');
     } catch (e) {
       AppLogger.e('Error loading config files', e);
     }
@@ -414,6 +447,36 @@ class ScheduleConfigService extends ChangeNotifier {
       }
     } catch (e, stackTrace) {
       AppLogger.e('Error showing update notifications', e, stackTrace);
+    }
+  }
+
+  Future<void> _cleanupOldConfigFiles() async {
+    try {
+      AppLogger.i('Cleaning up old config files');
+      final manifestContent = await rootBundle.loadString('AssetManifest.json');
+      final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+      final assetConfigNames = manifestMap.keys
+          .where((String key) => key.startsWith('assets/schedules/'))
+          .where((String key) => key.endsWith('.json'))
+          .map((String key) => path.basenameWithoutExtension(key))
+          .toList();
+
+      final files = await _configsPath.list().toList();
+      int deletedCount = 0;
+      for (final file in files) {
+        if (file is File && file.path.endsWith('.json')) {
+          final fileName = path.basenameWithoutExtension(file.path);
+          if (!assetConfigNames.contains(fileName)) {
+            AppLogger.i('Deleting old config file: ${file.path}');
+            await file.delete();
+            deletedCount++;
+          }
+        }
+      }
+      AppLogger.i(
+          'Cleanup of old config files completed. Deleted $deletedCount files.');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error cleaning up old config files', e, stackTrace);
     }
   }
 }
