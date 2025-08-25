@@ -1,0 +1,56 @@
+name: 🔧 Build/Tooling Update
+description: Request build system or tooling improvements
+title: "chore: "
+labels: ["type: enhancement", "commit: chore"]
+body:
+  - type: textarea
+    id: build-tooling-issue
+    attributes:
+      label: 🔧 Build/Tooling Issue
+      description: What build or tooling issue are you reporting?
+      placeholder: Describe the build or tooling issue you're reporting...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-setup
+    attributes:
+      label: 🔍 Current Setup
+      description: Describe the current build system or tooling configuration
+      placeholder: Describe the current build system or tooling setup...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: 💡 Proposed Changes
+      description: What build or tooling changes do you want?
+      placeholder: Describe the changes you'd like to see...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: build-system-components
+    attributes:
+      label: 🛠️ Build System Components
+      description: What parts of the build system are affected?
+      options:
+        - label: Dependencies
+        - label: CI/CD pipeline
+        - label: Build scripts
+        - label: Development tools
+        - label: Testing framework
+        - label: Linting/formatting
+        - label: Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the build/tooling request
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false

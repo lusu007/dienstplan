@@ -1,0 +1,59 @@
+name: 🎨 Code Style Update
+description: Request code style improvements or formatting changes
+title: "style: "
+labels: ["type: enhancement", "commit: style"]
+body:
+  - type: textarea
+    id: style-issue
+    attributes:
+      label: 🎨 Style Issue/Improvement
+      description: What code style issue or improvement are you reporting?
+      placeholder: Describe the code style issue or improvement you're reporting...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: current-style-issues
+    attributes:
+      label: 🔍 Current Style Issues
+      description: What style problems exist?
+      options:
+        - label: Code formatting
+        - label: Naming conventions
+        - label: Import organization
+        - label: Comment updates
+        - label: Code structure
+        - label: Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: affected-code-areas
+    attributes:
+      label: 📁 Affected Code Areas
+      description: What parts of the codebase need style updates?
+      options:
+        - label: Single file
+        - label: Multiple files
+        - label: Entire module
+        - label: Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: 💡 Proposed Changes
+      description: How should the code style be improved?
+      placeholder: Describe how you think the code style should be improved...
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the style request
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false

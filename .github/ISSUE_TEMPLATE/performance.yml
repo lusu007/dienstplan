@@ -1,0 +1,112 @@
+name: ⚡ Performance Improvement
+description: Request performance improvements or report performance issues
+title: "perf: "
+labels: ["type: enhancement", "commit: perf"]
+body:
+  - type: textarea
+    id: performance-issue
+    attributes:
+      label: ⚡ Performance Issue/Improvement
+      description: What performance issue or improvement are you reporting?
+      placeholder: Describe the performance issue or improvement you're reporting...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-performance
+    attributes:
+      label: 📊 Current Performance
+      description: Describe the current performance characteristics
+      placeholder: |
+        - Response Time: 
+        - Memory Usage: 
+        - CPU Usage: 
+        - Battery Impact: 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-performance
+    attributes:
+      label: 🎯 Expected Performance
+      description: What performance do you expect?
+      placeholder: Describe the performance you expect to achieve...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: performance-metrics
+    attributes:
+      label: 📈 Performance Metrics
+      description: What specific metrics are affected?
+      options:
+        - label: App startup time
+        - label: Screen loading time
+        - label: API response time
+        - label: Memory usage
+        - label: Battery consumption
+        - label: Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 🔄 Reproduction Steps
+      description: How to reproduce the performance issue
+      placeholder: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: dropdown
+    id: app-version
+    attributes:
+      label: 📱 App Version
+      description: What version of the app are you using?
+      options:
+        - Latest from App Store/Play Store
+        - Development build
+        - Beta version
+        - Other (please specify in additional context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device-type
+    attributes:
+      label: 📱 Device
+      description: What device are you using?
+      options:
+        - Android Phone
+        - Android Tablet
+        - iPhone
+        - iPad
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: network-type
+    attributes:
+      label: 📱 Network
+      description: What type of network connection are you using?
+      options:
+        - WiFi
+        - 4G/LTE
+        - 3G
+        - 2G
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the performance issue
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false

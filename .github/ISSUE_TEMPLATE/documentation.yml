@@ -1,0 +1,55 @@
+name: 📚 Documentation Update
+description: Request documentation improvements or updates
+title: "docs: "
+labels: ["type: documentation", "commit: docs"]
+body:
+  - type: textarea
+    id: documentation-issue
+    attributes:
+      label: 📚 Documentation Issue
+      description: What documentation needs to be updated?
+      placeholder: Describe what documentation needs to be changed or added...
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-state
+    attributes:
+      label: 🔍 Current State
+      description: What's wrong with the current documentation?
+      placeholder: Describe the current documentation and what's problematic...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: ✨ Proposed Changes
+      description: What should be changed or added?
+      placeholder: Describe the changes you'd like to see...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: documentation-type
+    attributes:
+      label: 📖 Documentation Type
+      description: What type of documentation is this?
+      options:
+        - README updates
+        - API documentation
+        - User guides
+        - Code comments
+        - Contributing guidelines
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 💬 Additional Context
+      description: Any other context about the documentation request
+      placeholder: Add any additional information that might be helpful...
+    validations:
+      required: false
