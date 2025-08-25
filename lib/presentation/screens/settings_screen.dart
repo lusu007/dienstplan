@@ -7,6 +7,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedu
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/other_section.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/sections/footer_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedule_section_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section_skeleton.dart';
@@ -93,6 +94,8 @@ class SettingsScreen extends ConsumerWidget {
                 const PrivacySection(),
                 const SizedBox(height: 16),
                 const OtherSection(),
+                const SizedBox(height: 32),
+                const SettingsFooter(),
                 const SizedBox(height: 32),
               ],
             ),
