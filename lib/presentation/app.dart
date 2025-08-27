@@ -26,6 +26,11 @@ class _MyAppState extends ConsumerState<MyApp> {
     _appRouter = AppRouter();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _configureSystemUI();
+
+    // Process any pending notifications once the UI is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationService().processPendingNotifications();
+    });
   }
 
   void _configureSystemUI() {
