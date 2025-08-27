@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.4](https://github.com/lusu007/dienstplan/compare/v0.9.3...v0.9.4) (2025-08-27)
+
+
+### Bug Fixes
+
+* Improve schedule file migration ([#266](https://github.com/lusu007/dienstplan/issues/266)) ([afe0e95](https://github.com/lusu007/dienstplan/commit/afe0e95779f8930460fe61865af66e772f1f976f))
+
 ## [0.9.3](https://github.com/lusu007/dienstplan/compare/v0.9.2...v0.9.3) (2025-08-25)
 
 
