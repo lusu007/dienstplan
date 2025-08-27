@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:dienstplan/data/models/schedule.dart';
@@ -84,37 +84,10 @@ class ScheduleConfigService extends ChangeNotifier {
     try {
       AppLogger.i('Loading schedule configs from assets and app directory');
 
-      // Load from assets first
-      final manifestContent = await rootBundle.loadString('AssetManifest.json');
-      final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-      final scheduleFiles = manifestMap.keys
-          .where((String key) => key.startsWith('assets/schedules/'))
-          .where((String key) => key.endsWith('.json'))
-          .toList();
+      // First, always copy the latest versions from assets to app directory
+      await _syncAssetsToAppDirectory();
 
-      AppLogger.i('Found ${scheduleFiles.length} schedule files in assets');
-
-      for (final file in scheduleFiles) {
-        try {
-          final jsonString = await rootBundle.loadString(file);
-          final json = jsonDecode(jsonString) as Map<String, dynamic>;
-          final config = DutyScheduleConfig.fromMap(json);
-
-          // Always use asset version (newest) for configs
-          configsByName[config.name] = config;
-          AppLogger.i(
-              'Loaded config from assets: ${config.name} (version ${config.version})');
-
-          // Save to app directory for future use
-          final fileName = path.basename(file);
-          final configFile = File(path.join(_configsPath.path, fileName));
-          await configFile.writeAsString(jsonString);
-        } catch (e) {
-          AppLogger.e('Error loading config file $file: $e');
-        }
-      }
-
-      // Then load from app directory, but only if not already loaded from assets
+      // Then load from app directory (which now has the latest versions)
       final files = await _configsPath.list().toList();
       AppLogger.i('Found ${files.length} files in app directory');
 
@@ -125,15 +98,9 @@ class ScheduleConfigService extends ChangeNotifier {
             final json = jsonDecode(jsonString) as Map<String, dynamic>;
             final config = DutyScheduleConfig.fromMap(json);
 
-            // Only add if not already loaded from assets (asset version takes precedence)
-            if (!configsByName.containsKey(config.name)) {
-              configsByName[config.name] = config;
-              AppLogger.i(
-                  'Loaded config from app directory: ${config.name} (version ${config.version})');
-            } else {
-              AppLogger.i(
-                  'Skipped duplicate config from app directory: ${config.name} (asset version takes precedence)');
-            }
+            configsByName[config.name] = config;
+            AppLogger.i(
+                'Loaded config from app directory: ${config.name} (version ${config.version})');
           } catch (e) {
             AppLogger.e('Error loading config file ${file.path}: $e');
           }
@@ -147,6 +114,51 @@ class ScheduleConfigService extends ChangeNotifier {
       AppLogger.e('Error loading config files', e);
     }
     return configs;
+  }
+
+  /// Syncs all schedule config files from assets to app directory
+  /// This ensures the app directory always has the latest versions
+  Future<void> _syncAssetsToAppDirectory() async {
+    try {
+      AppLogger.i('Syncing schedule configs from assets to app directory');
+
+      // Load asset manifest to find all schedule files
+      final manifestContent = await rootBundle.loadString('AssetManifest.json');
+      final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+      final scheduleFiles = manifestMap.keys
+          .where((String key) => key.startsWith('assets/schedules/'))
+          .where((String key) => key.endsWith('.json'))
+          .toList();
+
+      AppLogger.i('Found ${scheduleFiles.length} schedule files in assets');
+
+      int copiedCount = 0;
+      for (final assetFile in scheduleFiles) {
+        try {
+          // Load the asset file
+          final jsonString = await rootBundle.loadString(assetFile);
+          final json = jsonDecode(jsonString) as Map<String, dynamic>;
+          final config = DutyScheduleConfig.fromMap(json);
+
+          // Save to app directory
+          final fileName = path.basename(assetFile);
+          final configFile = File(path.join(_configsPath.path, fileName));
+          await configFile.writeAsString(jsonString);
+
+          AppLogger.i(
+              'Synced config from assets: ${config.name} (version ${config.version})');
+          copiedCount++;
+        } catch (e) {
+          AppLogger.e('Error syncing config file $assetFile: $e');
+        }
+      }
+
+      AppLogger.i(
+          'Successfully synced $copiedCount config files from assets to app directory');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error syncing assets to app directory', e, stackTrace);
+      // Don't rethrow - we want to continue with whatever configs we can load
+    }
   }
 
   Future<void> saveConfig(DutyScheduleConfig config) async {
@@ -347,12 +359,16 @@ class ScheduleConfigService extends ChangeNotifier {
       final List<Map<String, String>> updatedConfigs = [];
 
       for (final config in _configs) {
+        AppLogger.i(
+            'Checking config: ${config.name} (version ${config.version})');
+
         // Get stored version from database
         final storedConfigData =
             await _scheduleConfigsDao.getScheduleConfigByName(config.name);
 
         if (storedConfigData != null) {
           final storedVersion = storedConfigData['version'] as String;
+          AppLogger.i('Stored version for ${config.name}: $storedVersion');
 
           // Check if version has changed
           if (storedVersion != config.version) {
@@ -407,8 +423,14 @@ class ScheduleConfigService extends ChangeNotifier {
       }
 
       // Show notifications for updated configs
+      AppLogger.i(
+          'Found ${updatedConfigs.length} configs that need notifications');
       if (updatedConfigs.isNotEmpty) {
+        AppLogger.i(
+            'Configs to notify about: ${updatedConfigs.map((c) => '${c['name']} (${c['oldVersion']} → ${c['newVersion']})').join(', ')}');
         _showUpdateNotifications(updatedConfigs);
+      } else {
+        AppLogger.i('No config updates found, no notifications needed');
       }
 
       AppLogger.i('Schedule config version check completed');
@@ -420,6 +442,17 @@ class ScheduleConfigService extends ChangeNotifier {
   }
 
   void _showUpdateNotifications(List<Map<String, String>> updatedConfigs) {
+    try {
+      // Use post-frame callback to ensure UI is ready
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNotificationsAfterFrame(updatedConfigs);
+      });
+    } catch (e, stackTrace) {
+      AppLogger.e('Error scheduling update notifications', e, stackTrace);
+    }
+  }
+
+  void _showNotificationsAfterFrame(List<Map<String, String>> updatedConfigs) {
     try {
       final notificationService = NotificationService();
 
@@ -453,6 +486,9 @@ class ScheduleConfigService extends ChangeNotifier {
   Future<void> _cleanupOldConfigFiles() async {
     try {
       AppLogger.i('Cleaning up old config files');
+
+      // Since we now always sync from assets, we can be more aggressive in cleanup
+      // Delete any files that are not in the current assets
       final manifestContent = await rootBundle.loadString('AssetManifest.json');
       final Map<String, dynamic> manifestMap = json.decode(manifestContent);
       final assetConfigNames = manifestMap.keys
@@ -467,14 +503,14 @@ class ScheduleConfigService extends ChangeNotifier {
         if (file is File && file.path.endsWith('.json')) {
           final fileName = path.basenameWithoutExtension(file.path);
           if (!assetConfigNames.contains(fileName)) {
-            AppLogger.i('Deleting old config file: ${file.path}');
+            AppLogger.i('Deleting obsolete config file: ${file.path}');
             await file.delete();
             deletedCount++;
           }
         }
       }
       AppLogger.i(
-          'Cleanup of old config files completed. Deleted $deletedCount files.');
+          'Cleanup of old config files completed. Deleted $deletedCount obsolete files.');
     } catch (e, stackTrace) {
       AppLogger.e('Error cleaning up old config files', e, stackTrace);
     }
