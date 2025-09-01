@@ -27,6 +27,11 @@ class CalendarConfig {
     );
   }
 
+  // Calendar dimensions
+  static const double kCalendarHeight = 500.0; // Increased from 400.0 to 500.0
+  static const double kCalendarDayHeight = 70.0; // Increased from 60.0 to 70.0
+  static const double kCalendarDayWidth = 50.0; // Increased from 45.0 to 50.0
+
   static DateTime get firstDay => DateTime.utc(2018, 1, 1);
   static DateTime get lastDay => DateTime.utc(2100, 12, 31);
   static StartingDayOfWeek get startingDayOfWeek => StartingDayOfWeek.monday;

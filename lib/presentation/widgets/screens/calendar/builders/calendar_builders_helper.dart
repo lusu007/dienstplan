@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 
 class CalendarBuildersHelper {
   static CalendarBuilders createCalendarBuilders({
@@ -14,6 +15,8 @@ class CalendarBuildersHelper {
         return ReactiveCalendarDay(
           day: day,
           dayType: CalendarDayType.default_,
+          width: CalendarConfig.kCalendarDayWidth,
+          height: CalendarConfig.kCalendarDayHeight,
           onDaySelected: onDaySelected,
         );
       },
@@ -21,6 +24,8 @@ class CalendarBuildersHelper {
         return ReactiveCalendarDay(
           day: day,
           dayType: CalendarDayType.outside,
+          width: CalendarConfig.kCalendarDayWidth,
+          height: CalendarConfig.kCalendarDayHeight,
           onDaySelected: onDaySelected,
         );
       },
@@ -28,8 +33,8 @@ class CalendarBuildersHelper {
         return ReactiveCalendarDay(
           day: day,
           dayType: CalendarDayType.selected,
-          width: 40.0,
-          height: 50.0,
+          width: CalendarConfig.kCalendarDayWidth,
+          height: CalendarConfig.kCalendarDayHeight,
           onDaySelected: onDaySelected,
         );
       },
@@ -37,8 +42,8 @@ class CalendarBuildersHelper {
         return ReactiveCalendarDay(
           day: day,
           dayType: CalendarDayType.today,
-          width: 40.0,
-          height: 50.0,
+          width: CalendarConfig.kCalendarDayWidth,
+          height: CalendarConfig.kCalendarDayHeight,
           onDaySelected: onDaySelected,
         );
       },
