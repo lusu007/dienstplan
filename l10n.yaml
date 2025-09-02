@@ -4,4 +4,3 @@ output-localization-file: app_localizations.dart
 output-class: AppLocalizations
 nullable-getter: false
 use-deferred-loading: false
-synthetic-package: false

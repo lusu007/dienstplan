@@ -248,7 +248,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                   case CalendarFormat.month:
                     // Monatsansicht: 3 Snappunkte (klein, mittel, groß)
                     // Monatsansicht hat wenig Platz nach oben, daher kleinere Snappunkte
-                    snapPoints = [225.0, 550.0];
+                    snapPoints = [240.0, 550.0];
                     break;
                   case CalendarFormat.week:
                     // Wochenansicht: 2 Snappunkte (klein, mittel)

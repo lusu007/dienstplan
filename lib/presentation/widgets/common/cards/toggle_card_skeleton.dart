@@ -83,7 +83,7 @@ class _ToggleCardSkeletonState extends State<ToggleCardSkeleton>
         trailing: Switch(
           value: widget.value,
           onChanged: widget.enabled ? null : null,
-          activeColor: AppColors.primary,
+          activeThumbColor: AppColors.primary,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
