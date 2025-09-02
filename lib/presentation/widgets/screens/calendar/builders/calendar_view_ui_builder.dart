@@ -8,6 +8,7 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/a
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/draggable_sheet_container.dart';
 
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
@@ -65,6 +66,25 @@ class CalendarViewUiBuilder {
           ),
         ],
       ),
+      child: child,
+    );
+  }
+
+  static Widget buildDraggableSheetContainer({
+    required BuildContext context,
+    required Widget child,
+    double initialHeight = 300.0,
+    double minHeight = 150.0,
+    double maxHeight = 600.0,
+    List<double>? snapPoints,
+    VoidCallback? onHeightChanged,
+  }) {
+    return DraggableSheetContainer(
+      initialHeight: initialHeight,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
+      snapPoints: snapPoints,
+      onHeightChanged: onHeightChanged,
       child: child,
     );
   }
@@ -225,75 +245,84 @@ class _TableCalendarWrapper extends ConsumerWidget {
       state?.partnerDutyGroup,
     );
 
-    return TableCalendar(
-      key: ValueKey<int>(tableCalendarKeyHash),
-      firstDay: CalendarConfig.firstDay,
-      lastDay: CalendarConfig.lastDay,
-      focusedDay: focusedDay,
-      calendarFormat: calendarFormat,
-      startingDayOfWeek: CalendarConfig.startingDayOfWeek,
-      selectedDayPredicate: (day) {
-        return isSameDay(state?.selectedDay, day);
-      },
-      onDaySelected: (selectedDay, focusedDay) async {
-        await ref
-            .read(scheduleNotifierProvider.notifier)
-            .setSelectedDay(selectedDay);
-        ref.read(scheduleNotifierProvider.notifier).setFocusedDay(focusedDay);
-        await ref
-            .read(scheduleNotifierProvider.notifier)
-            .ensureActiveDay(selectedDay);
-        onDaySelected();
-      },
-      onFormatChanged: (format) {
-        // Single source of truth: notifier handles persistence and state
-        ref.read(scheduleNotifierProvider.notifier).setCalendarFormat(format);
-        onFormatChanged(format);
-      },
-      onPageChanged: (focusedDay) async {
-        // Single source of truth: notifier loads/generates months
-        await ref
-            .read(scheduleNotifierProvider.notifier)
-            .setFocusedDay(focusedDay);
-        onPageChanged(focusedDay);
-      },
-      calendarBuilders: CalendarBuilders(
-        defaultBuilder: (context, day, focusedDay) {
-          return ReactiveCalendarDay(
-            day: day,
-            dayType: CalendarDayType.default_,
-            onDaySelected: onDaySelected,
-          );
+    return SizedBox(
+      height: CalendarConfig.kCalendarHeight,
+      child: TableCalendar(
+        key: ValueKey<int>(tableCalendarKeyHash),
+        firstDay: CalendarConfig.firstDay,
+        lastDay: CalendarConfig.lastDay,
+        focusedDay: focusedDay,
+        calendarFormat: calendarFormat,
+        startingDayOfWeek: CalendarConfig.startingDayOfWeek,
+        rowHeight:
+            CalendarConfig.kCalendarDayHeight + 8, // Add padding for row height
+        selectedDayPredicate: (day) {
+          return isSameDay(state?.selectedDay, day);
         },
-        outsideBuilder: (context, day, focusedDay) {
-          return ReactiveCalendarDay(
-            day: day,
-            dayType: CalendarDayType.outside,
-            onDaySelected: onDaySelected,
-          );
+        onDaySelected: (selectedDay, focusedDay) async {
+          await ref
+              .read(scheduleNotifierProvider.notifier)
+              .setSelectedDay(selectedDay);
+          ref.read(scheduleNotifierProvider.notifier).setFocusedDay(focusedDay);
+          await ref
+              .read(scheduleNotifierProvider.notifier)
+              .ensureActiveDay(selectedDay);
+          onDaySelected();
         },
-        selectedBuilder: (context, day, focusedDay) {
-          return ReactiveCalendarDay(
-            day: day,
-            dayType: CalendarDayType.selected,
-            width: 40.0,
-            height: 50.0,
-            onDaySelected: onDaySelected,
-          );
+        onFormatChanged: (format) {
+          // Single source of truth: notifier handles persistence and state
+          ref.read(scheduleNotifierProvider.notifier).setCalendarFormat(format);
+          onFormatChanged(format);
         },
-        todayBuilder: (context, day, focusedDay) {
-          return ReactiveCalendarDay(
-            day: day,
-            dayType: CalendarDayType.today,
-            width: 40.0,
-            height: 50.0,
-            onDaySelected: onDaySelected,
-          );
+        onPageChanged: (focusedDay) async {
+          // Single source of truth: notifier loads/generates months
+          await ref
+              .read(scheduleNotifierProvider.notifier)
+              .setFocusedDay(focusedDay);
+          onPageChanged(focusedDay);
         },
+        calendarBuilders: CalendarBuilders(
+          defaultBuilder: (context, day, focusedDay) {
+            return ReactiveCalendarDay(
+              day: day,
+              dayType: CalendarDayType.default_,
+              width: CalendarConfig.kCalendarDayWidth,
+              height: CalendarConfig.kCalendarDayHeight,
+              onDaySelected: onDaySelected,
+            );
+          },
+          outsideBuilder: (context, day, focusedDay) {
+            return ReactiveCalendarDay(
+              day: day,
+              dayType: CalendarDayType.outside,
+              width: CalendarConfig.kCalendarDayWidth,
+              height: CalendarConfig.kCalendarDayHeight,
+              onDaySelected: onDaySelected,
+            );
+          },
+          selectedBuilder: (context, day, focusedDay) {
+            return ReactiveCalendarDay(
+              day: day,
+              dayType: CalendarDayType.selected,
+              width: CalendarConfig.kCalendarDayWidth,
+              height: CalendarConfig.kCalendarDayHeight,
+              onDaySelected: onDaySelected,
+            );
+          },
+          todayBuilder: (context, day, focusedDay) {
+            return ReactiveCalendarDay(
+              day: day,
+              dayType: CalendarDayType.today,
+              width: CalendarConfig.kCalendarDayHeight,
+              height: CalendarConfig.kCalendarDayHeight,
+              onDaySelected: onDaySelected,
+            );
+          },
+        ),
+        calendarStyle: CalendarConfig.createCalendarStyle(context),
+        headerStyle: CalendarConfig.createHeaderStyle(),
+        locale: Localizations.localeOf(context).languageCode,
       ),
-      calendarStyle: CalendarConfig.createCalendarStyle(context),
-      headerStyle: CalendarConfig.createHeaderStyle(),
-      locale: Localizations.localeOf(context).languageCode,
     );
   }
 }

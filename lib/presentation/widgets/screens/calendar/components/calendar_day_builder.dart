@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 
 class CalendarDayBuilder extends StatelessWidget {
   final DateTime day;
@@ -23,9 +24,9 @@ class CalendarDayBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Use fixed sizing for portrait mode only
-    final effectiveWidth = width ?? 40.0;
-    final effectiveHeight = height ?? 50.0;
+    // Use configured sizing with fallback to provided values
+    final effectiveWidth = width ?? CalendarConfig.kCalendarDayWidth;
+    final effectiveHeight = height ?? CalendarConfig.kCalendarDayHeight;
 
     final dayStyle = _getDayTextStyle(theme);
     final containerDecoration = _getContainerDecoration(theme);
@@ -48,51 +49,44 @@ class CalendarDayBuilder extends StatelessWidget {
               (partnerDutyAbbreviation != null &&
                   partnerDutyAbbreviation!.isNotEmpty))
             Padding(
-              padding: const EdgeInsets.only(top: 2.0),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (dutyAbbreviation != null &&
-                        dutyAbbreviation!.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 3.0, vertical: 1.0),
-                        decoration: dutyBadgeDecoration,
-                        child: Text(
-                          dutyAbbreviation!,
-                          style: dutyBadgeTextStyle.copyWith(
-                            fontSize: 9.0,
-                          ),
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // First row: My duty group chip
+                  if (dutyAbbreviation != null && dutyAbbreviation!.isNotEmpty)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 2.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 3.0, vertical: 1.0),
+                      decoration: dutyBadgeDecoration,
+                      child: Text(
+                        dutyAbbreviation!,
+                        style: dutyBadgeTextStyle.copyWith(
+                          fontSize: 9.0,
                         ),
                       ),
-                    if ((dutyAbbreviation != null &&
-                            dutyAbbreviation!.isNotEmpty) &&
-                        (partnerDutyAbbreviation != null &&
-                            partnerDutyAbbreviation!.isNotEmpty))
-                      const SizedBox(width: 2),
-                    if (partnerDutyAbbreviation != null &&
-                        partnerDutyAbbreviation!.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 3.0, vertical: 1.0),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          partnerDutyAbbreviation!,
-                          style: const TextStyle(
-                            fontSize: 9.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                    ),
+                  // Second row: Partner duty group chip
+                  if (partnerDutyAbbreviation != null &&
+                      partnerDutyAbbreviation!.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 3.0, vertical: 1.0),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        partnerDutyAbbreviation!,
+                        style: const TextStyle(
+                          fontSize: 9.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
             ),
         ],

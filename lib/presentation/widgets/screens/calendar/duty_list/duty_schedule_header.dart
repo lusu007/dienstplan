@@ -19,6 +19,16 @@ class DutyScheduleHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Drag handle indicator
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
           Text(
             l10n.services,
             textAlign: TextAlign.center,

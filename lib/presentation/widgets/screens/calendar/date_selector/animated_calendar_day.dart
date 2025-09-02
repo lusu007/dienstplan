@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 
 class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
@@ -37,9 +38,9 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Use fixed sizing for portrait mode only
-    final effectiveWidth = widget.width ?? 40.0;
-    final effectiveHeight = widget.height ?? 50.0;
+    // Use configured sizing with fallback to provided values
+    final effectiveWidth = widget.width ?? CalendarConfig.kCalendarDayWidth;
+    final effectiveHeight = widget.height ?? CalendarConfig.kCalendarDayHeight;
 
     final dayStyle = _getDayTextStyle(theme);
     final containerDecoration = _getContainerDecoration(theme);
@@ -52,7 +53,6 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         widget.dutyAbbreviation != null && widget.dutyAbbreviation!.isNotEmpty;
     final bool hasPartner = widget.partnerDutyAbbreviation != null &&
         widget.partnerDutyAbbreviation!.isNotEmpty;
-    final bool hasBoth = hasPrimary && hasPartner;
 
     return InkWell(
       onTap: () {
@@ -65,56 +65,59 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         height: effectiveHeight,
         decoration: containerDecoration,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              '${widget.day.day}',
-              style: dayStyle,
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Text(
+                '${widget.day.day}',
+                style: dayStyle,
+              ),
             ),
+            // Spacer to push chips to bottom when primary chips are missing
+            if (!hasPrimary && hasPartner) const Spacer(),
             if (hasPrimary || hasPartner)
               Padding(
-                padding: const EdgeInsets.only(top: 2.0),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.dutyAbbreviation != null &&
-                          widget.dutyAbbreviation!.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 3.0, vertical: 1.0),
-                          decoration: dutyBadgeDecoration,
-                          child: Text(
-                            widget.dutyAbbreviation!,
-                            style: dutyBadgeTextStyle.copyWith(
-                              fontSize: hasBoth ? 9.0 : 10.0,
-                            ),
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // First row: My duty group chip
+                    if (widget.dutyAbbreviation != null &&
+                        widget.dutyAbbreviation!.isNotEmpty)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 2.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 3.0, vertical: 1.0),
+                        decoration: dutyBadgeDecoration,
+                        child: Text(
+                          widget.dutyAbbreviation!,
+                          style: dutyBadgeTextStyle.copyWith(
+                            fontSize: 10.0,
                           ),
                         ),
-                      if ((widget.dutyAbbreviation != null &&
-                              widget.dutyAbbreviation!.isNotEmpty) &&
-                          (widget.partnerDutyAbbreviation != null &&
-                              widget.partnerDutyAbbreviation!.isNotEmpty))
-                        const SizedBox(width: 2),
-                      if (widget.partnerDutyAbbreviation != null &&
-                          widget.partnerDutyAbbreviation!.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 3.0, vertical: 1.0),
-                          decoration: partnerBadgeDecoration,
-                          child: Text(
-                            widget.partnerDutyAbbreviation!,
-                            style: partnerBadgeTextStyle.copyWith(
-                              fontSize: hasBoth ? 9.0 : 10.0,
-                            ),
+                      ),
+                    // Second row: Partner duty group chip (always at bottom)
+                    if (widget.partnerDutyAbbreviation != null &&
+                        widget.partnerDutyAbbreviation!.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 3.0, vertical: 1.0),
+                        decoration: partnerBadgeDecoration,
+                        child: Text(
+                          widget.partnerDutyAbbreviation!,
+                          style: partnerBadgeTextStyle.copyWith(
+                            fontSize: 10.0,
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
               ),
+            // Spacer to push chips to bottom when no chips are present
+            if (!hasPrimary && !hasPartner) const Spacer(),
+            // Add bottom padding to create equal spacing
+            const SizedBox(height: 4.0),
           ],
         ),
       ),

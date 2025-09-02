@@ -139,116 +139,188 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   Widget build(BuildContext context) {
     // Ensure schedule provider is warmed up
     ref.watch(scheduleNotifierProvider);
-    final currentFormat =
-        ref.watch(scheduleNotifierProvider).value?.calendarFormat ??
-            CalendarFormat.month;
 
-    return Column(
-      children: [
-        const SizedBox(height: 16), // Abstand zur AppBar
-        CalendarViewUiBuilder.buildCalendarHeader(
-          context: context,
-          headerKey: _headerKey,
-          onLeftChevronTap: () {
-            final newFocusedDay = CalendarNavigationHelper.getPreviousPeriod(
-                ref.read(scheduleNotifierProvider).value?.focusedDay ??
-                    DateTime.now(),
-                ref.read(scheduleNotifierProvider).value?.calendarFormat ??
-                    CalendarFormat.month);
-            ref
-                .read(scheduleNotifierProvider.notifier)
-                .setFocusedDay(newFocusedDay);
-            // Don't change the selectedDay - keep the current selection
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Stack(
+        children: [
+          // Main content with calendar
+          Column(
+            children: [
+              const SizedBox(height: 16), // Abstand zur AppBar
+              CalendarViewUiBuilder.buildCalendarHeader(
+                context: context,
+                headerKey: _headerKey,
+                onLeftChevronTap: () {
+                  final newFocusedDay =
+                      CalendarNavigationHelper.getPreviousPeriod(
+                          ref
+                                  .read(scheduleNotifierProvider)
+                                  .value
+                                  ?.focusedDay ??
+                              DateTime.now(),
+                          ref
+                                  .read(scheduleNotifierProvider)
+                                  .value
+                                  ?.calendarFormat ??
+                              CalendarFormat.month);
+                  ref
+                      .read(scheduleNotifierProvider.notifier)
+                      .setFocusedDay(newFocusedDay);
+                  // Don't change the selectedDay - keep the current selection
 
-            // Update the PageView to show the current selected day in the new calendar view
-            final currentSelectedDay =
-                ref.read(scheduleNotifierProvider).value?.selectedDay;
-            if (currentSelectedDay != null) {
-              _updatePageViewForCalendarNavigation(newFocusedDay);
-            }
-          },
-          onRightChevronTap: () {
-            final newFocusedDay = CalendarNavigationHelper.getNextPeriod(
-                ref.read(scheduleNotifierProvider).value?.focusedDay ??
-                    DateTime.now(),
-                ref.read(scheduleNotifierProvider).value?.calendarFormat ??
-                    CalendarFormat.month);
-            ref
-                .read(scheduleNotifierProvider.notifier)
-                .setFocusedDay(newFocusedDay);
-            // Don't change the selectedDay - keep the current selection
+                  // Update the PageView to show the current selected day in the new calendar view
+                  final currentSelectedDay =
+                      ref.read(scheduleNotifierProvider).value?.selectedDay;
+                  if (currentSelectedDay != null) {
+                    _updatePageViewForCalendarNavigation(newFocusedDay);
+                  }
+                },
+                onRightChevronTap: () {
+                  final newFocusedDay = CalendarNavigationHelper.getNextPeriod(
+                      ref.read(scheduleNotifierProvider).value?.focusedDay ??
+                          DateTime.now(),
+                      ref
+                              .read(scheduleNotifierProvider)
+                              .value
+                              ?.calendarFormat ??
+                          CalendarFormat.month);
+                  ref
+                      .read(scheduleNotifierProvider.notifier)
+                      .setFocusedDay(newFocusedDay);
+                  // Don't change the selectedDay - keep the current selection
 
-            // Update the PageView to show the current selected day in the new calendar view
-            final currentSelectedDay =
-                ref.read(scheduleNotifierProvider).value?.selectedDay;
-            if (currentSelectedDay != null) {
-              _updatePageViewForCalendarNavigation(newFocusedDay);
-            }
-          },
-          onDateSelected: (selectedDate) {
-            // Only change the focused day, keep the selected day unchanged
-            // This allows users to navigate to different months while keeping their original selection
-            ref
-                .read(scheduleNotifierProvider.notifier)
-                .setFocusedDay(selectedDate);
-            // Don't change selectedDay - preserve the user's original selection
-          },
-          onTodayButtonPressed: () async {
-            // Handle Today button press using the new goToToday method
-            await ref.read(scheduleNotifierProvider.notifier).goToToday();
+                  // Update the PageView to show the current selected day in the new calendar view
+                  final currentSelectedDay =
+                      ref.read(scheduleNotifierProvider).value?.selectedDay;
+                  if (currentSelectedDay != null) {
+                    _updatePageViewForCalendarNavigation(newFocusedDay);
+                  }
+                },
+                onDateSelected: (selectedDate) {
+                  // Only change the focused day, keep the selected day unchanged
+                  // This allows users to navigate to different months while keeping their original selection
+                  ref
+                      .read(scheduleNotifierProvider.notifier)
+                      .setFocusedDay(selectedDate);
+                  // Don't change selectedDay - preserve the user's original selection
+                },
+                onTodayButtonPressed: () async {
+                  // Handle Today button press using the new goToToday method
+                  await ref.read(scheduleNotifierProvider.notifier).goToToday();
 
-            // Force the PageView to rebuild around the new "today" day
-            _pageManager.rebuildDayPagesAroundDay(DateTime.now());
+                  // Force the PageView to rebuild around the new "today" day
+                  _pageManager.rebuildDayPagesAroundDay(DateTime.now());
 
-            // Force a complete rebuild of the PageView by changing its key
-            setState(() {
-              _pageViewKey = UniqueKey();
-            });
-          },
-        ),
-        // Create a unique key for the table calendar that changes when format changes
-        KeyedSubtree(
-          key: ValueKey(
-              'draggable_sheet_calendar_${currentFormat}_${DateTime.now().millisecondsSinceEpoch}'),
-          child: CalendarViewUiBuilder.buildTableCalendar(
-            context: context,
-            calendarKey: _calendarKey,
-            onFormatChanged: (format) {},
-            onPageChanged: (focusedDay) {},
-            onDaySelected: () {},
-          ),
-        ),
-        const SizedBox(height: 16), // Abstand zwischen Kalender und Sheet
-        Expanded(
-          child: CalendarViewUiBuilder.buildSheetContainer(
-            context: context,
-            child: Column(
-              children: [
-                _ServicesSectionWrapper(
-                  pageManager: _pageManager,
-                ),
-                // Filter status text (always visible, never animated)
-                CalendarViewUiBuilder.buildFilterStatusText(
+                  // Force a complete rebuild of the PageView by changing its key
+                  setState(() {
+                    _pageViewKey = UniqueKey();
+                  });
+                },
+              ),
+              // Calendar section
+              Expanded(
+                child: CalendarViewUiBuilder.buildTableCalendar(
                   context: context,
+                  calendarKey: _calendarKey,
+                  onFormatChanged: (format) {},
+                  onPageChanged: (focusedDay) {},
+                  onDaySelected: () {},
                 ),
-                Expanded(
-                  child: PageView.builder(
-                    key: _pageViewKey,
-                    controller: _pageManager.pageController,
-                    onPageChanged: _onPageChanged,
-                    itemCount: _pageManager.dayPages.length,
-                    physics: const PageScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      final day = _pageManager.dayPages[index];
-                      return _buildSheetContent(day);
-                    },
+              ),
+            ],
+          ),
+          // Draggable sheet overlay
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Consumer(
+              builder: (context, ref, child) {
+                // Watch for calendar format changes
+                final calendarState = ref.watch(scheduleNotifierProvider);
+                final currentFormat =
+                    calendarState.value?.calendarFormat ?? CalendarFormat.month;
+
+                // Define static snap points for each calendar format
+                List<double> snapPoints;
+                switch (currentFormat) {
+                  case CalendarFormat.month:
+                    // Monatsansicht: 3 Snappunkte (klein, mittel, groß)
+                    // Monatsansicht hat wenig Platz nach oben, daher kleinere Snappunkte
+                    snapPoints = [240.0, 550.0];
+                    break;
+                  case CalendarFormat.week:
+                    // Wochenansicht: 2 Snappunkte (klein, mittel)
+                    // Wochenansicht hat viel Platz nach oben, daher größere Snappunkte
+                    snapPoints = [550.0, 550.0];
+                    break;
+                  case CalendarFormat.twoWeeks:
+                    // 2-Wochen-Ansicht: 2 Snappunkte (klein, mittel)
+                    // 2-Wochen-Ansicht hat mittleren Platz nach oben
+                    snapPoints = [475.0, 550.0];
+                    break;
+                }
+
+                // Use the 0. index (first value) as the minimum height and default start position
+                final snapMinHeight = snapPoints.first;
+                final initialHeight = snapPoints.first;
+
+                // Ensure the sheet starts at the first snap point (0. index)
+                // This guarantees it won't overlap the calendar content
+                final effectiveInitialHeight = initialHeight;
+
+                // Set maxHeight to the second index (middle value) for better control
+                // This provides a reasonable maximum height that's not too extreme
+                final maxHeight = snapPoints.length > 1
+                    ? snapPoints[1] // Use second index as max
+                    : snapPoints
+                        .first; // Fallback to first if only one snap point
+
+                return CalendarViewUiBuilder.buildDraggableSheetContainer(
+                  context: context,
+                  initialHeight: effectiveInitialHeight,
+                  minHeight: snapMinHeight,
+                  maxHeight:
+                      maxHeight, // Use largest snap point instead of screen height
+                  snapPoints: snapPoints, // Pass snap points
+                  onHeightChanged: () {
+                    // Don't call setState here to avoid build error
+                    // The Consumer will automatically rebuild when needed
+                  },
+                  child: Column(
+                    children: [
+                      _ServicesSectionWrapper(
+                        pageManager: _pageManager,
+                      ),
+                      // Filter status text (always visible, never animated)
+                      CalendarViewUiBuilder.buildFilterStatusText(
+                        context: context,
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 250.0, // Fixed height to prevent overflow
+                          child: PageView.builder(
+                            key: _pageViewKey,
+                            controller: _pageManager.pageController,
+                            onPageChanged: _onPageChanged,
+                            itemCount: _pageManager.dayPages.length,
+                            physics: const PageScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final day = _pageManager.dayPages[index];
+                              return _buildSheetContent(day);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                );
+              },
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

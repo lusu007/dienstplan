@@ -127,7 +127,7 @@ class DutyGroupDropdownWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: DropdownButtonFormField<String?>(
-        value: selectedDutyGroup,
+        initialValue: selectedDutyGroup,
         decoration: InputDecoration(
           labelText: hintText ?? l10n.selectDutyGroup,
           border: OutlineInputBorder(

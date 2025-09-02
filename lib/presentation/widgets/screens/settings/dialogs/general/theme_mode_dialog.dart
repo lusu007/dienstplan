@@ -35,40 +35,84 @@ class _ThemeModeDialogContentState
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioListTile<ThemePreference>(
-            title: Text(l10n.themeModeLight),
-            value: ThemePreference.light,
-            groupValue: current,
-            onChanged: (val) {
-              if (val == null) return;
-              ref
-                  .read(settingsNotifierProvider.notifier)
-                  .setThemePreference(val);
-            },
+          _buildThemeOption(
+            context,
+            l10n.themeModeLight,
+            ThemePreference.light,
+            current,
+            Icons.light_mode,
           ),
-          RadioListTile<ThemePreference>(
-            title: Text(l10n.themeModeDark),
-            value: ThemePreference.dark,
-            groupValue: current,
-            onChanged: (val) {
-              if (val == null) return;
-              ref
-                  .read(settingsNotifierProvider.notifier)
-                  .setThemePreference(val);
-            },
+          _buildThemeOption(
+            context,
+            l10n.themeModeDark,
+            ThemePreference.dark,
+            current,
+            Icons.dark_mode,
           ),
-          RadioListTile<ThemePreference>(
-            title: Text(l10n.themeModeSystem),
-            value: ThemePreference.system,
-            groupValue: current,
-            onChanged: (val) {
-              if (val == null) return;
-              ref
-                  .read(settingsNotifierProvider.notifier)
-                  .setThemePreference(val);
-            },
+          _buildThemeOption(
+            context,
+            l10n.themeModeSystem,
+            ThemePreference.system,
+            current,
+            Icons.settings_system_daydream,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    String title,
+    ThemePreference value,
+    ThemePreference current,
+    IconData icon,
+  ) {
+    final isSelected = current == value;
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? theme.colorScheme.primary.withValues(alpha: 0.1)
+            : theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.outlineVariant,
+          width: isSelected ? 2 : 1,
+        ),
+      ),
+      child: ListTile(
+        leading: Icon(
+          icon,
+          color: isSelected
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurfaceVariant,
+        ),
+        title: Text(
+          title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface,
+          ),
+        ),
+        trailing: isSelected
+            ? Icon(
+                Icons.check_circle,
+                color: theme.colorScheme.primary,
+              )
+            : null,
+        onTap: () {
+          ref.read(settingsNotifierProvider.notifier).setThemePreference(value);
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
     );
   }
