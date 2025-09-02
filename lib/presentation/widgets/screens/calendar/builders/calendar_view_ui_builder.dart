@@ -76,12 +76,14 @@ class CalendarViewUiBuilder {
     double initialHeight = 300.0,
     double minHeight = 150.0,
     double maxHeight = 600.0,
+    List<double>? snapPoints,
     VoidCallback? onHeightChanged,
   }) {
     return DraggableSheetContainer(
       initialHeight: initialHeight,
       minHeight: minHeight,
       maxHeight: maxHeight,
+      snapPoints: snapPoints,
       onHeightChanged: onHeightChanged,
       child: child,
     );

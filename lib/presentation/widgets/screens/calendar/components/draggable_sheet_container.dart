@@ -7,6 +7,7 @@ class DraggableSheetContainer extends StatefulWidget {
   final double maxHeight;
   final VoidCallback? onHeightChanged;
   final ValueChanged<double>? onHeightUpdate;
+  final List<double>? snapPoints;
 
   const DraggableSheetContainer({
     super.key,
@@ -16,6 +17,7 @@ class DraggableSheetContainer extends StatefulWidget {
     this.maxHeight = 600.0,
     this.onHeightChanged,
     this.onHeightUpdate,
+    this.snapPoints,
   });
 
   @override
@@ -27,7 +29,6 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
     with TickerProviderStateMixin {
   late double _currentHeight;
   late double _effectiveMinHeight;
-  bool _isDragging = false;
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;
 
@@ -52,32 +53,69 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
   @override
   void didUpdateWidget(DraggableSheetContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    // Check if snap points changed (indicates calendar format change)
+    if (oldWidget.snapPoints != null &&
+        widget.snapPoints != null &&
+        !_areSnapPointsEqual(oldWidget.snapPoints!, widget.snapPoints!)) {
+      // Calendar format changed, adjust sheet height to new format
+      _adjustHeightForNewFormat();
+    }
+
     // Update effective min height if it changed
     if (oldWidget.minHeight != widget.minHeight) {
       final oldMinHeight = _effectiveMinHeight;
       _effectiveMinHeight = widget.minHeight;
 
-      // If minHeight increased, we need to adjust current height
-      if (widget.minHeight > oldMinHeight) {
-        // New minHeight is higher, adjust current height if needed
-        if (_currentHeight < _effectiveMinHeight) {
-          _currentHeight = _effectiveMinHeight;
-          _animateToHeight(_currentHeight);
-        }
-      } else {
-        // New minHeight is lower (calendar got bigger), reduce sheet height
-        // Calculate a reasonable new height that's not too small
-        final targetHeight = (_currentHeight + _effectiveMinHeight) / 2;
-        final newHeight =
-            targetHeight.clamp(_effectiveMinHeight, _currentHeight);
+      // If minHeight changed, always snap to the smallest snap point
+      // This ensures consistent behavior across all calendar format changes
+      if (widget.snapPoints != null && widget.snapPoints!.isNotEmpty) {
+        final targetHeight = widget.snapPoints!.first;
 
-        if (newHeight != _currentHeight) {
-          _currentHeight = newHeight;
-          _animateToHeight(_currentHeight);
+        if (targetHeight != _currentHeight) {
+          _currentHeight = targetHeight;
+          _animateToHeight(targetHeight);
+
+          // Notify about the height change
+          widget.onHeightChanged?.call();
         }
       }
+    }
+  }
 
-      // Always notify about height changes
+  bool _areSnapPointsEqual(List<double> points1, List<double> points2) {
+    if (points1.length != points2.length) return false;
+    for (int i = 0; i < points1.length; i++) {
+      if (points1[i] != points2[i]) return false;
+    }
+    return true;
+  }
+
+  void _adjustHeightForNewFormat() {
+    if (widget.snapPoints == null || widget.snapPoints!.isEmpty) return;
+
+    // Always snap to the smallest snap point (0. index) when calendar format changes
+    // This ensures consistent behavior and prevents the sheet from overlapping the calendar
+    double targetHeight = widget.snapPoints!.first;
+
+    // Ensure the target height is within bounds with safe clamping
+    // Add safety checks to prevent invalid arguments
+    final safeMinHeight =
+        _effectiveMinHeight.isFinite ? _effectiveMinHeight : 0.0;
+    final safeMaxHeight = widget.maxHeight.isFinite ? widget.maxHeight : 1000.0;
+
+    if (targetHeight < safeMinHeight) {
+      targetHeight = safeMinHeight;
+    } else if (targetHeight > safeMaxHeight) {
+      targetHeight = safeMaxHeight;
+    }
+
+    // Animate to the new height
+    if (targetHeight != _currentHeight) {
+      _currentHeight = targetHeight;
+      _animateToHeight(targetHeight);
+
+      // Notify about the height change
       widget.onHeightChanged?.call();
     }
   }
@@ -102,12 +140,6 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanStart: (details) {
-        setState(() {
-          _isDragging = true;
-        });
-        print('DraggableSheet: Pan started at ${details.globalPosition}');
-      },
       onPanUpdate: (details) {
         final newHeight = (_currentHeight - details.delta.dy)
             .clamp(_effectiveMinHeight, widget.maxHeight);
@@ -138,14 +170,30 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
         }
       },
       onPanEnd: (details) {
-        setState(() {
-          _isDragging = false;
-        });
+        // If snap points are provided, snap to the nearest one
+        double targetHeight = _currentHeight;
+        if (widget.snapPoints != null && widget.snapPoints!.isNotEmpty) {
+          // Find the nearest snap point
+          double nearestSnapPoint = widget.snapPoints!.first;
+          double minDistance = (_currentHeight - nearestSnapPoint).abs();
+
+          for (final snapPoint in widget.snapPoints!) {
+            final distance = (_currentHeight - snapPoint).abs();
+            if (distance < minDistance) {
+              minDistance = distance;
+              nearestSnapPoint = snapPoint;
+            }
+          }
+
+          // Snap to the nearest point - ensure it's exactly one of the defined snap points
+          targetHeight = nearestSnapPoint;
+          _currentHeight = targetHeight;
+        }
 
         // Animate to final position smoothly
         _heightAnimation = Tween<double>(
           begin: _heightAnimation.value,
-          end: _currentHeight,
+          end: targetHeight,
         ).animate(CurvedAnimation(
           parent: _animationController,
           curve: Curves.easeOutCubic,
@@ -154,8 +202,6 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
 
         // Final callback
         widget.onHeightChanged?.call();
-
-        print('DraggableSheet: Pan ended, final height: $_currentHeight');
       },
       child: AnimatedBuilder(
         animation: _heightAnimation,

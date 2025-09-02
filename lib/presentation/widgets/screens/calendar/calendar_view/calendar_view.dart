@@ -139,9 +139,6 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   Widget build(BuildContext context) {
     // Ensure schedule provider is warmed up
     ref.watch(scheduleNotifierProvider);
-    final currentFormat =
-        ref.watch(scheduleNotifierProvider).value?.calendarFormat ??
-            CalendarFormat.month;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -245,54 +242,48 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                 final currentFormat =
                     calendarState.value?.calendarFormat ?? CalendarFormat.month;
 
-                // Calculate minimum height based on calendar position and format
-                final screenHeight = MediaQuery.of(context).size.height;
-                final appBarHeight = AppBar().preferredSize.height;
-                final statusBarHeight = MediaQuery.of(context).padding.top;
-                final calendarHeaderHeight = 41.0; // CalendarHeader Höhe
-                final topPadding = 16.0; // Abstand zur AppBar
-
-                // Calculate total top space used by header elements
-                final totalTopSpace = appBarHeight +
-                    statusBarHeight +
-                    topPadding +
-                    calendarHeaderHeight;
-
-                // Adjust calendar height based on format
-                double calendarHeight;
+                // Define static snap points for each calendar format
+                List<double> snapPoints;
                 switch (currentFormat) {
                   case CalendarFormat.month:
-                    calendarHeight = 500.0; // Monatsansicht
+                    // Monatsansicht: 3 Snappunkte (klein, mittel, groß)
+                    // Monatsansicht hat wenig Platz nach oben, daher kleinere Snappunkte
+                    snapPoints = [225.0, 550.0];
                     break;
                   case CalendarFormat.week:
-                    calendarHeight = 200.0; // Wochenansicht
+                    // Wochenansicht: 2 Snappunkte (klein, mittel)
+                    // Wochenansicht hat viel Platz nach oben, daher größere Snappunkte
+                    snapPoints = [550.0, 550.0];
                     break;
                   case CalendarFormat.twoWeeks:
-                    calendarHeight = 300.0; // 2-Wochen-Ansicht
+                    // 2-Wochen-Ansicht: 2 Snappunkte (klein, mittel)
+                    // 2-Wochen-Ansicht hat mittleren Platz nach oben
+                    snapPoints = [475.0, 550.0];
                     break;
-                  default:
-                    calendarHeight = 500.0;
                 }
 
-                // Calculate where the calendar ends
-                final calendarBottom = totalTopSpace + calendarHeight;
+                // Use the 0. index (first value) as the minimum height and default start position
+                final snapMinHeight = snapPoints.first;
+                final initialHeight = snapPoints.first;
 
-                // Calculate available space for the sheet
-                final availableSpace = screenHeight - calendarBottom;
+                // Ensure the sheet starts at the first snap point (0. index)
+                // This guarantees it won't overlap the calendar content
+                final effectiveInitialHeight = initialHeight;
 
-                // Ensure minimum height is reasonable and doesn't overlap
-                final minHeight =
-                    availableSpace > 150.0 ? availableSpace - 20.0 : 150.0;
-
-                // Calculate initial height based on available space
-                final initialHeight =
-                    (availableSpace * 0.6).clamp(200.0, 400.0);
+                // Set maxHeight to the second index (middle value) for better control
+                // This provides a reasonable maximum height that's not too extreme
+                final maxHeight = snapPoints.length > 1
+                    ? snapPoints[1] // Use second index as max
+                    : snapPoints
+                        .first; // Fallback to first if only one snap point
 
                 return CalendarViewUiBuilder.buildDraggableSheetContainer(
                   context: context,
-                  initialHeight: initialHeight,
-                  minHeight: minHeight,
-                  maxHeight: MediaQuery.of(context).size.height * 0.8,
+                  initialHeight: effectiveInitialHeight,
+                  minHeight: snapMinHeight,
+                  maxHeight:
+                      maxHeight, // Use largest snap point instead of screen height
+                  snapPoints: snapPoints, // Pass snap points
                   onHeightChanged: () {
                     // Don't call setState here to avoid build error
                     // The Consumer will automatically rebuild when needed
@@ -307,7 +298,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                         context: context,
                       ),
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           height: 250.0, // Fixed height to prevent overflow
                           child: PageView.builder(
                             key: _pageViewKey,
