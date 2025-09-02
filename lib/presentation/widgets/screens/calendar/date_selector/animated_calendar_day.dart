@@ -68,7 +68,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 4.0),
               child: Text(
                 '${widget.day.day}',
                 style: dayStyle,
@@ -116,6 +116,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
               ),
             // Spacer to push chips to bottom when no chips are present
             if (!hasPrimary && !hasPartner) const Spacer(),
+            // Add bottom padding to create equal spacing
+            const SizedBox(height: 4.0),
           ],
         ),
       ),

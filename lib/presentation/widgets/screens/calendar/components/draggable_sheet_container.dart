@@ -64,7 +64,6 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
 
     // Update effective min height if it changed
     if (oldWidget.minHeight != widget.minHeight) {
-      final oldMinHeight = _effectiveMinHeight;
       _effectiveMinHeight = widget.minHeight;
 
       // If minHeight changed, always snap to the smallest snap point
