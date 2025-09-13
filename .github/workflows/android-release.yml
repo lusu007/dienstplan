@@ -3,11 +3,47 @@ name: 🚀 Release Android App
 on:
   release:
     types: [published]
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
 
 jobs:
+  check-labels:
+    name: 🔍 Check for autorelease label
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      has-autorelease-label: ${{ steps.check.outputs.has-autorelease-label }}
+    steps:
+      - name: Check for autorelease label
+        id: check
+        run: |
+          # Get PR labels
+          LABELS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | \
+            jq -r '.[].name' | tr '\n' ' ')
+          
+          echo "PR Labels: $LABELS"
+          
+          # Check if any label starts with "autorelease:"
+          if echo "$LABELS" | grep -q "autorelease:"; then
+            echo "has-autorelease-label=true" >> $GITHUB_OUTPUT
+            echo "✅ Found autorelease label"
+          else
+            echo "has-autorelease-label=false" >> $GITHUB_OUTPUT
+            echo "❌ No autorelease label found"
+          fi
+
   build-and-deploy:
     name: 🏗️ Build and Deploy Production Release
     runs-on: ubuntu-latest
+    if: github.event_name == 'release' || (github.event_name == 'pull_request' && needs.check-labels.outputs.has-autorelease-label == 'true')
+    needs: [check-labels]
     steps:
       - name: 📂 Checkout code
         uses: actions/checkout@v5
@@ -42,7 +78,8 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
-      - name: 🔑 Setup Keystore
+      - name: 🔑 Setup Keystore (Release only)
+        if: github.event_name == 'release'
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
           
@@ -52,7 +89,12 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: flutter build apk --flavor prod --release --build-number=${{ github.run_number }}
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            flutter build apk --flavor prod --release --build-number=${{ github.run_number }}
+          else
+            flutter build apk --flavor prod --debug --build-number=${{ github.run_number }}
+          fi
         
       - name: 📦 Build App Bundle
         env:
@@ -60,9 +102,15 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: flutter build appbundle --flavor prod --release --build-number=${{ github.run_number }}
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            flutter build appbundle --flavor prod --release --build-number=${{ github.run_number }}
+          else
+            flutter build appbundle --flavor prod --debug --build-number=${{ github.run_number }}
+          fi
         
       - name: 🔏 Sign Release
+        if: github.event_name == 'release'
         uses: r0adkll/sign-android-release@v1
         id: sign
         with:
@@ -73,8 +121,8 @@ jobs:
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
       - name: 🚀 Create Release and Upload Assets
+        if: github.event_name == 'release' && github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
-        if: github.ref_type == 'tag'
         with:
           files: |
             build/app/outputs/flutter-apk/app-prod-release.apk
@@ -96,6 +144,7 @@ jobs:
             - Ready for Google Play Store deployment
 
       - name: 🏪 Upload to Play Store
+        if: github.event_name == 'release'
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
@@ -103,4 +152,30 @@ jobs:
           releaseFiles: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           track: beta
           releaseName: ${{ github.ref_name }}
-          status: completed 
+          status: completed
+
+      - name: 📎 Upload PR Build Artifacts
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-pr-build-${{ github.run_number }}
+          path: |
+            build/app/outputs/flutter-apk/app-prod-debug.apk
+            build/app/outputs/bundle/prodDebug/app-prod-debug.aab
+          retention-days: 7
+
+      - name: 📊 PR Build Summary
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## 🏗️ Android Build Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PR:** #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Flutter Version:** 3.35.3" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ✅ Build Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- APK: \`build/app/outputs/flutter-apk/app-prod-debug.apk\`" >> $GITHUB_STEP_SUMMARY
+          echo "- AAB: \`build/app/outputs/bundle/prodDebug/app-prod-debug.aab\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** This is a debug build for testing purposes only." >> $GITHUB_STEP_SUMMARY 
