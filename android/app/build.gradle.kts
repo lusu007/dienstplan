@@ -20,7 +20,7 @@ val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "
 android {
     namespace = "io.scelus.dienstplan"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
