@@ -40,6 +40,8 @@ pubspec.lock
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
+**/android/**/.cxx/
+**/android/**/build/
 *.jks
 
 # iOS/XCode related
