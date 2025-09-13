@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.10.0](https://github.com/lusu007/dienstplan/compare/v0.9.3...v0.10.0) (2025-09-13)
+
+
+### Features
+
+* Make calendar layout more eye friendly ([#268](https://github.com/lusu007/dienstplan/issues/268)) ([922a09b](https://github.com/lusu007/dienstplan/commit/922a09ba744bd4f7927cdddc34546ebe51c21db8))
+
+
+### Bug Fixes
+
+* Improve schedule file migration ([#266](https://github.com/lusu007/dienstplan/issues/266)) ([afe0e95](https://github.com/lusu007/dienstplan/commit/afe0e95779f8930460fe61865af66e772f1f976f))
+* Upgrade Android plugin to support 16kb page size ([#272](https://github.com/lusu007/dienstplan/issues/272)) ([a790e65](https://github.com/lusu007/dienstplan/commit/a790e65b2c82f400214362551e037a6afac96812))
+
 ## [0.9.3](https://github.com/lusu007/dienstplan/compare/v0.9.2...v0.9.3) (2025-08-25)
 
 
