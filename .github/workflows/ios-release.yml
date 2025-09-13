@@ -3,47 +3,11 @@ name: 🚀 Release iOS App
 on:
   release:
     types: [published]
-  pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
-      - labeled
-      - unlabeled
 
 jobs:
-  check-labels:
-    name: 🔍 Check for autorelease label
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    outputs:
-      has-autorelease-label: ${{ steps.check.outputs.has-autorelease-label }}
-    steps:
-      - name: Check for autorelease label
-        id: check
-        run: |
-          # Get PR labels
-          LABELS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | \
-            jq -r '.[].name' | tr '\n' ' ')
-          
-          echo "PR Labels: $LABELS"
-          
-          # Check if any label starts with "autorelease:"
-          if echo "$LABELS" | grep -q "autorelease:"; then
-            echo "has-autorelease-label=true" >> $GITHUB_OUTPUT
-            echo "✅ Found autorelease label"
-          else
-            echo "has-autorelease-label=false" >> $GITHUB_OUTPUT
-            echo "❌ No autorelease label found"
-          fi
-
   build-and-deploy-ios:
     name: 🏗️ Build and Deploy iOS App to App Store
     runs-on: macos-15
-    if: github.event_name == 'release' || (github.event_name == 'pull_request' && needs.check-labels.outputs.has-autorelease-label == 'true')
-    needs: [check-labels]
     steps:
       - name: 📂 Checkout code
         uses: actions/checkout@v5
@@ -77,8 +41,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
-      - name: 🔑 Setup iOS Code Signing (Release only)
-        if: github.event_name == 'release'
+      - name: 🔑 Setup iOS Code Signing
         run: |
           echo "${{ secrets.DIS_CERTIFICATE_BASE64 }}" | base64 -D > dist_cert.p12
           echo "${{ secrets.PROVISIONING_PROFILE }}" | base64 -D > dist_profile.mobileprovision
@@ -96,16 +59,10 @@ jobs:
           PP_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' /dev/stdin <<< "$(security cms -D -i dist_profile.mobileprovision)")
           echo "Provisioning Profile UUID: $PP_UUID"
 
-      - name: 🛠️ Build Flutter iOS App
-        run: |
-          if [ "${{ github.event_name }}" == "release" ]; then
-            flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
-          else
-            flutter build ios --flavor prod --debug --build-number=${{ github.run_number }} --no-codesign
-          fi
+      - name: 🛠️ Build Flutter iOS App (no codesign)
+        run: flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
 
-      - name: 🔧 Patch Podfile for CI signing (Release only)
-        if: github.event_name == 'release'
+      - name: 🔧 Patch Podfile for CI signing
         run: |
           # Füge Ruby-Code-Block zum Podfile hinzu, falls noch nicht vorhanden
           if ! grep -q "post_install do |installer|" ios/Podfile; then
@@ -129,8 +86,7 @@ jobs:
           pod install
           cd ..
       
-      - name: 📝 Create CI signing config (Release only)
-        if: github.event_name == 'release'
+      - name: 📝 Create CI signing config
         run: |
           cat > ios/ci-signing.xcconfig <<EOF
           CODE_SIGN_STYLE = Manual
@@ -140,8 +96,7 @@ jobs:
           OTHER_CODE_SIGN_FLAGS = --keychain build.keychain
           EOF
       
-      - name: 🏗️ Archive iOS App (Release only)
-        if: github.event_name == 'release'
+      - name: 🏗️ Archive iOS App
         run: |
           cd ios
           xcodebuild \
@@ -152,12 +107,7 @@ jobs:
             -xcconfig ci-signing.xcconfig \
             archive
 
-      - name: 📦 Build iOS Archive for PR (Debug)
-        if: github.event_name == 'pull_request'
-        run: flutter build ipa --flavor prod --debug --build-number=${{ github.run_number }} --no-codesign
-
-      - name: 📝 Generate ExportOptions.plist (Release only)
-        if: github.event_name == 'release'
+      - name: 📝 Generate ExportOptions.plist
         run: |
           echo '{
             "method": "app-store",
@@ -171,46 +121,40 @@ jobs:
           ls -l ios/ExportOptions.plist
           cat ios/ExportOptions.plist
 
-      - name: 📦 Export IPA (Release only)
-        if: github.event_name == 'release'
+      - name: 📦 Export IPA
         run: |
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
             -exportOptionsPlist ios/ExportOptions.plist \
             -exportPath build/export
 
-      - name: 🔍 Find exported IPA (Release only)
-        if: github.event_name == 'release'
+      - name: 🔍 Find exported IPA
         id: find_ipa
         run: |
           find build/export -type f -name "*.ipa" | head -1 > ipa_path.txt
           IPA_PATH=$(cat ipa_path.txt)
           echo "IPA_PATH=$IPA_PATH" >> $GITHUB_ENV
           
-      - name: 📛 Rename IPA for Release Asset (Release only)
-        if: github.event_name == 'release'
+      - name: 📛 Rename IPA for Release Asset
         run: |
           NEW_NAME="dienstplan-${{ github.event.release.tag_name }}-${{ github.run_number }}.ipa"
           mv "$IPA_PATH" "build/export/$NEW_NAME"
           echo "IPA_PATH=build/export/$NEW_NAME" >> $GITHUB_ENV
         
-      - name: ⬆️ Upload IPA to GitHub Release (Release only)
-        if: github.event_name == 'release'
+      - name: ⬆️ Upload IPA to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.IPA_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🔧 Install Codemagic CLI Tools (app-store-connect) (Release only)
-        if: github.event_name == 'release'
+      - name: 🔧 Install Codemagic CLI Tools (app-store-connect)
         run: |
           pip3 install --break-system-packages codemagic-cli-tools
           which app-store-connect
           app-store-connect --version
 
-      - name: 🏪 Deploy to App Store Connect (Release only)
-        if: github.event_name == 'release'
+      - name: 🏪 Deploy to App Store Connect
         env:
           APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
@@ -237,34 +181,7 @@ jobs:
           }
           echo "✅ App Store Connect deployment completed"
 
-      - name: 📎 Upload PR Build Artifacts
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-pr-build-${{ github.run_number }}
-          path: |
-            build/ios/iphoneos/Runner.app
-            build/ios/ipa/*.ipa
-          retention-days: 7
-
-      - name: 📊 PR Build Summary
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "## 🏗️ iOS Build Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**PR:** #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Flutter Version:** 3.35.3" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### ✅ Build Artifacts" >> $GITHUB_STEP_SUMMARY
-          echo "- App: \`build/ios/iphoneos/Runner.app\`" >> $GITHUB_STEP_SUMMARY
-          echo "- IPA: \`build/ios/ipa/*.ipa\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Note:** This is a debug build for testing purposes only." >> $GITHUB_STEP_SUMMARY
-
       - name: 🧹 Cleanup
-        if: github.event_name == 'release'
         run: |
           rm -f dist_cert.p12
           rm -f dist_profile.mobileprovision
