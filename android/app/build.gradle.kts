@@ -2,7 +2,7 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -19,7 +19,8 @@ val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "
 
 android {
     namespace = "io.scelus.dienstplan"
-    compileSdk = flutter.compileSdkVersion
+    compileSdkVersion 36
+    buildToolsVersion "36.0.0"
     ndkVersion = "28.2.13676358"
 
     compileOptions {
