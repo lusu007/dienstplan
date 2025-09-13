@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.2](https://github.com/lusu007/dienstplan/compare/v0.10.1...v0.10.2) (2025-09-13)
+
+
+### Bug Fixes
+
+* Remove label script ([#280](https://github.com/lusu007/dienstplan/issues/280)) ([a4cfbc7](https://github.com/lusu007/dienstplan/commit/a4cfbc76ba75f859d4b241f2e75a196c4fd292c8))
+* Update NDK version to latest stable ([#277](https://github.com/lusu007/dienstplan/issues/277)) ([f6825d5](https://github.com/lusu007/dienstplan/commit/f6825d5955a526edbd0afe99b189d61323f812a8))
+
 ## [0.10.1](https://github.com/lusu007/dienstplan/compare/v0.10.0...v0.10.1) (2025-09-13)
 
 
