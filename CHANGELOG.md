@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.4](https://github.com/lusu007/dienstplan/compare/v0.10.3...v0.10.4) (2025-09-13)
+
+
+### Bug Fixes
+
+* Modify buildscripts to fix pipeline issue ([#283](https://github.com/lusu007/dienstplan/issues/283)) ([19b7759](https://github.com/lusu007/dienstplan/commit/19b775932039ad70b68cebf692646d21f910eaa1))
+
 ## [0.10.3](https://github.com/lusu007/dienstplan/compare/v0.10.2...v0.10.3) (2025-09-13)
 
 
