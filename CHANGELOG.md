@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/lusu007/dienstplan/compare/v0.10.0...v0.10.1) (2025-09-13)
+
+
+### Bug Fixes
+
+* Use correct jvm toolchain version ([#275](https://github.com/lusu007/dienstplan/issues/275)) ([20e6bbd](https://github.com/lusu007/dienstplan/commit/20e6bbd3f935d231344bf1fd319db3c2c0f33f18))
+
 ## [0.10.0](https://github.com/lusu007/dienstplan/compare/v0.9.3...v0.10.0) (2025-09-13)
 
 
