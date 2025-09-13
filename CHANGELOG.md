@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.3](https://github.com/lusu007/dienstplan/compare/v0.10.2...v0.10.3) (2025-09-13)
+
+
+### Bug Fixes
+
+* Bump tools version ([#281](https://github.com/lusu007/dienstplan/issues/281)) ([a7f2d01](https://github.com/lusu007/dienstplan/commit/a7f2d01b1605e55db38abd9ab4c2d01bf12d82d8))
+
 ## [0.10.2](https://github.com/lusu007/dienstplan/compare/v0.10.1...v0.10.2) (2025-09-13)
 
 
