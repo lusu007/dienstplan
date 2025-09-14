@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.5](https://github.com/lusu007/dienstplan/compare/v0.10.4...v0.10.5) (2025-09-14)
+
+
+### Bug Fixes
+
+* Rollback buildscript ([#285](https://github.com/lusu007/dienstplan/issues/285)) ([ba4e15c](https://github.com/lusu007/dienstplan/commit/ba4e15ced8b81d978a2a8ecb5782304c41ff5380))
+
 ## [0.10.4](https://github.com/lusu007/dienstplan/compare/v0.10.3...v0.10.4) (2025-09-13)
 
 
