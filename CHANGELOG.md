@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.11.0](https://github.com/lusu007/dienstplan/compare/v0.10.5...v0.11.0) (2025-09-15)
+
+
+### Features
+
+* Add 2-Schicht 5-Tage plan ([#289](https://github.com/lusu007/dienstplan/issues/289)) ([e36bed8](https://github.com/lusu007/dienstplan/commit/e36bed825f392d6c311679e856cc7a6d9e1372aa))
+
+
+### Bug Fixes
+
+* Correctly update subtitle in button when changing calendar format ([#287](https://github.com/lusu007/dienstplan/issues/287)) ([bcce1e1](https://github.com/lusu007/dienstplan/commit/bcce1e15af487eead25686b9306b1540ad24a8f6))
+* Improve state and component management ([#291](https://github.com/lusu007/dienstplan/issues/291)) ([b0bbd60](https://github.com/lusu007/dienstplan/commit/b0bbd60e38175b8ce459577c37b15b838b6830f3))
+* Memoize calendar day calculations ([#294](https://github.com/lusu007/dienstplan/issues/294)) ([1bfe5ca](https://github.com/lusu007/dienstplan/commit/1bfe5ca22a5d819ac8be781127c2e05a0bb89a44))
+* Remove gesture to change calendar format ([#292](https://github.com/lusu007/dienstplan/issues/292)) ([8e5149f](https://github.com/lusu007/dienstplan/commit/8e5149f3b7e3d6fef3e22046489b46208bbd4611))
+* Remove unused code ([#293](https://github.com/lusu007/dienstplan/issues/293)) ([f63506e](https://github.com/lusu007/dienstplan/commit/f63506eda44f04fbf0589f871af079348ee24546))
+
 ## [0.10.5](https://github.com/lusu007/dienstplan/compare/v0.10.4...v0.10.5) (2025-09-14)
 
 
