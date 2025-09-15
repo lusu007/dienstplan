@@ -4,7 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 
 class CalendarFormatDialog {
   static void show(BuildContext context) {
@@ -13,7 +13,7 @@ class CalendarFormatDialog {
     showDialog(
       context: context,
       builder: (context) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(scheduleNotifierProvider);
+        final asyncState = ref.watch(settingsNotifierProvider);
         final state = asyncState.value;
         return AlertDialog(
           title: Text(l10n.calendarFormat),
@@ -26,7 +26,7 @@ class CalendarFormatDialog {
                     CalendarFormat.month,
                 onTap: () async {
                   await ref
-                      .read(scheduleNotifierProvider.notifier)
+                      .read(settingsNotifierProvider.notifier)
                       .setCalendarFormat(CalendarFormat.month);
                   if (context.mounted) {
                     Navigator.pop(context);
@@ -41,7 +41,7 @@ class CalendarFormatDialog {
                     CalendarFormat.twoWeeks,
                 onTap: () async {
                   await ref
-                      .read(scheduleNotifierProvider.notifier)
+                      .read(settingsNotifierProvider.notifier)
                       .setCalendarFormat(CalendarFormat.twoWeeks);
                   if (context.mounted) {
                     Navigator.pop(context);
@@ -56,7 +56,7 @@ class CalendarFormatDialog {
                     CalendarFormat.week,
                 onTap: () async {
                   await ref
-                      .read(scheduleNotifierProvider.notifier)
+                      .read(settingsNotifierProvider.notifier)
                       .setCalendarFormat(CalendarFormat.week);
                   if (context.mounted) {
                     Navigator.pop(context);

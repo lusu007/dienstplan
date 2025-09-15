@@ -450,6 +450,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     }
   }
 
+  Future<void> updateCalendarFormatOnly(CalendarFormat format) async {
+    final current = state.value ?? ScheduleUiState.initial();
+    state = AsyncData(current.copyWith(calendarFormat: format));
+  }
+
   Future<void> setActiveConfig(DutyScheduleConfig config) async {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(isLoading: true));

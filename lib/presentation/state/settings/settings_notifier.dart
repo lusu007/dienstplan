@@ -6,6 +6,7 @@ import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
 import 'dart:async';
 part 'settings_notifier.g.dart';
 
@@ -107,6 +108,9 @@ class SettingsNotifier extends _$SettingsNotifier {
       );
       await _saveSettings(newSettings);
     }
+    // Update schedule notifier calendar format without full invalidation
+    final scheduleNotifier = ref.read(scheduleNotifierProvider.notifier);
+    await scheduleNotifier.updateCalendarFormatOnly(format);
   }
 
   Future<void> setActiveConfigName(String name) async {
