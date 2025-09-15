@@ -61,15 +61,15 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     );
   }
 
-  // Calendar methods
+  // Calendar methods - optimized for selective updates
   Future<void> setFocusedDay(DateTime day) async {
     await ref.read(calendarProvider.notifier).setFocusedDay(day);
-    await _refreshState();
+    await _updateCalendarStateOnly();
   }
 
   Future<void> setSelectedDay(DateTime? day) async {
     await ref.read(calendarProvider.notifier).setSelectedDay(day);
-    await _refreshState();
+    await _updateCalendarStateOnly();
   }
 
   Future<void> setCalendarFormat(CalendarFormat format) async {
@@ -93,28 +93,28 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _refreshState();
   }
 
-  // Partner methods
+  // Partner methods - optimized for selective updates
   Future<void> setPartnerConfigName(String? configName) async {
     await ref.read(partnerProvider.notifier).setPartnerConfigName(configName);
-    await _refreshState();
+    await _updatePartnerStateOnly();
   }
 
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
     await ref.read(partnerProvider.notifier).setPartnerDutyGroup(dutyGroup);
-    await _refreshState();
+    await _updatePartnerStateOnly();
   }
 
   Future<void> setPartnerAccentColor(int? colorValue) async {
     await ref.read(partnerProvider.notifier).setPartnerAccentColor(colorValue);
-    await _refreshState();
+    await _updatePartnerStateOnly();
   }
 
   Future<void> setMyAccentColor(int? colorValue) async {
     await ref.read(partnerProvider.notifier).setMyAccentColor(colorValue);
-    await _refreshState();
+    await _updatePartnerStateOnly();
   }
 
-  // Schedule data methods
+  // Schedule data methods - optimized for selective updates
   Future<void> loadSchedulesForDateRange({
     required DateTime startDate,
     required DateTime endDate,
@@ -125,7 +125,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           endDate: endDate,
           configName: configName,
         );
-    await _refreshState();
+    await _updateScheduleDataStateOnly();
   }
 
   Future<void> generateSchedulesForMonth({
@@ -136,7 +136,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           month: month,
           configName: configName,
         );
-    await _refreshState();
+    await _updateScheduleDataStateOnly();
   }
 
   Future<void> ensureMonthSchedules({
@@ -147,14 +147,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           month: month,
           configName: configName,
         );
-    await _refreshState();
+    await _updateScheduleDataStateOnly();
   }
 
   Future<void> setSelectedDutyGroup(String dutyGroup) async {
     await ref
         .read(scheduleDataProvider.notifier)
         .setSelectedDutyGroup(dutyGroup);
-    await _refreshState();
+    await _updateScheduleDataStateOnly();
   }
 
   // Utility methods
@@ -188,6 +188,72 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> applyPartnerSelectionChanges() async {
     // This method applies partner selection changes
     await _refreshState();
+  }
+
+  /// Optimized method to update only calendar-related state
+  Future<void> _updateCalendarStateOnly() async {
+    final currentState = state.value;
+    if (currentState == null) {
+      await _refreshState();
+      return;
+    }
+
+    final calendarState = await ref.read(calendarProvider.future);
+
+    // Only update calendar-related fields
+    final updatedState = currentState.copyWith(
+      selectedDay: calendarState.selectedDay,
+      focusedDay: calendarState.focusedDay,
+      calendarFormat: calendarState.calendarFormat,
+      isLoading: calendarState.isLoading || currentState.isLoading,
+      error: calendarState.error ?? currentState.error,
+    );
+
+    state = AsyncData(updatedState);
+  }
+
+  /// Optimized method to update only partner-related state
+  Future<void> _updatePartnerStateOnly() async {
+    final currentState = state.value;
+    if (currentState == null) {
+      await _refreshState();
+      return;
+    }
+
+    final partnerState = await ref.read(partnerProvider.future);
+
+    // Only update partner-related fields
+    final updatedState = currentState.copyWith(
+      partnerConfigName: partnerState.partnerConfigName,
+      partnerDutyGroup: partnerState.partnerDutyGroup,
+      partnerAccentColorValue: partnerState.partnerAccentColorValue,
+      myAccentColorValue: partnerState.myAccentColorValue,
+      isLoading: partnerState.isLoading || currentState.isLoading,
+      error: partnerState.error ?? currentState.error,
+    );
+
+    state = AsyncData(updatedState);
+  }
+
+  /// Optimized method to update only schedule data state
+  Future<void> _updateScheduleDataStateOnly() async {
+    final currentState = state.value;
+    if (currentState == null) {
+      await _refreshState();
+      return;
+    }
+
+    final scheduleDataState = await ref.read(scheduleDataProvider.future);
+
+    // Only update schedule data-related fields
+    final updatedState = currentState.copyWith(
+      schedules: scheduleDataState.schedules,
+      preferredDutyGroup: scheduleDataState.preferredDutyGroup,
+      isLoading: scheduleDataState.isLoading || currentState.isLoading,
+      error: scheduleDataState.error ?? currentState.error,
+    );
+
+    state = AsyncData(updatedState);
   }
 
   Future<void> _refreshState() async {

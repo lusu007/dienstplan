@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 
+/// Optimized calendar day card with selective provider watching
 class CalendarDayCard extends ConsumerWidget {
   final DateTime day;
   final CalendarDayType dayType;
@@ -23,19 +24,33 @@ class CalendarDayCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheduleState = ref.watch(scheduleCoordinatorProvider).value;
-    final isSelected = _isDaySelected(scheduleState?.selectedDay);
+    // Selective provider watching - only watch specific parts
+    final selectedDay = ref.watch(scheduleCoordinatorProvider.select(
+      (state) => state.value?.selectedDay,
+    ));
 
-    return AnimatedCalendarDay(
-      day: day,
-      dutyAbbreviation: dutyAbbreviation ?? '',
-      partnerAccentColorValue: scheduleState?.partnerAccentColorValue,
-      myAccentColorValue: scheduleState?.myAccentColorValue,
-      dayType: dayType,
-      width: width,
-      height: height,
-      isSelected: isSelected,
-      onTap: () => _handleDayTap(ref),
+    final partnerAccentColor = ref.watch(scheduleCoordinatorProvider.select(
+      (state) => state.value?.partnerAccentColorValue,
+    ));
+
+    final myAccentColor = ref.watch(scheduleCoordinatorProvider.select(
+      (state) => state.value?.myAccentColorValue,
+    ));
+
+    final isSelected = _isDaySelected(selectedDay);
+
+    return RepaintBoundary(
+      child: AnimatedCalendarDay(
+        day: day,
+        dutyAbbreviation: dutyAbbreviation ?? '',
+        partnerAccentColorValue: partnerAccentColor,
+        myAccentColorValue: myAccentColor,
+        dayType: dayType,
+        width: width,
+        height: height,
+        isSelected: isSelected,
+        onTap: () => _handleDayTap(ref),
+      ),
     );
   }
 
