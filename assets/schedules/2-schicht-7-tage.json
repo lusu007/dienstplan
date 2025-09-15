@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "meta": {
+    "name": "2-Schichtplan 7-Tage",
+    "created_by": "Lukas",
+    "description": "2-Schichtplan 7-Tage",
+    "icon": "directions_car",
+    "start_week_day": "Monday",
+    "start_date": "2025-09-15",
+    "police_authority": "Polizei Bremen",
+    "days": [
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa",
+      "So"
+    ]
+  },
+  "duty_types": {
+    "F": {
+      "label": "Frühdienst",
+      "icon": "wb_sunny"
+    },
+    "S": {
+      "label": "Spätdienst",
+      "icon": "schedule"
+    },
+    "-": {
+      "label": "Frei",
+      "all_day": true,
+      "icon": "weekend"
+    }
+  },
+  "duty_type_order": [
+    "F",
+    "S",
+    "-"
+  ],
+  "rhythms": {
+    "2wochen7tage_standard": {
+      "length_weeks": 2,
+      "pattern": [
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S",
+          "S"
+        ]
+      ]
+    }
+  },
+  "dienstgruppen": [
+    {
+      "id": "g1",
+      "name": "Gruppe 1",
+      "rhythm": "2wochen7tage_standard",
+      "offset_weeks": 0
+    },
+    {
+      "id": "g2",
+      "name": "Gruppe 2",
+      "rhythm": "2wochen7tage_standard",
+      "offset_weeks": 1
+    }
+  ]
+}
