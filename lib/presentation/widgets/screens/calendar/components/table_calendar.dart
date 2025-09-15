@@ -63,12 +63,6 @@ class CalendarTable extends ConsumerWidget {
                 .ensureActiveDay(selectedDay);
             onDaySelected();
           },
-          onFormatChanged: (format) {
-            ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .setCalendarFormat(format);
-            onFormatChanged(format);
-          },
           onPageChanged: (focusedDay) async {
             await ref
                 .read(scheduleCoordinatorProvider.notifier)
