@@ -274,11 +274,11 @@ class _TableCalendarWrapper extends ConsumerWidget {
           onDaySelected();
         },
         onFormatChanged: (format) {
-          // Single source of truth: notifier handles persistence and state
-          ref
-              .read(scheduleCoordinatorProvider.notifier)
-              .setCalendarFormat(format);
-          onFormatChanged(format);
+          // Disable format change via gesture - only allow programmatic changes
+          // ref
+          //     .read(scheduleCoordinatorProvider.notifier)
+          //     .setCalendarFormat(format);
+          // onFormatChanged(format);
         },
         onPageChanged: (focusedDay) async {
           // Single source of truth: notifier loads/generates months
