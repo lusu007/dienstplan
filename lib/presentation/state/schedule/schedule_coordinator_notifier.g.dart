@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'schedule_notifier.dart';
+part of 'schedule_coordinator_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,33 +9,35 @@ part of 'schedule_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ScheduleNotifier)
-const scheduleProvider = ScheduleNotifierProvider._();
+@ProviderFor(ScheduleCoordinatorNotifier)
+const scheduleCoordinatorProvider = ScheduleCoordinatorNotifierProvider._();
 
-final class ScheduleNotifierProvider
-    extends $AsyncNotifierProvider<ScheduleNotifier, ScheduleUiState> {
-  const ScheduleNotifierProvider._()
+final class ScheduleCoordinatorNotifierProvider extends $AsyncNotifierProvider<
+    ScheduleCoordinatorNotifier, ScheduleUiState> {
+  const ScheduleCoordinatorNotifierProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'scheduleProvider',
+          name: r'scheduleCoordinatorProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$scheduleNotifierHash();
+  String debugGetCreateSourceHash() => _$scheduleCoordinatorNotifierHash();
 
   @$internal
   @override
-  ScheduleNotifier create() => ScheduleNotifier();
+  ScheduleCoordinatorNotifier create() => ScheduleCoordinatorNotifier();
 }
 
-String _$scheduleNotifierHash() => r'b608d00d330f02c7e8da13f3853788d1cce8854f';
+String _$scheduleCoordinatorNotifierHash() =>
+    r'0691e1eac3bc16792f4a7d9cf0e188f4a102d973';
 
-abstract class _$ScheduleNotifier extends $AsyncNotifier<ScheduleUiState> {
+abstract class _$ScheduleCoordinatorNotifier
+    extends $AsyncNotifier<ScheduleUiState> {
   FutureOr<ScheduleUiState> build();
   @$mustCallSuper
   @override

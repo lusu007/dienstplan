@@ -4,7 +4,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/step_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/duty_group_card.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 
 class DutyGroupStepComponent extends ConsumerWidget {
   final DutyScheduleConfig? selectedConfig;
@@ -23,7 +23,7 @@ class DutyGroupStepComponent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final scheduleState = ref.watch(scheduleNotifierProvider).value;
+    final scheduleState = ref.watch(scheduleCoordinatorProvider).value;
     final currentDutyGroup = scheduleState?.preferredDutyGroup;
     final hasExistingDutyGroup =
         currentDutyGroup != null && currentDutyGroup.isNotEmpty;

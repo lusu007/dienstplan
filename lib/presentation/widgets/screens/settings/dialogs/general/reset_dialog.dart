@@ -39,7 +39,7 @@ class ResetDialog {
                   await container.read(scheduleConfigServiceProvider.future);
 
               await configService.resetSetup();
-              await container.read(settingsNotifierProvider.notifier).reset();
+              await container.read(settingsProvider.notifier).reset();
 
               if (context.mounted) {
                 Navigator.of(context, rootNavigator: true).pop();

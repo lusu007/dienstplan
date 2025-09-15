@@ -5,7 +5,7 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/c
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
@@ -78,8 +78,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Warm up schedule provider (ensures initial load)
-    ref.watch(scheduleNotifierProvider);
+    // Warm up schedule coordinator provider (ensures initial load)
+    ref.watch(scheduleCoordinatorProvider);
     return const Scaffold(
       appBar: CalendarAppBar(),
       body: SafeAreaWrapper(

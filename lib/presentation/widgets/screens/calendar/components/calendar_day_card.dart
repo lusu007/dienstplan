@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 
 class CalendarDayCard extends ConsumerWidget {
   final DateTime day;
@@ -23,7 +23,7 @@ class CalendarDayCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheduleState = ref.watch(scheduleNotifierProvider).value;
+    final scheduleState = ref.watch(scheduleCoordinatorProvider).value;
     final isSelected = _isDaySelected(scheduleState?.selectedDay);
 
     return AnimatedCalendarDay(
@@ -49,7 +49,7 @@ class CalendarDayCard extends ConsumerWidget {
 
   Future<void> _handleDayTap(WidgetRef ref) async {
     // Trigger day selection via provider
-    await ref.read(scheduleNotifierProvider.notifier).setSelectedDay(day);
-    ref.read(scheduleNotifierProvider.notifier).setFocusedDay(day);
+    await ref.read(scheduleCoordinatorProvider.notifier).setSelectedDay(day);
+    ref.read(scheduleCoordinatorProvider.notifier).setFocusedDay(day);
   }
 }

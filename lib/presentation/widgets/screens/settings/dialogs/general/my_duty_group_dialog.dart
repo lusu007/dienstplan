@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 
 class MyDutyGroupDialog {
   static void show(BuildContext context) {
@@ -12,7 +12,7 @@ class MyDutyGroupDialog {
     showDialog(
       context: context,
       builder: (context) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(scheduleNotifierProvider);
+        final asyncState = ref.watch(scheduleCoordinatorProvider);
         final state = asyncState.value;
         final dutyGroups = state?.dutyGroups ?? const <String>[];
         if ((state?.activeConfigName ?? '').isEmpty) {
@@ -59,7 +59,7 @@ class MyDutyGroupDialog {
 
                           // Perform operations after dialog is closed
                           await ref
-                              .read(scheduleNotifierProvider.notifier)
+                              .read(scheduleCoordinatorProvider.notifier)
                               .setPreferredDutyGroup(group);
                         },
                         mainColor: AppColors.primary,
@@ -74,8 +74,8 @@ class MyDutyGroupDialog {
 
                       // Perform operations after dialog is closed
                       await ref
-                          .read(scheduleNotifierProvider.notifier)
-                          .setPreferredDutyGroup(null);
+                          .read(scheduleCoordinatorProvider.notifier)
+                          .setPreferredDutyGroup('');
                     },
                     mainColor: AppColors.primary,
                     useDialogStyle: true,

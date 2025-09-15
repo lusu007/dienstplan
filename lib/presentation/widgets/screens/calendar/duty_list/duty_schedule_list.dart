@@ -6,7 +6,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_item_ui_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class DutyScheduleList extends StatefulWidget {
@@ -81,7 +81,7 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
   Widget build(BuildContext context) {
     // Read partner config and color via Riverpod
     final scheduleState = ProviderScope.containerOf(context, listen: true)
-        .read(scheduleNotifierProvider)
+        .read(scheduleCoordinatorProvider)
         .value;
     _partnerConfigName = scheduleState?.partnerConfigName;
     _partnerAccentColorValue = scheduleState?.partnerAccentColorValue;

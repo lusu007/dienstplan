@@ -22,7 +22,7 @@ class _AppInitializerWidgetState extends ConsumerState<AppInitializerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final settingsAsync = ref.watch(settingsNotifierProvider);
+    final settingsAsync = ref.watch(settingsProvider);
     return settingsAsync.when(
       data: (state) {
         final isSetupCompleted = (state.activeConfigName != null &&
@@ -44,7 +44,7 @@ class _AppInitializerWidgetState extends ConsumerState<AppInitializerWidget> {
               stackTrace: st,
               onRetry: () {
                 // Invalidate the settings provider to retry loading
-                ref.invalidate(settingsNotifierProvider);
+                ref.invalidate(settingsProvider);
               },
             ),
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
@@ -37,8 +37,8 @@ class PartnerConfigDialog {
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(scheduleNotifierProvider).value;
-          final notifier = ref.read(scheduleNotifierProvider.notifier);
+          final state = ref.watch(scheduleCoordinatorProvider).value;
+          final notifier = ref.read(scheduleCoordinatorProvider.notifier);
           final DateTime? initialFocused = state?.focusedDay;
           final configs = state?.configs ?? const [];
           if (configs.isEmpty) {
@@ -69,14 +69,11 @@ class PartnerConfigDialog {
                             Navigator.of(context).pop();
 
                             // Perform operations after dialog is closed
-                            await notifier.setPartnerConfigName(c.name,
-                                silent: true);
+                            await notifier.setPartnerConfigName(c.name);
                             // Reset partner duty group when duty plan changes
-                            await notifier.setPartnerDutyGroup(null,
-                                silent: true);
+                            await notifier.setPartnerDutyGroup(null);
                             if (initialFocused != null) {
-                              await notifier.setFocusedDay(initialFocused,
-                                  shouldLoad: false);
+                              await notifier.setFocusedDay(initialFocused);
                             }
                           },
                           useDialogStyle: true,
@@ -89,12 +86,11 @@ class PartnerConfigDialog {
                         Navigator.of(context).pop();
 
                         // Perform operations after dialog is closed
-                        await notifier.setPartnerConfigName(null, silent: true);
+                        await notifier.setPartnerConfigName(null);
                         // Reset partner duty group when duty plan is cleared
-                        await notifier.setPartnerDutyGroup(null, silent: true);
+                        await notifier.setPartnerDutyGroup(null);
                         if (initialFocused != null) {
-                          await notifier.setFocusedDay(initialFocused,
-                              shouldLoad: false);
+                          await notifier.setFocusedDay(initialFocused);
                         }
                       },
                       useDialogStyle: true,
@@ -108,7 +104,7 @@ class PartnerConfigDialog {
       ),
     );
     await container
-        .read(scheduleNotifierProvider.notifier)
+        .read(scheduleCoordinatorProvider.notifier)
         .applyPartnerSelectionChanges();
   }
 }

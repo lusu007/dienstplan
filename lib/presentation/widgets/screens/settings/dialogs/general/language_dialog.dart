@@ -30,7 +30,7 @@ class LanguageDialog {
                     onTap: () async {
                       languageService.setLanguage('de');
                       await ref
-                          .read(settingsNotifierProvider.notifier)
+                          .read(settingsProvider.notifier)
                           .setLanguage('de');
                       if (context.mounted) Navigator.pop(context);
                     },
@@ -44,7 +44,7 @@ class LanguageDialog {
                     onTap: () async {
                       languageService.setLanguage('en');
                       await ref
-                          .read(settingsNotifierProvider.notifier)
+                          .read(settingsProvider.notifier)
                           .setLanguage('en');
                       if (context.mounted) Navigator.pop(context);
                     },

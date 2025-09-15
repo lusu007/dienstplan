@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'setup_notifier.dart';
+part of 'config_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,42 +9,42 @@ part of 'setup_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SetupNotifier)
-const setupProvider = SetupNotifierProvider._();
+@ProviderFor(ConfigNotifier)
+const configProvider = ConfigNotifierProvider._();
 
-final class SetupNotifierProvider
-    extends $AsyncNotifierProvider<SetupNotifier, SetupUiState> {
-  const SetupNotifierProvider._()
+final class ConfigNotifierProvider
+    extends $AsyncNotifierProvider<ConfigNotifier, ConfigUiState> {
+  const ConfigNotifierProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'setupProvider',
+          name: r'configProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$setupNotifierHash();
+  String debugGetCreateSourceHash() => _$configNotifierHash();
 
   @$internal
   @override
-  SetupNotifier create() => SetupNotifier();
+  ConfigNotifier create() => ConfigNotifier();
 }
 
-String _$setupNotifierHash() => r'595d988ac01797f92b877fdf3527d2e4be61c04b';
+String _$configNotifierHash() => r'20f83cdc1bd13b41358d80f79157f01225b87af5';
 
-abstract class _$SetupNotifier extends $AsyncNotifier<SetupUiState> {
-  FutureOr<SetupUiState> build();
+abstract class _$ConfigNotifier extends $AsyncNotifier<ConfigUiState> {
+  FutureOr<ConfigUiState> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<SetupUiState>, SetupUiState>;
+    final ref = this.ref as $Ref<AsyncValue<ConfigUiState>, ConfigUiState>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<SetupUiState>, SetupUiState>,
-        AsyncValue<SetupUiState>,
+        AnyNotifier<AsyncValue<ConfigUiState>, ConfigUiState>,
+        AsyncValue<ConfigUiState>,
         Object?,
         Object?>;
     element.handleValue(ref, created);
