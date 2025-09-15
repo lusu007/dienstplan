@@ -15,7 +15,7 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'dart:async';
 
 part 'setup_notifier.g.dart';
@@ -78,7 +78,7 @@ class SetupNotifier extends _$SetupNotifier {
     state = AsyncData(current.copyWith(selectedTheme: theme));
 
     // Apply theme immediately
-    await ref.read(settingsNotifierProvider.notifier).setThemePreference(theme);
+    await ref.read(settingsProvider.notifier).setThemePreference(theme);
   }
 
   Future<void> setConfig(DutyScheduleConfig? config) async {
@@ -114,7 +114,7 @@ class SetupNotifier extends _$SetupNotifier {
 
     if (current.currentStep == 2 && current.selectedConfig != null) {
       // Pre-select current duty group if it exists
-      final scheduleState = ref.read(scheduleNotifierProvider).value;
+      final scheduleState = ref.read(scheduleCoordinatorProvider).value;
       final currentDutyGroup = scheduleState?.preferredDutyGroup;
 
       state = AsyncData(current.copyWith(
@@ -239,9 +239,9 @@ class SetupNotifier extends _$SetupNotifier {
       await _saveSettingsUseCase!.execute(finalSettings);
 
       await ref
-          .read(settingsNotifierProvider.notifier)
+          .read(settingsProvider.notifier)
           .setThemePreference(current.selectedTheme);
-      ref.invalidate(scheduleNotifierProvider);
+      ref.invalidate(scheduleCoordinatorProvider);
 
       // Mark setup as completed and keep loading state for smooth transition
       state = AsyncData(current.copyWith(

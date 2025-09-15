@@ -13,7 +13,7 @@ class CalendarFormatDialog {
     showDialog(
       context: context,
       builder: (context) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(settingsNotifierProvider);
+        final asyncState = ref.watch(settingsProvider);
         final state = asyncState.value;
         return AlertDialog(
           title: Text(l10n.calendarFormat),
@@ -26,7 +26,7 @@ class CalendarFormatDialog {
                     CalendarFormat.month,
                 onTap: () async {
                   await ref
-                      .read(settingsNotifierProvider.notifier)
+                      .read(settingsProvider.notifier)
                       .setCalendarFormat(CalendarFormat.month);
                   if (context.mounted) {
                     Navigator.pop(context);
@@ -41,7 +41,7 @@ class CalendarFormatDialog {
                     CalendarFormat.twoWeeks,
                 onTap: () async {
                   await ref
-                      .read(settingsNotifierProvider.notifier)
+                      .read(settingsProvider.notifier)
                       .setCalendarFormat(CalendarFormat.twoWeeks);
                   if (context.mounted) {
                     Navigator.pop(context);
@@ -56,7 +56,7 @@ class CalendarFormatDialog {
                     CalendarFormat.week,
                 onTap: () async {
                   await ref
-                      .read(settingsNotifierProvider.notifier)
+                      .read(settingsProvider.notifier)
                       .setCalendarFormat(CalendarFormat.week);
                   if (context.mounted) {
                     Navigator.pop(context);

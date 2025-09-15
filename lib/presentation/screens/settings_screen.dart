@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedule_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section.dart';
@@ -25,7 +25,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
 
-    final scheduleAsync = ref.watch(scheduleNotifierProvider);
+    final scheduleAsync = ref.watch(scheduleCoordinatorProvider);
     return scheduleAsync.when(
       loading: () => Scaffold(
         appBar: AppBar(title: Text(l10n.settings)),

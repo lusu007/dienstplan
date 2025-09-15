@@ -26,7 +26,7 @@ class _ThemeModeDialogContentState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final state = ref.watch(settingsNotifierProvider).value;
+    final state = ref.watch(settingsProvider).value;
     final ThemePreference current =
         state?.themePreference ?? ThemePreference.system;
 
@@ -108,7 +108,7 @@ class _ThemeModeDialogContentState
               )
             : null,
         onTap: () {
-          ref.read(settingsNotifierProvider.notifier).setThemePreference(value);
+          ref.read(settingsProvider.notifier).setThemePreference(value);
         },
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

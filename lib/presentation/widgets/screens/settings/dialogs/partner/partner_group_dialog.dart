@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
@@ -9,7 +9,7 @@ class PartnerGroupDialog {
     final container = ProviderScope.containerOf(context, listen: false);
 
     // Safety check: prevent dialog from opening if no partner duty plan is selected
-    final state = container.read(scheduleNotifierProvider).value;
+    final state = container.read(scheduleCoordinatorProvider).value;
     if (state?.partnerConfigName == null || state!.partnerConfigName!.isEmpty) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -26,8 +26,8 @@ class PartnerGroupDialog {
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(scheduleNotifierProvider).value;
-          final notifier = ref.read(scheduleNotifierProvider.notifier);
+          final state = ref.watch(scheduleCoordinatorProvider).value;
+          final notifier = ref.read(scheduleCoordinatorProvider.notifier);
           final DateTime? initialFocused = state?.focusedDay;
           final l10n = AppLocalizations.of(context);
           final String? selectedConfigName = state?.partnerConfigName;
@@ -58,11 +58,9 @@ class PartnerGroupDialog {
                               Navigator.of(context).pop();
 
                               // Perform operations after dialog is closed
-                              await notifier.setPartnerDutyGroup(group,
-                                  silent: true);
+                              await notifier.setPartnerDutyGroup(group);
                               if (initialFocused != null) {
-                                await notifier.setFocusedDay(initialFocused,
-                                    shouldLoad: false);
+                                await notifier.setFocusedDay(initialFocused);
                               }
                             },
                             useDialogStyle: true,
@@ -75,11 +73,9 @@ class PartnerGroupDialog {
                           Navigator.of(context).pop();
 
                           // Perform operations after dialog is closed
-                          await notifier.setPartnerDutyGroup(null,
-                              silent: true);
+                          await notifier.setPartnerDutyGroup(null);
                           if (initialFocused != null) {
-                            await notifier.setFocusedDay(initialFocused,
-                                shouldLoad: false);
+                            await notifier.setFocusedDay(initialFocused);
                           }
                         },
                         useDialogStyle: true,
@@ -96,7 +92,7 @@ class PartnerGroupDialog {
     );
     // After dialog is dismissed (tap outside/back), apply heavy loads once
     await container
-        .read(scheduleNotifierProvider.notifier)
+        .read(scheduleCoordinatorProvider.notifier)
         .applyPartnerSelectionChanges();
   }
 }

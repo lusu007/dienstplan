@@ -4,7 +4,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 
 class DutyScheduleDialog {
   static Widget _buildConfigTitle(dynamic config) {
@@ -39,7 +39,7 @@ class DutyScheduleDialog {
     showDialog(
       context: context,
       builder: (dialogContext) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(scheduleNotifierProvider);
+        final asyncState = ref.watch(scheduleCoordinatorProvider);
         final state = asyncState.value;
         final configs = state?.configs ?? const [];
         if (configs.isEmpty) {
@@ -75,11 +75,11 @@ class DutyScheduleDialog {
 
                             // Perform operations after dialog is closed
                             await ref
-                                .read(scheduleNotifierProvider.notifier)
-                                .setActiveConfig(config);
+                                .read(scheduleCoordinatorProvider.notifier)
+                                .setActiveConfig(config.name);
                             await ref
-                                .read(scheduleNotifierProvider.notifier)
-                                .setPreferredDutyGroup(null);
+                                .read(scheduleCoordinatorProvider.notifier)
+                                .setPreferredDutyGroup('');
                           } catch (e, stackTrace) {
                             AppLogger.e(
                                 'DutyScheduleDialog: Error setting active config',

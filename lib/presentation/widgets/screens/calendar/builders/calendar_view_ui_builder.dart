@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_builders_helper.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
@@ -114,7 +114,7 @@ class CalendarViewUiBuilder {
     bool shouldAnimate = false,
   }) {
     return Consumer(builder: (context, ref, __) {
-      final asyncState = ref.watch(scheduleNotifierProvider);
+      final asyncState = ref.watch(scheduleCoordinatorProvider);
       final state = asyncState.value;
       final String? selectedGroup = state?.selectedDutyGroup;
 
@@ -149,7 +149,7 @@ class CalendarViewUiBuilder {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (context.mounted) {
             ref
-                .read(scheduleNotifierProvider.notifier)
+                .read(scheduleCoordinatorProvider.notifier)
                 .setSelectedDay(state!.selectedDay);
           }
         });
@@ -162,9 +162,11 @@ class CalendarViewUiBuilder {
         dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
         dutyTypes: state?.activeConfig?.dutyTypes,
         onDutyGroupSelected: (group) {
-          ref
-              .read(scheduleNotifierProvider.notifier)
-              .setSelectedDutyGroup(group);
+          if (group != null) {
+            ref
+                .read(scheduleCoordinatorProvider.notifier)
+                .setSelectedDutyGroup(group);
+          }
         },
         shouldAnimate: shouldAnimate,
         isLoading: isLoadingSelectedDay,
@@ -177,7 +179,7 @@ class CalendarViewUiBuilder {
   }) {
     final l10n = AppLocalizations.of(context);
     return Consumer(builder: (context, ref, __) {
-      final state = ref.watch(scheduleNotifierProvider).value;
+      final state = ref.watch(scheduleCoordinatorProvider).value;
       final filterText = (state?.selectedDutyGroup ?? '').isNotEmpty
           ? state!.selectedDutyGroup!
           : l10n.all;
@@ -212,7 +214,7 @@ class _TableCalendarWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(scheduleNotifierProvider).value;
+    final state = ref.watch(scheduleCoordinatorProvider).value;
     final calendarFormat = state?.calendarFormat ?? CalendarFormat.month;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 
@@ -261,23 +263,27 @@ class _TableCalendarWrapper extends ConsumerWidget {
         },
         onDaySelected: (selectedDay, focusedDay) async {
           await ref
-              .read(scheduleNotifierProvider.notifier)
+              .read(scheduleCoordinatorProvider.notifier)
               .setSelectedDay(selectedDay);
-          ref.read(scheduleNotifierProvider.notifier).setFocusedDay(focusedDay);
+          ref
+              .read(scheduleCoordinatorProvider.notifier)
+              .setFocusedDay(focusedDay);
           await ref
-              .read(scheduleNotifierProvider.notifier)
+              .read(scheduleCoordinatorProvider.notifier)
               .ensureActiveDay(selectedDay);
           onDaySelected();
         },
         onFormatChanged: (format) {
           // Single source of truth: notifier handles persistence and state
-          ref.read(scheduleNotifierProvider.notifier).setCalendarFormat(format);
+          ref
+              .read(scheduleCoordinatorProvider.notifier)
+              .setCalendarFormat(format);
           onFormatChanged(format);
         },
         onPageChanged: (focusedDay) async {
           // Single source of truth: notifier loads/generates months
           await ref
-              .read(scheduleNotifierProvider.notifier)
+              .read(scheduleCoordinatorProvider.notifier)
               .setFocusedDay(focusedDay);
           onPageChanged(focusedDay);
         },

@@ -1,7 +1,7 @@
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class PartnerColorDialog {
@@ -10,7 +10,7 @@ class PartnerColorDialog {
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
-          final state = ref.watch(scheduleNotifierProvider).value;
+          final state = ref.watch(scheduleCoordinatorProvider).value;
           final l10n = AppLocalizations.of(context);
           // Use default color if no color is explicitly selected
           final int selected = state?.partnerAccentColorValue ??
@@ -28,7 +28,7 @@ class PartnerColorDialog {
                           isSelected: selected == entry.argb,
                           onTap: () async {
                             await ref
-                                .read(scheduleNotifierProvider.notifier)
+                                .read(scheduleCoordinatorProvider.notifier)
                                 .setPartnerAccentColor(entry.argb);
                             if (dialogContext.mounted) {
                               Navigator.of(dialogContext).pop();

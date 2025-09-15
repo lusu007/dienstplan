@@ -19,7 +19,7 @@ class AppSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final languageService = ref.watch(languageServiceProvider).value;
-    final settingsState = ref.watch(settingsNotifierProvider);
+    final settingsState = ref.watch(settingsProvider);
 
     // Use settings preference directly, fallback to light mode
     final ThemePreference effectivePref =

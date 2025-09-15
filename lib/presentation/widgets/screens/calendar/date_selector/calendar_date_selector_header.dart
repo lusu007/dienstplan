@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 
@@ -23,7 +23,7 @@ class CalendarDateSelectorHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final state = ref.watch(scheduleNotifierProvider).value;
+    final state = ref.watch(scheduleCoordinatorProvider).value;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 
     return Container(
@@ -79,7 +79,7 @@ class CalendarDateSelectorHeader extends ConsumerWidget {
       child: InkWell(
         onTap: () async {
           // Use notifier to jump to today and refresh schedules
-          await ref.read(scheduleNotifierProvider.notifier).goToToday();
+          await ref.read(scheduleCoordinatorProvider.notifier).goToToday();
 
           // Call the callback if provided
           onTodayButtonPressed?.call();

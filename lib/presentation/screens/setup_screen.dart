@@ -61,11 +61,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   void _nextStepWithScroll() {
     _scrollToTop();
-    ref.read(setupNotifierProvider.notifier).nextStep();
+    ref.read(setupProvider.notifier).nextStep();
   }
 
   void _previousStep() {
-    ref.read(setupNotifierProvider.notifier).previousStep();
+    ref.read(setupProvider.notifier).previousStep();
     _scrollToTop();
   }
 
@@ -170,7 +170,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         return ThemeStepComponent(
           selectedTheme: state.selectedTheme,
           onThemeChanged: (theme) =>
-              ref.read(setupNotifierProvider.notifier).setTheme(theme),
+              ref.read(setupProvider.notifier).setTheme(theme),
           scrollController: _scrollController,
         );
       case 2:
@@ -178,12 +178,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           configs: state.configs,
           selectedConfig: state.selectedConfig,
           onConfigChanged: (config) =>
-              ref.read(setupNotifierProvider.notifier).setConfig(config),
+              ref.read(setupProvider.notifier).setConfig(config),
           isLoading: state.isLoading,
           loadingError: state.error != null ? Exception(state.error!) : null,
           loadingErrorStackTrace: state.errorStackTrace,
-          onRetry: () =>
-              ref.read(setupNotifierProvider.notifier).retryLoading(),
+          onRetry: () => ref.read(setupProvider.notifier).retryLoading(),
           scrollController: _scrollController,
         );
       case 3:
@@ -191,7 +190,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           selectedConfig: state.selectedConfig,
           selectedDutyGroup: state.selectedDutyGroup,
           onDutyGroupChanged: (dutyGroup) =>
-              ref.read(setupNotifierProvider.notifier).setDutyGroup(dutyGroup),
+              ref.read(setupProvider.notifier).setDutyGroup(dutyGroup),
           scrollController: _scrollController,
         );
       case 4:
@@ -199,21 +198,19 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           configs: state.configs,
           selectedPartnerConfig: state.selectedPartnerConfig,
           onPartnerConfigChanged: (config) =>
-              ref.read(setupNotifierProvider.notifier).setPartnerConfig(config),
+              ref.read(setupProvider.notifier).setPartnerConfig(config),
           isLoading: state.isLoading,
           loadingError: state.error != null ? Exception(state.error!) : null,
           loadingErrorStackTrace: state.errorStackTrace,
-          onRetry: () =>
-              ref.read(setupNotifierProvider.notifier).retryLoading(),
+          onRetry: () => ref.read(setupProvider.notifier).retryLoading(),
           scrollController: _scrollController,
         );
       case 5:
         return PartnerDutyGroupStepComponent(
           selectedPartnerConfig: state.selectedPartnerConfig,
           selectedPartnerDutyGroup: state.selectedPartnerDutyGroup,
-          onPartnerDutyGroupChanged: (dutyGroup) => ref
-              .read(setupNotifierProvider.notifier)
-              .setPartnerDutyGroup(dutyGroup),
+          onPartnerDutyGroupChanged: (dutyGroup) =>
+              ref.read(setupProvider.notifier).setPartnerDutyGroup(dutyGroup),
           scrollController: _scrollController,
         );
       default:
@@ -223,7 +220,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final setupAsync = ref.watch(setupNotifierProvider);
+    final setupAsync = ref.watch(setupProvider);
     final languageAsync = ref.watch(languageServiceProvider);
 
     return setupAsync.when(
@@ -243,7 +240,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () =>
-                    ref.read(setupNotifierProvider.notifier).retryLoading(),
+                    ref.read(setupProvider.notifier).retryLoading(),
                 child: const Text('Retry'),
               ),
             ],

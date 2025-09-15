@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 
 class CalendarBuildersHelper {
@@ -204,7 +204,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
   }
 
   bool _isSelected() {
-    final state = ref.read(scheduleNotifierProvider).value;
+    final state = ref.read(scheduleCoordinatorProvider).value;
     final sel = state?.selectedDay;
     return sel != null &&
         widget.day.year == sel.year &&
@@ -215,7 +215,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
   @override
   Widget build(BuildContext context) {
     // Watch the provider to trigger rebuilds when state changes
-    final state = ref.watch(scheduleNotifierProvider).value;
+    final state = ref.watch(scheduleCoordinatorProvider).value;
 
     // Calculate duty abbreviation directly on each build to ensure it's always current
     final schedules = state?.schedules ?? const [];
@@ -256,10 +256,10 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
           try {
             // Trigger day selection via provider
             await ref
-                .read(scheduleNotifierProvider.notifier)
+                .read(scheduleCoordinatorProvider.notifier)
                 .setSelectedDay(widget.day);
             ref
-                .read(scheduleNotifierProvider.notifier)
+                .read(scheduleCoordinatorProvider.notifier)
                 .setFocusedDay(widget.day);
           } catch (e) {
             // Ignore errors during day selection

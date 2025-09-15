@@ -6,7 +6,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -203,22 +203,22 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   }
 
   String _getActiveSchedule() {
-    final scheduleState = ref.read(scheduleNotifierProvider).value;
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     return scheduleState?.activeConfigName ?? 'None';
   }
 
   String _getLoadedSchedulesCount() {
-    final scheduleState = ref.read(scheduleNotifierProvider).value;
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     return '${scheduleState?.schedules.length ?? 0} schedules';
   }
 
   String _getPreferredDutyGroup() {
-    final scheduleState = ref.read(scheduleNotifierProvider).value;
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     return scheduleState?.preferredDutyGroup ?? 'None';
   }
 
   String _getCalendarFormat(AppLocalizations l10n) {
-    final scheduleState = ref.read(scheduleNotifierProvider).value;
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     if (scheduleState == null) return 'Unknown';
 
     switch (scheduleState.calendarFormat) {
@@ -243,12 +243,12 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   }
 
   String _getScheduleConfigsCount() {
-    final scheduleState = ref.read(scheduleNotifierProvider).value;
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     return '${scheduleState?.configs.length ?? 0} configs';
   }
 
   String _getCacheStatus() {
-    final scheduleState = ref.read(scheduleNotifierProvider).value;
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     return scheduleState?.schedules.isNotEmpty == true ? 'Active' : 'Empty';
   }
 

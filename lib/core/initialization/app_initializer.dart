@@ -25,7 +25,7 @@ class AppInitializer {
     await container.read(sentryServiceProvider.future);
     await container.read(languageServiceProvider.future);
     // Pre-warm settings to avoid theme flash on startup
-    await container.read(settingsNotifierProvider.future);
+    await container.read(settingsProvider.future);
 
     // Initialize heavy tasks after first frame to avoid jank
     SchedulerBinding.instance.addPostFrameCallback((_) async {

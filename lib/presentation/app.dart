@@ -61,7 +61,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     final ThemeData darkTheme = ref.watch(appDarkThemeProvider);
 
     // Use settings notifier directly for immediate theme resolution
-    final settingsState = ref.watch(settingsNotifierProvider);
+    final settingsState = ref.watch(settingsProvider);
     final AsyncValue<Locale> localeAsync = ref.watch(currentLocaleProvider);
 
     // Handle loading state gracefully
