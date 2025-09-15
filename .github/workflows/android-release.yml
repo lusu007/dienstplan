@@ -72,28 +72,25 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: 🚀 Create Release and Upload Assets
+      - name: 📱 Rename Release Assets
+        run: |
+          APK_NAME="dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.apk"
+          AAB_NAME="dienstplan-${{ github.event.release.tag_name }}-prod-${{ github.run_number }}.aab"
+          
+          cp build/app/outputs/flutter-apk/app-prod-release.apk "build/app/outputs/flutter-apk/$APK_NAME"
+          cp build/app/outputs/bundle/prodRelease/app-prod-release.aab "build/app/outputs/bundle/prodRelease/$AAB_NAME"
+          
+          echo "APK_PATH=build/app/outputs/flutter-apk/$APK_NAME" >> $GITHUB_ENV
+          echo "AAB_PATH=build/app/outputs/bundle/prodRelease/$AAB_NAME" >> $GITHUB_ENV
+
+      - name: ⬆️ Upload Assets to Existing Release
         uses: softprops/action-gh-release@v2
-        if: github.ref_type == 'tag'
         with:
           files: |
-            build/app/outputs/flutter-apk/app-prod-release.apk
-            build/app/outputs/bundle/prodRelease/app-prod-release.aab
-          name: Release ${{ github.ref_name }}
-          body: |
-            ## 🚀 Production Release
-            
-            **Version:** ${{ github.ref_name }}
-            **Build:** ${{ github.run_number }}
-            
-            ### 📱 Downloads
-            - **APK:** `dienstplan-${{ github.ref_name }}-prod-${{ github.run_number }}.apk`
-            - **AAB:** `dienstplan-${{ github.ref_name }}-prod-${{ github.run_number }}.aab`
-            
-            ### 🔧 Changes
-            - Production build with build number ${{ github.run_number }}
-            - Signed with production keystore
-            - Ready for Google Play Store deployment
+            ${{ env.APK_PATH }}
+            ${{ env.AAB_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🏪 Upload to Play Store
         uses: r0adkll/upload-google-play@v1
