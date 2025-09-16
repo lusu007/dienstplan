@@ -15,15 +15,15 @@ const settingsProvider = SettingsNotifierProvider._();
 final class SettingsNotifierProvider
     extends $AsyncNotifierProvider<SettingsNotifier, SettingsUiState> {
   const SettingsNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'settingsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'settingsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$settingsNotifierHash();
@@ -33,7 +33,7 @@ final class SettingsNotifierProvider
   SettingsNotifier create() => SettingsNotifier();
 }
 
-String _$settingsNotifierHash() => r'f328e08a12535ebcd9fa9294aba8d9c0a3d5f1e2';
+String _$settingsNotifierHash() => r'cb4f97721c03a954d4a84593a43f63911488b131';
 
 abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsUiState> {
   FutureOr<SettingsUiState> build();
@@ -42,11 +42,14 @@ abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsUiState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<SettingsUiState>, SettingsUiState>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<SettingsUiState>, SettingsUiState>,
-        AsyncValue<SettingsUiState>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<SettingsUiState>, SettingsUiState>,
+              AsyncValue<SettingsUiState>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

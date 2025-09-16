@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_builders_helper.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
@@ -89,9 +90,7 @@ class CalendarViewUiBuilder {
     );
   }
 
-  static Widget buildServicesSection({
-    required DateTime? selectedDay,
-  }) {
+  static Widget buildServicesSection({required DateTime? selectedDay}) {
     return Builder(
       builder: (context) {
         return Container(
@@ -113,89 +112,91 @@ class CalendarViewUiBuilder {
     required BuildContext context,
     bool shouldAnimate = false,
   }) {
-    return Consumer(builder: (context, ref, __) {
-      final asyncState = ref.watch(scheduleCoordinatorProvider);
-      final state = asyncState.value;
-      final String? selectedGroup = state?.selectedDutyGroup;
+    return Consumer(
+      builder: (context, ref, _) {
+        final asyncState = ref.watch(scheduleCoordinatorProvider);
+        final state = asyncState.value;
+        final String? selectedGroup = state?.selectedDutyGroup;
 
-      // Filter schedules for selected day
-      final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
-        final sel = state?.selectedDay;
-        if (sel == null) return false;
+        // Filter schedules for selected day
+        final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
+          final sel = state?.selectedDay;
+          if (sel == null) return false;
 
-        // Normalize dates to avoid timezone issues
-        final scheduleDate = DateTime(s.date.year, s.date.month, s.date.day);
-        final selectedDate = DateTime(sel.year, sel.month, sel.day);
+          // Normalize dates to avoid timezone issues
+          final scheduleDate = DateTime(s.date.year, s.date.month, s.date.day);
+          final selectedDate = DateTime(sel.year, sel.month, sel.day);
 
-        // Also ensure we're using the correct config
-        final activeConfig = state?.activeConfigName;
-        final isCorrectConfig =
-            activeConfig == null || s.configName == activeConfig;
+          // Also ensure we're using the correct config
+          final activeConfig = state?.activeConfigName;
+          final isCorrectConfig =
+              activeConfig == null || s.configName == activeConfig;
 
-        return scheduleDate.isAtSameMomentAs(selectedDate) && isCorrectConfig;
-      }).toList();
+          return scheduleDate.isAtSameMomentAs(selectedDate) && isCorrectConfig;
+        }).toList();
 
-      // Only show loading if selected day has no schedules AND we're actually loading
-      final hasSchedulesForSelectedDay = selectedDaySchedules.isNotEmpty;
-      final isLoadingSelectedDay =
-          (state?.isLoading ?? false) && !hasSchedulesForSelectedDay;
+        // Only show loading if selected day has no schedules AND we're actually loading
+        final hasSchedulesForSelectedDay = selectedDaySchedules.isNotEmpty;
+        final isLoadingSelectedDay =
+            (state?.isLoading ?? false) && !hasSchedulesForSelectedDay;
 
-      // Trigger data loading if we have no schedules for selected day and not currently loading
-      if (!hasSchedulesForSelectedDay &&
-          !isLoadingSelectedDay &&
-          state?.selectedDay != null &&
-          state?.activeConfigName != null) {
-        // Use post-frame callback to avoid building during build
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (context.mounted) {
-            ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .setSelectedDay(state!.selectedDay);
-          }
-        });
-      }
+        // Trigger data loading if we have no schedules for selected day and not currently loading
+        if (!hasSchedulesForSelectedDay &&
+            !isLoadingSelectedDay &&
+            state?.selectedDay != null &&
+            state?.activeConfigName != null) {
+          // Use post-frame callback to avoid building during build
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) {
+              ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .setSelectedDay(state!.selectedDay);
+            }
+          });
+        }
 
-      return DutyScheduleList(
-        schedules: selectedDaySchedules,
-        selectedDutyGroup: selectedGroup,
-        activeConfigName: state?.activeConfigName,
-        dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
-        dutyTypes: state?.activeConfig?.dutyTypes,
-        onDutyGroupSelected: (group) {
-          if (group != null) {
-            ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .setSelectedDutyGroup(group);
-          }
-        },
-        shouldAnimate: shouldAnimate,
-        isLoading: isLoadingSelectedDay,
-      );
-    });
+        return DutyScheduleList(
+          schedules: selectedDaySchedules,
+          selectedDutyGroup: selectedGroup,
+          activeConfigName: state?.activeConfigName,
+          dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
+          dutyTypes: state?.activeConfig?.dutyTypes,
+          onDutyGroupSelected: (group) {
+            if (group != null) {
+              ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .setSelectedDutyGroup(group);
+            }
+          },
+          shouldAnimate: shouldAnimate,
+          isLoading: isLoadingSelectedDay,
+        );
+      },
+    );
   }
 
-  static Widget buildFilterStatusText({
-    required BuildContext context,
-  }) {
+  static Widget buildFilterStatusText({required BuildContext context}) {
     final l10n = AppLocalizations.of(context);
-    return Consumer(builder: (context, ref, __) {
-      final state = ref.watch(scheduleCoordinatorProvider).value;
-      final filterText = (state?.selectedDutyGroup ?? '').isNotEmpty
-          ? state!.selectedDutyGroup!
-          : l10n.all;
-      return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: Text(
-          '${l10n.filteredBy}: $filterText',
-          style: TextStyle(
-            fontSize: 12.0,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontStyle: FontStyle.italic,
+    return Consumer(
+      builder: (context, ref, _) {
+        final state = ref.watch(scheduleCoordinatorProvider).value;
+        final filterText = (state?.selectedDutyGroup ?? '').isNotEmpty
+            ? state!.selectedDutyGroup!
+            : l10n.all;
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Text(
+            '${l10n.filteredBy}: $filterText',
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              fontStyle: FontStyle.italic,
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -217,25 +218,40 @@ class _TableCalendarWrapper extends ConsumerWidget {
     final state = ref.watch(scheduleCoordinatorProvider).value;
     final calendarFormat = state?.calendarFormat ?? CalendarFormat.month;
     final focusedDay = state?.focusedDay ?? DateTime.now();
+    final holidaysAsync = ref.watch(schoolHolidaysProvider);
+    final holidaysState = holidaysAsync.value;
 
     // Create unique hash from schedule content of the visible calendar area
     // Include previous, current and next months so "out days" changes also trigger rebuilds
-    final DateTime hashStartMonth =
-        DateTime(focusedDay.year, focusedDay.month - 1, 1);
-    final DateTime hashEndMonth =
-        DateTime(focusedDay.year, focusedDay.month + 2, 0); // end of next month
-    final List<Schedule> visibleSchedulesForHash = (state?.schedules ??
-            const <Schedule>[])
-        .where((schedule) =>
-            schedule.date
-                .isAfter(hashStartMonth.subtract(const Duration(days: 1))) &&
-            schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))))
-        .toList();
+    final DateTime hashStartMonth = DateTime(
+      focusedDay.year,
+      focusedDay.month - 1,
+      1,
+    );
+    final DateTime hashEndMonth = DateTime(
+      focusedDay.year,
+      focusedDay.month + 2,
+      0,
+    ); // end of next month
+    final List<Schedule> visibleSchedulesForHash =
+        (state?.schedules ?? const <Schedule>[])
+            .where(
+              (schedule) =>
+                  schedule.date.isAfter(
+                    hashStartMonth.subtract(const Duration(days: 1)),
+                  ) &&
+                  schedule.date.isBefore(
+                    hashEndMonth.add(const Duration(days: 1)),
+                  ),
+            )
+            .toList();
     visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
     // Build a compact hash of visible data to force TableCalendar to rebuild
     final String visibleSignature = visibleSchedulesForHash
-        .map((s) =>
-            '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}')
+        .map(
+          (s) =>
+              '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}',
+        )
         .join(';');
     final int tableCalendarKeyHash = Object.hash(
       focusedDay.year,
@@ -246,6 +262,24 @@ class _TableCalendarWrapper extends ConsumerWidget {
       state?.partnerConfigName,
       state?.partnerDutyGroup,
     );
+
+    // Ensure school holidays are loaded for the visible range when enabled
+    if (holidaysState != null &&
+        holidaysState.isEnabled &&
+        holidaysState.selectedStateCode != null) {
+      final bool hasAnyHolidaysInRange = holidaysState
+          .getHolidaysInRange(hashStartMonth, hashEndMonth)
+          .isNotEmpty;
+      if (!hasAnyHolidaysInRange && !holidaysState.isLoading) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            ref
+                .read(schoolHolidaysProvider.notifier)
+                .loadHolidaysForRange(hashStartMonth, hashEndMonth);
+          }
+        });
+      }
+    }
 
     return SizedBox(
       height: CalendarConfig.kCalendarHeight,

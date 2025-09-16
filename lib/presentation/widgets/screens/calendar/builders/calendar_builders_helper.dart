@@ -4,7 +4,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 
 class CalendarBuildersHelper {
   static CalendarBuilders createCalendarBuilders({
@@ -65,7 +67,10 @@ class CalendarBuildersHelper {
       final schedulesForDay = schedules.where((schedule) {
         // Normalize dates to avoid timezone issues
         final scheduleDate = DateTime(
-            schedule.date.year, schedule.date.month, schedule.date.day);
+          schedule.date.year,
+          schedule.date.month,
+          schedule.date.day,
+        );
         final dayDate = DateTime(day.year, day.month, day.day);
         final isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
 
@@ -137,7 +142,10 @@ class CalendarBuildersHelper {
       final DateTime dayDate = DateTime(day.year, day.month, day.day);
       final List<Schedule> schedulesForDay = schedules.where((schedule) {
         final scheduleDate = DateTime(
-            schedule.date.year, schedule.date.month, schedule.date.day);
+          schedule.date.year,
+          schedule.date.month,
+          schedule.date.day,
+        );
         final bool isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
         final bool isPartnerConfig = schedule.configName == partnerConfigName;
         return isSameDay && isPartnerConfig;
@@ -147,16 +155,19 @@ class CalendarBuildersHelper {
       }
       if (partnerGroup != null && partnerGroup.isNotEmpty) {
         try {
-          final Schedule matched = schedulesForDay.firstWhere((s) =>
-              s.dutyGroupName == partnerGroup &&
-              s.dutyTypeId.isNotEmpty &&
-              s.dutyTypeId != '-');
+          final Schedule matched = schedulesForDay.firstWhere(
+            (s) =>
+                s.dutyGroupName == partnerGroup &&
+                s.dutyTypeId.isNotEmpty &&
+                s.dutyTypeId != '-',
+          );
           return matched.dutyTypeId;
         } catch (_) {
           // If partner group exists but is off that day, show nothing
           try {
-            final Schedule off = schedulesForDay
-                .firstWhere((s) => s.dutyGroupName == partnerGroup);
+            final Schedule off = schedulesForDay.firstWhere(
+              (s) => s.dutyGroupName == partnerGroup,
+            );
             if (off.dutyTypeId == '-' || off.dutyTypeId.isEmpty) {
               return '';
             }
@@ -217,6 +228,11 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
     // Watch the provider to trigger rebuilds when state changes
     final state = ref.watch(scheduleCoordinatorProvider).value;
 
+    // Debug logging to see if this component is being called
+    AppLogger.d(
+      'ReactiveCalendarDay: Building for ${widget.day.day}/${widget.day.month}/${widget.day.year}',
+    );
+
     // Calculate duty abbreviation directly on each build to ensure it's always current
     final schedules = state?.schedules ?? const [];
     final activeConfig = state?.activeConfigName;
@@ -233,13 +249,34 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
     final partnerGroup = state?.partnerDutyGroup;
     final partnerAbbreviation =
         CalendarBuildersHelper._getPartnerDutyAbbreviationForDate(
-      widget.day,
-      schedules: schedules,
-      partnerConfigName: partnerConfigName,
-      partnerGroup: partnerGroup,
-    );
+          widget.day,
+          schedules: schedules,
+          partnerConfigName: partnerConfigName,
+          partnerGroup: partnerGroup,
+        );
 
     final isSelected = _isSelected();
+
+    // Watch school holidays state
+    final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
+    final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
+
+    // Debug logging for holidays state
+    AppLogger.d(
+      'ReactiveCalendarDay: holidaysState isEnabled: ${holidaysState?.isEnabled}, selectedStateCode: ${holidaysState?.selectedStateCode}, allHolidays: ${holidaysState?.allHolidays.length}',
+    );
+
+    final hasSchoolHoliday =
+        holidaysState?.hasHolidayOnDate(widget.day) ?? false;
+    final holidays = holidaysState?.getHolidaysForDate(widget.day) ?? [];
+    final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
+
+    // Debug logging for school holidays
+    if (hasSchoolHoliday) {
+      AppLogger.d(
+        'Calendar: Day ${widget.day.day}/${widget.day.month}/${widget.day.year} has school holiday: $schoolHolidayName',
+      );
+    }
 
     try {
       return AnimatedCalendarDay(
@@ -252,6 +289,8 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         width: widget.width,
         height: widget.height,
         isSelected: isSelected,
+        hasSchoolHoliday: hasSchoolHoliday,
+        schoolHolidayName: schoolHolidayName,
         onTap: () async {
           try {
             // Trigger day selection via provider

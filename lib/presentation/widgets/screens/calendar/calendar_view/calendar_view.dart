@@ -9,11 +9,10 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/components/drag
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 
 class CalendarView extends ConsumerStatefulWidget {
-  const CalendarView({
-    super.key,
-  });
+  const CalendarView({super.key});
 
   @override
   ConsumerState<CalendarView> createState() => _CalendarViewState();
@@ -95,18 +94,28 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     final newDay = _pageManager.getCurrentDay();
     if (newDay != null) {
       AppLogger.d(
-          'CalendarView: _onPageChanged - pageIndex: $pageIndex, newDay: ${newDay.toIso8601String()}');
+        'CalendarView: _onPageChanged - pageIndex: $pageIndex, newDay: ${newDay.toIso8601String()}',
+      );
 
       // Check if the month has changed
       final currentFocusedDay = ref.read(calendarProvider).value?.focusedDay;
-      final monthChanged = currentFocusedDay == null ||
+      final monthChanged =
+          currentFocusedDay == null ||
           currentFocusedDay.year != newDay.year ||
           currentFocusedDay.month != newDay.month;
 
       if (monthChanged) {
         AppLogger.d(
-            'CalendarView: Month changed, updating focused day to ${newDay.toIso8601String()}');
+          'CalendarView: Month changed, updating focused day to ${newDay.toIso8601String()}',
+        );
         ref.read(calendarProvider.notifier).setFocusedDay(newDay);
+
+        // Load school holidays for the new month
+        final start = DateTime(newDay.year, newDay.month, 1);
+        final end = DateTime(newDay.year, newDay.month + 1, 0);
+        ref
+            .read(schoolHolidaysProvider.notifier)
+            .loadHolidaysForRange(start, end);
       }
     }
   }

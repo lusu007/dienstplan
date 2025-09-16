@@ -6,6 +6,7 @@ import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:flutter/scheduler.dart';
 
 class AppInitializer {
@@ -26,6 +27,8 @@ class AppInitializer {
     await container.read(languageServiceProvider.future);
     // Pre-warm settings to avoid theme flash on startup
     await container.read(settingsProvider.future);
+    // Pre-warm school holidays to ensure they're loaded if enabled
+    await container.read(schoolHolidaysProvider.future);
 
     // Initialize heavy tasks after first frame to avoid jank
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -47,12 +50,10 @@ class AppInitializer {
     if (_sentryInitialized) {
       return;
     }
-    await SentryFlutter.init(
-      (SentryFlutterOptions options) {
-        options.dsn = SentryConfig.dsn;
-        SentryConfig.configureOptions(options, sentryService);
-      },
-    );
+    await SentryFlutter.init((SentryFlutterOptions options) {
+      options.dsn = SentryConfig.dsn;
+      SentryConfig.configureOptions(options, sentryService);
+    });
     _sentryInitialized = true;
   }
 }

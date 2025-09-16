@@ -5,6 +5,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedule_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/sections/school_holidays_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/other_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/footer_section.dart';
@@ -37,6 +38,8 @@ class SettingsScreen extends ConsumerWidget {
                 const ScheduleSectionSkeleton(),
                 const SizedBox(height: 16),
                 const AppSectionSkeleton(),
+                const SizedBox(height: 16),
+                const AppSectionSkeleton(), // Using app skeleton for holidays section
                 const SizedBox(height: 16),
                 const PrivacySectionSkeleton(),
                 const SizedBox(height: 16),
@@ -90,6 +93,8 @@ class SettingsScreen extends ConsumerWidget {
                 ScheduleSection(state: state),
                 const SizedBox(height: 16),
                 const AppSection(),
+                const SizedBox(height: 16),
+                const SchoolHolidaysSection(),
                 const SizedBox(height: 16),
                 const PrivacySection(),
                 const SizedBox(height: 16),

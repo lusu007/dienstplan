@@ -34,15 +34,18 @@ class SetupNotifier extends _$SetupNotifier {
   @override
   Future<SetupUiState> build() async {
     _getConfigsUseCase ??= await ref.read(getConfigsUseCaseProvider.future);
-    _setActiveConfigUseCase ??=
-        await ref.read(setActiveConfigUseCaseProvider.future);
-    _generateSchedulesUseCase ??=
-        await ref.read(generateSchedulesUseCaseProvider.future);
+    _setActiveConfigUseCase ??= await ref.read(
+      setActiveConfigUseCaseProvider.future,
+    );
+    _generateSchedulesUseCase ??= await ref.read(
+      generateSchedulesUseCaseProvider.future,
+    );
     _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _configRepository ??= await ref.read(configRepositoryProvider.future);
-    _scheduleConfigService ??=
-        await ref.read(scheduleConfigServiceProvider.future);
+    _scheduleConfigService ??= await ref.read(
+      scheduleConfigServiceProvider.future,
+    );
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
 
     return await _loadConfigs();
@@ -82,10 +85,14 @@ class SetupNotifier extends _$SetupNotifier {
     final filteredConfigs = selectedPoliceAuthorities.isEmpty
         ? configs
         : configs
-            .where((config) =>
-                config.meta.policeAuthority != null &&
-                selectedPoliceAuthorities.contains(config.meta.policeAuthority))
-            .toList();
+              .where(
+                (config) =>
+                    config.meta.policeAuthority != null &&
+                    selectedPoliceAuthorities.contains(
+                      config.meta.policeAuthority,
+                    ),
+              )
+              .toList();
 
     return SetupUiState(
       isLoading: false,
@@ -113,10 +120,14 @@ class SetupNotifier extends _$SetupNotifier {
     final filteredConfigs = selectedPoliceAuthorities.isEmpty
         ? currentState.configs
         : currentState.configs
-            .where((config) =>
-                config.meta.policeAuthority != null &&
-                selectedPoliceAuthorities.contains(config.meta.policeAuthority))
-            .toList();
+              .where(
+                (config) =>
+                    config.meta.policeAuthority != null &&
+                    selectedPoliceAuthorities.contains(
+                      config.meta.policeAuthority,
+                    ),
+              )
+              .toList();
 
     return currentState.copyWith(
       selectedPoliceAuthorities: selectedPoliceAuthorities,
@@ -145,10 +156,12 @@ class SetupNotifier extends _$SetupNotifier {
 
   Future<void> setPartnerConfig(DutyScheduleConfig? config) async {
     final current = state.value ?? SetupUiState.initial();
-    state = AsyncData(current.copyWith(
-      selectedPartnerConfig: config,
-      selectedPartnerDutyGroup: null,
-    ));
+    state = AsyncData(
+      current.copyWith(
+        selectedPartnerConfig: config,
+        selectedPartnerDutyGroup: null,
+      ),
+    );
   }
 
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
@@ -158,8 +171,9 @@ class SetupNotifier extends _$SetupNotifier {
 
   Future<void> togglePoliceAuthorityFilter(String policeAuthority) async {
     final current = state.value ?? SetupUiState.initial();
-    final newSelectedAuthorities =
-        Set<String>.from(current.selectedPoliceAuthorities);
+    final newSelectedAuthorities = Set<String>.from(
+      current.selectedPoliceAuthorities,
+    );
 
     if (newSelectedAuthorities.contains(policeAuthority)) {
       newSelectedAuthorities.remove(policeAuthority);
@@ -190,28 +204,28 @@ class SetupNotifier extends _$SetupNotifier {
       final scheduleState = ref.read(scheduleCoordinatorProvider).value;
       final currentDutyGroup = scheduleState?.preferredDutyGroup;
 
-      state = AsyncData(current.copyWith(
-        currentStep: 3,
-        selectedDutyGroup: currentDutyGroup,
-      ));
+      state = AsyncData(
+        current.copyWith(currentStep: 3, selectedDutyGroup: currentDutyGroup),
+      );
       return;
     }
 
     if (current.currentStep == 3) {
-      state = AsyncData(current.copyWith(
-        currentStep: 4,
-        selectedPartnerConfig: null,
-        selectedPartnerDutyGroup: null,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          currentStep: 4,
+          selectedPartnerConfig: null,
+          selectedPartnerDutyGroup: null,
+        ),
+      );
       return;
     }
 
     if (current.currentStep == 4) {
       if (current.selectedPartnerConfig != null) {
-        state = AsyncData(current.copyWith(
-          currentStep: 5,
-          selectedPartnerDutyGroup: null,
-        ));
+        state = AsyncData(
+          current.copyWith(currentStep: 5, selectedPartnerDutyGroup: null),
+        );
       } else {
         // Skip partner setup - setup is already complete
         await _saveDefaultConfig();
@@ -245,12 +259,14 @@ class SetupNotifier extends _$SetupNotifier {
         newPartnerDutyGroup = null;
       }
 
-      state = AsyncData(current.copyWith(
-        currentStep: newStep,
-        selectedDutyGroup: newDutyGroup,
-        selectedPartnerConfig: newPartnerConfig,
-        selectedPartnerDutyGroup: newPartnerDutyGroup,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          currentStep: newStep,
+          selectedDutyGroup: newDutyGroup,
+          selectedPartnerConfig: newPartnerConfig,
+          selectedPartnerDutyGroup: newPartnerDutyGroup,
+        ),
+      );
     }
   }
 
@@ -292,12 +308,15 @@ class SetupNotifier extends _$SetupNotifier {
         themePreference: current.selectedTheme,
         partnerConfigName: current.selectedPartnerConfig?.name,
         partnerDutyGroup: current.selectedPartnerDutyGroup,
+        schoolHolidayStateCode: existingSettings?.schoolHolidayStateCode,
+        showSchoolHolidays: existingSettings?.showSchoolHolidays,
       );
       await _saveSettingsUseCase!.execute(initialSettings);
 
       await _scheduleConfigService!.markSetupCompleted();
       AppLogger.i(
-          'Setup completed successfully for config: ${current.selectedConfig?.name ?? "none"}');
+        'Setup completed successfully for config: ${current.selectedConfig?.name ?? "none"}',
+      );
 
       await Future.delayed(kUiDelayShort);
 
@@ -307,6 +326,8 @@ class SetupNotifier extends _$SetupNotifier {
         activeConfigName: current.selectedConfig!.name,
         themePreference: current.selectedTheme,
         partnerConfigName: current.selectedPartnerConfig?.name,
+        schoolHolidayStateCode: existingSettings?.schoolHolidayStateCode,
+        showSchoolHolidays: existingSettings?.showSchoolHolidays,
         partnerDutyGroup: current.selectedPartnerDutyGroup,
       );
       await _saveSettingsUseCase!.execute(finalSettings);
@@ -317,17 +338,21 @@ class SetupNotifier extends _$SetupNotifier {
       ref.invalidate(scheduleCoordinatorProvider);
 
       // Mark setup as completed and keep loading state for smooth transition
-      state = AsyncData(current.copyWith(
-        isGeneratingSchedules: true, // Keep loading state
-        isSetupCompleted: true,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          isGeneratingSchedules: true, // Keep loading state
+          isSetupCompleted: true,
+        ),
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error saving default config', e, stackTrace);
-      state = AsyncData(current.copyWith(
-        isGeneratingSchedules: false,
-        error: 'Failed to complete setup',
-        errorStackTrace: stackTrace,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          isGeneratingSchedules: false,
+          error: 'Failed to complete setup',
+          errorStackTrace: stackTrace,
+        ),
+      );
       rethrow;
     }
   }

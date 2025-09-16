@@ -12,19 +12,24 @@ part of 'riverpod_providers.dart';
 @ProviderFor(databaseService)
 const databaseServiceProvider = DatabaseServiceProvider._();
 
-final class DatabaseServiceProvider extends $FunctionalProvider<
-        AsyncValue<DatabaseService>, DatabaseService, FutureOr<DatabaseService>>
+final class DatabaseServiceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DatabaseService>,
+          DatabaseService,
+          FutureOr<DatabaseService>
+        >
     with $FutureModifier<DatabaseService>, $FutureProvider<DatabaseService> {
   const DatabaseServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'databaseServiceProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'databaseServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$databaseServiceHash();
@@ -32,8 +37,8 @@ final class DatabaseServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<DatabaseService> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<DatabaseService> create(Ref ref) {
@@ -46,19 +51,24 @@ String _$databaseServiceHash() => r'4b70714b1829eff89e609997d21e60bf44d5fd20';
 @ProviderFor(schedulesDao)
 const schedulesDaoProvider = SchedulesDaoProvider._();
 
-final class SchedulesDaoProvider extends $FunctionalProvider<
-        AsyncValue<SchedulesDao>, SchedulesDao, FutureOr<SchedulesDao>>
+final class SchedulesDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SchedulesDao>,
+          SchedulesDao,
+          FutureOr<SchedulesDao>
+        >
     with $FutureModifier<SchedulesDao>, $FutureProvider<SchedulesDao> {
   const SchedulesDaoProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'schedulesDaoProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'schedulesDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$schedulesDaoHash();
@@ -66,8 +76,8 @@ final class SchedulesDaoProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SchedulesDao> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SchedulesDao> create(Ref ref) {
@@ -80,19 +90,24 @@ String _$schedulesDaoHash() => r'04807b9767fa099dedfe88aed356c028d7ed74b8';
 @ProviderFor(settingsDao)
 const settingsDaoProvider = SettingsDaoProvider._();
 
-final class SettingsDaoProvider extends $FunctionalProvider<
-        AsyncValue<SettingsDao>, SettingsDao, FutureOr<SettingsDao>>
+final class SettingsDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SettingsDao>,
+          SettingsDao,
+          FutureOr<SettingsDao>
+        >
     with $FutureModifier<SettingsDao>, $FutureProvider<SettingsDao> {
   const SettingsDaoProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'settingsDaoProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'settingsDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$settingsDaoHash();
@@ -100,8 +115,8 @@ final class SettingsDaoProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SettingsDao> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SettingsDao> create(Ref ref) {
@@ -114,19 +129,24 @@ String _$settingsDaoHash() => r'5c5a5dd3827b1d704fd1098298ef22cd6c39ad85';
 @ProviderFor(dutyTypesDao)
 const dutyTypesDaoProvider = DutyTypesDaoProvider._();
 
-final class DutyTypesDaoProvider extends $FunctionalProvider<
-        AsyncValue<DutyTypesDao>, DutyTypesDao, FutureOr<DutyTypesDao>>
+final class DutyTypesDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DutyTypesDao>,
+          DutyTypesDao,
+          FutureOr<DutyTypesDao>
+        >
     with $FutureModifier<DutyTypesDao>, $FutureProvider<DutyTypesDao> {
   const DutyTypesDaoProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'dutyTypesDaoProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dutyTypesDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$dutyTypesDaoHash();
@@ -134,8 +154,8 @@ final class DutyTypesDaoProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<DutyTypesDao> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<DutyTypesDao> create(Ref ref) {
@@ -148,19 +168,24 @@ String _$dutyTypesDaoHash() => r'246b1106d6cfb10bb0c000d7a8064d41308254a8';
 @ProviderFor(maintenanceDao)
 const maintenanceDaoProvider = MaintenanceDaoProvider._();
 
-final class MaintenanceDaoProvider extends $FunctionalProvider<
-        AsyncValue<MaintenanceDao>, MaintenanceDao, FutureOr<MaintenanceDao>>
+final class MaintenanceDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<MaintenanceDao>,
+          MaintenanceDao,
+          FutureOr<MaintenanceDao>
+        >
     with $FutureModifier<MaintenanceDao>, $FutureProvider<MaintenanceDao> {
   const MaintenanceDaoProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'maintenanceDaoProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'maintenanceDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$maintenanceDaoHash();
@@ -168,8 +193,8 @@ final class MaintenanceDaoProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<MaintenanceDao> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<MaintenanceDao> create(Ref ref) {
@@ -182,23 +207,26 @@ String _$maintenanceDaoHash() => r'c7b50b2f513c05906fdf19e0b8cd9e1019c017d7';
 @ProviderFor(schedulesAdminDao)
 const schedulesAdminDaoProvider = SchedulesAdminDaoProvider._();
 
-final class SchedulesAdminDaoProvider extends $FunctionalProvider<
-        AsyncValue<SchedulesAdminDao>,
-        SchedulesAdminDao,
-        FutureOr<SchedulesAdminDao>>
+final class SchedulesAdminDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SchedulesAdminDao>,
+          SchedulesAdminDao,
+          FutureOr<SchedulesAdminDao>
+        >
     with
         $FutureModifier<SchedulesAdminDao>,
         $FutureProvider<SchedulesAdminDao> {
   const SchedulesAdminDaoProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'schedulesAdminDaoProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'schedulesAdminDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$schedulesAdminDaoHash();
@@ -206,8 +234,8 @@ final class SchedulesAdminDaoProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SchedulesAdminDao> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SchedulesAdminDao> create(Ref ref) {
@@ -220,23 +248,26 @@ String _$schedulesAdminDaoHash() => r'364472462048526c0a0336d7e8bc21265d9c1276';
 @ProviderFor(scheduleConfigsDao)
 const scheduleConfigsDaoProvider = ScheduleConfigsDaoProvider._();
 
-final class ScheduleConfigsDaoProvider extends $FunctionalProvider<
-        AsyncValue<ScheduleConfigsDao>,
-        ScheduleConfigsDao,
-        FutureOr<ScheduleConfigsDao>>
+final class ScheduleConfigsDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ScheduleConfigsDao>,
+          ScheduleConfigsDao,
+          FutureOr<ScheduleConfigsDao>
+        >
     with
         $FutureModifier<ScheduleConfigsDao>,
         $FutureProvider<ScheduleConfigsDao> {
   const ScheduleConfigsDaoProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scheduleConfigsDaoProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleConfigsDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scheduleConfigsDaoHash();
@@ -244,8 +275,8 @@ final class ScheduleConfigsDaoProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<ScheduleConfigsDao> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<ScheduleConfigsDao> create(Ref ref) {
@@ -259,23 +290,26 @@ String _$scheduleConfigsDaoHash() =>
 @ProviderFor(scheduleConfigService)
 const scheduleConfigServiceProvider = ScheduleConfigServiceProvider._();
 
-final class ScheduleConfigServiceProvider extends $FunctionalProvider<
-        AsyncValue<ScheduleConfigService>,
-        ScheduleConfigService,
-        FutureOr<ScheduleConfigService>>
+final class ScheduleConfigServiceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ScheduleConfigService>,
+          ScheduleConfigService,
+          FutureOr<ScheduleConfigService>
+        >
     with
         $FutureModifier<ScheduleConfigService>,
         $FutureProvider<ScheduleConfigService> {
   const ScheduleConfigServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scheduleConfigServiceProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleConfigServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scheduleConfigServiceHash();
@@ -283,8 +317,8 @@ final class ScheduleConfigServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<ScheduleConfigService> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<ScheduleConfigService> create(Ref ref) {
@@ -298,19 +332,24 @@ String _$scheduleConfigServiceHash() =>
 @ProviderFor(languageService)
 const languageServiceProvider = LanguageServiceProvider._();
 
-final class LanguageServiceProvider extends $FunctionalProvider<
-        AsyncValue<LanguageService>, LanguageService, FutureOr<LanguageService>>
+final class LanguageServiceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<LanguageService>,
+          LanguageService,
+          FutureOr<LanguageService>
+        >
     with $FutureModifier<LanguageService>, $FutureProvider<LanguageService> {
   const LanguageServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'languageServiceProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'languageServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$languageServiceHash();
@@ -318,8 +357,8 @@ final class LanguageServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<LanguageService> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<LanguageService> create(Ref ref) {
@@ -336,15 +375,15 @@ final class CurrentLocaleProvider
     extends $FunctionalProvider<AsyncValue<Locale>, Locale, Stream<Locale>>
     with $FutureModifier<Locale>, $StreamProvider<Locale> {
   const CurrentLocaleProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'currentLocaleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'currentLocaleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$currentLocaleHash();
@@ -365,19 +404,24 @@ String _$currentLocaleHash() => r'd0a4fd9ce7251dd9223ed358e73c9430989c43eb';
 @ProviderFor(themeMode)
 const themeModeProvider = ThemeModeProvider._();
 
-final class ThemeModeProvider extends $FunctionalProvider<AsyncValue<ThemeMode>,
-        ThemeMode, FutureOr<ThemeMode>>
+final class ThemeModeProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ThemeMode>,
+          ThemeMode,
+          FutureOr<ThemeMode>
+        >
     with $FutureModifier<ThemeMode>, $FutureProvider<ThemeMode> {
   const ThemeModeProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'themeModeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'themeModeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$themeModeHash();
@@ -402,15 +446,15 @@ final class AppThemeProvider
     extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
     with $Provider<ThemeData> {
   const AppThemeProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'appThemeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appThemeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$appThemeHash();
@@ -443,15 +487,15 @@ final class AppDarkThemeProvider
     extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
     with $Provider<ThemeData> {
   const AppDarkThemeProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'appDarkThemeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appDarkThemeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$appDarkThemeHash();
@@ -480,19 +524,24 @@ String _$appDarkThemeHash() => r'33cb551912c40fc143ef06166fe3bd3e0526bbb0';
 @ProviderFor(sentryService)
 const sentryServiceProvider = SentryServiceProvider._();
 
-final class SentryServiceProvider extends $FunctionalProvider<
-        AsyncValue<SentryService>, SentryService, FutureOr<SentryService>>
+final class SentryServiceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SentryService>,
+          SentryService,
+          FutureOr<SentryService>
+        >
     with $FutureModifier<SentryService>, $FutureProvider<SentryService> {
   const SentryServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'sentryServiceProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sentryServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$sentryServiceHash();
@@ -500,8 +549,8 @@ final class SentryServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SentryService> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SentryService> create(Ref ref) {
@@ -514,19 +563,24 @@ String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
 @ProviderFor(sentryState)
 const sentryStateProvider = SentryStateProvider._();
 
-final class SentryStateProvider extends $FunctionalProvider<
-        AsyncValue<SentryState>, SentryState, FutureOr<SentryState>>
+final class SentryStateProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SentryState>,
+          SentryState,
+          FutureOr<SentryState>
+        >
     with $FutureModifier<SentryState>, $FutureProvider<SentryState> {
   const SentryStateProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'sentryStateProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sentryStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$sentryStateHash();
@@ -534,8 +588,8 @@ final class SentryStateProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SentryState> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SentryState> create(Ref ref) {
@@ -552,15 +606,15 @@ final class ShareServiceProvider
     extends $FunctionalProvider<ShareService, ShareService, ShareService>
     with $Provider<ShareService> {
   const ShareServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'shareServiceProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'shareServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$shareServiceHash();
@@ -589,20 +643,24 @@ String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
 @ProviderFor(notificationService)
 const notificationServiceProvider = NotificationServiceProvider._();
 
-final class NotificationServiceProvider extends $FunctionalProvider<
-    NotificationService,
-    NotificationService,
-    NotificationService> with $Provider<NotificationService> {
+final class NotificationServiceProvider
+    extends
+        $FunctionalProvider<
+          NotificationService,
+          NotificationService,
+          NotificationService
+        >
+    with $Provider<NotificationService> {
   const NotificationServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'notificationServiceProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationServiceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$notificationServiceHash();
@@ -610,8 +668,8 @@ final class NotificationServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<NotificationService> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   NotificationService create(Ref ref) {
@@ -633,23 +691,26 @@ String _$notificationServiceHash() =>
 @ProviderFor(scheduleRepository)
 const scheduleRepositoryProvider = ScheduleRepositoryProvider._();
 
-final class ScheduleRepositoryProvider extends $FunctionalProvider<
-        AsyncValue<ScheduleRepository>,
-        ScheduleRepository,
-        FutureOr<ScheduleRepository>>
+final class ScheduleRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ScheduleRepository>,
+          ScheduleRepository,
+          FutureOr<ScheduleRepository>
+        >
     with
         $FutureModifier<ScheduleRepository>,
         $FutureProvider<ScheduleRepository> {
   const ScheduleRepositoryProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scheduleRepositoryProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scheduleRepositoryHash();
@@ -657,8 +718,8 @@ final class ScheduleRepositoryProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<ScheduleRepository> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<ScheduleRepository> create(Ref ref) {
@@ -672,23 +733,26 @@ String _$scheduleRepositoryHash() =>
 @ProviderFor(settingsRepository)
 const settingsRepositoryProvider = SettingsRepositoryProvider._();
 
-final class SettingsRepositoryProvider extends $FunctionalProvider<
-        AsyncValue<SettingsRepository>,
-        SettingsRepository,
-        FutureOr<SettingsRepository>>
+final class SettingsRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SettingsRepository>,
+          SettingsRepository,
+          FutureOr<SettingsRepository>
+        >
     with
         $FutureModifier<SettingsRepository>,
         $FutureProvider<SettingsRepository> {
   const SettingsRepositoryProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'settingsRepositoryProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'settingsRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$settingsRepositoryHash();
@@ -696,8 +760,8 @@ final class SettingsRepositoryProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SettingsRepository> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SettingsRepository> create(Ref ref) {
@@ -711,21 +775,24 @@ String _$settingsRepositoryHash() =>
 @ProviderFor(configRepository)
 const configRepositoryProvider = ConfigRepositoryProvider._();
 
-final class ConfigRepositoryProvider extends $FunctionalProvider<
-        AsyncValue<ConfigRepository>,
-        ConfigRepository,
-        FutureOr<ConfigRepository>>
+final class ConfigRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ConfigRepository>,
+          ConfigRepository,
+          FutureOr<ConfigRepository>
+        >
     with $FutureModifier<ConfigRepository>, $FutureProvider<ConfigRepository> {
   const ConfigRepositoryProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'configRepositoryProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'configRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$configRepositoryHash();
@@ -733,8 +800,8 @@ final class ConfigRepositoryProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<ConfigRepository> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<ConfigRepository> create(Ref ref) {
@@ -747,23 +814,26 @@ String _$configRepositoryHash() => r'440bff749a354e5110271371491471b123d94b33';
 @ProviderFor(getSchedulesUseCase)
 const getSchedulesUseCaseProvider = GetSchedulesUseCaseProvider._();
 
-final class GetSchedulesUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<GetSchedulesUseCase>,
-        GetSchedulesUseCase,
-        FutureOr<GetSchedulesUseCase>>
+final class GetSchedulesUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GetSchedulesUseCase>,
+          GetSchedulesUseCase,
+          FutureOr<GetSchedulesUseCase>
+        >
     with
         $FutureModifier<GetSchedulesUseCase>,
         $FutureProvider<GetSchedulesUseCase> {
   const GetSchedulesUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'getSchedulesUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getSchedulesUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$getSchedulesUseCaseHash();
@@ -771,8 +841,8 @@ final class GetSchedulesUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<GetSchedulesUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<GetSchedulesUseCase> create(Ref ref) {
@@ -786,23 +856,26 @@ String _$getSchedulesUseCaseHash() =>
 @ProviderFor(generateSchedulesUseCase)
 const generateSchedulesUseCaseProvider = GenerateSchedulesUseCaseProvider._();
 
-final class GenerateSchedulesUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<GenerateSchedulesUseCase>,
-        GenerateSchedulesUseCase,
-        FutureOr<GenerateSchedulesUseCase>>
+final class GenerateSchedulesUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GenerateSchedulesUseCase>,
+          GenerateSchedulesUseCase,
+          FutureOr<GenerateSchedulesUseCase>
+        >
     with
         $FutureModifier<GenerateSchedulesUseCase>,
         $FutureProvider<GenerateSchedulesUseCase> {
   const GenerateSchedulesUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'generateSchedulesUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'generateSchedulesUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$generateSchedulesUseCaseHash();
@@ -810,8 +883,8 @@ final class GenerateSchedulesUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<GenerateSchedulesUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<GenerateSchedulesUseCase> create(Ref ref) {
@@ -825,23 +898,26 @@ String _$generateSchedulesUseCaseHash() =>
 @ProviderFor(getSettingsUseCase)
 const getSettingsUseCaseProvider = GetSettingsUseCaseProvider._();
 
-final class GetSettingsUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<GetSettingsUseCase>,
-        GetSettingsUseCase,
-        FutureOr<GetSettingsUseCase>>
+final class GetSettingsUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GetSettingsUseCase>,
+          GetSettingsUseCase,
+          FutureOr<GetSettingsUseCase>
+        >
     with
         $FutureModifier<GetSettingsUseCase>,
         $FutureProvider<GetSettingsUseCase> {
   const GetSettingsUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'getSettingsUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getSettingsUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$getSettingsUseCaseHash();
@@ -849,8 +925,8 @@ final class GetSettingsUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<GetSettingsUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<GetSettingsUseCase> create(Ref ref) {
@@ -864,23 +940,26 @@ String _$getSettingsUseCaseHash() =>
 @ProviderFor(saveSettingsUseCase)
 const saveSettingsUseCaseProvider = SaveSettingsUseCaseProvider._();
 
-final class SaveSettingsUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<SaveSettingsUseCase>,
-        SaveSettingsUseCase,
-        FutureOr<SaveSettingsUseCase>>
+final class SaveSettingsUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SaveSettingsUseCase>,
+          SaveSettingsUseCase,
+          FutureOr<SaveSettingsUseCase>
+        >
     with
         $FutureModifier<SaveSettingsUseCase>,
         $FutureProvider<SaveSettingsUseCase> {
   const SaveSettingsUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'saveSettingsUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'saveSettingsUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$saveSettingsUseCaseHash();
@@ -888,8 +967,8 @@ final class SaveSettingsUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SaveSettingsUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SaveSettingsUseCase> create(Ref ref) {
@@ -903,23 +982,26 @@ String _$saveSettingsUseCaseHash() =>
 @ProviderFor(resetSettingsUseCase)
 const resetSettingsUseCaseProvider = ResetSettingsUseCaseProvider._();
 
-final class ResetSettingsUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<ResetSettingsUseCase>,
-        ResetSettingsUseCase,
-        FutureOr<ResetSettingsUseCase>>
+final class ResetSettingsUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ResetSettingsUseCase>,
+          ResetSettingsUseCase,
+          FutureOr<ResetSettingsUseCase>
+        >
     with
         $FutureModifier<ResetSettingsUseCase>,
         $FutureProvider<ResetSettingsUseCase> {
   const ResetSettingsUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'resetSettingsUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'resetSettingsUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$resetSettingsUseCaseHash();
@@ -927,8 +1009,8 @@ final class ResetSettingsUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<ResetSettingsUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<ResetSettingsUseCase> create(Ref ref) {
@@ -942,23 +1024,26 @@ String _$resetSettingsUseCaseHash() =>
 @ProviderFor(getConfigsUseCase)
 const getConfigsUseCaseProvider = GetConfigsUseCaseProvider._();
 
-final class GetConfigsUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<GetConfigsUseCase>,
-        GetConfigsUseCase,
-        FutureOr<GetConfigsUseCase>>
+final class GetConfigsUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GetConfigsUseCase>,
+          GetConfigsUseCase,
+          FutureOr<GetConfigsUseCase>
+        >
     with
         $FutureModifier<GetConfigsUseCase>,
         $FutureProvider<GetConfigsUseCase> {
   const GetConfigsUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'getConfigsUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getConfigsUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$getConfigsUseCaseHash();
@@ -966,8 +1051,8 @@ final class GetConfigsUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<GetConfigsUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<GetConfigsUseCase> create(Ref ref) {
@@ -980,23 +1065,26 @@ String _$getConfigsUseCaseHash() => r'c5cf41e41bbd51d13a93e5c79f7f3e4b032cb918';
 @ProviderFor(setActiveConfigUseCase)
 const setActiveConfigUseCaseProvider = SetActiveConfigUseCaseProvider._();
 
-final class SetActiveConfigUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<SetActiveConfigUseCase>,
-        SetActiveConfigUseCase,
-        FutureOr<SetActiveConfigUseCase>>
+final class SetActiveConfigUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SetActiveConfigUseCase>,
+          SetActiveConfigUseCase,
+          FutureOr<SetActiveConfigUseCase>
+        >
     with
         $FutureModifier<SetActiveConfigUseCase>,
         $FutureProvider<SetActiveConfigUseCase> {
   const SetActiveConfigUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'setActiveConfigUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'setActiveConfigUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$setActiveConfigUseCaseHash();
@@ -1004,8 +1092,8 @@ final class SetActiveConfigUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<SetActiveConfigUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<SetActiveConfigUseCase> create(Ref ref) {
@@ -1019,23 +1107,26 @@ String _$setActiveConfigUseCaseHash() =>
 @ProviderFor(loadDefaultConfigUseCase)
 const loadDefaultConfigUseCaseProvider = LoadDefaultConfigUseCaseProvider._();
 
-final class LoadDefaultConfigUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<LoadDefaultConfigUseCase>,
-        LoadDefaultConfigUseCase,
-        FutureOr<LoadDefaultConfigUseCase>>
+final class LoadDefaultConfigUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<LoadDefaultConfigUseCase>,
+          LoadDefaultConfigUseCase,
+          FutureOr<LoadDefaultConfigUseCase>
+        >
     with
         $FutureModifier<LoadDefaultConfigUseCase>,
         $FutureProvider<LoadDefaultConfigUseCase> {
   const LoadDefaultConfigUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'loadDefaultConfigUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'loadDefaultConfigUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$loadDefaultConfigUseCaseHash();
@@ -1043,8 +1134,8 @@ final class LoadDefaultConfigUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<LoadDefaultConfigUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<LoadDefaultConfigUseCase> create(Ref ref) {
@@ -1058,20 +1149,24 @@ String _$loadDefaultConfigUseCaseHash() =>
 @ProviderFor(scheduleMergeService)
 const scheduleMergeServiceProvider = ScheduleMergeServiceProvider._();
 
-final class ScheduleMergeServiceProvider extends $FunctionalProvider<
-    ScheduleMergeService,
-    ScheduleMergeService,
-    ScheduleMergeService> with $Provider<ScheduleMergeService> {
+final class ScheduleMergeServiceProvider
+    extends
+        $FunctionalProvider<
+          ScheduleMergeService,
+          ScheduleMergeService,
+          ScheduleMergeService
+        >
+    with $Provider<ScheduleMergeService> {
   const ScheduleMergeServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scheduleMergeServiceProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleMergeServiceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scheduleMergeServiceHash();
@@ -1079,8 +1174,8 @@ final class ScheduleMergeServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<ScheduleMergeService> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   ScheduleMergeService create(Ref ref) {
@@ -1102,18 +1197,20 @@ String _$scheduleMergeServiceHash() =>
 @ProviderFor(dateRangePolicy)
 const dateRangePolicyProvider = DateRangePolicyProvider._();
 
-final class DateRangePolicyProvider extends $FunctionalProvider<DateRangePolicy,
-    DateRangePolicy, DateRangePolicy> with $Provider<DateRangePolicy> {
+final class DateRangePolicyProvider
+    extends
+        $FunctionalProvider<DateRangePolicy, DateRangePolicy, DateRangePolicy>
+    with $Provider<DateRangePolicy> {
   const DateRangePolicyProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'dateRangePolicyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dateRangePolicyProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$dateRangePolicyHash();
@@ -1142,20 +1239,24 @@ String _$dateRangePolicyHash() => r'5b1ef2d79621ce28df46dfb1a59009d336d0f102';
 @ProviderFor(configQueryService)
 const configQueryServiceProvider = ConfigQueryServiceProvider._();
 
-final class ConfigQueryServiceProvider extends $FunctionalProvider<
-    ConfigQueryService,
-    ConfigQueryService,
-    ConfigQueryService> with $Provider<ConfigQueryService> {
+final class ConfigQueryServiceProvider
+    extends
+        $FunctionalProvider<
+          ConfigQueryService,
+          ConfigQueryService,
+          ConfigQueryService
+        >
+    with $Provider<ConfigQueryService> {
   const ConfigQueryServiceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'configQueryServiceProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'configQueryServiceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$configQueryServiceHash();
@@ -1163,8 +1264,8 @@ final class ConfigQueryServiceProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<ConfigQueryService> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   ConfigQueryService create(Ref ref) {
@@ -1187,23 +1288,26 @@ String _$configQueryServiceHash() =>
 const ensureMonthSchedulesUseCaseProvider =
     EnsureMonthSchedulesUseCaseProvider._();
 
-final class EnsureMonthSchedulesUseCaseProvider extends $FunctionalProvider<
-        AsyncValue<EnsureMonthSchedulesUseCase>,
-        EnsureMonthSchedulesUseCase,
-        FutureOr<EnsureMonthSchedulesUseCase>>
+final class EnsureMonthSchedulesUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<EnsureMonthSchedulesUseCase>,
+          EnsureMonthSchedulesUseCase,
+          FutureOr<EnsureMonthSchedulesUseCase>
+        >
     with
         $FutureModifier<EnsureMonthSchedulesUseCase>,
         $FutureProvider<EnsureMonthSchedulesUseCase> {
   const EnsureMonthSchedulesUseCaseProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'ensureMonthSchedulesUseCaseProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'ensureMonthSchedulesUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$ensureMonthSchedulesUseCaseHash();
@@ -1211,8 +1315,8 @@ final class EnsureMonthSchedulesUseCaseProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<EnsureMonthSchedulesUseCase> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<EnsureMonthSchedulesUseCase> create(Ref ref) {
@@ -1222,3 +1326,228 @@ final class EnsureMonthSchedulesUseCaseProvider extends $FunctionalProvider<
 
 String _$ensureMonthSchedulesUseCaseHash() =>
     r'6fa0fa93ee9d14338bb7a8b8a72390c72e88a23b';
+
+@ProviderFor(schoolHolidayRemoteDataSource)
+const schoolHolidayRemoteDataSourceProvider =
+    SchoolHolidayRemoteDataSourceProvider._();
+
+final class SchoolHolidayRemoteDataSourceProvider
+    extends
+        $FunctionalProvider<
+          SchoolHolidayRemoteDataSource,
+          SchoolHolidayRemoteDataSource,
+          SchoolHolidayRemoteDataSource
+        >
+    with $Provider<SchoolHolidayRemoteDataSource> {
+  const SchoolHolidayRemoteDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'schoolHolidayRemoteDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$schoolHolidayRemoteDataSourceHash();
+
+  @$internal
+  @override
+  $ProviderElement<SchoolHolidayRemoteDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SchoolHolidayRemoteDataSource create(Ref ref) {
+    return schoolHolidayRemoteDataSource(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SchoolHolidayRemoteDataSource value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SchoolHolidayRemoteDataSource>(
+        value,
+      ),
+    );
+  }
+}
+
+String _$schoolHolidayRemoteDataSourceHash() =>
+    r'797594b55f01054d0ce9fe0b8d2ab489f762e25c';
+
+@ProviderFor(schoolHolidaysDao)
+const schoolHolidaysDaoProvider = SchoolHolidaysDaoProvider._();
+
+final class SchoolHolidaysDaoProvider
+    extends
+        $FunctionalProvider<
+          SchoolHolidaysDao,
+          SchoolHolidaysDao,
+          SchoolHolidaysDao
+        >
+    with $Provider<SchoolHolidaysDao> {
+  const SchoolHolidaysDaoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'schoolHolidaysDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$schoolHolidaysDaoHash();
+
+  @$internal
+  @override
+  $ProviderElement<SchoolHolidaysDao> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  SchoolHolidaysDao create(Ref ref) {
+    return schoolHolidaysDao(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SchoolHolidaysDao value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SchoolHolidaysDao>(value),
+    );
+  }
+}
+
+String _$schoolHolidaysDaoHash() => r'd1a89dc4edd8a297702eb4d347f2ad99a7d976f8';
+
+@ProviderFor(schoolHolidayLocalDataSource)
+const schoolHolidayLocalDataSourceProvider =
+    SchoolHolidayLocalDataSourceProvider._();
+
+final class SchoolHolidayLocalDataSourceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SchoolHolidayLocalDataSource>,
+          SchoolHolidayLocalDataSource,
+          FutureOr<SchoolHolidayLocalDataSource>
+        >
+    with
+        $FutureModifier<SchoolHolidayLocalDataSource>,
+        $FutureProvider<SchoolHolidayLocalDataSource> {
+  const SchoolHolidayLocalDataSourceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'schoolHolidayLocalDataSourceProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$schoolHolidayLocalDataSourceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SchoolHolidayLocalDataSource> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SchoolHolidayLocalDataSource> create(Ref ref) {
+    return schoolHolidayLocalDataSource(ref);
+  }
+}
+
+String _$schoolHolidayLocalDataSourceHash() =>
+    r'1161606996f63d69383798240663c5961e3be4d6';
+
+@ProviderFor(schoolHolidayRepository)
+const schoolHolidayRepositoryProvider = SchoolHolidayRepositoryProvider._();
+
+final class SchoolHolidayRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SchoolHolidayRepository>,
+          SchoolHolidayRepository,
+          FutureOr<SchoolHolidayRepository>
+        >
+    with
+        $FutureModifier<SchoolHolidayRepository>,
+        $FutureProvider<SchoolHolidayRepository> {
+  const SchoolHolidayRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'schoolHolidayRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$schoolHolidayRepositoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SchoolHolidayRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SchoolHolidayRepository> create(Ref ref) {
+    return schoolHolidayRepository(ref);
+  }
+}
+
+String _$schoolHolidayRepositoryHash() =>
+    r'6a7e9e57d3f02de496d3f99a46c05a1b29cb503c';
+
+@ProviderFor(getSchoolHolidaysUseCase)
+const getSchoolHolidaysUseCaseProvider = GetSchoolHolidaysUseCaseProvider._();
+
+final class GetSchoolHolidaysUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<GetSchoolHolidaysUseCase>,
+          GetSchoolHolidaysUseCase,
+          FutureOr<GetSchoolHolidaysUseCase>
+        >
+    with
+        $FutureModifier<GetSchoolHolidaysUseCase>,
+        $FutureProvider<GetSchoolHolidaysUseCase> {
+  const GetSchoolHolidaysUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'getSchoolHolidaysUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$getSchoolHolidaysUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<GetSchoolHolidaysUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<GetSchoolHolidaysUseCase> create(Ref ref) {
+    return getSchoolHolidaysUseCase(ref);
+  }
+}
+
+String _$getSchoolHolidaysUseCaseHash() =>
+    r'fa0e86b5dc883ef81cac9bfd1069071821c88617';

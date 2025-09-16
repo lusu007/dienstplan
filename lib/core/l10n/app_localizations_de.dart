@@ -372,7 +372,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String scheduleUpdateNotification(
-      String configName, String oldVersion, String newVersion) {
+    String configName,
+    String oldVersion,
+    String newVersion,
+  ) {
     return 'Dienstplan \"$configName\" wurde aktualisiert (Version $oldVersion → $newVersion). Alle Dienste werden neu generiert.';
   }
 

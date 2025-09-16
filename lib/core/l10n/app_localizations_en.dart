@@ -371,7 +371,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String scheduleUpdateNotification(
-      String configName, String oldVersion, String newVersion) {
+    String configName,
+    String oldVersion,
+    String newVersion,
+  ) {
     return 'Duty schedule \"$configName\" has been updated (Version $oldVersion → $newVersion). All services will be regenerated.';
   }
 

@@ -13,6 +13,10 @@ class Settings {
   final String? partnerDutyGroup;
   final int? partnerAccentColorValue;
   final int? myAccentColorValue;
+  // School holidays
+  final String? schoolHolidayStateCode;
+  final bool? showSchoolHolidays;
+  final DateTime? lastSchoolHolidayRefresh;
 
   const Settings({
     required this.calendarFormat,
@@ -25,6 +29,9 @@ class Settings {
     this.partnerDutyGroup,
     this.partnerAccentColorValue,
     this.myAccentColorValue,
+    this.schoolHolidayStateCode,
+    this.showSchoolHolidays,
+    this.lastSchoolHolidayRefresh,
   });
 
   factory Settings.fromMap(Map<String, dynamic> map) {
@@ -42,6 +49,11 @@ class Settings {
       partnerDutyGroup: _safeStringCast(map['partner_duty_group']),
       partnerAccentColorValue: _safeIntCast(map['partner_accent_color']),
       myAccentColorValue: _safeIntCast(map['my_accent_color']),
+      schoolHolidayStateCode: _safeStringCast(map['school_holiday_state_code']),
+      showSchoolHolidays: _safeBoolCast(map['show_school_holidays']),
+      lastSchoolHolidayRefresh: _safeDateTimeCast(
+        map['last_school_holiday_refresh'],
+      ),
     );
   }
 
@@ -58,6 +70,13 @@ class Settings {
       if (partnerAccentColorValue != null)
         'partner_accent_color': partnerAccentColorValue,
       if (myAccentColorValue != null) 'my_accent_color': myAccentColorValue,
+      if (schoolHolidayStateCode != null)
+        'school_holiday_state_code': schoolHolidayStateCode,
+      if (showSchoolHolidays != null)
+        'show_school_holidays': showSchoolHolidays == true ? 1 : 0,
+      if (lastSchoolHolidayRefresh != null)
+        'last_school_holiday_refresh': lastSchoolHolidayRefresh!
+            .toIso8601String(),
     };
   }
 
@@ -72,6 +91,9 @@ class Settings {
     String? partnerDutyGroup,
     int? partnerAccentColorValue,
     int? myAccentColorValue,
+    String? schoolHolidayStateCode,
+    bool? showSchoolHolidays,
+    DateTime? lastSchoolHolidayRefresh,
   }) {
     return Settings(
       calendarFormat: calendarFormat ?? this.calendarFormat,
@@ -85,12 +107,17 @@ class Settings {
       partnerAccentColorValue:
           partnerAccentColorValue ?? this.partnerAccentColorValue,
       myAccentColorValue: myAccentColorValue ?? this.myAccentColorValue,
+      schoolHolidayStateCode:
+          schoolHolidayStateCode ?? this.schoolHolidayStateCode,
+      showSchoolHolidays: showSchoolHolidays ?? this.showSchoolHolidays,
+      lastSchoolHolidayRefresh:
+          lastSchoolHolidayRefresh ?? this.lastSchoolHolidayRefresh,
     );
   }
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh)';
   }
 
   @override
@@ -106,7 +133,9 @@ class Settings {
         other.partnerConfigName == partnerConfigName &&
         other.partnerDutyGroup == partnerDutyGroup &&
         other.partnerAccentColorValue == partnerAccentColorValue &&
-        other.myAccentColorValue == myAccentColorValue;
+        other.myAccentColorValue == myAccentColorValue &&
+        other.schoolHolidayStateCode == schoolHolidayStateCode &&
+        other.showSchoolHolidays == showSchoolHolidays;
   }
 
   @override
@@ -120,7 +149,9 @@ class Settings {
         partnerConfigName.hashCode ^
         partnerDutyGroup.hashCode ^
         partnerAccentColorValue.hashCode ^
-        myAccentColorValue.hashCode;
+        myAccentColorValue.hashCode ^
+        schoolHolidayStateCode.hashCode ^
+        showSchoolHolidays.hashCode;
   }
 
   static String? _safeStringCast(dynamic value) {
@@ -135,6 +166,30 @@ class Settings {
     if (value is String) {
       final parsed = int.tryParse(value);
       return parsed;
+    }
+    return null;
+  }
+
+  static bool? _safeBoolCast(dynamic value) {
+    if (value == null) return null;
+    if (value is bool) return value;
+    if (value is int) return value != 0;
+    if (value is String) {
+      if (value == '1' || value.toLowerCase() == 'true') return true;
+      if (value == '0' || value.toLowerCase() == 'false') return false;
+    }
+    return null;
+  }
+
+  static DateTime? _safeDateTimeCast(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    if (value is String) {
+      try {
+        return DateTime.parse(value);
+      } catch (e) {
+        return null;
+      }
     }
     return null;
   }

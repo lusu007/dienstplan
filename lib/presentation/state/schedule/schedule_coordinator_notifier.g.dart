@@ -12,18 +12,19 @@ part of 'schedule_coordinator_notifier.dart';
 @ProviderFor(ScheduleCoordinatorNotifier)
 const scheduleCoordinatorProvider = ScheduleCoordinatorNotifierProvider._();
 
-final class ScheduleCoordinatorNotifierProvider extends $AsyncNotifierProvider<
-    ScheduleCoordinatorNotifier, ScheduleUiState> {
+final class ScheduleCoordinatorNotifierProvider
+    extends
+        $AsyncNotifierProvider<ScheduleCoordinatorNotifier, ScheduleUiState> {
   const ScheduleCoordinatorNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scheduleCoordinatorProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleCoordinatorProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scheduleCoordinatorNotifierHash();
@@ -44,11 +45,14 @@ abstract class _$ScheduleCoordinatorNotifier
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<ScheduleUiState>, ScheduleUiState>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<ScheduleUiState>, ScheduleUiState>,
-        AsyncValue<ScheduleUiState>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<ScheduleUiState>, ScheduleUiState>,
+              AsyncValue<ScheduleUiState>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

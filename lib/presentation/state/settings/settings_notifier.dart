@@ -20,8 +20,9 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsUiState> build() async {
     _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
-    _resetSettingsUseCase ??=
-        await ref.read(resetSettingsUseCaseProvider.future);
+    _resetSettingsUseCase ??= await ref.read(
+      resetSettingsUseCaseProvider.future,
+    );
     final loaded = await _load();
     return loaded;
   }
@@ -43,8 +44,9 @@ class SettingsNotifier extends _$SettingsNotifier {
         myAccentColorValue: settings?.myAccentColorValue,
       );
     } catch (e) {
-      return SettingsUiState.initial()
-          .copyWith(error: 'Failed to load settings');
+      return SettingsUiState.initial().copyWith(
+        error: 'Failed to load settings',
+      );
     }
   }
 
@@ -60,6 +62,8 @@ class SettingsNotifier extends _$SettingsNotifier {
         calendarFormat: CalendarFormat.month,
         language: language,
         themePreference: ThemePreference.system,
+        schoolHolidayStateCode: null,
+        showSchoolHolidays: null,
       );
       await _saveSettings(newSettings);
     }
@@ -75,7 +79,8 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<void> _saveThemePreferenceInBackground(
-      ThemePreference preference) async {
+    ThemePreference preference,
+  ) async {
     try {
       final existing = await _getSettingsUseCase!.execute();
       if (existing != null) {
@@ -125,6 +130,8 @@ class SettingsNotifier extends _$SettingsNotifier {
         calendarFormat: CalendarFormat.month,
         activeConfigName: name,
         themePreference: ThemePreference.system,
+        schoolHolidayStateCode: null,
+        showSchoolHolidays: null,
       );
       await _saveSettings(newSettings);
     }
@@ -142,6 +149,8 @@ class SettingsNotifier extends _$SettingsNotifier {
         calendarFormat: CalendarFormat.month,
         myDutyGroup: group,
         themePreference: ThemePreference.system,
+        schoolHolidayStateCode: null,
+        showSchoolHolidays: null,
       );
       await _saveSettings(newSettings);
     }

@@ -26,10 +26,14 @@ class ResetSettingsUseCase {
       SettingsCache.updateCache(defaultSettings);
 
       AppLogger.i(
-          'ResetSettingsUseCase: Settings reset to defaults successfully and cache updated');
+        'ResetSettingsUseCase: Settings reset to defaults successfully and cache updated',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ResetSettingsUseCase: Error resetting settings', e, stackTrace);
+        'ResetSettingsUseCase: Error resetting settings',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -41,6 +45,8 @@ class ResetSettingsUseCase {
       selectedDutyGroup: null,
       myDutyGroup: null,
       themePreference: null,
+      schoolHolidayStateCode: null,
+      showSchoolHolidays: null,
     );
   }
 }

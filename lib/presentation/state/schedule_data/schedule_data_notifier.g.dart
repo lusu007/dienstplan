@@ -15,15 +15,15 @@ const scheduleDataProvider = ScheduleDataNotifierProvider._();
 final class ScheduleDataNotifierProvider
     extends $AsyncNotifierProvider<ScheduleDataNotifier, ScheduleDataUiState> {
   const ScheduleDataNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scheduleDataProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleDataProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scheduleDataNotifierHash();
@@ -45,11 +45,14 @@ abstract class _$ScheduleDataNotifier
     final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<ScheduleDataUiState>, ScheduleDataUiState>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<ScheduleDataUiState>, ScheduleDataUiState>,
-        AsyncValue<ScheduleDataUiState>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<ScheduleDataUiState>, ScheduleDataUiState>,
+              AsyncValue<ScheduleDataUiState>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

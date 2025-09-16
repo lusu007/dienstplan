@@ -18,6 +18,7 @@ import 'package:dienstplan/data/daos/schedules_dao.dart';
 import 'package:dienstplan/data/daos/settings_dao.dart';
 import 'package:dienstplan/data/daos/duty_types_dao.dart';
 import 'package:dienstplan/data/daos/maintenance_dao.dart';
+import 'package:dienstplan/data/daos/school_holidays_dao.dart';
 import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
 import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
 
@@ -45,6 +46,14 @@ import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/services/config_query_service.dart';
+
+// School holidays
+import 'package:dienstplan/data/data_sources/school_holiday_local_data_source.dart';
+import 'package:dienstplan/data/data_sources/school_holiday_remote_data_source.dart';
+import 'package:dienstplan/domain/repositories/school_holiday_repository.dart';
+import 'package:dienstplan/data/repositories/school_holiday_repository.dart'
+    as data_repos;
+import 'package:dienstplan/domain/use_cases/get_school_holidays_use_case.dart';
 
 part 'riverpod_providers.g.dart';
 
@@ -96,12 +105,17 @@ Future<ScheduleConfigsDao> scheduleConfigsDao(Ref ref) async {
 @Riverpod(keepAlive: true)
 Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final ScheduleConfigsDao configsDao =
-      await ref.watch(scheduleConfigsDaoProvider.future);
-  final SchedulesDao schedulesDao =
-      await ref.watch(schedulesDaoProvider.future);
-  final ScheduleConfigService service =
-      ScheduleConfigService(prefs, configsDao, schedulesDao);
+  final ScheduleConfigsDao configsDao = await ref.watch(
+    scheduleConfigsDaoProvider.future,
+  );
+  final SchedulesDao schedulesDao = await ref.watch(
+    schedulesDaoProvider.future,
+  );
+  final ScheduleConfigService service = ScheduleConfigService(
+    prefs,
+    configsDao,
+    schedulesDao,
+  );
   await service.initialize();
   return service;
 }
@@ -116,8 +130,9 @@ Future<LanguageService> languageService(Ref ref) async {
 // UI/Locale/Theme providers
 @riverpod
 Stream<Locale> currentLocale(Ref ref) async* {
-  final LanguageService languageService =
-      await ref.watch(languageServiceProvider.future);
+  final LanguageService languageService = await ref.watch(
+    languageServiceProvider.future,
+  );
   final StreamController<Locale> controller =
       StreamController<Locale>.broadcast();
   controller.add(languageService.currentLocale);
@@ -132,8 +147,9 @@ Stream<Locale> currentLocale(Ref ref) async* {
 
 @riverpod
 Future<ThemeMode> themeMode(Ref ref) async {
-  final GetSettingsUseCase getSettings =
-      await ref.watch(getSettingsUseCaseProvider.future);
+  final GetSettingsUseCase getSettings = await ref.watch(
+    getSettingsUseCaseProvider.future,
+  );
   final domain.Settings? settings = await getSettings.execute();
   switch (settings?.themePreference) {
     case domain.ThemePreference.light:
@@ -169,36 +185,26 @@ ThemeData appTheme(Ref ref) {
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: lightScheme.surface,
-      contentTextStyle: TextStyle(
-        color: lightScheme.onSurface,
-      ),
+      contentTextStyle: TextStyle(color: lightScheme.onSurface),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: lightScheme.surface,
       surfaceTintColor: lightScheme.surfaceTint,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: lightScheme.surface,
       surfaceTintColor: lightScheme.surfaceTint,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     ),
     cardTheme: CardThemeData(
       color: lightScheme.surface,
       surfaceTintColor: lightScheme.surfaceTint,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 8),
     ),
@@ -226,36 +232,26 @@ ThemeData appDarkTheme(Ref ref) {
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: darkScheme.surface,
-      contentTextStyle: TextStyle(
-        color: darkScheme.onSurface,
-      ),
+      contentTextStyle: TextStyle(color: darkScheme.onSurface),
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: darkScheme.surface,
       surfaceTintColor: darkScheme.surfaceTint,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: darkScheme.surface,
       surfaceTintColor: darkScheme.surfaceTint,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     ),
     cardTheme: CardThemeData(
       color: darkScheme.surface,
       surfaceTintColor: darkScheme.surfaceTint,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 0,
       margin: const EdgeInsets.only(bottom: 8),
     ),
@@ -304,67 +300,77 @@ Future<SettingsRepository> settingsRepository(Ref ref) async {
 
 @riverpod
 Future<ConfigRepository> configRepository(Ref ref) async {
-  final ScheduleConfigService cfg =
-      await ref.watch(scheduleConfigServiceProvider.future);
+  final ScheduleConfigService cfg = await ref.watch(
+    scheduleConfigServiceProvider.future,
+  );
   return data_repos.ConfigRepositoryImpl(cfg);
 }
 
 // Use cases
 @riverpod
 Future<GetSchedulesUseCase> getSchedulesUseCase(Ref ref) async {
-  final ScheduleRepository repo =
-      await ref.watch(scheduleRepositoryProvider.future);
+  final ScheduleRepository repo = await ref.watch(
+    scheduleRepositoryProvider.future,
+  );
   return GetSchedulesUseCase(repo);
 }
 
 @riverpod
 Future<GenerateSchedulesUseCase> generateSchedulesUseCase(Ref ref) async {
-  final ScheduleRepository scheduleRepo =
-      await ref.watch(scheduleRepositoryProvider.future);
-  final ConfigRepository configRepo =
-      await ref.watch(configRepositoryProvider.future);
+  final ScheduleRepository scheduleRepo = await ref.watch(
+    scheduleRepositoryProvider.future,
+  );
+  final ConfigRepository configRepo = await ref.watch(
+    configRepositoryProvider.future,
+  );
   return GenerateSchedulesUseCase(scheduleRepo, configRepo);
 }
 
 @riverpod
 Future<GetSettingsUseCase> getSettingsUseCase(Ref ref) async {
-  final SettingsRepository repo =
-      await ref.watch(settingsRepositoryProvider.future);
+  final SettingsRepository repo = await ref.watch(
+    settingsRepositoryProvider.future,
+  );
   return GetSettingsUseCase(repo);
 }
 
 @riverpod
 Future<SaveSettingsUseCase> saveSettingsUseCase(Ref ref) async {
-  final SettingsRepository repo =
-      await ref.watch(settingsRepositoryProvider.future);
+  final SettingsRepository repo = await ref.watch(
+    settingsRepositoryProvider.future,
+  );
   return SaveSettingsUseCase(repo);
 }
 
 @riverpod
 Future<ResetSettingsUseCase> resetSettingsUseCase(Ref ref) async {
-  final SettingsRepository repo =
-      await ref.watch(settingsRepositoryProvider.future);
+  final SettingsRepository repo = await ref.watch(
+    settingsRepositoryProvider.future,
+  );
   return ResetSettingsUseCase(repo);
 }
 
 @riverpod
 Future<GetConfigsUseCase> getConfigsUseCase(Ref ref) async {
-  final ConfigRepository repo =
-      await ref.watch(configRepositoryProvider.future);
+  final ConfigRepository repo = await ref.watch(
+    configRepositoryProvider.future,
+  );
   return GetConfigsUseCase(repo);
 }
 
 @riverpod
 Future<SetActiveConfigUseCase> setActiveConfigUseCase(Ref ref) async {
-  final ConfigRepository repo =
-      await ref.watch(configRepositoryProvider.future);
+  final ConfigRepository repo = await ref.watch(
+    configRepositoryProvider.future,
+  );
   return SetActiveConfigUseCase(repo);
 }
 
 @riverpod
 Future<LoadDefaultConfigUseCase> loadDefaultConfigUseCase(Ref ref) async {
-  final ConfigRepository repo =
-      await ref.watch(configRepositoryProvider.future);
+  final ConfigRepository repo = await ref.watch(
+    configRepositoryProvider.future,
+  );
   return LoadDefaultConfigUseCase(repo);
 }
 
@@ -387,9 +393,48 @@ ConfigQueryService configQueryService(Ref ref) {
 // Use cases (additional)
 @riverpod
 Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
-  final GetSchedulesUseCase get =
-      await ref.watch(getSchedulesUseCaseProvider.future);
-  final GenerateSchedulesUseCase gen =
-      await ref.watch(generateSchedulesUseCaseProvider.future);
+  final GetSchedulesUseCase get = await ref.watch(
+    getSchedulesUseCaseProvider.future,
+  );
+  final GenerateSchedulesUseCase gen = await ref.watch(
+    generateSchedulesUseCaseProvider.future,
+  );
   return EnsureMonthSchedulesUseCase(get, gen);
+}
+
+// School holiday providers
+@riverpod
+SchoolHolidayRemoteDataSource schoolHolidayRemoteDataSource(Ref ref) {
+  return SchoolHolidayRemoteDataSourceImpl();
+}
+
+@riverpod
+SchoolHolidaysDao schoolHolidaysDao(Ref ref) {
+  return SchoolHolidaysDao(DatabaseService());
+}
+
+@riverpod
+Future<SchoolHolidayLocalDataSource> schoolHolidayLocalDataSource(
+  Ref ref,
+) async {
+  final dao = ref.watch(schoolHolidaysDaoProvider);
+  return SchoolHolidayLocalDataSourceSqliteImpl(dao);
+}
+
+@riverpod
+Future<SchoolHolidayRepository> schoolHolidayRepository(Ref ref) async {
+  final remoteDataSource = ref.watch(schoolHolidayRemoteDataSourceProvider);
+  final localDataSource = await ref.watch(
+    schoolHolidayLocalDataSourceProvider.future,
+  );
+  return data_repos.SchoolHolidayRepositoryImpl(
+    remoteDataSource: remoteDataSource,
+    localDataSource: localDataSource,
+  );
+}
+
+@riverpod
+Future<GetSchoolHolidaysUseCase> getSchoolHolidaysUseCase(Ref ref) async {
+  final repository = await ref.watch(schoolHolidayRepositoryProvider.future);
+  return GetSchoolHolidaysUseCase(repository);
 }

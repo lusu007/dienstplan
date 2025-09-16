@@ -20,6 +20,10 @@ abstract class Settings with _$Settings {
     int? partnerAccentColorValue,
     // My accent color feature
     int? myAccentColorValue,
+    // School holidays feature
+    String? schoolHolidayStateCode,
+    bool? showSchoolHolidays,
+    DateTime? lastSchoolHolidayRefresh,
   }) = _Settings;
 
   const Settings._();

@@ -15,15 +15,15 @@ const partnerProvider = PartnerNotifierProvider._();
 final class PartnerNotifierProvider
     extends $AsyncNotifierProvider<PartnerNotifier, PartnerUiState> {
   const PartnerNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'partnerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'partnerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$partnerNotifierHash();
@@ -42,11 +42,14 @@ abstract class _$PartnerNotifier extends $AsyncNotifier<PartnerUiState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<PartnerUiState>, PartnerUiState>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<PartnerUiState>, PartnerUiState>,
-        AsyncValue<PartnerUiState>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<PartnerUiState>, PartnerUiState>,
+              AsyncValue<PartnerUiState>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
