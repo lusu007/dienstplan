@@ -36,11 +36,11 @@ class NavigationCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Material(
-        color:
-            enabled ? theme.cardColor : theme.cardColor.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
+            color: enabled
+                ? theme.cardColor
+                : theme.cardColor.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: enabled
