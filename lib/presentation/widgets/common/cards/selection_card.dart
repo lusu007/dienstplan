@@ -64,45 +64,53 @@ class SelectionCard extends StatelessWidget {
     final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? mainColor.withAlpha(kAlphaCardSelected)
-            : theme.cardColor,
+      child: Material(
+        elevation: isSelected ? 2 : 0,
+        shadowColor: mainColor.withAlpha(kAlphaShadowStrong),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isSelected ? mainColor : scheme.outlineVariant,
-          width: isSelected ? 2.5 : 1,
+        child: Container(
+          decoration: BoxDecoration(
+            color: isSelected
+                ? mainColor.withAlpha(kAlphaCardSelected)
+                : theme.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? mainColor : scheme.outlineVariant,
+              width: isSelected ? 2.5 : 1,
+            ),
+          ),
+          child: ListTile(
+            contentPadding: contentPadding,
+            leading: Icon(
+              isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+              color: isSelected ? mainColor : scheme.onSurfaceVariant,
+              size: 28,
+            ),
+            title: title is Widget
+                ? title
+                : Text(
+                    title as String,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color:
+                          isSelected ? mainColor : theme.colorScheme.onSurface,
+                    ),
+                  ),
+            subtitle: subtitle != null
+                ? Text(
+                    subtitle!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      color: isSelected
+                          ? mainColor.withValues(alpha: 0.8)
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                  )
+                : null,
+            onTap: onTap,
+          ),
         ),
-      ),
-      child: ListTile(
-        contentPadding: contentPadding,
-        leading: Icon(
-          isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-          color: isSelected ? mainColor : scheme.onSurfaceVariant,
-          size: 28,
-        ),
-        title: title is Widget
-            ? title
-            : Text(
-                title as String,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: isSelected ? mainColor : theme.colorScheme.onSurface,
-                ),
-              ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 15,
-                  color: isSelected
-                      ? mainColor.withValues(alpha: 0.8)
-                      : theme.colorScheme.onSurfaceVariant,
-                ),
-              )
-            : null,
-        onTap: onTap,
       ),
     );
   }
@@ -118,63 +126,61 @@ class SelectionCard extends StatelessWidget {
     final ColorScheme scheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: isSelected
-            ? mainColor.withAlpha(kAlphaCardSelected)
-            : theme.cardColor,
+      child: Material(
+        elevation: isSelected ? 4 : 0,
+        shadowColor: mainColor.withAlpha(kAlphaShadowStrong),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isSelected ? mainColor : scheme.outlineVariant,
-          width: isSelected ? 2.5 : 1,
-        ),
-        boxShadow: isSelected
-            ? [
-                BoxShadow(
-                  color: mainColor.withAlpha(kAlphaShadowStrong),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [],
-      ),
-      child: ListTile(
-        contentPadding: contentPadding,
-        minVerticalPadding: minVerticalPadding,
-        leading: leadingIcon != null
-            ? Icon(leadingIcon, color: mainColor, size: iconSize)
-            : null,
-        title: title is Widget
-            ? title
-            : Text(
-                title as String,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: theme.colorScheme.onSurface,
-                ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isSelected
+                ? mainColor.withAlpha(kAlphaCardSelected)
+                : theme.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? mainColor : scheme.outlineVariant,
+              width: isSelected ? 2.5 : 1,
+            ),
+          ),
+          child: ListTile(
+            contentPadding: contentPadding,
+            minVerticalPadding: minVerticalPadding,
+            leading: leadingIcon != null
+                ? Icon(leadingIcon, color: mainColor, size: iconSize)
+                : null,
+            title: title is Widget
+                ? title
+                : Text(
+                    title as String,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+            subtitle: subtitle != null
+                ? Text(
+                    subtitle!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  )
+                : null,
+            trailing: SizedBox(
+              width: 32,
+              child: Icon(
+                isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+                color: mainColor,
+                size: 28,
               ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 15,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              )
-            : null,
-        trailing: SizedBox(
-          width: 32,
-          child: Icon(
-            isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: mainColor,
-            size: 28,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            selectedTileColor: Colors.transparent,
+            onTap: onTap,
           ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        selectedTileColor: Colors.transparent,
-        onTap: onTap,
       ),
     );
   }

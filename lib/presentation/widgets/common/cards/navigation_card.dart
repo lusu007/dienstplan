@@ -35,46 +35,51 @@ class NavigationCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
+      child: Material(
         color:
             enabled ? theme.cardColor : theme.cardColor.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: enabled
-              ? scheme.outlineVariant
-              : scheme.outlineVariant.withValues(alpha: 0.5),
-          width: 1,
-        ),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-        minVerticalPadding: 20,
-        leading: Icon(icon, color: effectiveIconColor, size: 40),
-        title: Text(
-          title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: effectiveTitleColor,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: enabled
+                  ? scheme.outlineVariant
+                  : scheme.outlineVariant.withValues(alpha: 0.5),
+              width: 1,
+            ),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            minVerticalPadding: 20,
+            leading: Icon(icon, color: effectiveIconColor, size: 40),
+            title: Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: effectiveTitleColor,
+              ),
+            ),
+            subtitle: subtitle != null
+                ? Text(
+                    subtitle!,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      color: effectiveSubtitleColor,
+                    ),
+                  )
+                : null,
+            trailing: trailing != null && !enabled
+                ? Opacity(opacity: 0.5, child: trailing!)
+                : trailing,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            selectedTileColor: Colors.transparent,
+            onTap: onTap,
           ),
         ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 15,
-                  color: effectiveSubtitleColor,
-                ),
-              )
-            : null,
-        trailing: trailing != null && !enabled
-            ? Opacity(opacity: 0.5, child: trailing!)
-            : trailing,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        selectedTileColor: Colors.transparent,
-        onTap: onTap,
       ),
     );
   }
