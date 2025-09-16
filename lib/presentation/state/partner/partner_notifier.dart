@@ -20,6 +20,9 @@ class PartnerNotifier extends _$PartnerNotifier {
 
   Future<PartnerUiState> _initialize() async {
     try {
+      if (!ref.mounted) {
+        return PartnerUiState.initial();
+      }
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
@@ -40,9 +43,11 @@ class PartnerNotifier extends _$PartnerNotifier {
 
   Future<void> setPartnerConfigName(String? configName) async {
     final current = await future;
+    if (!ref.mounted) return;
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
+      if (!ref.mounted) return;
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final existing = settingsResult.isSuccess ? settingsResult.value : null;
 
@@ -51,11 +56,13 @@ class PartnerNotifier extends _$PartnerNotifier {
         await _saveSettingsUseCase!.executeSafe(updated);
       }
 
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         partnerConfigName: configName,
         isLoading: false,
       ));
     } catch (e) {
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         error: 'Failed to save partner config name',
         isLoading: false,
@@ -65,9 +72,11 @@ class PartnerNotifier extends _$PartnerNotifier {
 
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
     final current = await future;
+    if (!ref.mounted) return;
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
+      if (!ref.mounted) return;
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final existing = settingsResult.isSuccess ? settingsResult.value : null;
 
@@ -76,11 +85,13 @@ class PartnerNotifier extends _$PartnerNotifier {
         await _saveSettingsUseCase!.executeSafe(updated);
       }
 
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         partnerDutyGroup: dutyGroup,
         isLoading: false,
       ));
     } catch (e) {
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         error: 'Failed to save partner duty group',
         isLoading: false,
@@ -90,9 +101,11 @@ class PartnerNotifier extends _$PartnerNotifier {
 
   Future<void> setPartnerAccentColor(int? colorValue) async {
     final current = await future;
+    if (!ref.mounted) return;
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
+      if (!ref.mounted) return;
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final existing = settingsResult.isSuccess ? settingsResult.value : null;
 
@@ -101,11 +114,13 @@ class PartnerNotifier extends _$PartnerNotifier {
         await _saveSettingsUseCase!.executeSafe(updated);
       }
 
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         partnerAccentColorValue: colorValue,
         isLoading: false,
       ));
     } catch (e) {
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         error: 'Failed to save partner accent color',
         isLoading: false,
@@ -115,9 +130,11 @@ class PartnerNotifier extends _$PartnerNotifier {
 
   Future<void> setMyAccentColor(int? colorValue) async {
     final current = await future;
+    if (!ref.mounted) return;
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
+      if (!ref.mounted) return;
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final existing = settingsResult.isSuccess ? settingsResult.value : null;
 
@@ -126,11 +143,13 @@ class PartnerNotifier extends _$PartnerNotifier {
         await _saveSettingsUseCase!.executeSafe(updated);
       }
 
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         myAccentColorValue: colorValue,
         isLoading: false,
       ));
     } catch (e) {
+      if (!ref.mounted) return;
       state = AsyncData(current.copyWith(
         error: 'Failed to save my accent color',
         isLoading: false,
@@ -140,6 +159,7 @@ class PartnerNotifier extends _$PartnerNotifier {
 
   Future<void> clearError() async {
     final current = await future;
+    if (!ref.mounted) return;
     state = AsyncData(current.copyWith(error: null));
   }
 }

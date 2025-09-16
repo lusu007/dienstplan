@@ -96,6 +96,7 @@ class DatabaseService {
         partner_config_name TEXT,
         partner_duty_group TEXT,
         partner_accent_color INTEGER,
+        my_accent_color INTEGER,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
