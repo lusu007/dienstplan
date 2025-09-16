@@ -9,26 +9,48 @@ import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_ui_state.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
+import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
+import 'package:dienstplan/domain/policies/date_range_policy.dart';
+import 'package:dienstplan/domain/services/schedule_merge_service.dart';
+import 'package:dienstplan/domain/value_objects/date_range.dart';
+import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 part 'schedule_coordinator_notifier.g.dart';
 
 @riverpod
 class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
+  GetSchedulesUseCase? _getSchedulesUseCase;
+  EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
+  DateRangePolicy? _dateRangePolicy;
+  ScheduleMergeService? _scheduleMergeService;
+
   @override
   Future<ScheduleUiState> build() async {
+    _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
+    _ensureMonthSchedulesUseCase ??=
+        await ref.read(ensureMonthSchedulesUseCaseProvider.future);
+    _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
+    _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
     // Initialize all sub-notifiers
     final calendarState = await ref.read(calendarProvider.future);
     final configState = await ref.read(configProvider.future);
     final partnerState = await ref.read(partnerProvider.future);
     final scheduleDataState = await ref.read(scheduleDataProvider.future);
 
-    return _combineStates(
+    final ScheduleUiState combined = _combineStates(
       calendarState,
       configState,
       partnerState,
       scheduleDataState,
     );
+    // Kick off partner data ensure in the background so partner chips can render
+    // without blocking initial build.
+    // ignore: discarded_futures
+    _ensurePartnerDataForFocusedRange();
+    return combined;
   }
 
   ScheduleUiState _combineStates(
@@ -66,6 +88,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> setFocusedDay(DateTime day) async {
     await ref.read(calendarProvider.notifier).setFocusedDay(day);
     await _updateCalendarStateOnly();
+    await _ensurePartnerDataForFocusedRange();
   }
 
   Future<void> setSelectedDay(DateTime? day) async {
@@ -98,11 +121,13 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> setPartnerConfigName(String? configName) async {
     await ref.read(partnerProvider.notifier).setPartnerConfigName(configName);
     await _updatePartnerStateOnly();
+    await _ensurePartnerDataForFocusedRange();
   }
 
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
     await ref.read(partnerProvider.notifier).setPartnerDutyGroup(dutyGroup);
     await _updatePartnerStateOnly();
+    await _ensurePartnerDataForFocusedRange();
   }
 
   Future<void> setPartnerAccentColor(int? colorValue) async {
@@ -205,6 +230,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> applyPartnerSelectionChanges() async {
     // This method applies partner selection changes
     await _refreshState();
+    await _ensurePartnerDataForFocusedRange();
   }
 
   /// Optimized method to update only calendar-related state
@@ -285,5 +311,54 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       partnerState,
       scheduleDataState,
     ));
+  }
+
+  Future<void> _ensurePartnerDataForFocusedRange() async {
+    try {
+      final ScheduleUiState current = state.value ?? await future;
+      final String? partnerConfig = current.partnerConfigName;
+      if (partnerConfig == null || partnerConfig.isEmpty) return;
+      final DateTime focused = current.focusedDay ?? DateTime.now();
+      final DateRange focusedRange =
+          _dateRangePolicy!.computeFocusedRange(focused);
+      final DateTime? selected = current.selectedDay;
+      DateRange combinedRange = focusedRange;
+      if (selected != null) {
+        final DateRange selectedRange =
+            _dateRangePolicy!.computeSelectedRange(selected);
+        combinedRange = DateRange.union(focusedRange, selectedRange);
+      }
+      final result = await _getSchedulesUseCase!.executeForDateRangeSafe(
+        startDate: combinedRange.start,
+        endDate: combinedRange.end,
+        configName: partnerConfig,
+      );
+      if (result.isFailure) return;
+      final List<Schedule> allPartner = <Schedule>[...result.value];
+      Future<void> ensurePartnerMonth(DateTime monthStart) async {
+        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
+            .execute(configName: partnerConfig, monthStart: monthStart);
+        if (ensured.isNotEmpty) {
+          allPartner.addAll(ensured);
+        }
+      }
+
+      await Future.wait(<Future<void>>[
+        for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+          ensurePartnerMonth(DateTime(focused.year, focused.month + i, 1)),
+      ]);
+      final List<Schedule> existingNow =
+          (state.value?.schedules ?? current.schedules).toList();
+      final List<Schedule> merged =
+          _scheduleMergeService!.mergeReplacingConfigInRange(
+        existing: existingNow,
+        incoming: allPartner,
+        range: combinedRange,
+        replaceConfigName: partnerConfig,
+      );
+      state = AsyncData((state.value ?? current).copyWith(schedules: merged));
+    } catch (_) {
+      // Silent fail; UI remains functional
+    }
   }
 }
