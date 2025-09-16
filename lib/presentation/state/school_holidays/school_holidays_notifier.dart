@@ -18,8 +18,6 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
 
   @override
   Future<SchoolHolidaysUiState> build() async {
-    AppLogger.i('[DEBUG] SchoolHolidaysNotifier: build() called');
-
     _getHolidaysUseCase = await ref.read(
       getSchoolHolidaysUseCaseProvider.future,
     );
@@ -28,24 +26,15 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
 
     // Load initial settings
     final settings = await _getSettingsUseCase.execute();
-    AppLogger.i(
-      '[DEBUG] SchoolHolidaysNotifier: Settings loaded - showSchoolHolidays: ${settings?.showSchoolHolidays}, stateCode: ${settings?.schoolHolidayStateCode}',
-    );
 
     if (settings != null &&
         settings.showSchoolHolidays == true &&
         settings.schoolHolidayStateCode != null) {
-      AppLogger.i(
-        '[DEBUG] SchoolHolidaysNotifier: Loading holidays for state: ${settings.schoolHolidayStateCode}',
-      );
       // Load holidays if enabled and return the result
       return await _loadHolidaysForCurrentYearAndReturnState(
         settings.schoolHolidayStateCode!,
       );
     } else {
-      AppLogger.i(
-        '[DEBUG] SchoolHolidaysNotifier: Not loading holidays - conditions not met',
-      );
       return SchoolHolidaysUiState(
         isLoading: false,
         isRefreshing: false,
@@ -60,7 +49,14 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
   Future<void> toggleEnabled(bool enabled) async {
     final previous = state.value;
     if (previous != null) {
-      state = AsyncValue.data(previous.copyWith(isLoading: true));
+      state = AsyncValue.data(
+        previous.copyWith(
+          isLoading: true,
+          // Clear holidays immediately when starting toggle
+          holidaysByDate: {},
+          allHolidays: [],
+        ),
+      );
     }
     try {
       final currentSettings = await _getSettingsUseCase.execute();
@@ -72,6 +68,13 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
       }
       final updatedSettings = currentSettings.copyWith(
         showSchoolHolidays: enabled,
+        // Reset state and timestamp when disabling
+        schoolHolidayStateCode: enabled
+            ? currentSettings.schoolHolidayStateCode
+            : null,
+        lastSchoolHolidayRefresh: enabled
+            ? currentSettings.lastSchoolHolidayRefresh
+            : null,
       );
       final result = await _saveSettingsUseCase.executeSafe(updatedSettings);
       if (result.isSuccess) {
@@ -80,6 +83,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
             updatedSettings.schoolHolidayStateCode!,
           );
         } else {
+          // Always update state when toggling, regardless of state code
           final base =
               state.value ??
               previous ??
@@ -94,7 +98,11 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
               isLoading: false,
               isEnabled: enabled,
               selectedStateCode: updatedSettings.schoolHolidayStateCode,
+              lastRefreshTime: updatedSettings.lastSchoolHolidayRefresh,
               error: null,
+              // Clear holidays when disabled
+              holidaysByDate: enabled ? base.holidaysByDate : {},
+              allHolidays: enabled ? base.allHolidays : [],
             ),
           );
         }
@@ -124,7 +132,13 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
     final previous = state.value;
     if (previous != null) {
       state = AsyncValue.data(
-        previous.copyWith(isLoading: true, selectedStateCode: stateCode),
+        previous.copyWith(
+          isLoading: true,
+          selectedStateCode: stateCode,
+          // Clear holidays immediately when starting state change
+          holidaysByDate: {},
+          allHolidays: [],
+        ),
       );
     }
     try {
@@ -135,6 +149,10 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
         }
         return;
       }
+
+      // Check if the state code actually changed
+      final stateChanged = currentSettings.schoolHolidayStateCode != stateCode;
+
       final updatedSettings = currentSettings.copyWith(
         schoolHolidayStateCode: stateCode,
       );
@@ -158,6 +176,13 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
               isEnabled: currentSettings.showSchoolHolidays ?? false,
               selectedStateCode: stateCode,
               error: null,
+              // Clear holidays if state changed or if no state selected
+              holidaysByDate: (stateChanged || stateCode == null)
+                  ? {}
+                  : base.holidaysByDate,
+              allHolidays: (stateChanged || stateCode == null)
+                  ? []
+                  : base.allHolidays,
             ),
           );
         }
@@ -250,7 +275,14 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
       return;
     }
 
-    state = AsyncValue.data(currentState.copyWith(isRefreshing: true));
+    state = AsyncValue.data(
+      currentState.copyWith(
+        isRefreshing: true,
+        // Clear holidays immediately when starting refresh
+        holidaysByDate: {},
+        allHolidays: [],
+      ),
+    );
 
     try {
       final result = await _getHolidaysUseCase.refresh(
@@ -305,17 +337,9 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
   Future<SchoolHolidaysUiState> _loadHolidaysForCurrentYearAndReturnState(
     String stateCode,
   ) async {
-    AppLogger.i(
-      '[DEBUG] SchoolHolidaysNotifier: _loadHolidaysForCurrentYearAndReturnState called for state: $stateCode',
-    );
-
     final now = DateTime.now();
     final start = DateTime(now.year, 1, 1);
     final end = DateTime(now.year, 12, 31);
-
-    AppLogger.i(
-      '[DEBUG] SchoolHolidaysNotifier: Loading holidays for date range: $start to $end',
-    );
 
     try {
       final result = await _getHolidaysUseCase.call(
@@ -338,25 +362,17 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
           );
         },
         (holidays) async {
-          AppLogger.i(
-            '[DEBUG] SchoolHolidaysNotifier: Successfully loaded ${holidays.length} holidays',
-          );
-
-          // Log the actual holidays for debugging
-          for (final holiday in holidays) {
-            AppLogger.d(
-              '[DEBUG] SchoolHolidaysNotifier: Holiday: ${holiday.name} from ${holiday.startDate} to ${holiday.endDate}',
+          // Set the refresh timestamp when holidays are loaded
+          final now = DateTime.now();
+          final settings = await _getSettingsUseCase.execute();
+          if (settings != null) {
+            final updatedSettings = settings.copyWith(
+              lastSchoolHolidayRefresh: now,
             );
+            await _saveSettingsUseCase.executeSafe(updatedSettings);
           }
 
-          // Load the last refresh time from settings
-          final settings = await _getSettingsUseCase.execute();
-          final lastRefreshTime = settings?.lastSchoolHolidayRefresh;
-
           final holidaysByDate = _groupHolidaysByDate(holidays);
-          AppLogger.i(
-            '[DEBUG] SchoolHolidaysNotifier: Grouped holidays by date: ${holidaysByDate.length} dates',
-          );
 
           return SchoolHolidaysUiState(
             isLoading: false,
@@ -365,7 +381,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
             selectedStateCode: stateCode,
             allHolidays: holidays,
             holidaysByDate: holidaysByDate,
-            lastRefreshTime: lastRefreshTime,
+            lastRefreshTime: now,
             error: null,
           );
         },
@@ -386,22 +402,20 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
 
   /// Load holidays for the current year
   Future<void> _loadHolidaysForCurrentYear(String stateCode) async {
-    AppLogger.i(
-      '[DEBUG] SchoolHolidaysNotifier: _loadHolidaysForCurrentYear called for state: $stateCode',
-    );
-
     final now = DateTime.now();
     final start = DateTime(now.year, 1, 1);
     final end = DateTime(now.year, 12, 31);
     final currentState = state.value;
 
-    AppLogger.i(
-      '[DEBUG] SchoolHolidaysNotifier: Loading holidays for date range: $start to $end',
-    );
-
     if (currentState != null) {
       state = AsyncValue.data(
-        currentState.copyWith(isLoading: true, selectedStateCode: stateCode),
+        currentState.copyWith(
+          isLoading: true,
+          selectedStateCode: stateCode,
+          // Clear holidays immediately when starting to load
+          holidaysByDate: {},
+          allHolidays: [],
+        ),
       );
     } else {
       state = AsyncValue.data(
@@ -410,6 +424,8 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
           isRefreshing: false,
           isEnabled: true,
           selectedStateCode: stateCode,
+          holidaysByDate: {},
+          allHolidays: [],
         ),
       );
     }
@@ -428,42 +444,32 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
           state = AsyncValue.data(
             safeState.copyWith(
               isLoading: false,
+              isEnabled: true,
               error: failure.technicalMessage,
             ),
           );
         },
         (holidays) async {
-          AppLogger.i(
-            '[DEBUG] SchoolHolidaysNotifier: Successfully loaded ${holidays.length} holidays',
-          );
-
-          // Load the last refresh time from settings
+          // Set the refresh timestamp when holidays are loaded
+          final now = DateTime.now();
           final settings = await _getSettingsUseCase.execute();
-          final lastRefreshTime = settings?.lastSchoolHolidayRefresh;
+          if (settings != null) {
+            final updatedSettings = settings.copyWith(
+              lastSchoolHolidayRefresh: now,
+            );
+            await _saveSettingsUseCase.executeSafe(updatedSettings);
+          }
 
-          // Merge new holidays with existing ones to avoid losing data from other months
-          final existingHolidays = safeState.allHolidays;
-          final existingHolidayIds = existingHolidays.map((h) => h.id).toSet();
-          final newHolidays = holidays
-              .where((h) => !existingHolidayIds.contains(h.id))
-              .toList();
-          final mergedHolidays = [...existingHolidays, ...newHolidays];
-
-          AppLogger.i(
-            '[DEBUG] SchoolHolidaysNotifier: Merged holidays: ${existingHolidays.length} existing + ${newHolidays.length} new = ${mergedHolidays.length} total',
-          );
-
-          final holidaysByDate = _groupHolidaysByDate(mergedHolidays);
-          AppLogger.i(
-            '[DEBUG] SchoolHolidaysNotifier: Grouped holidays by date: ${holidaysByDate.length} dates',
-          );
+          // Replace holidays completely to ensure we have only the current state's data
+          final holidaysByDate = _groupHolidaysByDate(holidays);
 
           state = AsyncValue.data(
             safeState.copyWith(
               isLoading: false,
-              allHolidays: mergedHolidays,
+              isEnabled: true,
+              allHolidays: holidays,
               holidaysByDate: holidaysByDate,
-              lastRefreshTime: lastRefreshTime,
+              lastRefreshTime: now,
               error: null,
             ),
           );
@@ -476,7 +482,11 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
       final safeState = state.value;
       if (safeState != null) {
         state = AsyncValue.data(
-          safeState.copyWith(isLoading: false, error: e.toString()),
+          safeState.copyWith(
+            isLoading: false,
+            isEnabled: true,
+            error: e.toString(),
+          ),
         );
       }
     }

@@ -4,7 +4,6 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/a
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
-import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 
 /// Optimized calendar day widget with memoization and selective provider watching
@@ -106,21 +105,13 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
     final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
 
-    // Debug logging for holidays state
-    AppLogger.d(
-      'MemoizedCalendarDay: holidaysState isEnabled: ${holidaysState?.isEnabled}, selectedStateCode: ${holidaysState?.selectedStateCode}, allHolidays: ${holidaysState?.allHolidays.length}',
-    );
-
-    final hasSchoolHoliday = holidaysState?.hasHolidayOnDate(day) ?? false;
-    final holidays = holidaysState?.getHolidaysForDate(day) ?? [];
+    final hasSchoolHoliday =
+        holidaysState?.isEnabled == true &&
+        holidaysState?.hasHolidayOnDate(day) == true;
+    final holidays = hasSchoolHoliday
+        ? holidaysState?.getHolidaysForDate(day) ?? []
+        : [];
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
-
-    // Debug logging for school holidays
-    if (hasSchoolHoliday) {
-      AppLogger.d(
-        'MemoizedCalendarDay: Day ${day.day}/${day.month}/${day.year} has school holiday: $schoolHolidayName',
-      );
-    }
 
     // Memoized duty calculations
     final dutyData = _MemoizedDutyCalculator.calculateDutyData(

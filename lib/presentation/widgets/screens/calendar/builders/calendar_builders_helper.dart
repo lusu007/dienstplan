@@ -267,8 +267,11 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
     );
 
     final hasSchoolHoliday =
-        holidaysState?.hasHolidayOnDate(widget.day) ?? false;
-    final holidays = holidaysState?.getHolidaysForDate(widget.day) ?? [];
+        holidaysState?.isEnabled == true &&
+        holidaysState?.hasHolidayOnDate(widget.day) == true;
+    final holidays = hasSchoolHoliday
+        ? holidaysState?.getHolidaysForDate(widget.day) ?? []
+        : [];
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
 
     // Debug logging for school holidays

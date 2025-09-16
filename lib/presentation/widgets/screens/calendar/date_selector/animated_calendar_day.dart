@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
-import 'package:dienstplan/core/utils/logger.dart';
 
 class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
@@ -84,7 +83,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
               width: double.infinity,
               decoration: widget.hasSchoolHoliday
                   ? BoxDecoration(
-                      color: Colors.orange.withOpacity(0.7),
+                      color: Colors.orange.withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(1),
                     )
                   : null,

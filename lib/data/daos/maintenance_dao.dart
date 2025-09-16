@@ -23,7 +23,8 @@ class MaintenanceDao {
   Future<void> cleanupOldData({int daysToKeep = 365}) async {
     try {
       AppLogger.i(
-          'MaintenanceDao: Cleaning up data older than $daysToKeep days');
+        'MaintenanceDao: Cleaning up data older than $daysToKeep days',
+      );
       final db = await _databaseService.database;
       final cutoffDate = DateTime.now().subtract(Duration(days: daysToKeep));
       // Use date_ymd for better index utilization
@@ -57,7 +58,17 @@ class MaintenanceDao {
       final int? settingsCount = Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT(*) FROM settings'),
       );
-      final bool result = (schedulesCount ?? 0) > 0 || (settingsCount ?? 0) > 0;
+      final int? holidaysCount = Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM school_holidays'),
+      );
+      final int? configsCount = Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM schedule_configs'),
+      );
+      final bool result =
+          (schedulesCount ?? 0) > 0 ||
+          (settingsCount ?? 0) > 0 ||
+          (holidaysCount ?? 0) > 0 ||
+          (configsCount ?? 0) > 0;
       AppLogger.i('MaintenanceDao: hasData = $result');
       return result;
     } catch (e, stackTrace) {
@@ -73,6 +84,8 @@ class MaintenanceDao {
       await db.delete('schedules');
       await db.delete('duty_types');
       await db.delete('settings');
+      await db.delete('school_holidays');
+      await db.delete('schedule_configs');
       AppLogger.i('MaintenanceDao: Cleared all tables');
     } catch (e, stackTrace) {
       AppLogger.e('MaintenanceDao: Error clearing all data', e, stackTrace);
