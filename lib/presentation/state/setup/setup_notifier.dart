@@ -62,6 +62,7 @@ class SetupNotifier extends _$SetupNotifier {
         currentStep: 1,
         selectedTheme: ThemePreference.system,
         configs: configs,
+        selectedPoliceAuthorities: {},
       );
     } catch (e, stackTrace) {
       AppLogger.e('Error loading configs', e, stackTrace);
@@ -102,6 +103,26 @@ class SetupNotifier extends _$SetupNotifier {
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
     final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedPartnerDutyGroup: dutyGroup));
+  }
+
+  Future<void> togglePoliceAuthorityFilter(String policeAuthority) async {
+    final current = state.value ?? SetupUiState.initial();
+    final newSelectedAuthorities =
+        Set<String>.from(current.selectedPoliceAuthorities);
+
+    if (newSelectedAuthorities.contains(policeAuthority)) {
+      newSelectedAuthorities.remove(policeAuthority);
+    } else {
+      newSelectedAuthorities.add(policeAuthority);
+    }
+
+    state = AsyncData(
+        current.copyWith(selectedPoliceAuthorities: newSelectedAuthorities));
+  }
+
+  Future<void> clearAllFilters() async {
+    final current = state.value ?? SetupUiState.initial();
+    state = AsyncData(current.copyWith(selectedPoliceAuthorities: {}));
   }
 
   Future<void> nextStep() async {

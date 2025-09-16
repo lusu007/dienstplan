@@ -380,4 +380,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String multipleScheduleUpdatesNotification(String configNames) {
     return 'Mehrere Dienstpläne wurden aktualisiert: $configNames. Alle Dienste werden neu generiert.';
   }
+
+  @override
+  String get filterByPoliceAuthority => 'Nach Behörde filtern';
+
+  @override
+  String get clearAll => 'Alle löschen';
 }

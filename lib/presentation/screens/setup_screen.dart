@@ -184,6 +184,12 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           loadingErrorStackTrace: state.errorStackTrace,
           onRetry: () => ref.read(setupProvider.notifier).retryLoading(),
           scrollController: _scrollController,
+          selectedPoliceAuthorities: state.selectedPoliceAuthorities,
+          onPoliceAuthorityToggled: (authority) => ref
+              .read(setupProvider.notifier)
+              .togglePoliceAuthorityFilter(authority),
+          onClearAllFilters: () =>
+              ref.read(setupProvider.notifier).clearAllFilters(),
         );
       case 3:
         return DutyGroupStepComponent(
