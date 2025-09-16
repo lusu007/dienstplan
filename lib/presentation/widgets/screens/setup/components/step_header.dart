@@ -15,7 +15,6 @@ class StepHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 16),
         Text(
           title,
           style: const TextStyle(
@@ -28,7 +27,6 @@ class StepHeader extends StatelessWidget {
           description,
           style: const TextStyle(fontSize: 18.0),
         ),
-        const SizedBox(height: 32),
       ],
     );
   }

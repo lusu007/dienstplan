@@ -47,6 +47,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
         if (state.availablePoliceAuthorities.isNotEmpty &&
             !state.isLoading &&
             loadingError == null) ...[
+          const SizedBox(height: 16),
           PoliceAuthorityFilterChips(
             availableAuthorities: state.availablePoliceAuthorities,
             selectedAuthorities: state.selectedPoliceAuthorities,
