@@ -19,6 +19,9 @@ abstract class SetupUiState with _$SetupUiState {
     DutyScheduleConfig? selectedPartnerConfig,
     String? selectedPartnerDutyGroup,
     required List<DutyScheduleConfig> configs,
+    required Set<String> selectedPoliceAuthorities,
+    required List<DutyScheduleConfig> filteredConfigs,
+    required Set<String> availablePoliceAuthorities,
   }) = _SetupUiState;
 
   const SetupUiState._();
@@ -30,5 +33,8 @@ abstract class SetupUiState with _$SetupUiState {
         currentStep: 1,
         selectedTheme: ThemePreference.system,
         configs: [],
+        selectedPoliceAuthorities: {},
+        filteredConfigs: [],
+        availablePoliceAuthorities: {},
       );
 }

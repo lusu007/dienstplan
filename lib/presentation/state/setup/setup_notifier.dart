@@ -55,13 +55,9 @@ class SetupNotifier extends _$SetupNotifier {
       final configs = await _getConfigsUseCase!.execute();
       AppLogger.i('Loaded ${configs.length} configurations');
 
-      return SetupUiState(
-        isLoading: false,
-        isGeneratingSchedules: false,
-        isSetupCompleted: false,
-        currentStep: 1,
-        selectedTheme: ThemePreference.system,
+      return _createStateWithConfigs(
         configs: configs,
+        selectedPoliceAuthorities: {},
       );
     } catch (e, stackTrace) {
       AppLogger.e('Error loading configs', e, stackTrace);
@@ -71,6 +67,62 @@ class SetupNotifier extends _$SetupNotifier {
         errorStackTrace: stackTrace,
       );
     }
+  }
+
+  SetupUiState _createStateWithConfigs({
+    required List<DutyScheduleConfig> configs,
+    required Set<String> selectedPoliceAuthorities,
+  }) {
+    final availableAuthorities = configs
+        .map((config) => config.meta.policeAuthority)
+        .where((authority) => authority != null)
+        .cast<String>()
+        .toSet();
+
+    final filteredConfigs = selectedPoliceAuthorities.isEmpty
+        ? configs
+        : configs
+            .where((config) =>
+                config.meta.policeAuthority != null &&
+                selectedPoliceAuthorities.contains(config.meta.policeAuthority))
+            .toList();
+
+    return SetupUiState(
+      isLoading: false,
+      isGeneratingSchedules: false,
+      isSetupCompleted: false,
+      currentStep: 1,
+      selectedTheme: ThemePreference.system,
+      configs: configs,
+      selectedPoliceAuthorities: selectedPoliceAuthorities,
+      filteredConfigs: filteredConfigs,
+      availablePoliceAuthorities: availableAuthorities,
+    );
+  }
+
+  SetupUiState _updateFiltersInState(
+    SetupUiState currentState,
+    Set<String> selectedPoliceAuthorities,
+  ) {
+    final availableAuthorities = currentState.configs
+        .map((config) => config.meta.policeAuthority)
+        .where((authority) => authority != null)
+        .cast<String>()
+        .toSet();
+
+    final filteredConfigs = selectedPoliceAuthorities.isEmpty
+        ? currentState.configs
+        : currentState.configs
+            .where((config) =>
+                config.meta.policeAuthority != null &&
+                selectedPoliceAuthorities.contains(config.meta.policeAuthority))
+            .toList();
+
+    return currentState.copyWith(
+      selectedPoliceAuthorities: selectedPoliceAuthorities,
+      filteredConfigs: filteredConfigs,
+      availablePoliceAuthorities: availableAuthorities,
+    );
   }
 
   Future<void> setTheme(ThemePreference theme) async {
@@ -102,6 +154,27 @@ class SetupNotifier extends _$SetupNotifier {
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
     final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedPartnerDutyGroup: dutyGroup));
+  }
+
+  Future<void> togglePoliceAuthorityFilter(String policeAuthority) async {
+    final current = state.value ?? SetupUiState.initial();
+    final newSelectedAuthorities =
+        Set<String>.from(current.selectedPoliceAuthorities);
+
+    if (newSelectedAuthorities.contains(policeAuthority)) {
+      newSelectedAuthorities.remove(policeAuthority);
+    } else {
+      newSelectedAuthorities.add(policeAuthority);
+    }
+
+    final newState = _updateFiltersInState(current, newSelectedAuthorities);
+    state = AsyncData(newState);
+  }
+
+  Future<void> clearAllFilters() async {
+    final current = state.value ?? SetupUiState.initial();
+    final newState = _updateFiltersInState(current, {});
+    state = AsyncData(newState);
   }
 
   Future<void> nextStep() async {

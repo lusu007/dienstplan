@@ -494,5 +494,13 @@
         "example": "BEPO Züge, SEK"
       }
     }
+  },
+  "filterByPoliceAuthority": "Filter by Authority",
+  "@filterByPoliceAuthority": {
+    "description": "Label for police authority filter section"
+  },
+  "clearAll": "Clear All",
+  "@clearAll": {
+    "description": "Button text to clear all filters"
   }
 }

@@ -33,7 +33,7 @@ final class PartnerNotifierProvider
   PartnerNotifier create() => PartnerNotifier();
 }
 
-String _$partnerNotifierHash() => r'4f04a9125adb85fb41d56b5270b85500839d06cf';
+String _$partnerNotifierHash() => r'deb1720f92800a538a541158b0d901d1bdb68df1';
 
 abstract class _$PartnerNotifier extends $AsyncNotifier<PartnerUiState> {
   FutureOr<PartnerUiState> build();

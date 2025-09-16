@@ -379,4 +379,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String multipleScheduleUpdatesNotification(String configNames) {
     return 'Multiple duty schedules have been updated: $configNames. All services will be regenerated.';
   }
+
+  @override
+  String get filterByPoliceAuthority => 'Filter by Authority';
+
+  @override
+  String get clearAll => 'Clear All';
 }

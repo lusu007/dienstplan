@@ -788,6 +788,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Multiple duty schedules have been updated: {configNames}. All services will be regenerated.'**
   String multipleScheduleUpdatesNotification(String configNames);
+
+  /// Label for police authority filter section
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Authority'**
+  String get filterByPoliceAuthority;
+
+  /// Button text to clear all filters
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clearAll;
 }
 
 class _AppLocalizationsDelegate

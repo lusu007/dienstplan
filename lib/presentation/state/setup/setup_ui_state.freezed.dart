@@ -26,6 +26,9 @@ mixin _$SetupUiState {
   DutyScheduleConfig? get selectedPartnerConfig;
   String? get selectedPartnerDutyGroup;
   List<DutyScheduleConfig> get configs;
+  Set<String> get selectedPoliceAuthorities;
+  List<DutyScheduleConfig> get filteredConfigs;
+  Set<String> get availablePoliceAuthorities;
 
   /// Create a copy of SetupUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -62,7 +65,13 @@ mixin _$SetupUiState {
             (identical(
                     other.selectedPartnerDutyGroup, selectedPartnerDutyGroup) ||
                 other.selectedPartnerDutyGroup == selectedPartnerDutyGroup) &&
-            const DeepCollectionEquality().equals(other.configs, configs));
+            const DeepCollectionEquality().equals(other.configs, configs) &&
+            const DeepCollectionEquality().equals(
+                other.selectedPoliceAuthorities, selectedPoliceAuthorities) &&
+            const DeepCollectionEquality()
+                .equals(other.filteredConfigs, filteredConfigs) &&
+            const DeepCollectionEquality().equals(
+                other.availablePoliceAuthorities, availablePoliceAuthorities));
   }
 
   @override
@@ -79,11 +88,14 @@ mixin _$SetupUiState {
       selectedDutyGroup,
       selectedPartnerConfig,
       selectedPartnerDutyGroup,
-      const DeepCollectionEquality().hash(configs));
+      const DeepCollectionEquality().hash(configs),
+      const DeepCollectionEquality().hash(selectedPoliceAuthorities),
+      const DeepCollectionEquality().hash(filteredConfigs),
+      const DeepCollectionEquality().hash(availablePoliceAuthorities));
 
   @override
   String toString() {
-    return 'SetupUiState(isLoading: $isLoading, isGeneratingSchedules: $isGeneratingSchedules, isSetupCompleted: $isSetupCompleted, error: $error, errorStackTrace: $errorStackTrace, currentStep: $currentStep, selectedTheme: $selectedTheme, selectedConfig: $selectedConfig, selectedDutyGroup: $selectedDutyGroup, selectedPartnerConfig: $selectedPartnerConfig, selectedPartnerDutyGroup: $selectedPartnerDutyGroup, configs: $configs)';
+    return 'SetupUiState(isLoading: $isLoading, isGeneratingSchedules: $isGeneratingSchedules, isSetupCompleted: $isSetupCompleted, error: $error, errorStackTrace: $errorStackTrace, currentStep: $currentStep, selectedTheme: $selectedTheme, selectedConfig: $selectedConfig, selectedDutyGroup: $selectedDutyGroup, selectedPartnerConfig: $selectedPartnerConfig, selectedPartnerDutyGroup: $selectedPartnerDutyGroup, configs: $configs, selectedPoliceAuthorities: $selectedPoliceAuthorities, filteredConfigs: $filteredConfigs, availablePoliceAuthorities: $availablePoliceAuthorities)';
   }
 }
 
@@ -105,7 +117,10 @@ abstract mixin class $SetupUiStateCopyWith<$Res> {
       String? selectedDutyGroup,
       DutyScheduleConfig? selectedPartnerConfig,
       String? selectedPartnerDutyGroup,
-      List<DutyScheduleConfig> configs});
+      List<DutyScheduleConfig> configs,
+      Set<String> selectedPoliceAuthorities,
+      List<DutyScheduleConfig> filteredConfigs,
+      Set<String> availablePoliceAuthorities});
 
   $DutyScheduleConfigCopyWith<$Res>? get selectedConfig;
   $DutyScheduleConfigCopyWith<$Res>? get selectedPartnerConfig;
@@ -135,6 +150,9 @@ class _$SetupUiStateCopyWithImpl<$Res> implements $SetupUiStateCopyWith<$Res> {
     Object? selectedPartnerConfig = freezed,
     Object? selectedPartnerDutyGroup = freezed,
     Object? configs = null,
+    Object? selectedPoliceAuthorities = null,
+    Object? filteredConfigs = null,
+    Object? availablePoliceAuthorities = null,
   }) {
     return _then(_self.copyWith(
       isLoading: null == isLoading
@@ -185,6 +203,18 @@ class _$SetupUiStateCopyWithImpl<$Res> implements $SetupUiStateCopyWith<$Res> {
           ? _self.configs
           : configs // ignore: cast_nullable_to_non_nullable
               as List<DutyScheduleConfig>,
+      selectedPoliceAuthorities: null == selectedPoliceAuthorities
+          ? _self.selectedPoliceAuthorities
+          : selectedPoliceAuthorities // ignore: cast_nullable_to_non_nullable
+              as Set<String>,
+      filteredConfigs: null == filteredConfigs
+          ? _self.filteredConfigs
+          : filteredConfigs // ignore: cast_nullable_to_non_nullable
+              as List<DutyScheduleConfig>,
+      availablePoliceAuthorities: null == availablePoliceAuthorities
+          ? _self.availablePoliceAuthorities
+          : availablePoliceAuthorities // ignore: cast_nullable_to_non_nullable
+              as Set<String>,
     ));
   }
 
@@ -323,7 +353,10 @@ extension SetupUiStatePatterns on SetupUiState {
             String? selectedDutyGroup,
             DutyScheduleConfig? selectedPartnerConfig,
             String? selectedPartnerDutyGroup,
-            List<DutyScheduleConfig> configs)?
+            List<DutyScheduleConfig> configs,
+            Set<String> selectedPoliceAuthorities,
+            List<DutyScheduleConfig> filteredConfigs,
+            Set<String> availablePoliceAuthorities)?
         $default, {
     required TResult orElse(),
   }) {
@@ -342,7 +375,10 @@ extension SetupUiStatePatterns on SetupUiState {
             _that.selectedDutyGroup,
             _that.selectedPartnerConfig,
             _that.selectedPartnerDutyGroup,
-            _that.configs);
+            _that.configs,
+            _that.selectedPoliceAuthorities,
+            _that.filteredConfigs,
+            _that.availablePoliceAuthorities);
       case _:
         return orElse();
     }
@@ -375,7 +411,10 @@ extension SetupUiStatePatterns on SetupUiState {
             String? selectedDutyGroup,
             DutyScheduleConfig? selectedPartnerConfig,
             String? selectedPartnerDutyGroup,
-            List<DutyScheduleConfig> configs)
+            List<DutyScheduleConfig> configs,
+            Set<String> selectedPoliceAuthorities,
+            List<DutyScheduleConfig> filteredConfigs,
+            Set<String> availablePoliceAuthorities)
         $default,
   ) {
     final _that = this;
@@ -393,7 +432,10 @@ extension SetupUiStatePatterns on SetupUiState {
             _that.selectedDutyGroup,
             _that.selectedPartnerConfig,
             _that.selectedPartnerDutyGroup,
-            _that.configs);
+            _that.configs,
+            _that.selectedPoliceAuthorities,
+            _that.filteredConfigs,
+            _that.availablePoliceAuthorities);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -425,7 +467,10 @@ extension SetupUiStatePatterns on SetupUiState {
             String? selectedDutyGroup,
             DutyScheduleConfig? selectedPartnerConfig,
             String? selectedPartnerDutyGroup,
-            List<DutyScheduleConfig> configs)?
+            List<DutyScheduleConfig> configs,
+            Set<String> selectedPoliceAuthorities,
+            List<DutyScheduleConfig> filteredConfigs,
+            Set<String> availablePoliceAuthorities)?
         $default,
   ) {
     final _that = this;
@@ -443,7 +488,10 @@ extension SetupUiStatePatterns on SetupUiState {
             _that.selectedDutyGroup,
             _that.selectedPartnerConfig,
             _that.selectedPartnerDutyGroup,
-            _that.configs);
+            _that.configs,
+            _that.selectedPoliceAuthorities,
+            _that.filteredConfigs,
+            _that.availablePoliceAuthorities);
       case _:
         return null;
     }
@@ -465,8 +513,14 @@ class _SetupUiState extends SetupUiState {
       this.selectedDutyGroup,
       this.selectedPartnerConfig,
       this.selectedPartnerDutyGroup,
-      required final List<DutyScheduleConfig> configs})
+      required final List<DutyScheduleConfig> configs,
+      required final Set<String> selectedPoliceAuthorities,
+      required final List<DutyScheduleConfig> filteredConfigs,
+      required final Set<String> availablePoliceAuthorities})
       : _configs = configs,
+        _selectedPoliceAuthorities = selectedPoliceAuthorities,
+        _filteredConfigs = filteredConfigs,
+        _availablePoliceAuthorities = availablePoliceAuthorities,
         super._();
 
   @override
@@ -497,6 +551,32 @@ class _SetupUiState extends SetupUiState {
     if (_configs is EqualUnmodifiableListView) return _configs;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_configs);
+  }
+
+  final Set<String> _selectedPoliceAuthorities;
+  @override
+  Set<String> get selectedPoliceAuthorities {
+    if (_selectedPoliceAuthorities is EqualUnmodifiableSetView)
+      return _selectedPoliceAuthorities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_selectedPoliceAuthorities);
+  }
+
+  final List<DutyScheduleConfig> _filteredConfigs;
+  @override
+  List<DutyScheduleConfig> get filteredConfigs {
+    if (_filteredConfigs is EqualUnmodifiableListView) return _filteredConfigs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_filteredConfigs);
+  }
+
+  final Set<String> _availablePoliceAuthorities;
+  @override
+  Set<String> get availablePoliceAuthorities {
+    if (_availablePoliceAuthorities is EqualUnmodifiableSetView)
+      return _availablePoliceAuthorities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_availablePoliceAuthorities);
   }
 
   /// Create a copy of SetupUiState
@@ -534,7 +614,14 @@ class _SetupUiState extends SetupUiState {
             (identical(
                     other.selectedPartnerDutyGroup, selectedPartnerDutyGroup) ||
                 other.selectedPartnerDutyGroup == selectedPartnerDutyGroup) &&
-            const DeepCollectionEquality().equals(other._configs, _configs));
+            const DeepCollectionEquality().equals(other._configs, _configs) &&
+            const DeepCollectionEquality().equals(
+                other._selectedPoliceAuthorities, _selectedPoliceAuthorities) &&
+            const DeepCollectionEquality()
+                .equals(other._filteredConfigs, _filteredConfigs) &&
+            const DeepCollectionEquality().equals(
+                other._availablePoliceAuthorities,
+                _availablePoliceAuthorities));
   }
 
   @override
@@ -551,11 +638,14 @@ class _SetupUiState extends SetupUiState {
       selectedDutyGroup,
       selectedPartnerConfig,
       selectedPartnerDutyGroup,
-      const DeepCollectionEquality().hash(_configs));
+      const DeepCollectionEquality().hash(_configs),
+      const DeepCollectionEquality().hash(_selectedPoliceAuthorities),
+      const DeepCollectionEquality().hash(_filteredConfigs),
+      const DeepCollectionEquality().hash(_availablePoliceAuthorities));
 
   @override
   String toString() {
-    return 'SetupUiState(isLoading: $isLoading, isGeneratingSchedules: $isGeneratingSchedules, isSetupCompleted: $isSetupCompleted, error: $error, errorStackTrace: $errorStackTrace, currentStep: $currentStep, selectedTheme: $selectedTheme, selectedConfig: $selectedConfig, selectedDutyGroup: $selectedDutyGroup, selectedPartnerConfig: $selectedPartnerConfig, selectedPartnerDutyGroup: $selectedPartnerDutyGroup, configs: $configs)';
+    return 'SetupUiState(isLoading: $isLoading, isGeneratingSchedules: $isGeneratingSchedules, isSetupCompleted: $isSetupCompleted, error: $error, errorStackTrace: $errorStackTrace, currentStep: $currentStep, selectedTheme: $selectedTheme, selectedConfig: $selectedConfig, selectedDutyGroup: $selectedDutyGroup, selectedPartnerConfig: $selectedPartnerConfig, selectedPartnerDutyGroup: $selectedPartnerDutyGroup, configs: $configs, selectedPoliceAuthorities: $selectedPoliceAuthorities, filteredConfigs: $filteredConfigs, availablePoliceAuthorities: $availablePoliceAuthorities)';
   }
 }
 
@@ -579,7 +669,10 @@ abstract mixin class _$SetupUiStateCopyWith<$Res>
       String? selectedDutyGroup,
       DutyScheduleConfig? selectedPartnerConfig,
       String? selectedPartnerDutyGroup,
-      List<DutyScheduleConfig> configs});
+      List<DutyScheduleConfig> configs,
+      Set<String> selectedPoliceAuthorities,
+      List<DutyScheduleConfig> filteredConfigs,
+      Set<String> availablePoliceAuthorities});
 
   @override
   $DutyScheduleConfigCopyWith<$Res>? get selectedConfig;
@@ -612,6 +705,9 @@ class __$SetupUiStateCopyWithImpl<$Res>
     Object? selectedPartnerConfig = freezed,
     Object? selectedPartnerDutyGroup = freezed,
     Object? configs = null,
+    Object? selectedPoliceAuthorities = null,
+    Object? filteredConfigs = null,
+    Object? availablePoliceAuthorities = null,
   }) {
     return _then(_SetupUiState(
       isLoading: null == isLoading
@@ -662,6 +758,18 @@ class __$SetupUiStateCopyWithImpl<$Res>
           ? _self._configs
           : configs // ignore: cast_nullable_to_non_nullable
               as List<DutyScheduleConfig>,
+      selectedPoliceAuthorities: null == selectedPoliceAuthorities
+          ? _self._selectedPoliceAuthorities
+          : selectedPoliceAuthorities // ignore: cast_nullable_to_non_nullable
+              as Set<String>,
+      filteredConfigs: null == filteredConfigs
+          ? _self._filteredConfigs
+          : filteredConfigs // ignore: cast_nullable_to_non_nullable
+              as List<DutyScheduleConfig>,
+      availablePoliceAuthorities: null == availablePoliceAuthorities
+          ? _self._availablePoliceAuthorities
+          : availablePoliceAuthorities // ignore: cast_nullable_to_non_nullable
+              as Set<String>,
     ));
   }
 
