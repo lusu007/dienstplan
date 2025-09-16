@@ -54,13 +54,15 @@ class PartnerGroupDialog {
                             title: group,
                             isSelected: state?.partnerDutyGroup == group,
                             onTap: () async {
-                              // Close dialog immediately
-                              Navigator.of(context).pop();
-
-                              // Perform operations after dialog is closed
+                              // Perform operations first
                               await notifier.setPartnerDutyGroup(group);
                               if (initialFocused != null) {
                                 await notifier.setFocusedDay(initialFocused);
+                              }
+
+                              // Close dialog after operations are complete
+                              if (context.mounted) {
+                                Navigator.of(context).pop();
                               }
                             },
                             useDialogStyle: true,
@@ -69,13 +71,15 @@ class PartnerGroupDialog {
                         title: l10n.noPartnerGroup,
                         isSelected: (state?.partnerDutyGroup ?? '').isEmpty,
                         onTap: () async {
-                          // Close dialog immediately
-                          Navigator.of(context).pop();
-
-                          // Perform operations after dialog is closed
+                          // Perform operations first
                           await notifier.setPartnerDutyGroup(null);
                           if (initialFocused != null) {
                             await notifier.setFocusedDay(initialFocused);
+                          }
+
+                          // Close dialog after operations are complete
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
                           }
                         },
                         useDialogStyle: true,
