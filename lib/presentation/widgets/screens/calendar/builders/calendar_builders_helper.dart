@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 
 class CalendarBuildersHelper {
@@ -241,6 +242,12 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
 
     final isSelected = _isSelected();
 
+    // Watch school holidays state
+    final holidaysState = ref.watch(schoolHolidaysNotifierProvider).valueOrNull;
+    final hasSchoolHoliday = holidaysState?.hasHolidayOnDate(widget.day) ?? false;
+    final holidays = holidaysState?.getHolidaysForDate(widget.day) ?? [];
+    final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
+
     try {
       return AnimatedCalendarDay(
         day: widget.day,
@@ -252,6 +259,8 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         width: widget.width,
         height: widget.height,
         isSelected: isSelected,
+        hasSchoolHoliday: hasSchoolHoliday,
+        schoolHolidayName: schoolHolidayName,
         onTap: () async {
           try {
             // Trigger day selection via provider

@@ -14,6 +14,8 @@ class AnimatedCalendarDay extends StatefulWidget {
   final double? height;
   final bool isSelected;
   final VoidCallback? onTap;
+  final bool hasSchoolHoliday;
+  final String? schoolHolidayName;
 
   const AnimatedCalendarDay({
     super.key,
@@ -27,6 +29,8 @@ class AnimatedCalendarDay extends StatefulWidget {
     this.height,
     required this.isSelected,
     this.onTap,
+    this.hasSchoolHoliday = false,
+    this.schoolHolidayName,
   });
 
   @override
@@ -64,16 +68,32 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         width: effectiveWidth,
         height: effectiveHeight,
         decoration: containerDecoration,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Text(
-                '${widget.day.day}',
-                style: dayStyle,
+            // School holiday indicator (top right corner)
+            if (widget.hasSchoolHoliday)
+              Positioned(
+                top: 2,
+                right: 2,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    shape: BoxShape.circle,
+                  ),
+                ),
               ),
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    '${widget.day.day}',
+                    style: dayStyle,
+                  ),
+                ),
             // Spacer to push chips to bottom when primary chips are missing
             if (!hasPrimary && hasPartner) const Spacer(),
             if (hasPrimary || hasPartner)
@@ -116,8 +136,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
               ),
             // Spacer to push chips to bottom when no chips are present
             if (!hasPrimary && !hasPartner) const Spacer(),
-            // Add bottom padding to create equal spacing
-            const SizedBox(height: 4.0),
+                // Add bottom padding to create equal spacing
+                const SizedBox(height: 4.0),
+              ],
+            ),
           ],
         ),
       ),

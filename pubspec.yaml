@@ -52,6 +52,10 @@ dependencies:
   package_info_plus: ^9.0.0
   url_launcher: ^6.3.2
   share_plus: ^12.0.0
+  # HTTP Client
+  dio: ^5.7.0
+  json_annotation: ^4.10.1
+  dartz: ^0.10.1
 
 dev_dependencies:
   sentry_dart_plugin: ^3.1.1
@@ -61,6 +65,7 @@ dev_dependencies:
   riverpod_generator: ^3.0.0
   freezed: ^3.2.3
   auto_route_generator: ^10.2.4
+  json_serializable: ^6.10.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -46,6 +46,14 @@ import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/services/config_query_service.dart';
 
+// School holidays
+import 'package:dienstplan/data/data_sources/school_holiday_local_data_source.dart';
+import 'package:dienstplan/data/data_sources/school_holiday_remote_data_source.dart';
+import 'package:dienstplan/domain/repositories/school_holiday_repository.dart';
+import 'package:dienstplan/data/repositories/school_holiday_repository.dart' 
+    as data_repos;
+import 'package:dienstplan/domain/use_cases/get_school_holidays_use_case.dart';
+
 part 'riverpod_providers.g.dart';
 
 // Services
@@ -392,4 +400,32 @@ Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
   final GenerateSchedulesUseCase gen =
       await ref.watch(generateSchedulesUseCaseProvider.future);
   return EnsureMonthSchedulesUseCase(get, gen);
+}
+
+// School holiday providers
+@riverpod
+SchoolHolidayRemoteDataSource schoolHolidayRemoteDataSource(Ref ref) {
+  return SchoolHolidayRemoteDataSourceImpl();
+}
+
+@riverpod
+Future<SchoolHolidayLocalDataSource> schoolHolidayLocalDataSource(Ref ref) async {
+  final prefs = await SharedPreferences.getInstance();
+  return SchoolHolidayLocalDataSourceImpl(prefs);
+}
+
+@riverpod
+Future<SchoolHolidayRepository> schoolHolidayRepository(Ref ref) async {
+  final remoteDataSource = ref.watch(schoolHolidayRemoteDataSourceProvider);
+  final localDataSource = await ref.watch(schoolHolidayLocalDataSourceProvider.future);
+  return data_repos.SchoolHolidayRepositoryImpl(
+    remoteDataSource: remoteDataSource,
+    localDataSource: localDataSource,
+  );
+}
+
+@riverpod
+Future<GetSchoolHolidaysUseCase> getSchoolHolidaysUseCase(Ref ref) async {
+  final repository = await ref.watch(schoolHolidayRepositoryProvider.future);
+  return GetSchoolHolidaysUseCase(repository);
 }
