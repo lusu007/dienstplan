@@ -175,16 +175,13 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         );
       case 2:
         return ConfigSelectionStepComponent(
-          configs: state.configs,
-          selectedConfig: state.selectedConfig,
+          state: state,
           onConfigChanged: (config) =>
               ref.read(setupProvider.notifier).setConfig(config),
-          isLoading: state.isLoading,
           loadingError: state.error != null ? Exception(state.error!) : null,
           loadingErrorStackTrace: state.errorStackTrace,
           onRetry: () => ref.read(setupProvider.notifier).retryLoading(),
           scrollController: _scrollController,
-          selectedPoliceAuthorities: state.selectedPoliceAuthorities,
           onPoliceAuthorityToggled: (authority) => ref
               .read(setupProvider.notifier)
               .togglePoliceAuthorityFilter(authority),
@@ -201,15 +198,18 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         );
       case 4:
         return PartnerConfigStepComponent(
-          configs: state.configs,
-          selectedPartnerConfig: state.selectedPartnerConfig,
+          state: state,
           onPartnerConfigChanged: (config) =>
               ref.read(setupProvider.notifier).setPartnerConfig(config),
-          isLoading: state.isLoading,
           loadingError: state.error != null ? Exception(state.error!) : null,
           loadingErrorStackTrace: state.errorStackTrace,
           onRetry: () => ref.read(setupProvider.notifier).retryLoading(),
           scrollController: _scrollController,
+          onPoliceAuthorityToggled: (authority) => ref
+              .read(setupProvider.notifier)
+              .togglePoliceAuthorityFilter(authority),
+          onClearAllFilters: () =>
+              ref.read(setupProvider.notifier).clearAllFilters(),
         );
       case 5:
         return PartnerDutyGroupStepComponent(
