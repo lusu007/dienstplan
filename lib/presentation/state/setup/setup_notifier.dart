@@ -100,6 +100,31 @@ class SetupNotifier extends _$SetupNotifier {
     );
   }
 
+  SetupUiState _updateFiltersInState(
+    SetupUiState currentState,
+    Set<String> selectedPoliceAuthorities,
+  ) {
+    final availableAuthorities = currentState.configs
+        .map((config) => config.meta.policeAuthority)
+        .where((authority) => authority != null)
+        .cast<String>()
+        .toSet();
+
+    final filteredConfigs = selectedPoliceAuthorities.isEmpty
+        ? currentState.configs
+        : currentState.configs
+            .where((config) =>
+                config.meta.policeAuthority != null &&
+                selectedPoliceAuthorities.contains(config.meta.policeAuthority))
+            .toList();
+
+    return currentState.copyWith(
+      selectedPoliceAuthorities: selectedPoliceAuthorities,
+      filteredConfigs: filteredConfigs,
+      availablePoliceAuthorities: availableAuthorities,
+    );
+  }
+
   Future<void> setTheme(ThemePreference theme) async {
     final current = state.value ?? SetupUiState.initial();
     state = AsyncData(current.copyWith(selectedTheme: theme));
@@ -142,40 +167,13 @@ class SetupNotifier extends _$SetupNotifier {
       newSelectedAuthorities.add(policeAuthority);
     }
 
-    final newState = _createStateWithConfigs(
-      configs: current.configs,
-      selectedPoliceAuthorities: newSelectedAuthorities,
-    ).copyWith(
-      selectedTheme: current.selectedTheme,
-      selectedConfig: current.selectedConfig,
-      selectedDutyGroup: current.selectedDutyGroup,
-      selectedPartnerConfig: current.selectedPartnerConfig,
-      selectedPartnerDutyGroup: current.selectedPartnerDutyGroup,
-      currentStep: current.currentStep,
-      isGeneratingSchedules: current.isGeneratingSchedules,
-      isSetupCompleted: current.isSetupCompleted,
-    );
-
+    final newState = _updateFiltersInState(current, newSelectedAuthorities);
     state = AsyncData(newState);
   }
 
   Future<void> clearAllFilters() async {
     final current = state.value ?? SetupUiState.initial();
-
-    final newState = _createStateWithConfigs(
-      configs: current.configs,
-      selectedPoliceAuthorities: {},
-    ).copyWith(
-      selectedTheme: current.selectedTheme,
-      selectedConfig: current.selectedConfig,
-      selectedDutyGroup: current.selectedDutyGroup,
-      selectedPartnerConfig: current.selectedPartnerConfig,
-      selectedPartnerDutyGroup: current.selectedPartnerDutyGroup,
-      currentStep: current.currentStep,
-      isGeneratingSchedules: current.isGeneratingSchedules,
-      isSetupCompleted: current.isSetupCompleted,
-    );
-
+    final newState = _updateFiltersInState(current, {});
     state = AsyncData(newState);
   }
 
