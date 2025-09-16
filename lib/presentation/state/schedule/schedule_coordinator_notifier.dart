@@ -8,6 +8,7 @@ import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_ui_state.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 part 'schedule_coordinator_notifier.g.dart';
@@ -179,10 +180,26 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   }
 
   Future<void> setPreferredDutyGroup(String dutyGroup) async {
-    // This method sets the preferred duty group in settings
-    // Update settings with new duty group
-    // This would need to be implemented based on your settings structure
-    await _refreshState();
+    // Update the schedule data state immediately
+    final current = await future;
+    state = AsyncData(current.copyWith(preferredDutyGroup: dutyGroup));
+
+    // Save to settings
+    final getSettingsUseCase =
+        await ref.read(getSettingsUseCaseProvider.future);
+    final saveSettingsUseCase =
+        await ref.read(saveSettingsUseCaseProvider.future);
+
+    final settingsResult = await getSettingsUseCase.executeSafe();
+    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+
+    if (existing != null) {
+      await saveSettingsUseCase
+          .executeSafe(existing.copyWith(myDutyGroup: dutyGroup));
+    }
+
+    // Update the schedule data state to reflect the change
+    await _updateScheduleDataStateOnly();
   }
 
   Future<void> applyPartnerSelectionChanges() async {
