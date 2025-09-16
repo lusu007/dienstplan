@@ -55,12 +55,7 @@ class SetupNotifier extends _$SetupNotifier {
       final configs = await _getConfigsUseCase!.execute();
       AppLogger.i('Loaded ${configs.length} configurations');
 
-      return SetupUiState(
-        isLoading: false,
-        isGeneratingSchedules: false,
-        isSetupCompleted: false,
-        currentStep: 1,
-        selectedTheme: ThemePreference.system,
+      return _createStateWithConfigs(
         configs: configs,
         selectedPoliceAuthorities: {},
       );
@@ -72,6 +67,37 @@ class SetupNotifier extends _$SetupNotifier {
         errorStackTrace: stackTrace,
       );
     }
+  }
+
+  SetupUiState _createStateWithConfigs({
+    required List<DutyScheduleConfig> configs,
+    required Set<String> selectedPoliceAuthorities,
+  }) {
+    final availableAuthorities = configs
+        .map((config) => config.meta.policeAuthority)
+        .where((authority) => authority != null)
+        .cast<String>()
+        .toSet();
+
+    final filteredConfigs = selectedPoliceAuthorities.isEmpty
+        ? configs
+        : configs
+            .where((config) =>
+                config.meta.policeAuthority != null &&
+                selectedPoliceAuthorities.contains(config.meta.policeAuthority))
+            .toList();
+
+    return SetupUiState(
+      isLoading: false,
+      isGeneratingSchedules: false,
+      isSetupCompleted: false,
+      currentStep: 1,
+      selectedTheme: ThemePreference.system,
+      configs: configs,
+      selectedPoliceAuthorities: selectedPoliceAuthorities,
+      filteredConfigs: filteredConfigs,
+      availablePoliceAuthorities: availableAuthorities,
+    );
   }
 
   Future<void> setTheme(ThemePreference theme) async {
@@ -116,13 +142,41 @@ class SetupNotifier extends _$SetupNotifier {
       newSelectedAuthorities.add(policeAuthority);
     }
 
-    state = AsyncData(
-        current.copyWith(selectedPoliceAuthorities: newSelectedAuthorities));
+    final newState = _createStateWithConfigs(
+      configs: current.configs,
+      selectedPoliceAuthorities: newSelectedAuthorities,
+    ).copyWith(
+      selectedTheme: current.selectedTheme,
+      selectedConfig: current.selectedConfig,
+      selectedDutyGroup: current.selectedDutyGroup,
+      selectedPartnerConfig: current.selectedPartnerConfig,
+      selectedPartnerDutyGroup: current.selectedPartnerDutyGroup,
+      currentStep: current.currentStep,
+      isGeneratingSchedules: current.isGeneratingSchedules,
+      isSetupCompleted: current.isSetupCompleted,
+    );
+
+    state = AsyncData(newState);
   }
 
   Future<void> clearAllFilters() async {
     final current = state.value ?? SetupUiState.initial();
-    state = AsyncData(current.copyWith(selectedPoliceAuthorities: {}));
+
+    final newState = _createStateWithConfigs(
+      configs: current.configs,
+      selectedPoliceAuthorities: {},
+    ).copyWith(
+      selectedTheme: current.selectedTheme,
+      selectedConfig: current.selectedConfig,
+      selectedDutyGroup: current.selectedDutyGroup,
+      selectedPartnerConfig: current.selectedPartnerConfig,
+      selectedPartnerDutyGroup: current.selectedPartnerDutyGroup,
+      currentStep: current.currentStep,
+      isGeneratingSchedules: current.isGeneratingSchedules,
+      isSetupCompleted: current.isSetupCompleted,
+    );
+
+    state = AsyncData(newState);
   }
 
   Future<void> nextStep() async {

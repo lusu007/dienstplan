@@ -105,6 +105,7 @@ class ConfigSelectionStepComponent extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
+      padding: const EdgeInsets.only(bottom: 32),
       itemCount: filteredConfigs.length,
       itemBuilder: (context, index) {
         final config = filteredConfigs[index];
