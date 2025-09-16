@@ -5,6 +5,7 @@ import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/services/config_query_service.dart';
+import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 
 part 'config_notifier.g.dart';
@@ -41,7 +42,11 @@ class ConfigNotifier extends _$ConfigNotifier {
           ? _configQueryService!.extractDutyGroups(configs, activeConfigName)
           : <String>[];
 
-      final activeConfig = configs.isNotEmpty ? configs.first : null;
+      final DutyScheduleConfig? activeConfig = activeConfigName != null
+          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
+              ? configs.firstWhere((c) => c.name == activeConfigName)
+              : (configs.isNotEmpty ? configs.first : null))
+          : (configs.isNotEmpty ? configs.first : null);
 
       return ConfigUiState(
         isLoading: false,
@@ -113,7 +118,11 @@ class ConfigNotifier extends _$ConfigNotifier {
           ? _configQueryService!.extractDutyGroups(configs, activeConfigName)
           : <String>[];
 
-      final activeConfig = configs.isNotEmpty ? configs.first : null;
+      final DutyScheduleConfig? activeConfig = activeConfigName != null
+          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
+              ? configs.firstWhere((c) => c.name == activeConfigName)
+              : (configs.isNotEmpty ? configs.first : null))
+          : (configs.isNotEmpty ? configs.first : null);
 
       state = AsyncData(current.copyWith(
         configs: configs,
