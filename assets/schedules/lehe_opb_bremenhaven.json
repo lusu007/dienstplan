@@ -1,0 +1,130 @@
+{
+  "version": "1.2",
+  "meta": {
+    "name": "Polizeirevier Leher",
+    "created_by": "Lukas",
+    "description": "5-wöchiger Rotationsplan für das Polizeirevier Lehe der OPB Bremenhaven",
+    "icon": "directions_car",
+    "start_week_day": "Monday",
+    "start_date": "2025-09-01",
+    "police_authority": "OPB Bremenhaven",
+    "days": [
+      "Mo",
+      "Di",
+      "Mi",
+      "Do",
+      "Fr",
+      "Sa",
+      "So"
+    ]
+  },
+  "duty_types": {
+    "F": {
+      "label": "Frühdienst",
+      "icon": "wb_sunny"
+    },
+    "S": {
+      "label": "Spätdienst",
+      "icon": "schedule"
+    },
+    "N": {
+      "label": "Nachtdienst",
+      "icon": "bedtime"
+    },
+    "-": {
+      "label": "Frei",
+      "all_day": true,
+      "icon": "weekend"
+    }
+  },
+  "duty_type_order": [
+    "F",
+    "S",
+    "N",
+    "-"
+  ],
+  "rhythms": {
+    "5wochen_lehe": {
+      "length_weeks": 5,
+      "pattern": [
+        [
+          "S",
+          "S",
+          "S",
+          "-",
+          "N",
+          "N",
+          "N"
+        ],
+        [
+          "-",
+          "-",
+          "-",
+          "-",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "N",
+          "-",
+          "-",
+          "S",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "-",
+          "N",
+          "N",
+          "N",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "-",
+          "-",
+          "-"
+        ]
+      ]
+    }
+  },
+  "dienstgruppen": [
+    {
+      "id": "DG1",
+      "name": "Dienstgruppe 1",
+      "rhythm": "5wochen_lehe",
+      "offset_weeks": 0
+    },
+    {
+      "id": "DG2",
+      "name": "Dienstgruppe 2",
+      "rhythm": "5wochen_lehe",
+      "offset_weeks": 4
+    },
+    {
+      "id": "DG3",
+      "name": "Dienstgruppe 3",
+      "rhythm": "5wochen_lehe",
+      "offset_weeks": 3
+    },
+    {
+      "id": "DG4",
+      "name": "Dienstgruppe 4",
+      "rhythm": "5wochen_lehe",
+      "offset_weeks": 2
+    },
+    {
+      "id": "DG5",
+      "name": "Dienstgruppe 5",
+      "rhythm": "5wochen_lehe",
+      "offset_weeks": 1
+    }
+  ]
+}
