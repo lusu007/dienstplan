@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_ui_state.dart';
 import 'package:dienstplan/presentation/state/config/config_notifier.dart';
@@ -48,8 +50,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     );
     // Kick off partner data ensure in the background so partner chips can render
     // without blocking initial build.
-    // ignore: discarded_futures
-    _ensurePartnerDataForFocusedRange();
+    unawaited(_ensurePartnerDataForFocusedRange());
     return combined;
   }
 
@@ -357,8 +358,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         replaceConfigName: partnerConfig,
       );
       state = AsyncData((state.value ?? current).copyWith(schedules: merged));
-    } catch (_) {
-      // Silent fail; UI remains functional
+    } catch (e, stack) {
+      AppLogger.e('Error in _ensurePartnerDataForFocusedRange', e, stack);
     }
   }
 }

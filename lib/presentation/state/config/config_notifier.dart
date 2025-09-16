@@ -42,11 +42,14 @@ class ConfigNotifier extends _$ConfigNotifier {
           ? _configQueryService!.extractDutyGroups(configs, activeConfigName)
           : <String>[];
 
-      final DutyScheduleConfig? activeConfig = activeConfigName != null
-          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
-              ? configs.firstWhere((c) => c.name == activeConfigName)
-              : (configs.isNotEmpty ? configs.first : null))
-          : (configs.isNotEmpty ? configs.first : null);
+      final DutyScheduleConfig? activeConfig = (configs.isNotEmpty)
+          ? (activeConfigName != null
+              ? configs.firstWhere(
+                  (c) => c.name == activeConfigName,
+                  orElse: () => configs.first,
+                )
+              : configs.first)
+          : null;
 
       return ConfigUiState(
         isLoading: false,
@@ -118,11 +121,14 @@ class ConfigNotifier extends _$ConfigNotifier {
           ? _configQueryService!.extractDutyGroups(configs, activeConfigName)
           : <String>[];
 
-      final DutyScheduleConfig? activeConfig = activeConfigName != null
-          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
-              ? configs.firstWhere((c) => c.name == activeConfigName)
-              : (configs.isNotEmpty ? configs.first : null))
-          : (configs.isNotEmpty ? configs.first : null);
+      final DutyScheduleConfig? activeConfig = (configs.isNotEmpty)
+          ? (activeConfigName != null
+              ? configs.firstWhere(
+                  (c) => c.name == activeConfigName,
+                  orElse: () => configs.first,
+                )
+              : configs.first)
+          : null;
 
       state = AsyncData(current.copyWith(
         configs: configs,
