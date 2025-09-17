@@ -118,7 +118,7 @@ class CalendarViewController {
 
     // Adjust current page index to account for the new days
     currentPageIndex += _expansionSize;
-    
+
     // Update the PageController position to maintain the same visual page
     if (pageController.hasClients) {
       pageController.jumpToPage(currentPageIndex);

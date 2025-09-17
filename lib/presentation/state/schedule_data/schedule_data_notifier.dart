@@ -41,7 +41,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
     if (_cachedState != null) {
-      print('[ScheduleData] build(): using cached state');
       return _cachedState!;
     }
     return await _initialize();

@@ -408,38 +408,15 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     );
 
     // Debug: mark start of refresh
-    print('[Coordinator] _refreshState(): start');
 
     final CalendarUiState calendarState = await calendarFuture;
     if (!ref.mounted) return;
-    print(
-      '[Coordinator] _refreshState(): calendarState = '
-      'selectedDay=${calendarState.selectedDay?.toIso8601String()}, '
-      'focusedDay=${calendarState.focusedDay?.toIso8601String()}, '
-      'format=${calendarState.calendarFormat}',
-    );
     final ConfigUiState configState = await configFuture;
     if (!ref.mounted) return;
-    print(
-      '[Coordinator] _refreshState(): configState = '
-      'activeConfigName=${configState.activeConfigName}, '
-      'dutyGroups=${configState.dutyGroups.length}',
-    );
     final PartnerUiState partnerState = await partnerFuture;
     if (!ref.mounted) return;
-    print(
-      '[Coordinator] _refreshState(): partnerState = '
-      'partnerConfigName=${partnerState.partnerConfigName}, '
-      'partnerDutyGroup=${partnerState.partnerDutyGroup}',
-    );
     final ScheduleDataUiState scheduleDataState = await scheduleDataFuture;
     if (!ref.mounted) return;
-    print(
-      '[Coordinator] _refreshState(): scheduleDataState = '
-      'schedules=${scheduleDataState.schedules.length}, '
-      'activeConfigName=${scheduleDataState.activeConfigName}, '
-      'selectedDutyGroup=${scheduleDataState.selectedDutyGroup}',
-    );
 
     // Merge existing coordinator schedules with latest scheduleData to avoid losing
     // previously loaded months due to scheduleData re-inits.
@@ -458,16 +435,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     ).copyWith(schedules: mergedSchedules);
 
     state = AsyncData(combined);
-
-    // Debug: after combine
-    final s = state.value;
-    print(
-      '[Coordinator] _refreshState(): combined -> '
-      'selectedDay=${s?.selectedDay?.toIso8601String()}, '
-      'focusedDay=${s?.focusedDay?.toIso8601String()}, '
-      'activeConfigName=${s?.activeConfigName}, '
-      'schedules=${s?.schedules.length}',
-    );
   }
 
   /// Loads schedules for an expanded date range when user scrolls beyond current data
