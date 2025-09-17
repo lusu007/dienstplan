@@ -78,6 +78,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       schedules: scheduleDataState.schedules,
       activeConfigName: configState.activeConfigName,
       preferredDutyGroup: scheduleDataState.preferredDutyGroup,
+      selectedDutyGroup: scheduleDataState.selectedDutyGroup,
       dutyGroups: configState.dutyGroups,
       configs: configState.configs,
       activeConfig: configState.activeConfig,
@@ -180,11 +181,50 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _updateScheduleDataStateOnly();
   }
 
-  Future<void> setSelectedDutyGroup(String dutyGroup) async {
+  Future<void> setSelectedDutyGroup(String? dutyGroup) async {
+    // Update state immediately for instant UI feedback
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(selectedDutyGroup: dutyGroup));
+    }
+
+    // Update the schedule data provider
     await ref
         .read(scheduleDataProvider.notifier)
         .setSelectedDutyGroup(dutyGroup);
-    await _updateScheduleDataStateOnly();
+
+    // Update state once with all changes, but preserve the selectedDutyGroup
+    await _updateScheduleDataStateOnlyPreservingSelectedDutyGroup(dutyGroup);
+
+    // Save to settings for persistence (in background)
+    unawaited(_saveSelectedDutyGroupToSettings(dutyGroup));
+  }
+
+  Future<void> _saveSelectedDutyGroupToSettings(String? dutyGroup) async {
+    try {
+      final getSettingsUseCase = await ref.read(
+        getSettingsUseCaseProvider.future,
+      );
+      final saveSettingsUseCase = await ref.read(
+        saveSettingsUseCaseProvider.future,
+      );
+
+      final settingsResult = await getSettingsUseCase.executeSafe();
+      final existing = settingsResult.isSuccess ? settingsResult.value : null;
+
+      if (existing != null) {
+        await saveSettingsUseCase.executeSafe(
+          existing.copyWith(selectedDutyGroup: dutyGroup),
+        );
+
+        // Refresh the schedule data provider to ensure it has the latest selectedDutyGroup
+        await ref
+            .read(scheduleDataProvider.notifier)
+            .refreshSelectedDutyGroupFromSettings();
+      }
+    } catch (e) {
+      // Ignore settings save errors to avoid disrupting the filter
+    }
   }
 
   // Utility methods
@@ -299,6 +339,32 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     final updatedState = currentState.copyWith(
       schedules: scheduleDataState.schedules,
       preferredDutyGroup: scheduleDataState.preferredDutyGroup,
+      selectedDutyGroup: scheduleDataState.selectedDutyGroup,
+      isLoading: scheduleDataState.isLoading || currentState.isLoading,
+      error: scheduleDataState.error ?? currentState.error,
+    );
+
+    state = AsyncData(updatedState);
+  }
+
+  /// Optimized method to update only schedule data state while preserving selectedDutyGroup
+  Future<void> _updateScheduleDataStateOnlyPreservingSelectedDutyGroup(
+    String? selectedDutyGroup,
+  ) async {
+    final currentState = state.value;
+    if (currentState == null) {
+      await _refreshState();
+      return;
+    }
+
+    final scheduleDataState = await ref.read(scheduleDataProvider.future);
+
+    // Only update schedule data-related fields, but preserve the selectedDutyGroup
+    final updatedState = currentState.copyWith(
+      schedules: scheduleDataState.schedules,
+      preferredDutyGroup: scheduleDataState.preferredDutyGroup,
+      selectedDutyGroup:
+          selectedDutyGroup, // Use the provided value instead of scheduleDataState
       isLoading: scheduleDataState.isLoading || currentState.isLoading,
       error: scheduleDataState.error ?? currentState.error,
     );

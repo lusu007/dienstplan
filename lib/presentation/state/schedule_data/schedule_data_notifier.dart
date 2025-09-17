@@ -47,6 +47,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
       final activeConfigName = settings?.activeConfigName;
       final preferredDutyGroup = settings?.myDutyGroup;
+      final selectedDutyGroup = settings?.selectedDutyGroup;
 
       List<Schedule> schedules = [];
       if (activeConfigName != null) {
@@ -72,6 +73,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
             schedules: const <Schedule>[],
             activeConfigName: activeConfigName,
             preferredDutyGroup: preferredDutyGroup,
+            selectedDutyGroup: selectedDutyGroup,
           );
         }
       }
@@ -82,6 +84,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         schedules: schedules,
         activeConfigName: activeConfigName ?? '',
         preferredDutyGroup: preferredDutyGroup ?? '',
+        selectedDutyGroup: selectedDutyGroup,
       );
     } catch (e) {
       return ScheduleDataUiState.initial().copyWith(
@@ -96,6 +99,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     required String configName,
   }) async {
     final current = await future;
+    if (!ref.mounted) return;
+
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
@@ -105,6 +110,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
             endDate: endDate,
             configName: configName,
           );
+
+      if (!ref.mounted) return;
 
       if (schedulesResult.isSuccess) {
         final newSchedules = schedulesResult.value;
@@ -129,12 +136,16 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         );
       } else {
         final message = await _presentFailure(schedulesResult.failure);
-        state = AsyncData(current.copyWith(error: message, isLoading: false));
+        if (ref.mounted) {
+          state = AsyncData(current.copyWith(error: message, isLoading: false));
+        }
       }
     } catch (e) {
-      state = AsyncData(
-        current.copyWith(error: 'Failed to load schedules', isLoading: false),
-      );
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(error: 'Failed to load schedules', isLoading: false),
+        );
+      }
     }
   }
 
@@ -143,6 +154,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     required String configName,
   }) async {
     final current = await future;
+    if (!ref.mounted) return;
+
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
@@ -152,6 +165,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         configName: configName,
       );
 
+      if (!ref.mounted) return;
+
       // Reload schedules for the month
       final startDate = DateTime(month.year, month.month, 1);
       final endDate = DateTime(month.year, month.month + 1, 0);
@@ -162,12 +177,14 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         configName: configName,
       );
     } catch (e) {
-      state = AsyncData(
-        current.copyWith(
-          error: 'Failed to generate schedules',
-          isLoading: false,
-        ),
-      );
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(
+            error: 'Failed to generate schedules',
+            isLoading: false,
+          ),
+        );
+      }
     }
   }
 
@@ -176,12 +193,15 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     required String configName,
   }) async {
     final current = await future;
+    if (!ref.mounted) return;
 
     try {
       await _ensureMonthSchedulesUseCase!.execute(
         monthStart: month,
         configName: configName,
       );
+
+      if (!ref.mounted) return;
 
       // Reload schedules for the month
       final startDate = DateTime(month.year, month.month, 1);
@@ -193,19 +213,47 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         configName: configName,
       );
     } catch (e) {
-      state = AsyncData(
-        current.copyWith(error: 'Failed to ensure month schedules'),
-      );
+      if (ref.mounted) {
+        state = AsyncData(
+          current.copyWith(error: 'Failed to ensure month schedules'),
+        );
+      }
     }
   }
 
-  Future<void> setSelectedDutyGroup(String dutyGroup) async {
+  Future<void> setSelectedDutyGroup(String? dutyGroup) async {
     final current = await future;
-    state = AsyncData(current.copyWith(selectedDutyGroup: dutyGroup));
+    if (!ref.mounted) return;
+
+    // Only update if the value actually changed to avoid unnecessary rebuilds
+    if (current.selectedDutyGroup != dutyGroup) {
+      state = AsyncData(current.copyWith(selectedDutyGroup: dutyGroup));
+    }
+  }
+
+  Future<void> refreshSelectedDutyGroupFromSettings() async {
+    final current = await future;
+    if (!ref.mounted) return;
+
+    try {
+      final settingsResult = await _getSettingsUseCase!.executeSafe();
+      final settings = settingsResult.isSuccess ? settingsResult.value : null;
+      final selectedDutyGroup = settings?.selectedDutyGroup;
+
+      // Only update if the value actually changed
+      if (current.selectedDutyGroup != selectedDutyGroup) {
+        state = AsyncData(
+          current.copyWith(selectedDutyGroup: selectedDutyGroup),
+        );
+      }
+    } catch (e) {
+      // Ignore errors to avoid disrupting the filter
+    }
   }
 
   Future<void> clearError() async {
     final current = await future;
+    if (!ref.mounted) return;
     state = AsyncData(current.copyWith(error: null));
   }
 

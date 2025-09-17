@@ -162,11 +162,9 @@ class CalendarViewUiBuilder {
           dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
           dutyTypes: state?.activeConfig?.dutyTypes,
           onDutyGroupSelected: (group) {
-            if (group != null) {
-              ref
-                  .read(scheduleCoordinatorProvider.notifier)
-                  .setSelectedDutyGroup(group);
-            }
+            ref
+                .read(scheduleCoordinatorProvider.notifier)
+                .setSelectedDutyGroup(group);
           },
           shouldAnimate: shouldAnimate,
           isLoading: isLoadingSelectedDay,
