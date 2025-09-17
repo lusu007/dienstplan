@@ -256,11 +256,6 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
     final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
 
-    // Debug logging for holidays state
-    AppLogger.d(
-      'ReactiveCalendarDay: holidaysState isEnabled: ${holidaysState?.isEnabled}, selectedStateCode: ${holidaysState?.selectedStateCode}, allHolidays: ${holidaysState?.allHolidays.length}',
-    );
-
     final hasSchoolHoliday =
         holidaysState?.isEnabled == true &&
         holidaysState?.hasHolidayOnDate(widget.day) == true;
@@ -268,13 +263,6 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         ? holidaysState?.getHolidaysForDate(widget.day) ?? []
         : [];
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
-
-    // Debug logging for school holidays
-    if (hasSchoolHoliday) {
-      AppLogger.d(
-        'Calendar: Day ${widget.day.day}/${widget.day.month}/${widget.day.year} has school holiday: $schoolHolidayName',
-      );
-    }
 
     try {
       return AnimatedCalendarDay(
