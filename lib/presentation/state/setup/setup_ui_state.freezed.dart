@@ -9,7 +9,6 @@ part of 'setup_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -36,7 +35,9 @@ mixin _$SetupUiState {
   @pragma('vm:prefer-inline')
   $SetupUiStateCopyWith<SetupUiState> get copyWith =>
       _$SetupUiStateCopyWithImpl<SetupUiState>(
-          this as SetupUiState, _$identity);
+        this as SetupUiState,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -63,35 +64,44 @@ mixin _$SetupUiState {
             (identical(other.selectedPartnerConfig, selectedPartnerConfig) ||
                 other.selectedPartnerConfig == selectedPartnerConfig) &&
             (identical(
-                    other.selectedPartnerDutyGroup, selectedPartnerDutyGroup) ||
+                  other.selectedPartnerDutyGroup,
+                  selectedPartnerDutyGroup,
+                ) ||
                 other.selectedPartnerDutyGroup == selectedPartnerDutyGroup) &&
             const DeepCollectionEquality().equals(other.configs, configs) &&
             const DeepCollectionEquality().equals(
-                other.selectedPoliceAuthorities, selectedPoliceAuthorities) &&
-            const DeepCollectionEquality()
-                .equals(other.filteredConfigs, filteredConfigs) &&
+              other.selectedPoliceAuthorities,
+              selectedPoliceAuthorities,
+            ) &&
             const DeepCollectionEquality().equals(
-                other.availablePoliceAuthorities, availablePoliceAuthorities));
+              other.filteredConfigs,
+              filteredConfigs,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other.availablePoliceAuthorities,
+              availablePoliceAuthorities,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      isGeneratingSchedules,
-      isSetupCompleted,
-      error,
-      errorStackTrace,
-      currentStep,
-      selectedTheme,
-      selectedConfig,
-      selectedDutyGroup,
-      selectedPartnerConfig,
-      selectedPartnerDutyGroup,
-      const DeepCollectionEquality().hash(configs),
-      const DeepCollectionEquality().hash(selectedPoliceAuthorities),
-      const DeepCollectionEquality().hash(filteredConfigs),
-      const DeepCollectionEquality().hash(availablePoliceAuthorities));
+    runtimeType,
+    isLoading,
+    isGeneratingSchedules,
+    isSetupCompleted,
+    error,
+    errorStackTrace,
+    currentStep,
+    selectedTheme,
+    selectedConfig,
+    selectedDutyGroup,
+    selectedPartnerConfig,
+    selectedPartnerDutyGroup,
+    const DeepCollectionEquality().hash(configs),
+    const DeepCollectionEquality().hash(selectedPoliceAuthorities),
+    const DeepCollectionEquality().hash(filteredConfigs),
+    const DeepCollectionEquality().hash(availablePoliceAuthorities),
+  );
 
   @override
   String toString() {
@@ -102,25 +112,27 @@ mixin _$SetupUiState {
 /// @nodoc
 abstract mixin class $SetupUiStateCopyWith<$Res> {
   factory $SetupUiStateCopyWith(
-          SetupUiState value, $Res Function(SetupUiState) _then) =
-      _$SetupUiStateCopyWithImpl;
+    SetupUiState value,
+    $Res Function(SetupUiState) _then,
+  ) = _$SetupUiStateCopyWithImpl;
   @useResult
-  $Res call(
-      {bool isLoading,
-      bool isGeneratingSchedules,
-      bool isSetupCompleted,
-      String? error,
-      StackTrace? errorStackTrace,
-      int currentStep,
-      ThemePreference selectedTheme,
-      DutyScheduleConfig? selectedConfig,
-      String? selectedDutyGroup,
-      DutyScheduleConfig? selectedPartnerConfig,
-      String? selectedPartnerDutyGroup,
-      List<DutyScheduleConfig> configs,
-      Set<String> selectedPoliceAuthorities,
-      List<DutyScheduleConfig> filteredConfigs,
-      Set<String> availablePoliceAuthorities});
+  $Res call({
+    bool isLoading,
+    bool isGeneratingSchedules,
+    bool isSetupCompleted,
+    String? error,
+    StackTrace? errorStackTrace,
+    int currentStep,
+    ThemePreference selectedTheme,
+    DutyScheduleConfig? selectedConfig,
+    String? selectedDutyGroup,
+    DutyScheduleConfig? selectedPartnerConfig,
+    String? selectedPartnerDutyGroup,
+    List<DutyScheduleConfig> configs,
+    Set<String> selectedPoliceAuthorities,
+    List<DutyScheduleConfig> filteredConfigs,
+    Set<String> availablePoliceAuthorities,
+  });
 
   $DutyScheduleConfigCopyWith<$Res>? get selectedConfig;
   $DutyScheduleConfigCopyWith<$Res>? get selectedPartnerConfig;
@@ -154,68 +166,70 @@ class _$SetupUiStateCopyWithImpl<$Res> implements $SetupUiStateCopyWith<$Res> {
     Object? filteredConfigs = null,
     Object? availablePoliceAuthorities = null,
   }) {
-    return _then(_self.copyWith(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isGeneratingSchedules: null == isGeneratingSchedules
-          ? _self.isGeneratingSchedules
-          : isGeneratingSchedules // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isSetupCompleted: null == isSetupCompleted
-          ? _self.isSetupCompleted
-          : isSetupCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      errorStackTrace: freezed == errorStackTrace
-          ? _self.errorStackTrace
-          : errorStackTrace // ignore: cast_nullable_to_non_nullable
-              as StackTrace?,
-      currentStep: null == currentStep
-          ? _self.currentStep
-          : currentStep // ignore: cast_nullable_to_non_nullable
-              as int,
-      selectedTheme: null == selectedTheme
-          ? _self.selectedTheme
-          : selectedTheme // ignore: cast_nullable_to_non_nullable
-              as ThemePreference,
-      selectedConfig: freezed == selectedConfig
-          ? _self.selectedConfig
-          : selectedConfig // ignore: cast_nullable_to_non_nullable
-              as DutyScheduleConfig?,
-      selectedDutyGroup: freezed == selectedDutyGroup
-          ? _self.selectedDutyGroup
-          : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
-              as String?,
-      selectedPartnerConfig: freezed == selectedPartnerConfig
-          ? _self.selectedPartnerConfig
-          : selectedPartnerConfig // ignore: cast_nullable_to_non_nullable
-              as DutyScheduleConfig?,
-      selectedPartnerDutyGroup: freezed == selectedPartnerDutyGroup
-          ? _self.selectedPartnerDutyGroup
-          : selectedPartnerDutyGroup // ignore: cast_nullable_to_non_nullable
-              as String?,
-      configs: null == configs
-          ? _self.configs
-          : configs // ignore: cast_nullable_to_non_nullable
-              as List<DutyScheduleConfig>,
-      selectedPoliceAuthorities: null == selectedPoliceAuthorities
-          ? _self.selectedPoliceAuthorities
-          : selectedPoliceAuthorities // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
-      filteredConfigs: null == filteredConfigs
-          ? _self.filteredConfigs
-          : filteredConfigs // ignore: cast_nullable_to_non_nullable
-              as List<DutyScheduleConfig>,
-      availablePoliceAuthorities: null == availablePoliceAuthorities
-          ? _self.availablePoliceAuthorities
-          : availablePoliceAuthorities // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
-    ));
+    return _then(
+      _self.copyWith(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isGeneratingSchedules: null == isGeneratingSchedules
+            ? _self.isGeneratingSchedules
+            : isGeneratingSchedules // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isSetupCompleted: null == isSetupCompleted
+            ? _self.isSetupCompleted
+            : isSetupCompleted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        errorStackTrace: freezed == errorStackTrace
+            ? _self.errorStackTrace
+            : errorStackTrace // ignore: cast_nullable_to_non_nullable
+                  as StackTrace?,
+        currentStep: null == currentStep
+            ? _self.currentStep
+            : currentStep // ignore: cast_nullable_to_non_nullable
+                  as int,
+        selectedTheme: null == selectedTheme
+            ? _self.selectedTheme
+            : selectedTheme // ignore: cast_nullable_to_non_nullable
+                  as ThemePreference,
+        selectedConfig: freezed == selectedConfig
+            ? _self.selectedConfig
+            : selectedConfig // ignore: cast_nullable_to_non_nullable
+                  as DutyScheduleConfig?,
+        selectedDutyGroup: freezed == selectedDutyGroup
+            ? _self.selectedDutyGroup
+            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        selectedPartnerConfig: freezed == selectedPartnerConfig
+            ? _self.selectedPartnerConfig
+            : selectedPartnerConfig // ignore: cast_nullable_to_non_nullable
+                  as DutyScheduleConfig?,
+        selectedPartnerDutyGroup: freezed == selectedPartnerDutyGroup
+            ? _self.selectedPartnerDutyGroup
+            : selectedPartnerDutyGroup // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        configs: null == configs
+            ? _self.configs
+            : configs // ignore: cast_nullable_to_non_nullable
+                  as List<DutyScheduleConfig>,
+        selectedPoliceAuthorities: null == selectedPoliceAuthorities
+            ? _self.selectedPoliceAuthorities
+            : selectedPoliceAuthorities // ignore: cast_nullable_to_non_nullable
+                  as Set<String>,
+        filteredConfigs: null == filteredConfigs
+            ? _self.filteredConfigs
+            : filteredConfigs // ignore: cast_nullable_to_non_nullable
+                  as List<DutyScheduleConfig>,
+        availablePoliceAuthorities: null == availablePoliceAuthorities
+            ? _self.availablePoliceAuthorities
+            : availablePoliceAuthorities // ignore: cast_nullable_to_non_nullable
+                  as Set<String>,
+      ),
+    );
   }
 
   /// Create a copy of SetupUiState
@@ -241,8 +255,9 @@ class _$SetupUiStateCopyWithImpl<$Res> implements $SetupUiStateCopyWith<$Res> {
       return null;
     }
 
-    return $DutyScheduleConfigCopyWith<$Res>(_self.selectedPartnerConfig!,
-        (value) {
+    return $DutyScheduleConfigCopyWith<$Res>(_self.selectedPartnerConfig!, (
+      value,
+    ) {
       return _then(_self.copyWith(selectedPartnerConfig: value));
     });
   }
@@ -342,43 +357,45 @@ extension SetupUiStatePatterns on SetupUiState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            bool isGeneratingSchedules,
-            bool isSetupCompleted,
-            String? error,
-            StackTrace? errorStackTrace,
-            int currentStep,
-            ThemePreference selectedTheme,
-            DutyScheduleConfig? selectedConfig,
-            String? selectedDutyGroup,
-            DutyScheduleConfig? selectedPartnerConfig,
-            String? selectedPartnerDutyGroup,
-            List<DutyScheduleConfig> configs,
-            Set<String> selectedPoliceAuthorities,
-            List<DutyScheduleConfig> filteredConfigs,
-            Set<String> availablePoliceAuthorities)?
-        $default, {
+      bool isLoading,
+      bool isGeneratingSchedules,
+      bool isSetupCompleted,
+      String? error,
+      StackTrace? errorStackTrace,
+      int currentStep,
+      ThemePreference selectedTheme,
+      DutyScheduleConfig? selectedConfig,
+      String? selectedDutyGroup,
+      DutyScheduleConfig? selectedPartnerConfig,
+      String? selectedPartnerDutyGroup,
+      List<DutyScheduleConfig> configs,
+      Set<String> selectedPoliceAuthorities,
+      List<DutyScheduleConfig> filteredConfigs,
+      Set<String> availablePoliceAuthorities,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SetupUiState() when $default != null:
         return $default(
-            _that.isLoading,
-            _that.isGeneratingSchedules,
-            _that.isSetupCompleted,
-            _that.error,
-            _that.errorStackTrace,
-            _that.currentStep,
-            _that.selectedTheme,
-            _that.selectedConfig,
-            _that.selectedDutyGroup,
-            _that.selectedPartnerConfig,
-            _that.selectedPartnerDutyGroup,
-            _that.configs,
-            _that.selectedPoliceAuthorities,
-            _that.filteredConfigs,
-            _that.availablePoliceAuthorities);
+          _that.isLoading,
+          _that.isGeneratingSchedules,
+          _that.isSetupCompleted,
+          _that.error,
+          _that.errorStackTrace,
+          _that.currentStep,
+          _that.selectedTheme,
+          _that.selectedConfig,
+          _that.selectedDutyGroup,
+          _that.selectedPartnerConfig,
+          _that.selectedPartnerDutyGroup,
+          _that.configs,
+          _that.selectedPoliceAuthorities,
+          _that.filteredConfigs,
+          _that.availablePoliceAuthorities,
+        );
       case _:
         return orElse();
     }
@@ -400,42 +417,44 @@ extension SetupUiStatePatterns on SetupUiState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            bool isGeneratingSchedules,
-            bool isSetupCompleted,
-            String? error,
-            StackTrace? errorStackTrace,
-            int currentStep,
-            ThemePreference selectedTheme,
-            DutyScheduleConfig? selectedConfig,
-            String? selectedDutyGroup,
-            DutyScheduleConfig? selectedPartnerConfig,
-            String? selectedPartnerDutyGroup,
-            List<DutyScheduleConfig> configs,
-            Set<String> selectedPoliceAuthorities,
-            List<DutyScheduleConfig> filteredConfigs,
-            Set<String> availablePoliceAuthorities)
-        $default,
+      bool isLoading,
+      bool isGeneratingSchedules,
+      bool isSetupCompleted,
+      String? error,
+      StackTrace? errorStackTrace,
+      int currentStep,
+      ThemePreference selectedTheme,
+      DutyScheduleConfig? selectedConfig,
+      String? selectedDutyGroup,
+      DutyScheduleConfig? selectedPartnerConfig,
+      String? selectedPartnerDutyGroup,
+      List<DutyScheduleConfig> configs,
+      Set<String> selectedPoliceAuthorities,
+      List<DutyScheduleConfig> filteredConfigs,
+      Set<String> availablePoliceAuthorities,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SetupUiState():
         return $default(
-            _that.isLoading,
-            _that.isGeneratingSchedules,
-            _that.isSetupCompleted,
-            _that.error,
-            _that.errorStackTrace,
-            _that.currentStep,
-            _that.selectedTheme,
-            _that.selectedConfig,
-            _that.selectedDutyGroup,
-            _that.selectedPartnerConfig,
-            _that.selectedPartnerDutyGroup,
-            _that.configs,
-            _that.selectedPoliceAuthorities,
-            _that.filteredConfigs,
-            _that.availablePoliceAuthorities);
+          _that.isLoading,
+          _that.isGeneratingSchedules,
+          _that.isSetupCompleted,
+          _that.error,
+          _that.errorStackTrace,
+          _that.currentStep,
+          _that.selectedTheme,
+          _that.selectedConfig,
+          _that.selectedDutyGroup,
+          _that.selectedPartnerConfig,
+          _that.selectedPartnerDutyGroup,
+          _that.configs,
+          _that.selectedPoliceAuthorities,
+          _that.filteredConfigs,
+          _that.availablePoliceAuthorities,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -456,42 +475,44 @@ extension SetupUiStatePatterns on SetupUiState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            bool isLoading,
-            bool isGeneratingSchedules,
-            bool isSetupCompleted,
-            String? error,
-            StackTrace? errorStackTrace,
-            int currentStep,
-            ThemePreference selectedTheme,
-            DutyScheduleConfig? selectedConfig,
-            String? selectedDutyGroup,
-            DutyScheduleConfig? selectedPartnerConfig,
-            String? selectedPartnerDutyGroup,
-            List<DutyScheduleConfig> configs,
-            Set<String> selectedPoliceAuthorities,
-            List<DutyScheduleConfig> filteredConfigs,
-            Set<String> availablePoliceAuthorities)?
-        $default,
+      bool isLoading,
+      bool isGeneratingSchedules,
+      bool isSetupCompleted,
+      String? error,
+      StackTrace? errorStackTrace,
+      int currentStep,
+      ThemePreference selectedTheme,
+      DutyScheduleConfig? selectedConfig,
+      String? selectedDutyGroup,
+      DutyScheduleConfig? selectedPartnerConfig,
+      String? selectedPartnerDutyGroup,
+      List<DutyScheduleConfig> configs,
+      Set<String> selectedPoliceAuthorities,
+      List<DutyScheduleConfig> filteredConfigs,
+      Set<String> availablePoliceAuthorities,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SetupUiState() when $default != null:
         return $default(
-            _that.isLoading,
-            _that.isGeneratingSchedules,
-            _that.isSetupCompleted,
-            _that.error,
-            _that.errorStackTrace,
-            _that.currentStep,
-            _that.selectedTheme,
-            _that.selectedConfig,
-            _that.selectedDutyGroup,
-            _that.selectedPartnerConfig,
-            _that.selectedPartnerDutyGroup,
-            _that.configs,
-            _that.selectedPoliceAuthorities,
-            _that.filteredConfigs,
-            _that.availablePoliceAuthorities);
+          _that.isLoading,
+          _that.isGeneratingSchedules,
+          _that.isSetupCompleted,
+          _that.error,
+          _that.errorStackTrace,
+          _that.currentStep,
+          _that.selectedTheme,
+          _that.selectedConfig,
+          _that.selectedDutyGroup,
+          _that.selectedPartnerConfig,
+          _that.selectedPartnerDutyGroup,
+          _that.configs,
+          _that.selectedPoliceAuthorities,
+          _that.filteredConfigs,
+          _that.availablePoliceAuthorities,
+        );
       case _:
         return null;
     }
@@ -501,27 +522,27 @@ extension SetupUiStatePatterns on SetupUiState {
 /// @nodoc
 
 class _SetupUiState extends SetupUiState {
-  const _SetupUiState(
-      {required this.isLoading,
-      required this.isGeneratingSchedules,
-      required this.isSetupCompleted,
-      this.error,
-      this.errorStackTrace,
-      required this.currentStep,
-      required this.selectedTheme,
-      this.selectedConfig,
-      this.selectedDutyGroup,
-      this.selectedPartnerConfig,
-      this.selectedPartnerDutyGroup,
-      required final List<DutyScheduleConfig> configs,
-      required final Set<String> selectedPoliceAuthorities,
-      required final List<DutyScheduleConfig> filteredConfigs,
-      required final Set<String> availablePoliceAuthorities})
-      : _configs = configs,
-        _selectedPoliceAuthorities = selectedPoliceAuthorities,
-        _filteredConfigs = filteredConfigs,
-        _availablePoliceAuthorities = availablePoliceAuthorities,
-        super._();
+  const _SetupUiState({
+    required this.isLoading,
+    required this.isGeneratingSchedules,
+    required this.isSetupCompleted,
+    this.error,
+    this.errorStackTrace,
+    required this.currentStep,
+    required this.selectedTheme,
+    this.selectedConfig,
+    this.selectedDutyGroup,
+    this.selectedPartnerConfig,
+    this.selectedPartnerDutyGroup,
+    required final List<DutyScheduleConfig> configs,
+    required final Set<String> selectedPoliceAuthorities,
+    required final List<DutyScheduleConfig> filteredConfigs,
+    required final Set<String> availablePoliceAuthorities,
+  }) : _configs = configs,
+       _selectedPoliceAuthorities = selectedPoliceAuthorities,
+       _filteredConfigs = filteredConfigs,
+       _availablePoliceAuthorities = availablePoliceAuthorities,
+       super._();
 
   @override
   final bool isLoading;
@@ -612,36 +633,44 @@ class _SetupUiState extends SetupUiState {
             (identical(other.selectedPartnerConfig, selectedPartnerConfig) ||
                 other.selectedPartnerConfig == selectedPartnerConfig) &&
             (identical(
-                    other.selectedPartnerDutyGroup, selectedPartnerDutyGroup) ||
+                  other.selectedPartnerDutyGroup,
+                  selectedPartnerDutyGroup,
+                ) ||
                 other.selectedPartnerDutyGroup == selectedPartnerDutyGroup) &&
             const DeepCollectionEquality().equals(other._configs, _configs) &&
             const DeepCollectionEquality().equals(
-                other._selectedPoliceAuthorities, _selectedPoliceAuthorities) &&
-            const DeepCollectionEquality()
-                .equals(other._filteredConfigs, _filteredConfigs) &&
+              other._selectedPoliceAuthorities,
+              _selectedPoliceAuthorities,
+            ) &&
             const DeepCollectionEquality().equals(
-                other._availablePoliceAuthorities,
-                _availablePoliceAuthorities));
+              other._filteredConfigs,
+              _filteredConfigs,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._availablePoliceAuthorities,
+              _availablePoliceAuthorities,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      isGeneratingSchedules,
-      isSetupCompleted,
-      error,
-      errorStackTrace,
-      currentStep,
-      selectedTheme,
-      selectedConfig,
-      selectedDutyGroup,
-      selectedPartnerConfig,
-      selectedPartnerDutyGroup,
-      const DeepCollectionEquality().hash(_configs),
-      const DeepCollectionEquality().hash(_selectedPoliceAuthorities),
-      const DeepCollectionEquality().hash(_filteredConfigs),
-      const DeepCollectionEquality().hash(_availablePoliceAuthorities));
+    runtimeType,
+    isLoading,
+    isGeneratingSchedules,
+    isSetupCompleted,
+    error,
+    errorStackTrace,
+    currentStep,
+    selectedTheme,
+    selectedConfig,
+    selectedDutyGroup,
+    selectedPartnerConfig,
+    selectedPartnerDutyGroup,
+    const DeepCollectionEquality().hash(_configs),
+    const DeepCollectionEquality().hash(_selectedPoliceAuthorities),
+    const DeepCollectionEquality().hash(_filteredConfigs),
+    const DeepCollectionEquality().hash(_availablePoliceAuthorities),
+  );
 
   @override
   String toString() {
@@ -653,26 +682,28 @@ class _SetupUiState extends SetupUiState {
 abstract mixin class _$SetupUiStateCopyWith<$Res>
     implements $SetupUiStateCopyWith<$Res> {
   factory _$SetupUiStateCopyWith(
-          _SetupUiState value, $Res Function(_SetupUiState) _then) =
-      __$SetupUiStateCopyWithImpl;
+    _SetupUiState value,
+    $Res Function(_SetupUiState) _then,
+  ) = __$SetupUiStateCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {bool isLoading,
-      bool isGeneratingSchedules,
-      bool isSetupCompleted,
-      String? error,
-      StackTrace? errorStackTrace,
-      int currentStep,
-      ThemePreference selectedTheme,
-      DutyScheduleConfig? selectedConfig,
-      String? selectedDutyGroup,
-      DutyScheduleConfig? selectedPartnerConfig,
-      String? selectedPartnerDutyGroup,
-      List<DutyScheduleConfig> configs,
-      Set<String> selectedPoliceAuthorities,
-      List<DutyScheduleConfig> filteredConfigs,
-      Set<String> availablePoliceAuthorities});
+  $Res call({
+    bool isLoading,
+    bool isGeneratingSchedules,
+    bool isSetupCompleted,
+    String? error,
+    StackTrace? errorStackTrace,
+    int currentStep,
+    ThemePreference selectedTheme,
+    DutyScheduleConfig? selectedConfig,
+    String? selectedDutyGroup,
+    DutyScheduleConfig? selectedPartnerConfig,
+    String? selectedPartnerDutyGroup,
+    List<DutyScheduleConfig> configs,
+    Set<String> selectedPoliceAuthorities,
+    List<DutyScheduleConfig> filteredConfigs,
+    Set<String> availablePoliceAuthorities,
+  });
 
   @override
   $DutyScheduleConfigCopyWith<$Res>? get selectedConfig;
@@ -709,68 +740,70 @@ class __$SetupUiStateCopyWithImpl<$Res>
     Object? filteredConfigs = null,
     Object? availablePoliceAuthorities = null,
   }) {
-    return _then(_SetupUiState(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isGeneratingSchedules: null == isGeneratingSchedules
-          ? _self.isGeneratingSchedules
-          : isGeneratingSchedules // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isSetupCompleted: null == isSetupCompleted
-          ? _self.isSetupCompleted
-          : isSetupCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      errorStackTrace: freezed == errorStackTrace
-          ? _self.errorStackTrace
-          : errorStackTrace // ignore: cast_nullable_to_non_nullable
-              as StackTrace?,
-      currentStep: null == currentStep
-          ? _self.currentStep
-          : currentStep // ignore: cast_nullable_to_non_nullable
-              as int,
-      selectedTheme: null == selectedTheme
-          ? _self.selectedTheme
-          : selectedTheme // ignore: cast_nullable_to_non_nullable
-              as ThemePreference,
-      selectedConfig: freezed == selectedConfig
-          ? _self.selectedConfig
-          : selectedConfig // ignore: cast_nullable_to_non_nullable
-              as DutyScheduleConfig?,
-      selectedDutyGroup: freezed == selectedDutyGroup
-          ? _self.selectedDutyGroup
-          : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
-              as String?,
-      selectedPartnerConfig: freezed == selectedPartnerConfig
-          ? _self.selectedPartnerConfig
-          : selectedPartnerConfig // ignore: cast_nullable_to_non_nullable
-              as DutyScheduleConfig?,
-      selectedPartnerDutyGroup: freezed == selectedPartnerDutyGroup
-          ? _self.selectedPartnerDutyGroup
-          : selectedPartnerDutyGroup // ignore: cast_nullable_to_non_nullable
-              as String?,
-      configs: null == configs
-          ? _self._configs
-          : configs // ignore: cast_nullable_to_non_nullable
-              as List<DutyScheduleConfig>,
-      selectedPoliceAuthorities: null == selectedPoliceAuthorities
-          ? _self._selectedPoliceAuthorities
-          : selectedPoliceAuthorities // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
-      filteredConfigs: null == filteredConfigs
-          ? _self._filteredConfigs
-          : filteredConfigs // ignore: cast_nullable_to_non_nullable
-              as List<DutyScheduleConfig>,
-      availablePoliceAuthorities: null == availablePoliceAuthorities
-          ? _self._availablePoliceAuthorities
-          : availablePoliceAuthorities // ignore: cast_nullable_to_non_nullable
-              as Set<String>,
-    ));
+    return _then(
+      _SetupUiState(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isGeneratingSchedules: null == isGeneratingSchedules
+            ? _self.isGeneratingSchedules
+            : isGeneratingSchedules // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isSetupCompleted: null == isSetupCompleted
+            ? _self.isSetupCompleted
+            : isSetupCompleted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        errorStackTrace: freezed == errorStackTrace
+            ? _self.errorStackTrace
+            : errorStackTrace // ignore: cast_nullable_to_non_nullable
+                  as StackTrace?,
+        currentStep: null == currentStep
+            ? _self.currentStep
+            : currentStep // ignore: cast_nullable_to_non_nullable
+                  as int,
+        selectedTheme: null == selectedTheme
+            ? _self.selectedTheme
+            : selectedTheme // ignore: cast_nullable_to_non_nullable
+                  as ThemePreference,
+        selectedConfig: freezed == selectedConfig
+            ? _self.selectedConfig
+            : selectedConfig // ignore: cast_nullable_to_non_nullable
+                  as DutyScheduleConfig?,
+        selectedDutyGroup: freezed == selectedDutyGroup
+            ? _self.selectedDutyGroup
+            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        selectedPartnerConfig: freezed == selectedPartnerConfig
+            ? _self.selectedPartnerConfig
+            : selectedPartnerConfig // ignore: cast_nullable_to_non_nullable
+                  as DutyScheduleConfig?,
+        selectedPartnerDutyGroup: freezed == selectedPartnerDutyGroup
+            ? _self.selectedPartnerDutyGroup
+            : selectedPartnerDutyGroup // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        configs: null == configs
+            ? _self._configs
+            : configs // ignore: cast_nullable_to_non_nullable
+                  as List<DutyScheduleConfig>,
+        selectedPoliceAuthorities: null == selectedPoliceAuthorities
+            ? _self._selectedPoliceAuthorities
+            : selectedPoliceAuthorities // ignore: cast_nullable_to_non_nullable
+                  as Set<String>,
+        filteredConfigs: null == filteredConfigs
+            ? _self._filteredConfigs
+            : filteredConfigs // ignore: cast_nullable_to_non_nullable
+                  as List<DutyScheduleConfig>,
+        availablePoliceAuthorities: null == availablePoliceAuthorities
+            ? _self._availablePoliceAuthorities
+            : availablePoliceAuthorities // ignore: cast_nullable_to_non_nullable
+                  as Set<String>,
+      ),
+    );
   }
 
   /// Create a copy of SetupUiState
@@ -796,11 +829,10 @@ class __$SetupUiStateCopyWithImpl<$Res>
       return null;
     }
 
-    return $DutyScheduleConfigCopyWith<$Res>(_self.selectedPartnerConfig!,
-        (value) {
+    return $DutyScheduleConfigCopyWith<$Res>(_self.selectedPartnerConfig!, (
+      value,
+    ) {
       return _then(_self.copyWith(selectedPartnerConfig: value));
     });
   }
 }
-
-// dart format on

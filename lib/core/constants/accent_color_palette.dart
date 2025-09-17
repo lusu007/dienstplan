@@ -37,4 +37,8 @@ class AccentColorDefaults {
   // Partner accent color default - turquoise green
   static const int partnerAccentColorValue = 0xFF00B89F; // teal (Türkisgrün)
   static const Color partnerAccentColor = Color(partnerAccentColorValue);
+
+  // Holiday accent color default - warm orange
+  static const int holidayAccentColorValue = 0xFFFF7A33; // amber (Warm Orange)
+  static const Color holidayAccentColor = Color(holidayAccentColorValue);
 }

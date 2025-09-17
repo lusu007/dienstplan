@@ -102,17 +102,12 @@ class _ThemeModeDialogContentState
           ),
         ),
         trailing: isSelected
-            ? Icon(
-                Icons.check_circle,
-                color: theme.colorScheme.primary,
-              )
+            ? Icon(Icons.check_circle, color: theme.colorScheme.primary)
             : null,
         onTap: () {
           ref.read(settingsProvider.notifier).setThemePreference(value);
         },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

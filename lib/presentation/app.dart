@@ -72,10 +72,11 @@ class _MyAppState extends ConsumerState<MyApp> {
         orElse: () => const Locale('de'),
       );
       return _buildMaterialApp(
-          theme: theme,
-          darkTheme: darkTheme,
-          mode: ThemeMode.light,
-          locale: locale);
+        theme: theme,
+        darkTheme: darkTheme,
+        mode: ThemeMode.light,
+        locale: locale,
+      );
     }
 
     final domain.ThemePreference? uiThemePref =
@@ -95,22 +96,28 @@ class _MyAppState extends ConsumerState<MyApp> {
 
     // Use settings preference if available, otherwise default to light mode
     // This prevents the dark mode flash on startup
-    final ThemeMode mode =
-        uiThemePref != null ? deriveFromPref(uiThemePref) : ThemeMode.light;
+    final ThemeMode mode = uiThemePref != null
+        ? deriveFromPref(uiThemePref)
+        : ThemeMode.light;
 
     final Locale locale = localeAsync.maybeWhen(
       data: (l) => l,
       orElse: () => const Locale('de'),
     );
     return _buildMaterialApp(
-        theme: theme, darkTheme: darkTheme, mode: mode, locale: locale);
+      theme: theme,
+      darkTheme: darkTheme,
+      mode: mode,
+      locale: locale,
+    );
   }
 
-  Widget _buildMaterialApp(
-      {required ThemeData theme,
-      required ThemeData darkTheme,
-      required ThemeMode mode,
-      required Locale locale}) {
+  Widget _buildMaterialApp({
+    required ThemeData theme,
+    required ThemeData darkTheme,
+    required ThemeMode mode,
+    required Locale locale,
+  }) {
     return MaterialApp.router(
       title: 'Dienstplan',
       theme: theme,
@@ -125,7 +132,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: locale,
       routerDelegate: _appRouter.delegate(
-          navigatorObservers: () => <NavigatorObserver>[AutoRouteObserver()]),
+        navigatorObservers: () => <NavigatorObserver>[AutoRouteObserver()],
+      ),
       routeInformationParser: _appRouter.defaultRouteParser(),
       scaffoldMessengerKey: NotificationService.scaffoldMessengerKey,
     );

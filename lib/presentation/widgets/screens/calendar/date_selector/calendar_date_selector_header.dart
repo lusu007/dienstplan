@@ -73,7 +73,10 @@ class CalendarDateSelectorHeader extends ConsumerWidget {
   }
 
   Widget _buildTodayButton(
-      BuildContext context, AppLocalizations l10n, WidgetRef ref) {
+    BuildContext context,
+    AppLocalizations l10n,
+    WidgetRef ref,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(

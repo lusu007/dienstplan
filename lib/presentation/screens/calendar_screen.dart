@@ -28,10 +28,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controller = AnimationController(
-      duration: kAnimDefault,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: kAnimDefault, vsync: this);
 
     _controller.forward();
     _locale = 'de_DE'; // Default locale
@@ -82,9 +79,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
     ref.watch(scheduleCoordinatorProvider);
     return const Scaffold(
       appBar: CalendarAppBar(),
-      body: SafeAreaWrapper(
-        child: CalendarView(),
-      ),
+      body: SafeAreaWrapper(child: CalendarView()),
     );
   }
 }

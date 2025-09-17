@@ -16,10 +16,10 @@ abstract class PartnerUiState with _$PartnerUiState {
   const PartnerUiState._();
 
   factory PartnerUiState.initial() => const PartnerUiState(
-        isLoading: false,
-        partnerConfigName: null,
-        partnerDutyGroup: null,
-        partnerAccentColorValue: null,
-        myAccentColorValue: null,
-      );
+    isLoading: false,
+    partnerConfigName: null,
+    partnerDutyGroup: null,
+    partnerAccentColorValue: null,
+    myAccentColorValue: null,
+  );
 }

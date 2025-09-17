@@ -9,11 +9,14 @@ class AnimatedCalendarDay extends StatefulWidget {
   final String? partnerDutyAbbreviation;
   final int? partnerAccentColorValue;
   final int? myAccentColorValue;
+  final int? holidayAccentColorValue;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
   final bool isSelected;
   final VoidCallback? onTap;
+  final bool hasSchoolHoliday;
+  final String? schoolHolidayName;
 
   const AnimatedCalendarDay({
     super.key,
@@ -22,11 +25,14 @@ class AnimatedCalendarDay extends StatefulWidget {
     this.partnerDutyAbbreviation,
     this.partnerAccentColorValue,
     this.myAccentColorValue,
+    this.holidayAccentColorValue,
     required this.dayType,
     this.width,
     this.height,
     required this.isSelected,
     this.onTap,
+    this.hasSchoolHoliday = false,
+    this.schoolHolidayName,
   });
 
   @override
@@ -51,7 +57,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
     final bool hasPrimary =
         widget.dutyAbbreviation != null && widget.dutyAbbreviation!.isNotEmpty;
-    final bool hasPartner = widget.partnerDutyAbbreviation != null &&
+    final bool hasPartner =
+        widget.partnerDutyAbbreviation != null &&
         widget.partnerDutyAbbreviation!.isNotEmpty;
 
     return InkWell(
@@ -68,17 +75,29 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Text(
-                '${widget.day.day}',
-                style: dayStyle,
-              ),
+              padding: const EdgeInsets.only(top: 2.0),
+              child: Text('${widget.day.day}', style: dayStyle),
             ),
+            // School holiday indicator (between date and chips)
+            // Only show if we have a holiday and a color value (to avoid flickering)
+            if (widget.hasSchoolHoliday &&
+                widget.holidayAccentColorValue != null)
+              Container(
+                margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
+                height: 2,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color(
+                    widget.holidayAccentColorValue!,
+                  ).withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
             // Spacer to push chips to bottom when primary chips are missing
             if (!hasPrimary && hasPartner) const Spacer(),
             if (hasPrimary || hasPartner)
               Padding(
-                padding: const EdgeInsets.only(top: 4.0),
+                padding: const EdgeInsets.only(top: 1.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -88,13 +107,13 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
                       Container(
                         margin: const EdgeInsets.only(bottom: 2.0),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 3.0, vertical: 1.0),
+                          horizontal: 3.0,
+                          vertical: 1.0,
+                        ),
                         decoration: dutyBadgeDecoration,
                         child: Text(
                           widget.dutyAbbreviation!,
-                          style: dutyBadgeTextStyle.copyWith(
-                            fontSize: 10.0,
-                          ),
+                          style: dutyBadgeTextStyle.copyWith(fontSize: 10.0),
                         ),
                       ),
                     // Second row: Partner duty group chip (always at bottom)
@@ -102,13 +121,13 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
                         widget.partnerDutyAbbreviation!.isNotEmpty)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 3.0, vertical: 1.0),
+                          horizontal: 3.0,
+                          vertical: 1.0,
+                        ),
                         decoration: partnerBadgeDecoration,
                         child: Text(
                           widget.partnerDutyAbbreviation!,
-                          style: partnerBadgeTextStyle.copyWith(
-                            fontSize: 10.0,
-                          ),
+                          style: partnerBadgeTextStyle.copyWith(fontSize: 10.0),
                         ),
                       ),
                   ],
@@ -127,10 +146,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   TextStyle _getDayTextStyle(ThemeData theme) {
     switch (widget.dayType) {
       case CalendarDayType.default_:
-        return const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        );
+        return const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
       case CalendarDayType.outside:
         return TextStyle(
           fontSize: 16,
@@ -144,10 +160,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           color: Colors.white,
         );
       case CalendarDayType.today:
-        return const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        );
+        return const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
     }
   }
 
@@ -272,20 +285,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   }
 
   EdgeInsets _getMargin() {
-    switch (widget.dayType) {
-      case CalendarDayType.default_:
-      case CalendarDayType.outside:
-        return const EdgeInsets.all(2);
-      case CalendarDayType.selected:
-      case CalendarDayType.today:
-        return const EdgeInsets.all(1);
-    }
+    return const EdgeInsets.all(2);
   }
 }
 
-enum CalendarDayType {
-  default_,
-  outside,
-  selected,
-  today,
-}
+enum CalendarDayType { default_, outside, selected, today }

@@ -16,10 +16,7 @@ class SetupStepWrapper extends StatelessWidget {
       controller: scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          child,
-          const SizedBox(height: 32),
-        ],
+        children: [child, const SizedBox(height: 32)],
       ),
     );
   }

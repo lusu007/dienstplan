@@ -21,8 +21,9 @@ class ConfigNotifier extends _$ConfigNotifier {
   @override
   Future<ConfigUiState> build() async {
     _getConfigsUseCase ??= await ref.read(getConfigsUseCaseProvider.future);
-    _setActiveConfigUseCase ??=
-        await ref.read(setActiveConfigUseCaseProvider.future);
+    _setActiveConfigUseCase ??= await ref.read(
+      setActiveConfigUseCaseProvider.future,
+    );
     _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _configQueryService ??= ref.read(configQueryServiceProvider);
@@ -35,7 +36,8 @@ class ConfigNotifier extends _$ConfigNotifier {
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
-      final activeConfigName = settings?.activeConfigName ??
+      final activeConfigName =
+          settings?.activeConfigName ??
           (configs.isNotEmpty ? configs.first.name : null);
 
       final dutyGroups = activeConfigName != null
@@ -44,11 +46,11 @@ class ConfigNotifier extends _$ConfigNotifier {
 
       final DutyScheduleConfig? activeConfig = (configs.isNotEmpty)
           ? (activeConfigName != null
-              ? configs.firstWhere(
-                  (c) => c.name == activeConfigName,
-                  orElse: () => configs.first,
-                )
-              : configs.first)
+                ? configs.firstWhere(
+                    (c) => c.name == activeConfigName,
+                    orElse: () => configs.first,
+                  )
+                : configs.first)
           : null;
 
       return ConfigUiState(
@@ -84,24 +86,30 @@ class ConfigNotifier extends _$ConfigNotifier {
       }
 
       // Update duty groups for new config
-      final dutyGroups =
-          _configQueryService!.extractDutyGroups(current.configs, configName);
+      final dutyGroups = _configQueryService!.extractDutyGroups(
+        current.configs,
+        configName,
+      );
       final activeConfig = current.configs.firstWhere(
         (config) => config.name == configName,
         orElse: () => current.configs.first,
       );
 
-      state = AsyncData(current.copyWith(
-        activeConfigName: configName,
-        dutyGroups: dutyGroups,
-        activeConfig: activeConfig,
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          activeConfigName: configName,
+          dutyGroups: dutyGroups,
+          activeConfig: activeConfig,
+          isLoading: false,
+        ),
+      );
     } catch (e) {
-      state = AsyncData(current.copyWith(
-        error: 'Failed to set active config',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          error: 'Failed to set active config',
+          isLoading: false,
+        ),
+      );
     }
   }
 
@@ -114,7 +122,8 @@ class ConfigNotifier extends _$ConfigNotifier {
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
-      final activeConfigName = settings?.activeConfigName ??
+      final activeConfigName =
+          settings?.activeConfigName ??
           (configs.isNotEmpty ? configs.first.name : null);
 
       final dutyGroups = activeConfigName != null
@@ -123,25 +132,26 @@ class ConfigNotifier extends _$ConfigNotifier {
 
       final DutyScheduleConfig? activeConfig = (configs.isNotEmpty)
           ? (activeConfigName != null
-              ? configs.firstWhere(
-                  (c) => c.name == activeConfigName,
-                  orElse: () => configs.first,
-                )
-              : configs.first)
+                ? configs.firstWhere(
+                    (c) => c.name == activeConfigName,
+                    orElse: () => configs.first,
+                  )
+                : configs.first)
           : null;
 
-      state = AsyncData(current.copyWith(
-        configs: configs,
-        activeConfigName: activeConfigName ?? '',
-        dutyGroups: dutyGroups,
-        activeConfig: activeConfig,
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          configs: configs,
+          activeConfigName: activeConfigName ?? '',
+          dutyGroups: dutyGroups,
+          activeConfig: activeConfig,
+          isLoading: false,
+        ),
+      );
     } catch (e) {
-      state = AsyncData(current.copyWith(
-        error: 'Failed to refresh configs',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(error: 'Failed to refresh configs', isLoading: false),
+      );
     }
   }
 

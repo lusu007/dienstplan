@@ -36,7 +36,8 @@ abstract class BaseCache<T> {
   /// Log cache operation
   void logOperation(String operation, [dynamic data]) {
     AppLogger.d(
-        '$cacheName Cache: $operation ${data != null ? '- $data' : ''}');
+      '$cacheName Cache: $operation ${data != null ? '- $data' : ''}',
+    );
   }
 
   /// Log cache error

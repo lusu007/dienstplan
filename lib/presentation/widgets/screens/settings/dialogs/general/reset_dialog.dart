@@ -9,6 +9,7 @@ import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 
 class ResetDialog {
   static void show(BuildContext context) {
@@ -33,13 +34,19 @@ class ResetDialog {
               textStyle: const TextStyle(fontSize: 14),
             ),
             onPressed: () async {
-              final container =
-                  ProviderScope.containerOf(context, listen: false);
-              final configService =
-                  await container.read(scheduleConfigServiceProvider.future);
+              final container = ProviderScope.containerOf(
+                context,
+                listen: false,
+              );
+              final configService = await container.read(
+                scheduleConfigServiceProvider.future,
+              );
 
               await configService.resetSetup();
               await container.read(settingsProvider.notifier).reset();
+
+              // Invalidate school holidays provider to clear cached data
+              container.invalidate(schoolHolidaysProvider);
 
               if (context.mounted) {
                 Navigator.of(context, rootNavigator: true).pop();

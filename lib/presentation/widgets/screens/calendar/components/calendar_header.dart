@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
-import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_navigation_helper.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -35,15 +34,16 @@ class CalendarHeader extends ConsumerWidget {
 
   void _onLeftChevronTap(WidgetRef ref) {
     final newFocusedDay = CalendarNavigationHelper.getPreviousPeriod(
-      ref.read(calendarProvider).value?.focusedDay ?? DateTime.now(),
-      ref.read(calendarProvider).value?.calendarFormat ?? CalendarFormat.month,
+      ref.read(scheduleCoordinatorProvider).value?.focusedDay ?? DateTime.now(),
+      ref.read(scheduleCoordinatorProvider).value?.calendarFormat ??
+          CalendarFormat.month,
     );
-    ref.read(calendarProvider.notifier).setFocusedDay(newFocusedDay);
+    ref.read(scheduleCoordinatorProvider.notifier).setFocusedDay(newFocusedDay);
   }
 
   void _onRightChevronTap(WidgetRef ref) {
     final newFocusedDay = CalendarNavigationHelper.getNextPeriod(
-      ref.read(calendarProvider).value?.focusedDay ?? DateTime.now(),
+      ref.read(scheduleCoordinatorProvider).value?.focusedDay ?? DateTime.now(),
       ref.read(scheduleCoordinatorProvider).value?.calendarFormat ??
           CalendarFormat.month,
     );

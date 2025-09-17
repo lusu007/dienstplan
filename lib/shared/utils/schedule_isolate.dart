@@ -23,10 +23,7 @@ class ScheduleGenerationResult {
   final List<Schedule> schedules;
   final String? error;
 
-  ScheduleGenerationResult({
-    required this.schedules,
-    this.error,
-  });
+  ScheduleGenerationResult({required this.schedules, this.error});
 }
 
 class ShutdownMessage extends IsolateMessage {}
@@ -132,7 +129,10 @@ class ScheduleGenerationIsolate {
 
     // Pre-calculate normalized start date
     final normalizedStartDate = DateTime.utc(
-        config.startDate.year, config.startDate.month, config.startDate.day);
+      config.startDate.year,
+      config.startDate.month,
+      config.startDate.day,
+    );
 
     // Pre-calculate rhythm patterns for better performance
     final rhythmPatterns = <String, List<List<String>>>{};
@@ -163,7 +163,7 @@ class ScheduleGenerationIsolate {
             _floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
         final weekIndex =
             ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
-                rhythm.lengthWeeks;
+            rhythm.lengthWeeks;
         final dayIndex = ((deltaDays % 7) + 7) % 7;
 
         if (weekIndex >= 0 &&

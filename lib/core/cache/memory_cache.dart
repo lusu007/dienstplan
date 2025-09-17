@@ -15,11 +15,7 @@ class MemoryCache<T> extends BaseCache<T> {
   int _misses = 0;
   DateTime _lastAccess = DateTime.now();
 
-  MemoryCache({
-    required super.cacheName,
-    super.defaultTtl,
-    super.maxSize,
-  });
+  MemoryCache({required super.cacheName, super.defaultTtl, super.maxSize});
 
   @override
   T? get(String key) {

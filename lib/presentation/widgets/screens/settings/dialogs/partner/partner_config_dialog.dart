@@ -60,24 +60,26 @@ class PartnerConfigDialog {
                   children: [
                     Text(l10n.selectDutySchedule),
                     const SizedBox(height: 8),
-                    ...configs.map((c) => SelectionCard(
-                          title: _buildConfigTitle(c),
-                          subtitle: _buildConfigSubtitle(c),
-                          isSelected: state?.partnerConfigName == c.name,
-                          onTap: () async {
-                            // Close dialog immediately
-                            Navigator.of(context).pop();
+                    ...configs.map(
+                      (c) => SelectionCard(
+                        title: _buildConfigTitle(c),
+                        subtitle: _buildConfigSubtitle(c),
+                        isSelected: state?.partnerConfigName == c.name,
+                        onTap: () async {
+                          // Close dialog immediately
+                          Navigator.of(context).pop();
 
-                            // Perform operations after dialog is closed
-                            await notifier.setPartnerConfigName(c.name);
-                            // Reset partner duty group when duty plan changes
-                            await notifier.setPartnerDutyGroup(null);
-                            if (initialFocused != null) {
-                              await notifier.setFocusedDay(initialFocused);
-                            }
-                          },
-                          useDialogStyle: true,
-                        )),
+                          // Perform operations after dialog is closed
+                          await notifier.setPartnerConfigName(c.name);
+                          // Reset partner duty group when duty plan changes
+                          await notifier.setPartnerDutyGroup(null);
+                          if (initialFocused != null) {
+                            await notifier.setFocusedDay(initialFocused);
+                          }
+                        },
+                        useDialogStyle: true,
+                      ),
+                    ),
                     SelectionCard(
                       title: l10n.noDutySchedule,
                       isSelected: (state?.partnerConfigName ?? '').isEmpty,

@@ -9,7 +9,6 @@ part of 'duty_schedule_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -27,7 +26,9 @@ mixin _$DutyScheduleConfig {
   @pragma('vm:prefer-inline')
   $DutyScheduleConfigCopyWith<DutyScheduleConfig> get copyWith =>
       _$DutyScheduleConfigCopyWithImpl<DutyScheduleConfig>(
-          this as DutyScheduleConfig, _$identity);
+        this as DutyScheduleConfig,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -37,22 +38,27 @@ mixin _$DutyScheduleConfig {
             (identical(other.version, version) || other.version == version) &&
             (identical(other.meta, meta) || other.meta == meta) &&
             const DeepCollectionEquality().equals(other.dutyTypes, dutyTypes) &&
-            const DeepCollectionEquality()
-                .equals(other.dutyTypeOrder, dutyTypeOrder) &&
+            const DeepCollectionEquality().equals(
+              other.dutyTypeOrder,
+              dutyTypeOrder,
+            ) &&
             const DeepCollectionEquality().equals(other.rhythms, rhythms) &&
-            const DeepCollectionEquality()
-                .equals(other.dutyGroups, dutyGroups));
+            const DeepCollectionEquality().equals(
+              other.dutyGroups,
+              dutyGroups,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      version,
-      meta,
-      const DeepCollectionEquality().hash(dutyTypes),
-      const DeepCollectionEquality().hash(dutyTypeOrder),
-      const DeepCollectionEquality().hash(rhythms),
-      const DeepCollectionEquality().hash(dutyGroups));
+    runtimeType,
+    version,
+    meta,
+    const DeepCollectionEquality().hash(dutyTypes),
+    const DeepCollectionEquality().hash(dutyTypeOrder),
+    const DeepCollectionEquality().hash(rhythms),
+    const DeepCollectionEquality().hash(dutyGroups),
+  );
 
   @override
   String toString() {
@@ -63,16 +69,18 @@ mixin _$DutyScheduleConfig {
 /// @nodoc
 abstract mixin class $DutyScheduleConfigCopyWith<$Res> {
   factory $DutyScheduleConfigCopyWith(
-          DutyScheduleConfig value, $Res Function(DutyScheduleConfig) _then) =
-      _$DutyScheduleConfigCopyWithImpl;
+    DutyScheduleConfig value,
+    $Res Function(DutyScheduleConfig) _then,
+  ) = _$DutyScheduleConfigCopyWithImpl;
   @useResult
-  $Res call(
-      {String version,
-      Meta meta,
-      Map<String, DutyType> dutyTypes,
-      List<String> dutyTypeOrder,
-      Map<String, Rhythm> rhythms,
-      List<DutyGroup> dutyGroups});
+  $Res call({
+    String version,
+    Meta meta,
+    Map<String, DutyType> dutyTypes,
+    List<String> dutyTypeOrder,
+    Map<String, Rhythm> rhythms,
+    List<DutyGroup> dutyGroups,
+  });
 
   $MetaCopyWith<$Res> get meta;
 }
@@ -97,32 +105,34 @@ class _$DutyScheduleConfigCopyWithImpl<$Res>
     Object? rhythms = null,
     Object? dutyGroups = null,
   }) {
-    return _then(_self.copyWith(
-      version: null == version
-          ? _self.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      meta: null == meta
-          ? _self.meta
-          : meta // ignore: cast_nullable_to_non_nullable
-              as Meta,
-      dutyTypes: null == dutyTypes
-          ? _self.dutyTypes
-          : dutyTypes // ignore: cast_nullable_to_non_nullable
-              as Map<String, DutyType>,
-      dutyTypeOrder: null == dutyTypeOrder
-          ? _self.dutyTypeOrder
-          : dutyTypeOrder // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      rhythms: null == rhythms
-          ? _self.rhythms
-          : rhythms // ignore: cast_nullable_to_non_nullable
-              as Map<String, Rhythm>,
-      dutyGroups: null == dutyGroups
-          ? _self.dutyGroups
-          : dutyGroups // ignore: cast_nullable_to_non_nullable
-              as List<DutyGroup>,
-    ));
+    return _then(
+      _self.copyWith(
+        version: null == version
+            ? _self.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String,
+        meta: null == meta
+            ? _self.meta
+            : meta // ignore: cast_nullable_to_non_nullable
+                  as Meta,
+        dutyTypes: null == dutyTypes
+            ? _self.dutyTypes
+            : dutyTypes // ignore: cast_nullable_to_non_nullable
+                  as Map<String, DutyType>,
+        dutyTypeOrder: null == dutyTypeOrder
+            ? _self.dutyTypeOrder
+            : dutyTypeOrder // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        rhythms: null == rhythms
+            ? _self.rhythms
+            : rhythms // ignore: cast_nullable_to_non_nullable
+                  as Map<String, Rhythm>,
+        dutyGroups: null == dutyGroups
+            ? _self.dutyGroups
+            : dutyGroups // ignore: cast_nullable_to_non_nullable
+                  as List<DutyGroup>,
+      ),
+    );
   }
 
   /// Create a copy of DutyScheduleConfig
@@ -230,20 +240,27 @@ extension DutyScheduleConfigPatterns on DutyScheduleConfig {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            String version,
-            Meta meta,
-            Map<String, DutyType> dutyTypes,
-            List<String> dutyTypeOrder,
-            Map<String, Rhythm> rhythms,
-            List<DutyGroup> dutyGroups)?
-        $default, {
+      String version,
+      Meta meta,
+      Map<String, DutyType> dutyTypes,
+      List<String> dutyTypeOrder,
+      Map<String, Rhythm> rhythms,
+      List<DutyGroup> dutyGroups,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _DutyScheduleConfig() when $default != null:
-        return $default(_that.version, _that.meta, _that.dutyTypes,
-            _that.dutyTypeOrder, _that.rhythms, _that.dutyGroups);
+        return $default(
+          _that.version,
+          _that.meta,
+          _that.dutyTypes,
+          _that.dutyTypeOrder,
+          _that.rhythms,
+          _that.dutyGroups,
+        );
       case _:
         return orElse();
     }
@@ -265,19 +282,26 @@ extension DutyScheduleConfigPatterns on DutyScheduleConfig {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            String version,
-            Meta meta,
-            Map<String, DutyType> dutyTypes,
-            List<String> dutyTypeOrder,
-            Map<String, Rhythm> rhythms,
-            List<DutyGroup> dutyGroups)
-        $default,
+      String version,
+      Meta meta,
+      Map<String, DutyType> dutyTypes,
+      List<String> dutyTypeOrder,
+      Map<String, Rhythm> rhythms,
+      List<DutyGroup> dutyGroups,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DutyScheduleConfig():
-        return $default(_that.version, _that.meta, _that.dutyTypes,
-            _that.dutyTypeOrder, _that.rhythms, _that.dutyGroups);
+        return $default(
+          _that.version,
+          _that.meta,
+          _that.dutyTypes,
+          _that.dutyTypeOrder,
+          _that.rhythms,
+          _that.dutyGroups,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -298,19 +322,26 @@ extension DutyScheduleConfigPatterns on DutyScheduleConfig {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            String version,
-            Meta meta,
-            Map<String, DutyType> dutyTypes,
-            List<String> dutyTypeOrder,
-            Map<String, Rhythm> rhythms,
-            List<DutyGroup> dutyGroups)?
-        $default,
+      String version,
+      Meta meta,
+      Map<String, DutyType> dutyTypes,
+      List<String> dutyTypeOrder,
+      Map<String, Rhythm> rhythms,
+      List<DutyGroup> dutyGroups,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DutyScheduleConfig() when $default != null:
-        return $default(_that.version, _that.meta, _that.dutyTypes,
-            _that.dutyTypeOrder, _that.rhythms, _that.dutyGroups);
+        return $default(
+          _that.version,
+          _that.meta,
+          _that.dutyTypes,
+          _that.dutyTypeOrder,
+          _that.rhythms,
+          _that.dutyGroups,
+        );
       case _:
         return null;
     }
@@ -320,18 +351,18 @@ extension DutyScheduleConfigPatterns on DutyScheduleConfig {
 /// @nodoc
 
 class _DutyScheduleConfig extends DutyScheduleConfig {
-  const _DutyScheduleConfig(
-      {required this.version,
-      required this.meta,
-      required final Map<String, DutyType> dutyTypes,
-      required final List<String> dutyTypeOrder,
-      required final Map<String, Rhythm> rhythms,
-      required final List<DutyGroup> dutyGroups})
-      : _dutyTypes = dutyTypes,
-        _dutyTypeOrder = dutyTypeOrder,
-        _rhythms = rhythms,
-        _dutyGroups = dutyGroups,
-        super._();
+  const _DutyScheduleConfig({
+    required this.version,
+    required this.meta,
+    required final Map<String, DutyType> dutyTypes,
+    required final List<String> dutyTypeOrder,
+    required final Map<String, Rhythm> rhythms,
+    required final List<DutyGroup> dutyGroups,
+  }) : _dutyTypes = dutyTypes,
+       _dutyTypeOrder = dutyTypeOrder,
+       _rhythms = rhythms,
+       _dutyGroups = dutyGroups,
+       super._();
 
   @override
   final String version;
@@ -384,24 +415,31 @@ class _DutyScheduleConfig extends DutyScheduleConfig {
             other is _DutyScheduleConfig &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.meta, meta) || other.meta == meta) &&
-            const DeepCollectionEquality()
-                .equals(other._dutyTypes, _dutyTypes) &&
-            const DeepCollectionEquality()
-                .equals(other._dutyTypeOrder, _dutyTypeOrder) &&
+            const DeepCollectionEquality().equals(
+              other._dutyTypes,
+              _dutyTypes,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._dutyTypeOrder,
+              _dutyTypeOrder,
+            ) &&
             const DeepCollectionEquality().equals(other._rhythms, _rhythms) &&
-            const DeepCollectionEquality()
-                .equals(other._dutyGroups, _dutyGroups));
+            const DeepCollectionEquality().equals(
+              other._dutyGroups,
+              _dutyGroups,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      version,
-      meta,
-      const DeepCollectionEquality().hash(_dutyTypes),
-      const DeepCollectionEquality().hash(_dutyTypeOrder),
-      const DeepCollectionEquality().hash(_rhythms),
-      const DeepCollectionEquality().hash(_dutyGroups));
+    runtimeType,
+    version,
+    meta,
+    const DeepCollectionEquality().hash(_dutyTypes),
+    const DeepCollectionEquality().hash(_dutyTypeOrder),
+    const DeepCollectionEquality().hash(_rhythms),
+    const DeepCollectionEquality().hash(_dutyGroups),
+  );
 
   @override
   String toString() {
@@ -413,17 +451,19 @@ class _DutyScheduleConfig extends DutyScheduleConfig {
 abstract mixin class _$DutyScheduleConfigCopyWith<$Res>
     implements $DutyScheduleConfigCopyWith<$Res> {
   factory _$DutyScheduleConfigCopyWith(
-          _DutyScheduleConfig value, $Res Function(_DutyScheduleConfig) _then) =
-      __$DutyScheduleConfigCopyWithImpl;
+    _DutyScheduleConfig value,
+    $Res Function(_DutyScheduleConfig) _then,
+  ) = __$DutyScheduleConfigCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {String version,
-      Meta meta,
-      Map<String, DutyType> dutyTypes,
-      List<String> dutyTypeOrder,
-      Map<String, Rhythm> rhythms,
-      List<DutyGroup> dutyGroups});
+  $Res call({
+    String version,
+    Meta meta,
+    Map<String, DutyType> dutyTypes,
+    List<String> dutyTypeOrder,
+    Map<String, Rhythm> rhythms,
+    List<DutyGroup> dutyGroups,
+  });
 
   @override
   $MetaCopyWith<$Res> get meta;
@@ -449,32 +489,34 @@ class __$DutyScheduleConfigCopyWithImpl<$Res>
     Object? rhythms = null,
     Object? dutyGroups = null,
   }) {
-    return _then(_DutyScheduleConfig(
-      version: null == version
-          ? _self.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      meta: null == meta
-          ? _self.meta
-          : meta // ignore: cast_nullable_to_non_nullable
-              as Meta,
-      dutyTypes: null == dutyTypes
-          ? _self._dutyTypes
-          : dutyTypes // ignore: cast_nullable_to_non_nullable
-              as Map<String, DutyType>,
-      dutyTypeOrder: null == dutyTypeOrder
-          ? _self._dutyTypeOrder
-          : dutyTypeOrder // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      rhythms: null == rhythms
-          ? _self._rhythms
-          : rhythms // ignore: cast_nullable_to_non_nullable
-              as Map<String, Rhythm>,
-      dutyGroups: null == dutyGroups
-          ? _self._dutyGroups
-          : dutyGroups // ignore: cast_nullable_to_non_nullable
-              as List<DutyGroup>,
-    ));
+    return _then(
+      _DutyScheduleConfig(
+        version: null == version
+            ? _self.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String,
+        meta: null == meta
+            ? _self.meta
+            : meta // ignore: cast_nullable_to_non_nullable
+                  as Meta,
+        dutyTypes: null == dutyTypes
+            ? _self._dutyTypes
+            : dutyTypes // ignore: cast_nullable_to_non_nullable
+                  as Map<String, DutyType>,
+        dutyTypeOrder: null == dutyTypeOrder
+            ? _self._dutyTypeOrder
+            : dutyTypeOrder // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        rhythms: null == rhythms
+            ? _self._rhythms
+            : rhythms // ignore: cast_nullable_to_non_nullable
+                  as Map<String, Rhythm>,
+        dutyGroups: null == dutyGroups
+            ? _self._dutyGroups
+            : dutyGroups // ignore: cast_nullable_to_non_nullable
+                  as List<DutyGroup>,
+      ),
+    );
   }
 
   /// Create a copy of DutyScheduleConfig
@@ -487,5 +529,3 @@ class __$DutyScheduleConfigCopyWithImpl<$Res>
     });
   }
 }
-
-// dart format on

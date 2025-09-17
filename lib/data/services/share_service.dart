@@ -50,7 +50,8 @@ class ShareService {
       );
 
       AppLogger.i(
-          'ShareService: App shared successfully via native share with image');
+        'ShareService: App shared successfully via native share with image',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('ShareService: Error sharing app with image', e, stackTrace);
 
@@ -60,17 +61,18 @@ class ShareService {
         final String shareText = _buildShareText(packageInfo, l10n);
 
         await SharePlus.instance.share(
-          ShareParams(
-            text: shareText,
-            subject: l10n.shareAppSubject,
-          ),
+          ShareParams(text: shareText, subject: l10n.shareAppSubject),
         );
 
         AppLogger.i(
-            'ShareService: App shared successfully via fallback text share');
+          'ShareService: App shared successfully via fallback text share',
+        );
       } catch (fallbackError, fallbackStackTrace) {
-        AppLogger.e('ShareService: Fallback sharing failed', fallbackError,
-            fallbackStackTrace);
+        AppLogger.e(
+          'ShareService: Fallback sharing failed',
+          fallbackError,
+          fallbackStackTrace,
+        );
         // Last resort: Try to open store directly
         await _openAppStore(l10n);
       }
@@ -84,10 +86,7 @@ class ShareService {
 
   /// Builds the share text with app information
   String _buildShareText(PackageInfo packageInfo, AppLocalizations l10n) {
-    return l10n.shareAppMessage(
-      _appStoreUrl,
-      _playStoreUrl,
-    );
+    return l10n.shareAppMessage(_appStoreUrl, _playStoreUrl);
   }
 
   /// Creates an image with the share text for WhatsApp Status compatibility
@@ -130,22 +129,21 @@ class ShareService {
       );
 
       final boxPaint = Paint()
-        ..color = const Color(0xFFFEFEFE) // Light theme surface color
+        ..color =
+            const Color(0xFFFEFEFE) // Light theme surface color
         ..style = PaintingStyle.fill;
 
       canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          logoBoxRect,
-          const Radius.circular(20),
-        ),
+        RRect.fromRectAndRadius(logoBoxRect, const Radius.circular(20)),
         boxPaint,
       );
 
       // Load and draw the app logo
       try {
         final ByteData logoData = await rootBundle.load(AppInfo.appIconPath);
-        final ui.Codec codec =
-            await ui.instantiateImageCodec(logoData.buffer.asUint8List());
+        final ui.Codec codec = await ui.instantiateImageCodec(
+          logoData.buffer.asUint8List(),
+        );
         final ui.FrameInfo frameInfo = await codec.getNextFrame();
         final ui.Image logoImage = frameInfo.image;
 
@@ -158,7 +156,11 @@ class ShareService {
         canvas.drawImageRect(
           logoImage,
           Rect.fromLTWH(
-              0, 0, logoImage.width.toDouble(), logoImage.height.toDouble()),
+            0,
+            0,
+            logoImage.width.toDouble(),
+            logoImage.height.toDouble(),
+          ),
           logoRect,
           Paint(),
         );
@@ -209,10 +211,7 @@ class ShareService {
       textPainter.layout(maxWidth: width * 0.85);
 
       // Position text in the center-lower area
-      final textOffset = Offset(
-        (width - textPainter.width) / 2,
-        height * 0.45,
-      );
+      final textOffset = Offset((width - textPainter.width) / 2, height * 0.45);
 
       textPainter.paint(canvas, textOffset);
 
@@ -240,7 +239,8 @@ class ShareService {
       // Save to temporary file
       final tempDir = await getTemporaryDirectory();
       final file = File(
-          '${tempDir.path}/dienstplan_share_${DateTime.now().millisecondsSinceEpoch}.png');
+        '${tempDir.path}/dienstplan_share_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
       await file.writeAsBytes(pngBytes);
 
       AppLogger.i('ShareService: Share image created successfully');

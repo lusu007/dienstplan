@@ -14,7 +14,7 @@ class ConfigRepositoryImpl implements domain_repo.ConfigRepository {
   final ExceptionMapper _exceptionMapper;
 
   ConfigRepositoryImpl(this._configService, {ExceptionMapper? exceptionMapper})
-      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+    : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   @override
   Future<List<domain.DutyScheduleConfig>> getConfigs() async {
@@ -23,7 +23,8 @@ class ConfigRepositoryImpl implements domain_repo.ConfigRepository {
       final dataConfigs = _configService.configs;
       final domainConfigs = dataConfigs.map(_toDomainConfig).toList();
       AppLogger.i(
-          'ConfigRepository: Retrieved ${domainConfigs.length} configs');
+        'ConfigRepository: Retrieved ${domainConfigs.length} configs',
+      );
       return domainConfigs;
     } catch (e, stackTrace) {
       AppLogger.e('ConfigRepository: Error getting configs', e, stackTrace);
@@ -53,7 +54,10 @@ class ConfigRepositoryImpl implements domain_repo.ConfigRepository {
       return domainConfig;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ConfigRepository: Error getting default config', e, stackTrace);
+        'ConfigRepository: Error getting default config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -102,14 +106,18 @@ class ConfigRepositoryImpl implements domain_repo.ConfigRepository {
       AppLogger.i('ConfigRepository: Default config set successfully');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ConfigRepository: Error setting default config', e, stackTrace);
+        'ConfigRepository: Error setting default config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
 
   @override
   Future<Result<void>> setDefaultConfigSafe(
-      domain.DutyScheduleConfig config) async {
+    domain.DutyScheduleConfig config,
+  ) async {
     try {
       await setDefaultConfig(config);
       return Result.success<void>(null);

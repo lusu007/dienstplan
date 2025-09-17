@@ -15,14 +15,17 @@ class EnsureMonthSchedulesUseCase {
     required String configName,
     required DateTime monthStart,
   }) async {
-    final DateTime monthEnd =
-        DateTime(monthStart.year, monthStart.month + 1, 0);
-    final List<Schedule> existing =
-        await _getSchedulesUseCase.executeForDateRange(
-      startDate: monthStart,
-      endDate: monthEnd,
-      configName: configName,
+    final DateTime monthEnd = DateTime(
+      monthStart.year,
+      monthStart.month + 1,
+      0,
     );
+    final List<Schedule> existing = await _getSchedulesUseCase
+        .executeForDateRange(
+          startDate: monthStart,
+          endDate: monthEnd,
+          configName: configName,
+        );
     final bool hasValid = _hasValidSchedules(existing, configName);
 
     if (hasValid) {
@@ -39,8 +42,9 @@ class EnsureMonthSchedulesUseCase {
 
   bool _hasValidSchedules(List<Schedule> schedules, String configName) {
     // Check if we have any schedules for the correct config (including free days with "-")
-    final configSchedules =
-        schedules.where((s) => s.configName == configName).toList();
+    final configSchedules = schedules
+        .where((s) => s.configName == configName)
+        .toList();
 
     if (configSchedules.isEmpty) {
       return false;

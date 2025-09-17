@@ -38,33 +38,35 @@ class DutyScheduleDialog {
 
     showDialog(
       context: context,
-      builder: (dialogContext) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(scheduleCoordinatorProvider);
-        final state = asyncState.value;
-        final configs = state?.configs ?? const [];
-        if (configs.isEmpty) {
+      builder: (dialogContext) => Consumer(
+        builder: (context, ref, _) {
+          final asyncState = ref.watch(scheduleCoordinatorProvider);
+          final state = asyncState.value;
+          final configs = state?.configs ?? const [];
+          if (configs.isEmpty) {
+            return AlertDialog(
+              title: Text(l10n.selectDutySchedule),
+              content: const Text('No duty schedules available'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          }
           return AlertDialog(
-            title: Text(l10n.selectDutySchedule),
-            content: const Text('No duty schedules available'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('OK'),
-              )
-            ],
-          );
-        }
-        return AlertDialog(
-          title: Text(l10n.myDutySchedule),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.selectDutySchedule),
-                  const SizedBox(height: 8),
-                  ...configs.map((config) => SelectionCard(
+            title: Text(l10n.myDutySchedule),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.selectDutySchedule),
+                    const SizedBox(height: 8),
+                    ...configs.map(
+                      (config) => SelectionCard(
                         title: _buildConfigTitle(config),
                         subtitle: _buildConfigSubtitle(config),
                         isSelected: state?.activeConfigName == config.name,
@@ -82,21 +84,23 @@ class DutyScheduleDialog {
                                 .setPreferredDutyGroup('');
                           } catch (e, stackTrace) {
                             AppLogger.e(
-                                'DutyScheduleDialog: Error setting active config',
-                                e,
-                                stackTrace);
+                              'DutyScheduleDialog: Error setting active config',
+                              e,
+                              stackTrace,
+                            );
                             // Show error in parent context since dialog is closed
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.surface,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).colorScheme.surface,
                                   content: Text(
                                     'Error setting active config: ${e.toString()}',
                                     style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
                                     ),
                                   ),
                                   behavior: SnackBarBehavior.floating,
@@ -107,13 +111,15 @@ class DutyScheduleDialog {
                         },
                         mainColor: AppColors.primary,
                         useDialogStyle: true,
-                      )),
-                ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

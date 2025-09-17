@@ -3,11 +3,7 @@ class DutyType {
   final bool isAllDay;
   final String? icon;
 
-  DutyType({
-    required this.label,
-    this.isAllDay = false,
-    this.icon,
-  });
+  DutyType({required this.label, this.isAllDay = false, this.icon});
 
   Map<String, dynamic> toMap() {
     return {

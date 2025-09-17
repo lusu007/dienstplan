@@ -18,26 +18,31 @@ class SettingsCache {
     Future<Settings?> Function() settingsLoader,
   ) async {
     // Check if we have valid cached settings
-    final cacheValidity =
-        _isStartupPhase ? _startupCacheValidity : _cacheValidity;
-    final isValid = _cachedSettings != null &&
+    final cacheValidity = _isStartupPhase
+        ? _startupCacheValidity
+        : _cacheValidity;
+    final isValid =
+        _cachedSettings != null &&
         _lastCacheTime != null &&
         DateTime.now().difference(_lastCacheTime!) < cacheValidity;
 
     if (isValid) {
       AppLogger.i(
-          'SettingsCache: Cache hit - returning cached settings (avoided database query)');
+        'SettingsCache: Cache hit - returning cached settings (avoided database query)',
+      );
       return _cachedSettings;
     }
 
     // Debug logging for cache state
     AppLogger.d(
-        'SettingsCache: Cache state - cachedSettings: ${_cachedSettings != null}, lastCacheTime: ${_lastCacheTime?.toIso8601String()}, isValid: $isValid, isStartupPhase: $_isStartupPhase');
+      'SettingsCache: Cache state - cachedSettings: ${_cachedSettings != null}, lastCacheTime: ${_lastCacheTime?.toIso8601String()}, isValid: $isValid, isStartupPhase: $_isStartupPhase',
+    );
 
     // If already loading, wait for the current request to complete
     if (_loadingCompleter != null) {
       AppLogger.i(
-          'SettingsCache: Already loading settings, waiting for completion');
+        'SettingsCache: Already loading settings, waiting for completion',
+      );
       return _loadingCompleter!.future;
     }
 
@@ -88,13 +93,15 @@ class SettingsCache {
   static void endStartupPhase() {
     _isStartupPhase = false;
     AppLogger.i(
-        'SettingsCache: Startup phase ended, switching to normal cache validity');
+      'SettingsCache: Startup phase ended, switching to normal cache validity',
+    );
   }
 
   /// Check if cache is valid
   static bool get isCacheValid {
-    final cacheValidity =
-        _isStartupPhase ? _startupCacheValidity : _cacheValidity;
+    final cacheValidity = _isStartupPhase
+        ? _startupCacheValidity
+        : _cacheValidity;
     return _cachedSettings != null &&
         _lastCacheTime != null &&
         DateTime.now().difference(_lastCacheTime!) < cacheValidity;
@@ -102,8 +109,9 @@ class SettingsCache {
 
   /// Get cache statistics
   static Map<String, dynamic> get cacheStatistics {
-    final cacheValidity =
-        _isStartupPhase ? _startupCacheValidity : _cacheValidity;
+    final cacheValidity = _isStartupPhase
+        ? _startupCacheValidity
+        : _cacheValidity;
     return {
       'hasCachedSettings': _cachedSettings != null,
       'lastCacheTime': _lastCacheTime?.toIso8601String(),

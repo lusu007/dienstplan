@@ -9,20 +9,25 @@ class GetSchedulesUseCase {
   final ScheduleRepository _scheduleRepository;
   final ExceptionMapper _exceptionMapper;
 
-  GetSchedulesUseCase(this._scheduleRepository,
-      {ExceptionMapper? exceptionMapper})
-      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  GetSchedulesUseCase(
+    this._scheduleRepository, {
+    ExceptionMapper? exceptionMapper,
+  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   Future<List<Schedule>> execute() async {
     try {
       AppLogger.i('GetSchedulesUseCase: Executing get schedules');
       final schedules = await _scheduleRepository.getSchedules();
       AppLogger.i(
-          'GetSchedulesUseCase: Retrieved ${schedules.length} schedules');
+        'GetSchedulesUseCase: Retrieved ${schedules.length} schedules',
+      );
       return schedules;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'GetSchedulesUseCase: Error getting schedules', e, stackTrace);
+        'GetSchedulesUseCase: Error getting schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -44,7 +49,8 @@ class GetSchedulesUseCase {
   }) async {
     try {
       AppLogger.i(
-          'GetSchedulesUseCase: Executing get schedules for date range: $startDate to $endDate${configName != null ? ' for config: $configName' : ''}');
+        'GetSchedulesUseCase: Executing get schedules for date range: $startDate to $endDate${configName != null ? ' for config: $configName' : ''}',
+      );
 
       // Business logic: Validate date range
       if (startDate.isAfter(endDate)) {
@@ -58,11 +64,15 @@ class GetSchedulesUseCase {
       );
 
       AppLogger.i(
-          'GetSchedulesUseCase: Retrieved ${schedules.length} schedules for date range');
+        'GetSchedulesUseCase: Retrieved ${schedules.length} schedules for date range',
+      );
       return schedules;
     } catch (e, stackTrace) {
-      AppLogger.e('GetSchedulesUseCase: Error getting schedules for date range',
-          e, stackTrace);
+      AppLogger.e(
+        'GetSchedulesUseCase: Error getting schedules for date range',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -92,7 +102,10 @@ class GetSchedulesUseCase {
       AppLogger.i('GetSchedulesUseCase: All schedules cleared');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'GetSchedulesUseCase: Error clearing schedules', e, stackTrace);
+        'GetSchedulesUseCase: Error clearing schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

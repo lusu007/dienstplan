@@ -12,13 +12,15 @@ abstract class ScheduleDataUiState with _$ScheduleDataUiState {
     String? activeConfigName,
     String? preferredDutyGroup,
     String? selectedDutyGroup,
+    int? holidayAccentColorValue,
   }) = _ScheduleDataUiState;
 
   const ScheduleDataUiState._();
 
   factory ScheduleDataUiState.initial() => const ScheduleDataUiState(
-        isLoading: false,
-        activeConfigName: '',
-        preferredDutyGroup: '',
-      );
+    isLoading: false,
+    activeConfigName: '',
+    preferredDutyGroup: '',
+    holidayAccentColorValue: null,
+  );
 }

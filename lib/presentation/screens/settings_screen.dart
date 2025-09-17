@@ -5,6 +5,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedule_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/sections/school_holidays_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/other_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/footer_section.dart';
@@ -38,6 +39,8 @@ class SettingsScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
                 const AppSectionSkeleton(),
                 const SizedBox(height: 16),
+                const AppSectionSkeleton(), // Using app skeleton for holidays section
+                const SizedBox(height: 16),
                 const PrivacySectionSkeleton(),
                 const SizedBox(height: 16),
                 const OtherSectionSkeleton(),
@@ -55,33 +58,35 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
-                Builder(builder: (context) {
-                  const presenter = FailurePresenter();
-                  return FutureBuilder(
-                    future: ref.read(languageServiceProvider.future),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const SizedBox.shrink();
-                      }
-                      final l10nResolved = AppLocalizations.of(context);
-                      final Failure failure = e is Failure
-                          ? e
-                          : const UnknownFailure(technicalMessage: 'unknown');
-                      final String message =
-                          presenter.present(failure, l10nResolved);
-                      return Text(message, textAlign: TextAlign.center);
-                    },
-                  );
-                }),
+                Builder(
+                  builder: (context) {
+                    const presenter = FailurePresenter();
+                    return FutureBuilder(
+                      future: ref.read(languageServiceProvider.future),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
+                        final l10nResolved = AppLocalizations.of(context);
+                        final Failure failure = e is Failure
+                            ? e
+                            : const UnknownFailure(technicalMessage: 'unknown');
+                        final String message = presenter.present(
+                          failure,
+                          l10nResolved,
+                        );
+                        return Text(message, textAlign: TextAlign.center);
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
         ),
       ),
       data: (state) => Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.settings),
-        ),
+        appBar: AppBar(title: Text(l10n.settings)),
         body: SafeAreaWrapper(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -90,6 +95,8 @@ class SettingsScreen extends ConsumerWidget {
                 ScheduleSection(state: state),
                 const SizedBox(height: 16),
                 const AppSection(),
+                const SizedBox(height: 16),
+                const SchoolHolidaysSection(),
                 const SizedBox(height: 16),
                 const PrivacySection(),
                 const SizedBox(height: 16),

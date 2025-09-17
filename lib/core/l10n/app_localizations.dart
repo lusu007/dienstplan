@@ -63,7 +63,7 @@ import 'app_localizations_en.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -86,16 +86,16 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
-    Locale('en')
+    Locale('en'),
   ];
 
   /// Title for the settings screen
@@ -391,6 +391,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Light Grey'**
   String get accentLightGrey;
+
+  /// Title for holiday accent color setting
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday Accent Color'**
+  String get holidayAccentColor;
 
   /// Option to select no duty schedule
   ///
@@ -781,7 +787,10 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Duty schedule \"{configName}\" has been updated (Version {oldVersion} → {newVersion}). All services will be regenerated.'**
   String scheduleUpdateNotification(
-      String configName, String oldVersion, String newVersion);
+    String configName,
+    String oldVersion,
+    String newVersion,
+  );
 
   /// Notification message for multiple schedule updates
   ///
@@ -800,6 +809,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear All'**
   String get clearAll;
+
+  /// Title for school holidays section
+  ///
+  /// In en, this message translates to:
+  /// **'School Holidays'**
+  String get schoolHolidays;
+
+  /// Label for showing school holidays toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Show School Holidays'**
+  String get showSchoolHolidays;
+
+  /// Loading text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Error message when loading fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading'**
+  String get errorLoading;
+
+  /// Enabled status text
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled;
+
+  /// Disabled status text
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled;
+
+  /// Label for federal state selection
+  ///
+  /// In en, this message translates to:
+  /// **'Federal State'**
+  String get federalState;
+
+  /// Text when no federal state is selected
+  ///
+  /// In en, this message translates to:
+  /// **'No federal state selected'**
+  String get noFederalStateSelected;
+
+  /// Label for refreshing holiday data
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Holiday Data'**
+  String get refreshHolidayData;
+
+  /// Last updated time text
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated: {time}'**
+  String lastUpdated(String time);
+
+  /// Text when data has not been updated yet
+  ///
+  /// In en, this message translates to:
+  /// **'Not updated yet'**
+  String get notUpdatedYet;
+
+  /// Text for very recent time
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// Text for minutes ago
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes ago'**
+  String minutesAgo(int minutes);
+
+  /// Text for hours ago
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String hoursAgo(int hours);
+
+  /// Text for days ago
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String daysAgo(int days);
+
+  /// Title for federal state selection dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Select Federal State'**
+  String get selectFederalState;
 }
 
 class _AppLocalizationsDelegate
@@ -829,8 +934,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }

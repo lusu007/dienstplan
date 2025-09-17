@@ -20,12 +20,14 @@ abstract class SettingsUiState with _$SettingsUiState {
     int? partnerAccentColorValue,
     // My accent color UI value
     int? myAccentColorValue,
+    // Holiday accent color UI value
+    int? holidayAccentColorValue,
   }) = _SettingsUiState;
 
   const SettingsUiState._();
 
   factory SettingsUiState.initial() => const SettingsUiState(
-        isLoading: false,
-        themePreference: ThemePreference.system,
-      );
+    isLoading: false,
+    themePreference: ThemePreference.system,
+  );
 }

@@ -11,46 +11,49 @@ class MyDutyGroupDialog {
 
     showDialog(
       context: context,
-      builder: (context) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(scheduleCoordinatorProvider);
-        final state = asyncState.value;
-        final dutyGroups = state?.dutyGroups ?? const <String>[];
-        if ((state?.activeConfigName ?? '').isEmpty) {
-          return AlertDialog(
-            title: Text(l10n.selectMyDutyGroup),
-            content: const Text('No active duty schedule selected'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
+      builder: (context) => Consumer(
+        builder: (context, ref, _) {
+          final asyncState = ref.watch(scheduleCoordinatorProvider);
+          final state = asyncState.value;
+          final dutyGroups = state?.dutyGroups ?? const <String>[];
+          if ((state?.activeConfigName ?? '').isEmpty) {
+            return AlertDialog(
+              title: Text(l10n.selectMyDutyGroup),
+              content: const Text('No active duty schedule selected'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          }
+          if (dutyGroups.isEmpty) {
+            return AlertDialog(
+              title: Text(l10n.selectMyDutyGroup),
+              content: const Text(
+                'No duty groups available in the current schedule.',
               ),
-            ],
-          );
-        }
-        if (dutyGroups.isEmpty) {
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          }
           return AlertDialog(
-            title: Text(l10n.selectMyDutyGroup),
-            content:
-                const Text('No duty groups available in the current schedule.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        }
-        return AlertDialog(
-          title: Text(l10n.myDutyGroup),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.selectMyDutyGroup),
-                  const SizedBox(height: 8),
-                  ...dutyGroups.map((group) => SelectionCard(
+            title: Text(l10n.myDutyGroup),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.selectMyDutyGroup),
+                    const SizedBox(height: 8),
+                    ...dutyGroups.map(
+                      (group) => SelectionCard(
                         title: group,
                         isSelected: state?.preferredDutyGroup == group,
                         onTap: () async {
@@ -64,28 +67,30 @@ class MyDutyGroupDialog {
                         },
                         mainColor: AppColors.primary,
                         useDialogStyle: true,
-                      )),
-                  SelectionCard(
-                    title: l10n.noDutyGroup,
-                    isSelected: (state?.preferredDutyGroup ?? '').isEmpty,
-                    onTap: () async {
-                      // Close dialog immediately
-                      Navigator.of(context).pop();
+                      ),
+                    ),
+                    SelectionCard(
+                      title: l10n.noDutyGroup,
+                      isSelected: (state?.preferredDutyGroup ?? '').isEmpty,
+                      onTap: () async {
+                        // Close dialog immediately
+                        Navigator.of(context).pop();
 
-                      // Perform operations after dialog is closed
-                      await ref
-                          .read(scheduleCoordinatorProvider.notifier)
-                          .setPreferredDutyGroup('');
-                    },
-                    mainColor: AppColors.primary,
-                    useDialogStyle: true,
-                  ),
-                ],
+                        // Perform operations after dialog is closed
+                        await ref
+                            .read(scheduleCoordinatorProvider.notifier)
+                            .setPreferredDutyGroup('');
+                      },
+                      mainColor: AppColors.primary,
+                      useDialogStyle: true,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

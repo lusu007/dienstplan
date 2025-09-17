@@ -15,15 +15,15 @@ const calendarProvider = CalendarNotifierProvider._();
 final class CalendarNotifierProvider
     extends $AsyncNotifierProvider<CalendarNotifier, CalendarUiState> {
   const CalendarNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'calendarProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'calendarProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$calendarNotifierHash();
@@ -42,11 +42,14 @@ abstract class _$CalendarNotifier extends $AsyncNotifier<CalendarUiState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<CalendarUiState>, CalendarUiState>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<CalendarUiState>, CalendarUiState>,
-        AsyncValue<CalendarUiState>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<CalendarUiState>, CalendarUiState>,
+              AsyncValue<CalendarUiState>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

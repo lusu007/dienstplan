@@ -53,10 +53,7 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: scheme.outlineVariant,
-          width: 1,
-        ),
+        border: Border.all(color: scheme.outlineVariant, width: 1),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -73,17 +70,15 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
         subtitle: widget.showSubtitleSkeleton
             ? _buildSkeletonSubtitle()
             : widget.subtitle != null
-                ? Text(
-                    widget.subtitle!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  )
-                : null,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+            ? Text(
+                widget.subtitle!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: 15,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              )
+            : null,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         selectedTileColor: Colors.transparent,
       ),
     );
@@ -98,10 +93,9 @@ class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
           width: double.infinity,
           margin: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .outlineVariant
-                .withValues(alpha: 0.2 + (_animation.value * 0.3)),
+            color: Theme.of(context).colorScheme.outlineVariant.withValues(
+              alpha: 0.2 + (_animation.value * 0.3),
+            ),
             borderRadius: BorderRadius.circular(4),
           ),
         );

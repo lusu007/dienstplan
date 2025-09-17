@@ -9,29 +9,30 @@ class DutyTypesDao {
   DutyTypesDao(this._databaseService);
 
   Future<void> replaceAllForConfig(
-      String configName, Map<String, data_model.DutyType> dutyTypes) async {
+    String configName,
+    Map<String, data_model.DutyType> dutyTypes,
+  ) async {
     try {
       AppLogger.i('DutyTypesDao: Replacing duty types for $configName');
       final Database db = await _databaseService.database;
       final int now = DateTime.now().millisecondsSinceEpoch;
       await db.transaction((Transaction txn) async {
-        await txn.delete('duty_types',
-            where: 'config_name = ?', whereArgs: <Object?>[configName]);
+        await txn.delete(
+          'duty_types',
+          where: 'config_name = ?',
+          whereArgs: <Object?>[configName],
+        );
         final Batch batch = txn.batch();
         dutyTypes.forEach((String id, data_model.DutyType dt) {
-          batch.insert(
-            'duty_types',
-            <String, Object?>{
-              'config_name': configName,
-              'id': id,
-              'label': dt.label,
-              'all_day': dt.isAllDay ? 1 : 0,
-              'icon': dt.icon,
-              'created_at': now,
-              'updated_at': now,
-            },
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          );
+          batch.insert('duty_types', <String, Object?>{
+            'config_name': configName,
+            'id': id,
+            'label': dt.label,
+            'all_day': dt.isAllDay ? 1 : 0,
+            'icon': dt.icon,
+            'created_at': now,
+            'updated_at': now,
+          }, conflictAlgorithm: ConflictAlgorithm.replace);
         });
         await batch.commit(noResult: true);
       });
@@ -42,7 +43,8 @@ class DutyTypesDao {
   }
 
   Future<Map<String, data_model.DutyType>> loadForConfig(
-      String configName) async {
+    String configName,
+  ) async {
     try {
       AppLogger.i('DutyTypesDao: Loading duty types for $configName');
       final Database db = await _databaseService.database;

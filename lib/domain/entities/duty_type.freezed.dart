@@ -9,7 +9,6 @@ part of 'duty_type.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -69,20 +68,22 @@ class _$DutyTypeCopyWithImpl<$Res> implements $DutyTypeCopyWith<$Res> {
     Object? isAllDay = null,
     Object? icon = freezed,
   }) {
-    return _then(_self.copyWith(
-      label: null == label
-          ? _self.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
-      isAllDay: null == isAllDay
-          ? _self.isAllDay
-          : isAllDay // ignore: cast_nullable_to_non_nullable
-              as bool,
-      icon: freezed == icon
-          ? _self.icon
-          : icon // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _self.copyWith(
+        label: null == label
+            ? _self.label
+            : label // ignore: cast_nullable_to_non_nullable
+                  as String,
+        isAllDay: null == isAllDay
+            ? _self.isAllDay
+            : isAllDay // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        icon: freezed == icon
+            ? _self.icon
+            : icon // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
 
@@ -247,7 +248,7 @@ extension DutyTypePatterns on DutyType {
 
 class _DutyType extends DutyType {
   const _DutyType({required this.label, this.isAllDay = false, this.icon})
-      : super._();
+    : super._();
 
   @override
   final String label;
@@ -311,21 +312,21 @@ class __$DutyTypeCopyWithImpl<$Res> implements _$DutyTypeCopyWith<$Res> {
     Object? isAllDay = null,
     Object? icon = freezed,
   }) {
-    return _then(_DutyType(
-      label: null == label
-          ? _self.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
-      isAllDay: null == isAllDay
-          ? _self.isAllDay
-          : isAllDay // ignore: cast_nullable_to_non_nullable
-              as bool,
-      icon: freezed == icon
-          ? _self.icon
-          : icon // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _DutyType(
+        label: null == label
+            ? _self.label
+            : label // ignore: cast_nullable_to_non_nullable
+                  as String,
+        isAllDay: null == isAllDay
+            ? _self.isAllDay
+            : isAllDay // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        icon: freezed == icon
+            ? _self.icon
+            : icon // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
-
-// dart format on

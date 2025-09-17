@@ -34,9 +34,7 @@ class DutyScheduleConfig {
             MapEntry(key, Rhythm.fromMap(value as Map<String, dynamic>)),
       ),
       dutyGroups: (map['dienstgruppen'] as List<dynamic>)
-          .map(
-            (x) => DutyGroup.fromMap(x as Map<String, dynamic>),
-          )
+          .map((x) => DutyGroup.fromMap(x as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -89,10 +87,7 @@ class Rhythm {
   final int lengthWeeks;
   final List<List<String>> pattern;
 
-  Rhythm({
-    required this.lengthWeeks,
-    required this.pattern,
-  });
+  Rhythm({required this.lengthWeeks, required this.pattern});
 
   factory Rhythm.fromMap(Map<String, dynamic> map) {
     return Rhythm(
@@ -104,10 +99,7 @@ class Rhythm {
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'length_weeks': lengthWeeks,
-      'pattern': pattern,
-    };
+    return {'length_weeks': lengthWeeks, 'pattern': pattern};
   }
 }
 

@@ -38,8 +38,9 @@ class ActionButton extends StatelessWidget {
             backgroundColor: isDisabled
                 ? effectiveMainColor.withValues(alpha: 0.5)
                 : effectiveMainColor,
-            foregroundColor:
-                isDisabled ? Colors.white.withValues(alpha: 0.7) : Colors.white,
+            foregroundColor: isDisabled
+                ? Colors.white.withValues(alpha: 0.7)
+                : Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -96,12 +97,7 @@ class ActionButton extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              buttonText,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          Flexible(child: Text(buttonText, overflow: TextOverflow.ellipsis)),
         ],
       );
     }

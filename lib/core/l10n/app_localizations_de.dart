@@ -160,6 +160,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get accentLightGrey => 'Hellgrau';
 
   @override
+  String get holidayAccentColor => 'Ferien-Akzentfarbe';
+
+  @override
   String get noDutySchedule => 'Kein Dienstplan';
 
   @override
@@ -372,7 +375,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String scheduleUpdateNotification(
-      String configName, String oldVersion, String newVersion) {
+    String configName,
+    String oldVersion,
+    String newVersion,
+  ) {
     return 'Dienstplan \"$configName\" wurde aktualisiert (Version $oldVersion → $newVersion). Alle Dienste werden neu generiert.';
   }
 
@@ -386,4 +392,60 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get clearAll => 'Alle löschen';
+
+  @override
+  String get schoolHolidays => 'Schulferien';
+
+  @override
+  String get showSchoolHolidays => 'Schulferien anzeigen';
+
+  @override
+  String get loading => 'Lädt...';
+
+  @override
+  String get errorLoading => 'Fehler beim Laden';
+
+  @override
+  String get enabled => 'Aktiviert';
+
+  @override
+  String get disabled => 'Deaktiviert';
+
+  @override
+  String get federalState => 'Bundesland';
+
+  @override
+  String get noFederalStateSelected => 'Kein Bundesland ausgewählt';
+
+  @override
+  String get refreshHolidayData => 'Feriendaten aktualisieren';
+
+  @override
+  String lastUpdated(String time) {
+    return 'Zuletzt aktualisiert: $time';
+  }
+
+  @override
+  String get notUpdatedYet => 'Noch nicht aktualisiert';
+
+  @override
+  String get justNow => 'Gerade eben';
+
+  @override
+  String minutesAgo(int minutes) {
+    return 'Vor $minutes Minuten';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return 'Vor $hours Stunden';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return 'Vor $days Tagen';
+  }
+
+  @override
+  String get selectFederalState => 'Bundesland auswählen';
 }

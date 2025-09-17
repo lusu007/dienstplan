@@ -127,7 +127,10 @@ class _CalendarDayContent extends ConsumerWidget {
       final schedulesForDay = schedules.where((schedule) {
         // Normalize dates to avoid timezone issues
         final scheduleDate = DateTime(
-            schedule.date.year, schedule.date.month, schedule.date.day);
+          schedule.date.year,
+          schedule.date.month,
+          schedule.date.day,
+        );
         final dayDate = DateTime(day.year, day.month, day.day);
         final isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
 
@@ -199,7 +202,10 @@ class _CalendarDayContent extends ConsumerWidget {
       final DateTime dayDate = DateTime(day.year, day.month, day.day);
       final List<Schedule> schedulesForDay = schedules.where((schedule) {
         final scheduleDate = DateTime(
-            schedule.date.year, schedule.date.month, schedule.date.day);
+          schedule.date.year,
+          schedule.date.month,
+          schedule.date.day,
+        );
         final bool isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
         final bool isPartnerConfig = schedule.configName == partnerConfigName;
         return isSameDay && isPartnerConfig;
@@ -209,16 +215,19 @@ class _CalendarDayContent extends ConsumerWidget {
       }
       if (partnerGroup != null && partnerGroup.isNotEmpty) {
         try {
-          final Schedule matched = schedulesForDay.firstWhere((s) =>
-              s.dutyGroupName == partnerGroup &&
-              s.dutyTypeId.isNotEmpty &&
-              s.dutyTypeId != '-');
+          final Schedule matched = schedulesForDay.firstWhere(
+            (s) =>
+                s.dutyGroupName == partnerGroup &&
+                s.dutyTypeId.isNotEmpty &&
+                s.dutyTypeId != '-',
+          );
           return matched.dutyTypeId;
         } catch (_) {
           // If partner group exists but is off that day, show nothing
           try {
-            final Schedule off = schedulesForDay
-                .firstWhere((s) => s.dutyGroupName == partnerGroup);
+            final Schedule off = schedulesForDay.firstWhere(
+              (s) => s.dutyGroupName == partnerGroup,
+            );
             if (off.dutyTypeId == '-' || off.dutyTypeId.isEmpty) {
               return '';
             }

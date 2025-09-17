@@ -26,20 +26,23 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     int? partnerAccentColorValue,
     // My accent color state
     int? myAccentColorValue,
+    // Holiday accent color state
+    int? holidayAccentColorValue,
   }) = _ScheduleUiState;
 
   const ScheduleUiState._();
 
   factory ScheduleUiState.initial() => ScheduleUiState(
-        isLoading: false,
-        selectedDay: DateTime.now(),
-        focusedDay: DateTime.now(),
-        calendarFormat: CalendarFormat.month,
-        activeConfigName: '',
-        preferredDutyGroup: '',
-        partnerConfigName: null,
-        partnerDutyGroup: null,
-        partnerAccentColorValue: null,
-        myAccentColorValue: null,
-      );
+    isLoading: false,
+    selectedDay: DateTime.now(),
+    focusedDay: DateTime.now(),
+    calendarFormat: CalendarFormat.month,
+    activeConfigName: '',
+    preferredDutyGroup: '',
+    partnerConfigName: null,
+    partnerDutyGroup: null,
+    partnerAccentColorValue: null,
+    myAccentColorValue: null,
+    holidayAccentColorValue: null,
+  );
 }

@@ -14,8 +14,9 @@ class ScheduleMergeService {
       }
     }
     for (final Schedule newItem in incoming) {
-      final bool exists =
-          merged.any((Schedule s) => _isSameScheduleDayAndGroup(s, newItem));
+      final bool exists = merged.any(
+        (Schedule s) => _isSameScheduleDayAndGroup(s, newItem),
+      );
       if (!exists) {
         merged.add(newItem);
       }
@@ -68,8 +69,9 @@ class ScheduleMergeService {
   List<Schedule> deduplicate(List<Schedule> schedules) {
     final List<Schedule> result = <Schedule>[];
     for (final Schedule s in schedules) {
-      final bool exists =
-          result.any((Schedule e) => _isSameScheduleDayAndGroup(e, s));
+      final bool exists = result.any(
+        (Schedule e) => _isSameScheduleDayAndGroup(e, s),
+      );
       if (!exists) {
         result.add(s);
       }

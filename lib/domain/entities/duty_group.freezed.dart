@@ -9,7 +9,6 @@ part of 'duty_group.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -72,24 +71,26 @@ class _$DutyGroupCopyWithImpl<$Res> implements $DutyGroupCopyWith<$Res> {
     Object? rhythm = null,
     Object? offsetWeeks = null,
   }) {
-    return _then(_self.copyWith(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      rhythm: null == rhythm
-          ? _self.rhythm
-          : rhythm // ignore: cast_nullable_to_non_nullable
-              as String,
-      offsetWeeks: null == offsetWeeks
-          ? _self.offsetWeeks
-          : offsetWeeks // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
+    return _then(
+      _self.copyWith(
+        id: null == id
+            ? _self.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        rhythm: null == rhythm
+            ? _self.rhythm
+            : rhythm // ignore: cast_nullable_to_non_nullable
+                  as String,
+        offsetWeeks: null == offsetWeeks
+            ? _self.offsetWeeks
+            : offsetWeeks // ignore: cast_nullable_to_non_nullable
+                  as double,
+      ),
+    );
   }
 }
 
@@ -187,7 +188,7 @@ extension DutyGroupPatterns on DutyGroup {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(String id, String name, String rhythm, double offsetWeeks)?
-        $default, {
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
@@ -215,7 +216,7 @@ extension DutyGroupPatterns on DutyGroup {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(String id, String name, String rhythm, double offsetWeeks)
-        $default,
+    $default,
   ) {
     final _that = this;
     switch (_that) {
@@ -241,8 +242,12 @@ extension DutyGroupPatterns on DutyGroup {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            String id, String name, String rhythm, double offsetWeeks)?
-        $default,
+      String id,
+      String name,
+      String rhythm,
+      double offsetWeeks,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
@@ -257,12 +262,12 @@ extension DutyGroupPatterns on DutyGroup {
 /// @nodoc
 
 class _DutyGroup extends DutyGroup {
-  const _DutyGroup(
-      {required this.id,
-      required this.name,
-      required this.rhythm,
-      required this.offsetWeeks})
-      : super._();
+  const _DutyGroup({
+    required this.id,
+    required this.name,
+    required this.rhythm,
+    required this.offsetWeeks,
+  }) : super._();
 
   @override
   final String id;
@@ -306,8 +311,9 @@ class _DutyGroup extends DutyGroup {
 abstract mixin class _$DutyGroupCopyWith<$Res>
     implements $DutyGroupCopyWith<$Res> {
   factory _$DutyGroupCopyWith(
-          _DutyGroup value, $Res Function(_DutyGroup) _then) =
-      __$DutyGroupCopyWithImpl;
+    _DutyGroup value,
+    $Res Function(_DutyGroup) _then,
+  ) = __$DutyGroupCopyWithImpl;
   @override
   @useResult
   $Res call({String id, String name, String rhythm, double offsetWeeks});
@@ -330,25 +336,25 @@ class __$DutyGroupCopyWithImpl<$Res> implements _$DutyGroupCopyWith<$Res> {
     Object? rhythm = null,
     Object? offsetWeeks = null,
   }) {
-    return _then(_DutyGroup(
-      id: null == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      rhythm: null == rhythm
-          ? _self.rhythm
-          : rhythm // ignore: cast_nullable_to_non_nullable
-              as String,
-      offsetWeeks: null == offsetWeeks
-          ? _self.offsetWeeks
-          : offsetWeeks // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
+    return _then(
+      _DutyGroup(
+        id: null == id
+            ? _self.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        rhythm: null == rhythm
+            ? _self.rhythm
+            : rhythm // ignore: cast_nullable_to_non_nullable
+                  as String,
+        offsetWeeks: null == offsetWeeks
+            ? _self.offsetWeeks
+            : offsetWeeks // ignore: cast_nullable_to_non_nullable
+                  as double,
+      ),
+    );
   }
 }
-
-// dart format on

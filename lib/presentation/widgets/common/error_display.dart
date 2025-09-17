@@ -56,18 +56,9 @@ class ErrorDisplay extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null)
-              Icon(
-                icon,
-                size: iconSize,
-                color: iconColor,
-              ),
+            if (icon != null) Icon(icon, size: iconSize, color: iconColor),
             if (icon != null) const SizedBox(height: 16),
-            Text(
-              message,
-              textAlign: textAlign,
-              style: textStyle,
-            ),
+            Text(message, textAlign: textAlign, style: textStyle),
             if (onRetry != null) ...[
               const SizedBox(height: 24),
               ElevatedButton(
@@ -87,11 +78,7 @@ class ErrorMessage extends ConsumerWidget {
   final Object error;
   final StackTrace? stackTrace;
 
-  const ErrorMessage({
-    super.key,
-    required this.error,
-    this.stackTrace,
-  });
+  const ErrorMessage({super.key, required this.error, this.stackTrace});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

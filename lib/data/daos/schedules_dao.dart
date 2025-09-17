@@ -92,7 +92,10 @@ class SchedulesDao {
           .toList();
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SchedulesDao: Error loading schedules for range', e, stackTrace);
+        'SchedulesDao: Error loading schedules for range',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -103,7 +106,8 @@ class SchedulesDao {
     }
     try {
       AppLogger.i(
-          'SchedulesDao: Saving ${schedules.length} schedules in chunks');
+        'SchedulesDao: Saving ${schedules.length} schedules in chunks',
+      );
       final Database db = await _databaseService.database;
       final int now = DateTime.now().millisecondsSinceEpoch;
 
@@ -128,8 +132,11 @@ class SchedulesDao {
               'created_at': now,
               'updated_at': now,
             };
-            batch.insert('schedules', values,
-                conflictAlgorithm: ConflictAlgorithm.replace);
+            batch.insert(
+              'schedules',
+              values,
+              conflictAlgorithm: ConflictAlgorithm.replace,
+            );
           }
           await batch.commit(noResult: true);
         }
@@ -197,7 +204,10 @@ class SchedulesDao {
           .toList();
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SchedulesDao: Error loading schedules for day', e, stackTrace);
+        'SchedulesDao: Error loading schedules for day',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -238,7 +248,10 @@ class SchedulesDao {
           .toList();
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SchedulesDao: Error loading schedules for month', e, stackTrace);
+        'SchedulesDao: Error loading schedules for month',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -273,7 +286,10 @@ class SchedulesDao {
       return Sqflite.firstIntValue(result) ?? 0;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SchedulesDao: Error counting schedules for month', e, stackTrace);
+        'SchedulesDao: Error counting schedules for month',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -300,10 +316,14 @@ class SchedulesDao {
         whereArgs: <Object?>[configName],
       );
       AppLogger.i(
-          'SchedulesDao: Deleted $deletedCount schedules for config: $configName');
+        'SchedulesDao: Deleted $deletedCount schedules for config: $configName',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SchedulesDao: Error deleting schedules for config', e, stackTrace);
+        'SchedulesDao: Error deleting schedules for config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

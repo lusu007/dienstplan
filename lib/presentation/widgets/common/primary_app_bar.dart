@@ -18,10 +18,7 @@ class PrimaryAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        titleText,
-        style: const TextStyle(color: Colors.white),
-      ),
+      title: Text(titleText, style: const TextStyle(color: Colors.white)),
       backgroundColor: Theme.of(context).colorScheme.primary,
       automaticallyImplyLeading: leading != null,
       leading: leading,

@@ -9,7 +9,6 @@ part of 'calendar_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -26,7 +25,9 @@ mixin _$CalendarUiState {
   @pragma('vm:prefer-inline')
   $CalendarUiStateCopyWith<CalendarUiState> get copyWith =>
       _$CalendarUiStateCopyWithImpl<CalendarUiState>(
-          this as CalendarUiState, _$identity);
+        this as CalendarUiState,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -46,7 +47,13 @@ mixin _$CalendarUiState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, isLoading, error, selectedDay, focusedDay, calendarFormat);
+    runtimeType,
+    isLoading,
+    error,
+    selectedDay,
+    focusedDay,
+    calendarFormat,
+  );
 
   @override
   String toString() {
@@ -57,15 +64,17 @@ mixin _$CalendarUiState {
 /// @nodoc
 abstract mixin class $CalendarUiStateCopyWith<$Res> {
   factory $CalendarUiStateCopyWith(
-          CalendarUiState value, $Res Function(CalendarUiState) _then) =
-      _$CalendarUiStateCopyWithImpl;
+    CalendarUiState value,
+    $Res Function(CalendarUiState) _then,
+  ) = _$CalendarUiStateCopyWithImpl;
   @useResult
-  $Res call(
-      {bool isLoading,
-      String? error,
-      DateTime? selectedDay,
-      DateTime? focusedDay,
-      CalendarFormat? calendarFormat});
+  $Res call({
+    bool isLoading,
+    String? error,
+    DateTime? selectedDay,
+    DateTime? focusedDay,
+    CalendarFormat? calendarFormat,
+  });
 }
 
 /// @nodoc
@@ -87,28 +96,30 @@ class _$CalendarUiStateCopyWithImpl<$Res>
     Object? focusedDay = freezed,
     Object? calendarFormat = freezed,
   }) {
-    return _then(_self.copyWith(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      selectedDay: freezed == selectedDay
-          ? _self.selectedDay
-          : selectedDay // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      focusedDay: freezed == focusedDay
-          ? _self.focusedDay
-          : focusedDay // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      calendarFormat: freezed == calendarFormat
-          ? _self.calendarFormat
-          : calendarFormat // ignore: cast_nullable_to_non_nullable
-              as CalendarFormat?,
-    ));
+    return _then(
+      _self.copyWith(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        selectedDay: freezed == selectedDay
+            ? _self.selectedDay
+            : selectedDay // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        focusedDay: freezed == focusedDay
+            ? _self.focusedDay
+            : focusedDay // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        calendarFormat: freezed == calendarFormat
+            ? _self.calendarFormat
+            : calendarFormat // ignore: cast_nullable_to_non_nullable
+                  as CalendarFormat?,
+      ),
+    );
   }
 }
 
@@ -205,16 +216,26 @@ extension CalendarUiStatePatterns on CalendarUiState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(bool isLoading, String? error, DateTime? selectedDay,
-            DateTime? focusedDay, CalendarFormat? calendarFormat)?
-        $default, {
+    TResult Function(
+      bool isLoading,
+      String? error,
+      DateTime? selectedDay,
+      DateTime? focusedDay,
+      CalendarFormat? calendarFormat,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CalendarUiState() when $default != null:
-        return $default(_that.isLoading, _that.error, _that.selectedDay,
-            _that.focusedDay, _that.calendarFormat);
+        return $default(
+          _that.isLoading,
+          _that.error,
+          _that.selectedDay,
+          _that.focusedDay,
+          _that.calendarFormat,
+        );
       case _:
         return orElse();
     }
@@ -235,15 +256,25 @@ extension CalendarUiStatePatterns on CalendarUiState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(bool isLoading, String? error, DateTime? selectedDay,
-            DateTime? focusedDay, CalendarFormat? calendarFormat)
-        $default,
+    TResult Function(
+      bool isLoading,
+      String? error,
+      DateTime? selectedDay,
+      DateTime? focusedDay,
+      CalendarFormat? calendarFormat,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CalendarUiState():
-        return $default(_that.isLoading, _that.error, _that.selectedDay,
-            _that.focusedDay, _that.calendarFormat);
+        return $default(
+          _that.isLoading,
+          _that.error,
+          _that.selectedDay,
+          _that.focusedDay,
+          _that.calendarFormat,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -263,15 +294,25 @@ extension CalendarUiStatePatterns on CalendarUiState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(bool isLoading, String? error, DateTime? selectedDay,
-            DateTime? focusedDay, CalendarFormat? calendarFormat)?
-        $default,
+    TResult? Function(
+      bool isLoading,
+      String? error,
+      DateTime? selectedDay,
+      DateTime? focusedDay,
+      CalendarFormat? calendarFormat,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CalendarUiState() when $default != null:
-        return $default(_that.isLoading, _that.error, _that.selectedDay,
-            _that.focusedDay, _that.calendarFormat);
+        return $default(
+          _that.isLoading,
+          _that.error,
+          _that.selectedDay,
+          _that.focusedDay,
+          _that.calendarFormat,
+        );
       case _:
         return null;
     }
@@ -281,13 +322,13 @@ extension CalendarUiStatePatterns on CalendarUiState {
 /// @nodoc
 
 class _CalendarUiState extends CalendarUiState {
-  const _CalendarUiState(
-      {required this.isLoading,
-      this.error,
-      this.selectedDay,
-      this.focusedDay,
-      this.calendarFormat})
-      : super._();
+  const _CalendarUiState({
+    required this.isLoading,
+    this.error,
+    this.selectedDay,
+    this.focusedDay,
+    this.calendarFormat,
+  }) : super._();
 
   @override
   final bool isLoading;
@@ -326,7 +367,13 @@ class _CalendarUiState extends CalendarUiState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, isLoading, error, selectedDay, focusedDay, calendarFormat);
+    runtimeType,
+    isLoading,
+    error,
+    selectedDay,
+    focusedDay,
+    calendarFormat,
+  );
 
   @override
   String toString() {
@@ -338,16 +385,18 @@ class _CalendarUiState extends CalendarUiState {
 abstract mixin class _$CalendarUiStateCopyWith<$Res>
     implements $CalendarUiStateCopyWith<$Res> {
   factory _$CalendarUiStateCopyWith(
-          _CalendarUiState value, $Res Function(_CalendarUiState) _then) =
-      __$CalendarUiStateCopyWithImpl;
+    _CalendarUiState value,
+    $Res Function(_CalendarUiState) _then,
+  ) = __$CalendarUiStateCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {bool isLoading,
-      String? error,
-      DateTime? selectedDay,
-      DateTime? focusedDay,
-      CalendarFormat? calendarFormat});
+  $Res call({
+    bool isLoading,
+    String? error,
+    DateTime? selectedDay,
+    DateTime? focusedDay,
+    CalendarFormat? calendarFormat,
+  });
 }
 
 /// @nodoc
@@ -369,29 +418,29 @@ class __$CalendarUiStateCopyWithImpl<$Res>
     Object? focusedDay = freezed,
     Object? calendarFormat = freezed,
   }) {
-    return _then(_CalendarUiState(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      selectedDay: freezed == selectedDay
-          ? _self.selectedDay
-          : selectedDay // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      focusedDay: freezed == focusedDay
-          ? _self.focusedDay
-          : focusedDay // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      calendarFormat: freezed == calendarFormat
-          ? _self.calendarFormat
-          : calendarFormat // ignore: cast_nullable_to_non_nullable
-              as CalendarFormat?,
-    ));
+    return _then(
+      _CalendarUiState(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        selectedDay: freezed == selectedDay
+            ? _self.selectedDay
+            : selectedDay // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        focusedDay: freezed == focusedDay
+            ? _self.focusedDay
+            : focusedDay // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        calendarFormat: freezed == calendarFormat
+            ? _self.calendarFormat
+            : calendarFormat // ignore: cast_nullable_to_non_nullable
+                  as CalendarFormat?,
+      ),
+    );
   }
 }
-
-// dart format on

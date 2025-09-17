@@ -46,12 +46,21 @@ class ThemeStepComponent extends ConsumerWidget {
             title: l10n.welcome,
             description: l10n.themeModeDescription,
           ),
-          _buildThemeCard(Icons.wb_sunny_outlined, l10n.themeModeLight,
-              ThemePreference.light),
           _buildThemeCard(
-              Icons.nightlight_round, l10n.themeModeDark, ThemePreference.dark),
-          _buildThemeCard(Icons.brightness_auto, l10n.themeModeSystem,
-              ThemePreference.system),
+            Icons.wb_sunny_outlined,
+            l10n.themeModeLight,
+            ThemePreference.light,
+          ),
+          _buildThemeCard(
+            Icons.nightlight_round,
+            l10n.themeModeDark,
+            ThemePreference.dark,
+          ),
+          _buildThemeCard(
+            Icons.brightness_auto,
+            l10n.themeModeSystem,
+            ThemePreference.system,
+          ),
         ],
       ),
     );

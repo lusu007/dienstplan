@@ -43,20 +43,16 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
       duration: kAnimDefault,
       vsync: this,
     );
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _selectedYear = widget.currentDate.year;
     _selectedMonth = widget.currentDate.month;
@@ -164,46 +160,53 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                   Expanded(
                     child: _isYearView
                         ? (_yearPageController != null
-                            ? PageView.builder(
-                                key: ValueKey('year_$_pageControllerKey'),
-                                controller: _yearPageController!,
-                                physics: const ClampingScrollPhysics(),
-                                onPageChanged: (pageIndex) {
-                                  setState(() {
-                                    _yearBlockStart = _calculateYearBlockStart(
-                                        2018 + (pageIndex * 12));
-                                  });
-                                  setModalState(() {});
-                                },
-                                itemCount: ((2100 - 2018) / 12).ceil() + 1,
-                                itemBuilder: (context, index) {
-                                  return _buildYearGrid(setModalState);
-                                },
-                              )
-                            : const Center(child: CircularProgressIndicator()))
+                              ? PageView.builder(
+                                  key: ValueKey('year_$_pageControllerKey'),
+                                  controller: _yearPageController!,
+                                  physics: const ClampingScrollPhysics(),
+                                  onPageChanged: (pageIndex) {
+                                    setState(() {
+                                      _yearBlockStart =
+                                          _calculateYearBlockStart(
+                                            2018 + (pageIndex * 12),
+                                          );
+                                    });
+                                    setModalState(() {});
+                                  },
+                                  itemCount: ((2100 - 2018) / 12).ceil() + 1,
+                                  itemBuilder: (context, index) {
+                                    return _buildYearGrid(setModalState);
+                                  },
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(),
+                                ))
                         : (_monthPageController != null
-                            ? PageView.builder(
-                                key: ValueKey('month_$_pageControllerKey'),
-                                controller: _monthPageController!,
-                                physics: const ClampingScrollPhysics(),
-                                onPageChanged: (pageIndex) {
-                                  final newYear = 2018 + pageIndex;
-                                  setState(() {
-                                    _displayedYear = newYear;
-                                    _selectedYear =
-                                        newYear; // Keep selected year in sync
-                                  });
-                                  setModalState(() {});
-                                },
-                                itemCount: 2100 - 2018 + 1,
-                                itemBuilder: (context, index) {
-                                  final year = 2018 + index;
-                                  return _buildMonthGrid(
+                              ? PageView.builder(
+                                  key: ValueKey('month_$_pageControllerKey'),
+                                  controller: _monthPageController!,
+                                  physics: const ClampingScrollPhysics(),
+                                  onPageChanged: (pageIndex) {
+                                    final newYear = 2018 + pageIndex;
+                                    setState(() {
+                                      _displayedYear = newYear;
+                                      _selectedYear =
+                                          newYear; // Keep selected year in sync
+                                    });
+                                    setModalState(() {});
+                                  },
+                                  itemCount: 2100 - 2018 + 1,
+                                  itemBuilder: (context, index) {
+                                    final year = 2018 + index;
+                                    return _buildMonthGrid(
                                       key: ValueKey(year),
-                                      displayedYear: _selectedYear);
-                                },
-                              )
-                            : const Center(child: CircularProgressIndicator())),
+                                      displayedYear: _selectedYear,
+                                    );
+                                  },
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(),
+                                )),
                   ),
                   const SizedBox(height: 16), // Bottom padding inside modal
                 ],
@@ -261,25 +264,26 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
                         ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withAlpha((0.1 * 255).toInt()),
+                        : Theme.of(
+                            context,
+                          ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     yearText,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Theme.of(context).colorScheme.primary,
-                        ),
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -332,25 +336,26 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
                         ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withAlpha((0.1 * 255).toInt()),
+                        : Theme.of(
+                            context,
+                          ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '$_yearBlockStart – ${_yearBlockStart + 11}',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Theme.of(context).colorScheme.primary,
-                        ),
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.primary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -361,13 +366,13 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
             icon: const Icon(Icons.chevron_right),
             onPressed:
                 _yearBlockStart + 11 < 2100 && _yearPageController != null
-                    ? () {
-                        _yearPageController!.nextPage(
-                          duration: kAnimDefault,
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    : null,
+                ? () {
+                    _yearPageController!.nextPage(
+                      duration: kAnimDefault,
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                : null,
           ),
         ],
       ),
@@ -389,14 +394,18 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
       itemCount: 12,
       itemBuilder: (context, index) {
         final month = months[index];
-        final currentDisplayedYear = displayedYear ??
+        final currentDisplayedYear =
+            displayedYear ??
             _selectedYear; // Use selected year instead of displayed year
         final isCurrentMonth =
             month == now.month && currentDisplayedYear == now.year;
-        final isFocusedMonth = month == widget.currentDate.month &&
+        final isFocusedMonth =
+            month == widget.currentDate.month &&
             currentDisplayedYear == widget.currentDate.year;
-        final monthName = DateFormat('MMM', widget.locale.languageCode)
-            .format(DateTime(currentDisplayedYear, month));
+        final monthName = DateFormat(
+          'MMM',
+          widget.locale.languageCode,
+        ).format(DateTime(currentDisplayedYear, month));
         return GestureDetector(
           onTap: () {
             setState(() {
@@ -410,22 +419,21 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
               color: isFocusedMonth
                   ? Theme.of(context).colorScheme.primary
                   : (isCurrentMonth
-                      ? Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withAlpha(kAlphaToday)
-                      : Colors.transparent),
+                        ? Theme.of(
+                            context,
+                          ).colorScheme.primary.withAlpha(kAlphaToday)
+                        : Colors.transparent),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
               child: Text(
                 monthName,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: (isFocusedMonth || isCurrentMonth)
-                          ? Colors.white
-                          : null,
-                    ),
+                  fontWeight: FontWeight.w600,
+                  color: (isFocusedMonth || isCurrentMonth)
+                      ? Colors.white
+                      : null,
+                ),
               ),
             ),
           ),
@@ -468,13 +476,12 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
             decoration: BoxDecoration(
               color: isValidYear
                   ? (isFocusedYear
-                      ? Theme.of(context).colorScheme.primary
-                      : (isCurrentYear
-                          ? Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withAlpha(kAlphaToday)
-                          : Colors.transparent))
+                        ? Theme.of(context).colorScheme.primary
+                        : (isCurrentYear
+                              ? Theme.of(
+                                  context,
+                                ).colorScheme.primary.withAlpha(kAlphaToday)
+                              : Colors.transparent))
                   : Colors.grey.withAlpha((0.1 * 255).toInt()),
               borderRadius: BorderRadius.circular(12),
             ),
@@ -482,13 +489,11 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
               child: Text(
                 year.toString(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isValidYear
-                          ? ((isFocusedYear || isCurrentYear)
-                              ? Colors.white
-                              : null)
-                          : Colors.grey,
-                    ),
+                  fontWeight: FontWeight.w600,
+                  color: isValidYear
+                      ? ((isFocusedYear || isCurrentYear) ? Colors.white : null)
+                      : Colors.grey,
+                ),
               ),
             ),
           ),
@@ -510,7 +515,8 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
     // Only call onDateSelected if the month or year actually changed
     // This prevents unnecessary reloads when closing without changes
     final currentFocusedDay = widget.currentDate;
-    final monthChanged = currentFocusedDay.year != focusedDate.year ||
+    final monthChanged =
+        currentFocusedDay.year != focusedDate.year ||
         currentFocusedDay.month != focusedDate.month;
 
     if (monthChanged) {
@@ -522,8 +528,10 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
 
   @override
   Widget build(BuildContext context) {
-    final monthYearText = DateFormat('MMMM yyyy', widget.locale.languageCode)
-        .format(widget.currentDate);
+    final monthYearText = DateFormat(
+      'MMMM yyyy',
+      widget.locale.languageCode,
+    ).format(widget.currentDate);
     return GestureDetector(
       onTap: _showDateSwitcher,
       child: Container(
@@ -531,10 +539,9 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context)
-                  .colorScheme
-                  .primary
-                  .withAlpha((0.1 * 255).toInt()),
+              : Theme.of(
+                  context,
+                ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
@@ -543,12 +550,12 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
             Text(
               monthYearText,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.onSurface,
-                  ),
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.onSurface,
+              ),
             ),
             const SizedBox(width: 8),
             Icon(

@@ -35,11 +35,13 @@ class LanguageSelectorButton extends StatelessWidget {
                 ? null
                 : () {
                     const locales = [Locale('de'), Locale('en')];
-                    final currentIndex =
-                        locales.indexOf(languageService.currentLocale);
+                    final currentIndex = locales.indexOf(
+                      languageService.currentLocale,
+                    );
                     final nextIndex = (currentIndex + 1) % locales.length;
-                    languageService
-                        .setLanguage(locales[nextIndex].languageCode);
+                    languageService.setLanguage(
+                      locales[nextIndex].languageCode,
+                    );
                     // Remove onLanguageChanged call to prevent double update
                   },
             child: Text(
@@ -47,7 +49,9 @@ class LanguageSelectorButton extends StatelessWidget {
                   ? l10n.german
                   : l10n.english,
               style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         );

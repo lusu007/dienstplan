@@ -16,8 +16,6 @@ abstract class ConfigUiState with _$ConfigUiState {
 
   const ConfigUiState._();
 
-  factory ConfigUiState.initial() => const ConfigUiState(
-        isLoading: false,
-        activeConfigName: '',
-      );
+  factory ConfigUiState.initial() =>
+      const ConfigUiState(isLoading: false, activeConfigName: '');
 }

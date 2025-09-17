@@ -25,7 +25,8 @@ class _AppInitializerWidgetState extends ConsumerState<AppInitializerWidget> {
     final settingsAsync = ref.watch(settingsProvider);
     return settingsAsync.when(
       data: (state) {
-        final isSetupCompleted = (state.activeConfigName != null &&
+        final isSetupCompleted =
+            (state.activeConfigName != null &&
             state.activeConfigName!.isNotEmpty);
         AppLogger.i('Setup completed: $isSetupCompleted');
         return isSetupCompleted ? const CalendarScreen() : const SetupScreen();

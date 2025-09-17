@@ -14,11 +14,11 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => <AutoRoute>[
-        AutoRoute(page: AppInitializerRoute.page, path: '/', initial: true),
-        AutoRoute(page: CalendarRoute.page, path: '/calendar'),
-        AutoRoute(page: SettingsRoute.page, path: '/settings'),
-        AutoRoute(page: AboutRoute.page, path: '/about'),
-        AutoRoute(page: DebugRoute.page, path: '/debug'),
-        AutoRoute(page: SetupRoute.page, path: '/setup'),
-      ];
+    AutoRoute(page: AppInitializerRoute.page, path: '/', initial: true),
+    AutoRoute(page: CalendarRoute.page, path: '/calendar'),
+    AutoRoute(page: SettingsRoute.page, path: '/settings'),
+    AutoRoute(page: AboutRoute.page, path: '/about'),
+    AutoRoute(page: DebugRoute.page, path: '/debug'),
+    AutoRoute(page: SetupRoute.page, path: '/setup'),
+  ];
 }

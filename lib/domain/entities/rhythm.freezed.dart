@@ -9,7 +9,6 @@ part of 'rhythm.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -36,7 +35,10 @@ mixin _$Rhythm {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, lengthWeeks, const DeepCollectionEquality().hash(pattern));
+    runtimeType,
+    lengthWeeks,
+    const DeepCollectionEquality().hash(pattern),
+  );
 
   @override
   String toString() {
@@ -63,20 +65,19 @@ class _$RhythmCopyWithImpl<$Res> implements $RhythmCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? lengthWeeks = null,
-    Object? pattern = null,
-  }) {
-    return _then(_self.copyWith(
-      lengthWeeks: null == lengthWeeks
-          ? _self.lengthWeeks
-          : lengthWeeks // ignore: cast_nullable_to_non_nullable
-              as int,
-      pattern: null == pattern
-          ? _self.pattern
-          : pattern // ignore: cast_nullable_to_non_nullable
-              as List<List<String>>,
-    ));
+  $Res call({Object? lengthWeeks = null, Object? pattern = null}) {
+    return _then(
+      _self.copyWith(
+        lengthWeeks: null == lengthWeeks
+            ? _self.lengthWeeks
+            : lengthWeeks // ignore: cast_nullable_to_non_nullable
+                  as int,
+        pattern: null == pattern
+            ? _self.pattern
+            : pattern // ignore: cast_nullable_to_non_nullable
+                  as List<List<String>>,
+      ),
+    );
   }
 }
 
@@ -240,10 +241,11 @@ extension RhythmPatterns on Rhythm {
 /// @nodoc
 
 class _Rhythm extends Rhythm {
-  const _Rhythm(
-      {required this.lengthWeeks, required final List<List<String>> pattern})
-      : _pattern = pattern,
-        super._();
+  const _Rhythm({
+    required this.lengthWeeks,
+    required final List<List<String>> pattern,
+  }) : _pattern = pattern,
+       super._();
 
   @override
   final int lengthWeeks;
@@ -275,7 +277,10 @@ class _Rhythm extends Rhythm {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, lengthWeeks, const DeepCollectionEquality().hash(_pattern));
+    runtimeType,
+    lengthWeeks,
+    const DeepCollectionEquality().hash(_pattern),
+  );
 
   @override
   String toString() {
@@ -303,21 +308,18 @@ class __$RhythmCopyWithImpl<$Res> implements _$RhythmCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? lengthWeeks = null,
-    Object? pattern = null,
-  }) {
-    return _then(_Rhythm(
-      lengthWeeks: null == lengthWeeks
-          ? _self.lengthWeeks
-          : lengthWeeks // ignore: cast_nullable_to_non_nullable
-              as int,
-      pattern: null == pattern
-          ? _self._pattern
-          : pattern // ignore: cast_nullable_to_non_nullable
-              as List<List<String>>,
-    ));
+  $Res call({Object? lengthWeeks = null, Object? pattern = null}) {
+    return _then(
+      _Rhythm(
+        lengthWeeks: null == lengthWeeks
+            ? _self.lengthWeeks
+            : lengthWeeks // ignore: cast_nullable_to_non_nullable
+                  as int,
+        pattern: null == pattern
+            ? _self._pattern
+            : pattern // ignore: cast_nullable_to_non_nullable
+                  as List<List<String>>,
+      ),
+    );
   }
 }
-
-// dart format on

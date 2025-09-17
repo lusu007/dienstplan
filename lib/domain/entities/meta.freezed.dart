@@ -9,7 +9,6 @@ part of 'meta.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -49,14 +48,15 @@ mixin _$Meta {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      description,
-      startDate,
-      startWeekDay,
-      const DeepCollectionEquality().hash(days),
-      icon,
-      policeAuthority);
+    runtimeType,
+    name,
+    description,
+    startDate,
+    startWeekDay,
+    const DeepCollectionEquality().hash(days),
+    icon,
+    policeAuthority,
+  );
 
   @override
   String toString() {
@@ -69,14 +69,15 @@ abstract mixin class $MetaCopyWith<$Res> {
   factory $MetaCopyWith(Meta value, $Res Function(Meta) _then) =
       _$MetaCopyWithImpl;
   @useResult
-  $Res call(
-      {String name,
-      String description,
-      DateTime startDate,
-      String startWeekDay,
-      List<String> days,
-      String? icon,
-      String? policeAuthority});
+  $Res call({
+    String name,
+    String description,
+    DateTime startDate,
+    String startWeekDay,
+    List<String> days,
+    String? icon,
+    String? policeAuthority,
+  });
 }
 
 /// @nodoc
@@ -99,36 +100,38 @@ class _$MetaCopyWithImpl<$Res> implements $MetaCopyWith<$Res> {
     Object? icon = freezed,
     Object? policeAuthority = freezed,
   }) {
-    return _then(_self.copyWith(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _self.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      startDate: null == startDate
-          ? _self.startDate
-          : startDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      startWeekDay: null == startWeekDay
-          ? _self.startWeekDay
-          : startWeekDay // ignore: cast_nullable_to_non_nullable
-              as String,
-      days: null == days
-          ? _self.days
-          : days // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      icon: freezed == icon
-          ? _self.icon
-          : icon // ignore: cast_nullable_to_non_nullable
-              as String?,
-      policeAuthority: freezed == policeAuthority
-          ? _self.policeAuthority
-          : policeAuthority // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _self.copyWith(
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _self.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+        startDate: null == startDate
+            ? _self.startDate
+            : startDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        startWeekDay: null == startWeekDay
+            ? _self.startWeekDay
+            : startWeekDay // ignore: cast_nullable_to_non_nullable
+                  as String,
+        days: null == days
+            ? _self.days
+            : days // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        icon: freezed == icon
+            ? _self.icon
+            : icon // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        policeAuthority: freezed == policeAuthority
+            ? _self.policeAuthority
+            : policeAuthority // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
 
@@ -174,9 +177,7 @@ extension MetaPatterns on Meta {
   /// ```
 
   @optionalTypeArgs
-  TResult map<TResult extends Object?>(
-    TResult Function(_Meta value) $default,
-  ) {
+  TResult map<TResult extends Object?>(TResult Function(_Meta value) $default) {
     final _that = this;
     switch (_that) {
       case _Meta():
@@ -226,21 +227,29 @@ extension MetaPatterns on Meta {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            String name,
-            String description,
-            DateTime startDate,
-            String startWeekDay,
-            List<String> days,
-            String? icon,
-            String? policeAuthority)?
-        $default, {
+      String name,
+      String description,
+      DateTime startDate,
+      String startWeekDay,
+      List<String> days,
+      String? icon,
+      String? policeAuthority,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Meta() when $default != null:
-        return $default(_that.name, _that.description, _that.startDate,
-            _that.startWeekDay, _that.days, _that.icon, _that.policeAuthority);
+        return $default(
+          _that.name,
+          _that.description,
+          _that.startDate,
+          _that.startWeekDay,
+          _that.days,
+          _that.icon,
+          _that.policeAuthority,
+        );
       case _:
         return orElse();
     }
@@ -262,20 +271,28 @@ extension MetaPatterns on Meta {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            String name,
-            String description,
-            DateTime startDate,
-            String startWeekDay,
-            List<String> days,
-            String? icon,
-            String? policeAuthority)
-        $default,
+      String name,
+      String description,
+      DateTime startDate,
+      String startWeekDay,
+      List<String> days,
+      String? icon,
+      String? policeAuthority,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Meta():
-        return $default(_that.name, _that.description, _that.startDate,
-            _that.startWeekDay, _that.days, _that.icon, _that.policeAuthority);
+        return $default(
+          _that.name,
+          _that.description,
+          _that.startDate,
+          _that.startWeekDay,
+          _that.days,
+          _that.icon,
+          _that.policeAuthority,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -296,20 +313,28 @@ extension MetaPatterns on Meta {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            String name,
-            String description,
-            DateTime startDate,
-            String startWeekDay,
-            List<String> days,
-            String? icon,
-            String? policeAuthority)?
-        $default,
+      String name,
+      String description,
+      DateTime startDate,
+      String startWeekDay,
+      List<String> days,
+      String? icon,
+      String? policeAuthority,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Meta() when $default != null:
-        return $default(_that.name, _that.description, _that.startDate,
-            _that.startWeekDay, _that.days, _that.icon, _that.policeAuthority);
+        return $default(
+          _that.name,
+          _that.description,
+          _that.startDate,
+          _that.startWeekDay,
+          _that.days,
+          _that.icon,
+          _that.policeAuthority,
+        );
       case _:
         return null;
     }
@@ -319,16 +344,16 @@ extension MetaPatterns on Meta {
 /// @nodoc
 
 class _Meta extends Meta {
-  const _Meta(
-      {required this.name,
-      required this.description,
-      required this.startDate,
-      required this.startWeekDay,
-      required final List<String> days,
-      this.icon,
-      this.policeAuthority})
-      : _days = days,
-        super._();
+  const _Meta({
+    required this.name,
+    required this.description,
+    required this.startDate,
+    required this.startWeekDay,
+    required final List<String> days,
+    this.icon,
+    this.policeAuthority,
+  }) : _days = days,
+       super._();
 
   @override
   final String name;
@@ -379,14 +404,15 @@ class _Meta extends Meta {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      name,
-      description,
-      startDate,
-      startWeekDay,
-      const DeepCollectionEquality().hash(_days),
-      icon,
-      policeAuthority);
+    runtimeType,
+    name,
+    description,
+    startDate,
+    startWeekDay,
+    const DeepCollectionEquality().hash(_days),
+    icon,
+    policeAuthority,
+  );
 
   @override
   String toString() {
@@ -400,14 +426,15 @@ abstract mixin class _$MetaCopyWith<$Res> implements $MetaCopyWith<$Res> {
       __$MetaCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {String name,
-      String description,
-      DateTime startDate,
-      String startWeekDay,
-      List<String> days,
-      String? icon,
-      String? policeAuthority});
+  $Res call({
+    String name,
+    String description,
+    DateTime startDate,
+    String startWeekDay,
+    List<String> days,
+    String? icon,
+    String? policeAuthority,
+  });
 }
 
 /// @nodoc
@@ -430,37 +457,37 @@ class __$MetaCopyWithImpl<$Res> implements _$MetaCopyWith<$Res> {
     Object? icon = freezed,
     Object? policeAuthority = freezed,
   }) {
-    return _then(_Meta(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _self.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      startDate: null == startDate
-          ? _self.startDate
-          : startDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      startWeekDay: null == startWeekDay
-          ? _self.startWeekDay
-          : startWeekDay // ignore: cast_nullable_to_non_nullable
-              as String,
-      days: null == days
-          ? _self._days
-          : days // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      icon: freezed == icon
-          ? _self.icon
-          : icon // ignore: cast_nullable_to_non_nullable
-              as String?,
-      policeAuthority: freezed == policeAuthority
-          ? _self.policeAuthority
-          : policeAuthority // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+    return _then(
+      _Meta(
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _self.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+        startDate: null == startDate
+            ? _self.startDate
+            : startDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        startWeekDay: null == startWeekDay
+            ? _self.startWeekDay
+            : startWeekDay // ignore: cast_nullable_to_non_nullable
+                  as String,
+        days: null == days
+            ? _self._days
+            : days // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        icon: freezed == icon
+            ? _self.icon
+            : icon // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        policeAuthority: freezed == policeAuthority
+            ? _self.policeAuthority
+            : policeAuthority // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
-
-// dart format on

@@ -5,10 +5,7 @@ abstract class CachedUseCase<Input, Output> {
   final BaseCache<Output> cache;
   final String useCaseName;
 
-  CachedUseCase({
-    required this.cache,
-    required this.useCaseName,
-  });
+  CachedUseCase({required this.cache, required this.useCaseName});
 
   /// Execute the use case with caching
   Future<Output> execute(Input input) async {
@@ -68,10 +65,7 @@ abstract class CachedUseCaseNoInput<Output> {
   final BaseCache<Output> cache;
   final String useCaseName;
 
-  CachedUseCaseNoInput({
-    required this.cache,
-    required this.useCaseName,
-  });
+  CachedUseCaseNoInput({required this.cache, required this.useCaseName});
 
   /// Execute the use case with caching
   Future<Output> execute() async {

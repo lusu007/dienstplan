@@ -25,17 +25,21 @@ class CalendarDayCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Selective provider watching - only watch specific parts
-    final selectedDay = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.selectedDay,
-    ));
+    final selectedDay = ref.watch(
+      scheduleCoordinatorProvider.select((state) => state.value?.selectedDay),
+    );
 
-    final partnerAccentColor = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.partnerAccentColorValue,
-    ));
+    final partnerAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.partnerAccentColorValue,
+      ),
+    );
 
-    final myAccentColor = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.myAccentColorValue,
-    ));
+    final myAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.myAccentColorValue,
+      ),
+    );
 
     final isSelected = _isDaySelected(selectedDay);
 

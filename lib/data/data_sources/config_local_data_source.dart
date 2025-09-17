@@ -19,7 +19,10 @@ class ConfigLocalDataSource {
       return configs;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ConfigLocalDataSource: Error getting configs', e, stackTrace);
+        'ConfigLocalDataSource: Error getting configs',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -53,7 +56,8 @@ class ConfigLocalDataSource {
       await _scheduleConfigService.saveConfig(config);
 
       AppLogger.d(
-          'ConfigLocalDataSource: Successfully saved config: ${config.name}');
+        'ConfigLocalDataSource: Successfully saved config: ${config.name}',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('ConfigLocalDataSource: Error saving config', e, stackTrace);
       rethrow;
@@ -70,7 +74,8 @@ class ConfigLocalDataSource {
       }
 
       AppLogger.d(
-          'ConfigLocalDataSource: Successfully saved ${configs.length} configs');
+        'ConfigLocalDataSource: Successfully saved ${configs.length} configs',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('ConfigLocalDataSource: Error saving configs', e, stackTrace);
       rethrow;
@@ -85,13 +90,18 @@ class ConfigLocalDataSource {
       // Note: ScheduleConfigService doesn't have a deleteConfig method
       // This would need to be implemented in the service
       AppLogger.w(
-          'ConfigLocalDataSource: deleteConfig not implemented in ScheduleConfigService');
+        'ConfigLocalDataSource: deleteConfig not implemented in ScheduleConfigService',
+      );
 
       AppLogger.d(
-          'ConfigLocalDataSource: Successfully deleted config: $configName');
+        'ConfigLocalDataSource: Successfully deleted config: $configName',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ConfigLocalDataSource: Error deleting config', e, stackTrace);
+        'ConfigLocalDataSource: Error deleting config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -104,12 +114,16 @@ class ConfigLocalDataSource {
       // Note: ScheduleConfigService doesn't have a clearConfigs method
       // This would need to be implemented in the service
       AppLogger.w(
-          'ConfigLocalDataSource: clearConfigs not implemented in ScheduleConfigService');
+        'ConfigLocalDataSource: clearConfigs not implemented in ScheduleConfigService',
+      );
 
       AppLogger.d('ConfigLocalDataSource: Successfully cleared all configs');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ConfigLocalDataSource: Error clearing configs', e, stackTrace);
+        'ConfigLocalDataSource: Error clearing configs',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -118,7 +132,8 @@ class ConfigLocalDataSource {
   Future<bool> hasConfig(String configName) async {
     try {
       AppLogger.d(
-          'ConfigLocalDataSource: Checking if config exists: $configName');
+        'ConfigLocalDataSource: Checking if config exists: $configName',
+      );
 
       final configs = _scheduleConfigService.configs;
       final hasConfig = configs.any((c) => c.name == configName);
@@ -127,8 +142,11 @@ class ConfigLocalDataSource {
 
       return hasConfig;
     } catch (e, stackTrace) {
-      AppLogger.e('ConfigLocalDataSource: Error checking if config exists', e,
-          stackTrace);
+      AppLogger.e(
+        'ConfigLocalDataSource: Error checking if config exists',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -145,8 +163,11 @@ class ConfigLocalDataSource {
 
       return configName;
     } catch (e, stackTrace) {
-      AppLogger.e('ConfigLocalDataSource: Error getting active config name', e,
-          stackTrace);
+      AppLogger.e(
+        'ConfigLocalDataSource: Error getting active config name',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -155,7 +176,8 @@ class ConfigLocalDataSource {
   Future<void> setActiveConfigName(String configName) async {
     try {
       AppLogger.d(
-          'ConfigLocalDataSource: Setting active config name: $configName');
+        'ConfigLocalDataSource: Setting active config name: $configName',
+      );
 
       final configs = _scheduleConfigService.configs;
       final config = configs.where((c) => c.name == configName).firstOrNull;
@@ -163,13 +185,17 @@ class ConfigLocalDataSource {
       if (config != null) {
         await _scheduleConfigService.setDefaultConfig(config);
         AppLogger.d(
-            'ConfigLocalDataSource: Successfully set active config: $configName');
+          'ConfigLocalDataSource: Successfully set active config: $configName',
+        );
       } else {
         throw ArgumentError('Configuration not found: $configName');
       }
     } catch (e, stackTrace) {
-      AppLogger.e('ConfigLocalDataSource: Error setting active config name', e,
-          stackTrace);
+      AppLogger.e(
+        'ConfigLocalDataSource: Error setting active config name',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

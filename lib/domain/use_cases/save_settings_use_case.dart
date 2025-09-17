@@ -10,9 +10,10 @@ class SaveSettingsUseCase {
   final SettingsRepository _settingsRepository;
   final ExceptionMapper _exceptionMapper;
 
-  SaveSettingsUseCase(this._settingsRepository,
-      {ExceptionMapper? exceptionMapper})
-      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  SaveSettingsUseCase(
+    this._settingsRepository, {
+    ExceptionMapper? exceptionMapper,
+  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   Future<void> execute(Settings settings) async {
     try {
@@ -24,7 +25,8 @@ class SaveSettingsUseCase {
       SettingsCache.updateCache(settings);
 
       AppLogger.i(
-          'SaveSettingsUseCase: Settings saved successfully and cache updated');
+        'SaveSettingsUseCase: Settings saved successfully and cache updated',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('SaveSettingsUseCase: Error saving settings', e, stackTrace);
       rethrow;

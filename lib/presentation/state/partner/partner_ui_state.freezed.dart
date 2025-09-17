@@ -9,7 +9,6 @@ part of 'partner_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -27,7 +26,9 @@ mixin _$PartnerUiState {
   @pragma('vm:prefer-inline')
   $PartnerUiStateCopyWith<PartnerUiState> get copyWith =>
       _$PartnerUiStateCopyWithImpl<PartnerUiState>(
-          this as PartnerUiState, _$identity);
+        this as PartnerUiState,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -42,7 +43,9 @@ mixin _$PartnerUiState {
             (identical(other.partnerDutyGroup, partnerDutyGroup) ||
                 other.partnerDutyGroup == partnerDutyGroup) &&
             (identical(
-                    other.partnerAccentColorValue, partnerAccentColorValue) ||
+                  other.partnerAccentColorValue,
+                  partnerAccentColorValue,
+                ) ||
                 other.partnerAccentColorValue == partnerAccentColorValue) &&
             (identical(other.myAccentColorValue, myAccentColorValue) ||
                 other.myAccentColorValue == myAccentColorValue));
@@ -50,13 +53,14 @@ mixin _$PartnerUiState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      error,
-      partnerConfigName,
-      partnerDutyGroup,
-      partnerAccentColorValue,
-      myAccentColorValue);
+    runtimeType,
+    isLoading,
+    error,
+    partnerConfigName,
+    partnerDutyGroup,
+    partnerAccentColorValue,
+    myAccentColorValue,
+  );
 
   @override
   String toString() {
@@ -67,16 +71,18 @@ mixin _$PartnerUiState {
 /// @nodoc
 abstract mixin class $PartnerUiStateCopyWith<$Res> {
   factory $PartnerUiStateCopyWith(
-          PartnerUiState value, $Res Function(PartnerUiState) _then) =
-      _$PartnerUiStateCopyWithImpl;
+    PartnerUiState value,
+    $Res Function(PartnerUiState) _then,
+  ) = _$PartnerUiStateCopyWithImpl;
   @useResult
-  $Res call(
-      {bool isLoading,
-      String? error,
-      String? partnerConfigName,
-      String? partnerDutyGroup,
-      int? partnerAccentColorValue,
-      int? myAccentColorValue});
+  $Res call({
+    bool isLoading,
+    String? error,
+    String? partnerConfigName,
+    String? partnerDutyGroup,
+    int? partnerAccentColorValue,
+    int? myAccentColorValue,
+  });
 }
 
 /// @nodoc
@@ -99,32 +105,34 @@ class _$PartnerUiStateCopyWithImpl<$Res>
     Object? partnerAccentColorValue = freezed,
     Object? myAccentColorValue = freezed,
   }) {
-    return _then(_self.copyWith(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      partnerConfigName: freezed == partnerConfigName
-          ? _self.partnerConfigName
-          : partnerConfigName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      partnerDutyGroup: freezed == partnerDutyGroup
-          ? _self.partnerDutyGroup
-          : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
-              as String?,
-      partnerAccentColorValue: freezed == partnerAccentColorValue
-          ? _self.partnerAccentColorValue
-          : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-      myAccentColorValue: freezed == myAccentColorValue
-          ? _self.myAccentColorValue
-          : myAccentColorValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
+    return _then(
+      _self.copyWith(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerConfigName: freezed == partnerConfigName
+            ? _self.partnerConfigName
+            : partnerConfigName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerDutyGroup: freezed == partnerDutyGroup
+            ? _self.partnerDutyGroup
+            : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerAccentColorValue: freezed == partnerAccentColorValue
+            ? _self.partnerAccentColorValue
+            : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        myAccentColorValue: freezed == myAccentColorValue
+            ? _self.myAccentColorValue
+            : myAccentColorValue // ignore: cast_nullable_to_non_nullable
+                  as int?,
+      ),
+    );
   }
 }
 
@@ -222,25 +230,27 @@ extension PartnerUiStatePatterns on PartnerUiState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            String? error,
-            String? partnerConfigName,
-            String? partnerDutyGroup,
-            int? partnerAccentColorValue,
-            int? myAccentColorValue)?
-        $default, {
+      bool isLoading,
+      String? error,
+      String? partnerConfigName,
+      String? partnerDutyGroup,
+      int? partnerAccentColorValue,
+      int? myAccentColorValue,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _PartnerUiState() when $default != null:
         return $default(
-            _that.isLoading,
-            _that.error,
-            _that.partnerConfigName,
-            _that.partnerDutyGroup,
-            _that.partnerAccentColorValue,
-            _that.myAccentColorValue);
+          _that.isLoading,
+          _that.error,
+          _that.partnerConfigName,
+          _that.partnerDutyGroup,
+          _that.partnerAccentColorValue,
+          _that.myAccentColorValue,
+        );
       case _:
         return orElse();
     }
@@ -262,24 +272,26 @@ extension PartnerUiStatePatterns on PartnerUiState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            String? error,
-            String? partnerConfigName,
-            String? partnerDutyGroup,
-            int? partnerAccentColorValue,
-            int? myAccentColorValue)
-        $default,
+      bool isLoading,
+      String? error,
+      String? partnerConfigName,
+      String? partnerDutyGroup,
+      int? partnerAccentColorValue,
+      int? myAccentColorValue,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PartnerUiState():
         return $default(
-            _that.isLoading,
-            _that.error,
-            _that.partnerConfigName,
-            _that.partnerDutyGroup,
-            _that.partnerAccentColorValue,
-            _that.myAccentColorValue);
+          _that.isLoading,
+          _that.error,
+          _that.partnerConfigName,
+          _that.partnerDutyGroup,
+          _that.partnerAccentColorValue,
+          _that.myAccentColorValue,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -300,24 +312,26 @@ extension PartnerUiStatePatterns on PartnerUiState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            bool isLoading,
-            String? error,
-            String? partnerConfigName,
-            String? partnerDutyGroup,
-            int? partnerAccentColorValue,
-            int? myAccentColorValue)?
-        $default,
+      bool isLoading,
+      String? error,
+      String? partnerConfigName,
+      String? partnerDutyGroup,
+      int? partnerAccentColorValue,
+      int? myAccentColorValue,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PartnerUiState() when $default != null:
         return $default(
-            _that.isLoading,
-            _that.error,
-            _that.partnerConfigName,
-            _that.partnerDutyGroup,
-            _that.partnerAccentColorValue,
-            _that.myAccentColorValue);
+          _that.isLoading,
+          _that.error,
+          _that.partnerConfigName,
+          _that.partnerDutyGroup,
+          _that.partnerAccentColorValue,
+          _that.myAccentColorValue,
+        );
       case _:
         return null;
     }
@@ -327,14 +341,14 @@ extension PartnerUiStatePatterns on PartnerUiState {
 /// @nodoc
 
 class _PartnerUiState extends PartnerUiState {
-  const _PartnerUiState(
-      {required this.isLoading,
-      this.error,
-      this.partnerConfigName,
-      this.partnerDutyGroup,
-      this.partnerAccentColorValue,
-      this.myAccentColorValue})
-      : super._();
+  const _PartnerUiState({
+    required this.isLoading,
+    this.error,
+    this.partnerConfigName,
+    this.partnerDutyGroup,
+    this.partnerAccentColorValue,
+    this.myAccentColorValue,
+  }) : super._();
 
   @override
   final bool isLoading;
@@ -370,7 +384,9 @@ class _PartnerUiState extends PartnerUiState {
             (identical(other.partnerDutyGroup, partnerDutyGroup) ||
                 other.partnerDutyGroup == partnerDutyGroup) &&
             (identical(
-                    other.partnerAccentColorValue, partnerAccentColorValue) ||
+                  other.partnerAccentColorValue,
+                  partnerAccentColorValue,
+                ) ||
                 other.partnerAccentColorValue == partnerAccentColorValue) &&
             (identical(other.myAccentColorValue, myAccentColorValue) ||
                 other.myAccentColorValue == myAccentColorValue));
@@ -378,13 +394,14 @@ class _PartnerUiState extends PartnerUiState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      error,
-      partnerConfigName,
-      partnerDutyGroup,
-      partnerAccentColorValue,
-      myAccentColorValue);
+    runtimeType,
+    isLoading,
+    error,
+    partnerConfigName,
+    partnerDutyGroup,
+    partnerAccentColorValue,
+    myAccentColorValue,
+  );
 
   @override
   String toString() {
@@ -396,17 +413,19 @@ class _PartnerUiState extends PartnerUiState {
 abstract mixin class _$PartnerUiStateCopyWith<$Res>
     implements $PartnerUiStateCopyWith<$Res> {
   factory _$PartnerUiStateCopyWith(
-          _PartnerUiState value, $Res Function(_PartnerUiState) _then) =
-      __$PartnerUiStateCopyWithImpl;
+    _PartnerUiState value,
+    $Res Function(_PartnerUiState) _then,
+  ) = __$PartnerUiStateCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {bool isLoading,
-      String? error,
-      String? partnerConfigName,
-      String? partnerDutyGroup,
-      int? partnerAccentColorValue,
-      int? myAccentColorValue});
+  $Res call({
+    bool isLoading,
+    String? error,
+    String? partnerConfigName,
+    String? partnerDutyGroup,
+    int? partnerAccentColorValue,
+    int? myAccentColorValue,
+  });
 }
 
 /// @nodoc
@@ -429,33 +448,33 @@ class __$PartnerUiStateCopyWithImpl<$Res>
     Object? partnerAccentColorValue = freezed,
     Object? myAccentColorValue = freezed,
   }) {
-    return _then(_PartnerUiState(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      partnerConfigName: freezed == partnerConfigName
-          ? _self.partnerConfigName
-          : partnerConfigName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      partnerDutyGroup: freezed == partnerDutyGroup
-          ? _self.partnerDutyGroup
-          : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
-              as String?,
-      partnerAccentColorValue: freezed == partnerAccentColorValue
-          ? _self.partnerAccentColorValue
-          : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-      myAccentColorValue: freezed == myAccentColorValue
-          ? _self.myAccentColorValue
-          : myAccentColorValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-    ));
+    return _then(
+      _PartnerUiState(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerConfigName: freezed == partnerConfigName
+            ? _self.partnerConfigName
+            : partnerConfigName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerDutyGroup: freezed == partnerDutyGroup
+            ? _self.partnerDutyGroup
+            : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerAccentColorValue: freezed == partnerAccentColorValue
+            ? _self.partnerAccentColorValue
+            : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        myAccentColorValue: freezed == myAccentColorValue
+            ? _self.myAccentColorValue
+            : myAccentColorValue // ignore: cast_nullable_to_non_nullable
+                  as int?,
+      ),
+    );
   }
 }
-
-// dart format on

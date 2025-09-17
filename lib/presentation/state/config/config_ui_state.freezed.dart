@@ -9,7 +9,6 @@ part of 'config_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -27,7 +26,9 @@ mixin _$ConfigUiState {
   @pragma('vm:prefer-inline')
   $ConfigUiStateCopyWith<ConfigUiState> get copyWith =>
       _$ConfigUiStateCopyWithImpl<ConfigUiState>(
-          this as ConfigUiState, _$identity);
+        this as ConfigUiState,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -39,8 +40,10 @@ mixin _$ConfigUiState {
             (identical(other.error, error) || other.error == error) &&
             (identical(other.activeConfigName, activeConfigName) ||
                 other.activeConfigName == activeConfigName) &&
-            const DeepCollectionEquality()
-                .equals(other.dutyGroups, dutyGroups) &&
+            const DeepCollectionEquality().equals(
+              other.dutyGroups,
+              dutyGroups,
+            ) &&
             const DeepCollectionEquality().equals(other.configs, configs) &&
             (identical(other.activeConfig, activeConfig) ||
                 other.activeConfig == activeConfig));
@@ -48,13 +51,14 @@ mixin _$ConfigUiState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      error,
-      activeConfigName,
-      const DeepCollectionEquality().hash(dutyGroups),
-      const DeepCollectionEquality().hash(configs),
-      activeConfig);
+    runtimeType,
+    isLoading,
+    error,
+    activeConfigName,
+    const DeepCollectionEquality().hash(dutyGroups),
+    const DeepCollectionEquality().hash(configs),
+    activeConfig,
+  );
 
   @override
   String toString() {
@@ -65,16 +69,18 @@ mixin _$ConfigUiState {
 /// @nodoc
 abstract mixin class $ConfigUiStateCopyWith<$Res> {
   factory $ConfigUiStateCopyWith(
-          ConfigUiState value, $Res Function(ConfigUiState) _then) =
-      _$ConfigUiStateCopyWithImpl;
+    ConfigUiState value,
+    $Res Function(ConfigUiState) _then,
+  ) = _$ConfigUiStateCopyWithImpl;
   @useResult
-  $Res call(
-      {bool isLoading,
-      String? error,
-      String? activeConfigName,
-      List<String> dutyGroups,
-      List<DutyScheduleConfig> configs,
-      DutyScheduleConfig? activeConfig});
+  $Res call({
+    bool isLoading,
+    String? error,
+    String? activeConfigName,
+    List<String> dutyGroups,
+    List<DutyScheduleConfig> configs,
+    DutyScheduleConfig? activeConfig,
+  });
 
   $DutyScheduleConfigCopyWith<$Res>? get activeConfig;
 }
@@ -99,32 +105,34 @@ class _$ConfigUiStateCopyWithImpl<$Res>
     Object? configs = null,
     Object? activeConfig = freezed,
   }) {
-    return _then(_self.copyWith(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      activeConfigName: freezed == activeConfigName
-          ? _self.activeConfigName
-          : activeConfigName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      dutyGroups: null == dutyGroups
-          ? _self.dutyGroups
-          : dutyGroups // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      configs: null == configs
-          ? _self.configs
-          : configs // ignore: cast_nullable_to_non_nullable
-              as List<DutyScheduleConfig>,
-      activeConfig: freezed == activeConfig
-          ? _self.activeConfig
-          : activeConfig // ignore: cast_nullable_to_non_nullable
-              as DutyScheduleConfig?,
-    ));
+    return _then(
+      _self.copyWith(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        activeConfigName: freezed == activeConfigName
+            ? _self.activeConfigName
+            : activeConfigName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        dutyGroups: null == dutyGroups
+            ? _self.dutyGroups
+            : dutyGroups // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        configs: null == configs
+            ? _self.configs
+            : configs // ignore: cast_nullable_to_non_nullable
+                  as List<DutyScheduleConfig>,
+        activeConfig: freezed == activeConfig
+            ? _self.activeConfig
+            : activeConfig // ignore: cast_nullable_to_non_nullable
+                  as DutyScheduleConfig?,
+      ),
+    );
   }
 
   /// Create a copy of ConfigUiState
@@ -236,20 +244,27 @@ extension ConfigUiStatePatterns on ConfigUiState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            String? error,
-            String? activeConfigName,
-            List<String> dutyGroups,
-            List<DutyScheduleConfig> configs,
-            DutyScheduleConfig? activeConfig)?
-        $default, {
+      bool isLoading,
+      String? error,
+      String? activeConfigName,
+      List<String> dutyGroups,
+      List<DutyScheduleConfig> configs,
+      DutyScheduleConfig? activeConfig,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ConfigUiState() when $default != null:
-        return $default(_that.isLoading, _that.error, _that.activeConfigName,
-            _that.dutyGroups, _that.configs, _that.activeConfig);
+        return $default(
+          _that.isLoading,
+          _that.error,
+          _that.activeConfigName,
+          _that.dutyGroups,
+          _that.configs,
+          _that.activeConfig,
+        );
       case _:
         return orElse();
     }
@@ -271,19 +286,26 @@ extension ConfigUiStatePatterns on ConfigUiState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            bool isLoading,
-            String? error,
-            String? activeConfigName,
-            List<String> dutyGroups,
-            List<DutyScheduleConfig> configs,
-            DutyScheduleConfig? activeConfig)
-        $default,
+      bool isLoading,
+      String? error,
+      String? activeConfigName,
+      List<String> dutyGroups,
+      List<DutyScheduleConfig> configs,
+      DutyScheduleConfig? activeConfig,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ConfigUiState():
-        return $default(_that.isLoading, _that.error, _that.activeConfigName,
-            _that.dutyGroups, _that.configs, _that.activeConfig);
+        return $default(
+          _that.isLoading,
+          _that.error,
+          _that.activeConfigName,
+          _that.dutyGroups,
+          _that.configs,
+          _that.activeConfig,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -304,19 +326,26 @@ extension ConfigUiStatePatterns on ConfigUiState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            bool isLoading,
-            String? error,
-            String? activeConfigName,
-            List<String> dutyGroups,
-            List<DutyScheduleConfig> configs,
-            DutyScheduleConfig? activeConfig)?
-        $default,
+      bool isLoading,
+      String? error,
+      String? activeConfigName,
+      List<String> dutyGroups,
+      List<DutyScheduleConfig> configs,
+      DutyScheduleConfig? activeConfig,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ConfigUiState() when $default != null:
-        return $default(_that.isLoading, _that.error, _that.activeConfigName,
-            _that.dutyGroups, _that.configs, _that.activeConfig);
+        return $default(
+          _that.isLoading,
+          _that.error,
+          _that.activeConfigName,
+          _that.dutyGroups,
+          _that.configs,
+          _that.activeConfig,
+        );
       case _:
         return null;
     }
@@ -326,16 +355,16 @@ extension ConfigUiStatePatterns on ConfigUiState {
 /// @nodoc
 
 class _ConfigUiState extends ConfigUiState {
-  const _ConfigUiState(
-      {required this.isLoading,
-      this.error,
-      this.activeConfigName,
-      final List<String> dutyGroups = const <String>[],
-      final List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
-      this.activeConfig})
-      : _dutyGroups = dutyGroups,
-        _configs = configs,
-        super._();
+  const _ConfigUiState({
+    required this.isLoading,
+    this.error,
+    this.activeConfigName,
+    final List<String> dutyGroups = const <String>[],
+    final List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
+    this.activeConfig,
+  }) : _dutyGroups = dutyGroups,
+       _configs = configs,
+       super._();
 
   @override
   final bool isLoading;
@@ -382,8 +411,10 @@ class _ConfigUiState extends ConfigUiState {
             (identical(other.error, error) || other.error == error) &&
             (identical(other.activeConfigName, activeConfigName) ||
                 other.activeConfigName == activeConfigName) &&
-            const DeepCollectionEquality()
-                .equals(other._dutyGroups, _dutyGroups) &&
+            const DeepCollectionEquality().equals(
+              other._dutyGroups,
+              _dutyGroups,
+            ) &&
             const DeepCollectionEquality().equals(other._configs, _configs) &&
             (identical(other.activeConfig, activeConfig) ||
                 other.activeConfig == activeConfig));
@@ -391,13 +422,14 @@ class _ConfigUiState extends ConfigUiState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      error,
-      activeConfigName,
-      const DeepCollectionEquality().hash(_dutyGroups),
-      const DeepCollectionEquality().hash(_configs),
-      activeConfig);
+    runtimeType,
+    isLoading,
+    error,
+    activeConfigName,
+    const DeepCollectionEquality().hash(_dutyGroups),
+    const DeepCollectionEquality().hash(_configs),
+    activeConfig,
+  );
 
   @override
   String toString() {
@@ -409,17 +441,19 @@ class _ConfigUiState extends ConfigUiState {
 abstract mixin class _$ConfigUiStateCopyWith<$Res>
     implements $ConfigUiStateCopyWith<$Res> {
   factory _$ConfigUiStateCopyWith(
-          _ConfigUiState value, $Res Function(_ConfigUiState) _then) =
-      __$ConfigUiStateCopyWithImpl;
+    _ConfigUiState value,
+    $Res Function(_ConfigUiState) _then,
+  ) = __$ConfigUiStateCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {bool isLoading,
-      String? error,
-      String? activeConfigName,
-      List<String> dutyGroups,
-      List<DutyScheduleConfig> configs,
-      DutyScheduleConfig? activeConfig});
+  $Res call({
+    bool isLoading,
+    String? error,
+    String? activeConfigName,
+    List<String> dutyGroups,
+    List<DutyScheduleConfig> configs,
+    DutyScheduleConfig? activeConfig,
+  });
 
   @override
   $DutyScheduleConfigCopyWith<$Res>? get activeConfig;
@@ -445,32 +479,34 @@ class __$ConfigUiStateCopyWithImpl<$Res>
     Object? configs = null,
     Object? activeConfig = freezed,
   }) {
-    return _then(_ConfigUiState(
-      isLoading: null == isLoading
-          ? _self.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      error: freezed == error
-          ? _self.error
-          : error // ignore: cast_nullable_to_non_nullable
-              as String?,
-      activeConfigName: freezed == activeConfigName
-          ? _self.activeConfigName
-          : activeConfigName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      dutyGroups: null == dutyGroups
-          ? _self._dutyGroups
-          : dutyGroups // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      configs: null == configs
-          ? _self._configs
-          : configs // ignore: cast_nullable_to_non_nullable
-              as List<DutyScheduleConfig>,
-      activeConfig: freezed == activeConfig
-          ? _self.activeConfig
-          : activeConfig // ignore: cast_nullable_to_non_nullable
-              as DutyScheduleConfig?,
-    ));
+    return _then(
+      _ConfigUiState(
+        isLoading: null == isLoading
+            ? _self.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        error: freezed == error
+            ? _self.error
+            : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        activeConfigName: freezed == activeConfigName
+            ? _self.activeConfigName
+            : activeConfigName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        dutyGroups: null == dutyGroups
+            ? _self._dutyGroups
+            : dutyGroups // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        configs: null == configs
+            ? _self._configs
+            : configs // ignore: cast_nullable_to_non_nullable
+                  as List<DutyScheduleConfig>,
+        activeConfig: freezed == activeConfig
+            ? _self.activeConfig
+            : activeConfig // ignore: cast_nullable_to_non_nullable
+                  as DutyScheduleConfig?,
+      ),
+    );
   }
 
   /// Create a copy of ConfigUiState
@@ -487,5 +523,3 @@ class __$ConfigUiStateCopyWithImpl<$Res>
     });
   }
 }
-
-// dart format on

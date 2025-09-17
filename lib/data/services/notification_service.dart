@@ -44,15 +44,18 @@ class NotificationService {
         AppLogger.i('NotificationService: SnackBar displayed: $message');
       } else {
         AppLogger.w(
-            'NotificationService: ScaffoldMessenger not available, queuing notification');
+          'NotificationService: ScaffoldMessenger not available, queuing notification',
+        );
         // Queue the notification for later
-        _pendingNotifications.add(_PendingNotification(
-          message: message,
-          duration: duration,
-          action: action,
-          backgroundColor: backgroundColor,
-          textColor: textColor,
-        ));
+        _pendingNotifications.add(
+          _PendingNotification(
+            message: message,
+            duration: duration,
+            action: action,
+            backgroundColor: backgroundColor,
+            textColor: textColor,
+          ),
+        );
       }
     } catch (e, stackTrace) {
       AppLogger.e('NotificationService: Error showing snackbar', e, stackTrace);
@@ -66,12 +69,14 @@ class NotificationService {
     final messenger = scaffoldMessengerKey.currentState;
     if (messenger == null) {
       AppLogger.w(
-          'NotificationService: Still no ScaffoldMessenger available for pending notifications');
+        'NotificationService: Still no ScaffoldMessenger available for pending notifications',
+      );
       return;
     }
 
     AppLogger.i(
-        'NotificationService: Processing ${_pendingNotifications.length} pending notifications');
+      'NotificationService: Processing ${_pendingNotifications.length} pending notifications',
+    );
 
     for (final pending in _pendingNotifications) {
       try {
@@ -93,10 +98,14 @@ class NotificationService {
           ),
         );
         AppLogger.i(
-            'NotificationService: Pending SnackBar displayed: ${pending.message}');
+          'NotificationService: Pending SnackBar displayed: ${pending.message}',
+        );
       } catch (e, stackTrace) {
-        AppLogger.e('NotificationService: Error showing pending snackbar', e,
-            stackTrace);
+        AppLogger.e(
+          'NotificationService: Error showing pending snackbar',
+          e,
+          stackTrace,
+        );
       }
     }
 

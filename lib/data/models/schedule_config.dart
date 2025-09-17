@@ -32,10 +32,7 @@ class Meta {
   final String name;
   final String description;
 
-  Meta({
-    required this.name,
-    required this.description,
-  });
+  Meta({required this.name, required this.description});
 
   factory Meta.fromJson(Map<String, dynamic> json) {
     return Meta(
@@ -45,10 +42,7 @@ class Meta {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'description': description,
-    };
+    return {'name': name, 'description': description};
   }
 }
 
@@ -56,23 +50,18 @@ class Service {
   final String name;
   final List<String> persons;
 
-  Service({
-    required this.name,
-    required this.persons,
-  });
+  Service({required this.name, required this.persons});
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
       name: json['name'] as String,
-      persons:
-          (json['persons'] as List).map((person) => person as String).toList(),
+      persons: (json['persons'] as List)
+          .map((person) => person as String)
+          .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'persons': persons,
-    };
+    return {'name': name, 'persons': persons};
   }
 }

@@ -9,7 +9,6 @@ part of 'schedule.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -49,8 +48,16 @@ mixin _$Schedule {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, date, service, dutyGroupId,
-      dutyTypeId, dutyGroupName, configName, isAllDay);
+  int get hashCode => Object.hash(
+    runtimeType,
+    date,
+    service,
+    dutyGroupId,
+    dutyTypeId,
+    dutyGroupName,
+    configName,
+    isAllDay,
+  );
 
   @override
   String toString() {
@@ -63,14 +70,15 @@ abstract mixin class $ScheduleCopyWith<$Res> {
   factory $ScheduleCopyWith(Schedule value, $Res Function(Schedule) _then) =
       _$ScheduleCopyWithImpl;
   @useResult
-  $Res call(
-      {DateTime date,
-      String service,
-      String dutyGroupId,
-      String dutyTypeId,
-      String dutyGroupName,
-      String configName,
-      bool isAllDay});
+  $Res call({
+    DateTime date,
+    String service,
+    String dutyGroupId,
+    String dutyTypeId,
+    String dutyGroupName,
+    String configName,
+    bool isAllDay,
+  });
 }
 
 /// @nodoc
@@ -93,36 +101,38 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? configName = null,
     Object? isAllDay = null,
   }) {
-    return _then(_self.copyWith(
-      date: null == date
-          ? _self.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      service: null == service
-          ? _self.service
-          : service // ignore: cast_nullable_to_non_nullable
-              as String,
-      dutyGroupId: null == dutyGroupId
-          ? _self.dutyGroupId
-          : dutyGroupId // ignore: cast_nullable_to_non_nullable
-              as String,
-      dutyTypeId: null == dutyTypeId
-          ? _self.dutyTypeId
-          : dutyTypeId // ignore: cast_nullable_to_non_nullable
-              as String,
-      dutyGroupName: null == dutyGroupName
-          ? _self.dutyGroupName
-          : dutyGroupName // ignore: cast_nullable_to_non_nullable
-              as String,
-      configName: null == configName
-          ? _self.configName
-          : configName // ignore: cast_nullable_to_non_nullable
-              as String,
-      isAllDay: null == isAllDay
-          ? _self.isAllDay
-          : isAllDay // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      _self.copyWith(
+        date: null == date
+            ? _self.date
+            : date // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        service: null == service
+            ? _self.service
+            : service // ignore: cast_nullable_to_non_nullable
+                  as String,
+        dutyGroupId: null == dutyGroupId
+            ? _self.dutyGroupId
+            : dutyGroupId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        dutyTypeId: null == dutyTypeId
+            ? _self.dutyTypeId
+            : dutyTypeId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        dutyGroupName: null == dutyGroupName
+            ? _self.dutyGroupName
+            : dutyGroupName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        configName: null == configName
+            ? _self.configName
+            : configName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        isAllDay: null == isAllDay
+            ? _self.isAllDay
+            : isAllDay // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
@@ -220,27 +230,29 @@ extension SchedulePatterns on Schedule {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            DateTime date,
-            String service,
-            String dutyGroupId,
-            String dutyTypeId,
-            String dutyGroupName,
-            String configName,
-            bool isAllDay)?
-        $default, {
+      DateTime date,
+      String service,
+      String dutyGroupId,
+      String dutyTypeId,
+      String dutyGroupName,
+      String configName,
+      bool isAllDay,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _Schedule() when $default != null:
         return $default(
-            _that.date,
-            _that.service,
-            _that.dutyGroupId,
-            _that.dutyTypeId,
-            _that.dutyGroupName,
-            _that.configName,
-            _that.isAllDay);
+          _that.date,
+          _that.service,
+          _that.dutyGroupId,
+          _that.dutyTypeId,
+          _that.dutyGroupName,
+          _that.configName,
+          _that.isAllDay,
+        );
       case _:
         return orElse();
     }
@@ -262,26 +274,28 @@ extension SchedulePatterns on Schedule {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            DateTime date,
-            String service,
-            String dutyGroupId,
-            String dutyTypeId,
-            String dutyGroupName,
-            String configName,
-            bool isAllDay)
-        $default,
+      DateTime date,
+      String service,
+      String dutyGroupId,
+      String dutyTypeId,
+      String dutyGroupName,
+      String configName,
+      bool isAllDay,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Schedule():
         return $default(
-            _that.date,
-            _that.service,
-            _that.dutyGroupId,
-            _that.dutyTypeId,
-            _that.dutyGroupName,
-            _that.configName,
-            _that.isAllDay);
+          _that.date,
+          _that.service,
+          _that.dutyGroupId,
+          _that.dutyTypeId,
+          _that.dutyGroupName,
+          _that.configName,
+          _that.isAllDay,
+        );
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -302,26 +316,28 @@ extension SchedulePatterns on Schedule {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            DateTime date,
-            String service,
-            String dutyGroupId,
-            String dutyTypeId,
-            String dutyGroupName,
-            String configName,
-            bool isAllDay)?
-        $default,
+      DateTime date,
+      String service,
+      String dutyGroupId,
+      String dutyTypeId,
+      String dutyGroupName,
+      String configName,
+      bool isAllDay,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _Schedule() when $default != null:
         return $default(
-            _that.date,
-            _that.service,
-            _that.dutyGroupId,
-            _that.dutyTypeId,
-            _that.dutyGroupName,
-            _that.configName,
-            _that.isAllDay);
+          _that.date,
+          _that.service,
+          _that.dutyGroupId,
+          _that.dutyTypeId,
+          _that.dutyGroupName,
+          _that.configName,
+          _that.isAllDay,
+        );
       case _:
         return null;
     }
@@ -331,15 +347,15 @@ extension SchedulePatterns on Schedule {
 /// @nodoc
 
 class _Schedule extends Schedule {
-  const _Schedule(
-      {required this.date,
-      required this.service,
-      required this.dutyGroupId,
-      required this.dutyTypeId,
-      required this.dutyGroupName,
-      required this.configName,
-      this.isAllDay = false})
-      : super._();
+  const _Schedule({
+    required this.date,
+    required this.service,
+    required this.dutyGroupId,
+    required this.dutyTypeId,
+    required this.dutyGroupName,
+    required this.configName,
+    this.isAllDay = false,
+  }) : super._();
 
   @override
   final DateTime date;
@@ -385,8 +401,16 @@ class _Schedule extends Schedule {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, date, service, dutyGroupId,
-      dutyTypeId, dutyGroupName, configName, isAllDay);
+  int get hashCode => Object.hash(
+    runtimeType,
+    date,
+    service,
+    dutyGroupId,
+    dutyTypeId,
+    dutyGroupName,
+    configName,
+    isAllDay,
+  );
 
   @override
   String toString() {
@@ -401,14 +425,15 @@ abstract mixin class _$ScheduleCopyWith<$Res>
       __$ScheduleCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {DateTime date,
-      String service,
-      String dutyGroupId,
-      String dutyTypeId,
-      String dutyGroupName,
-      String configName,
-      bool isAllDay});
+  $Res call({
+    DateTime date,
+    String service,
+    String dutyGroupId,
+    String dutyTypeId,
+    String dutyGroupName,
+    String configName,
+    bool isAllDay,
+  });
 }
 
 /// @nodoc
@@ -431,37 +456,37 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? configName = null,
     Object? isAllDay = null,
   }) {
-    return _then(_Schedule(
-      date: null == date
-          ? _self.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      service: null == service
-          ? _self.service
-          : service // ignore: cast_nullable_to_non_nullable
-              as String,
-      dutyGroupId: null == dutyGroupId
-          ? _self.dutyGroupId
-          : dutyGroupId // ignore: cast_nullable_to_non_nullable
-              as String,
-      dutyTypeId: null == dutyTypeId
-          ? _self.dutyTypeId
-          : dutyTypeId // ignore: cast_nullable_to_non_nullable
-              as String,
-      dutyGroupName: null == dutyGroupName
-          ? _self.dutyGroupName
-          : dutyGroupName // ignore: cast_nullable_to_non_nullable
-              as String,
-      configName: null == configName
-          ? _self.configName
-          : configName // ignore: cast_nullable_to_non_nullable
-              as String,
-      isAllDay: null == isAllDay
-          ? _self.isAllDay
-          : isAllDay // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      _Schedule(
+        date: null == date
+            ? _self.date
+            : date // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        service: null == service
+            ? _self.service
+            : service // ignore: cast_nullable_to_non_nullable
+                  as String,
+        dutyGroupId: null == dutyGroupId
+            ? _self.dutyGroupId
+            : dutyGroupId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        dutyTypeId: null == dutyTypeId
+            ? _self.dutyTypeId
+            : dutyTypeId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        dutyGroupName: null == dutyGroupName
+            ? _self.dutyGroupName
+            : dutyGroupName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        configName: null == configName
+            ? _self.configName
+            : configName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        isAllDay: null == isAllDay
+            ? _self.isAllDay
+            : isAllDay // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
-
-// dart format on

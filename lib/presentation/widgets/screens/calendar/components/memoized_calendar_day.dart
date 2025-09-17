@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 
@@ -54,37 +55,69 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Selective provider watching - only watch specific parts of the state
-    final schedules = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.schedules ?? const <Schedule>[],
-    ));
+    final schedules = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.schedules ?? const <Schedule>[],
+      ),
+    );
 
-    final activeConfig = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.activeConfigName,
-    ));
+    final activeConfig = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.activeConfigName,
+      ),
+    );
 
-    final preferredGroup = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.preferredDutyGroup,
-    ));
+    final preferredGroup = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.preferredDutyGroup,
+      ),
+    );
 
-    final partnerConfigName = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.partnerConfigName,
-    ));
+    final partnerConfigName = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.partnerConfigName,
+      ),
+    );
 
-    final partnerGroup = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.partnerDutyGroup,
-    ));
+    final partnerGroup = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.partnerDutyGroup,
+      ),
+    );
 
-    final selectedDay = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.selectedDay,
-    ));
+    final selectedDay = ref.watch(
+      scheduleCoordinatorProvider.select((state) => state.value?.selectedDay),
+    );
 
-    final partnerAccentColor = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.partnerAccentColorValue,
-    ));
+    final partnerAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.partnerAccentColorValue,
+      ),
+    );
 
-    final myAccentColor = ref.watch(scheduleCoordinatorProvider.select(
-      (state) => state.value?.myAccentColorValue,
-    ));
+    final myAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.myAccentColorValue,
+      ),
+    );
+
+    final holidayAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.holidayAccentColorValue,
+      ),
+    );
+
+    // Watch school holidays state
+    final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
+    final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
+
+    final hasSchoolHoliday =
+        holidaysState?.isEnabled == true &&
+        holidaysState?.hasHolidayOnDate(day) == true;
+    final holidays = hasSchoolHoliday
+        ? holidaysState?.getHolidaysForDate(day) ?? []
+        : [];
+    final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
 
     // Memoized duty calculations
     final dutyData = _MemoizedDutyCalculator.calculateDutyData(
@@ -104,10 +137,13 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       partnerDutyAbbreviation: dutyData.partnerDuty,
       partnerAccentColorValue: partnerAccentColor,
       myAccentColorValue: myAccentColor,
+      holidayAccentColorValue: holidayAccentColor,
       dayType: dayType,
       width: width ?? CalendarConfig.kCalendarDayWidth,
       height: height ?? CalendarConfig.kCalendarDayHeight,
       isSelected: isSelected,
+      hasSchoolHoliday: hasSchoolHoliday,
+      schoolHolidayName: schoolHolidayName,
       onTap: () async {
         try {
           // Trigger day selection via provider
@@ -135,10 +171,7 @@ class DutyData {
   final String myDuty;
   final String partnerDuty;
 
-  const DutyData({
-    required this.myDuty,
-    required this.partnerDuty,
-  });
+  const DutyData({required this.myDuty, required this.partnerDuty});
 
   @override
   bool operator ==(Object other) {
@@ -232,15 +265,18 @@ class _MemoizedDutyCalculator {
     final relevantSchedules = schedules
         .where(
           (schedule) =>
-              schedule.date
-                  .isAfter(monthStart.subtract(const Duration(days: 1))) &&
+              schedule.date.isAfter(
+                monthStart.subtract(const Duration(days: 1)),
+              ) &&
               schedule.date.isBefore(monthEnd.add(const Duration(days: 1))),
         )
         .toList();
 
     return relevantSchedules
-        .map((s) =>
-            '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}')
+        .map(
+          (s) =>
+              '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}',
+        )
         .join(';')
         .hashCode;
   }
@@ -268,7 +304,10 @@ class _MemoizedDutyCalculator {
       final schedulesForDay = schedules.where((schedule) {
         // Normalize dates to avoid timezone issues
         final scheduleDate = DateTime(
-            schedule.date.year, schedule.date.month, schedule.date.day);
+          schedule.date.year,
+          schedule.date.month,
+          schedule.date.day,
+        );
         final dayDate = DateTime(day.year, day.month, day.day);
         final isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
 
@@ -340,7 +379,10 @@ class _MemoizedDutyCalculator {
       final DateTime dayDate = DateTime(day.year, day.month, day.day);
       final List<Schedule> schedulesForDay = schedules.where((schedule) {
         final scheduleDate = DateTime(
-            schedule.date.year, schedule.date.month, schedule.date.day);
+          schedule.date.year,
+          schedule.date.month,
+          schedule.date.day,
+        );
         final bool isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
         final bool isPartnerConfig = schedule.configName == partnerConfigName;
         return isSameDay && isPartnerConfig;
@@ -350,16 +392,19 @@ class _MemoizedDutyCalculator {
       }
       if (partnerGroup != null && partnerGroup.isNotEmpty) {
         try {
-          final Schedule matched = schedulesForDay.firstWhere((s) =>
-              s.dutyGroupName == partnerGroup &&
-              s.dutyTypeId.isNotEmpty &&
-              s.dutyTypeId != '-');
+          final Schedule matched = schedulesForDay.firstWhere(
+            (s) =>
+                s.dutyGroupName == partnerGroup &&
+                s.dutyTypeId.isNotEmpty &&
+                s.dutyTypeId != '-',
+          );
           return matched.dutyTypeId;
         } catch (_) {
           // If partner group exists but is off that day, show nothing
           try {
-            final Schedule off = schedulesForDay
-                .firstWhere((s) => s.dutyGroupName == partnerGroup);
+            final Schedule off = schedulesForDay.firstWhere(
+              (s) => s.dutyGroupName == partnerGroup,
+            );
             if (off.dutyTypeId == '-' || off.dutyTypeId.isEmpty) {
               return '';
             }

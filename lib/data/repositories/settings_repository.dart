@@ -14,7 +14,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   final ExceptionMapper _exceptionMapper;
 
   SettingsRepositoryImpl(this._settingsDao, {ExceptionMapper? exceptionMapper})
-      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+    : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   @override
   Future<domain.Settings?> getSettings() async {
@@ -103,6 +103,10 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       partnerDutyGroup: s.partnerDutyGroup,
       partnerAccentColorValue: s.partnerAccentColorValue,
       myAccentColorValue: s.myAccentColorValue,
+      schoolHolidayStateCode: s.schoolHolidayStateCode,
+      showSchoolHolidays: s.showSchoolHolidays,
+      lastSchoolHolidayRefresh: s.lastSchoolHolidayRefresh,
+      holidayAccentColorValue: s.holidayAccentColorValue,
     );
   }
 
@@ -118,6 +122,10 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       partnerDutyGroup: s.partnerDutyGroup,
       partnerAccentColorValue: s.partnerAccentColorValue,
       myAccentColorValue: s.myAccentColorValue,
+      schoolHolidayStateCode: s.schoolHolidayStateCode,
+      showSchoolHolidays: s.showSchoolHolidays,
+      lastSchoolHolidayRefresh: s.lastSchoolHolidayRefresh,
+      holidayAccentColorValue: s.holidayAccentColorValue,
     );
   }
 

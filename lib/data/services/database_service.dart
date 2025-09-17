@@ -39,10 +39,12 @@ class DatabaseService {
       await db.rawQuery('PRAGMA foreign_keys=ON');
 
       // Additional performance optimizations
-      await db
-          .rawQuery('PRAGMA cache_size=10000'); // Increase cache size (10MB)
       await db.rawQuery(
-          'PRAGMA temp_store=MEMORY'); // Store temporary tables in memory
+        'PRAGMA cache_size=10000',
+      ); // Increase cache size (10MB)
+      await db.rawQuery(
+        'PRAGMA temp_store=MEMORY',
+      ); // Store temporary tables in memory
 
       AppLogger.i('Database performance optimizations applied');
     } catch (e, stackTrace) {
@@ -97,6 +99,9 @@ class DatabaseService {
         partner_duty_group TEXT,
         partner_accent_color INTEGER,
         my_accent_color INTEGER,
+        show_school_holidays INTEGER,
+        school_holiday_state_code TEXT,
+        last_school_holiday_refresh TEXT,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
@@ -153,6 +158,35 @@ class DatabaseService {
       ON duty_types(config_name, id);
     ''');
 
+    // Create school_holidays table for offline functionality
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS school_holidays (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        state_code TEXT NOT NULL,
+        state_name TEXT NOT NULL,
+        year INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        start_date TEXT NOT NULL,
+        end_date TEXT NOT NULL,
+        description TEXT,
+        type TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        UNIQUE(state_code, year, name, start_date)
+      )
+    ''');
+
+    // Create indexes for school_holidays table
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_school_holidays_state_year 
+      ON school_holidays(state_code, year)
+    ''');
+
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_school_holidays_dates 
+      ON school_holidays(start_date, end_date)
+    ''');
+
     // Note: Partial indexes with date() functions are not supported
     // SQLite considers date() non-deterministic
     // Regular indexes will be used instead
@@ -178,7 +212,10 @@ class DatabaseService {
   }
 
   Future<void> _upgradeDatabase(
-      Database db, int oldVersion, int newVersion) async {
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
     AppLogger.i('Upgrading database from version $oldVersion to $newVersion');
     await db.transaction((txn) async {
       if (oldVersion < 5) {
@@ -202,6 +239,15 @@ class DatabaseService {
       if (oldVersion < 11) {
         await _migrateToVersion11(txn);
       }
+      if (oldVersion < 12) {
+        await _migrateToVersion12(txn);
+      }
+      if (oldVersion < 13) {
+        await _migrateToVersion13(txn);
+      }
+      if (oldVersion < 14) {
+        await _migrateToVersion14(txn);
+      }
 
       // Create any missing indexes after all migrations are complete
       await _createOptimizedIndexes(txn);
@@ -211,7 +257,8 @@ class DatabaseService {
   Future<void> _migrateToVersion5(DatabaseExecutor db) async {
     try {
       AppLogger.i(
-          'Migrating to version 5: Removing focused_day and selected_day columns');
+        'Migrating to version 5: Removing focused_day and selected_day columns',
+      );
 
       // Create a new settings table without the date columns
       await db.execute('''
@@ -246,7 +293,8 @@ class DatabaseService {
       await db.execute('ALTER TABLE settings_new RENAME TO settings');
 
       AppLogger.i(
-          'Successfully migrated to version 5: Removed date columns from settings');
+        'Successfully migrated to version 5: Removed date columns from settings',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 5', e, stackTrace);
       rethrow;
@@ -256,7 +304,8 @@ class DatabaseService {
   Future<void> _migrateToVersion6(DatabaseExecutor db) async {
     try {
       AppLogger.i(
-          'Migrating to version 6: Rebuilding schedules table with collision-safe IDs');
+        'Migrating to version 6: Rebuilding schedules table with collision-safe IDs',
+      );
 
       // Create a new schedules table
       await db.execute('''
@@ -297,7 +346,8 @@ class DatabaseService {
       await db.execute('ALTER TABLE schedules_new RENAME TO schedules');
 
       AppLogger.i(
-          'Successfully migrated to version 6: schedules IDs updated and duplicates removed');
+        'Successfully migrated to version 6: schedules IDs updated and duplicates removed',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 6', e, stackTrace);
       rethrow;
@@ -307,7 +357,8 @@ class DatabaseService {
   Future<void> _migrateToVersion7(DatabaseExecutor db) async {
     try {
       AppLogger.i(
-          'Migrating to version 7: Rebuilding schedules table with composite PK and date_ymd');
+        'Migrating to version 7: Rebuilding schedules table with composite PK and date_ymd',
+      );
 
       await db.execute('''
         CREATE TABLE schedules_new_v7 (
@@ -346,7 +397,8 @@ class DatabaseService {
       await db.execute('ALTER TABLE schedules_new_v7 RENAME TO schedules');
 
       AppLogger.i(
-          'Successfully migrated to version 7: schedules now use composite PK and date_ymd');
+        'Successfully migrated to version 7: schedules now use composite PK and date_ymd',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 7', e, stackTrace);
       rethrow;
@@ -390,18 +442,21 @@ class DatabaseService {
 
       // First check if the column already exists
       final columns = await db.rawQuery('PRAGMA table_info(settings)');
-      final hasMyAccentColor =
-          columns.any((col) => col['name'] == 'my_accent_color');
+      final hasMyAccentColor = columns.any(
+        (col) => col['name'] == 'my_accent_color',
+      );
 
       if (!hasMyAccentColor) {
         await db.execute('''
           ALTER TABLE settings ADD COLUMN my_accent_color INTEGER
         ''');
         AppLogger.i(
-            'Successfully migrated to version 10: my accent color added');
+          'Successfully migrated to version 10: my accent color added',
+        );
       } else {
         AppLogger.i(
-            'Column my_accent_color already exists, skipping migration');
+          'Column my_accent_color already exists, skipping migration',
+        );
       }
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 10', e, stackTrace);
@@ -416,7 +471,8 @@ class DatabaseService {
 
       // Check if the table already exists
       final tables = await db.rawQuery(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='schedule_configs'");
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='schedule_configs'",
+      );
 
       if (tables.isEmpty) {
         await db.execute('''
@@ -435,15 +491,156 @@ class DatabaseService {
           )
         ''');
         AppLogger.i(
-            'Successfully migrated to version 11: schedule_configs table added');
+          'Successfully migrated to version 11: schedule_configs table added',
+        );
       } else {
         AppLogger.i(
-            'Table schedule_configs already exists, skipping migration');
+          'Table schedule_configs already exists, skipping migration',
+        );
       }
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 11', e, stackTrace);
       // Don't rethrow - let the migration continue
       AppLogger.i('Migration to version 11 failed, but continuing...');
+    }
+  }
+
+  Future<void> _migrateToVersion12(DatabaseExecutor db) async {
+    try {
+      AppLogger.i(
+        'Migrating to version 12: Add school holiday fields to settings',
+      );
+      // Add columns if they do not exist
+      final columns = await db.rawQuery('PRAGMA table_info(settings)');
+      final hasShowSchoolHolidays = columns.any(
+        (col) => col['name'] == 'show_school_holidays',
+      );
+      final hasSchoolHolidayStateCode = columns.any(
+        (col) => col['name'] == 'school_holiday_state_code',
+      );
+      final hasLastRefreshTime = columns.any(
+        (col) => col['name'] == 'last_school_holiday_refresh',
+      );
+
+      if (!hasShowSchoolHolidays) {
+        await db.execute(
+          'ALTER TABLE settings ADD COLUMN show_school_holidays INTEGER',
+        );
+      }
+      if (!hasSchoolHolidayStateCode) {
+        await db.execute(
+          'ALTER TABLE settings ADD COLUMN school_holiday_state_code TEXT',
+        );
+      }
+      if (!hasLastRefreshTime) {
+        await db.execute(
+          'ALTER TABLE settings ADD COLUMN last_school_holiday_refresh TEXT',
+        );
+      }
+
+      // Create school_holidays table for offline functionality
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS school_holidays (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          state_code TEXT NOT NULL,
+          state_name TEXT NOT NULL,
+          year INTEGER NOT NULL,
+          name TEXT NOT NULL,
+          start_date TEXT NOT NULL,
+          end_date TEXT NOT NULL,
+          description TEXT,
+          type TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          UNIQUE(state_code, year, name, start_date)
+        )
+      ''');
+
+      // Create indexes for better query performance
+      await db.execute('''
+        CREATE INDEX IF NOT EXISTS idx_school_holidays_state_year 
+        ON school_holidays(state_code, year)
+      ''');
+
+      await db.execute('''
+        CREATE INDEX IF NOT EXISTS idx_school_holidays_dates 
+        ON school_holidays(start_date, end_date)
+      ''');
+
+      // Check if school_holidays table exists and add missing columns if needed
+      final tables = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='school_holidays'",
+      );
+
+      if (tables.isNotEmpty) {
+        // Table exists, check which columns are missing
+        final columns = await db.rawQuery('PRAGMA table_info(school_holidays)');
+        final columnNames = columns.map((col) => col['name'] as String).toSet();
+
+        if (!columnNames.contains('state_name')) {
+          await db.execute(
+            'ALTER TABLE school_holidays ADD COLUMN state_name TEXT',
+          );
+          AppLogger.i('Added state_name column to school_holidays table');
+        }
+
+        if (!columnNames.contains('description')) {
+          await db.execute(
+            'ALTER TABLE school_holidays ADD COLUMN description TEXT',
+          );
+          AppLogger.i('Added description column to school_holidays table');
+        }
+
+        if (!columnNames.contains('type')) {
+          await db.execute('ALTER TABLE school_holidays ADD COLUMN type TEXT');
+          AppLogger.i('Added type column to school_holidays table');
+        }
+      }
+
+      AppLogger.i(
+        'Successfully migrated to version 12: school holiday fields and table added',
+      );
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 12', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion13(DatabaseExecutor db) async {
+    try {
+      AppLogger.i('Migrating to version 13: No changes needed');
+      // Version 13 was a placeholder - no actual migration needed
+      AppLogger.i('Successfully migrated to version 13: No changes applied');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 13', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion14(DatabaseExecutor db) async {
+    try {
+      AppLogger.i(
+        'Migrating to version 14: Add holiday accent color to settings',
+      );
+
+      // Check if the column already exists
+      final columns = await db.rawQuery('PRAGMA table_info(settings)');
+      final columnNames = columns.map((col) => col['name'] as String).toList();
+
+      if (!columnNames.contains('holiday_accent_color')) {
+        await db.execute(
+          'ALTER TABLE settings ADD COLUMN holiday_accent_color INTEGER',
+        );
+        AppLogger.i('Added holiday_accent_color column to settings table');
+      } else {
+        AppLogger.i(
+          'holiday_accent_color column already exists in settings table',
+        );
+      }
+
+      AppLogger.i(
+        'Successfully migrated to version 14: holiday accent color added',
+      );
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 14', e, stackTrace);
     }
   }
 

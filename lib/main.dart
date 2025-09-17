@@ -12,10 +12,12 @@ void main() async {
   AppLogger.setProviderContainer(container);
   final sentryService = await container.read(sentryServiceProvider.future);
   await AppInitializer.initializeSentry(sentryService);
-  runApp(SentryWidget(
-    child: UncontrolledProviderScope(
-      container: container,
-      child: const MyApp(),
+  runApp(
+    SentryWidget(
+      child: UncontrolledProviderScope(
+        container: container,
+        child: const MyApp(),
+      ),
     ),
-  ));
+  );
 }

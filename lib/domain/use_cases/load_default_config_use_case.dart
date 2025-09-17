@@ -15,15 +15,19 @@ class LoadDefaultConfigUseCase {
 
       if (defaultConfig != null) {
         AppLogger.i(
-            'LoadDefaultConfigUseCase: Default config loaded: ${defaultConfig.name}');
+          'LoadDefaultConfigUseCase: Default config loaded: ${defaultConfig.name}',
+        );
       } else {
         AppLogger.i('LoadDefaultConfigUseCase: No default config found');
       }
 
       return defaultConfig;
     } catch (e, stackTrace) {
-      AppLogger.e('LoadDefaultConfigUseCase: Error loading default config', e,
-          stackTrace);
+      AppLogger.e(
+        'LoadDefaultConfigUseCase: Error loading default config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -31,14 +35,16 @@ class LoadDefaultConfigUseCase {
   Future<DutyScheduleConfig?> executeWithFallback() async {
     try {
       AppLogger.i(
-          'LoadDefaultConfigUseCase: Loading default config with fallback');
+        'LoadDefaultConfigUseCase: Loading default config with fallback',
+      );
 
       // Try to get default config
       final defaultConfig = await _configRepository.getDefaultConfig();
 
       if (defaultConfig != null) {
         AppLogger.i(
-            'LoadDefaultConfigUseCase: Default config loaded: ${defaultConfig.name}');
+          'LoadDefaultConfigUseCase: Default config loaded: ${defaultConfig.name}',
+        );
         return defaultConfig;
       }
 
@@ -47,7 +53,8 @@ class LoadDefaultConfigUseCase {
       if (configs.isNotEmpty) {
         final fallbackConfig = configs.first;
         AppLogger.i(
-            'LoadDefaultConfigUseCase: Using fallback config: ${fallbackConfig.name}');
+          'LoadDefaultConfigUseCase: Using fallback config: ${fallbackConfig.name}',
+        );
         return fallbackConfig;
       }
 
@@ -55,9 +62,10 @@ class LoadDefaultConfigUseCase {
       return null;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'LoadDefaultConfigUseCase: Error loading default config with fallback',
-          e,
-          stackTrace);
+        'LoadDefaultConfigUseCase: Error loading default config with fallback',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

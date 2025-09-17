@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      freezed:
+        options:
+          # Improve formatting of generated code
+          format: true
+          # Better line breaks for operator == methods
+          line_length: 80

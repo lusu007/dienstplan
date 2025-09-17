@@ -29,8 +29,9 @@ class ConfigCard extends StatelessWidget {
 
     return SelectionCard(
       title: _buildTitle(),
-      subtitle:
-          config.meta.description.isNotEmpty ? config.meta.description : null,
+      subtitle: config.meta.description.isNotEmpty
+          ? config.meta.description
+          : null,
       leadingIcon: icon,
       isSelected: isSelected,
       onTap: onTap,

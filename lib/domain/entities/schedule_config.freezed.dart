@@ -9,7 +9,6 @@ part of 'schedule_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
-// dart format off
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -24,7 +23,9 @@ mixin _$ScheduleConfig {
   @pragma('vm:prefer-inline')
   $ScheduleConfigCopyWith<ScheduleConfig> get copyWith =>
       _$ScheduleConfigCopyWithImpl<ScheduleConfig>(
-          this as ScheduleConfig, _$identity);
+        this as ScheduleConfig,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -37,8 +38,12 @@ mixin _$ScheduleConfig {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, meta,
-      const DeepCollectionEquality().hash(services), version);
+  int get hashCode => Object.hash(
+    runtimeType,
+    meta,
+    const DeepCollectionEquality().hash(services),
+    version,
+  );
 
   @override
   String toString() {
@@ -49,11 +54,15 @@ mixin _$ScheduleConfig {
 /// @nodoc
 abstract mixin class $ScheduleConfigCopyWith<$Res> {
   factory $ScheduleConfigCopyWith(
-          ScheduleConfig value, $Res Function(ScheduleConfig) _then) =
-      _$ScheduleConfigCopyWithImpl;
+    ScheduleConfig value,
+    $Res Function(ScheduleConfig) _then,
+  ) = _$ScheduleConfigCopyWithImpl;
   @useResult
-  $Res call(
-      {ScheduleMeta meta, List<ScheduleService> services, String version});
+  $Res call({
+    ScheduleMeta meta,
+    List<ScheduleService> services,
+    String version,
+  });
 
   $ScheduleMetaCopyWith<$Res> get meta;
 }
@@ -75,20 +84,22 @@ class _$ScheduleConfigCopyWithImpl<$Res>
     Object? services = null,
     Object? version = null,
   }) {
-    return _then(_self.copyWith(
-      meta: null == meta
-          ? _self.meta
-          : meta // ignore: cast_nullable_to_non_nullable
-              as ScheduleMeta,
-      services: null == services
-          ? _self.services
-          : services // ignore: cast_nullable_to_non_nullable
-              as List<ScheduleService>,
-      version: null == version
-          ? _self.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+    return _then(
+      _self.copyWith(
+        meta: null == meta
+            ? _self.meta
+            : meta // ignore: cast_nullable_to_non_nullable
+                  as ScheduleMeta,
+        services: null == services
+            ? _self.services
+            : services // ignore: cast_nullable_to_non_nullable
+                  as List<ScheduleService>,
+        version: null == version
+            ? _self.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 
   /// Create a copy of ScheduleConfig
@@ -196,8 +207,11 @@ extension ScheduleConfigPatterns on ScheduleConfig {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            ScheduleMeta meta, List<ScheduleService> services, String version)?
-        $default, {
+      ScheduleMeta meta,
+      List<ScheduleService> services,
+      String version,
+    )?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
@@ -225,8 +239,11 @@ extension ScheduleConfigPatterns on ScheduleConfig {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            ScheduleMeta meta, List<ScheduleService> services, String version)
-        $default,
+      ScheduleMeta meta,
+      List<ScheduleService> services,
+      String version,
+    )
+    $default,
   ) {
     final _that = this;
     switch (_that) {
@@ -252,8 +269,11 @@ extension ScheduleConfigPatterns on ScheduleConfig {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            ScheduleMeta meta, List<ScheduleService> services, String version)?
-        $default,
+      ScheduleMeta meta,
+      List<ScheduleService> services,
+      String version,
+    )?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
@@ -268,12 +288,12 @@ extension ScheduleConfigPatterns on ScheduleConfig {
 /// @nodoc
 
 class _ScheduleConfig extends ScheduleConfig {
-  const _ScheduleConfig(
-      {required this.meta,
-      required final List<ScheduleService> services,
-      required this.version})
-      : _services = services,
-        super._();
+  const _ScheduleConfig({
+    required this.meta,
+    required final List<ScheduleService> services,
+    required this.version,
+  }) : _services = services,
+       super._();
 
   @override
   final ScheduleMeta meta;
@@ -307,8 +327,12 @@ class _ScheduleConfig extends ScheduleConfig {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, meta,
-      const DeepCollectionEquality().hash(_services), version);
+  int get hashCode => Object.hash(
+    runtimeType,
+    meta,
+    const DeepCollectionEquality().hash(_services),
+    version,
+  );
 
   @override
   String toString() {
@@ -320,12 +344,16 @@ class _ScheduleConfig extends ScheduleConfig {
 abstract mixin class _$ScheduleConfigCopyWith<$Res>
     implements $ScheduleConfigCopyWith<$Res> {
   factory _$ScheduleConfigCopyWith(
-          _ScheduleConfig value, $Res Function(_ScheduleConfig) _then) =
-      __$ScheduleConfigCopyWithImpl;
+    _ScheduleConfig value,
+    $Res Function(_ScheduleConfig) _then,
+  ) = __$ScheduleConfigCopyWithImpl;
   @override
   @useResult
-  $Res call(
-      {ScheduleMeta meta, List<ScheduleService> services, String version});
+  $Res call({
+    ScheduleMeta meta,
+    List<ScheduleService> services,
+    String version,
+  });
 
   @override
   $ScheduleMetaCopyWith<$Res> get meta;
@@ -348,20 +376,22 @@ class __$ScheduleConfigCopyWithImpl<$Res>
     Object? services = null,
     Object? version = null,
   }) {
-    return _then(_ScheduleConfig(
-      meta: null == meta
-          ? _self.meta
-          : meta // ignore: cast_nullable_to_non_nullable
-              as ScheduleMeta,
-      services: null == services
-          ? _self._services
-          : services // ignore: cast_nullable_to_non_nullable
-              as List<ScheduleService>,
-      version: null == version
-          ? _self.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+    return _then(
+      _ScheduleConfig(
+        meta: null == meta
+            ? _self.meta
+            : meta // ignore: cast_nullable_to_non_nullable
+                  as ScheduleMeta,
+        services: null == services
+            ? _self._services
+            : services // ignore: cast_nullable_to_non_nullable
+                  as List<ScheduleService>,
+        version: null == version
+            ? _self.version
+            : version // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 
   /// Create a copy of ScheduleConfig
@@ -386,7 +416,9 @@ mixin _$ScheduleMeta {
   @pragma('vm:prefer-inline')
   $ScheduleMetaCopyWith<ScheduleMeta> get copyWith =>
       _$ScheduleMetaCopyWithImpl<ScheduleMeta>(
-          this as ScheduleMeta, _$identity);
+        this as ScheduleMeta,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -410,8 +442,9 @@ mixin _$ScheduleMeta {
 /// @nodoc
 abstract mixin class $ScheduleMetaCopyWith<$Res> {
   factory $ScheduleMetaCopyWith(
-          ScheduleMeta value, $Res Function(ScheduleMeta) _then) =
-      _$ScheduleMetaCopyWithImpl;
+    ScheduleMeta value,
+    $Res Function(ScheduleMeta) _then,
+  ) = _$ScheduleMetaCopyWithImpl;
   @useResult
   $Res call({String name, String description});
 }
@@ -427,20 +460,19 @@ class _$ScheduleMetaCopyWithImpl<$Res> implements $ScheduleMetaCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? name = null,
-    Object? description = null,
-  }) {
-    return _then(_self.copyWith(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _self.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? name = null, Object? description = null}) {
+    return _then(
+      _self.copyWith(
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _self.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -605,7 +637,7 @@ extension ScheduleMetaPatterns on ScheduleMeta {
 
 class _ScheduleMeta extends ScheduleMeta {
   const _ScheduleMeta({required this.name, required this.description})
-      : super._();
+    : super._();
 
   @override
   final String name;
@@ -643,8 +675,9 @@ class _ScheduleMeta extends ScheduleMeta {
 abstract mixin class _$ScheduleMetaCopyWith<$Res>
     implements $ScheduleMetaCopyWith<$Res> {
   factory _$ScheduleMetaCopyWith(
-          _ScheduleMeta value, $Res Function(_ScheduleMeta) _then) =
-      __$ScheduleMetaCopyWithImpl;
+    _ScheduleMeta value,
+    $Res Function(_ScheduleMeta) _then,
+  ) = __$ScheduleMetaCopyWithImpl;
   @override
   @useResult
   $Res call({String name, String description});
@@ -662,20 +695,19 @@ class __$ScheduleMetaCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? name = null,
-    Object? description = null,
-  }) {
-    return _then(_ScheduleMeta(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _self.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? name = null, Object? description = null}) {
+    return _then(
+      _ScheduleMeta(
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _self.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -690,7 +722,9 @@ mixin _$ScheduleService {
   @pragma('vm:prefer-inline')
   $ScheduleServiceCopyWith<ScheduleService> get copyWith =>
       _$ScheduleServiceCopyWithImpl<ScheduleService>(
-          this as ScheduleService, _$identity);
+        this as ScheduleService,
+        _$identity,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -703,7 +737,10 @@ mixin _$ScheduleService {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, name, const DeepCollectionEquality().hash(persons));
+    runtimeType,
+    name,
+    const DeepCollectionEquality().hash(persons),
+  );
 
   @override
   String toString() {
@@ -714,8 +751,9 @@ mixin _$ScheduleService {
 /// @nodoc
 abstract mixin class $ScheduleServiceCopyWith<$Res> {
   factory $ScheduleServiceCopyWith(
-          ScheduleService value, $Res Function(ScheduleService) _then) =
-      _$ScheduleServiceCopyWithImpl;
+    ScheduleService value,
+    $Res Function(ScheduleService) _then,
+  ) = _$ScheduleServiceCopyWithImpl;
   @useResult
   $Res call({String name, List<String> persons});
 }
@@ -732,20 +770,19 @@ class _$ScheduleServiceCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? name = null,
-    Object? persons = null,
-  }) {
-    return _then(_self.copyWith(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      persons: null == persons
-          ? _self.persons
-          : persons // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? name = null, Object? persons = null}) {
+    return _then(
+      _self.copyWith(
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        persons: null == persons
+            ? _self.persons
+            : persons // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+      ),
+    );
   }
 }
 
@@ -909,10 +946,11 @@ extension ScheduleServicePatterns on ScheduleService {
 /// @nodoc
 
 class _ScheduleService extends ScheduleService {
-  const _ScheduleService(
-      {required this.name, required final List<String> persons})
-      : _persons = persons,
-        super._();
+  const _ScheduleService({
+    required this.name,
+    required final List<String> persons,
+  }) : _persons = persons,
+       super._();
 
   @override
   final String name;
@@ -943,7 +981,10 @@ class _ScheduleService extends ScheduleService {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, name, const DeepCollectionEquality().hash(_persons));
+    runtimeType,
+    name,
+    const DeepCollectionEquality().hash(_persons),
+  );
 
   @override
   String toString() {
@@ -955,8 +996,9 @@ class _ScheduleService extends ScheduleService {
 abstract mixin class _$ScheduleServiceCopyWith<$Res>
     implements $ScheduleServiceCopyWith<$Res> {
   factory _$ScheduleServiceCopyWith(
-          _ScheduleService value, $Res Function(_ScheduleService) _then) =
-      __$ScheduleServiceCopyWithImpl;
+    _ScheduleService value,
+    $Res Function(_ScheduleService) _then,
+  ) = __$ScheduleServiceCopyWithImpl;
   @override
   @useResult
   $Res call({String name, List<String> persons});
@@ -974,21 +1016,18 @@ class __$ScheduleServiceCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $Res call({
-    Object? name = null,
-    Object? persons = null,
-  }) {
-    return _then(_ScheduleService(
-      name: null == name
-          ? _self.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      persons: null == persons
-          ? _self._persons
-          : persons // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? name = null, Object? persons = null}) {
+    return _then(
+      _ScheduleService(
+        name: null == name
+            ? _self.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        persons: null == persons
+            ? _self._persons
+            : persons // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+      ),
+    );
   }
 }
-
-// dart format on

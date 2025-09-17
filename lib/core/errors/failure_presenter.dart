@@ -9,7 +9,10 @@ class FailurePresenter {
     if (failure.userMessageKey != null) {
       // Add mapping here if any key requires arguments
       return _resolveByKey(
-          failure.userMessageKey!, failure.userMessageArgs, l10n);
+        failure.userMessageKey!,
+        failure.userMessageArgs,
+        l10n,
+      );
     }
 
     switch (failure.code) {

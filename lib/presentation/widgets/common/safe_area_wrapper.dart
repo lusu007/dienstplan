@@ -43,10 +43,7 @@ class SafeAreaWithPadding extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       maintainBottomViewPadding: maintainBottomViewPadding,
-      child: Padding(
-        padding: padding,
-        child: child,
-      ),
+      child: Padding(padding: padding, child: child),
     );
   }
 }

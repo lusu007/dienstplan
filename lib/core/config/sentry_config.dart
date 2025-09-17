@@ -9,7 +9,9 @@ class SentryConfig {
   static String get dsn => _dsn;
 
   static void configureOptions(
-      SentryFlutterOptions options, SentryService sentryService) {
+    SentryFlutterOptions options,
+    SentryService sentryService,
+  ) {
     // Default: everything off
     double tracesSampleRate = 0.0;
     double profilesSampleRate = 0.0;

@@ -15,15 +15,15 @@ const configProvider = ConfigNotifierProvider._();
 final class ConfigNotifierProvider
     extends $AsyncNotifierProvider<ConfigNotifier, ConfigUiState> {
   const ConfigNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'configProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'configProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$configNotifierHash();
@@ -42,11 +42,14 @@ abstract class _$ConfigNotifier extends $AsyncNotifier<ConfigUiState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<ConfigUiState>, ConfigUiState>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<ConfigUiState>, ConfigUiState>,
-        AsyncValue<ConfigUiState>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<ConfigUiState>, ConfigUiState>,
+              AsyncValue<ConfigUiState>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

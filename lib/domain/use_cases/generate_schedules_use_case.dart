@@ -10,10 +10,7 @@ class GenerateSchedulesUseCase {
   final ScheduleRepository _scheduleRepository;
   final ConfigRepository _configRepository;
 
-  GenerateSchedulesUseCase(
-    this._scheduleRepository,
-    this._configRepository,
-  );
+  GenerateSchedulesUseCase(this._scheduleRepository, this._configRepository);
 
   Future<List<Schedule>> execute({
     required String configName,
@@ -22,7 +19,8 @@ class GenerateSchedulesUseCase {
   }) async {
     try {
       AppLogger.i(
-          'GenerateSchedulesUseCase: Generating schedules for config: $configName from $startDate to $endDate');
+        'GenerateSchedulesUseCase: Generating schedules for config: $configName from $startDate to $endDate',
+      );
 
       // Business logic: Validate date range
       if (startDate.isAfter(endDate)) {
@@ -38,12 +36,12 @@ class GenerateSchedulesUseCase {
       );
 
       // Check if schedules already exist for this range
-      final existingSchedules =
-          await _scheduleRepository.getSchedulesForDateRange(
-        start: startDate,
-        end: endDate,
-        configName: configName,
-      );
+      final existingSchedules = await _scheduleRepository
+          .getSchedulesForDateRange(
+            start: startDate,
+            end: endDate,
+            configName: configName,
+          );
 
       // If we have schedules for most of the range, only generate missing ones
       const int expectedSchedulesPerDay =
@@ -57,24 +55,34 @@ class GenerateSchedulesUseCase {
       if (existingSchedules.length >=
           expectedTotalSchedules * coverageThreshold) {
         AppLogger.i(
-            'GenerateSchedulesUseCase: Found ${existingSchedules.length} existing schedules, checking for gaps');
+          'GenerateSchedulesUseCase: Found ${existingSchedules.length} existing schedules, checking for gaps',
+        );
 
         // Find date gaps and only generate for missing dates
         final missingDates = _findMissingDates(
-            existingSchedules, startDate, endDate, configName);
+          existingSchedules,
+          startDate,
+          endDate,
+          configName,
+        );
 
         if (missingDates.isEmpty) {
           AppLogger.i(
-              'GenerateSchedulesUseCase: All schedules already exist, returning existing schedules');
+            'GenerateSchedulesUseCase: All schedules already exist, returning existing schedules',
+          );
           return existingSchedules;
         }
 
         AppLogger.i(
-            'GenerateSchedulesUseCase: Generating schedules for ${missingDates.length} missing dates');
+          'GenerateSchedulesUseCase: Generating schedules for ${missingDates.length} missing dates',
+        );
 
         // Generate only for missing dates
-        final missingSchedules =
-            await _generateForMissingDates(configName, missingDates, config);
+        final missingSchedules = await _generateForMissingDates(
+          configName,
+          missingDates,
+          config,
+        );
 
         // Combine existing and new schedules
         final allSchedules = [...existingSchedules, ...missingSchedules];
@@ -92,11 +100,15 @@ class GenerateSchedulesUseCase {
       await _scheduleRepository.saveSchedules(schedules);
 
       AppLogger.i(
-          'GenerateSchedulesUseCase: Generated and saved ${schedules.length} schedules');
+        'GenerateSchedulesUseCase: Generated and saved ${schedules.length} schedules',
+      );
       return schedules;
     } catch (e, stackTrace) {
-      AppLogger.e('GenerateSchedulesUseCase: Error generating schedules', e,
-          stackTrace);
+      AppLogger.e(
+        'GenerateSchedulesUseCase: Error generating schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -113,9 +125,11 @@ class GenerateSchedulesUseCase {
         .toSet();
 
     final missingDates = <DateTime>[];
-    for (var date = startDate;
-        date.isBefore(endDate.add(const Duration(days: 1)));
-        date = date.add(const Duration(days: 1))) {
+    for (
+      var date = startDate;
+      date.isBefore(endDate.add(const Duration(days: 1)));
+      date = date.add(const Duration(days: 1))
+    ) {
       final normalizedDate = DateTime(date.year, date.month, date.day);
       if (!existingDates.contains(normalizedDate)) {
         missingDates.add(normalizedDate);
