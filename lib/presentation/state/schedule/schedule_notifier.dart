@@ -17,6 +17,8 @@ import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/core/errors/failure_presenter.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/core/utils/logger.dart';
+import 'package:flutter/material.dart';
 
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
@@ -231,6 +233,67 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   }
 
   // Validation moved into use case
+
+  /// Loads schedules for an expanded date range when user scrolls beyond current data
+  Future<void> loadSchedulesForExpandedRange({
+    required DateTimeRange currentRange,
+    required DateTime targetDate,
+    required String configName,
+  }) async {
+    final current = state.value ?? ScheduleUiState.initial();
+    if (!ref.mounted) return;
+
+    // Check if we already have data for the target date
+    final hasDataForTarget = current.schedules.any(
+      (schedule) =>
+          schedule.date.year == targetDate.year &&
+          schedule.date.month == targetDate.month &&
+          schedule.configName == configName,
+    );
+
+    if (hasDataForTarget) return; // Already have data, no need to load
+
+    try {
+      // Calculate the expanded range needed
+      final DateRange expandedRange = _dateRangePolicy!.computeExpandedRange(
+        currentRange,
+        targetDate,
+      );
+
+      // Load schedules for the expanded range
+      final schedulesResult = await _getSchedulesUseCase!
+          .executeForDateRangeSafe(
+            startDate: expandedRange.start,
+            endDate: expandedRange.end,
+            configName: configName,
+          );
+
+      if (!ref.mounted) return;
+
+      if (schedulesResult.isSuccess) {
+        final newSchedules = schedulesResult.value;
+
+        // Merge with existing schedules
+        final List<Schedule> existingSchedules = current.schedules.toList();
+        final List<Schedule> mergedSchedules = _scheduleMergeService!
+            .mergeOutsideRange(
+              existing: existingSchedules,
+              incoming: newSchedules,
+              range: DateRange(
+                start: expandedRange.start,
+                end: expandedRange.end,
+              ),
+            );
+
+        state = AsyncData(
+          current.copyWith(schedules: mergedSchedules, isLoading: false),
+        );
+      }
+    } catch (e) {
+      AppLogger.e('ScheduleNotifier: Error loading expanded range', e);
+      // Don't update state on error for background loading
+    }
+  }
 
   Future<void> setFocusedDay(DateTime day, {bool shouldLoad = true}) async {
     final current = state.value ?? ScheduleUiState.initial();

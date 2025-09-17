@@ -2,6 +2,26 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 
 class ScheduleMergeService {
+  // Upsert by unique schedule key (date + dutyGroup + config):
+  // - Keeps all existing items not present in incoming
+  // - Replaces existing matches with incoming
+  List<Schedule> upsertByKey({
+    required List<Schedule> existing,
+    required List<Schedule> incoming,
+  }) {
+    final List<Schedule> result = <Schedule>[];
+    for (final Schedule oldItem in existing) {
+      final bool willBeReplaced = incoming.any(
+        (Schedule inc) => _isSameScheduleDayAndGroup(inc, oldItem),
+      );
+      if (!willBeReplaced) {
+        result.add(oldItem);
+      }
+    }
+    result.addAll(incoming);
+    return result;
+  }
+
   List<Schedule> mergeOutsideRange({
     required List<Schedule> existing,
     required List<Schedule> incoming,

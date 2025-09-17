@@ -45,15 +45,25 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
   int? _myAccentColorValue;
   Map<String, DutyType>? _dutyTypes;
   List<Schedule> _getFilteredSchedules() {
-    return widget.schedules.where((schedule) {
-      final isActiveConfig =
+    final List<Schedule> base = widget.schedules.where((schedule) {
+      final bool isActiveConfig =
           widget.activeConfigName == null ||
+          widget.activeConfigName!.isEmpty ||
           schedule.configName == widget.activeConfigName;
-      final isSelectedDutyGroup =
-          widget.selectedDutyGroup == null ||
-          schedule.dutyGroupName == widget.selectedDutyGroup;
-      return isActiveConfig && isSelectedDutyGroup;
+      return isActiveConfig;
     }).toList();
+
+    if (widget.selectedDutyGroup == null || widget.selectedDutyGroup!.isEmpty) {
+      return base;
+    }
+
+    final List<Schedule> byGroup = base
+        .where((s) => s.dutyGroupName == widget.selectedDutyGroup)
+        .toList();
+
+    // Fallback: if the selected group has no services for this day,
+    // show all groups instead of an empty list to avoid a blank UI.
+    return byGroup.isEmpty ? base : byGroup;
   }
 
   List<Schedule> _sortSchedules(List<Schedule> schedules) {
@@ -96,7 +106,7 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
       _dutyTypes = scheduleState!.activeConfig!.dutyTypes;
     }
 
-    if (widget.isLoading || widget.schedules.isEmpty) {
+    if (widget.isLoading) {
       return _buildSkeletonLoader();
     }
 
