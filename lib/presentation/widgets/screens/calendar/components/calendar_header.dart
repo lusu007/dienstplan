@@ -35,15 +35,16 @@ class CalendarHeader extends ConsumerWidget {
 
   void _onLeftChevronTap(WidgetRef ref) {
     final newFocusedDay = CalendarNavigationHelper.getPreviousPeriod(
-      ref.read(calendarProvider).value?.focusedDay ?? DateTime.now(),
-      ref.read(calendarProvider).value?.calendarFormat ?? CalendarFormat.month,
+      ref.read(scheduleCoordinatorProvider).value?.focusedDay ?? DateTime.now(),
+      ref.read(scheduleCoordinatorProvider).value?.calendarFormat ??
+          CalendarFormat.month,
     );
-    ref.read(calendarProvider.notifier).setFocusedDay(newFocusedDay);
+    ref.read(scheduleCoordinatorProvider.notifier).setFocusedDay(newFocusedDay);
   }
 
   void _onRightChevronTap(WidgetRef ref) {
     final newFocusedDay = CalendarNavigationHelper.getNextPeriod(
-      ref.read(calendarProvider).value?.focusedDay ?? DateTime.now(),
+      ref.read(scheduleCoordinatorProvider).value?.focusedDay ?? DateTime.now(),
       ref.read(scheduleCoordinatorProvider).value?.calendarFormat ??
           CalendarFormat.month,
     );
