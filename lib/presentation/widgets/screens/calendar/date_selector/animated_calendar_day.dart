@@ -79,20 +79,20 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
               child: Text('${widget.day.day}', style: dayStyle),
             ),
             // School holiday indicator (between date and chips)
-            Container(
-              margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
-              height: 2,
-              width: double.infinity,
-              decoration: widget.hasSchoolHoliday
-                  ? BoxDecoration(
-                      color: Color(
-                        widget.holidayAccentColorValue ??
-                            AccentColorDefaults.holidayAccentColorValue,
-                      ).withValues(alpha: 0.7),
-                      borderRadius: BorderRadius.circular(1),
-                    )
-                  : null,
-            ),
+            // Only show if we have a holiday and a color value (to avoid flickering)
+            if (widget.hasSchoolHoliday &&
+                widget.holidayAccentColorValue != null)
+              Container(
+                margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
+                height: 2,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Color(
+                    widget.holidayAccentColorValue!,
+                  ).withValues(alpha: 0.7),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
             // Spacer to push chips to bottom when primary chips are missing
             if (!hasPrimary && hasPartner) const Spacer(),
             if (hasPrimary || hasPartner)
