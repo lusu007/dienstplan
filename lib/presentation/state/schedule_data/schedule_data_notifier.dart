@@ -11,10 +11,11 @@ import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 
 part 'schedule_data_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   GetSchedulesUseCase? _getSchedulesUseCase;
   GenerateSchedulesUseCase? _generateSchedulesUseCase;
@@ -23,6 +24,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   SaveSettingsUseCase? _saveSettingsUseCase;
   DateRangePolicy? _dateRangePolicy;
   ScheduleMergeService? _scheduleMergeService;
+
+  static ScheduleDataUiState? _cachedState;
 
   @override
   Future<ScheduleDataUiState> build() async {
@@ -37,6 +40,10 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
+    if (_cachedState != null) {
+      print('[ScheduleData] build(): using cached state');
+      return _cachedState!;
+    }
     return await _initialize();
   }
 
@@ -54,6 +61,10 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         final DateTime now = DateTime.now();
         final DateRange initialRange = _dateRangePolicy!.computeInitialRange(
           now,
+        );
+
+        AppLogger.d(
+          'ScheduleDataNotifier: Initial load range: ${initialRange.start} to ${initialRange.end}',
         );
 
         final schedulesResult = await _getSchedulesUseCase!
@@ -79,7 +90,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         }
       }
 
-      return ScheduleDataUiState(
+      final initialState = ScheduleDataUiState(
         isLoading: false,
         error: null,
         schedules: schedules,
@@ -88,6 +99,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         selectedDutyGroup: selectedDutyGroup,
         holidayAccentColorValue: settings?.holidayAccentColorValue,
       );
+      _cachedState = initialState;
+      return initialState;
     } catch (e) {
       return ScheduleDataUiState.initial().copyWith(
         error: 'Failed to initialize schedule data',
@@ -100,12 +113,26 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     required DateTime endDate,
     required String configName,
   }) async {
-    final current = await future;
-    if (!ref.mounted) return;
+    AppLogger.d(
+      'ScheduleDataNotifier: loadSchedulesForDateRange called for $startDate to $endDate',
+    );
 
-    state = AsyncData(current.copyWith(isLoading: true));
+    // Ensure dependencies are available even if provider rebuilt and returned cached state
+    _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
+    _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
+
+    final ScheduleDataUiState baseline =
+        state.value ?? _cachedState ?? await future;
+    final ScheduleDataUiState loadingState = baseline.copyWith(isLoading: true);
+    _cachedState = loadingState;
+    if (ref.mounted) {
+      state = AsyncData(loadingState);
+    }
 
     try {
+      AppLogger.d(
+        'ScheduleDataNotifier: Loading schedules for range $startDate to $endDate',
+      );
       final schedulesResult = await _getSchedulesUseCase!
           .executeForDateRangeSafe(
             startDate: startDate,
@@ -113,40 +140,45 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
             configName: configName,
           );
 
-      if (!ref.mounted) return;
-
       if (schedulesResult.isSuccess) {
         final newSchedules = schedulesResult.value;
-        // Create a date range for the incoming schedules
-        final incomingDates = newSchedules.map((s) => s.date).toList();
-        final minDate = incomingDates.reduce((a, b) => a.isBefore(b) ? a : b);
-        final maxDate = incomingDates.reduce((a, b) => a.isAfter(b) ? a : b);
-        final range = DateRange(start: minDate, end: maxDate);
-
-        final mergedSchedules = _scheduleMergeService!.mergeOutsideRange(
-          existing: current.schedules,
-          incoming: newSchedules,
-          range: range,
+        AppLogger.d(
+          'ScheduleDataNotifier: fetched ${newSchedules.length} incoming schedules',
+        );
+        // Use upsert merge to avoid dropping existing items when loading deltas
+        final List<Schedule> mergedSchedules = _scheduleMergeService!
+            .upsertByKey(existing: baseline.schedules, incoming: newSchedules);
+        AppLogger.d(
+          'ScheduleDataNotifier: merged schedules = ${mergedSchedules.length}',
         );
 
-        state = AsyncData(
-          current.copyWith(
-            schedules: mergedSchedules,
-            activeConfigName: configName,
-            isLoading: false,
-          ),
+        final ScheduleDataUiState updated = baseline.copyWith(
+          schedules: mergedSchedules,
+          activeConfigName: configName,
+          isLoading: false,
         );
+        _cachedState = updated;
+        if (ref.mounted) {
+          state = AsyncData(updated);
+        }
       } else {
         final message = await _presentFailure(schedulesResult.failure);
+        final ScheduleDataUiState errored = baseline.copyWith(
+          error: message,
+          isLoading: false,
+        );
+        _cachedState = errored;
         if (ref.mounted) {
-          state = AsyncData(current.copyWith(error: message, isLoading: false));
+          state = AsyncData(errored);
         }
       }
     } catch (e) {
+      final ScheduleDataUiState errored =
+          (state.value ?? _cachedState ?? ScheduleDataUiState.initial())
+              .copyWith(error: 'Failed to load schedules', isLoading: false);
+      _cachedState = errored;
       if (ref.mounted) {
-        state = AsyncData(
-          current.copyWith(error: 'Failed to load schedules', isLoading: false),
-        );
+        state = AsyncData(errored);
       }
     }
   }

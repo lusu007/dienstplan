@@ -118,21 +118,20 @@ class CalendarViewUiBuilder {
         final state = asyncState.value;
         final String? selectedGroup = state?.selectedDutyGroup;
 
-        // Filter schedules for selected day
+        // Filter schedules for selected day (no config filter to avoid hiding data)
         final selectedDaySchedules = (state?.schedules ?? const []).where((s) {
           final sel = state?.selectedDay;
           if (sel == null) return false;
 
           // Normalize dates to avoid timezone issues
-          final scheduleDate = DateTime(s.date.year, s.date.month, s.date.day);
-          final selectedDate = DateTime(sel.year, sel.month, sel.day);
+          final scheduleDate = DateTime.utc(
+            s.date.year,
+            s.date.month,
+            s.date.day,
+          );
+          final selectedDate = DateTime.utc(sel.year, sel.month, sel.day);
 
-          // Also ensure we're using the correct config
-          final activeConfig = state?.activeConfigName;
-          final isCorrectConfig =
-              activeConfig == null || s.configName == activeConfig;
-
-          return scheduleDate.isAtSameMomentAs(selectedDate) && isCorrectConfig;
+          return scheduleDate.isAtSameMomentAs(selectedDate);
         }).toList();
 
         // Only show loading if selected day has no schedules AND we're actually loading

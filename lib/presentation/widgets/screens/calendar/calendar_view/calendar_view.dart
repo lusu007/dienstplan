@@ -87,8 +87,26 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
         date1.day == date2.day;
   }
 
+  bool _isSameMonth(DateTime date1, DateTime date2) {
+    return date1.year == date2.year && date1.month == date2.month;
+  }
+
   void _onPageChanged(int pageIndex) {
     _pageManager.onPageChanged(pageIndex, false);
+
+    // Check if we need to expand the range dynamically
+    if (_pageManager.shouldExpandRange(pageIndex)) {
+      // Expand the range first
+      _pageManager.expandRangeIfNeeded(pageIndex);
+
+      // Trigger a rebuild to update the PageView with new pages
+      if (mounted) {
+        setState(() {});
+      }
+
+      // Trigger dynamic loading for the expanded range
+      _loadSchedulesForExpandedRange();
+    }
 
     // Only update focused day when navigating, not selected day
     final newDay = _pageManager.getCurrentDay();
@@ -108,6 +126,8 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
         AppLogger.d(
           'CalendarView: Month changed, updating focused day to ${newDay.toIso8601String()}',
         );
+        // Also set selected day to ensure the duty list has a day to show
+        ref.read(calendarProvider.notifier).setSelectedDay(newDay);
         ref.read(calendarProvider.notifier).setFocusedDay(newDay);
 
         // Load school holidays for the new month
@@ -120,10 +140,71 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     }
   }
 
+  /// Loads schedules for the expanded date range when user scrolls beyond current data
+  void _loadSchedulesForExpandedRange() {
+    final currentRange = _pageManager.getCurrentDateRange();
+    final currentDay = _pageManager.getCurrentDay();
+    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
+
+    if (currentDay != null && scheduleState?.activeConfigName != null) {
+      // Load schedules for the expanded range in the background
+      ref
+          .read(scheduleCoordinatorProvider.notifier)
+          .loadSchedulesForExpandedRange(
+            currentRange: currentRange,
+            targetDate: currentDay,
+            configName: scheduleState!.activeConfigName!,
+          );
+    }
+  }
+
+  /// Triggers dynamic loading when focused day changes (e.g., via chevron navigation)
+  void _triggerDynamicLoadingForFocusedDayChange(DateTime focusedDay) {
+    AppLogger.d(
+      'CalendarView: _triggerDynamicLoadingForFocusedDayChange called for $focusedDay',
+    );
+
+    // Update the page manager to reflect the new focused day
+    _pageManager.rebuildDayPagesAroundDay(focusedDay);
+    AppLogger.d('CalendarView: Page manager rebuilt around $focusedDay');
+
+    // Trigger a rebuild to update the PageView
+    if (mounted) {
+      setState(() {});
+      AppLogger.d('CalendarView: setState called to update PageView');
+    }
+
+    // The schedule coordinator will handle the actual loading
+    // since we already extended setFocusedDay to trigger dynamic loading
+    AppLogger.d('CalendarView: Dynamic loading trigger completed');
+  }
+
   @override
   Widget build(BuildContext context) {
     // Ensure calendar provider is warmed up
     ref.watch(calendarProvider);
+
+    // Watch for focused day changes to trigger dynamic loading
+    ref.listen(scheduleCoordinatorProvider, (previous, next) {
+      final previousFocusedDay = previous?.value?.focusedDay;
+      final currentFocusedDay = next.value?.focusedDay;
+
+      AppLogger.d(
+        'CalendarView: Focused day changed from $previousFocusedDay to $currentFocusedDay',
+      );
+
+      if (previousFocusedDay != null &&
+          currentFocusedDay != null &&
+          !_isSameMonth(previousFocusedDay, currentFocusedDay)) {
+        // Focused day changed to a different month, trigger dynamic loading
+        AppLogger.d('CalendarView: Month changed, triggering dynamic loading');
+        _triggerDynamicLoadingForFocusedDayChange(currentFocusedDay);
+      } else {
+        AppLogger.d(
+          'CalendarView: Same month or no previous focused day, skipping dynamic loading',
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
