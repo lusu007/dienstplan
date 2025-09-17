@@ -392,6 +392,12 @@ abstract class AppLocalizations {
   /// **'Light Grey'**
   String get accentLightGrey;
 
+  /// Title for holiday accent color setting
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday Accent Color'**
+  String get holidayAccentColor;
+
   /// Option to select no duty schedule
   ///
   /// In en, this message translates to:

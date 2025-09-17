@@ -86,6 +86,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       partnerDutyGroup: partnerState.partnerDutyGroup,
       partnerAccentColorValue: partnerState.partnerAccentColorValue,
       myAccentColorValue: partnerState.myAccentColorValue,
+      holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
     );
   }
 
@@ -340,6 +341,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       schedules: scheduleDataState.schedules,
       preferredDutyGroup: scheduleDataState.preferredDutyGroup,
       selectedDutyGroup: scheduleDataState.selectedDutyGroup,
+      holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
       isLoading: scheduleDataState.isLoading || currentState.isLoading,
       error: scheduleDataState.error ?? currentState.error,
     );
@@ -365,6 +367,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       preferredDutyGroup: scheduleDataState.preferredDutyGroup,
       selectedDutyGroup:
           selectedDutyGroup, // Use the provided value instead of scheduleDataState
+      holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
       isLoading: scheduleDataState.isLoading || currentState.isLoading,
       error: scheduleDataState.error ?? currentState.error,
     );

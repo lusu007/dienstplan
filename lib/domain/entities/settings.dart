@@ -24,6 +24,7 @@ abstract class Settings with _$Settings {
     String? schoolHolidayStateCode,
     bool? showSchoolHolidays,
     DateTime? lastSchoolHolidayRefresh,
+    int? holidayAccentColorValue,
   }) = _Settings;
 
   const Settings._();

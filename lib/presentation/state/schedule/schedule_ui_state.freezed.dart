@@ -16,7 +16,8 @@ mixin _$ScheduleUiState {
 
  bool get isLoading; String? get error; DateTime? get selectedDay; DateTime? get focusedDay; CalendarFormat? get calendarFormat; List<Schedule> get schedules; String? get activeConfigName; String? get preferredDutyGroup; String? get selectedDutyGroup; List<String> get dutyGroups; List<DutyScheduleConfig> get configs; DutyScheduleConfig? get activeConfig;// Partner group extended state
  String? get partnerConfigName; String? get partnerDutyGroup; int? get partnerAccentColorValue;// My accent color state
- int? get myAccentColorValue;
+ int? get myAccentColorValue;// Holiday accent color state
+ int? get holidayAccentColorValue;
 /// Create a copy of ScheduleUiState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $ScheduleUiStateCopyWith<ScheduleUiState> get copyWith => _$ScheduleUiStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.selectedDay, selectedDay) || other.selectedDay == selectedDay)&&(identical(other.focusedDay, focusedDay) || other.focusedDay == focusedDay)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&const DeepCollectionEquality().equals(other.schedules, schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup)&&const DeepCollectionEquality().equals(other.dutyGroups, dutyGroups)&&const DeepCollectionEquality().equals(other.configs, configs)&&(identical(other.activeConfig, activeConfig) || other.activeConfig == activeConfig)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.selectedDay, selectedDay) || other.selectedDay == selectedDay)&&(identical(other.focusedDay, focusedDay) || other.focusedDay == focusedDay)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&const DeepCollectionEquality().equals(other.schedules, schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup)&&const DeepCollectionEquality().equals(other.dutyGroups, dutyGroups)&&const DeepCollectionEquality().equals(other.configs, configs)&&(identical(other.activeConfig, activeConfig) || other.activeConfig == activeConfig)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue)&&(identical(other.holidayAccentColorValue, holidayAccentColorValue) || other.holidayAccentColorValue == holidayAccentColorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,selectedDay,focusedDay,calendarFormat,const DeepCollectionEquality().hash(schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup,const DeepCollectionEquality().hash(dutyGroups),const DeepCollectionEquality().hash(configs),activeConfig,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue);
+int get hashCode => Object.hash(runtimeType,isLoading,error,selectedDay,focusedDay,calendarFormat,const DeepCollectionEquality().hash(schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup,const DeepCollectionEquality().hash(dutyGroups),const DeepCollectionEquality().hash(configs),activeConfig,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue,holidayAccentColorValue);
 
 @override
 String toString() {
-  return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
+  return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res>  {
   factory $ScheduleUiStateCopyWith(ScheduleUiState value, $Res Function(ScheduleUiState) _then) = _$ScheduleUiStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? error, DateTime? selectedDay, DateTime? focusedDay, CalendarFormat? calendarFormat, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup, List<String> dutyGroups, List<DutyScheduleConfig> configs, DutyScheduleConfig? activeConfig, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue
+ bool isLoading, String? error, DateTime? selectedDay, DateTime? focusedDay, CalendarFormat? calendarFormat, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup, List<String> dutyGroups, List<DutyScheduleConfig> configs, DutyScheduleConfig? activeConfig, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue, int? holidayAccentColorValue
 });
 
 
@@ -64,7 +65,7 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
 
 /// Create a copy of ScheduleUiState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? selectedDay = freezed,Object? focusedDay = freezed,Object? calendarFormat = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,Object? dutyGroups = null,Object? configs = null,Object? activeConfig = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? selectedDay = freezed,Object? focusedDay = freezed,Object? calendarFormat = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,Object? dutyGroups = null,Object? configs = null,Object? activeConfig = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,Object? holidayAccentColorValue = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -82,6 +83,7 @@ as DutyScheduleConfig?,partnerConfigName: freezed == partnerConfigName ? _self.p
 as String?,partnerDutyGroup: freezed == partnerDutyGroup ? _self.partnerDutyGroup : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
 as String?,partnerAccentColorValue: freezed == partnerAccentColorValue ? _self.partnerAccentColorValue : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,myAccentColorValue: freezed == myAccentColorValue ? _self.myAccentColorValue : myAccentColorValue // ignore: cast_nullable_to_non_nullable
+as int?,holidayAccentColorValue: freezed == holidayAccentColorValue ? _self.holidayAccentColorValue : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -179,10 +181,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  DateTime? selectedDay,  DateTime? focusedDay,  CalendarFormat? calendarFormat,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  List<String> dutyGroups,  List<DutyScheduleConfig> configs,  DutyScheduleConfig? activeConfig,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  DateTime? selectedDay,  DateTime? focusedDay,  CalendarFormat? calendarFormat,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  List<String> dutyGroups,  List<DutyScheduleConfig> configs,  DutyScheduleConfig? activeConfig,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue,  int? holidayAccentColorValue)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScheduleUiState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_that.calendarFormat,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.dutyGroups,_that.configs,_that.activeConfig,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue);case _:
+return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_that.calendarFormat,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.dutyGroups,_that.configs,_that.activeConfig,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue,_that.holidayAccentColorValue);case _:
   return orElse();
 
 }
@@ -200,10 +202,10 @@ return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  DateTime? selectedDay,  DateTime? focusedDay,  CalendarFormat? calendarFormat,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  List<String> dutyGroups,  List<DutyScheduleConfig> configs,  DutyScheduleConfig? activeConfig,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  DateTime? selectedDay,  DateTime? focusedDay,  CalendarFormat? calendarFormat,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  List<String> dutyGroups,  List<DutyScheduleConfig> configs,  DutyScheduleConfig? activeConfig,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue,  int? holidayAccentColorValue)  $default,) {final _that = this;
 switch (_that) {
 case _ScheduleUiState():
-return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_that.calendarFormat,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.dutyGroups,_that.configs,_that.activeConfig,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue);case _:
+return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_that.calendarFormat,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.dutyGroups,_that.configs,_that.activeConfig,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue,_that.holidayAccentColorValue);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -220,10 +222,10 @@ return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  DateTime? selectedDay,  DateTime? focusedDay,  CalendarFormat? calendarFormat,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  List<String> dutyGroups,  List<DutyScheduleConfig> configs,  DutyScheduleConfig? activeConfig,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  DateTime? selectedDay,  DateTime? focusedDay,  CalendarFormat? calendarFormat,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  List<String> dutyGroups,  List<DutyScheduleConfig> configs,  DutyScheduleConfig? activeConfig,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue,  int? holidayAccentColorValue)?  $default,) {final _that = this;
 switch (_that) {
 case _ScheduleUiState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_that.calendarFormat,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.dutyGroups,_that.configs,_that.activeConfig,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue);case _:
+return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_that.calendarFormat,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.dutyGroups,_that.configs,_that.activeConfig,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue,_that.holidayAccentColorValue);case _:
   return null;
 
 }
@@ -235,7 +237,7 @@ return $default(_that.isLoading,_that.error,_that.selectedDay,_that.focusedDay,_
 
 
 class _ScheduleUiState extends ScheduleUiState {
-  const _ScheduleUiState({required this.isLoading, this.error, this.selectedDay, this.focusedDay, this.calendarFormat, final  List<Schedule> schedules = const <Schedule>[], this.activeConfigName, this.preferredDutyGroup, this.selectedDutyGroup, final  List<String> dutyGroups = const <String>[], final  List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[], this.activeConfig, this.partnerConfigName, this.partnerDutyGroup, this.partnerAccentColorValue, this.myAccentColorValue}): _schedules = schedules,_dutyGroups = dutyGroups,_configs = configs,super._();
+  const _ScheduleUiState({required this.isLoading, this.error, this.selectedDay, this.focusedDay, this.calendarFormat, final  List<Schedule> schedules = const <Schedule>[], this.activeConfigName, this.preferredDutyGroup, this.selectedDutyGroup, final  List<String> dutyGroups = const <String>[], final  List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[], this.activeConfig, this.partnerConfigName, this.partnerDutyGroup, this.partnerAccentColorValue, this.myAccentColorValue, this.holidayAccentColorValue}): _schedules = schedules,_dutyGroups = dutyGroups,_configs = configs,super._();
   
 
 @override final  bool isLoading;
@@ -274,6 +276,8 @@ class _ScheduleUiState extends ScheduleUiState {
 @override final  int? partnerAccentColorValue;
 // My accent color state
 @override final  int? myAccentColorValue;
+// Holiday accent color state
+@override final  int? holidayAccentColorValue;
 
 /// Create a copy of ScheduleUiState
 /// with the given fields replaced by the non-null parameter values.
@@ -285,16 +289,16 @@ _$ScheduleUiStateCopyWith<_ScheduleUiState> get copyWith => __$ScheduleUiStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.selectedDay, selectedDay) || other.selectedDay == selectedDay)&&(identical(other.focusedDay, focusedDay) || other.focusedDay == focusedDay)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&const DeepCollectionEquality().equals(other._schedules, _schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup)&&const DeepCollectionEquality().equals(other._dutyGroups, _dutyGroups)&&const DeepCollectionEquality().equals(other._configs, _configs)&&(identical(other.activeConfig, activeConfig) || other.activeConfig == activeConfig)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.selectedDay, selectedDay) || other.selectedDay == selectedDay)&&(identical(other.focusedDay, focusedDay) || other.focusedDay == focusedDay)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&const DeepCollectionEquality().equals(other._schedules, _schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup)&&const DeepCollectionEquality().equals(other._dutyGroups, _dutyGroups)&&const DeepCollectionEquality().equals(other._configs, _configs)&&(identical(other.activeConfig, activeConfig) || other.activeConfig == activeConfig)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue)&&(identical(other.holidayAccentColorValue, holidayAccentColorValue) || other.holidayAccentColorValue == holidayAccentColorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,selectedDay,focusedDay,calendarFormat,const DeepCollectionEquality().hash(_schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup,const DeepCollectionEquality().hash(_dutyGroups),const DeepCollectionEquality().hash(_configs),activeConfig,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue);
+int get hashCode => Object.hash(runtimeType,isLoading,error,selectedDay,focusedDay,calendarFormat,const DeepCollectionEquality().hash(_schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup,const DeepCollectionEquality().hash(_dutyGroups),const DeepCollectionEquality().hash(_configs),activeConfig,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue,holidayAccentColorValue);
 
 @override
 String toString() {
-  return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
+  return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
 }
 
 
@@ -305,7 +309,7 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res> implements $ScheduleUiState
   factory _$ScheduleUiStateCopyWith(_ScheduleUiState value, $Res Function(_ScheduleUiState) _then) = __$ScheduleUiStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? error, DateTime? selectedDay, DateTime? focusedDay, CalendarFormat? calendarFormat, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup, List<String> dutyGroups, List<DutyScheduleConfig> configs, DutyScheduleConfig? activeConfig, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue
+ bool isLoading, String? error, DateTime? selectedDay, DateTime? focusedDay, CalendarFormat? calendarFormat, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup, List<String> dutyGroups, List<DutyScheduleConfig> configs, DutyScheduleConfig? activeConfig, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue, int? holidayAccentColorValue
 });
 
 
@@ -322,7 +326,7 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
 
 /// Create a copy of ScheduleUiState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? selectedDay = freezed,Object? focusedDay = freezed,Object? calendarFormat = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,Object? dutyGroups = null,Object? configs = null,Object? activeConfig = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? selectedDay = freezed,Object? focusedDay = freezed,Object? calendarFormat = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,Object? dutyGroups = null,Object? configs = null,Object? activeConfig = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,Object? holidayAccentColorValue = freezed,}) {
   return _then(_ScheduleUiState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -340,6 +344,7 @@ as DutyScheduleConfig?,partnerConfigName: freezed == partnerConfigName ? _self.p
 as String?,partnerDutyGroup: freezed == partnerDutyGroup ? _self.partnerDutyGroup : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
 as String?,partnerAccentColorValue: freezed == partnerAccentColorValue ? _self.partnerAccentColorValue : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,myAccentColorValue: freezed == myAccentColorValue ? _self.myAccentColorValue : myAccentColorValue // ignore: cast_nullable_to_non_nullable
+as int?,holidayAccentColorValue: freezed == holidayAccentColorValue ? _self.holidayAccentColorValue : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }

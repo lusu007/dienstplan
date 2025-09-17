@@ -201,6 +201,10 @@
   "@accentLightGrey": {
     "description": "Light grey accent color"
   },
+  "holidayAccentColor": "Holiday Accent Color",
+  "@holidayAccentColor": {
+    "description": "Title for holiday accent color setting"
+  },
   "noDutySchedule": "No duty schedule",
   "@noDutySchedule": {
     "description": "Option to select no duty schedule"

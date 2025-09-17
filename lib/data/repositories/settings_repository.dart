@@ -106,6 +106,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       schoolHolidayStateCode: s.schoolHolidayStateCode,
       showSchoolHolidays: s.showSchoolHolidays,
       lastSchoolHolidayRefresh: s.lastSchoolHolidayRefresh,
+      holidayAccentColorValue: s.holidayAccentColorValue,
     );
   }
 
@@ -124,6 +125,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       schoolHolidayStateCode: s.schoolHolidayStateCode,
       showSchoolHolidays: s.showSchoolHolidays,
       lastSchoolHolidayRefresh: s.lastSchoolHolidayRefresh,
+      holidayAccentColorValue: s.holidayAccentColorValue,
     );
   }
 

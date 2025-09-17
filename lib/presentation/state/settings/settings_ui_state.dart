@@ -20,6 +20,8 @@ abstract class SettingsUiState with _$SettingsUiState {
     int? partnerAccentColorValue,
     // My accent color UI value
     int? myAccentColorValue,
+    // Holiday accent color UI value
+    int? holidayAccentColorValue,
   }) = _SettingsUiState;
 
   const SettingsUiState._();

@@ -16,7 +16,8 @@ mixin _$SettingsUiState {
 
  bool get isLoading; String? get error; String? get language; CalendarFormat? get calendarFormat; String? get activeConfigName; String? get myDutyGroup; ThemePreference? get themePreference;// Partner duty group UI values
  String? get partnerConfigName; String? get partnerDutyGroup; int? get partnerAccentColorValue;// My accent color UI value
- int? get myAccentColorValue;
+ int? get myAccentColorValue;// Holiday accent color UI value
+ int? get holidayAccentColorValue;
 /// Create a copy of SettingsUiState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,16 +28,16 @@ $SettingsUiStateCopyWith<SettingsUiState> get copyWith => _$SettingsUiStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.language, language) || other.language == language)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.myDutyGroup, myDutyGroup) || other.myDutyGroup == myDutyGroup)&&(identical(other.themePreference, themePreference) || other.themePreference == themePreference)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SettingsUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.language, language) || other.language == language)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.myDutyGroup, myDutyGroup) || other.myDutyGroup == myDutyGroup)&&(identical(other.themePreference, themePreference) || other.themePreference == themePreference)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue)&&(identical(other.holidayAccentColorValue, holidayAccentColorValue) || other.holidayAccentColorValue == holidayAccentColorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,language,calendarFormat,activeConfigName,myDutyGroup,themePreference,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue);
+int get hashCode => Object.hash(runtimeType,isLoading,error,language,calendarFormat,activeConfigName,myDutyGroup,themePreference,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue,holidayAccentColorValue);
 
 @override
 String toString() {
-  return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
+  return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
 }
 
 
@@ -47,7 +48,7 @@ abstract mixin class $SettingsUiStateCopyWith<$Res>  {
   factory $SettingsUiStateCopyWith(SettingsUiState value, $Res Function(SettingsUiState) _then) = _$SettingsUiStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? error, String? language, CalendarFormat? calendarFormat, String? activeConfigName, String? myDutyGroup, ThemePreference? themePreference, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue
+ bool isLoading, String? error, String? language, CalendarFormat? calendarFormat, String? activeConfigName, String? myDutyGroup, ThemePreference? themePreference, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue, int? holidayAccentColorValue
 });
 
 
@@ -64,7 +65,7 @@ class _$SettingsUiStateCopyWithImpl<$Res>
 
 /// Create a copy of SettingsUiState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? language = freezed,Object? calendarFormat = freezed,Object? activeConfigName = freezed,Object? myDutyGroup = freezed,Object? themePreference = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? language = freezed,Object? calendarFormat = freezed,Object? activeConfigName = freezed,Object? myDutyGroup = freezed,Object? themePreference = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,Object? holidayAccentColorValue = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -77,6 +78,7 @@ as ThemePreference?,partnerConfigName: freezed == partnerConfigName ? _self.part
 as String?,partnerDutyGroup: freezed == partnerDutyGroup ? _self.partnerDutyGroup : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
 as String?,partnerAccentColorValue: freezed == partnerAccentColorValue ? _self.partnerAccentColorValue : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,myAccentColorValue: freezed == myAccentColorValue ? _self.myAccentColorValue : myAccentColorValue // ignore: cast_nullable_to_non_nullable
+as int?,holidayAccentColorValue: freezed == holidayAccentColorValue ? _self.holidayAccentColorValue : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -162,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  String? language,  CalendarFormat? calendarFormat,  String? activeConfigName,  String? myDutyGroup,  ThemePreference? themePreference,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  String? language,  CalendarFormat? calendarFormat,  String? activeConfigName,  String? myDutyGroup,  ThemePreference? themePreference,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue,  int? holidayAccentColorValue)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SettingsUiState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,_that.activeConfigName,_that.myDutyGroup,_that.themePreference,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue);case _:
+return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,_that.activeConfigName,_that.myDutyGroup,_that.themePreference,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue,_that.holidayAccentColorValue);case _:
   return orElse();
 
 }
@@ -183,10 +185,10 @@ return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  String? language,  CalendarFormat? calendarFormat,  String? activeConfigName,  String? myDutyGroup,  ThemePreference? themePreference,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  String? language,  CalendarFormat? calendarFormat,  String? activeConfigName,  String? myDutyGroup,  ThemePreference? themePreference,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue,  int? holidayAccentColorValue)  $default,) {final _that = this;
 switch (_that) {
 case _SettingsUiState():
-return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,_that.activeConfigName,_that.myDutyGroup,_that.themePreference,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue);case _:
+return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,_that.activeConfigName,_that.myDutyGroup,_that.themePreference,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue,_that.holidayAccentColorValue);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +205,10 @@ return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  String? language,  CalendarFormat? calendarFormat,  String? activeConfigName,  String? myDutyGroup,  ThemePreference? themePreference,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  String? language,  CalendarFormat? calendarFormat,  String? activeConfigName,  String? myDutyGroup,  ThemePreference? themePreference,  String? partnerConfigName,  String? partnerDutyGroup,  int? partnerAccentColorValue,  int? myAccentColorValue,  int? holidayAccentColorValue)?  $default,) {final _that = this;
 switch (_that) {
 case _SettingsUiState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,_that.activeConfigName,_that.myDutyGroup,_that.themePreference,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue);case _:
+return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,_that.activeConfigName,_that.myDutyGroup,_that.themePreference,_that.partnerConfigName,_that.partnerDutyGroup,_that.partnerAccentColorValue,_that.myAccentColorValue,_that.holidayAccentColorValue);case _:
   return null;
 
 }
@@ -218,7 +220,7 @@ return $default(_that.isLoading,_that.error,_that.language,_that.calendarFormat,
 
 
 class _SettingsUiState extends SettingsUiState {
-  const _SettingsUiState({required this.isLoading, this.error, this.language, this.calendarFormat, this.activeConfigName, this.myDutyGroup, this.themePreference, this.partnerConfigName, this.partnerDutyGroup, this.partnerAccentColorValue, this.myAccentColorValue}): super._();
+  const _SettingsUiState({required this.isLoading, this.error, this.language, this.calendarFormat, this.activeConfigName, this.myDutyGroup, this.themePreference, this.partnerConfigName, this.partnerDutyGroup, this.partnerAccentColorValue, this.myAccentColorValue, this.holidayAccentColorValue}): super._();
   
 
 @override final  bool isLoading;
@@ -234,6 +236,8 @@ class _SettingsUiState extends SettingsUiState {
 @override final  int? partnerAccentColorValue;
 // My accent color UI value
 @override final  int? myAccentColorValue;
+// Holiday accent color UI value
+@override final  int? holidayAccentColorValue;
 
 /// Create a copy of SettingsUiState
 /// with the given fields replaced by the non-null parameter values.
@@ -245,16 +249,16 @@ _$SettingsUiStateCopyWith<_SettingsUiState> get copyWith => __$SettingsUiStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.language, language) || other.language == language)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.myDutyGroup, myDutyGroup) || other.myDutyGroup == myDutyGroup)&&(identical(other.themePreference, themePreference) || other.themePreference == themePreference)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SettingsUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&(identical(other.language, language) || other.language == language)&&(identical(other.calendarFormat, calendarFormat) || other.calendarFormat == calendarFormat)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.myDutyGroup, myDutyGroup) || other.myDutyGroup == myDutyGroup)&&(identical(other.themePreference, themePreference) || other.themePreference == themePreference)&&(identical(other.partnerConfigName, partnerConfigName) || other.partnerConfigName == partnerConfigName)&&(identical(other.partnerDutyGroup, partnerDutyGroup) || other.partnerDutyGroup == partnerDutyGroup)&&(identical(other.partnerAccentColorValue, partnerAccentColorValue) || other.partnerAccentColorValue == partnerAccentColorValue)&&(identical(other.myAccentColorValue, myAccentColorValue) || other.myAccentColorValue == myAccentColorValue)&&(identical(other.holidayAccentColorValue, holidayAccentColorValue) || other.holidayAccentColorValue == holidayAccentColorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,language,calendarFormat,activeConfigName,myDutyGroup,themePreference,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue);
+int get hashCode => Object.hash(runtimeType,isLoading,error,language,calendarFormat,activeConfigName,myDutyGroup,themePreference,partnerConfigName,partnerDutyGroup,partnerAccentColorValue,myAccentColorValue,holidayAccentColorValue);
 
 @override
 String toString() {
-  return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
+  return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
 }
 
 
@@ -265,7 +269,7 @@ abstract mixin class _$SettingsUiStateCopyWith<$Res> implements $SettingsUiState
   factory _$SettingsUiStateCopyWith(_SettingsUiState value, $Res Function(_SettingsUiState) _then) = __$SettingsUiStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? error, String? language, CalendarFormat? calendarFormat, String? activeConfigName, String? myDutyGroup, ThemePreference? themePreference, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue
+ bool isLoading, String? error, String? language, CalendarFormat? calendarFormat, String? activeConfigName, String? myDutyGroup, ThemePreference? themePreference, String? partnerConfigName, String? partnerDutyGroup, int? partnerAccentColorValue, int? myAccentColorValue, int? holidayAccentColorValue
 });
 
 
@@ -282,7 +286,7 @@ class __$SettingsUiStateCopyWithImpl<$Res>
 
 /// Create a copy of SettingsUiState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? language = freezed,Object? calendarFormat = freezed,Object? activeConfigName = freezed,Object? myDutyGroup = freezed,Object? themePreference = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? language = freezed,Object? calendarFormat = freezed,Object? activeConfigName = freezed,Object? myDutyGroup = freezed,Object? themePreference = freezed,Object? partnerConfigName = freezed,Object? partnerDutyGroup = freezed,Object? partnerAccentColorValue = freezed,Object? myAccentColorValue = freezed,Object? holidayAccentColorValue = freezed,}) {
   return _then(_SettingsUiState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -295,6 +299,7 @@ as ThemePreference?,partnerConfigName: freezed == partnerConfigName ? _self.part
 as String?,partnerDutyGroup: freezed == partnerDutyGroup ? _self.partnerDutyGroup : partnerDutyGroup // ignore: cast_nullable_to_non_nullable
 as String?,partnerAccentColorValue: freezed == partnerAccentColorValue ? _self.partnerAccentColorValue : partnerAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,myAccentColorValue: freezed == myAccentColorValue ? _self.myAccentColorValue : myAccentColorValue // ignore: cast_nullable_to_non_nullable
+as int?,holidayAccentColorValue: freezed == holidayAccentColorValue ? _self.holidayAccentColorValue : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }

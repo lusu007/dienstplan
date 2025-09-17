@@ -26,6 +26,8 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     int? partnerAccentColorValue,
     // My accent color state
     int? myAccentColorValue,
+    // Holiday accent color state
+    int? holidayAccentColorValue,
   }) = _ScheduleUiState;
 
   const ScheduleUiState._();
@@ -41,5 +43,6 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     partnerDutyGroup: null,
     partnerAccentColorValue: null,
     myAccentColorValue: null,
+    holidayAccentColorValue: null,
   );
 }

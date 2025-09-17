@@ -283,6 +283,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         partnerDutyAbbreviation: partnerAbbreviation,
         partnerAccentColorValue: state?.partnerAccentColorValue,
         myAccentColorValue: state?.myAccentColorValue,
+        holidayAccentColorValue: state?.holidayAccentColorValue,
         dayType: widget.dayType,
         width: widget.width,
         height: widget.height,

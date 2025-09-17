@@ -160,6 +160,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get accentLightGrey => 'Hellgrau';
 
   @override
+  String get holidayAccentColor => 'Ferien-Akzentfarbe';
+
+  @override
   String get noDutySchedule => 'Kein Dienstplan';
 
   @override

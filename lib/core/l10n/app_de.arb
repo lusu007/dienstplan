@@ -214,6 +214,10 @@
   "@accentLightGrey": {
     "description": "Akzentfarbe Hellgrau"
   },
+  "holidayAccentColor": "Ferien-Akzentfarbe",
+  "@holidayAccentColor": {
+    "description": "Titel für die Ferien-Akzentfarbe-Einstellung"
+  },
   "about": "Über",
   "@about": {
     "description": "Title for the about dialog"

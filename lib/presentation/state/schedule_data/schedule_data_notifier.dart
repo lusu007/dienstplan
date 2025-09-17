@@ -74,6 +74,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
             activeConfigName: activeConfigName,
             preferredDutyGroup: preferredDutyGroup,
             selectedDutyGroup: selectedDutyGroup,
+            holidayAccentColorValue: settings?.holidayAccentColorValue,
           );
         }
       }
@@ -85,6 +86,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         activeConfigName: activeConfigName ?? '',
         preferredDutyGroup: preferredDutyGroup ?? '',
         selectedDutyGroup: selectedDutyGroup,
+        holidayAccentColorValue: settings?.holidayAccentColorValue,
       );
     } catch (e) {
       return ScheduleDataUiState.initial().copyWith(

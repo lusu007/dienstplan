@@ -12,6 +12,7 @@ abstract class ScheduleDataUiState with _$ScheduleDataUiState {
     String? activeConfigName,
     String? preferredDutyGroup,
     String? selectedDutyGroup,
+    int? holidayAccentColorValue,
   }) = _ScheduleDataUiState;
 
   const ScheduleDataUiState._();
@@ -20,5 +21,6 @@ abstract class ScheduleDataUiState with _$ScheduleDataUiState {
     isLoading: false,
     activeConfigName: '',
     preferredDutyGroup: '',
+    holidayAccentColorValue: null,
   );
 }

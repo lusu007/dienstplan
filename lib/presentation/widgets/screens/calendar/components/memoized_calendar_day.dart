@@ -101,6 +101,12 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       ),
     );
 
+    final holidayAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.holidayAccentColorValue,
+      ),
+    );
+
     // Watch school holidays state
     final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
@@ -131,6 +137,7 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       partnerDutyAbbreviation: dutyData.partnerDuty,
       partnerAccentColorValue: partnerAccentColor,
       myAccentColorValue: myAccentColor,
+      holidayAccentColorValue: holidayAccentColor,
       dayType: dayType,
       width: width ?? CalendarConfig.kCalendarDayWidth,
       height: height ?? CalendarConfig.kCalendarDayHeight,

@@ -17,6 +17,7 @@ class Settings {
   final String? schoolHolidayStateCode;
   final bool? showSchoolHolidays;
   final DateTime? lastSchoolHolidayRefresh;
+  final int? holidayAccentColorValue;
 
   const Settings({
     required this.calendarFormat,
@@ -32,6 +33,7 @@ class Settings {
     this.schoolHolidayStateCode,
     this.showSchoolHolidays,
     this.lastSchoolHolidayRefresh,
+    this.holidayAccentColorValue,
   });
 
   factory Settings.fromMap(Map<String, dynamic> map) {
@@ -54,6 +56,7 @@ class Settings {
       lastSchoolHolidayRefresh: _safeDateTimeCast(
         map['last_school_holiday_refresh'],
       ),
+      holidayAccentColorValue: _safeIntCast(map['holiday_accent_color']),
     );
   }
 
@@ -77,6 +80,8 @@ class Settings {
       if (lastSchoolHolidayRefresh != null)
         'last_school_holiday_refresh': lastSchoolHolidayRefresh!
             .toIso8601String(),
+      if (holidayAccentColorValue != null)
+        'holiday_accent_color': holidayAccentColorValue,
     };
   }
 
@@ -94,6 +99,7 @@ class Settings {
     String? schoolHolidayStateCode,
     bool? showSchoolHolidays,
     DateTime? lastSchoolHolidayRefresh,
+    int? holidayAccentColorValue,
   }) {
     return Settings(
       calendarFormat: calendarFormat ?? this.calendarFormat,
@@ -112,12 +118,14 @@ class Settings {
       showSchoolHolidays: showSchoolHolidays ?? this.showSchoolHolidays,
       lastSchoolHolidayRefresh:
           lastSchoolHolidayRefresh ?? this.lastSchoolHolidayRefresh,
+      holidayAccentColorValue:
+          holidayAccentColorValue ?? this.holidayAccentColorValue,
     );
   }
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh)';
+    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 
   @override
@@ -135,7 +143,8 @@ class Settings {
         other.partnerAccentColorValue == partnerAccentColorValue &&
         other.myAccentColorValue == myAccentColorValue &&
         other.schoolHolidayStateCode == schoolHolidayStateCode &&
-        other.showSchoolHolidays == showSchoolHolidays;
+        other.showSchoolHolidays == showSchoolHolidays &&
+        other.holidayAccentColorValue == holidayAccentColorValue;
   }
 
   @override
@@ -151,7 +160,8 @@ class Settings {
         partnerAccentColorValue.hashCode ^
         myAccentColorValue.hashCode ^
         schoolHolidayStateCode.hashCode ^
-        showSchoolHolidays.hashCode;
+        showSchoolHolidays.hashCode ^
+        holidayAccentColorValue.hashCode;
   }
 
   static String? _safeStringCast(dynamic value) {

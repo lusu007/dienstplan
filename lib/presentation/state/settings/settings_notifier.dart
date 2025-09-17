@@ -7,6 +7,7 @@ import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'dart:async';
 part 'settings_notifier.g.dart';
 
@@ -42,6 +43,7 @@ class SettingsNotifier extends _$SettingsNotifier {
         partnerDutyGroup: settings?.partnerDutyGroup,
         partnerAccentColorValue: settings?.partnerAccentColorValue,
         myAccentColorValue: settings?.myAccentColorValue,
+        holidayAccentColorValue: settings?.holidayAccentColorValue,
       );
     } catch (e) {
       return SettingsUiState.initial().copyWith(
@@ -165,6 +167,40 @@ class SettingsNotifier extends _$SettingsNotifier {
     } catch (_) {
       final current = state.value ?? SettingsUiState.initial();
       state = AsyncData(current.copyWith(error: 'Failed to reset settings'));
+    }
+  }
+
+  Future<void> setHolidayAccentColor(int? colorValue) async {
+    final current = state.value ?? SettingsUiState.initial();
+    state = AsyncData(current.copyWith(holidayAccentColorValue: colorValue));
+    final existing = await _getSettingsUseCase!.execute();
+    if (existing != null) {
+      await _saveSettings(
+        existing.copyWith(holidayAccentColorValue: colorValue),
+      );
+    } else {
+      // Create new settings with the holiday accent color if none exist
+      final newSettings = Settings(
+        calendarFormat: CalendarFormat.month,
+        holidayAccentColorValue: colorValue,
+        themePreference: ThemePreference.system,
+        schoolHolidayStateCode: null,
+        showSchoolHolidays: null,
+      );
+      await _saveSettings(newSettings);
+    }
+
+    // Refresh the schedule data provider and coordinator to update the holiday color in the calendar
+    // Do this after the settings are saved
+    try {
+      // Force refresh the schedule data provider to get the updated holiday color
+      await ref.refresh(scheduleDataProvider.future);
+      // Also refresh the coordinator to ensure the calendar updates
+      ref.invalidate(scheduleCoordinatorProvider);
+    } catch (e) {
+      // If refresh fails, fall back to invalidation
+      ref.invalidate(scheduleDataProvider);
+      ref.invalidate(scheduleCoordinatorProvider);
     }
   }
 

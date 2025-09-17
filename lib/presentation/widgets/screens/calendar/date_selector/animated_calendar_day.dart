@@ -9,6 +9,7 @@ class AnimatedCalendarDay extends StatefulWidget {
   final String? partnerDutyAbbreviation;
   final int? partnerAccentColorValue;
   final int? myAccentColorValue;
+  final int? holidayAccentColorValue;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
@@ -24,6 +25,7 @@ class AnimatedCalendarDay extends StatefulWidget {
     this.partnerDutyAbbreviation,
     this.partnerAccentColorValue,
     this.myAccentColorValue,
+    this.holidayAccentColorValue,
     required this.dayType,
     this.width,
     this.height,
@@ -83,7 +85,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
               width: double.infinity,
               decoration: widget.hasSchoolHoliday
                   ? BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.7),
+                      color: Color(
+                        widget.holidayAccentColorValue ??
+                            AccentColorDefaults.holidayAccentColorValue,
+                      ).withValues(alpha: 0.7),
                       borderRadius: BorderRadius.circular(1),
                     )
                   : null,

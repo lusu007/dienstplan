@@ -160,7 +160,7 @@ class DatabaseService {
 
     // Create school_holidays table for offline functionality
     await db.execute('''
-      CREATE TABLE school_holidays (
+      CREATE TABLE IF NOT EXISTS school_holidays (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         state_code TEXT NOT NULL,
         state_name TEXT NOT NULL,
@@ -241,6 +241,12 @@ class DatabaseService {
       }
       if (oldVersion < 12) {
         await _migrateToVersion12(txn);
+      }
+      if (oldVersion < 13) {
+        await _migrateToVersion13(txn);
+      }
+      if (oldVersion < 14) {
+        await _migrateToVersion14(txn);
       }
 
       // Create any missing indexes after all migrations are complete
@@ -596,6 +602,45 @@ class DatabaseService {
       );
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 12', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion13(DatabaseExecutor db) async {
+    try {
+      AppLogger.i('Migrating to version 13: No changes needed');
+      // Version 13 was a placeholder - no actual migration needed
+      AppLogger.i('Successfully migrated to version 13: No changes applied');
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 13', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion14(DatabaseExecutor db) async {
+    try {
+      AppLogger.i(
+        'Migrating to version 14: Add holiday accent color to settings',
+      );
+
+      // Check if the column already exists
+      final columns = await db.rawQuery('PRAGMA table_info(settings)');
+      final columnNames = columns.map((col) => col['name'] as String).toList();
+
+      if (!columnNames.contains('holiday_accent_color')) {
+        await db.execute(
+          'ALTER TABLE settings ADD COLUMN holiday_accent_color INTEGER',
+        );
+        AppLogger.i('Added holiday_accent_color column to settings table');
+      } else {
+        AppLogger.i(
+          'holiday_accent_color column already exists in settings table',
+        );
+      }
+
+      AppLogger.i(
+        'Successfully migrated to version 14: holiday accent color added',
+      );
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 14', e, stackTrace);
     }
   }
 

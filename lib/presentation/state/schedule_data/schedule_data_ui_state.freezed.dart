@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ScheduleDataUiState {
 
- bool get isLoading; String? get error; List<Schedule> get schedules; String? get activeConfigName; String? get preferredDutyGroup; String? get selectedDutyGroup;
+ bool get isLoading; String? get error; List<Schedule> get schedules; String? get activeConfigName; String? get preferredDutyGroup; String? get selectedDutyGroup; int? get holidayAccentColorValue;
 /// Create a copy of ScheduleDataUiState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ScheduleDataUiStateCopyWith<ScheduleDataUiState> get copyWith => _$ScheduleData
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleDataUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.schedules, schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScheduleDataUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.schedules, schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup)&&(identical(other.holidayAccentColorValue, holidayAccentColorValue) || other.holidayAccentColorValue == holidayAccentColorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup);
+int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup,holidayAccentColorValue);
 
 @override
 String toString() {
-  return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup)';
+  return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ScheduleDataUiStateCopyWith<$Res>  {
   factory $ScheduleDataUiStateCopyWith(ScheduleDataUiState value, $Res Function(ScheduleDataUiState) _then) = _$ScheduleDataUiStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? error, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup
+ bool isLoading, String? error, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup, int? holidayAccentColorValue
 });
 
 
@@ -62,7 +62,7 @@ class _$ScheduleDataUiStateCopyWithImpl<$Res>
 
 /// Create a copy of ScheduleDataUiState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? error = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,Object? holidayAccentColorValue = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,8 @@ as String?,schedules: null == schedules ? _self.schedules : schedules // ignore:
 as List<Schedule>,activeConfigName: freezed == activeConfigName ? _self.activeConfigName : activeConfigName // ignore: cast_nullable_to_non_nullable
 as String?,preferredDutyGroup: freezed == preferredDutyGroup ? _self.preferredDutyGroup : preferredDutyGroup // ignore: cast_nullable_to_non_nullable
 as String?,selectedDutyGroup: freezed == selectedDutyGroup ? _self.selectedDutyGroup : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,holidayAccentColorValue: freezed == holidayAccentColorValue ? _self.holidayAccentColorValue : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  int? holidayAccentColorValue)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScheduleDataUiState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup);case _:
+return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.holidayAccentColorValue);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? error,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  int? holidayAccentColorValue)  $default,) {final _that = this;
 switch (_that) {
 case _ScheduleDataUiState():
-return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup);case _:
+return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.holidayAccentColorValue);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? error,  List<Schedule> schedules,  String? activeConfigName,  String? preferredDutyGroup,  String? selectedDutyGroup,  int? holidayAccentColorValue)?  $default,) {final _that = this;
 switch (_that) {
 case _ScheduleDataUiState() when $default != null:
-return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup);case _:
+return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigName,_that.preferredDutyGroup,_that.selectedDutyGroup,_that.holidayAccentColorValue);case _:
   return null;
 
 }
@@ -211,7 +212,7 @@ return $default(_that.isLoading,_that.error,_that.schedules,_that.activeConfigNa
 
 
 class _ScheduleDataUiState extends ScheduleDataUiState {
-  const _ScheduleDataUiState({required this.isLoading, this.error, final  List<Schedule> schedules = const <Schedule>[], this.activeConfigName, this.preferredDutyGroup, this.selectedDutyGroup}): _schedules = schedules,super._();
+  const _ScheduleDataUiState({required this.isLoading, this.error, final  List<Schedule> schedules = const <Schedule>[], this.activeConfigName, this.preferredDutyGroup, this.selectedDutyGroup, this.holidayAccentColorValue}): _schedules = schedules,super._();
   
 
 @override final  bool isLoading;
@@ -226,6 +227,7 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
 @override final  String? activeConfigName;
 @override final  String? preferredDutyGroup;
 @override final  String? selectedDutyGroup;
+@override final  int? holidayAccentColorValue;
 
 /// Create a copy of ScheduleDataUiState
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +239,16 @@ _$ScheduleDataUiStateCopyWith<_ScheduleDataUiState> get copyWith => __$ScheduleD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleDataUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._schedules, _schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScheduleDataUiState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._schedules, _schedules)&&(identical(other.activeConfigName, activeConfigName) || other.activeConfigName == activeConfigName)&&(identical(other.preferredDutyGroup, preferredDutyGroup) || other.preferredDutyGroup == preferredDutyGroup)&&(identical(other.selectedDutyGroup, selectedDutyGroup) || other.selectedDutyGroup == selectedDutyGroup)&&(identical(other.holidayAccentColorValue, holidayAccentColorValue) || other.holidayAccentColorValue == holidayAccentColorValue));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(_schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup);
+int get hashCode => Object.hash(runtimeType,isLoading,error,const DeepCollectionEquality().hash(_schedules),activeConfigName,preferredDutyGroup,selectedDutyGroup,holidayAccentColorValue);
 
 @override
 String toString() {
-  return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup)';
+  return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$ScheduleDataUiStateCopyWith<$Res> implements $ScheduleDat
   factory _$ScheduleDataUiStateCopyWith(_ScheduleDataUiState value, $Res Function(_ScheduleDataUiState) _then) = __$ScheduleDataUiStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? error, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup
+ bool isLoading, String? error, List<Schedule> schedules, String? activeConfigName, String? preferredDutyGroup, String? selectedDutyGroup, int? holidayAccentColorValue
 });
 
 
@@ -274,7 +276,7 @@ class __$ScheduleDataUiStateCopyWithImpl<$Res>
 
 /// Create a copy of ScheduleDataUiState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? error = freezed,Object? schedules = null,Object? activeConfigName = freezed,Object? preferredDutyGroup = freezed,Object? selectedDutyGroup = freezed,Object? holidayAccentColorValue = freezed,}) {
   return _then(_ScheduleDataUiState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
@@ -282,7 +284,8 @@ as String?,schedules: null == schedules ? _self._schedules : schedules // ignore
 as List<Schedule>,activeConfigName: freezed == activeConfigName ? _self.activeConfigName : activeConfigName // ignore: cast_nullable_to_non_nullable
 as String?,preferredDutyGroup: freezed == preferredDutyGroup ? _self.preferredDutyGroup : preferredDutyGroup // ignore: cast_nullable_to_non_nullable
 as String?,selectedDutyGroup: freezed == selectedDutyGroup ? _self.selectedDutyGroup : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,holidayAccentColorValue: freezed == holidayAccentColorValue ? _self.holidayAccentColorValue : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
