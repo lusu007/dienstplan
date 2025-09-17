@@ -6,7 +6,6 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
-import 'package:dienstplan/core/utils/logger.dart';
 
 class CalendarBuildersHelper {
   static CalendarBuilders createCalendarBuilders({
