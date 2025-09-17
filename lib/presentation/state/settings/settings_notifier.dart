@@ -194,7 +194,7 @@ class SettingsNotifier extends _$SettingsNotifier {
     // Do this after the settings are saved
     try {
       // Force refresh the schedule data provider to get the updated holiday color
-      await ref.refresh(scheduleDataProvider.future);
+      final _ = await ref.refresh(scheduleDataProvider.future);
       // Also refresh the coordinator to ensure the calendar updates
       ref.invalidate(scheduleCoordinatorProvider);
     } catch (e) {
