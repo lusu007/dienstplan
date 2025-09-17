@@ -57,16 +57,17 @@ class PartnerNotifier extends _$PartnerNotifier {
       }
 
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        partnerConfigName: configName,
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(partnerConfigName: configName, isLoading: false),
+      );
     } catch (e) {
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        error: 'Failed to save partner config name',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          error: 'Failed to save partner config name',
+          isLoading: false,
+        ),
+      );
     }
   }
 
@@ -86,16 +87,17 @@ class PartnerNotifier extends _$PartnerNotifier {
       }
 
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        partnerDutyGroup: dutyGroup,
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(partnerDutyGroup: dutyGroup, isLoading: false),
+      );
     } catch (e) {
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        error: 'Failed to save partner duty group',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          error: 'Failed to save partner duty group',
+          isLoading: false,
+        ),
+      );
     }
   }
 
@@ -115,16 +117,17 @@ class PartnerNotifier extends _$PartnerNotifier {
       }
 
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        partnerAccentColorValue: colorValue,
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(partnerAccentColorValue: colorValue, isLoading: false),
+      );
     } catch (e) {
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        error: 'Failed to save partner accent color',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          error: 'Failed to save partner accent color',
+          isLoading: false,
+        ),
+      );
     }
   }
 
@@ -144,16 +147,17 @@ class PartnerNotifier extends _$PartnerNotifier {
       }
 
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        myAccentColorValue: colorValue,
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(myAccentColorValue: colorValue, isLoading: false),
+      );
     } catch (e) {
       if (!ref.mounted) return;
-      state = AsyncData(current.copyWith(
-        error: 'Failed to save my accent color',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          error: 'Failed to save my accent color',
+          isLoading: false,
+        ),
+      );
     }
   }
 

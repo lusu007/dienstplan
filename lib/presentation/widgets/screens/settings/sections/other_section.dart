@@ -84,8 +84,9 @@ class OtherSection extends ConsumerWidget {
 
   Future<void> _openContribute(BuildContext context) async {
     try {
-      final Uri contributeUri =
-          Uri.parse('https://github.com/lusu007/dienstplan');
+      final Uri contributeUri = Uri.parse(
+        'https://github.com/lusu007/dienstplan',
+      );
       if (await canLaunchUrl(contributeUri)) {
         await launchUrl(contributeUri);
       }

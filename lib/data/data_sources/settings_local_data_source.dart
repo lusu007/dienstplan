@@ -34,7 +34,10 @@ class SettingsLocalDataSource {
       return settings;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SettingsLocalDataSource: Error getting settings', e, stackTrace);
+        'SettingsLocalDataSource: Error getting settings',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -60,7 +63,10 @@ class SettingsLocalDataSource {
       AppLogger.d('SettingsLocalDataSource: Successfully saved settings');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SettingsLocalDataSource: Error saving settings', e, stackTrace);
+        'SettingsLocalDataSource: Error saving settings',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -76,7 +82,10 @@ class SettingsLocalDataSource {
       AppLogger.d('SettingsLocalDataSource: Successfully deleted settings');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SettingsLocalDataSource: Error deleting settings', e, stackTrace);
+        'SettingsLocalDataSource: Error deleting settings',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -97,8 +106,11 @@ class SettingsLocalDataSource {
 
       return hasSettings;
     } catch (e, stackTrace) {
-      AppLogger.e('SettingsLocalDataSource: Error checking if settings exist',
-          e, stackTrace);
+      AppLogger.e(
+        'SettingsLocalDataSource: Error checking if settings exist',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -107,7 +119,8 @@ class SettingsLocalDataSource {
   Future<String?> getSettingValue(String key) async {
     try {
       AppLogger.d(
-          'SettingsLocalDataSource: Getting setting value for key: $key');
+        'SettingsLocalDataSource: Getting setting value for key: $key',
+      );
 
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -123,12 +136,16 @@ class SettingsLocalDataSource {
 
       final value = maps.first[key] as String?;
       AppLogger.d(
-          'SettingsLocalDataSource: Retrieved value for key $key: $value');
+        'SettingsLocalDataSource: Retrieved value for key $key: $value',
+      );
 
       return value;
     } catch (e, stackTrace) {
-      AppLogger.e('SettingsLocalDataSource: Error getting setting value', e,
-          stackTrace);
+      AppLogger.e(
+        'SettingsLocalDataSource: Error getting setting value',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -137,7 +154,8 @@ class SettingsLocalDataSource {
   Future<void> setSettingValue(String key, String value) async {
     try {
       AppLogger.d(
-          'SettingsLocalDataSource: Setting value for key: $key = $value');
+        'SettingsLocalDataSource: Setting value for key: $key = $value',
+      );
 
       final db = await _databaseService.database;
 
@@ -167,10 +185,14 @@ class SettingsLocalDataSource {
       }
 
       AppLogger.d(
-          'SettingsLocalDataSource: Successfully set value for key: $key');
+        'SettingsLocalDataSource: Successfully set value for key: $key',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SettingsLocalDataSource: Error setting value', e, stackTrace);
+        'SettingsLocalDataSource: Error setting value',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

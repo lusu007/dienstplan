@@ -46,9 +46,11 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
   Map<String, DutyType>? _dutyTypes;
   List<Schedule> _getFilteredSchedules() {
     return widget.schedules.where((schedule) {
-      final isActiveConfig = widget.activeConfigName == null ||
+      final isActiveConfig =
+          widget.activeConfigName == null ||
           schedule.configName == widget.activeConfigName;
-      final isSelectedDutyGroup = widget.selectedDutyGroup == null ||
+      final isSelectedDutyGroup =
+          widget.selectedDutyGroup == null ||
           schedule.dutyGroupName == widget.selectedDutyGroup;
       return isActiveConfig && isSelectedDutyGroup;
     }).toList();
@@ -59,18 +61,17 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
       return schedules;
     }
 
-    return List.from(schedules)
-      ..sort((a, b) {
-        final aIndex = widget.dutyTypeOrder!.indexOf(a.dutyTypeId);
-        final bIndex = widget.dutyTypeOrder!.indexOf(b.dutyTypeId);
+    return List.from(schedules)..sort((a, b) {
+      final aIndex = widget.dutyTypeOrder!.indexOf(a.dutyTypeId);
+      final bIndex = widget.dutyTypeOrder!.indexOf(b.dutyTypeId);
 
-        if (aIndex != -1 && bIndex != -1) {
-          return aIndex.compareTo(bIndex);
-        }
-        if (aIndex != -1) return -1;
-        if (bIndex != -1) return 1;
-        return a.dutyTypeId.compareTo(b.dutyTypeId);
-      });
+      if (aIndex != -1 && bIndex != -1) {
+        return aIndex.compareTo(bIndex);
+      }
+      if (aIndex != -1) return -1;
+      if (bIndex != -1) return 1;
+      return a.dutyTypeId.compareTo(b.dutyTypeId);
+    });
   }
 
   void _onDutyGroupSelected(String? dutyGroupId) {
@@ -80,9 +81,10 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
   @override
   Widget build(BuildContext context) {
     // Read partner config and color via Riverpod
-    final scheduleState = ProviderScope.containerOf(context, listen: true)
-        .read(scheduleCoordinatorProvider)
-        .value;
+    final scheduleState = ProviderScope.containerOf(
+      context,
+      listen: true,
+    ).read(scheduleCoordinatorProvider).value;
     _partnerConfigName = scheduleState?.partnerConfigName;
     _partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
     _partnerDutyGroupName = scheduleState?.partnerDutyGroup;
@@ -128,23 +130,25 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
         final schedule = schedules[index];
         final bool matchesPartnerConfig =
             (_partnerConfigName != null && _partnerConfigName!.isNotEmpty)
-                ? schedule.configName == _partnerConfigName
-                : (widget.activeConfigName == null ||
-                    schedule.configName == widget.activeConfigName);
+            ? schedule.configName == _partnerConfigName
+            : (widget.activeConfigName == null ||
+                  schedule.configName == widget.activeConfigName);
         final bool matchesPartnerGroup =
             (_partnerDutyGroupName != null && _partnerDutyGroupName!.isNotEmpty)
-                ? schedule.dutyGroupName == _partnerDutyGroupName
-                : false;
+            ? schedule.dutyGroupName == _partnerDutyGroupName
+            : false;
         final bool isPartner = matchesPartnerConfig && matchesPartnerGroup;
         final bool isSelected =
             widget.selectedDutyGroup == schedule.dutyGroupName;
         final Color primaryColor = Theme.of(context).colorScheme.primary;
         final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
-        final bool isOwn = (_myDutyGroupName != null &&
+        final bool isOwn =
+            (_myDutyGroupName != null &&
             _myDutyGroupName!.isNotEmpty &&
             schedule.dutyGroupName == _myDutyGroupName);
-        final Color baseColor =
-            isPartner ? partnerColor : (isOwn ? myAccentColor : outlineColor);
+        final Color baseColor = isPartner
+            ? partnerColor
+            : (isOwn ? myAccentColor : outlineColor);
         final Color borderColor = isSelected ? primaryColor : baseColor;
         final Color badgeColor = baseColor;
         // isSelected moved up before use
@@ -155,12 +159,15 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
             color: Colors.transparent,
             child: InkWell(
               onTap: () => _onDutyGroupSelected(
-                  isSelected ? null : schedule.dutyGroupName),
+                isSelected ? null : schedule.dutyGroupName,
+              ),
               borderRadius: BorderRadius.circular(16),
               child: Container(
                 height: 72,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? primaryColor.withAlpha(kAlphaCardSelected)
@@ -194,14 +201,13 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
                           Expanded(
                             child: Text(
                               schedule.service,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
+                              style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -209,15 +215,13 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
                           const SizedBox(width: 8),
                           Text(
                             schedule.dutyGroupName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                                 ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -286,8 +290,9 @@ class _DutyScheduleListState extends State<DutyScheduleList> {
                   height: 12,
                   width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),

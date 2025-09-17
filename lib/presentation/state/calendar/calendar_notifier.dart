@@ -85,10 +85,9 @@ class CalendarNotifier extends _$CalendarNotifier {
       // Clear loading state
       state = AsyncData((state.value ?? current).copyWith(isLoading: false));
     } catch (e) {
-      state = AsyncData(current.copyWith(
-        error: 'Failed to go to today',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(error: 'Failed to go to today', isLoading: false),
+      );
     }
   }
 

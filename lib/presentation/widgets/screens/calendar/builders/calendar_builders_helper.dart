@@ -228,11 +228,6 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
     // Watch the provider to trigger rebuilds when state changes
     final state = ref.watch(scheduleCoordinatorProvider).value;
 
-    // Debug logging to see if this component is being called
-    AppLogger.d(
-      'ReactiveCalendarDay: Building for ${widget.day.day}/${widget.day.month}/${widget.day.year}',
-    );
-
     // Calculate duty abbreviation directly on each build to ensure it's always current
     final schedules = state?.schedules ?? const [];
     final activeConfig = state?.activeConfigName;

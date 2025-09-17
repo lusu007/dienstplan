@@ -31,9 +31,9 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
           children: [
             Text(
               l10n.filterByPoliceAuthority,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const Spacer(),
             TextButton(
@@ -60,11 +60,13 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            ...availableAuthorities.map((authority) => _buildFilterChip(
-                  context,
-                  authority,
-                  selectedAuthorities.contains(authority),
-                )),
+            ...availableAuthorities.map(
+              (authority) => _buildFilterChip(
+                context,
+                authority,
+                selectedAuthorities.contains(authority),
+              ),
+            ),
           ],
         ),
       ],
@@ -90,10 +92,7 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
       backgroundColor: Colors.transparent,
       selectedColor: AppColors.primary,
       checkmarkColor: Colors.white,
-      side: const BorderSide(
-        color: AppColors.primary,
-        width: 1.5,
-      ),
+      side: const BorderSide(color: AppColors.primary, width: 1.5),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),

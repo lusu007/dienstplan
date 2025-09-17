@@ -14,8 +14,10 @@ class SchoolHolidaysDao {
     required int year,
   }) async {
     try {
-      AppLogger.d('SchoolHolidaysDao: Getting holidays for $stateCode, year $year');
-      
+      AppLogger.d(
+        'SchoolHolidaysDao: Getting holidays for $stateCode, year $year',
+      );
+
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
         'school_holidays',
@@ -40,8 +42,10 @@ class SchoolHolidaysDao {
     required DateTime endDate,
   }) async {
     try {
-      AppLogger.d('SchoolHolidaysDao: Getting holidays in range $startDate to $endDate for $stateCode');
-      
+      AppLogger.d(
+        'SchoolHolidaysDao: Getting holidays in range $startDate to $endDate for $stateCode',
+      );
+
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
         'school_holidays',
@@ -55,10 +59,16 @@ class SchoolHolidaysDao {
       );
 
       final holidays = maps.map((map) => SchoolHoliday.fromMap(map)).toList();
-      AppLogger.d('SchoolHolidaysDao: Retrieved ${holidays.length} holidays in range');
+      AppLogger.d(
+        'SchoolHolidaysDao: Retrieved ${holidays.length} holidays in range',
+      );
       return holidays;
     } catch (e, stackTrace) {
-      AppLogger.e('SchoolHolidaysDao: Error getting holidays in range', e, stackTrace);
+      AppLogger.e(
+        'SchoolHolidaysDao: Error getting holidays in range',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -70,8 +80,10 @@ class SchoolHolidaysDao {
     required List<SchoolHoliday> holidays,
   }) async {
     try {
-      AppLogger.d('SchoolHolidaysDao: Saving ${holidays.length} holidays for $stateCode, year $year');
-      
+      AppLogger.d(
+        'SchoolHolidaysDao: Saving ${holidays.length} holidays for $stateCode, year $year',
+      );
+
       final db = await _databaseService.database;
       final now = DateTime.now().millisecondsSinceEpoch;
 
@@ -85,19 +97,17 @@ class SchoolHolidaysDao {
 
         // Insert new holidays
         for (final holiday in holidays) {
-          await txn.insert(
-            'school_holidays',
-            {
-              ...holiday.toMap(),
-              'created_at': now,
-              'updated_at': now,
-            },
-            conflictAlgorithm: ConflictAlgorithm.replace,
-          );
+          await txn.insert('school_holidays', {
+            ...holiday.toMap(),
+            'created_at': now,
+            'updated_at': now,
+          }, conflictAlgorithm: ConflictAlgorithm.replace);
         }
       });
 
-      AppLogger.d('SchoolHolidaysDao: Successfully saved ${holidays.length} holidays');
+      AppLogger.d(
+        'SchoolHolidaysDao: Successfully saved ${holidays.length} holidays',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('SchoolHolidaysDao: Error saving holidays', e, stackTrace);
       rethrow;
@@ -108,10 +118,10 @@ class SchoolHolidaysDao {
   Future<void> clearAllHolidays() async {
     try {
       AppLogger.d('SchoolHolidaysDao: Clearing all holidays');
-      
+
       final db = await _databaseService.database;
       await db.delete('school_holidays');
-      
+
       AppLogger.d('SchoolHolidaysDao: Successfully cleared all holidays');
     } catch (e, stackTrace) {
       AppLogger.e('SchoolHolidaysDao: Error clearing holidays', e, stackTrace);
@@ -125,15 +135,17 @@ class SchoolHolidaysDao {
     required int year,
   }) async {
     try {
-      AppLogger.d('SchoolHolidaysDao: Clearing holidays for $stateCode, year $year');
-      
+      AppLogger.d(
+        'SchoolHolidaysDao: Clearing holidays for $stateCode, year $year',
+      );
+
       final db = await _databaseService.database;
       await db.delete(
         'school_holidays',
         where: 'state_code = ? AND year = ?',
         whereArgs: [stateCode, year],
       );
-      
+
       AppLogger.d('SchoolHolidaysDao: Successfully cleared holidays');
     } catch (e, stackTrace) {
       AppLogger.e('SchoolHolidaysDao: Error clearing holidays', e, stackTrace);
@@ -163,7 +175,11 @@ class SchoolHolidaysDao {
       }
       return null;
     } catch (e, stackTrace) {
-      AppLogger.e('SchoolHolidaysDao: Error getting last update time', e, stackTrace);
+      AppLogger.e(
+        'SchoolHolidaysDao: Error getting last update time',
+        e,
+        stackTrace,
+      );
       return null;
     }
   }

@@ -68,28 +68,42 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                     _buildSection('App Information', [
                       _buildInfoRow('App Name', _packageInfo?.appName ?? 'N/A'),
                       _buildInfoRow(
-                          'Package Name', _packageInfo?.packageName ?? 'N/A'),
+                        'Package Name',
+                        _packageInfo?.packageName ?? 'N/A',
+                      ),
                       _buildInfoRow('Version', _packageInfo?.version ?? 'N/A'),
                       _buildInfoRow(
-                          'Build Number', _packageInfo?.buildNumber ?? 'N/A'),
-                      _buildInfoRow('Full Version',
-                          '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}'),
+                        'Build Number',
+                        _packageInfo?.buildNumber ?? 'N/A',
+                      ),
+                      _buildInfoRow(
+                        'Full Version',
+                        '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}',
+                      ),
                     ]),
                     const SizedBox(height: 24),
                     _buildSection('App-Specific Info', [
                       _buildInfoRow('Active Schedule', _getActiveSchedule()),
                       _buildInfoRow(
-                          'Loaded Schedules', _getLoadedSchedulesCount()),
+                        'Loaded Schedules',
+                        _getLoadedSchedulesCount(),
+                      ),
                       _buildInfoRow(
-                          'Preferred Duty Group', _getPreferredDutyGroup()),
+                        'Preferred Duty Group',
+                        _getPreferredDutyGroup(),
+                      ),
                       _buildInfoRow(
-                          'Calendar Format', _getCalendarFormat(l10n)),
+                        'Calendar Format',
+                        _getCalendarFormat(l10n),
+                      ),
                       _buildInfoRow('Language', _getCurrentLanguage()),
                     ]),
                     const SizedBox(height: 24),
                     _buildSection('Database & Storage', [
                       _buildInfoRow(
-                          'Schedule Configs', _getScheduleConfigsCount()),
+                        'Schedule Configs',
+                        _getScheduleConfigsCount(),
+                      ),
                       _buildInfoRow('Cache Status', _getCacheStatus()),
                     ]),
                     const SizedBox(height: 24),
@@ -133,9 +147,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              children: children,
-            ),
+            child: Column(children: children),
           ),
         ),
       ],

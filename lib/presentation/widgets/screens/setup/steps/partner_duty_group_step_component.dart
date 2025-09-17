@@ -39,16 +39,19 @@ class PartnerDutyGroupStepComponent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: dutyGroups
-                  .map((group) => DutyGroupCard(
-                        dutyGroupName: group.name,
-                        isSelected: selectedPartnerDutyGroup == group.name,
-                        onTap: () {
-                          onPartnerDutyGroupChanged(
-                              selectedPartnerDutyGroup == group.name
-                                  ? null
-                                  : group.name);
-                        },
-                      ))
+                  .map(
+                    (group) => DutyGroupCard(
+                      dutyGroupName: group.name,
+                      isSelected: selectedPartnerDutyGroup == group.name,
+                      onTap: () {
+                        onPartnerDutyGroupChanged(
+                          selectedPartnerDutyGroup == group.name
+                              ? null
+                              : group.name,
+                        );
+                      },
+                    ),
+                  )
                   .toList(),
             ),
           ),

@@ -47,15 +47,17 @@ class DutyGroupStepComponent extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: dutyGroups
-                  .map((group) => DutyGroupCard(
-                        dutyGroupName: group.name,
-                        isSelected: selectedDutyGroup == group.name,
-                        onTap: () {
-                          onDutyGroupChanged(selectedDutyGroup == group.name
-                              ? null
-                              : group.name);
-                        },
-                      ))
+                  .map(
+                    (group) => DutyGroupCard(
+                      dutyGroupName: group.name,
+                      isSelected: selectedDutyGroup == group.name,
+                      onTap: () {
+                        onDutyGroupChanged(
+                          selectedDutyGroup == group.name ? null : group.name,
+                        );
+                      },
+                    ),
+                  )
                   .toList(),
             ),
           ),

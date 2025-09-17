@@ -51,8 +51,10 @@ class DutyItemList extends StatelessWidget {
           if (showFilterStatus)
             Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               child: Text(
                 selectedDutyGroupName != null
                     ? '${l10n.filteredBy}: $selectedDutyGroupName'
@@ -69,8 +71,10 @@ class DutyItemList extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               controller: scrollController,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 0.0,
+              ),
               itemCount: schedules.length,
               itemBuilder: (context, index) {
                 try {
@@ -82,7 +86,7 @@ class DutyItemList extends StatelessWidget {
                     dutyGroupName,
                     schedule,
                     [
-                      schedule
+                      schedule,
                     ], // Pass single schedule instead of grouped schedules
                     false, // No selection for now
                     mainColor,
@@ -101,10 +105,7 @@ class DutyItemList extends StatelessWidget {
       return Center(
         child: Text(
           'Error loading duties',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.red.shade600,
-          ),
+          style: TextStyle(fontSize: 16, color: Colors.red.shade600),
         ),
       );
     }
@@ -161,10 +162,9 @@ class DutyItemList extends StatelessWidget {
                       ]
                     : [
                         BoxShadow(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .shadow
-                              .withAlpha(kAlphaShadowWeak),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.shadow.withAlpha(kAlphaShadowWeak),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -194,28 +194,27 @@ class DutyItemList extends StatelessWidget {
                         Expanded(
                           child: Text(
                             dutyTypeName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                 ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           dutyGroupName,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                         ),
                       ],
                     ),
@@ -240,10 +239,7 @@ class DutyItemList extends StatelessWidget {
           ),
           child: Text(
             'Error loading duty',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.red.shade600,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.red.shade600),
           ),
         ),
       );
@@ -256,8 +252,10 @@ class DutyItemList extends StatelessWidget {
       if (dutyTypes != null && dutyTypes!.containsKey(dutyTypeId)) {
         final dutyType = dutyTypes![dutyTypeId];
         if (dutyType?.icon != null) {
-          return IconMapper.getIcon(dutyType!.icon!,
-              defaultIcon: Icons.schedule);
+          return IconMapper.getIcon(
+            dutyType!.icon!,
+            defaultIcon: Icons.schedule,
+          );
         }
       }
 

@@ -12,8 +12,10 @@ class SettingsDao {
     try {
       AppLogger.i('SettingsDao: Loading settings');
       final Database db = await _databaseService.database;
-      final List<Map<String, Object?>> rows =
-          await db.query('settings', limit: 1);
+      final List<Map<String, Object?>> rows = await db.query(
+        'settings',
+        limit: 1,
+      );
       if (rows.isEmpty) {
         return null;
       }
@@ -33,8 +35,11 @@ class SettingsDao {
         ..addAll(<String, Object?>{'created_at': now, 'updated_at': now});
       await db.transaction((Transaction txn) async {
         await txn.delete('settings');
-        await txn.insert('settings', values,
-            conflictAlgorithm: ConflictAlgorithm.replace);
+        await txn.insert(
+          'settings',
+          values,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
       });
     } catch (e, stackTrace) {
       AppLogger.e('SettingsDao: Error saving settings', e, stackTrace);
@@ -43,7 +48,8 @@ class SettingsDao {
       if (e.toString().contains('my_accent_color') &&
           e.toString().contains('no column named')) {
         AppLogger.w(
-            'SettingsDao: my_accent_color column missing - this should be fixed by migration');
+          'SettingsDao: my_accent_color column missing - this should be fixed by migration',
+        );
         // Don't rethrow - let the app continue without saving this setting
         return;
       }

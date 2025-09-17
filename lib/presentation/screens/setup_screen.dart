@@ -92,8 +92,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 text: l10n.continueButton,
                 onPressed:
                     state.isSetupCompleted || state.selectedConfig == null
-                        ? null
-                        : _nextStepWithScroll,
+                    ? null
+                    : _nextStepWithScroll,
                 mainColor: AppColors.primary,
               ),
             ),
@@ -149,7 +149,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             Expanded(
               child: ActionButton(
                 text: l10n.continueButton,
-                onPressed: state.isSetupCompleted ||
+                onPressed:
+                    state.isSetupCompleted ||
                         state.selectedPartnerDutyGroup == null
                     ? null
                     : _nextStepWithScroll,
@@ -293,17 +294,16 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                       children: [
                         StepIndicator(
                           currentStep: setupState.currentStep,
-                          totalSteps:
-                              setupState.selectedPartnerConfig != null ? 5 : 4,
+                          totalSteps: setupState.selectedPartnerConfig != null
+                              ? 5
+                              : 4,
                           activeColor: AppColors.primary,
                           halfSteps: setupState.selectedPartnerConfig != null
                               ? [3, 4]
                               : null,
                         ),
                         const SizedBox(height: 24),
-                        Expanded(
-                          child: _buildCurrentStepContent(setupState),
-                        ),
+                        Expanded(child: _buildCurrentStepContent(setupState)),
                         const SizedBox(height: 24),
                         _buildStepButtons(setupState),
                       ],

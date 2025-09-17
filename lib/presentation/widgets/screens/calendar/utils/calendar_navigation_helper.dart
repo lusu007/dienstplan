@@ -2,7 +2,9 @@ import 'package:table_calendar/table_calendar.dart';
 
 class CalendarNavigationHelper {
   static DateTime getPreviousPeriod(
-      DateTime currentDate, CalendarFormat format) {
+    DateTime currentDate,
+    CalendarFormat format,
+  ) {
     switch (format) {
       case CalendarFormat.month:
         // For month view, show the previous month but keep the same selected date
@@ -12,8 +14,9 @@ class CalendarNavigationHelper {
 
         // Handle year transition
         final actualYear = previousMonth <= 0 ? previousYear - 1 : previousYear;
-        final actualMonth =
-            previousMonth <= 0 ? 12 + previousMonth : previousMonth;
+        final actualMonth = previousMonth <= 0
+            ? 12 + previousMonth
+            : previousMonth;
 
         // Return the first day of the previous month as focusedDay
         return DateTime(actualYear, actualMonth, 1);

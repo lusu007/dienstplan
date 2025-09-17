@@ -44,10 +44,7 @@ class GetSchoolHolidaysUseCase {
       );
     }
 
-    return _repository.getSchoolHolidays(
-      stateCode: stateCode,
-      year: year,
-    );
+    return _repository.getSchoolHolidays(stateCode: stateCode, year: year);
   }
 
   /// Refresh holidays from the API
@@ -63,10 +60,7 @@ class GetSchoolHolidaysUseCase {
       );
     }
 
-    return _repository.refreshHolidays(
-      stateCode: stateCode,
-      year: year,
-    );
+    return _repository.refreshHolidays(stateCode: stateCode, year: year);
   }
 
   /// Clear all cached holidays

@@ -64,10 +64,9 @@ class DutyItemUiBuilder {
                     ]
                   : [
                       BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .shadow
-                            .withAlpha(kAlphaShadowWeak),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.shadow.withAlpha(kAlphaShadowWeak),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -82,11 +81,7 @@ class DutyItemUiBuilder {
                     color: mainColor.withAlpha(kAlphaBadge),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    icon,
-                    color: mainColor,
-                    size: 24,
-                  ),
+                  child: Icon(icon, color: mainColor, size: 24),
                 ),
                 const SizedBox(width: 16),
 
@@ -97,9 +92,7 @@ class DutyItemUiBuilder {
                       Expanded(
                         child: Text(
                           serviceName,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
+                          style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -112,12 +105,10 @@ class DutyItemUiBuilder {
                       Text(
                         schedule.dutyGroupName,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -132,7 +123,9 @@ class DutyItemUiBuilder {
   }
 
   static IconData getDutyTypeIcon(
-      String serviceId, Map<String, DutyType>? dutyTypes) {
+    String serviceId,
+    Map<String, DutyType>? dutyTypes,
+  ) {
     final dutyType = dutyTypes?[serviceId];
 
     // Use the icon from the duty type if available
@@ -145,8 +138,6 @@ class DutyItemUiBuilder {
   }
 
   static Widget buildEmptyState(String noServicesText) {
-    return Center(
-      child: Text(noServicesText),
-    );
+    return Center(child: Text(noServicesText));
   }
 }

@@ -33,4 +33,3 @@ abstract interface class SchoolHolidayRepository {
     required int year,
   });
 }
-

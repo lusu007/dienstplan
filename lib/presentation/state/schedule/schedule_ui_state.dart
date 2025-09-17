@@ -31,15 +31,15 @@ abstract class ScheduleUiState with _$ScheduleUiState {
   const ScheduleUiState._();
 
   factory ScheduleUiState.initial() => ScheduleUiState(
-        isLoading: false,
-        selectedDay: DateTime.now(),
-        focusedDay: DateTime.now(),
-        calendarFormat: CalendarFormat.month,
-        activeConfigName: '',
-        preferredDutyGroup: '',
-        partnerConfigName: null,
-        partnerDutyGroup: null,
-        partnerAccentColorValue: null,
-        myAccentColorValue: null,
-      );
+    isLoading: false,
+    selectedDay: DateTime.now(),
+    focusedDay: DateTime.now(),
+    calendarFormat: CalendarFormat.month,
+    activeConfigName: '',
+    preferredDutyGroup: '',
+    partnerConfigName: null,
+    partnerDutyGroup: null,
+    partnerAccentColorValue: null,
+    myAccentColorValue: null,
+  );
 }

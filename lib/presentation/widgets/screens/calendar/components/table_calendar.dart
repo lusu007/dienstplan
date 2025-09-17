@@ -87,24 +87,35 @@ class CalendarTable extends ConsumerWidget {
     String? partnerDutyGroup,
   ) {
     // Include previous, current and next months so "out days" changes also trigger rebuilds
-    final DateTime hashStartMonth =
-        DateTime(focusedDay.year, focusedDay.month - 1, 1);
-    final DateTime hashEndMonth =
-        DateTime(focusedDay.year, focusedDay.month + 2, 0);
+    final DateTime hashStartMonth = DateTime(
+      focusedDay.year,
+      focusedDay.month - 1,
+      1,
+    );
+    final DateTime hashEndMonth = DateTime(
+      focusedDay.year,
+      focusedDay.month + 2,
+      0,
+    );
 
     final List<Schedule> visibleSchedulesForHash = schedules
-        .where((schedule) =>
-            schedule.date
-                .isAfter(hashStartMonth.subtract(const Duration(days: 1))) &&
-            schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))))
+        .where(
+          (schedule) =>
+              schedule.date.isAfter(
+                hashStartMonth.subtract(const Duration(days: 1)),
+              ) &&
+              schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))),
+        )
         .toList();
 
     visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
 
     // Build a compact hash of visible data to force TableCalendar to rebuild
     final String visibleSignature = visibleSchedulesForHash
-        .map((s) =>
-            '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}')
+        .map(
+          (s) =>
+              '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}',
+        )
         .join(';');
 
     return Object.hash(

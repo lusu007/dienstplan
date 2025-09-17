@@ -2,10 +2,7 @@ class DateRange {
   final DateTime start;
   final DateTime end;
 
-  const DateRange({
-    required this.start,
-    required this.end,
-  });
+  const DateRange({required this.start, required this.end});
 
   bool containsDate(DateTime date) {
     final DateTime inclusiveStart = start.subtract(const Duration(days: 1));

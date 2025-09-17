@@ -30,10 +30,7 @@ class ToggleCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: scheme.outlineVariant,
-          width: 1,
-        ),
+        border: Border.all(color: scheme.outlineVariant, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -62,8 +59,9 @@ class ToggleCard extends StatelessWidget {
                             ? Text(
                                 subtitle!,
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontSize: 15,
-                                    color: theme.colorScheme.onSurfaceVariant),
+                                  fontSize: 15,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               )
                             : const SizedBox.shrink(),
                       ),

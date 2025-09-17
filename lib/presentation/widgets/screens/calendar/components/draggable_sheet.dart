@@ -44,8 +44,9 @@ class _DraggableSheetState extends ConsumerState<DraggableSheet>
         final snapPoints = _getSnapPoints(currentFormat);
         final snapMinHeight = snapPoints.first;
         final initialHeight = snapPoints.first;
-        final maxHeight =
-            snapPoints.length > 1 ? snapPoints[1] : snapPoints.first;
+        final maxHeight = snapPoints.length > 1
+            ? snapPoints[1]
+            : snapPoints.first;
 
         return RepaintBoundary(
           child: CalendarViewUiBuilder.buildDraggableSheetContainer(
@@ -60,13 +61,9 @@ class _DraggableSheetState extends ConsumerState<DraggableSheet>
             },
             child: Column(
               children: [
-                _ServicesSectionWrapper(
-                  pageManager: widget.pageManager,
-                ),
+                _ServicesSectionWrapper(pageManager: widget.pageManager),
                 // Filter status text (always visible, never animated)
-                CalendarViewUiBuilder.buildFilterStatusText(
-                  context: context,
-                ),
+                CalendarViewUiBuilder.buildFilterStatusText(context: context),
                 Expanded(
                   child: SizedBox(
                     height: 250.0, // Fixed height to prevent overflow
@@ -109,9 +106,7 @@ class _DraggableSheetState extends ConsumerState<DraggableSheet>
 class _ServicesSectionWrapper extends ConsumerStatefulWidget {
   final CalendarViewController pageManager;
 
-  const _ServicesSectionWrapper({
-    required this.pageManager,
-  });
+  const _ServicesSectionWrapper({required this.pageManager});
 
   @override
   ConsumerState<_ServicesSectionWrapper> createState() =>

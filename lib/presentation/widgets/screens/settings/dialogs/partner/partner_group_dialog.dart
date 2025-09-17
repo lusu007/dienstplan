@@ -50,23 +50,25 @@ class PartnerGroupDialog {
                         selectedConfigName.isEmpty)
                       Text(l10n.noDutySchedule)
                     else ...[
-                      ...groupsForSelected.map((group) => SelectionCard(
-                            title: group,
-                            isSelected: state?.partnerDutyGroup == group,
-                            onTap: () async {
-                              // Perform operations first
-                              await notifier.setPartnerDutyGroup(group);
-                              if (initialFocused != null) {
-                                await notifier.setFocusedDay(initialFocused);
-                              }
+                      ...groupsForSelected.map(
+                        (group) => SelectionCard(
+                          title: group,
+                          isSelected: state?.partnerDutyGroup == group,
+                          onTap: () async {
+                            // Perform operations first
+                            await notifier.setPartnerDutyGroup(group);
+                            if (initialFocused != null) {
+                              await notifier.setFocusedDay(initialFocused);
+                            }
 
-                              // Close dialog after operations are complete
-                              if (context.mounted) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            useDialogStyle: true,
-                          )),
+                            // Close dialog after operations are complete
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          useDialogStyle: true,
+                        ),
+                      ),
                       SelectionCard(
                         title: l10n.noPartnerGroup,
                         isSelected: (state?.partnerDutyGroup ?? '').isEmpty,

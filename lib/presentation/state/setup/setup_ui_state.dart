@@ -27,14 +27,14 @@ abstract class SetupUiState with _$SetupUiState {
   const SetupUiState._();
 
   factory SetupUiState.initial() => const SetupUiState(
-        isLoading: true,
-        isGeneratingSchedules: false,
-        isSetupCompleted: false,
-        currentStep: 1,
-        selectedTheme: ThemePreference.system,
-        configs: [],
-        selectedPoliceAuthorities: {},
-        filteredConfigs: [],
-        availablePoliceAuthorities: {},
-      );
+    isLoading: true,
+    isGeneratingSchedules: false,
+    isSetupCompleted: false,
+    currentStep: 1,
+    selectedTheme: ThemePreference.system,
+    configs: [],
+    selectedPoliceAuthorities: {},
+    filteredConfigs: [],
+    availablePoliceAuthorities: {},
+  );
 }

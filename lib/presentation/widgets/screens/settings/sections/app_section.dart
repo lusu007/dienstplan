@@ -37,8 +37,8 @@ class AppSection extends ConsumerWidget {
           title: l10n.language,
           subtitle:
               (languageService?.currentLocale.languageCode ?? 'de') == 'de'
-                  ? l10n.german
-                  : l10n.english,
+              ? l10n.german
+              : l10n.english,
           onTap: () => LanguageDialog.show(context),
         ),
         NavigationCard(

@@ -15,9 +15,11 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   final DutyTypesDao _dutyTypesDao;
   final ExceptionMapper _exceptionMapper;
 
-  ScheduleRepositoryImpl(this._schedulesDao, this._dutyTypesDao,
-      {ExceptionMapper? exceptionMapper})
-      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  ScheduleRepositoryImpl(
+    this._schedulesDao,
+    this._dutyTypesDao, {
+    ExceptionMapper? exceptionMapper,
+  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   @override
   Future<List<Schedule>> getSchedules() async {
@@ -26,7 +28,8 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
       final dataSchedules = await _schedulesDao.loadSchedules();
       final schedules = dataSchedules.map(mapper.toDomainSchedule).toList();
       AppLogger.i(
-          'ScheduleRepository: Retrieved ${schedules.length} schedules');
+        'ScheduleRepository: Retrieved ${schedules.length} schedules',
+      );
       return schedules;
     } catch (e, stackTrace) {
       AppLogger.e('ScheduleRepository: Error getting schedules', e, stackTrace);
@@ -53,7 +56,8 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   }) async {
     try {
       AppLogger.i(
-          'ScheduleRepository: Getting schedules for date range: $start to $end${configName != null ? ' for config: $configName' : ''}');
+        'ScheduleRepository: Getting schedules for date range: $start to $end${configName != null ? ' for config: $configName' : ''}',
+      );
       final dataSchedules = await _schedulesDao.loadSchedulesForRange(
         startDate: start,
         endDate: end,
@@ -61,11 +65,15 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
       );
       final schedules = dataSchedules.map(mapper.toDomainSchedule).toList();
       AppLogger.i(
-          'ScheduleRepository: Retrieved ${schedules.length} schedules for date range');
+        'ScheduleRepository: Retrieved ${schedules.length} schedules for date range',
+      );
       return schedules;
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleRepository: Error getting schedules for date range',
-          e, stackTrace);
+      AppLogger.e(
+        'ScheduleRepository: Error getting schedules for date range',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -121,7 +129,10 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
       AppLogger.i('ScheduleRepository: Successfully cleared all schedules');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleRepository: Error clearing schedules', e, stackTrace);
+        'ScheduleRepository: Error clearing schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -141,20 +152,26 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   Future<void> deleteSchedulesByConfigName(String configName) async {
     try {
       AppLogger.i(
-          'ScheduleRepository: Deleting schedules for config: $configName');
+        'ScheduleRepository: Deleting schedules for config: $configName',
+      );
       await _schedulesDao.deleteSchedulesByConfigName(configName);
       AppLogger.i(
-          'ScheduleRepository: Successfully deleted schedules for config: $configName');
+        'ScheduleRepository: Successfully deleted schedules for config: $configName',
+      );
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleRepository: Error deleting schedules for config', e,
-          stackTrace);
+      AppLogger.e(
+        'ScheduleRepository: Error deleting schedules for config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
 
   @override
   Future<Result<void>> deleteSchedulesByConfigNameSafe(
-      String configName) async {
+    String configName,
+  ) async {
     try {
       await deleteSchedulesByConfigName(configName);
       return Result.success<void>(null);
@@ -168,28 +185,33 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   Future<List<DutyType>> getDutyTypes({required String configName}) async {
     try {
       AppLogger.i(
-          'ScheduleRepository: Getting duty types for config: $configName');
+        'ScheduleRepository: Getting duty types for config: $configName',
+      );
       final dataDutyTypesMap = await _dutyTypesDao.loadForConfig(configName);
       final dutyTypes = dataDutyTypesMap.values
-          .map((dt) => DutyType(
-                label: dt.label,
-                isAllDay: dt.isAllDay,
-                icon: dt.icon,
-              ))
+          .map(
+            (dt) =>
+                DutyType(label: dt.label, isAllDay: dt.isAllDay, icon: dt.icon),
+          )
           .toList();
       AppLogger.i(
-          'ScheduleRepository: Retrieved ${dutyTypes.length} duty types');
+        'ScheduleRepository: Retrieved ${dutyTypes.length} duty types',
+      );
       return dutyTypes;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleRepository: Error getting duty types', e, stackTrace);
+        'ScheduleRepository: Error getting duty types',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
 
   @override
-  Future<Result<List<DutyType>>> getDutyTypesSafe(
-      {required String configName}) async {
+  Future<Result<List<DutyType>>> getDutyTypesSafe({
+    required String configName,
+  }) async {
     try {
       final result = await getDutyTypes(configName: configName);
       return Result.success<List<DutyType>>(result);

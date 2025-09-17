@@ -351,7 +351,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
       return result.fold(
         (failure) {
           AppLogger.e(
-            '[DEBUG] SchoolHolidaysNotifier: Failed to load holidays: ${failure.technicalMessage}',
+            'SchoolHolidaysNotifier: Failed to load holidays: ${failure.technicalMessage}',
           );
           return SchoolHolidaysUiState(
             isLoading: false,
@@ -387,9 +387,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
         },
       );
     } catch (e) {
-      AppLogger.e(
-        '[DEBUG] SchoolHolidaysNotifier: Exception loading holidays: $e',
-      );
+      AppLogger.e('SchoolHolidaysNotifier: Exception loading holidays: $e');
       return SchoolHolidaysUiState(
         isLoading: false,
         isRefreshing: false,
@@ -439,7 +437,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
       result.fold(
         (failure) {
           AppLogger.e(
-            '[DEBUG] SchoolHolidaysNotifier: Failed to load holidays: ${failure.technicalMessage}',
+            'SchoolHolidaysNotifier: Failed to load holidays: ${failure.technicalMessage}',
           );
           state = AsyncValue.data(
             safeState.copyWith(
@@ -476,9 +474,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
         },
       );
     } catch (e) {
-      AppLogger.e(
-        '[DEBUG] SchoolHolidaysNotifier: Exception loading holidays: $e',
-      );
+      AppLogger.e('SchoolHolidaysNotifier: Exception loading holidays: $e');
       final safeState = state.value;
       if (safeState != null) {
         state = AsyncValue.data(

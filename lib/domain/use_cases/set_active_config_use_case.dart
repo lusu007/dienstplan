@@ -9,9 +9,10 @@ class SetActiveConfigUseCase {
   final ConfigRepository _configRepository;
   final ExceptionMapper _exceptionMapper;
 
-  SetActiveConfigUseCase(this._configRepository,
-      {ExceptionMapper? exceptionMapper})
-      : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  SetActiveConfigUseCase(
+    this._configRepository, {
+    ExceptionMapper? exceptionMapper,
+  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   Future<void> execute(String configName) async {
     try {
@@ -43,10 +44,14 @@ class SetActiveConfigUseCase {
       await _configRepository.saveConfig(config);
 
       AppLogger.i(
-          'SetActiveConfigUseCase: Active config set successfully: $configName');
+        'SetActiveConfigUseCase: Active config set successfully: $configName',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SetActiveConfigUseCase: Error setting active config', e, stackTrace);
+        'SetActiveConfigUseCase: Error setting active config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -67,30 +72,35 @@ class SetActiveConfigUseCase {
     // Check if config has duty types
     if (config.dutyTypes.isEmpty) {
       throw ArgumentError(
-          'Configuration "${config.name}" must have at least one duty type');
+        'Configuration "${config.name}" must have at least one duty type',
+      );
     }
 
     // Check if config has duty groups
     if (config.dutyGroups.isEmpty) {
       throw ArgumentError(
-          'Configuration "${config.name}" must have at least one duty group');
+        'Configuration "${config.name}" must have at least one duty group',
+      );
     }
 
     // Check if config has rhythms
     if (config.rhythms.isEmpty) {
       throw ArgumentError(
-          'Configuration "${config.name}" must have at least one rhythm');
+        'Configuration "${config.name}" must have at least one rhythm',
+      );
     }
 
     // Validate that all duty groups reference valid rhythms
     for (final dutyGroup in config.dutyGroups) {
       if (!config.rhythms.containsKey(dutyGroup.rhythm)) {
         throw ArgumentError(
-            'Duty group "${dutyGroup.name}" in configuration "${config.name}" references invalid rhythm: ${dutyGroup.rhythm}');
+          'Duty group "${dutyGroup.name}" in configuration "${config.name}" references invalid rhythm: ${dutyGroup.rhythm}',
+        );
       }
     }
 
     AppLogger.d(
-        'SetActiveConfigUseCase: Config validation passed for ${config.name}');
+      'SetActiveConfigUseCase: Config validation passed for ${config.name}',
+    );
   }
 }

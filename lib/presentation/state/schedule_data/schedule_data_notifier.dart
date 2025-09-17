@@ -27,10 +27,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   @override
   Future<ScheduleDataUiState> build() async {
     _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
-    _generateSchedulesUseCase ??=
-        await ref.read(generateSchedulesUseCaseProvider.future);
-    _ensureMonthSchedulesUseCase ??=
-        await ref.read(ensureMonthSchedulesUseCaseProvider.future);
+    _generateSchedulesUseCase ??= await ref.read(
+      generateSchedulesUseCaseProvider.future,
+    );
+    _ensureMonthSchedulesUseCase ??= await ref.read(
+      ensureMonthSchedulesUseCaseProvider.future,
+    );
     _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
@@ -49,15 +51,16 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
       List<Schedule> schedules = [];
       if (activeConfigName != null) {
         final DateTime now = DateTime.now();
-        final DateRange initialRange =
-            _dateRangePolicy!.computeInitialRange(now);
-
-        final schedulesResult =
-            await _getSchedulesUseCase!.executeForDateRangeSafe(
-          startDate: initialRange.start,
-          endDate: initialRange.end,
-          configName: activeConfigName,
+        final DateRange initialRange = _dateRangePolicy!.computeInitialRange(
+          now,
         );
+
+        final schedulesResult = await _getSchedulesUseCase!
+            .executeForDateRangeSafe(
+              startDate: initialRange.start,
+              endDate: initialRange.end,
+              configName: activeConfigName,
+            );
 
         if (schedulesResult.isSuccess) {
           schedules = schedulesResult.value;
@@ -96,12 +99,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
-      final schedulesResult =
-          await _getSchedulesUseCase!.executeForDateRangeSafe(
-        startDate: startDate,
-        endDate: endDate,
-        configName: configName,
-      );
+      final schedulesResult = await _getSchedulesUseCase!
+          .executeForDateRangeSafe(
+            startDate: startDate,
+            endDate: endDate,
+            configName: configName,
+          );
 
       if (schedulesResult.isSuccess) {
         final newSchedules = schedulesResult.value;
@@ -117,23 +120,21 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
           range: range,
         );
 
-        state = AsyncData(current.copyWith(
-          schedules: mergedSchedules,
-          activeConfigName: configName,
-          isLoading: false,
-        ));
+        state = AsyncData(
+          current.copyWith(
+            schedules: mergedSchedules,
+            activeConfigName: configName,
+            isLoading: false,
+          ),
+        );
       } else {
         final message = await _presentFailure(schedulesResult.failure);
-        state = AsyncData(current.copyWith(
-          error: message,
-          isLoading: false,
-        ));
+        state = AsyncData(current.copyWith(error: message, isLoading: false));
       }
     } catch (e) {
-      state = AsyncData(current.copyWith(
-        error: 'Failed to load schedules',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(error: 'Failed to load schedules', isLoading: false),
+      );
     }
   }
 
@@ -161,10 +162,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         configName: configName,
       );
     } catch (e) {
-      state = AsyncData(current.copyWith(
-        error: 'Failed to generate schedules',
-        isLoading: false,
-      ));
+      state = AsyncData(
+        current.copyWith(
+          error: 'Failed to generate schedules',
+          isLoading: false,
+        ),
+      );
     }
   }
 
@@ -190,9 +193,9 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         configName: configName,
       );
     } catch (e) {
-      state = AsyncData(current.copyWith(
-        error: 'Failed to ensure month schedules',
-      ));
+      state = AsyncData(
+        current.copyWith(error: 'Failed to ensure month schedules'),
+      );
     }
   }
 

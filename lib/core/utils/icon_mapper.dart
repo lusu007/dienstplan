@@ -98,13 +98,15 @@ class IconMapper {
     'taxi': Icons.local_taxi,
     'boat': Icons.directions_boat,
     'ship': Icons.directions_boat,
-    'plane': Icons.flight
+    'plane': Icons.flight,
   };
 
   /// Maps an icon name string to a Flutter IconData
   /// Returns a default icon if the name is not found
-  static IconData getIcon(String? iconName,
-      {IconData defaultIcon = Icons.schedule}) {
+  static IconData getIcon(
+    String? iconName, {
+    IconData defaultIcon = Icons.schedule,
+  }) {
     if (iconName == null || iconName.isEmpty) {
       return defaultIcon;
     }

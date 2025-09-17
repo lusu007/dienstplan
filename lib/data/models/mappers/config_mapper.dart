@@ -10,11 +10,13 @@ domain.DutyScheduleConfig toDomainConfig(data_dsc.DutyScheduleConfig input) {
   return domain.DutyScheduleConfig(
     version: input.version,
     meta: toDomainMeta(input.meta),
-    dutyTypes: input.dutyTypes
-        .map((key, value) => MapEntry(key, toDomainDutyType(value))),
+    dutyTypes: input.dutyTypes.map(
+      (key, value) => MapEntry(key, toDomainDutyType(value)),
+    ),
     dutyTypeOrder: input.dutyTypeOrder,
-    rhythms:
-        input.rhythms.map((key, value) => MapEntry(key, toDomainRhythm(value))),
+    rhythms: input.rhythms.map(
+      (key, value) => MapEntry(key, toDomainRhythm(value)),
+    ),
     dutyGroups: input.dutyGroups.map(toDomainDutyGroup).toList(),
   );
 }
@@ -23,11 +25,13 @@ data_dsc.DutyScheduleConfig toDataConfig(domain.DutyScheduleConfig input) {
   return data_dsc.DutyScheduleConfig(
     version: input.version,
     meta: toDataMeta(input.meta),
-    dutyTypes: input.dutyTypes
-        .map((key, value) => MapEntry(key, toDataDutyType(value))),
+    dutyTypes: input.dutyTypes.map(
+      (key, value) => MapEntry(key, toDataDutyType(value)),
+    ),
     dutyTypeOrder: input.dutyTypeOrder,
-    rhythms:
-        input.rhythms.map((key, value) => MapEntry(key, toDataRhythm(value))),
+    rhythms: input.rhythms.map(
+      (key, value) => MapEntry(key, toDataRhythm(value)),
+    ),
     dutyGroups: input.dutyGroups.map(toDataDutyGroup).toList(),
   );
 }

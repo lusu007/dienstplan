@@ -5,10 +5,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 class DutyScheduleHeader extends StatelessWidget {
   final DateTime? selectedDay;
 
-  const DutyScheduleHeader({
-    super.key,
-    required this.selectedDay,
-  });
+  const DutyScheduleHeader({super.key, required this.selectedDay});
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +38,11 @@ class DutyScheduleHeader extends StatelessWidget {
           Text(
             selectedDay != null
                 ? l10n.servicesOnDate(
-                    DateFormat('dd.MM.yyyy').format(selectedDay!))
+                    DateFormat('dd.MM.yyyy').format(selectedDay!),
+                  )
                 : l10n.noServicesForDay,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
+            style: const TextStyle(color: Colors.white),
           ),
         ],
       ),

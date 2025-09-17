@@ -41,13 +41,13 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _heightAnimation = Tween<double>(
-      begin: _currentHeight,
-      end: _currentHeight,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _heightAnimation = Tween<double>(begin: _currentHeight, end: _currentHeight)
+        .animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
   }
 
   @override
@@ -99,8 +99,9 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
 
     // Ensure the target height is within bounds with safe clamping
     // Add safety checks to prevent invalid arguments
-    final safeMinHeight =
-        _effectiveMinHeight.isFinite ? _effectiveMinHeight : 0.0;
+    final safeMinHeight = _effectiveMinHeight.isFinite
+        ? _effectiveMinHeight
+        : 0.0;
     final safeMaxHeight = widget.maxHeight.isFinite ? widget.maxHeight : 1000.0;
 
     if (targetHeight < safeMinHeight) {
@@ -120,13 +121,13 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
   }
 
   void _animateToHeight(double targetHeight) {
-    _heightAnimation = Tween<double>(
-      begin: _heightAnimation.value,
-      end: targetHeight,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _heightAnimation =
+        Tween<double>(begin: _heightAnimation.value, end: targetHeight).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
     _animationController.forward(from: 0.0);
   }
 
@@ -140,21 +141,23 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
   Widget build(BuildContext context) {
     return GestureDetector(
       onPanUpdate: (details) {
-        final newHeight = (_currentHeight - details.delta.dy)
-            .clamp(_effectiveMinHeight, widget.maxHeight);
+        final newHeight = (_currentHeight - details.delta.dy).clamp(
+          _effectiveMinHeight,
+          widget.maxHeight,
+        );
 
         if ((newHeight - _currentHeight).abs() > 1.0) {
           _currentHeight = newHeight;
 
           // During dragging, update height immediately without animation
           // This makes the sheet "stick" to the finger
-          _heightAnimation = Tween<double>(
-            begin: _currentHeight,
-            end: _currentHeight,
-          ).animate(CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.linear,
-          ));
+          _heightAnimation =
+              Tween<double>(begin: _currentHeight, end: _currentHeight).animate(
+                CurvedAnimation(
+                  parent: _animationController,
+                  curve: Curves.linear,
+                ),
+              );
 
           // Force immediate update
           _animationController.value = 1.0;
@@ -190,13 +193,16 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
         }
 
         // Animate to final position smoothly
-        _heightAnimation = Tween<double>(
-          begin: _heightAnimation.value,
-          end: targetHeight,
-        ).animate(CurvedAnimation(
-          parent: _animationController,
-          curve: Curves.easeOutCubic,
-        ));
+        _heightAnimation =
+            Tween<double>(
+              begin: _heightAnimation.value,
+              end: targetHeight,
+            ).animate(
+              CurvedAnimation(
+                parent: _animationController,
+                curve: Curves.easeOutCubic,
+              ),
+            );
         _animationController.forward(from: 0.0);
 
         // Final callback
@@ -215,10 +221,9 @@ class _DraggableSheetContainerState extends State<DraggableSheetContainer>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .shadow
-                      .withValues(alpha: 0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.shadow.withValues(alpha: 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),

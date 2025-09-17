@@ -12,63 +12,68 @@ class CalendarFormatDialog {
 
     showDialog(
       context: context,
-      builder: (context) => Consumer(builder: (context, ref, _) {
-        final asyncState = ref.watch(settingsProvider);
-        final state = asyncState.value;
-        return AlertDialog(
-          title: Text(l10n.calendarFormat),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SelectionCard(
-                title: l10n.calendarFormatMonth,
-                isSelected: (state?.calendarFormat ?? CalendarFormat.month) ==
-                    CalendarFormat.month,
-                onTap: () async {
-                  await ref
-                      .read(settingsProvider.notifier)
-                      .setCalendarFormat(CalendarFormat.month);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                mainColor: AppColors.primary,
-                useDialogStyle: true,
-              ),
-              SelectionCard(
-                title: l10n.calendarFormatTwoWeeks,
-                isSelected: (state?.calendarFormat ?? CalendarFormat.month) ==
-                    CalendarFormat.twoWeeks,
-                onTap: () async {
-                  await ref
-                      .read(settingsProvider.notifier)
-                      .setCalendarFormat(CalendarFormat.twoWeeks);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                mainColor: AppColors.primary,
-                useDialogStyle: true,
-              ),
-              SelectionCard(
-                title: l10n.calendarFormatWeek,
-                isSelected: (state?.calendarFormat ?? CalendarFormat.month) ==
-                    CalendarFormat.week,
-                onTap: () async {
-                  await ref
-                      .read(settingsProvider.notifier)
-                      .setCalendarFormat(CalendarFormat.week);
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                mainColor: AppColors.primary,
-                useDialogStyle: true,
-              ),
-            ],
-          ),
-        );
-      }),
+      builder: (context) => Consumer(
+        builder: (context, ref, _) {
+          final asyncState = ref.watch(settingsProvider);
+          final state = asyncState.value;
+          return AlertDialog(
+            title: Text(l10n.calendarFormat),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SelectionCard(
+                  title: l10n.calendarFormatMonth,
+                  isSelected:
+                      (state?.calendarFormat ?? CalendarFormat.month) ==
+                      CalendarFormat.month,
+                  onTap: () async {
+                    await ref
+                        .read(settingsProvider.notifier)
+                        .setCalendarFormat(CalendarFormat.month);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  mainColor: AppColors.primary,
+                  useDialogStyle: true,
+                ),
+                SelectionCard(
+                  title: l10n.calendarFormatTwoWeeks,
+                  isSelected:
+                      (state?.calendarFormat ?? CalendarFormat.month) ==
+                      CalendarFormat.twoWeeks,
+                  onTap: () async {
+                    await ref
+                        .read(settingsProvider.notifier)
+                        .setCalendarFormat(CalendarFormat.twoWeeks);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  mainColor: AppColors.primary,
+                  useDialogStyle: true,
+                ),
+                SelectionCard(
+                  title: l10n.calendarFormatWeek,
+                  isSelected:
+                      (state?.calendarFormat ?? CalendarFormat.month) ==
+                      CalendarFormat.week,
+                  onTap: () async {
+                    await ref
+                        .read(settingsProvider.notifier)
+                        .setCalendarFormat(CalendarFormat.week);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  },
+                  mainColor: AppColors.primary,
+                  useDialogStyle: true,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

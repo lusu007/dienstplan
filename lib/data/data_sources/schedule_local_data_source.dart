@@ -21,15 +21,20 @@ class ScheduleLocalDataSource {
         orderBy: 'date ASC, duty_group_name ASC',
       );
 
-      final schedules =
-          maps.map((map) => data_model.Schedule.fromMap(map)).toList();
+      final schedules = maps
+          .map((map) => data_model.Schedule.fromMap(map))
+          .toList();
       AppLogger.d(
-          'ScheduleLocalDataSource: Retrieved ${schedules.length} schedules');
+        'ScheduleLocalDataSource: Retrieved ${schedules.length} schedules',
+      );
 
       return schedules.map(mapper.toDomainSchedule).toList();
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error getting schedules', e, stackTrace);
+        'ScheduleLocalDataSource: Error getting schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -41,30 +46,31 @@ class ScheduleLocalDataSource {
   }) async {
     try {
       AppLogger.d(
-          'ScheduleLocalDataSource: Getting schedules for date range: $startDate to $endDate');
+        'ScheduleLocalDataSource: Getting schedules for date range: $startDate to $endDate',
+      );
 
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
         'schedules',
         where: 'date BETWEEN ? AND ?',
-        whereArgs: [
-          startDate.toIso8601String(),
-          endDate.toIso8601String(),
-        ],
+        whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
         orderBy: 'date ASC, duty_group_name ASC',
       );
 
-      final schedules =
-          maps.map((map) => data_model.Schedule.fromMap(map)).toList();
+      final schedules = maps
+          .map((map) => data_model.Schedule.fromMap(map))
+          .toList();
       AppLogger.d(
-          'ScheduleLocalDataSource: Retrieved ${schedules.length} schedules for date range');
+        'ScheduleLocalDataSource: Retrieved ${schedules.length} schedules for date range',
+      );
 
       return schedules.map(mapper.toDomainSchedule).toList();
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error getting schedules for date range',
-          e,
-          stackTrace);
+        'ScheduleLocalDataSource: Error getting schedules for date range',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -73,7 +79,8 @@ class ScheduleLocalDataSource {
   Future<void> saveSchedules(List<Schedule> schedules) async {
     try {
       AppLogger.d(
-          'ScheduleLocalDataSource: Saving ${schedules.length} schedules');
+        'ScheduleLocalDataSource: Saving ${schedules.length} schedules',
+      );
 
       final db = await _databaseService.database;
 
@@ -94,10 +101,14 @@ class ScheduleLocalDataSource {
       });
 
       AppLogger.d(
-          'ScheduleLocalDataSource: Successfully saved ${schedules.length} schedules');
+        'ScheduleLocalDataSource: Successfully saved ${schedules.length} schedules',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error saving schedules', e, stackTrace);
+        'ScheduleLocalDataSource: Error saving schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -106,7 +117,8 @@ class ScheduleLocalDataSource {
   Future<void> saveSchedule(Schedule schedule) async {
     try {
       AppLogger.d(
-          'ScheduleLocalDataSource: Saving single schedule for ${schedule.date}');
+        'ScheduleLocalDataSource: Saving single schedule for ${schedule.date}',
+      );
 
       final db = await _databaseService.database;
       final dataModel = mapper.toDataSchedule(schedule);
@@ -118,10 +130,14 @@ class ScheduleLocalDataSource {
       );
 
       AppLogger.d(
-          'ScheduleLocalDataSource: Successfully saved single schedule');
+        'ScheduleLocalDataSource: Successfully saved single schedule',
+      );
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleLocalDataSource: Error saving single schedule', e,
-          stackTrace);
+      AppLogger.e(
+        'ScheduleLocalDataSource: Error saving single schedule',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -135,10 +151,14 @@ class ScheduleLocalDataSource {
       await db.delete('schedules');
 
       AppLogger.d(
-          'ScheduleLocalDataSource: Successfully cleared all schedules');
+        'ScheduleLocalDataSource: Successfully cleared all schedules',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error clearing schedules', e, stackTrace);
+        'ScheduleLocalDataSource: Error clearing schedules',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -150,25 +170,25 @@ class ScheduleLocalDataSource {
   }) async {
     try {
       AppLogger.d(
-          'ScheduleLocalDataSource: Deleting schedules for date range: $startDate to $endDate');
+        'ScheduleLocalDataSource: Deleting schedules for date range: $startDate to $endDate',
+      );
 
       final db = await _databaseService.database;
       final deletedRows = await db.delete(
         'schedules',
         where: 'date BETWEEN ? AND ?',
-        whereArgs: [
-          startDate.toIso8601String(),
-          endDate.toIso8601String(),
-        ],
+        whereArgs: [startDate.toIso8601String(), endDate.toIso8601String()],
       );
 
       AppLogger.d(
-          'ScheduleLocalDataSource: Successfully deleted $deletedRows schedules');
+        'ScheduleLocalDataSource: Successfully deleted $deletedRows schedules',
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error deleting schedules for date range',
-          e,
-          stackTrace);
+        'ScheduleLocalDataSource: Error deleting schedules for date range',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -177,7 +197,8 @@ class ScheduleLocalDataSource {
   Future<List<String>> getDutyTypes({required String configName}) async {
     try {
       AppLogger.d(
-          'ScheduleLocalDataSource: Getting duty types for config: $configName');
+        'ScheduleLocalDataSource: Getting duty types for config: $configName',
+      );
 
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -191,12 +212,16 @@ class ScheduleLocalDataSource {
 
       final dutyTypes = maps.map((map) => map['service'] as String).toList();
       AppLogger.d(
-          'ScheduleLocalDataSource: Retrieved ${dutyTypes.length} duty types');
+        'ScheduleLocalDataSource: Retrieved ${dutyTypes.length} duty types',
+      );
 
       return dutyTypes;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error getting duty types', e, stackTrace);
+        'ScheduleLocalDataSource: Error getting duty types',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -205,7 +230,8 @@ class ScheduleLocalDataSource {
   Future<List<String>> getDutyGroups({required String configName}) async {
     try {
       AppLogger.d(
-          'ScheduleLocalDataSource: Getting duty groups for config: $configName');
+        'ScheduleLocalDataSource: Getting duty groups for config: $configName',
+      );
 
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -217,15 +243,20 @@ class ScheduleLocalDataSource {
         orderBy: 'duty_group_name ASC',
       );
 
-      final dutyGroups =
-          maps.map((map) => map['duty_group_name'] as String).toList();
+      final dutyGroups = maps
+          .map((map) => map['duty_group_name'] as String)
+          .toList();
       AppLogger.d(
-          'ScheduleLocalDataSource: Retrieved ${dutyGroups.length} duty groups');
+        'ScheduleLocalDataSource: Retrieved ${dutyGroups.length} duty groups',
+      );
 
       return dutyGroups;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleLocalDataSource: Error getting duty groups', e, stackTrace);
+        'ScheduleLocalDataSource: Error getting duty groups',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

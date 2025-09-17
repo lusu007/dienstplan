@@ -26,11 +26,7 @@ class AppAboutDialog extends StatelessWidget {
       applicationName: appName,
       applicationVersion: appVersion,
       applicationIcon: appIconPath != null
-          ? Image.asset(
-              appIconPath!,
-              width: 50,
-              height: 50,
-            )
+          ? Image.asset(appIconPath!, width: 50, height: 50)
           : null,
       applicationLegalese: appLegalese,
       children: [
@@ -78,11 +74,7 @@ class AppAboutDialog extends StatelessWidget {
         applicationName: appName,
         applicationVersion: effectiveAppVersion,
         applicationIcon: appIconPath != null
-            ? Image.asset(
-                appIconPath,
-                width: 50,
-                height: 50,
-              )
+            ? Image.asset(appIconPath, width: 50, height: 50)
             : null,
         applicationLegalese: appLegalese,
         children: [

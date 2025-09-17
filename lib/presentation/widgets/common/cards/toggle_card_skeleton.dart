@@ -55,10 +55,7 @@ class _ToggleCardSkeletonState extends State<ToggleCardSkeleton>
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-          width: 1,
-        ),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -75,19 +72,17 @@ class _ToggleCardSkeletonState extends State<ToggleCardSkeleton>
         subtitle: widget.showSubtitleSkeleton
             ? _buildSkeletonSubtitle()
             : widget.subtitle != null
-                ? Text(
-                    widget.subtitle!,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
-                  )
-                : null,
+            ? Text(
+                widget.subtitle!,
+                style: const TextStyle(fontSize: 15, color: Colors.black87),
+              )
+            : null,
         trailing: Switch(
           value: widget.value,
           onChanged: widget.enabled ? null : null,
           activeThumbColor: AppColors.primary,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         selectedTileColor: Colors.transparent,
       ),
     );
@@ -102,8 +97,9 @@ class _ToggleCardSkeletonState extends State<ToggleCardSkeleton>
           width: double.infinity,
           margin: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-            color: Colors.grey.shade300
-                .withValues(alpha: 0.3 + (_animation.value * 0.4)),
+            color: Colors.grey.shade300.withValues(
+              alpha: 0.3 + (_animation.value * 0.4),
+            ),
             borderRadius: BorderRadius.circular(4),
           ),
         );

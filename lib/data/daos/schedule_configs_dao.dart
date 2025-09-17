@@ -24,28 +24,27 @@ class ScheduleConfigsDao {
       final Database db = await _databaseService.database;
       final int now = DateTime.now().millisecondsSinceEpoch;
 
-      await db.insert(
-        'schedule_configs',
-        {
-          'name': name,
-          'version': version,
-          'display_name': displayName,
-          'description': description,
-          'police_authority': policeAuthority,
-          'icon': icon,
-          'start_date': startDate.toIso8601String(),
-          'start_week_day': startWeekDay,
-          'days': jsonEncode(days),
-          'created_at': now,
-          'updated_at': now,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await db.insert('schedule_configs', {
+        'name': name,
+        'version': version,
+        'display_name': displayName,
+        'description': description,
+        'police_authority': policeAuthority,
+        'icon': icon,
+        'start_date': startDate.toIso8601String(),
+        'start_week_day': startWeekDay,
+        'days': jsonEncode(days),
+        'created_at': now,
+        'updated_at': now,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
 
       AppLogger.i('ScheduleConfigsDao: Saved schedule config $name');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleConfigsDao: Error saving schedule config', e, stackTrace);
+        'ScheduleConfigsDao: Error saving schedule config',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -75,11 +74,15 @@ class ScheduleConfigsDao {
       }).toList();
 
       AppLogger.i(
-          'ScheduleConfigsDao: Loaded ${configs.length} schedule configs');
+        'ScheduleConfigsDao: Loaded ${configs.length} schedule configs',
+      );
       return configs;
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleConfigsDao: Error loading schedule configs', e, stackTrace);
+        'ScheduleConfigsDao: Error loading schedule configs',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -117,8 +120,11 @@ class ScheduleConfigsDao {
       AppLogger.i('ScheduleConfigsDao: Loaded schedule config $name');
       return config;
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleConfigsDao: Error loading schedule config $name', e,
-          stackTrace);
+      AppLogger.e(
+        'ScheduleConfigsDao: Error loading schedule config $name',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -128,16 +134,15 @@ class ScheduleConfigsDao {
       AppLogger.i('ScheduleConfigsDao: Deleting schedule config $name');
       final Database db = await _databaseService.database;
 
-      await db.delete(
-        'schedule_configs',
-        where: 'name = ?',
-        whereArgs: [name],
-      );
+      await db.delete('schedule_configs', where: 'name = ?', whereArgs: [name]);
 
       AppLogger.i('ScheduleConfigsDao: Deleted schedule config $name');
     } catch (e, stackTrace) {
-      AppLogger.e('ScheduleConfigsDao: Error deleting schedule config $name', e,
-          stackTrace);
+      AppLogger.e(
+        'ScheduleConfigsDao: Error deleting schedule config $name',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }
@@ -152,7 +157,10 @@ class ScheduleConfigsDao {
       AppLogger.i('ScheduleConfigsDao: Cleared all schedule configs');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'ScheduleConfigsDao: Error clearing schedule configs', e, stackTrace);
+        'ScheduleConfigsDao: Error clearing schedule configs',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

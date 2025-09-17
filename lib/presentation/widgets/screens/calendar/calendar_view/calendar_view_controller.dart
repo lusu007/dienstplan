@@ -7,10 +7,10 @@ class CalendarViewController {
   DateTime? lastSelectedDay;
 
   CalendarViewController()
-      : pageController = PageController(
-          initialPage: 30, // Start at the middle page (index 30)
-          viewportFraction: 1.0,
-        );
+    : pageController = PageController(
+        initialPage: 30, // Start at the middle page (index 30)
+        viewportFraction: 1.0,
+      );
 
   void dispose() {
     pageController.dispose();

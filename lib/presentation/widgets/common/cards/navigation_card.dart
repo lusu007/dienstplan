@@ -27,8 +27,9 @@ class NavigationCard extends StatelessWidget {
     final ColorScheme scheme = theme.colorScheme;
 
     final effectiveIconColor = enabled ? iconColor : scheme.onSurfaceVariant;
-    final effectiveTitleColor =
-        enabled ? scheme.onSurface : scheme.onSurfaceVariant;
+    final effectiveTitleColor = enabled
+        ? scheme.onSurface
+        : scheme.onSurfaceVariant;
     final effectiveSubtitleColor = enabled
         ? scheme.onSurfaceVariant
         : scheme.onSurfaceVariant.withValues(alpha: 0.6);

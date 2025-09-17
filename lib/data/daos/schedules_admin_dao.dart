@@ -21,13 +21,22 @@ class SchedulesAdminDao {
     try {
       AppLogger.i('SchedulesAdminDao: Clearing duty schedule for $configName');
       final db = await _databaseService.database;
-      await db.delete('schedules',
-          where: 'config_name = ?', whereArgs: <Object?>[configName]);
-      await db.delete('duty_types',
-          where: 'config_name = ?', whereArgs: <Object?>[configName]);
+      await db.delete(
+        'schedules',
+        where: 'config_name = ?',
+        whereArgs: <Object?>[configName],
+      );
+      await db.delete(
+        'duty_types',
+        where: 'config_name = ?',
+        whereArgs: <Object?>[configName],
+      );
     } catch (e, stackTrace) {
       AppLogger.e(
-          'SchedulesAdminDao: Error clearing duty schedule', e, stackTrace);
+        'SchedulesAdminDao: Error clearing duty schedule',
+        e,
+        stackTrace,
+      );
       rethrow;
     }
   }

@@ -13,7 +13,8 @@ class MyAccentColorDialog {
           final state = ref.watch(scheduleCoordinatorProvider).value;
           final l10n = AppLocalizations.of(context);
           // Use default color if no color is explicitly selected
-          final int selected = state?.myAccentColorValue ??
+          final int selected =
+              state?.myAccentColorValue ??
               AccentColorDefaults.myAccentColorValue;
           return AlertDialog(
             title: Text(l10n.myAccentColor),
@@ -23,18 +24,20 @@ class MyAccentColorDialog {
                 spacing: 12,
                 runSpacing: 12,
                 children: AccentColor.values
-                    .map((entry) => _ColorDot(
-                          color: entry.toColor(),
-                          isSelected: selected == entry.argb,
-                          onTap: () async {
-                            await ref
-                                .read(scheduleCoordinatorProvider.notifier)
-                                .setMyAccentColor(entry.argb);
-                            if (dialogContext.mounted) {
-                              Navigator.of(dialogContext).pop();
-                            }
-                          },
-                        ))
+                    .map(
+                      (entry) => _ColorDot(
+                        color: entry.toColor(),
+                        isSelected: selected == entry.argb,
+                        onTap: () async {
+                          await ref
+                              .read(scheduleCoordinatorProvider.notifier)
+                              .setMyAccentColor(entry.argb);
+                          if (dialogContext.mounted) {
+                            Navigator.of(dialogContext).pop();
+                          }
+                        },
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -80,11 +83,7 @@ class _ColorDot extends StatelessWidget {
           ],
         ),
         child: isSelected
-            ? const Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 20,
-              )
+            ? const Icon(Icons.check, color: Colors.white, size: 20)
             : null,
       ),
     );

@@ -18,9 +18,7 @@ class AboutScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.about),
-      ),
+      appBar: AppBar(title: Text(l10n.about)),
       body: SafeAreaWrapper(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -48,17 +46,13 @@ class AboutScreen extends StatelessWidget {
         Center(
           child: Column(
             children: [
-              Image.asset(
-                AppInfo.appIconPath,
-                width: 80,
-                height: 80,
-              ),
+              Image.asset(AppInfo.appIconPath, width: 80, height: 80),
               const SizedBox(height: 16),
               Text(
                 AppInfo.appName,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               FutureBuilder<String>(
@@ -69,18 +63,14 @@ class AboutScreen extends StatelessWidget {
                       children: [
                         Text(
                           AppInfo.appLegalese,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey.shade600,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.grey.shade600),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           snapshot.data!,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey.shade600,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.grey.shade600),
                         ),
                       ],
                     );
@@ -103,9 +93,9 @@ class AboutScreen extends StatelessWidget {
         // About Description
         Text(
           l10n.aboutDescription,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
@@ -113,9 +103,9 @@ class AboutScreen extends StatelessWidget {
         // Disclaimer
         Text(
           l10n.aboutDisclaimer,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
           textAlign: TextAlign.center,
         ),
       ],
@@ -151,9 +141,7 @@ class AboutScreen extends StatelessWidget {
     AppDialog.show(
       context: context,
       title: l10n.disclaimer,
-      content: SingleChildScrollView(
-        child: Text(l10n.disclaimerLong),
-      ),
+      content: SingleChildScrollView(child: Text(l10n.disclaimerLong)),
       showCloseButton: true,
     );
   }

@@ -12,10 +12,7 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text(
-        AppInfo.appName,
-        style: TextStyle(color: Colors.white),
-      ),
+      title: const Text(AppInfo.appName, style: TextStyle(color: Colors.white)),
       backgroundColor: Theme.of(context).colorScheme.primary,
       automaticallyImplyLeading: false,
       actions: [

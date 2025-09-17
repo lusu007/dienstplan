@@ -43,8 +43,10 @@ class ScheduleSection extends StatelessWidget {
               icon: Icons.color_lens_outlined,
               title: l10n.myAccentColor,
               subtitle: _getMyAccentColorName(state, l10n),
-              trailing:
-                  _buildMyAccentColorChip(context, state.myAccentColorValue),
+              trailing: _buildMyAccentColorChip(
+                context,
+                state.myAccentColorValue,
+              ),
               onTap: () => MyAccentColorDialog.show(context),
             ),
           ],
@@ -72,8 +74,10 @@ class ScheduleSection extends StatelessWidget {
               icon: Icons.color_lens_outlined,
               title: l10n.accentColor,
               subtitle: _getPartnerAccentColorName(state, l10n),
-              trailing:
-                  _buildAccentColorChip(context, state.partnerAccentColorValue),
+              trailing: _buildAccentColorChip(
+                context,
+                state.partnerAccentColorValue,
+              ),
               onTap: () => PartnerColorDialog.show(context),
             ),
           ],
@@ -83,8 +87,11 @@ class ScheduleSection extends StatelessWidget {
   }
 
   String _getPartnerAccentColorName(
-      ScheduleUiState state, AppLocalizations l10n) {
-    final int value = state.partnerAccentColorValue ??
+    ScheduleUiState state,
+    AppLocalizations l10n,
+  ) {
+    final int value =
+        state.partnerAccentColorValue ??
         AccentColorDefaults.partnerAccentColorValue;
     final AccentColor? match = AccentColor.fromValue(value);
     if (match != null) return match.toLabel(l10n);
@@ -92,8 +99,9 @@ class ScheduleSection extends StatelessWidget {
   }
 
   Widget _buildAccentColorChip(BuildContext context, int? colorValue) {
-    final Color color =
-        Color(colorValue ?? AccentColorDefaults.partnerAccentColorValue);
+    final Color color = Color(
+      colorValue ?? AccentColorDefaults.partnerAccentColorValue,
+    );
     return Container(
       width: 24,
       height: 24,
@@ -119,7 +127,9 @@ class ScheduleSection extends StatelessWidget {
       return state.activeConfig?.meta.name ?? state.activeConfigName!;
     } catch (e) {
       AppLogger.e(
-          'ScheduleSection: Error getting duty schedule display name', e);
+        'ScheduleSection: Error getting duty schedule display name',
+        e,
+      );
       return l10n.noDutySchedules;
     }
   }
@@ -135,8 +145,9 @@ class ScheduleSection extends StatelessWidget {
       return state.preferredDutyGroup!;
     } catch (e) {
       AppLogger.e(
-          'ScheduleSection: Error getting preferred duty group display name',
-          e);
+        'ScheduleSection: Error getting preferred duty group display name',
+        e,
+      );
       return l10n.noMyDutyGroup;
     }
   }
@@ -150,8 +161,9 @@ class ScheduleSection extends StatelessWidget {
   }
 
   Widget _buildMyAccentColorChip(BuildContext context, int? colorValue) {
-    final Color color =
-        Color(colorValue ?? AccentColorDefaults.myAccentColorValue);
+    final Color color = Color(
+      colorValue ?? AccentColorDefaults.myAccentColorValue,
+    );
     return Container(
       width: 24,
       height: 24,

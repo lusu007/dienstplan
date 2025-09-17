@@ -5,15 +5,9 @@ class SentryState {
   final bool isEnabled;
   final bool isReplayEnabled;
 
-  const SentryState({
-    required this.isEnabled,
-    required this.isReplayEnabled,
-  });
+  const SentryState({required this.isEnabled, required this.isReplayEnabled});
 
-  SentryState copyWith({
-    bool? isEnabled,
-    bool? isReplayEnabled,
-  }) {
+  SentryState copyWith({bool? isEnabled, bool? isReplayEnabled}) {
     return SentryState(
       isEnabled: isEnabled ?? this.isEnabled,
       isReplayEnabled: isReplayEnabled ?? this.isReplayEnabled,
@@ -53,7 +47,8 @@ class SentryService {
       await _applyConfiguration();
 
       AppLogger.i(
-          'SentryService initialized - enabled: $_isEnabled, replay: $_isReplayEnabled');
+        'SentryService initialized - enabled: $_isEnabled, replay: $_isReplayEnabled',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error initializing SentryService', e, stackTrace);
     }
@@ -100,7 +95,10 @@ class SentryService {
       // Note: Actual Sentry capture would be implemented here
       // For now, just log the exception
       AppLogger.e(
-          'Sentry would capture exception: $exception', exception, stackTrace);
+        'Sentry would capture exception: $exception',
+        exception,
+        stackTrace,
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error capturing exception in Sentry', e, stackTrace);
     }
@@ -126,7 +124,8 @@ class SentryService {
       // Note: Actual SDK init is idempotent in AppInitializer.initializeSentry.
       // This method only logs current configuration and not re-init the SDK.
       AppLogger.i(
-          'Sentry configuration updated - enabled: $_isEnabled, replay: $_isReplayEnabled');
+        'Sentry configuration updated - enabled: $_isEnabled, replay: $_isReplayEnabled',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error applying Sentry configuration', e, stackTrace);
     }

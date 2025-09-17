@@ -16,9 +16,9 @@ abstract class CalendarUiState with _$CalendarUiState {
   const CalendarUiState._();
 
   factory CalendarUiState.initial() => CalendarUiState(
-        isLoading: false,
-        selectedDay: DateTime.now(),
-        focusedDay: DateTime.now(),
-        calendarFormat: CalendarFormat.month,
-      );
+    isLoading: false,
+    selectedDay: DateTime.now(),
+    focusedDay: DateTime.now(),
+    calendarFormat: CalendarFormat.month,
+  );
 }

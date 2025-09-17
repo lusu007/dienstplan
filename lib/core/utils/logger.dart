@@ -60,8 +60,12 @@ class AppLogger {
     return logFile;
   }
 
-  static Future<void> _writeLog(String level, String message,
-      [Object? error, StackTrace? stackTrace]) async {
+  static Future<void> _writeLog(
+    String level,
+    String message, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) async {
     try {
       if (_currentLogFile == null) {
         await initialize();
@@ -85,14 +89,17 @@ class AppLogger {
       }
 
       // Write to local log file
-      await _currentLogFile!
-          .writeAsString('$logMessage\n', mode: FileMode.append);
+      await _currentLogFile!.writeAsString(
+        '$logMessage\n',
+        mode: FileMode.append,
+      );
 
       // Send to Sentry if available, enabled, and SDK initialized
       try {
         // Check if Sentry service is available and enabled via injected container
-        final sentryService =
-            _providerContainer?.read(sentryServiceProvider).value;
+        final sentryService = _providerContainer
+            ?.read(sentryServiceProvider)
+            .value;
 
         if (sentryService != null &&
             sentryService.isEnabled &&
@@ -191,7 +198,9 @@ class AppLogger {
   static Future<void> d(String message) async => _writeLog('D', message);
   static Future<void> i(String message) async => _writeLog('I', message);
   static Future<void> w(String message) async => _writeLog('W', message);
-  static Future<void> e(String message,
-          [Object? error, StackTrace? stackTrace]) async =>
-      _writeLog('E', message, error, stackTrace);
+  static Future<void> e(
+    String message, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) async => _writeLog('E', message, error, stackTrace);
 }

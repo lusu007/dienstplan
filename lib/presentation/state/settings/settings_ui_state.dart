@@ -25,7 +25,7 @@ abstract class SettingsUiState with _$SettingsUiState {
   const SettingsUiState._();
 
   factory SettingsUiState.initial() => const SettingsUiState(
-        isLoading: false,
-        themePreference: ThemePreference.system,
-      );
+    isLoading: false,
+    themePreference: ThemePreference.system,
+  );
 }

@@ -10,10 +10,7 @@ class LanguageService extends ChangeNotifier {
 
   Locale get currentLocale => _currentLocale;
 
-  List<Locale> get supportedLocales => const [
-        Locale('de'),
-        Locale('en'),
-      ];
+  List<Locale> get supportedLocales => const [Locale('de'), Locale('en')];
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();

@@ -33,7 +33,8 @@ class SelectionCard extends StatelessWidget {
     final effectiveMainColor =
         mainColor ?? Theme.of(context).colorScheme.primary;
     final effectiveIconSize = iconSize ?? 40;
-    final effectiveContentPadding = contentPadding ??
+    final effectiveContentPadding =
+        contentPadding ??
         (useDialogStyle
             ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
             : const EdgeInsets.symmetric(horizontal: 20));
@@ -93,8 +94,9 @@ class SelectionCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color:
-                          isSelected ? mainColor : theme.colorScheme.onSurface,
+                      color: isSelected
+                          ? mainColor
+                          : theme.colorScheme.onSurface,
                     ),
                   ),
             subtitle: subtitle != null

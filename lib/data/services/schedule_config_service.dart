@@ -25,7 +25,10 @@ class ScheduleConfigService extends ChangeNotifier {
   static const String _setupCompletedKey = kPrefsKeySetupCompleted;
 
   ScheduleConfigService(
-      this._prefs, this._scheduleConfigsDao, this._schedulesDao);
+    this._prefs,
+    this._scheduleConfigsDao,
+    this._schedulesDao,
+  );
 
   List<DutyScheduleConfig> get configs => _configs;
   DutyScheduleConfig? get defaultConfig => _defaultConfig;
@@ -100,7 +103,8 @@ class ScheduleConfigService extends ChangeNotifier {
 
             configsByName[config.name] = config;
             AppLogger.i(
-                'Loaded config from app directory: ${config.name} (version ${config.version})');
+              'Loaded config from app directory: ${config.name} (version ${config.version})',
+            );
           } catch (e) {
             AppLogger.e('Error loading config file ${file.path}: $e');
           }
@@ -146,7 +150,8 @@ class ScheduleConfigService extends ChangeNotifier {
           await configFile.writeAsString(jsonString);
 
           AppLogger.i(
-              'Synced config from assets: ${config.name} (version ${config.version})');
+            'Synced config from assets: ${config.name} (version ${config.version})',
+          );
           copiedCount++;
         } catch (e) {
           AppLogger.e('Error syncing config file $assetFile: $e');
@@ -154,7 +159,8 @@ class ScheduleConfigService extends ChangeNotifier {
       }
 
       AppLogger.i(
-          'Successfully synced $copiedCount config files from assets to app directory');
+        'Successfully synced $copiedCount config files from assets to app directory',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error syncing assets to app directory', e, stackTrace);
       // Don't rethrow - we want to continue with whatever configs we can load
@@ -206,14 +212,19 @@ class ScheduleConfigService extends ChangeNotifier {
     final effectiveEndDate =
         endDate ?? config.startDate.add(const Duration(days: 27375));
 
-    final daysToGenerate =
-        effectiveEndDate.difference(effectiveStartDate).inDays;
+    final daysToGenerate = effectiveEndDate
+        .difference(effectiveStartDate)
+        .inDays;
     AppLogger.i(
-        'Generating schedules for ${daysToGenerate + 1} days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}');
+      'Generating schedules for ${daysToGenerate + 1} days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}',
+    );
 
     // Pre-calculate normalized start date
     final normalizedStartDate = DateTime.utc(
-        config.startDate.year, config.startDate.month, config.startDate.day);
+      config.startDate.year,
+      config.startDate.month,
+      config.startDate.day,
+    );
 
     // Pre-calculate rhythm patterns for better performance
     final rhythmPatterns = <String, List<List<String>>>{};
@@ -229,9 +240,11 @@ class ScheduleConfigService extends ChangeNotifier {
 
     // Use more efficient batch processing
     const batchSize = 1000;
-    for (var batchStart = 0;
-        batchStart <= daysToGenerate;
-        batchStart += batchSize) {
+    for (
+      var batchStart = 0;
+      batchStart <= daysToGenerate;
+      batchStart += batchSize
+    ) {
       final batchEnd = (batchStart + batchSize - 1).clamp(0, daysToGenerate);
       final batchSchedules = <Schedule>[];
 
@@ -253,7 +266,7 @@ class ScheduleConfigService extends ChangeNotifier {
               floorDiv(deltaDays, 7) - dutyGroup.offsetWeeks.toInt();
           final weekIndex =
               ((rawWeekIndex % rhythm.lengthWeeks) + rhythm.lengthWeeks) %
-                  rhythm.lengthWeeks;
+              rhythm.lengthWeeks;
           final dayIndex = ((deltaDays % 7) + 7) % 7;
 
           if (weekIndex >= 0 &&
@@ -289,7 +302,8 @@ class ScheduleConfigService extends ChangeNotifier {
       if (daysToGenerate > 100) {
         final progress = ((batchEnd + 1) / (daysToGenerate + 1) * 100).round();
         AppLogger.i(
-            'Schedule generation progress: $progress% (${schedules.length} schedules generated)');
+          'Schedule generation progress: $progress% (${schedules.length} schedules generated)',
+        );
       }
     }
 
@@ -360,11 +374,12 @@ class ScheduleConfigService extends ChangeNotifier {
 
       for (final config in _configs) {
         AppLogger.i(
-            'Checking config: ${config.name} (version ${config.version})');
+          'Checking config: ${config.name} (version ${config.version})',
+        );
 
         // Get stored version from database
-        final storedConfigData =
-            await _scheduleConfigsDao.getScheduleConfigByName(config.name);
+        final storedConfigData = await _scheduleConfigsDao
+            .getScheduleConfigByName(config.name);
 
         if (storedConfigData != null) {
           final storedVersion = storedConfigData['version'] as String;
@@ -373,7 +388,8 @@ class ScheduleConfigService extends ChangeNotifier {
           // Check if version has changed
           if (storedVersion != config.version) {
             AppLogger.i(
-                'Version mismatch for config ${config.name}: stored=$storedVersion, current=${config.version}. Invalidating schedules.');
+              'Version mismatch for config ${config.name}: stored=$storedVersion, current=${config.version}. Invalidating schedules.',
+            );
 
             // Delete all schedules for this config
             await _schedulesDao.deleteSchedulesByConfigName(config.name);
@@ -399,15 +415,18 @@ class ScheduleConfigService extends ChangeNotifier {
             });
 
             AppLogger.i(
-                'Updated config ${config.name} to version ${config.version}');
+              'Updated config ${config.name} to version ${config.version}',
+            );
           } else {
             AppLogger.i(
-                'Config ${config.name} version ${config.version} is up to date');
+              'Config ${config.name} version ${config.version} is up to date',
+            );
           }
         } else {
           // Config not in database yet, save it
           AppLogger.i(
-              'New config ${config.name} version ${config.version}, saving to database');
+            'New config ${config.name} version ${config.version}, saving to database',
+          );
           await _scheduleConfigsDao.saveScheduleConfig(
             name: config.name,
             version: config.version,
@@ -424,10 +443,12 @@ class ScheduleConfigService extends ChangeNotifier {
 
       // Show notifications for updated configs
       AppLogger.i(
-          'Found ${updatedConfigs.length} configs that need notifications');
+        'Found ${updatedConfigs.length} configs that need notifications',
+      );
       if (updatedConfigs.isNotEmpty) {
         AppLogger.i(
-            'Configs to notify about: ${updatedConfigs.map((c) => '${c['name']} (${c['oldVersion']} → ${c['newVersion']})').join(', ')}');
+          'Configs to notify about: ${updatedConfigs.map((c) => '${c['name']} (${c['oldVersion']} → ${c['newVersion']})').join(', ')}',
+        );
         _showUpdateNotifications(updatedConfigs);
       } else {
         AppLogger.i('No config updates found, no notifications needed');
@@ -436,7 +457,10 @@ class ScheduleConfigService extends ChangeNotifier {
       AppLogger.i('Schedule config version check completed');
     } catch (e, stackTrace) {
       AppLogger.e(
-          'Error checking versions and invalidating schedules', e, stackTrace);
+        'Error checking versions and invalidating schedules',
+        e,
+        stackTrace,
+      );
       // Don't rethrow - we don't want to prevent app startup due to version check failure
     }
   }
@@ -510,7 +534,8 @@ class ScheduleConfigService extends ChangeNotifier {
         }
       }
       AppLogger.i(
-          'Cleanup of old config files completed. Deleted $deletedCount obsolete files.');
+        'Cleanup of old config files completed. Deleted $deletedCount obsolete files.',
+      );
     } catch (e, stackTrace) {
       AppLogger.e('Error cleaning up old config files', e, stackTrace);
     }

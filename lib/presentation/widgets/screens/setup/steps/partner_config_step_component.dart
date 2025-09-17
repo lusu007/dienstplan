@@ -115,7 +115,8 @@ class PartnerConfigStepComponent extends StatelessWidget {
           isSelected: selectedPartnerConfig == config,
           onTap: () {
             onPartnerConfigChanged(
-                selectedPartnerConfig == config ? null : config);
+              selectedPartnerConfig == config ? null : config,
+            );
           },
         );
       },

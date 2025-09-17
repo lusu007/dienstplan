@@ -30,11 +30,7 @@ class SetupBackButton extends StatelessWidget {
           padding: EdgeInsets.zero,
         ),
         onPressed: onPressed,
-        child: Icon(
-          Icons.arrow_back,
-          size: 24,
-          color: effectiveMainColor,
-        ),
+        child: Icon(Icons.arrow_back, size: 24, color: effectiveMainColor),
       ),
     );
   }

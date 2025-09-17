@@ -58,33 +58,35 @@ class SettingsScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.error_outline, size: 48, color: Colors.red),
                 const SizedBox(height: 16),
-                Builder(builder: (context) {
-                  const presenter = FailurePresenter();
-                  return FutureBuilder(
-                    future: ref.read(languageServiceProvider.future),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const SizedBox.shrink();
-                      }
-                      final l10nResolved = AppLocalizations.of(context);
-                      final Failure failure = e is Failure
-                          ? e
-                          : const UnknownFailure(technicalMessage: 'unknown');
-                      final String message =
-                          presenter.present(failure, l10nResolved);
-                      return Text(message, textAlign: TextAlign.center);
-                    },
-                  );
-                }),
+                Builder(
+                  builder: (context) {
+                    const presenter = FailurePresenter();
+                    return FutureBuilder(
+                      future: ref.read(languageServiceProvider.future),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
+                        final l10nResolved = AppLocalizations.of(context);
+                        final Failure failure = e is Failure
+                            ? e
+                            : const UnknownFailure(technicalMessage: 'unknown');
+                        final String message = presenter.present(
+                          failure,
+                          l10nResolved,
+                        );
+                        return Text(message, textAlign: TextAlign.center);
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
         ),
       ),
       data: (state) => Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.settings),
-        ),
+        appBar: AppBar(title: Text(l10n.settings)),
         body: SafeAreaWrapper(
           child: Padding(
             padding: const EdgeInsets.all(24.0),

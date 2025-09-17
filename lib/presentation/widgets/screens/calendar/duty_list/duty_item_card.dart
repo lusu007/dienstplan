@@ -60,7 +60,8 @@ class DutyItemCardList extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
-      padding: padding ??
+      padding:
+          padding ??
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
       itemCount: schedules.length,
       itemBuilder: (context, index) {
