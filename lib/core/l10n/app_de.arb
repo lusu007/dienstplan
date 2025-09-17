@@ -503,5 +503,93 @@
   "clearAll": "Alle löschen",
   "@clearAll": {
     "description": "Button text to clear all filters"
+  },
+  "schoolHolidays": "Schulferien",
+  "@schoolHolidays": {
+    "description": "Title for school holidays section"
+  },
+  "showSchoolHolidays": "Schulferien anzeigen",
+  "@showSchoolHolidays": {
+    "description": "Label for showing school holidays toggle"
+  },
+  "loading": "Lädt...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "errorLoading": "Fehler beim Laden",
+  "@errorLoading": {
+    "description": "Error message when loading fails"
+  },
+  "enabled": "Aktiviert",
+  "@enabled": {
+    "description": "Enabled status text"
+  },
+  "disabled": "Deaktiviert",
+  "@disabled": {
+    "description": "Disabled status text"
+  },
+  "federalState": "Bundesland",
+  "@federalState": {
+    "description": "Label for federal state selection"
+  },
+  "noFederalStateSelected": "Kein Bundesland ausgewählt",
+  "@noFederalStateSelected": {
+    "description": "Text when no federal state is selected"
+  },
+  "refreshHolidayData": "Feriendaten aktualisieren",
+  "@refreshHolidayData": {
+    "description": "Label for refreshing holiday data"
+  },
+  "lastUpdated": "Zuletzt aktualisiert: {time}",
+  "@lastUpdated": {
+    "description": "Last updated time text",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "Vor 2 Stunden"
+      }
+    }
+  },
+  "notUpdatedYet": "Noch nicht aktualisiert",
+  "@notUpdatedYet": {
+    "description": "Text when data has not been updated yet"
+  },
+  "justNow": "Gerade eben",
+  "@justNow": {
+    "description": "Text for very recent time"
+  },
+  "minutesAgo": "Vor {minutes} Minuten",
+  "@minutesAgo": {
+    "description": "Text for minutes ago",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "hoursAgo": "Vor {hours} Stunden",
+  "@hoursAgo": {
+    "description": "Text for hours ago",
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "daysAgo": "Vor {days} Tagen",
+  "@daysAgo": {
+    "description": "Text for days ago",
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "selectFederalState": "Bundesland auswählen",
+  "@selectFederalState": {
+    "description": "Title for federal state selection dialog"
   }
 }

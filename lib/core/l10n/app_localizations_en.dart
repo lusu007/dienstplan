@@ -391,4 +391,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearAll => 'Clear All';
+
+  @override
+  String get schoolHolidays => 'School Holidays';
+
+  @override
+  String get showSchoolHolidays => 'Show School Holidays';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get errorLoading => 'Error loading';
+
+  @override
+  String get enabled => 'Enabled';
+
+  @override
+  String get disabled => 'Disabled';
+
+  @override
+  String get federalState => 'Federal State';
+
+  @override
+  String get noFederalStateSelected => 'No federal state selected';
+
+  @override
+  String get refreshHolidayData => 'Refresh Holiday Data';
+
+  @override
+  String lastUpdated(String time) {
+    return 'Last updated: $time';
+  }
+
+  @override
+  String get notUpdatedYet => 'Not updated yet';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String minutesAgo(int minutes) {
+    return '$minutes minutes ago';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return '$hours hours ago';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return '$days days ago';
+  }
+
+  @override
+  String get selectFederalState => 'Select Federal State';
 }

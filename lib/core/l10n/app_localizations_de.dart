@@ -392,4 +392,60 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get clearAll => 'Alle löschen';
+
+  @override
+  String get schoolHolidays => 'Schulferien';
+
+  @override
+  String get showSchoolHolidays => 'Schulferien anzeigen';
+
+  @override
+  String get loading => 'Lädt...';
+
+  @override
+  String get errorLoading => 'Fehler beim Laden';
+
+  @override
+  String get enabled => 'Aktiviert';
+
+  @override
+  String get disabled => 'Deaktiviert';
+
+  @override
+  String get federalState => 'Bundesland';
+
+  @override
+  String get noFederalStateSelected => 'Kein Bundesland ausgewählt';
+
+  @override
+  String get refreshHolidayData => 'Feriendaten aktualisieren';
+
+  @override
+  String lastUpdated(String time) {
+    return 'Zuletzt aktualisiert: $time';
+  }
+
+  @override
+  String get notUpdatedYet => 'Noch nicht aktualisiert';
+
+  @override
+  String get justNow => 'Gerade eben';
+
+  @override
+  String minutesAgo(int minutes) {
+    return 'Vor $minutes Minuten';
+  }
+
+  @override
+  String hoursAgo(int hours) {
+    return 'Vor $hours Stunden';
+  }
+
+  @override
+  String daysAgo(int days) {
+    return 'Vor $days Tagen';
+  }
+
+  @override
+  String get selectFederalState => 'Bundesland auswählen';
 }

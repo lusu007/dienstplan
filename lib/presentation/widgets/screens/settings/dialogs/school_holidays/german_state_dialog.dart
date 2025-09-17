@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/german_state.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
 
 class GermanStateDialog extends StatelessWidget {
   final String? selectedStateCode;
@@ -8,8 +9,9 @@ class GermanStateDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
-      title: const Text('Bundesland auswählen'),
+      title: Text(l10n.selectFederalState),
       content: SizedBox(
         width: double.maxFinite,
         child: RadioGroup<String>(
@@ -46,7 +48,7 @@ class GermanStateDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Abbrechen'),
+          child: Text(l10n.cancel),
         ),
       ],
     );

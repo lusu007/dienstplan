@@ -809,6 +809,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear All'**
   String get clearAll;
+
+  /// Title for school holidays section
+  ///
+  /// In en, this message translates to:
+  /// **'School Holidays'**
+  String get schoolHolidays;
+
+  /// Label for showing school holidays toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Show School Holidays'**
+  String get showSchoolHolidays;
+
+  /// Loading text
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// Error message when loading fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading'**
+  String get errorLoading;
+
+  /// Enabled status text
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled;
+
+  /// Disabled status text
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled;
+
+  /// Label for federal state selection
+  ///
+  /// In en, this message translates to:
+  /// **'Federal State'**
+  String get federalState;
+
+  /// Text when no federal state is selected
+  ///
+  /// In en, this message translates to:
+  /// **'No federal state selected'**
+  String get noFederalStateSelected;
+
+  /// Label for refreshing holiday data
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Holiday Data'**
+  String get refreshHolidayData;
+
+  /// Last updated time text
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated: {time}'**
+  String lastUpdated(String time);
+
+  /// Text when data has not been updated yet
+  ///
+  /// In en, this message translates to:
+  /// **'Not updated yet'**
+  String get notUpdatedYet;
+
+  /// Text for very recent time
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// Text for minutes ago
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} minutes ago'**
+  String minutesAgo(int minutes);
+
+  /// Text for hours ago
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String hoursAgo(int hours);
+
+  /// Text for days ago
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days ago'**
+  String daysAgo(int days);
+
+  /// Title for federal state selection dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Select Federal State'**
+  String get selectFederalState;
 }
 
 class _AppLocalizationsDelegate

@@ -21,14 +21,14 @@ class SchoolHolidaysSection extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
 
     return holidaysState.when(
-      loading: () => const SettingsSection(
-        title: 'Schulferien',
+      loading: () => SettingsSection(
+        title: l10n.schoolHolidays,
         cards: [
           NavigationCard(
             icon: Icons.school_outlined,
-            title: 'Schulferien anzeigen',
-            subtitle: 'Lädt...',
-            trailing: SizedBox(
+            title: l10n.showSchoolHolidays,
+            subtitle: l10n.loading,
+            trailing: const SizedBox(
               width: 24,
               height: 24,
               child: CircularProgressIndicator(strokeWidth: 2),
@@ -37,14 +37,14 @@ class SchoolHolidaysSection extends ConsumerWidget {
           ),
         ],
       ),
-      error: (error, stack) => const SettingsSection(
-        title: 'Schulferien',
+      error: (error, stack) => SettingsSection(
+        title: l10n.schoolHolidays,
         cards: [
           NavigationCard(
             icon: Icons.school_outlined,
-            title: 'Schulferien anzeigen',
-            subtitle: 'Fehler beim Laden',
-            trailing: Switch(value: false, onChanged: null),
+            title: l10n.showSchoolHolidays,
+            subtitle: l10n.errorLoading,
+            trailing: const Switch(value: false, onChanged: null),
             onTap: null,
           ),
         ],
@@ -56,12 +56,12 @@ class SchoolHolidaysSection extends ConsumerWidget {
             : null;
 
         return SettingsSection(
-          title: 'Schulferien',
+          title: l10n.schoolHolidays,
           cards: [
             NavigationCard(
               icon: Icons.school_outlined,
-              title: 'Schulferien anzeigen',
-              subtitle: isEnabled ? 'Aktiviert' : 'Deaktiviert',
+              title: l10n.showSchoolHolidays,
+              subtitle: isEnabled ? l10n.enabled : l10n.disabled,
               trailing: Switch(
                 value: isEnabled,
                 onChanged: (value) {
@@ -75,8 +75,8 @@ class SchoolHolidaysSection extends ConsumerWidget {
             if (isEnabled) ...[
               NavigationCard(
                 icon: Icons.location_on_outlined,
-                title: 'Bundesland',
-                subtitle: selectedState?.name ?? 'Kein Bundesland ausgewählt',
+                title: l10n.federalState,
+                subtitle: selectedState?.name ?? l10n.noFederalStateSelected,
                 onTap: () async {
                   final selected = await showDialog<String>(
                     context: context,
@@ -95,10 +95,12 @@ class SchoolHolidaysSection extends ConsumerWidget {
               if (state.selectedStateCode != null) ...[
                 NavigationCard(
                   icon: Icons.refresh_outlined,
-                  title: 'Feriendaten aktualisieren',
+                  title: l10n.refreshHolidayData,
                   subtitle: state.lastRefreshTime != null
-                      ? 'Zuletzt aktualisiert: ${_formatLastUpdate(state.lastRefreshTime!)}'
-                      : 'Noch nicht aktualisiert',
+                      ? l10n.lastUpdated(
+                          _formatLastUpdate(state.lastRefreshTime!, l10n),
+                        )
+                      : l10n.notUpdatedYet,
                   onTap: state.isRefreshing
                       ? null
                       : () {
@@ -160,18 +162,18 @@ class SchoolHolidaysSection extends ConsumerWidget {
     );
   }
 
-  String _formatLastUpdate(DateTime date) {
+  String _formatLastUpdate(DateTime date, AppLocalizations l10n) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inMinutes < 1) {
-      return 'Gerade eben';
+      return l10n.justNow;
     } else if (difference.inMinutes < 60) {
-      return 'Vor ${difference.inMinutes} Minuten';
+      return l10n.minutesAgo(difference.inMinutes);
     } else if (difference.inHours < 24) {
-      return 'Vor ${difference.inHours} Stunden';
+      return l10n.hoursAgo(difference.inHours);
     } else {
-      return 'Vor ${difference.inDays} Tagen';
+      return l10n.daysAgo(difference.inDays);
     }
   }
 }
