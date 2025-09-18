@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../domain/entities/school_holiday.dart';
+import '../../../core/l10n/app_localizations.dart';
 
 part 'school_holidays_ui_state.freezed.dart';
 
@@ -42,5 +43,19 @@ abstract class SchoolHolidaysUiState with _$SchoolHolidaysUiState {
       return !holiday.endDate.isBefore(start) &&
           !holiday.startDate.isAfter(end);
     }).toList();
+  }
+
+  /// Resolve error message for display
+  String? getResolvedError(AppLocalizations l10n) {
+    if (error == null) return null;
+
+    // Handle special error format for holiday data not available
+    if (error!.startsWith('noHolidayDataForYear:')) {
+      final year = error!.split(':')[1];
+      return l10n.noHolidayDataForYear(int.tryParse(year) ?? 0);
+    }
+
+    // Return original error for other cases
+    return error;
   }
 }

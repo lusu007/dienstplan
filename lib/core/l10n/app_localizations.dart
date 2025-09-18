@@ -905,6 +905,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Federal State'**
   String get selectFederalState;
+
+  /// Message shown when no holiday data is available for a specific year
+  ///
+  /// In en, this message translates to:
+  /// **'No holiday data available for year {year}'**
+  String noHolidayDataForYear(int year);
 }
 
 class _AppLocalizationsDelegate

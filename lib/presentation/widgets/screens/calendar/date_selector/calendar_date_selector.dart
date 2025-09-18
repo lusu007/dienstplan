@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:intl/intl.dart';
 
-class CalendarDateSelector extends StatefulWidget {
+class CalendarDateSelector extends ConsumerStatefulWidget {
   final DateTime currentDate;
   final Function(DateTime) onDateSelected;
   final Locale locale;
@@ -18,10 +20,11 @@ class CalendarDateSelector extends StatefulWidget {
   });
 
   @override
-  State<CalendarDateSelector> createState() => _CalendarDateSelectorState();
+  ConsumerState<CalendarDateSelector> createState() =>
+      _CalendarDateSelectorState();
 }
 
-class _CalendarDateSelectorState extends State<CalendarDateSelector>
+class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -520,6 +523,15 @@ class _CalendarDateSelectorState extends State<CalendarDateSelector>
         currentFocusedDay.month != focusedDate.month;
 
     if (monthChanged) {
+      // Check if year has changed and load holidays for the new year
+      final yearChanged = currentFocusedDay.year != focusedDate.year;
+      if (yearChanged) {
+        // Load holidays for the new year
+        ref
+            .read(schoolHolidaysProvider.notifier)
+            .loadHolidaysForYear(focusedDate.year);
+      }
+
       widget.onDateSelected(focusedDate);
     }
 

@@ -93,6 +93,20 @@ class SchoolHolidaysSection extends ConsumerWidget {
                 },
               ),
               if (state.selectedStateCode != null) ...[
+                // Show error message if there's an error
+                if (state.error != null)
+                  NavigationCard(
+                    icon: Icons.error_outline,
+                    title: l10n.error,
+                    subtitle: state.getResolvedError(l10n) ?? l10n.errorLoading,
+                    trailing: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        ref.read(schoolHolidaysProvider.notifier).clearError();
+                      },
+                    ),
+                    onTap: null,
+                  ),
                 NavigationCard(
                   icon: Icons.refresh_outlined,
                   title: l10n.refreshHolidayData,

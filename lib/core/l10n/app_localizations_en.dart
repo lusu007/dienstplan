@@ -447,4 +447,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectFederalState => 'Select Federal State';
+
+  @override
+  String noHolidayDataForYear(int year) {
+    return 'No holiday data available for year $year';
+  }
 }

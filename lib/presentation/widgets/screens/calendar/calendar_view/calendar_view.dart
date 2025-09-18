@@ -130,12 +130,26 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
         ref.read(calendarProvider.notifier).setSelectedDay(newDay);
         ref.read(calendarProvider.notifier).setFocusedDay(newDay);
 
-        // Load school holidays for the new month
-        final start = DateTime(newDay.year, newDay.month, 1);
-        final end = DateTime(newDay.year, newDay.month + 1, 0);
-        ref
-            .read(schoolHolidaysProvider.notifier)
-            .loadHolidaysForRange(start, end);
+        // Check if year has changed and load holidays for the new year
+        final yearChanged =
+            currentFocusedDay == null || currentFocusedDay.year != newDay.year;
+
+        if (yearChanged) {
+          AppLogger.d(
+            'CalendarView: Year changed to ${newDay.year}, loading holidays',
+          );
+          // Load holidays for the entire year
+          ref
+              .read(schoolHolidaysProvider.notifier)
+              .loadHolidaysForYear(newDay.year);
+        } else {
+          // Load school holidays for the new month only
+          final start = DateTime(newDay.year, newDay.month, 1);
+          final end = DateTime(newDay.year, newDay.month + 1, 0);
+          ref
+              .read(schoolHolidaysProvider.notifier)
+              .loadHolidaysForRange(start, end);
+        }
       }
     }
   }
