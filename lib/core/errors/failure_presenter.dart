@@ -58,6 +58,10 @@ class FailurePresenter {
         return l10n.genericSerializationError;
       case 'errorValidation':
         return l10n.genericValidationError;
+      case 'noHolidayDataForYear':
+        // Extract year from args if available
+        final year = args?['year'] ?? '0';
+        return l10n.noHolidayDataForYear(int.tryParse(year) ?? 0);
       case 'errorUnknown':
       default:
         return l10n.genericUnknownError;

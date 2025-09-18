@@ -591,5 +591,15 @@
   "selectFederalState": "Bundesland auswählen",
   "@selectFederalState": {
     "description": "Title for federal state selection dialog"
+  },
+  "noHolidayDataForYear": "Keine Feriendaten für das Jahr {year} verfügbar",
+  "@noHolidayDataForYear": {
+    "description": "Message shown when no holiday data is available for a specific year",
+    "placeholders": {
+      "year": {
+        "type": "int",
+        "example": "2025"
+      }
+    }
   }
 }

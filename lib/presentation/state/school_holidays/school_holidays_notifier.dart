@@ -266,6 +266,108 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
     }
   }
 
+  /// Load holidays for a specific year
+  Future<void> loadHolidaysForYear(int year) async {
+    final currentState = state.value;
+    if (currentState == null ||
+        !currentState.isEnabled ||
+        currentState.selectedStateCode == null) {
+      return;
+    }
+
+    // Check if we already have holidays for this year
+    if (_hasHolidaysForYear(year)) {
+      AppLogger.d(
+        'SchoolHolidaysNotifier: Holidays for year $year already loaded',
+      );
+      return;
+    }
+
+    state = AsyncValue.data(currentState.copyWith(isLoading: true));
+
+    try {
+      final start = DateTime(year, 1, 1);
+      final end = DateTime(year, 12, 31);
+
+      final result = await _getHolidaysUseCase.call(
+        stateCode: currentState.selectedStateCode!,
+        startDate: start,
+        endDate: end,
+      );
+
+      result.fold(
+        (failure) {
+          state = AsyncValue.data(
+            currentState.copyWith(
+              isLoading: false,
+              error: failure.technicalMessage,
+            ),
+          );
+        },
+        (holidays) {
+          if (holidays.isEmpty) {
+            state = AsyncValue.data(
+              currentState.copyWith(
+                isLoading: false,
+                error: 'noHolidayDataForYear:$year',
+              ),
+            );
+            return;
+          }
+
+          // Log the holidays we received
+          for (final holiday in holidays) {
+            AppLogger.d(
+              'SchoolHolidaysNotifier: Holiday: ${holiday.name} from ${holiday.startDate} to ${holiday.endDate}',
+            );
+          }
+
+          // Merge new holidays with existing ones
+          final existingHolidays = currentState.allHolidays;
+          final existingHolidayIds = existingHolidays.map((h) => h.id).toSet();
+          final newHolidays = holidays
+              .where((h) => !existingHolidayIds.contains(h.id))
+              .toList();
+          final mergedHolidays = [...existingHolidays, ...newHolidays];
+
+          AppLogger.d(
+            'SchoolHolidaysNotifier: Merged holidays - existing: ${existingHolidays.length}, new: ${newHolidays.length}, total: ${mergedHolidays.length}',
+          );
+
+          final holidaysByDate = _groupHolidaysByDate(mergedHolidays);
+          state = AsyncValue.data(
+            currentState.copyWith(
+              isLoading: false,
+              allHolidays: mergedHolidays,
+              holidaysByDate: holidaysByDate,
+              error: null,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      state = AsyncValue.data(
+        currentState.copyWith(isLoading: false, error: e.toString()),
+      );
+    }
+  }
+
+  /// Check if holidays exist for a specific year
+  bool _hasHolidaysForYear(int year) {
+    final currentState = state.value;
+    if (currentState == null || currentState.allHolidays.isEmpty) {
+      return false;
+    }
+
+    // Check if we have holidays that START in the requested year
+    // This ensures we have loaded the complete year's holidays, not just cross-year holidays
+    final hasHolidaysStartingInYear = currentState.allHolidays.any(
+      (holiday) => holiday.startDate.year == year,
+    );
+
+    return hasHolidaysStartingInYear;
+  }
+
   /// Refresh holidays from API
   Future<void> refreshHolidays() async {
     final currentState = state.value;
@@ -508,7 +610,6 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
         currentDate = currentDate.add(const Duration(days: 1));
       }
     }
-
     return holidaysByDate;
   }
 }

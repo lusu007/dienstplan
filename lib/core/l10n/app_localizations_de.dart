@@ -448,4 +448,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectFederalState => 'Bundesland auswählen';
+
+  @override
+  String noHolidayDataForYear(int year) {
+    return 'Keine Feriendaten für das Jahr $year verfügbar';
+  }
 }
