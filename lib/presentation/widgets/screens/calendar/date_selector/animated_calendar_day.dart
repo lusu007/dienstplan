@@ -40,105 +40,126 @@ class AnimatedCalendarDay extends StatefulWidget {
 }
 
 class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
+  static const double _chipPadding = 1.0;
+  static const double _chipHorizontalPadding = 3.0;
+  static const double _chipVerticalPadding = 1.0;
+  static const double _chipHeight = 12.0;
+  static const double _chipBottomMargin = 2.0;
+  static const double _chipPlaceholderBottomMargin = 4.0;
+  static const double _holidayIndicatorHeight = 2.0;
+  static const double _holidayIndicatorAlpha = 0.7;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // Use configured sizing with fallback to provided values
     final effectiveWidth = widget.width ?? CalendarConfig.kCalendarDayWidth;
     final effectiveHeight = widget.height ?? CalendarConfig.kCalendarDayHeight;
 
-    final dayStyle = _getDayTextStyle(theme);
-    final containerDecoration = _getContainerDecoration(theme);
-    final dutyBadgeDecoration = _getDutyBadgeDecoration(theme);
-    final dutyBadgeTextStyle = _getDutyBadgeTextStyle(theme);
-    final partnerBadgeDecoration = _getPartnerBadgeDecoration(theme);
-    final partnerBadgeTextStyle = _getPartnerBadgeTextStyle(theme);
-
-    final bool hasPrimary =
-        widget.dutyAbbreviation != null && widget.dutyAbbreviation!.isNotEmpty;
-    final bool hasPartner =
-        widget.partnerDutyAbbreviation != null &&
-        widget.partnerDutyAbbreviation!.isNotEmpty;
-
     return InkWell(
-      onTap: () {
-        widget.onTap?.call();
-      },
+      onTap: widget.onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        margin: _getMargin(),
+        margin: const EdgeInsets.all(2),
         width: effectiveWidth,
         height: effectiveHeight,
-        decoration: containerDecoration,
+        decoration: _getContainerDecoration(theme),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 2.0),
-              child: Text('${widget.day.day}', style: dayStyle),
-            ),
-            // School holiday indicator (between date and chips)
-            // Only show if we have a holiday and a color value (to avoid flickering)
-            if (widget.hasSchoolHoliday &&
-                widget.holidayAccentColorValue != null)
-              Container(
-                margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
-                height: 2,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(
-                    widget.holidayAccentColorValue!,
-                  ).withValues(alpha: 0.7),
-                  borderRadius: BorderRadius.circular(1),
-                ),
-              ),
-            // Spacer to push chips to bottom when primary chips are missing
-            if (!hasPrimary && hasPartner) const Spacer(),
-            if (hasPrimary || hasPartner)
-              Padding(
-                padding: const EdgeInsets.only(top: 1.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // First row: My duty group chip
-                    if (widget.dutyAbbreviation != null &&
-                        widget.dutyAbbreviation!.isNotEmpty)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 2.0),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 3.0,
-                          vertical: 1.0,
-                        ),
-                        decoration: dutyBadgeDecoration,
-                        child: Text(
-                          widget.dutyAbbreviation!,
-                          style: dutyBadgeTextStyle.copyWith(fontSize: 10.0),
-                        ),
-                      ),
-                    // Second row: Partner duty group chip (always at bottom)
-                    if (widget.partnerDutyAbbreviation != null &&
-                        widget.partnerDutyAbbreviation!.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 3.0,
-                          vertical: 1.0,
-                        ),
-                        decoration: partnerBadgeDecoration,
-                        child: Text(
-                          widget.partnerDutyAbbreviation!,
-                          style: partnerBadgeTextStyle.copyWith(fontSize: 10.0),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            // Spacer to push chips to bottom when no chips are present
-            if (!hasPrimary && !hasPartner) const Spacer(),
-            // Add bottom padding to create equal spacing
-            const SizedBox(height: 4.0),
+            _buildDayNumber(theme),
+            _buildHolidayIndicator(),
+            _buildPrimaryChip(theme),
+            _buildPartnerChip(theme),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDayNumber(ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2.0),
+      child: Text('${widget.day.day}', style: _getDayTextStyle(theme)),
+    );
+  }
+
+  Widget _buildHolidayIndicator() {
+    if (!widget.hasSchoolHoliday || widget.holidayAccentColorValue == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
+      height: _holidayIndicatorHeight,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Color(
+          widget.holidayAccentColorValue!,
+        ).withValues(alpha: _holidayIndicatorAlpha),
+        borderRadius: BorderRadius.circular(1),
+      ),
+    );
+  }
+
+  Widget _buildPrimaryChip(ThemeData theme) {
+    final hasPrimary = widget.dutyAbbreviation?.isNotEmpty ?? false;
+    final hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+
+    if (hasPrimary) {
+      return _buildChip(
+        text: widget.dutyAbbreviation!,
+        decoration: _getDutyBadgeDecoration(theme),
+        textStyle: _getDutyBadgeTextStyle(theme),
+        margin: const EdgeInsets.only(bottom: _chipBottomMargin),
+      );
+    } else if (hasPartner) {
+      return _buildPlaceholder();
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildPartnerChip(ThemeData theme) {
+    final hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+
+    if (!hasPartner) return const SizedBox.shrink();
+
+    return _buildChip(
+      text: widget.partnerDutyAbbreviation!,
+      decoration: _getPartnerBadgeDecoration(theme),
+      textStyle: _getPartnerBadgeTextStyle(theme),
+    );
+  }
+
+  Widget _buildChip({
+    required String text,
+    required BoxDecoration decoration,
+    required TextStyle textStyle,
+    EdgeInsets? margin,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: _chipPadding),
+      child: Container(
+        margin: margin,
+        padding: const EdgeInsets.symmetric(
+          horizontal: _chipHorizontalPadding,
+          vertical: _chipVerticalPadding,
+        ),
+        decoration: decoration,
+        child: Text(text, style: textStyle),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return Padding(
+      padding: const EdgeInsets.only(top: _chipPadding),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: _chipPlaceholderBottomMargin),
+        padding: const EdgeInsets.symmetric(
+          horizontal: _chipHorizontalPadding,
+          vertical: _chipVerticalPadding,
+        ),
+        child: const SizedBox(height: _chipHeight),
       ),
     );
   }
@@ -189,26 +210,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     final Color myAccentColor = Color(
       widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
     );
-    switch (widget.dayType) {
-      case CalendarDayType.default_:
-      case CalendarDayType.today:
-        return BoxDecoration(
-          color: myAccentColor,
-          borderRadius: BorderRadius.circular(4),
-        );
-      case CalendarDayType.outside:
-        return BoxDecoration(
-          color: theme.brightness == Brightness.dark
-              ? Colors.grey.shade400.withValues(alpha: 0.8)
-              : theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
-          borderRadius: BorderRadius.circular(4),
-        );
-      case CalendarDayType.selected:
-        return BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(4),
-        );
-    }
+    return _getBadgeDecoration(theme, myAccentColor);
   }
 
   BoxDecoration _getPartnerBadgeDecoration(ThemeData theme) {
@@ -216,12 +218,15 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
       widget.partnerAccentColorValue ??
           AccentColorDefaults.partnerAccentColorValue,
     );
-    // Partner chip: use configured accent or secondary color scheme variant
+    return _getBadgeDecoration(theme, partnerColor);
+  }
+
+  BoxDecoration _getBadgeDecoration(ThemeData theme, Color accentColor) {
     switch (widget.dayType) {
       case CalendarDayType.default_:
       case CalendarDayType.today:
         return BoxDecoration(
-          color: partnerColor,
+          color: accentColor,
           borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.outside:
@@ -235,29 +240,6 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         return BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(4),
-        );
-    }
-  }
-
-  TextStyle _getPartnerBadgeTextStyle(ThemeData theme) {
-    final Color partnerColor = Color(
-      widget.partnerAccentColorValue ??
-          AccentColorDefaults.partnerAccentColorValue,
-    );
-    switch (widget.dayType) {
-      case CalendarDayType.default_:
-      case CalendarDayType.outside:
-      case CalendarDayType.today:
-        return const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        );
-      case CalendarDayType.selected:
-        return TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: partnerColor,
         );
     }
   }
@@ -266,6 +248,18 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     final Color myAccentColor = Color(
       widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
     );
+    return _getBadgeTextStyle(theme, myAccentColor);
+  }
+
+  TextStyle _getPartnerBadgeTextStyle(ThemeData theme) {
+    final Color partnerColor = Color(
+      widget.partnerAccentColorValue ??
+          AccentColorDefaults.partnerAccentColorValue,
+    );
+    return _getBadgeTextStyle(theme, partnerColor);
+  }
+
+  TextStyle _getBadgeTextStyle(ThemeData theme, Color accentColor) {
     switch (widget.dayType) {
       case CalendarDayType.default_:
       case CalendarDayType.outside:
@@ -279,13 +273,9 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         return TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: myAccentColor,
+          color: accentColor,
         );
     }
-  }
-
-  EdgeInsets _getMargin() {
-    return const EdgeInsets.all(2);
   }
 }
 
