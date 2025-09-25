@@ -167,6 +167,7 @@ class CalendarViewUiBuilder {
           },
           shouldAnimate: shouldAnimate,
           isLoading: isLoadingSelectedDay,
+          selectedDay: state?.selectedDay,
         );
       },
     );

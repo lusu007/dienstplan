@@ -453,4 +453,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String noHolidayDataForYear(int year) {
     return 'Keine Feriendaten für das Jahr $year verfügbar';
   }
+
+  @override
+  String get vacation => 'Ferien';
+
+  @override
+  String get publicHoliday => 'Feiertag';
+
+  @override
+  String get movableHoliday => 'Beweglich';
 }
