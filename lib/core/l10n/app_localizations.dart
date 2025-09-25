@@ -911,6 +911,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No holiday data available for year {year}'**
   String noHolidayDataForYear(int year);
+
+  /// Label for vacation/regular holidays
+  ///
+  /// In en, this message translates to:
+  /// **'Vacation'**
+  String get vacation;
+
+  /// Label for public holidays
+  ///
+  /// In en, this message translates to:
+  /// **'Public Holiday'**
+  String get publicHoliday;
+
+  /// Label for movable holidays
+  ///
+  /// In en, this message translates to:
+  /// **'Movable'**
+  String get movableHoliday;
 }
 
 class _AppLocalizationsDelegate

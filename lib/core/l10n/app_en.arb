@@ -604,5 +604,17 @@
         "example": "2025"
       }
     }
+  },
+  "vacation": "Vacation",
+  "@vacation": {
+    "description": "Label for vacation/regular holidays"
+  },
+  "publicHoliday": "Public Holiday",
+  "@publicHoliday": {
+    "description": "Label for public holidays"
+  },
+  "movableHoliday": "Movable",
+  "@movableHoliday": {
+    "description": "Label for movable holidays"
   }
 }
