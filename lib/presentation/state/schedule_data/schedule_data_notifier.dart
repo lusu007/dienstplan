@@ -40,9 +40,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
+
+    // Return cached state if available and still valid, otherwise initialize
     if (_cachedState != null) {
       return _cachedState!;
     }
+
     return await _initialize();
   }
 
@@ -288,6 +291,11 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     final current = await future;
     if (!ref.mounted) return;
     state = AsyncData(current.copyWith(error: null));
+  }
+
+  /// Invalidates the cached state to force reload with new settings
+  void invalidateCache() {
+    _cachedState = null;
   }
 
   Future<String> _presentFailure(Failure failure) async {
