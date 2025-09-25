@@ -84,18 +84,21 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   }
 
   Widget _buildHolidayIndicator() {
-    if (!widget.hasSchoolHoliday || widget.holidayAccentColorValue == null) {
+    if (!widget.hasSchoolHoliday) {
       return const SizedBox.shrink();
     }
+
+    // Use default color if no color is explicitly set
+    final int colorValue =
+        widget.holidayAccentColorValue ??
+        AccentColorDefaults.holidayAccentColorValue;
 
     return Container(
       margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
       height: _holidayIndicatorHeight,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(
-          widget.holidayAccentColorValue!,
-        ).withValues(alpha: _holidayIndicatorAlpha),
+        color: Color(colorValue).withValues(alpha: _holidayIndicatorAlpha),
         borderRadius: BorderRadius.circular(1),
       ),
     );

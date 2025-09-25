@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 
 /// Optimized calendar day card with selective provider watching
 class CalendarDayCard extends ConsumerWidget {
@@ -41,6 +42,24 @@ class CalendarDayCard extends ConsumerWidget {
       ),
     );
 
+    final holidayAccentColor = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.holidayAccentColorValue,
+      ),
+    );
+
+    // Watch school holidays state
+    final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
+    final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
+
+    final hasSchoolHoliday =
+        holidaysState?.isEnabled == true &&
+        holidaysState?.hasHolidayOnDate(day) == true;
+    final holidays = hasSchoolHoliday
+        ? holidaysState?.getHolidaysForDate(day) ?? []
+        : [];
+    final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
+
     final isSelected = _isDaySelected(selectedDay);
 
     return RepaintBoundary(
@@ -49,10 +68,13 @@ class CalendarDayCard extends ConsumerWidget {
         dutyAbbreviation: dutyAbbreviation ?? '',
         partnerAccentColorValue: partnerAccentColor,
         myAccentColorValue: myAccentColor,
+        holidayAccentColorValue: holidayAccentColor,
         dayType: dayType,
         width: width,
         height: height,
         isSelected: isSelected,
+        hasSchoolHoliday: hasSchoolHoliday,
+        schoolHolidayName: schoolHolidayName,
         onTap: () => _handleDayTap(ref),
       ),
     );

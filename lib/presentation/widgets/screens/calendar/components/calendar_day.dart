@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 
@@ -77,6 +78,18 @@ class _CalendarDayContent extends ConsumerWidget {
       partnerGroup: partnerGroup,
     );
 
+    // Watch school holidays state
+    final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
+    final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
+
+    final hasSchoolHoliday =
+        holidaysState?.isEnabled == true &&
+        holidaysState?.hasHolidayOnDate(day) == true;
+    final holidays = hasSchoolHoliday
+        ? holidaysState?.getHolidaysForDate(day) ?? []
+        : [];
+    final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
+
     final isSelected = _isSelected(ref);
 
     return AnimatedCalendarDay(
@@ -85,10 +98,13 @@ class _CalendarDayContent extends ConsumerWidget {
       partnerDutyAbbreviation: partnerAbbreviation,
       partnerAccentColorValue: state?.partnerAccentColorValue,
       myAccentColorValue: state?.myAccentColorValue,
+      holidayAccentColorValue: state?.holidayAccentColorValue,
       dayType: dayType,
       width: width ?? CalendarConfig.kCalendarDayWidth,
       height: height ?? CalendarConfig.kCalendarDayHeight,
       isSelected: isSelected,
+      hasSchoolHoliday: hasSchoolHoliday,
+      schoolHolidayName: schoolHolidayName,
       onTap: () async {
         try {
           // Trigger day selection via provider

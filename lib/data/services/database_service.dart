@@ -102,6 +102,7 @@ class DatabaseService {
         show_school_holidays INTEGER,
         school_holiday_state_code TEXT,
         last_school_holiday_refresh TEXT,
+        holiday_accent_color INTEGER,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
