@@ -810,16 +810,16 @@ abstract class AppLocalizations {
   /// **'Clear All'**
   String get clearAll;
 
-  /// Title for school holidays section
+  /// Title for school holidays and public holidays section
   ///
   /// In en, this message translates to:
-  /// **'School Holidays'**
+  /// **'Holidays & Public Holidays'**
   String get schoolHolidays;
 
-  /// Label for showing school holidays toggle
+  /// Label for showing school holidays and public holidays toggle
   ///
   /// In en, this message translates to:
-  /// **'Show School Holidays'**
+  /// **'Show Holidays & Public Holidays'**
   String get showSchoolHolidays;
 
   /// Loading text
@@ -929,6 +929,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Movable'**
   String get movableHoliday;
+
+  /// Information about what types of holidays are displayed
+  ///
+  /// In en, this message translates to:
+  /// **'Shows school holidays and public holidays'**
+  String get holidayTypesInfo;
 }
 
 class _AppLocalizationsDelegate

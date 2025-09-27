@@ -504,13 +504,13 @@
   "@clearAll": {
     "description": "Button text to clear all filters"
   },
-  "schoolHolidays": "Schulferien",
+  "schoolHolidays": "Ferien & Feiertage",
   "@schoolHolidays": {
-    "description": "Title for school holidays section"
+    "description": "Title for school holidays and public holidays section"
   },
-  "showSchoolHolidays": "Schulferien anzeigen",
+  "showSchoolHolidays": "Ferien & Feiertage anzeigen",
   "@showSchoolHolidays": {
-    "description": "Label for showing school holidays toggle"
+    "description": "Label for showing school holidays and public holidays toggle"
   },
   "loading": "Lädt...",
   "@loading": {
@@ -613,5 +613,9 @@
   "movableHoliday": "Beweglich",
   "@movableHoliday": {
     "description": "Label for movable holidays"
+  },
+  "holidayTypesInfo": "Zeigt Schulferien und gesetzliche Feiertage an",
+  "@holidayTypesInfo": {
+    "description": "Information about what types of holidays are displayed"
   }
 }

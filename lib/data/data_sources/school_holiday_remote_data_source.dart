@@ -38,20 +38,16 @@ class SchoolHolidayRemoteDataSourceImpl
     required int year,
   }) async {
     try {
-      // MSC v2.1 endpoint: /federal-states/{slug}/periods?start_date&end_date&type=vacation
+      // MSC v2.1 endpoint: /federal-states/{slug}/periods?start_date&end_date
       final String slug = _getStateNameFromCode(stateCode);
       final String start = '$year-01-01';
       final String end = '$year-12-31';
       await AppLogger.i(
-        'SchoolHolidayRemote: Request GET /federal-states/$slug/periods?start_date=$start&end_date=$end&type=vacation',
+        'SchoolHolidayRemote: Request GET /federal-states/$slug/periods?start_date=$start&end_date=$end',
       );
       final response = await _dio.get(
         '/federal-states/$slug/periods',
-        queryParameters: {
-          'start_date': start,
-          'end_date': end,
-          'type': 'vacation',
-        },
+        queryParameters: {'start_date': start, 'end_date': end},
       );
       if (response.statusCode == 200) {
         await AppLogger.d(
