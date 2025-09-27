@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.12.0](https://github.com/lusu007/dienstplan/compare/v0.11.0...v0.12.0) (2025-09-27)
+
+
+### Features
+
+* Add filter to Dienstplan selection ([#299](https://github.com/lusu007/dienstplan/issues/299)) ([d0bb960](https://github.com/lusu007/dienstplan/commit/d0bb96061064c2d01a100169230f826e1d191cab))
+* Add new schedules for OPB Bremenhaven ([#298](https://github.com/lusu007/dienstplan/issues/298)) ([66b1e14](https://github.com/lusu007/dienstplan/commit/66b1e14b0e61f97da3168d33c2183e508ca192dd))
+* Add school holidays ([#303](https://github.com/lusu007/dienstplan/issues/303)) ([cb915f5](https://github.com/lusu007/dienstplan/commit/cb915f5ab401d69b5bf0b3a91294663995b083bb))
+* Show holidays in duty list ([#309](https://github.com/lusu007/dienstplan/issues/309)) ([55cac2f](https://github.com/lusu007/dienstplan/commit/55cac2f047132e3d6751057ff432a9be0fc1779b))
+
+
+### Bug Fixes
+
+* Add credits to the README and about screen ([#312](https://github.com/lusu007/dienstplan/issues/312)) ([16811a8](https://github.com/lusu007/dienstplan/commit/16811a85484943de65ce30409eb6c676e6a3ad38))
+* Also show school public holidays in the calendar ([#310](https://github.com/lusu007/dienstplan/issues/310)) ([a2a5f9d](https://github.com/lusu007/dienstplan/commit/a2a5f9d3b9f2b4f75add7bbf86079ce2be7eb63a))
+* Correctly apply changed accent color to holidays ([#308](https://github.com/lusu007/dienstplan/issues/308)) ([b76c878](https://github.com/lusu007/dienstplan/commit/b76c87853c55a80940d6ceddf322cdb06af4c7b9))
+* Correctly space chips in calendar day ([#307](https://github.com/lusu007/dienstplan/issues/307)) ([9bbad92](https://github.com/lusu007/dienstplan/commit/9bbad9269e330ee37dd5992bc07f1fa1ca8fdb82))
+* Fix multiple issues introduced with new notifier setup ([#295](https://github.com/lusu007/dienstplan/issues/295)) ([60dbeba](https://github.com/lusu007/dienstplan/commit/60dbebad0d0fc876c7d08c42127f06611db229ff))
+* Fix z-index of cards to prevent overlapping ([#297](https://github.com/lusu007/dienstplan/issues/297)) ([7d4fd3b](https://github.com/lusu007/dienstplan/commit/7d4fd3ba897e871cf16acceab54b593f046363c2))
+* Improve settings page design ([#311](https://github.com/lusu007/dienstplan/issues/311)) ([da95f87](https://github.com/lusu007/dienstplan/commit/da95f87c7c1ec2fb27584459b33544018c45a0a0))
+* Improve spacing in setup UI ([#300](https://github.com/lusu007/dienstplan/issues/300)) ([2c69d8e](https://github.com/lusu007/dienstplan/commit/2c69d8eff5f3e585020d2a0d07f818fec5862c44))
+* Load holidays when changing year ([#306](https://github.com/lusu007/dienstplan/issues/306)) ([efe7518](https://github.com/lusu007/dienstplan/commit/efe75185ac6f22bc65ab9e83e376aa10537cdc6e))
+* Loading schedules for expanded range ([#305](https://github.com/lusu007/dienstplan/issues/305)) ([c3eef42](https://github.com/lusu007/dienstplan/commit/c3eef4270c93ffbb46035ac9e6eca668f9e63a3b))
+* refine features section ([#313](https://github.com/lusu007/dienstplan/issues/313)) ([99e2984](https://github.com/lusu007/dienstplan/commit/99e298408c9cdd7c9f9fd1a563e93048791a71ce))
+
 ## [0.11.0](https://github.com/lusu007/dienstplan/compare/v0.10.5...v0.11.0) (2025-09-15)
 
 
