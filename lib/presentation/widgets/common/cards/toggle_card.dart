@@ -25,6 +25,18 @@ class ToggleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
+
+    // Use disabled colors when not enabled
+    final Color effectiveIconColor = enabled
+        ? iconColor
+        : theme.colorScheme.onSurfaceVariant;
+    final Color effectiveTitleColor = enabled
+        ? theme.colorScheme.onSurface
+        : theme.colorScheme.onSurfaceVariant;
+    final Color effectiveSubtitleColor = enabled
+        ? theme.colorScheme.onSurfaceVariant
+        : theme.colorScheme.onSurface.withValues(alpha: 0.38);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -37,7 +49,7 @@ class ToggleCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, color: iconColor, size: 40),
+            Icon(icon, color: effectiveIconColor, size: 40),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -48,7 +60,7 @@ class ToggleCard extends StatelessWidget {
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: theme.colorScheme.onSurface,
+                      color: effectiveTitleColor,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -60,7 +72,7 @@ class ToggleCard extends StatelessWidget {
                                 subtitle!,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontSize: 15,
-                                  color: theme.colorScheme.onSurfaceVariant,
+                                  color: effectiveSubtitleColor,
                                 ),
                               )
                             : const SizedBox.shrink(),
