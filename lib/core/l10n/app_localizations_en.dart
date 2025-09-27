@@ -393,10 +393,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearAll => 'Clear All';
 
   @override
-  String get schoolHolidays => 'School Holidays';
+  String get schoolHolidays => 'Holidays & Public Holidays';
 
   @override
-  String get showSchoolHolidays => 'Show School Holidays';
+  String get showSchoolHolidays => 'Show Holidays & Public Holidays';
 
   @override
   String get loading => 'Loading...';
@@ -461,4 +461,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get movableHoliday => 'Movable';
+
+  @override
+  String get holidayTypesInfo => 'Shows school holidays and public holidays';
 }
