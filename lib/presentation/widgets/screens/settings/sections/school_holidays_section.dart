@@ -72,76 +72,82 @@ class SchoolHolidaysSection extends ConsumerWidget {
               ),
               onTap: null,
             ),
-            if (isEnabled) ...[
-              NavigationCard(
-                icon: Icons.location_on_outlined,
-                title: l10n.federalState,
-                subtitle: selectedState?.name ?? l10n.noFederalStateSelected,
-                onTap: () async {
-                  final selected = await showDialog<String>(
-                    context: context,
-                    builder: (context) => GermanStateDialog(
-                      selectedStateCode: state.selectedStateCode,
-                    ),
-                  );
+            NavigationCard(
+              icon: Icons.location_on_outlined,
+              title: l10n.federalState,
+              subtitle: selectedState?.name ?? l10n.noFederalStateSelected,
+              enabled: isEnabled,
+              onTap: isEnabled
+                  ? () async {
+                      final selected = await showDialog<String>(
+                        context: context,
+                        builder: (context) => GermanStateDialog(
+                          selectedStateCode: state.selectedStateCode,
+                        ),
+                      );
 
-                  if (selected != null) {
-                    await ref
-                        .read(schoolHolidaysProvider.notifier)
-                        .setSelectedState(selected);
-                  }
-                },
+                      if (selected != null) {
+                        await ref
+                            .read(schoolHolidaysProvider.notifier)
+                            .setSelectedState(selected);
+                      }
+                    }
+                  : null,
+            ),
+            // Show error message if there's an error
+            if (state.error != null)
+              NavigationCard(
+                icon: Icons.error_outline,
+                title: l10n.error,
+                subtitle: state.getResolvedError(l10n) ?? l10n.errorLoading,
+                trailing: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    ref.read(schoolHolidaysProvider.notifier).clearError();
+                  },
+                ),
+                onTap: null,
               ),
-              if (state.selectedStateCode != null) ...[
-                // Show error message if there's an error
-                if (state.error != null)
-                  NavigationCard(
-                    icon: Icons.error_outline,
-                    title: l10n.error,
-                    subtitle: state.getResolvedError(l10n) ?? l10n.errorLoading,
-                    trailing: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        ref.read(schoolHolidaysProvider.notifier).clearError();
-                      },
-                    ),
-                    onTap: null,
-                  ),
-                NavigationCard(
-                  icon: Icons.refresh_outlined,
-                  title: l10n.refreshHolidayData,
-                  subtitle: state.lastRefreshTime != null
-                      ? l10n.lastUpdated(
-                          _formatLastUpdate(state.lastRefreshTime!, l10n),
-                        )
-                      : l10n.notUpdatedYet,
-                  onTap: state.isRefreshing
-                      ? null
-                      : () {
-                          ref
-                              .read(schoolHolidaysProvider.notifier)
-                              .refreshHolidays();
-                        },
-                  trailing: state.isRefreshing
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : null,
-                ),
-                NavigationCard(
-                  icon: Icons.color_lens_outlined,
-                  title: l10n.holidayAccentColor,
-                  subtitle: _getHolidayAccentColorName(settingsState, l10n),
-                  trailing: _buildHolidayAccentColorChip(
-                    context,
-                    settingsState?.holidayAccentColorValue,
-                  ),
-                  onTap: () => HolidayColorDialog.show(context),
-                ),
-              ],
-            ],
+            NavigationCard(
+              icon: Icons.color_lens_outlined,
+              title: l10n.holidayAccentColor,
+              subtitle: _getHolidayAccentColorName(settingsState, l10n),
+              trailing: _buildHolidayAccentColorChip(
+                context,
+                settingsState?.holidayAccentColorValue,
+              ),
+              enabled: isEnabled && state.selectedStateCode != null,
+              onTap: (isEnabled && state.selectedStateCode != null)
+                  ? () => HolidayColorDialog.show(context)
+                  : null,
+            ),
+            NavigationCard(
+              icon: Icons.refresh_outlined,
+              title: l10n.refreshHolidayData,
+              subtitle: state.lastRefreshTime != null
+                  ? l10n.lastUpdated(
+                      _formatLastUpdate(state.lastRefreshTime!, l10n),
+                    )
+                  : l10n.notUpdatedYet,
+              enabled: isEnabled && state.selectedStateCode != null,
+              onTap:
+                  (isEnabled &&
+                      state.selectedStateCode != null &&
+                      !state.isRefreshing)
+                  ? () {
+                      ref
+                          .read(schoolHolidaysProvider.notifier)
+                          .refreshHolidays();
+                    }
+                  : null,
+              trailing: state.isRefreshing
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : null,
+            ),
           ],
         );
       },
