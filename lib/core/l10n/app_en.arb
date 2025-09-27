@@ -229,6 +229,18 @@
   "@aboutDisclaimer": {
     "description": "Disclaimer text shown in the about dialog"
   },
+  "credits": "Credits",
+  "@credits": {
+    "description": "Title for the credits section"
+  },
+  "mehrSchulferienCredits": "School holiday and public holiday data is provided by Mehr-Schulferien.de. Thank you for the free API and great work!",
+  "@mehrSchulferienCredits": {
+    "description": "Credits text for Mehr-Schulferien.de"
+  },
+  "visitMehrSchulferien": "Visit Mehr-Schulferien.de",
+  "@visitMehrSchulferien": {
+    "description": "Link text to visit mehr-schulferien.de"
+  },
   "disclaimerLong": "This application is not an official product of any government authority or agency. The Dienstplan App has been developed independently and is not officially affiliated with the police or any government entity.\n\nThe data used in this application originates from publicly accessible information materials of the police unions GdP (Gewerkschaft der Polizei) and DPolG (Deutsche Polizeigewerkschaft). Only publicly available information has been utilized. No internal or confidential agency data has been published or processed without authorization.\n\nThis application is intended for private use only and makes no claim to the completeness or accuracy of the information provided.",
   "@disclaimerLong": {
     "description": "Full disclaimer text for the disclaimer popup"

@@ -434,6 +434,24 @@ abstract class AppLocalizations {
   /// **'This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.'**
   String get aboutDisclaimer;
 
+  /// Title for the credits section
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get credits;
+
+  /// Credits text for Mehr-Schulferien.de
+  ///
+  /// In en, this message translates to:
+  /// **'School holiday and public holiday data is provided by Mehr-Schulferien.de. Thank you for the free API and great work!'**
+  String get mehrSchulferienCredits;
+
+  /// Link text to visit mehr-schulferien.de
+  ///
+  /// In en, this message translates to:
+  /// **'Visit Mehr-Schulferien.de'**
+  String get visitMehrSchulferien;
+
   /// Full disclaimer text for the disclaimer popup
   ///
   /// In en, this message translates to:
