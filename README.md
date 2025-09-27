@@ -13,51 +13,30 @@ A modern, cross-platform mobile application designed specifically for police off
 
 ## 🚀 Features
 
-### 📱 Core Functionality
-- **📅 Interactive Calendar**: Easy-to-use calendar with month and year picker for quick navigation to any date
-- **👥 Personal Duty Group**: Set your preferred duty group for personalized schedule views
-- **🔄 Works Offline**: No internet connection required - all data stored on your device
-- **⚡ Fast Loading**: Quick access to your schedule with optimized performance
+### 📱 Core Features
+- **📅 Interactive Calendar**: Easy-to-use calendar with month/year picker for quick navigation
+- **👥 Personal Duty Groups**: Set your preferred duty group for personalized schedule views
+- **🔄 Offline First**: No internet required - all data stored locally on your device
 - **🌍 Multi-Language**: Full German and English localization
-- **📊 Multiple Schedules**: Switch between different duty schedule types (e.g., Bereitschaftspolizei, ESD)
+- **📊 Multiple Schedules**: Switch between different duty schedule types (Bereitschaftspolizei, ESD, etc.)
 
 ### 🎯 Smart Schedule Management
-- **🎯 Smart Schedule Generation**: Automatically generates your schedule based on rotation patterns
-- **📋 Detailed Duty Information**: Tap any date to see your specific duty details and times
-- **🔧 Flexible Duty Types**: Support for various duty types like Frühdienst, Spätdienst, Nachtdienst, and special assignments
+- **🎯 Auto Schedule Generation**: Automatically generates schedules based on rotation patterns
 - **👥 Partner Integration**: Track your partner's schedule alongside your own
-- **🎨 Customizable Colors**: Personalize your schedule with custom accent colors for you and your partner
-- **📊 Filter Your View**: Filter schedules by duty group to focus on your assignments
+- **🎨 Customizable Colors**: Personalize schedules with custom accent colors
+- **📋 Detailed Duty Info**: Tap any date to see specific duty details and times
+- **🔧 Flexible Duty Types**: Support for Frühdienst, Spätdienst, Nachtdienst, and special assignments
 
 ### 🏫 School Holidays & Public Holidays
-- **📚 School Holiday Integration**: View school holidays and public holidays directly in your calendar
+- **📚 Holiday Integration**: View school holidays and public holidays directly in your calendar
 - **🗺️ Federal State Selection**: Choose your federal state for accurate holiday data
-- **🎨 Holiday Color Customization**: Customize the display color for holidays
-- **🔄 Automatic Updates**: Refresh holiday data to stay up-to-date
 - **📡 Powered by Mehr-Schulferien.de**: Uses the excellent free API from [Mehr-Schulferien.de](https://www.mehr-schulferien.de/) for accurate holiday data
-
-### 🛠 Advanced Features
-- **📱 Modern Interface**: Clean, intuitive design that's easy to navigate
-- **🔄 Remember Your Settings**: App remembers your preferences, selected dates, and duty group
-- **🎨 Theme Customization**: Choose between light and dark themes
-- **📊 Detailed Schedule View**: Comprehensive duty list with filtering and sorting options
-- **🔍 Smart Search**: Quickly find specific duties and dates
-- **📱 Responsive Design**: Optimized for different screen sizes
 
 ### 🔒 Privacy & Security
 - **🔐 Your Data Stays Private**: All schedule data stored locally on your device
 - **🚫 No Cloud Sync**: Your personal schedule information never leaves your device
-- **📊 Optional Error Reporting**: Help improve the app with optional Sentry analytics (can be turned off)
-- **🔒 Complete Privacy**: No personal data collection or tracking
+- **📊 Optional Analytics**: Help improve the app with optional Sentry analytics (can be turned off)
 - **🛡️ GDPR Compliant**: Full compliance with European data protection regulations
-
-### 🏗 Technical Features
-- **Clean Architecture**: Separation of concerns with domain, data, and presentation layers
-- **Dependency Injection**: Riverpod-based providers for testable and composable components
-- **State Management**: Riverpod (AsyncNotifier/codegen) with Freezed unions for robust UI states
-- **Database Migration**: Automatic schema updates with user notifications
-- **Error Handling**: Comprehensive error tracking and user-friendly error messages
-- **Offline First**: Complete offline functionality with local data storage
 
 ---
 
