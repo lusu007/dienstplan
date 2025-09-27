@@ -29,6 +29,10 @@ class AboutScreen extends StatelessWidget {
               _buildAppInfoSection(context, l10n),
               const SizedBox(height: 16),
 
+              // Credits Section
+              _buildCreditsSection(context, l10n),
+              const SizedBox(height: 16),
+
               // Legal Section
               _buildLegalSection(context, l10n),
             ],
@@ -112,6 +116,20 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildCreditsSection(BuildContext context, AppLocalizations l10n) {
+    return SettingsSection(
+      title: l10n.credits,
+      cards: [
+        NavigationCard(
+          icon: Icons.school_outlined,
+          title: l10n.visitMehrSchulferien,
+          subtitle: l10n.mehrSchulferienCredits,
+          onTap: () => _openMehrSchulferien(),
+        ),
+      ],
+    );
+  }
+
   Widget _buildLegalSection(BuildContext context, AppLocalizations l10n) {
     return SettingsSection(
       title: l10n.legal,
@@ -144,6 +162,15 @@ class AboutScreen extends StatelessWidget {
       content: SingleChildScrollView(child: Text(l10n.disclaimerLong)),
       showCloseButton: true,
     );
+  }
+
+  Future<void> _openMehrSchulferien() async {
+    final Uri mehrSchulferienUri = Uri.parse(
+      'https://www.mehr-schulferien.de/',
+    );
+    if (await canLaunchUrl(mehrSchulferienUri)) {
+      await launchUrl(mehrSchulferienUri, mode: LaunchMode.externalApplication);
+    }
   }
 
   Future<void> _openPrivacyPolicy() async {

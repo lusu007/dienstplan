@@ -184,6 +184,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.';
 
   @override
+  String get credits => 'Credits';
+
+  @override
+  String get mehrSchulferienCredits =>
+      'School holiday and public holiday data is provided by Mehr-Schulferien.de. Thank you for the free API and great work!';
+
+  @override
+  String get visitMehrSchulferien => 'Visit Mehr-Schulferien.de';
+
+  @override
   String get disclaimerLong =>
       'This application is not an official product of any government authority or agency. The Dienstplan App has been developed independently and is not officially affiliated with the police or any government entity.\n\nThe data used in this application originates from publicly accessible information materials of the police unions GdP (Gewerkschaft der Polizei) and DPolG (Deutsche Polizeigewerkschaft). Only publicly available information has been utilized. No internal or confidential agency data has been published or processed without authorization.\n\nThis application is intended for private use only and makes no claim to the completeness or accuracy of the information provided.';
 

@@ -18,22 +18,38 @@ A modern, cross-platform mobile application designed specifically for police off
 - **👥 Personal Duty Group**: Set your preferred duty group for personalized schedule views
 - **🔄 Works Offline**: No internet connection required - all data stored on your device
 - **⚡ Fast Loading**: Quick access to your schedule with optimized performance
-- **🌍 German Language**: Full German localization for native users
+- **🌍 Multi-Language**: Full German and English localization
 - **📊 Multiple Schedules**: Switch between different duty schedule types (e.g., Bereitschaftspolizei, ESD)
 
-### 🛠 Advanced Features
+### 🎯 Smart Schedule Management
 - **🎯 Smart Schedule Generation**: Automatically generates your schedule based on rotation patterns
 - **📋 Detailed Duty Information**: Tap any date to see your specific duty details and times
 - **🔧 Flexible Duty Types**: Support for various duty types like Frühdienst, Spätdienst, Nachtdienst, and special assignments
+- **👥 Partner Integration**: Track your partner's schedule alongside your own
+- **🎨 Customizable Colors**: Personalize your schedule with custom accent colors for you and your partner
+- **📊 Filter Your View**: Filter schedules by duty group to focus on your assignments
+
+### 🏫 School Holidays & Public Holidays
+- **📚 School Holiday Integration**: View school holidays and public holidays directly in your calendar
+- **🗺️ Federal State Selection**: Choose your federal state for accurate holiday data
+- **🎨 Holiday Color Customization**: Customize the display color for holidays
+- **🔄 Automatic Updates**: Refresh holiday data to stay up-to-date
+- **📡 Powered by Mehr-Schulferien.de**: Uses the excellent free API from [Mehr-Schulferien.de](https://www.mehr-schulferien.de/) for accurate holiday data
+
+### 🛠 Advanced Features
 - **📱 Modern Interface**: Clean, intuitive design that's easy to navigate
 - **🔄 Remember Your Settings**: App remembers your preferences, selected dates, and duty group
-- **📊 Filter Your View**: Filter schedules by duty group to focus on your assignments
+- **🎨 Theme Customization**: Choose between light and dark themes
+- **📊 Detailed Schedule View**: Comprehensive duty list with filtering and sorting options
+- **🔍 Smart Search**: Quickly find specific duties and dates
+- **📱 Responsive Design**: Optimized for different screen sizes
 
 ### 🔒 Privacy & Security
 - **🔐 Your Data Stays Private**: All schedule data stored locally on your device
 - **🚫 No Cloud Sync**: Your personal schedule information never leaves your device
-- **📊 Optional Error Reporting**: Help improve the app with optional error reporting (can be turned off)
+- **📊 Optional Error Reporting**: Help improve the app with optional Sentry analytics (can be turned off)
 - **🔒 Complete Privacy**: No personal data collection or tracking
+- **🛡️ GDPR Compliant**: Full compliance with European data protection regulations
 
 ### 🏗 Technical Features
 - **Clean Architecture**: Separation of concerns with domain, data, and presentation layers
@@ -41,6 +57,7 @@ A modern, cross-platform mobile application designed specifically for police off
 - **State Management**: Riverpod (AsyncNotifier/codegen) with Freezed unions for robust UI states
 - **Database Migration**: Automatic schema updates with user notifications
 - **Error Handling**: Comprehensive error tracking and user-friendly error messages
+- **Offline First**: Complete offline functionality with local data storage
 
 ---
 
@@ -174,21 +191,6 @@ flutter test
 flutter build apk --release
 ```
 
-### Key Dependencies
-- **State Management**: `flutter_riverpod: ^2.6.1`, `riverpod_annotation: ^2.6.1`, `freezed_annotation: ^3.1.0`
-- **Dependency Injection**: via Riverpod providers (no separate service locator)
-- **Database**: `sqflite: ^2.4.2`
-- **Calendar**: `table_calendar: ^3.2.0`
-- **Localization**: `flutter_localizations`
-- **Error Tracking**: `sentry_flutter: ^9.6.0`
-
-### Architecture Patterns
-- **Clean Architecture**: Separation of concerns with clear layer boundaries
-- **Repository Pattern**: Abstract data access with concrete implementations
-- **Use Case Pattern**: Business logic encapsulation
-- **Riverpod**: State management and dependency injection via providers
-- **Dependency Injection**: Implemented with Riverpod providers (no service locator)
-
 ---
 
 ## 🤝 Contributing
@@ -232,6 +234,16 @@ This project is licensed under the **GNU Affero General Public License v3.0 (AGP
 - **Source code**: Open source under AGPL-3.0
 - **Compiled app**: Available commercially in app stores
 - **Personal builds**: Allowed for personal use
+
+---
+
+## 🙏 Acknowledgments
+
+### Data Sources
+- **School Holidays & Public Holidays**: Powered by the excellent free API from [Mehr-Schulferien.de](https://www.mehr-schulferien.de/). We thank the developers for providing this valuable service that makes accurate holiday data available to our users. The open-source project is available on [GitHub](https://github.com/mehr-schulferien-de/www.mehr-schulferien.de).
+
+### Open Source Libraries
+This project uses several open-source libraries. See the [About Screen](lib/presentation/screens/about_screen.dart) in the app for a complete list of licenses.
 
 ---
 

@@ -13,11 +13,16 @@ abstract interface class SchoolHolidayRemoteDataSource {
 }
 
 /// Implementation of SchoolHolidayRemoteDataSource using Mehr-Schulferien API v2.1
+///
+/// This implementation uses the free and open-source Mehr-Schulferien.de API
+/// (https://www.mehr-schulferien.de/) to fetch school holidays and public holidays
+/// for German federal states. We thank the developers for providing this valuable service!
 class SchoolHolidayRemoteDataSourceImpl
     implements SchoolHolidayRemoteDataSource {
   final Dio _dio;
 
   // Base URL for Mehr-Schulferien API v2.1
+  // API Documentation: https://www.mehr-schulferien.de/
   static const _baseUrl = 'https://www.mehr-schulferien.de/api/v2.1';
 
   SchoolHolidayRemoteDataSourceImpl({Dio? dio})
