@@ -427,12 +427,23 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       <Schedule>[...existing, ...incoming],
     );
 
+    // Cleanup old schedules to prevent memory accumulation
+    final DateTime currentDate = calendarState.focusedDay ?? DateTime.now();
+    final DateTime? selectedDay = calendarState.selectedDay;
+    final List<Schedule> cleanedSchedules = _scheduleMergeService!
+        .cleanupOldSchedules(
+          schedules: mergedSchedules,
+          currentDate: currentDate,
+          monthsToKeep: kMonthsToKeepInMemory,
+          selectedDay: selectedDay,
+        );
+
     final ScheduleUiState combined = _combineStates(
       calendarState,
       configState,
       partnerState,
       scheduleDataState,
-    ).copyWith(schedules: mergedSchedules);
+    ).copyWith(schedules: cleanedSchedules);
 
     state = AsyncData(combined);
   }

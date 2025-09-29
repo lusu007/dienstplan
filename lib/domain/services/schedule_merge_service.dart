@@ -99,6 +99,57 @@ class ScheduleMergeService {
     return result;
   }
 
+  /// Removes schedules outside the specified date range to prevent memory accumulation
+  /// Always preserves the month containing the selected day ±1 month for off days
+  List<Schedule> cleanupOldSchedules({
+    required List<Schedule> schedules,
+    required DateTime currentDate,
+    required int monthsToKeep,
+    DateTime? selectedDay,
+  }) {
+    final DateTime cutoffDate = DateTime(
+      currentDate.year,
+      currentDate.month - monthsToKeep,
+      1,
+    );
+
+    // If there's a selected day, ensure its month ±1 is always preserved
+    DateTime? selectedMonthStart;
+    DateTime? selectedMonthEnd;
+    if (selectedDay != null) {
+      // Get the month before and after the selected day's month
+      final selectedMonth = DateTime(selectedDay.year, selectedDay.month, 1);
+      selectedMonthStart = DateTime(
+        selectedMonth.year,
+        selectedMonth.month - 1,
+        1,
+      );
+      selectedMonthEnd = DateTime(
+        selectedMonth.year,
+        selectedMonth.month + 2,
+        0,
+      );
+    }
+
+    return schedules.where((schedule) {
+      // Keep schedules after cutoff date
+      if (schedule.date.isAfter(cutoffDate) ||
+          schedule.date.isAtSameMomentAs(cutoffDate)) {
+        return true;
+      }
+
+      // Always keep schedules from the selected day's month ±1
+      if (selectedMonthStart != null && selectedMonthEnd != null) {
+        if (schedule.date.isAfter(selectedMonthStart) &&
+            schedule.date.isBefore(selectedMonthEnd)) {
+          return true;
+        }
+      }
+
+      return false;
+    }).toList();
+  }
+
   bool _isSameScheduleDayAndGroup(Schedule a, Schedule b) {
     return a.date.year == b.date.year &&
         a.date.month == b.date.month &&
