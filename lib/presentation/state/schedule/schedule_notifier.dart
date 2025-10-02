@@ -390,9 +390,18 @@ class ScheduleNotifier extends _$ScheduleNotifier {
               range: combinedRange,
             );
 
+        // Cleanup old schedules to prevent memory accumulation
+        final List<Schedule> cleanedSchedules = _scheduleMergeService!
+            .cleanupOldSchedules(
+              schedules: mergedSchedules,
+              currentDate: day,
+              monthsToKeep: kMonthsToKeepInMemory,
+              selectedDay: current.selectedDay,
+            );
+
         // Update state with new schedules
         final newState = current.copyWith(
-          schedules: mergedSchedules,
+          schedules: cleanedSchedules,
           focusedDay: day,
           isLoading: false,
         );

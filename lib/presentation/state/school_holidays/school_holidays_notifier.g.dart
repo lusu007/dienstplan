@@ -35,7 +35,7 @@ final class SchoolHolidaysNotifierProvider
 }
 
 String _$schoolHolidaysNotifierHash() =>
-    r'0dfc094d150a29b2c1351729d4858856970a54b1';
+    r'46cc8ba6a88c9b82cfe48dada95e4a7fc5376806';
 
 abstract class _$SchoolHolidaysNotifier
     extends $AsyncNotifier<SchoolHolidaysUiState> {
