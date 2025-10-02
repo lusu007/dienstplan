@@ -20,7 +20,7 @@ final class ScheduleDataNotifierProvider
         argument: null,
         retry: null,
         name: r'scheduleDataProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -34,7 +34,7 @@ final class ScheduleDataNotifierProvider
 }
 
 String _$scheduleDataNotifierHash() =>
-    r'8a731f200e409835ba8055ae5f28f54a0ac8edd5';
+    r'c55293b8dd0a1720f9e864493e82d4753745be1d';
 
 abstract class _$ScheduleDataNotifier
     extends $AsyncNotifier<ScheduleDataUiState> {

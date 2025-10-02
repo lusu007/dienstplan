@@ -15,3 +15,10 @@ const int kExpectedSchedulesPerDay = 5;
 
 // Fraction of expected schedules that indicates sufficient coverage
 const double kCoverageThreshold = 0.8;
+
+// Cache configuration
+const Duration kCacheValidityDuration = Duration(minutes: 10);
+const int kMaxCacheEntries = 25;
+
+// UI optimization
+const Duration kBatchDelay = Duration(milliseconds: 16); // ~60fps

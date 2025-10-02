@@ -93,19 +93,12 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   // Calendar methods - optimized for selective updates
   Future<void> setFocusedDay(DateTime day) async {
-    AppLogger.d('ScheduleCoordinatorNotifier: setFocusedDay called for $day');
-
     await ref.read(calendarProvider.notifier).setFocusedDay(day);
     await _updateCalendarStateOnly();
     await _ensurePartnerDataForFocusedRange();
 
     // Trigger dynamic loading for the new focused range
-    AppLogger.d(
-      'ScheduleCoordinatorNotifier: Triggering dynamic loading for focused day',
-    );
     await _triggerDynamicLoadingForFocusedDay(day);
-
-    AppLogger.d('ScheduleCoordinatorNotifier: setFocusedDay completed');
   }
 
   Future<void> setSelectedDay(DateTime? day) async {
@@ -347,15 +340,17 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
     final scheduleDataState = await ref.read(scheduleDataProvider.future);
 
-    // Only update schedule data-related fields
-    final updatedState = currentState.copyWith(
-      schedules: scheduleDataState.schedules,
-      preferredDutyGroup: scheduleDataState.preferredDutyGroup,
-      selectedDutyGroup: scheduleDataState.selectedDutyGroup,
-      holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
-      isLoading: scheduleDataState.isLoading || currentState.isLoading,
-      error: scheduleDataState.error ?? currentState.error,
-    );
+    // Only update schedule data-related fields and update index
+    final updatedState = currentState
+        .copyWith(
+          schedules: scheduleDataState.schedules,
+          preferredDutyGroup: scheduleDataState.preferredDutyGroup,
+          selectedDutyGroup: scheduleDataState.selectedDutyGroup,
+          holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
+          isLoading: scheduleDataState.isLoading || currentState.isLoading,
+          error: scheduleDataState.error ?? currentState.error,
+        )
+        .updateScheduleIndex();
 
     state = AsyncData(updatedState);
   }
@@ -381,15 +376,17 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     );
 
     // Only update schedule data-related fields, but preserve the selectedDutyGroup
-    final updatedState = currentState.copyWith(
-      schedules: mergedSchedules,
-      preferredDutyGroup: scheduleDataState.preferredDutyGroup,
-      selectedDutyGroup:
-          selectedDutyGroup, // Use the provided value instead of scheduleDataState
-      holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
-      isLoading: scheduleDataState.isLoading || currentState.isLoading,
-      error: scheduleDataState.error ?? currentState.error,
-    );
+    final updatedState = currentState
+        .copyWith(
+          schedules: mergedSchedules,
+          preferredDutyGroup: scheduleDataState.preferredDutyGroup,
+          selectedDutyGroup:
+              selectedDutyGroup, // Use the provided value instead of scheduleDataState
+          holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
+          isLoading: scheduleDataState.isLoading || currentState.isLoading,
+          error: scheduleDataState.error ?? currentState.error,
+        )
+        .updateScheduleIndex();
 
     state = AsyncData(updatedState);
   }
@@ -443,7 +440,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       configState,
       partnerState,
       scheduleDataState,
-    ).copyWith(schedules: cleanedSchedules);
+    ).copyWith(schedules: cleanedSchedules).updateScheduleIndex();
 
     state = AsyncData(combined);
   }
@@ -498,31 +495,16 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   /// Triggers dynamic loading when focused day changes (e.g., via chevron navigation)
   Future<void> _triggerDynamicLoadingForFocusedDay(DateTime focusedDay) async {
     try {
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: _triggerDynamicLoadingForFocusedDay called for $focusedDay',
-      );
-
       final current = await future;
       final activeConfigName = current.activeConfigName;
 
       if (activeConfigName == null || activeConfigName.isEmpty) {
-        AppLogger.d(
-          'ScheduleCoordinatorNotifier: No active config name, skipping dynamic loading',
-        );
         return;
       }
-
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: Active config: $activeConfigName',
-      );
 
       // Calculate the range around the focused day
       final DateRange focusedRange = _dateRangePolicy!.computeFocusedRange(
         focusedDay,
-      );
-
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: Focused range: ${focusedRange.start} to ${focusedRange.end}',
       );
 
       // Determine minimal missing ranges compared to current in-memory coverage.
@@ -532,24 +514,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       );
 
       if (coverage == null) {
-        AppLogger.d(
-          'ScheduleCoordinatorNotifier: No coverage yet, ensuring and loading full focused range',
-        );
         await _ensureAndLoadRange(
           focusedRange.start,
           focusedRange.end,
           activeConfigName,
         );
         await _refreshState();
-        AppLogger.d(
-          'ScheduleCoordinatorNotifier: Ensured and loaded full focused range',
-        );
         return;
       }
-
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: Current coverage = ${coverage.start} to ${coverage.end}',
-      );
 
       final List<DateRange> deltas = <DateRange>[];
 
@@ -584,23 +556,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       }
 
       if (deltas.isEmpty) {
-        AppLogger.d(
-          'ScheduleCoordinatorNotifier: Focused range fully covered, skipping load',
-        );
         return;
       }
 
       for (final DateRange delta in deltas) {
-        AppLogger.d(
-          'ScheduleCoordinatorNotifier: Ensuring and loading delta ${delta.start} to ${delta.end}',
-        );
         await _ensureAndLoadRange(delta.start, delta.end, activeConfigName);
       }
 
       await _refreshState();
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: Delta loading completed and state refreshed',
-      );
     } catch (e) {
       AppLogger.e(
         'ScheduleCoordinatorNotifier: Error in dynamic loading for focused day',
@@ -655,7 +618,11 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
             range: combinedRange,
             replaceConfigName: partnerConfig,
           );
-      state = AsyncData((state.value ?? current).copyWith(schedules: merged));
+      state = AsyncData(
+        (state.value ?? current)
+            .copyWith(schedules: merged)
+            .updateScheduleIndex(),
+      );
     } catch (e, stack) {
       AppLogger.e('Error in _ensurePartnerDataForFocusedRange', e, stack);
     }
@@ -668,30 +635,41 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     String configName,
   ) async {
     try {
-      // First ensure schedules exist for each month in the range
-      final monthsToEnsure = <DateTime>[];
-      DateTime current = DateTime(startDate.year, startDate.month, 1);
-      final end = DateTime(endDate.year, endDate.month, 1);
+      // Check if we already have data for this range to avoid redundant queries
+      final currentState = state.value;
+      if (currentState != null) {
+        // Use optimized index for O(k) coverage check + O(log n) binary search
+        final hasDataForRange = currentState.hasDataForRange(
+          configName,
+          startDate,
+          endDate,
+        );
 
-      while (current.isBefore(end) || current.isAtSameMomentAs(end)) {
-        monthsToEnsure.add(current);
-        current = DateTime(current.year, current.month + 1, 1);
+        if (hasDataForRange) {
+          AppLogger.d(
+            'ScheduleCoordinatorNotifier: Data already exists for range, skipping load',
+          );
+          return;
+        }
       }
 
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: Ensuring schedules for ${monthsToEnsure.length} months',
-      );
+      // First ensure schedules exist for each month in the range
+      final monthsToEnsure = <DateTime>[];
+      DateTime currentMonth = DateTime(startDate.year, startDate.month, 1);
+      final endMonth = DateTime(endDate.year, endDate.month, 1);
 
-      // Ensure each month in parallel
+      while (currentMonth.isBefore(endMonth) ||
+          currentMonth.isAtSameMomentAs(endMonth)) {
+        monthsToEnsure.add(currentMonth);
+        currentMonth = DateTime(currentMonth.year, currentMonth.month + 1, 1);
+      }
+
+      // Ensure each month in parallel, but only if not already cached
       await Future.wait(
-        monthsToEnsure.map(
-          (month) => ref
-              .read(scheduleDataProvider.notifier)
-              .ensureMonthSchedules(month: month, configName: configName),
-        ),
+        monthsToEnsure.map((month) => _ensureMonthIfNeeded(month, configName)),
       );
 
-      // Then load the full range
+      // Load the full range in a single query
       await ref
           .read(scheduleDataProvider.notifier)
           .loadSchedulesForDateRange(
@@ -705,6 +683,42 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         e,
       );
       rethrow;
+    }
+  }
+
+  /// Ensures a month's schedules exist only if not already cached
+  Future<void> _ensureMonthIfNeeded(DateTime month, String configName) async {
+    try {
+      // Check if we already have data for this month
+      final currentState = state.value;
+      if (currentState != null) {
+        // Use optimized index for month range check
+        final monthStart = DateTime(month.year, month.month, 1);
+        final monthEnd = DateTime(month.year, month.month + 1, 0);
+        final hasDataForMonth = currentState.hasDataForRange(
+          configName,
+          monthStart,
+          monthEnd,
+        );
+
+        if (hasDataForMonth) {
+          AppLogger.d(
+            'ScheduleCoordinatorNotifier: Data already exists for month ${month.year}-${month.month}, skipping ensure',
+          );
+          return;
+        }
+      }
+
+      // Only ensure if we don't have data for this month
+      await ref
+          .read(scheduleDataProvider.notifier)
+          .ensureMonthSchedules(month: month, configName: configName);
+    } catch (e) {
+      AppLogger.e(
+        'ScheduleCoordinatorNotifier: Error ensuring month ${month.year}-${month.month}',
+        e,
+      );
+      // Don't rethrow to avoid breaking the entire operation
     }
   }
 }

@@ -6,9 +6,9 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calend
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/draggable_sheet.dart';
-import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_navigation_debouncer.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 
 class CalendarView extends ConsumerStatefulWidget {
@@ -22,6 +22,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   final GlobalKey _calendarKey = GlobalKey();
   final GlobalKey _headerKey = GlobalKey();
   late final CalendarViewController _pageManager;
+  late final ScheduleNavigationDebouncer _navigationDebouncer;
   CalendarFormat? _lastKnownFormat;
   Key _pageViewKey = UniqueKey();
 
@@ -29,6 +30,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   void initState() {
     super.initState();
     _pageManager = CalendarViewController();
+    _navigationDebouncer = ScheduleNavigationDebouncer();
 
     // Initialize day pages around current selected day first
     final selectedDay =
@@ -49,6 +51,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   @override
   void dispose() {
     _pageManager.dispose();
+    _navigationDebouncer.dispose();
     super.dispose();
   }
 
@@ -111,10 +114,6 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     // Only update focused day when navigating, not selected day
     final newDay = _pageManager.getCurrentDay();
     if (newDay != null) {
-      AppLogger.d(
-        'CalendarView: _onPageChanged - pageIndex: $pageIndex, newDay: ${newDay.toIso8601String()}',
-      );
-
       // Check if the month has changed
       final currentFocusedDay = ref.read(calendarProvider).value?.focusedDay;
       final monthChanged =
@@ -123,21 +122,21 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
           currentFocusedDay.month != newDay.month;
 
       if (monthChanged) {
-        AppLogger.d(
-          'CalendarView: Month changed, updating focused day to ${newDay.toIso8601String()}',
+        // Debounce the navigation to prevent excessive loading
+        _navigationDebouncer.debounceNavigation(
+          'month_change_${newDay.year}_${newDay.month}',
+          () {
+            // Also set selected day to ensure the duty list has a day to show
+            ref.read(calendarProvider.notifier).setSelectedDay(newDay);
+            ref.read(calendarProvider.notifier).setFocusedDay(newDay);
+          },
         );
-        // Also set selected day to ensure the duty list has a day to show
-        ref.read(calendarProvider.notifier).setSelectedDay(newDay);
-        ref.read(calendarProvider.notifier).setFocusedDay(newDay);
 
         // Check if year has changed and load holidays for the new year
         final yearChanged =
             currentFocusedDay == null || currentFocusedDay.year != newDay.year;
 
         if (yearChanged) {
-          AppLogger.d(
-            'CalendarView: Year changed to ${newDay.year}, loading holidays',
-          );
           // Load holidays for the entire year
           ref
               .read(schoolHolidaysProvider.notifier)
@@ -174,23 +173,16 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
 
   /// Triggers dynamic loading when focused day changes (e.g., via chevron navigation)
   void _triggerDynamicLoadingForFocusedDayChange(DateTime focusedDay) {
-    AppLogger.d(
-      'CalendarView: _triggerDynamicLoadingForFocusedDayChange called for $focusedDay',
-    );
-
     // Update the page manager to reflect the new focused day
     _pageManager.rebuildDayPagesAroundDay(focusedDay);
-    AppLogger.d('CalendarView: Page manager rebuilt around $focusedDay');
 
     // Trigger a rebuild to update the PageView
     if (mounted) {
       setState(() {});
-      AppLogger.d('CalendarView: setState called to update PageView');
     }
 
     // The schedule coordinator will handle the actual loading
     // since we already extended setFocusedDay to trigger dynamic loading
-    AppLogger.d('CalendarView: Dynamic loading trigger completed');
   }
 
   @override
@@ -203,20 +195,11 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
       final previousFocusedDay = previous?.value?.focusedDay;
       final currentFocusedDay = next.value?.focusedDay;
 
-      AppLogger.d(
-        'CalendarView: Focused day changed from $previousFocusedDay to $currentFocusedDay',
-      );
-
       if (previousFocusedDay != null &&
           currentFocusedDay != null &&
           !_isSameMonth(previousFocusedDay, currentFocusedDay)) {
         // Focused day changed to a different month, trigger dynamic loading
-        AppLogger.d('CalendarView: Month changed, triggering dynamic loading');
         _triggerDynamicLoadingForFocusedDayChange(currentFocusedDay);
-      } else {
-        AppLogger.d(
-          'CalendarView: Same month or no previous focused day, skipping dynamic loading',
-        );
       }
     });
 

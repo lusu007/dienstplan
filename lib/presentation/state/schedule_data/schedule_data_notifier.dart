@@ -12,6 +12,8 @@ import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_cache_manager.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_loading_queue.dart';
 
 part 'schedule_data_notifier.g.dart';
 
@@ -26,6 +28,10 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   ScheduleMergeService? _scheduleMergeService;
 
   static ScheduleDataUiState? _cachedState;
+  static DateTime? _lastCacheTime;
+  static const Duration _cacheValidityDuration = Duration(minutes: 5);
+  static final ScheduleCacheManager _cacheManager = ScheduleCacheManager();
+  static final ScheduleLoadingQueue _loadingQueue = ScheduleLoadingQueue();
 
   @override
   Future<ScheduleDataUiState> build() async {
@@ -42,11 +48,17 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
 
     // Return cached state if available and still valid, otherwise initialize
-    if (_cachedState != null) {
+    if (_cachedState != null && _isCacheValid()) {
+      AppLogger.d('ScheduleDataNotifier: Returning cached state');
       return _cachedState!;
     }
 
     return await _initialize();
+  }
+
+  bool _isCacheValid() {
+    if (_lastCacheTime == null) return false;
+    return DateTime.now().difference(_lastCacheTime!) < _cacheValidityDuration;
   }
 
   Future<ScheduleDataUiState> _initialize() async {
@@ -102,6 +114,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         holidayAccentColorValue: settings?.holidayAccentColorValue,
       );
       _cachedState = initialState;
+      _lastCacheTime = DateTime.now();
       return initialState;
     } catch (e) {
       return ScheduleDataUiState.initial().copyWith(
@@ -115,10 +128,56 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     required DateTime endDate,
     required String configName,
   }) async {
-    AppLogger.d(
-      'ScheduleDataNotifier: loadSchedulesForDateRange called for $startDate to $endDate',
+    // Check cache first
+    final cachedSchedules = _cacheManager.getSchedules(
+      startDate,
+      endDate,
+      configName,
+    );
+    if (cachedSchedules != null) {
+      AppLogger.d(
+        'ScheduleDataNotifier: Using cached data for range ${startDate.toIso8601String()} to ${endDate.toIso8601String()}',
+      );
+      final baseline = state.value ?? _cachedState ?? await future;
+      final mergedSchedules = _scheduleMergeService!.upsertByKey(
+        existing: baseline.schedules,
+        incoming: cachedSchedules,
+      );
+
+      final updated = baseline.copyWith(
+        schedules: mergedSchedules,
+        activeConfigName: configName,
+        isLoading: false,
+      );
+      _cachedState = updated;
+      _lastCacheTime = DateTime.now();
+      if (ref.mounted) {
+        state = AsyncData(updated);
+      }
+      return;
+    }
+
+    // Use loading queue to prevent duplicate requests
+    final operationKey = _loadingQueue.generateOperationKey(
+      startDate,
+      endDate,
+      configName,
+    );
+    final wasQueued = await _loadingQueue.executeIfNotPending(
+      operationKey,
+      () async => await _performScheduleLoading(startDate, endDate, configName),
     );
 
+    if (!wasQueued) {
+      // Operation already in progress, skipping
+    }
+  }
+
+  Future<void> _performScheduleLoading(
+    DateTime startDate,
+    DateTime endDate,
+    String configName,
+  ) async {
     // Ensure dependencies are available even if provider rebuilt and returned cached state
     _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
@@ -132,9 +191,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     }
 
     try {
-      AppLogger.d(
-        'ScheduleDataNotifier: Loading schedules for range $startDate to $endDate',
-      );
       final schedulesResult = await _getSchedulesUseCase!
           .executeForDateRangeSafe(
             startDate: startDate,
@@ -144,15 +200,18 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
       if (schedulesResult.isSuccess) {
         final newSchedules = schedulesResult.value;
-        AppLogger.d(
-          'ScheduleDataNotifier: fetched ${newSchedules.length} incoming schedules',
+
+        // Cache the results
+        _cacheManager.setSchedules(
+          startDate,
+          endDate,
+          configName,
+          newSchedules,
         );
+
         // Use upsert merge to avoid dropping existing items when loading deltas
         final List<Schedule> mergedSchedules = _scheduleMergeService!
             .upsertByKey(existing: baseline.schedules, incoming: newSchedules);
-        AppLogger.d(
-          'ScheduleDataNotifier: merged schedules = ${mergedSchedules.length}',
-        );
 
         final ScheduleDataUiState updated = baseline.copyWith(
           schedules: mergedSchedules,
@@ -160,6 +219,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
           isLoading: false,
         );
         _cachedState = updated;
+        _lastCacheTime = DateTime.now();
         if (ref.mounted) {
           state = AsyncData(updated);
         }
@@ -296,6 +356,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   /// Invalidates the cached state to force reload with new settings
   void invalidateCache() {
     _cachedState = null;
+    _lastCacheTime = null;
   }
 
   Future<String> _presentFailure(Failure failure) async {
