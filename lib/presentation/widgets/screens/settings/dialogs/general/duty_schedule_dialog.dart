@@ -33,10 +33,11 @@ class DutyScheduleDialog {
     return config.meta.description.isNotEmpty ? config.meta.description : null;
   }
 
-  static void show(BuildContext context) {
+  static Future<void> show(BuildContext context) async {
+    final container = ProviderScope.containerOf(context, listen: false);
     final l10n = AppLocalizations.of(context);
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
@@ -72,16 +73,19 @@ class DutyScheduleDialog {
                         isSelected: state?.activeConfigName == config.name,
                         onTap: () async {
                           try {
+                            // Get notifier before closing dialog
+                            final notifier = ref.read(
+                              scheduleCoordinatorProvider.notifier,
+                            );
+
                             // Close dialog immediately
                             Navigator.of(context).pop();
 
                             // Perform operations after dialog is closed
-                            await ref
-                                .read(scheduleCoordinatorProvider.notifier)
-                                .setActiveConfig(config.name);
-                            await ref
-                                .read(scheduleCoordinatorProvider.notifier)
-                                .setPreferredDutyGroup('');
+                            // First set the active config so coordinator state reflects it immediately
+                            await notifier.setActiveConfig(config.name);
+                            // Then clear duty group; its save preserves the current active config
+                            await notifier.setPreferredDutyGroup('');
                           } catch (e, stackTrace) {
                             AppLogger.e(
                               'DutyScheduleDialog: Error setting active config',
@@ -121,5 +125,8 @@ class DutyScheduleDialog {
         },
       ),
     );
+    await container
+        .read(scheduleCoordinatorProvider.notifier)
+        .applyOwnSelectionChanges();
   }
 }

@@ -16,6 +16,9 @@ import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/config/config_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'dart:async';
 
 part 'setup_notifier.g.dart';
@@ -303,6 +306,7 @@ class SetupNotifier extends _$SetupNotifier {
       final initialSettings = Settings(
         calendarFormat:
             existingSettings?.calendarFormat ?? CalendarFormat.month,
+        selectedDutyGroup: current.selectedDutyGroup,
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig?.name,
         themePreference: current.selectedTheme,
@@ -321,7 +325,9 @@ class SetupNotifier extends _$SetupNotifier {
       await Future.delayed(kUiDelayShort);
 
       final finalSettings = Settings(
-        calendarFormat: CalendarFormat.month,
+        calendarFormat:
+            existingSettings?.calendarFormat ?? CalendarFormat.month,
+        selectedDutyGroup: current.selectedDutyGroup,
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig!.name,
         themePreference: current.selectedTheme,
@@ -332,10 +338,19 @@ class SetupNotifier extends _$SetupNotifier {
       );
       await _saveSettingsUseCase!.execute(finalSettings);
 
+      // Ensure consumers pick up the latest settings immediately
+      SettingsCache.clearCache();
+      ref.read(scheduleDataProvider.notifier).invalidateCache();
+      ref.invalidate(scheduleDataProvider);
+      ref.invalidate(getSettingsUseCaseProvider);
+
       await ref
           .read(settingsProvider.notifier)
           .setThemePreference(current.selectedTheme);
       ref.invalidate(scheduleCoordinatorProvider);
+      ref.invalidate(configProvider);
+      // Explicitly refresh the config provider to ensure duty groups are loaded
+      await ref.read(configProvider.notifier).refreshConfigs();
 
       // Mark setup as completed and keep loading state for smooth transition
       state = AsyncData(
