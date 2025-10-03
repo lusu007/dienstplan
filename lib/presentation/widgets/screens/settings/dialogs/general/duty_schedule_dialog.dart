@@ -34,8 +34,11 @@ class DutyScheduleDialog {
   }
 
   static Future<void> show(BuildContext context) async {
-    final container = ProviderScope.containerOf(context, listen: false);
     final l10n = AppLocalizations.of(context);
+    final container = ProviderScope.containerOf(context, listen: false);
+    final notifierAfterDialog = container.read(
+      scheduleCoordinatorProvider.notifier,
+    );
 
     await showDialog(
       context: context,
@@ -125,8 +128,6 @@ class DutyScheduleDialog {
         },
       ),
     );
-    await container
-        .read(scheduleCoordinatorProvider.notifier)
-        .applyOwnSelectionChanges();
+    await notifierAfterDialog.applyOwnSelectionChanges();
   }
 }

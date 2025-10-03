@@ -306,7 +306,7 @@ class SetupNotifier extends _$SetupNotifier {
       final initialSettings = Settings(
         calendarFormat:
             existingSettings?.calendarFormat ?? CalendarFormat.month,
-        selectedDutyGroup: current.selectedDutyGroup,
+        selectedDutyGroup: null, // Start with no active filter (All)
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig?.name,
         themePreference: current.selectedTheme,
@@ -327,7 +327,7 @@ class SetupNotifier extends _$SetupNotifier {
       final finalSettings = Settings(
         calendarFormat:
             existingSettings?.calendarFormat ?? CalendarFormat.month,
-        selectedDutyGroup: current.selectedDutyGroup,
+        selectedDutyGroup: null, // Keep filter as All after setup
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig!.name,
         themePreference: current.selectedTheme,

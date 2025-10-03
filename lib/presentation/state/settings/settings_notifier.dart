@@ -7,6 +7,7 @@ import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
+import 'package:dienstplan/core/utils/settings_utils.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'dart:async';
@@ -171,8 +172,10 @@ class SettingsNotifier extends _$SettingsNotifier {
       await _saveSettings(
         existing.copyWith(
           myDutyGroup: group,
-          activeConfigName:
-              current.activeConfigName ?? existing.activeConfigName,
+          activeConfigName: SettingsUtils.selectActiveConfigNameToPersist(
+            currentActiveConfigName: current.activeConfigName,
+            existingActiveConfigName: existing.activeConfigName,
+          ),
         ),
       );
     } else {

@@ -19,6 +19,7 @@ import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
+import 'package:dienstplan/core/utils/settings_utils.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
 
@@ -300,10 +301,10 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     if (existing != null) {
       // Preserve the currently selected active config if available in coordinator state
       final String? activeConfigNameToPersist =
-          (current.activeConfigName != null &&
-              current.activeConfigName!.isNotEmpty)
-          ? current.activeConfigName
-          : existing.activeConfigName;
+          SettingsUtils.selectActiveConfigNameToPersist(
+            currentActiveConfigName: current.activeConfigName,
+            existingActiveConfigName: existing.activeConfigName,
+          );
       final saveResult = await saveSettingsUseCase.executeSafe(
         existing.copyWith(
           myDutyGroup: dutyGroup,
@@ -456,26 +457,37 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   Future<void> _refreshState() async {
     // Prefer current values to avoid re-initializing providers with stale caches
-    final AsyncValue<CalendarUiState> calendarAsync = ref.read(
-      calendarProvider,
-    );
-    final AsyncValue<ConfigUiState> configAsync = ref.read(configProvider);
-    final AsyncValue<PartnerUiState> partnerAsync = ref.read(partnerProvider);
-    final AsyncValue<ScheduleDataUiState> scheduleDataAsync = ref.read(
-      scheduleDataProvider,
-    );
+    Future<T> readNowOrFuture<T>({
+      required AsyncValue<T> current,
+      required Future<T> future,
+    }) async {
+      if (current.hasValue && current.value != null) {
+        return current.value as T;
+      }
+      return await future;
+    }
 
     final CalendarUiState calendarState =
-        calendarAsync.value ?? await ref.read(calendarProvider.future);
+        await readNowOrFuture<CalendarUiState>(
+          current: ref.read(calendarProvider),
+          future: ref.read(calendarProvider.future),
+        );
     if (!ref.mounted) return;
-    final ConfigUiState configState =
-        configAsync.value ?? await ref.read(configProvider.future);
+    final ConfigUiState configState = await readNowOrFuture<ConfigUiState>(
+      current: ref.read(configProvider),
+      future: ref.read(configProvider.future),
+    );
     if (!ref.mounted) return;
-    final PartnerUiState partnerState =
-        partnerAsync.value ?? await ref.read(partnerProvider.future);
+    final PartnerUiState partnerState = await readNowOrFuture<PartnerUiState>(
+      current: ref.read(partnerProvider),
+      future: ref.read(partnerProvider.future),
+    );
     if (!ref.mounted) return;
     final ScheduleDataUiState scheduleDataState =
-        scheduleDataAsync.value ?? await ref.read(scheduleDataProvider.future);
+        await readNowOrFuture<ScheduleDataUiState>(
+          current: ref.read(scheduleDataProvider),
+          future: ref.read(scheduleDataProvider.future),
+        );
     if (!ref.mounted) return;
 
     // Merge existing coordinator schedules with latest scheduleData to avoid losing
