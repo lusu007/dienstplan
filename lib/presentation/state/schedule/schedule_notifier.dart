@@ -14,6 +14,7 @@ import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/errors/failure_presenter.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
@@ -616,6 +617,9 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           return;
         }
       }
+
+      // Ensure partner data is loaded after active config change
+      await _ensurePartnerDataForFocusedRange();
     } catch (_) {
       state = AsyncData(current.copyWith(error: 'Failed to set active config'));
     }
@@ -627,10 +631,25 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     final settingsResult = await _getSettingsUseCase!.executeSafe();
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
     if (existing != null) {
-      await _saveSettingsUseCase!.executeSafe(
+      final saveResult = await _saveSettingsUseCase!.executeSafe(
         existing.copyWith(myDutyGroup: group),
       );
+
+      if (saveResult.isFailure) {
+        // If save fails, revert the state change
+        state = AsyncData(current);
+        return;
+      }
     }
+
+    // Invalidate settings cache to ensure fresh data on next read
+    ref.invalidate(getSettingsUseCaseProvider);
+
+    // Clear the static settings cache to force reload with new settings
+    SettingsCache.clearCache();
+
+    // Note: scheduleDataProvider is not available in this notifier
+    // The cache invalidation will be handled by the coordinator notifier
   }
 
   Future<void> setPartnerConfigName(

@@ -6,6 +6,8 @@ import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
+import 'package:dienstplan/core/utils/settings_utils.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'dart:async';
@@ -69,6 +71,12 @@ class SettingsNotifier extends _$SettingsNotifier {
       );
       await _saveSettings(newSettings);
     }
+
+    // Invalidate settings cache to ensure fresh data on next read
+    ref.invalidate(getSettingsUseCaseProvider);
+
+    // Clear the static settings cache to force reload with new settings
+    SettingsCache.clearCache();
   }
 
   Future<void> setThemePreference(ThemePreference preference) async {
@@ -95,6 +103,9 @@ class SettingsNotifier extends _$SettingsNotifier {
         );
         await _saveSettings(newSettings);
       }
+
+      // Invalidate settings cache to ensure fresh data on next read
+      ref.invalidate(getSettingsUseCaseProvider);
     } catch (e) {
       // Silently handle errors for background saves
       // The UI state is already updated, so we don't need to revert
@@ -115,6 +126,13 @@ class SettingsNotifier extends _$SettingsNotifier {
       );
       await _saveSettings(newSettings);
     }
+
+    // Invalidate settings cache to ensure fresh data on next read
+    ref.invalidate(getSettingsUseCaseProvider);
+
+    // Clear the static settings cache to force reload with new settings
+    SettingsCache.clearCache();
+
     // Update schedule notifier calendar format without full invalidation
     final scheduleNotifier = ref.read(scheduleCoordinatorProvider.notifier);
     await scheduleNotifier.updateCalendarFormatOnly(format);
@@ -137,6 +155,12 @@ class SettingsNotifier extends _$SettingsNotifier {
       );
       await _saveSettings(newSettings);
     }
+
+    // Invalidate settings cache to ensure fresh data on next read
+    ref.invalidate(getSettingsUseCaseProvider);
+
+    // Clear the static settings cache to force reload with new settings
+    SettingsCache.clearCache();
   }
 
   Future<void> setMyDutyGroup(String? group) async {
@@ -144,7 +168,16 @@ class SettingsNotifier extends _$SettingsNotifier {
     state = AsyncData(current.copyWith(myDutyGroup: group));
     final existing = await _getSettingsUseCase!.execute();
     if (existing != null) {
-      await _saveSettings(existing.copyWith(myDutyGroup: group));
+      // Preserve current activeConfigName when saving myDutyGroup
+      await _saveSettings(
+        existing.copyWith(
+          myDutyGroup: group,
+          activeConfigName: SettingsUtils.selectActiveConfigNameToPersist(
+            currentActiveConfigName: current.activeConfigName,
+            existingActiveConfigName: existing.activeConfigName,
+          ),
+        ),
+      );
     } else {
       // Create new settings with the duty group if none exist
       final newSettings = Settings(
@@ -156,6 +189,18 @@ class SettingsNotifier extends _$SettingsNotifier {
       );
       await _saveSettings(newSettings);
     }
+
+    // Invalidate settings cache to ensure fresh data on next read
+    ref.invalidate(getSettingsUseCaseProvider);
+
+    // Clear the static settings cache to force reload with new settings
+    SettingsCache.clearCache();
+
+    // Invalidate schedule data provider cache to force reload with new settings
+    ref.read(scheduleDataProvider.notifier).invalidateCache();
+
+    // Force refresh of the schedule data provider to get new settings
+    ref.invalidate(scheduleDataProvider);
   }
 
   Future<void> reset() async {
@@ -189,6 +234,12 @@ class SettingsNotifier extends _$SettingsNotifier {
       );
       await _saveSettings(newSettings);
     }
+
+    // Invalidate settings cache to ensure fresh data on next read
+    ref.invalidate(getSettingsUseCaseProvider);
+
+    // Clear the static settings cache to force reload with new settings
+    SettingsCache.clearCache();
 
     // Refresh the schedule data provider and coordinator to update the holiday color in the calendar
     // Do this after the settings are saved

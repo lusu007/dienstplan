@@ -7,6 +7,7 @@ import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/services/config_query_service.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 
 part 'config_notifier.g.dart';
 
@@ -70,19 +71,32 @@ class ConfigNotifier extends _$ConfigNotifier {
 
   Future<void> setActiveConfig(String configName) async {
     final current = await future;
+    if (!ref.mounted) return;
+
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
       // Set active config in database
       await _setActiveConfigUseCase!.execute(configName);
+      if (!ref.mounted) return;
 
       // Update settings
       final settingsResult = await _getSettingsUseCase!.executeSafe();
+      if (!ref.mounted) return;
+
       final existing = settingsResult.isSuccess ? settingsResult.value : null;
 
       if (existing != null) {
         final updated = existing.copyWith(activeConfigName: configName);
-        await _saveSettingsUseCase!.executeSafe(updated);
+        final saveResult = await _saveSettingsUseCase!.executeSafe(updated);
+        if (saveResult.isFailure) {
+          throw Exception('Failed to save settings: ${saveResult.failure}');
+        }
+        if (!ref.mounted) return;
+
+        // Force cache invalidation after successful save
+        ref.invalidate(getSettingsUseCaseProvider);
+        SettingsCache.clearCache();
       }
 
       // Update duty groups for new config
@@ -95,6 +109,8 @@ class ConfigNotifier extends _$ConfigNotifier {
         orElse: () => current.configs.first,
       );
 
+      if (!ref.mounted) return;
+
       state = AsyncData(
         current.copyWith(
           activeConfigName: configName,
@@ -104,6 +120,8 @@ class ConfigNotifier extends _$ConfigNotifier {
         ),
       );
     } catch (e) {
+      if (!ref.mounted) return;
+
       state = AsyncData(
         current.copyWith(
           error: 'Failed to set active config',
@@ -115,11 +133,17 @@ class ConfigNotifier extends _$ConfigNotifier {
 
   Future<void> refreshConfigs() async {
     final current = await future;
+    if (!ref.mounted) return;
+
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
       final configs = await _getConfigsUseCase!.execute();
+      if (!ref.mounted) return;
+
       final settingsResult = await _getSettingsUseCase!.executeSafe();
+      if (!ref.mounted) return;
+
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
       final activeConfigName =
@@ -139,6 +163,8 @@ class ConfigNotifier extends _$ConfigNotifier {
                 : configs.first)
           : null;
 
+      if (!ref.mounted) return;
+
       state = AsyncData(
         current.copyWith(
           configs: configs,
@@ -149,6 +175,8 @@ class ConfigNotifier extends _$ConfigNotifier {
         ),
       );
     } catch (e) {
+      if (!ref.mounted) return;
+
       state = AsyncData(
         current.copyWith(error: 'Failed to refresh configs', isLoading: false),
       );
@@ -157,6 +185,8 @@ class ConfigNotifier extends _$ConfigNotifier {
 
   Future<void> clearError() async {
     final current = await future;
+    if (!ref.mounted) return;
+
     state = AsyncData(current.copyWith(error: null));
   }
 }
