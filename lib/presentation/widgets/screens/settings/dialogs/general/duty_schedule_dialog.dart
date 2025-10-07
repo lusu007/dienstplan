@@ -35,10 +35,6 @@ class DutyScheduleDialog {
 
   static Future<void> show(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    final container = ProviderScope.containerOf(context, listen: false);
-    final notifierAfterDialog = container.read(
-      scheduleCoordinatorProvider.notifier,
-    );
 
     await showDialog(
       context: context,
@@ -87,8 +83,14 @@ class DutyScheduleDialog {
                             // Perform operations after dialog is closed
                             // First set the active config so coordinator state reflects it immediately
                             await notifier.setActiveConfig(config.name);
-                            // Then clear duty group; its save preserves the current active config
-                            await notifier.setPreferredDutyGroup('');
+                            // Reset my duty group selection and clear filter when duty plan changes
+                            await notifier.setPreferredDutyGroup(
+                              '',
+                              activeConfigNameOverride: config.name,
+                            );
+                            await notifier.setSelectedDutyGroup(null);
+                            // Apply changes immediately so a second change isn't required
+                            await notifier.applyOwnSelectionChanges();
                           } catch (e, stackTrace) {
                             AppLogger.e(
                               'DutyScheduleDialog: Error setting active config',
@@ -128,6 +130,6 @@ class DutyScheduleDialog {
         },
       ),
     );
-    await notifierAfterDialog.applyOwnSelectionChanges();
+    // Changes are applied immediately in the onTap handler above
   }
 }

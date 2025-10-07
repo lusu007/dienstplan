@@ -17,6 +17,7 @@ import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/utils/settings_utils.dart';
@@ -124,22 +125,32 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     final ScheduleUiState? current = state.value;
     if (current != null) {
       try {
-        final selected = current.configs.firstWhere(
-          (c) => c.name == configName,
-          orElse: () => current.configs.isNotEmpty
-              ? current.configs.first
-              : current.activeConfig!,
-        );
-        final List<String> dutyGroups = selected.dutyGroups
-            .map((g) => g.name)
-            .toList(growable: false);
-        state = AsyncData(
-          current.copyWith(
-            activeConfigName: configName,
-            activeConfig: selected,
-            dutyGroups: dutyGroups,
-          ),
-        );
+        DutyScheduleConfig? selected;
+        if (current.configs.isNotEmpty) {
+          try {
+            selected = current.configs.firstWhere((c) => c.name == configName);
+          } catch (_) {
+            selected = current.configs.first;
+          }
+        } else {
+          selected = current.activeConfig;
+        }
+        if (selected != null) {
+          final List<String> dutyGroups = selected.dutyGroups
+              .map((g) => g.name)
+              .toList(growable: false);
+          state = AsyncData(
+            current.copyWith(
+              activeConfigName: configName,
+              activeConfig: selected,
+              dutyGroups: dutyGroups,
+            ),
+          );
+        } else {
+          AppLogger.w(
+            'ScheduleCoordinatorNotifier: No valid config found for name: $configName',
+          );
+        }
       } catch (_) {
         // Ignore optimistic update failure and proceed
       }
@@ -282,12 +293,20 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await setFocusedDay(day);
   }
 
-  Future<void> setPreferredDutyGroup(String dutyGroup) async {
-    // Update the schedule data state immediately
-    final current = await future;
-    state = AsyncData(current.copyWith(preferredDutyGroup: dutyGroup));
+  Future<void> setPreferredDutyGroup(
+    String dutyGroup, {
+    String? activeConfigNameOverride,
+  }) async {
+    // Update the schedule data state immediately using the latest value if available
+    final ScheduleUiState existingState;
+    if (state.value != null) {
+      existingState = state.value!;
+    } else {
+      existingState = await future;
+    }
+    state = AsyncData(existingState.copyWith(preferredDutyGroup: dutyGroup));
 
-    // Save to settings
+    // Save to settings using the provided override if present, otherwise the most recent activeConfigName
     final getSettingsUseCase = await ref.read(
       getSettingsUseCaseProvider.future,
     );
@@ -299,12 +318,27 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     final existing = settingsResult.isSuccess ? settingsResult.value : null;
 
     if (existing != null) {
-      // Preserve the currently selected active config if available in coordinator state
-      final String? activeConfigNameToPersist =
-          SettingsUtils.selectActiveConfigNameToPersist(
-            currentActiveConfigName: current.activeConfigName,
-            existingActiveConfigName: existing.activeConfigName,
-          );
+      // Prefer explicit override if provided to avoid races with async provider updates
+      String? activeConfigNameToPersist = activeConfigNameOverride;
+
+      if (activeConfigNameToPersist == null ||
+          activeConfigNameToPersist.isEmpty) {
+        // Fall back to the latest provider/coordinator state as the source of truth
+        final ConfigUiState configStateNow =
+            ref.read(configProvider).value ??
+            await ref.read(configProvider.future);
+        final String? activeFromConfig = configStateNow.activeConfigName;
+        final String? activeFromCoordinator =
+            (state.value ?? existingState).activeConfigName;
+        activeConfigNameToPersist =
+            SettingsUtils.selectActiveConfigNameToPersist(
+              currentActiveConfigName:
+                  (activeFromConfig != null && activeFromConfig.isNotEmpty)
+                  ? activeFromConfig
+                  : activeFromCoordinator,
+              existingActiveConfigName: existing.activeConfigName,
+            );
+      }
       final saveResult = await saveSettingsUseCase.executeSafe(
         existing.copyWith(
           myDutyGroup: dutyGroup,
@@ -314,7 +348,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
       if (saveResult.isFailure) {
         // If save fails, revert the state change
-        state = AsyncData(current);
+        state = AsyncData(existingState);
         return;
       }
     }
@@ -343,10 +377,47 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   Future<void> applyOwnSelectionChanges() async {
     // This method applies own duty group and config selection changes
-    await _refreshState();
-    await _updateScheduleDataStateOnly();
-    // Force refresh of schedule data to ensure new config is loaded
+    // Ensure schedule data provider is refreshed first so new active config is reflected
+    ref.read(scheduleDataProvider.notifier).invalidateCache();
     ref.invalidate(scheduleDataProvider);
+    // Preserve current selected duty group through the refresh
+    final String? selectedBefore;
+    if (state.value != null) {
+      selectedBefore = state.value!.selectedDutyGroup;
+    } else {
+      selectedBefore = (await future).selectedDutyGroup;
+    }
+    await _updateScheduleDataStateOnlyPreservingSelectedDutyGroup(
+      selectedBefore,
+    );
+    // Finally, refresh combined state and ensure partner data for current range
+    await _refreshState();
+    await _ensurePartnerDataForFocusedRange();
+
+    // Also trigger dynamic loading for the current focused day to prefill chips
+    final ScheduleUiState current;
+    if (state.value != null) {
+      current = state.value!;
+    } else {
+      current = await future;
+    }
+    final DateTime focused = current.focusedDay ?? DateTime.now();
+    await _triggerDynamicLoadingForFocusedDay(focused);
+
+    // Guarantee generation/availability for the current and next month
+    final String? activeName = (state.value ?? current).activeConfigName;
+    if (activeName != null && activeName.isNotEmpty) {
+      final DateTime monthStart = DateTime(focused.year, focused.month, 1);
+      final DateTime nextMonthStart = DateTime(
+        focused.year,
+        focused.month + 1,
+        1,
+      );
+      await ensureMonthSchedules(month: monthStart, configName: activeName);
+      await ensureMonthSchedules(month: nextMonthStart, configName: activeName);
+      // Update schedule data state after ensuring months
+      await _updateScheduleDataStateOnly();
+    }
   }
 
   /// Optimized method to update only calendar-related state
@@ -404,10 +475,16 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
     final scheduleDataState = await ref.read(scheduleDataProvider.future);
 
+    // Merge incoming schedules with existing ones to preserve partner data
+    final List<Schedule> mergedSchedules = _scheduleMergeService!.upsertByKey(
+      existing: currentState.schedules,
+      incoming: scheduleDataState.schedules,
+    );
+
     // Only update schedule data-related fields and update index
     final updatedState = currentState
         .copyWith(
-          schedules: scheduleDataState.schedules,
+          schedules: mergedSchedules,
           preferredDutyGroup: scheduleDataState.preferredDutyGroup,
           selectedDutyGroup: scheduleDataState.selectedDutyGroup,
           holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
@@ -650,7 +727,12 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   Future<void> _ensurePartnerDataForFocusedRange() async {
     try {
-      final ScheduleUiState current = state.value ?? await future;
+      final ScheduleUiState current;
+      if (state.value != null) {
+        current = state.value!;
+      } else {
+        current = await future;
+      }
       final String? partnerConfig = current.partnerConfigName;
       if (partnerConfig == null || partnerConfig.isEmpty) return;
       final DateTime focused = current.focusedDay ?? DateTime.now();
