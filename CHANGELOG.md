@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.1](https://github.com/lusu007/dienstplan/compare/v0.12.0...v0.12.1) (2025-10-08)
+
+
+### Bug Fixes
+
+* Duty group selection in setup is now working correctly ([#315](https://github.com/lusu007/dienstplan/issues/315)) ([923ec53](https://github.com/lusu007/dienstplan/commit/923ec53291d4b5225c69af2373d355514fa4c54f))
+* Improve performance ([#314](https://github.com/lusu007/dienstplan/issues/314)) ([b3ddc87](https://github.com/lusu007/dienstplan/commit/b3ddc87ac55697c4890abb77c6eccc1632e9c1d7))
+
 ## [0.12.0](https://github.com/lusu007/dienstplan/compare/v0.11.0...v0.12.0) (2025-09-27)
 
 
