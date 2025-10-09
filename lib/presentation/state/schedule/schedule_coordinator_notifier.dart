@@ -98,10 +98,9 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> setFocusedDay(DateTime day) async {
     await ref.read(calendarProvider.notifier).setFocusedDay(day);
     await _updateCalendarStateOnly();
-    await _ensurePartnerDataForFocusedRange();
-
+    unawaited(_ensurePartnerDataForFocusedRange());
     // Trigger dynamic loading for the new focused range
-    await _triggerDynamicLoadingForFocusedDay(day);
+    unawaited(_triggerDynamicLoadingForFocusedDay(day));
   }
 
   Future<void> setSelectedDay(DateTime? day) async {
@@ -116,7 +115,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   Future<void> goToToday() async {
     await ref.read(calendarProvider.notifier).goToToday();
-    await _refreshState();
+    unawaited(_refreshState());
   }
 
   // Config methods

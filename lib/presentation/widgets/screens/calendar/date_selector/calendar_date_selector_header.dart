@@ -80,11 +80,8 @@ class CalendarDateSelectorHeader extends ConsumerWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () async {
-          // Use notifier to jump to today and refresh schedules
-          await ref.read(scheduleCoordinatorProvider.notifier).goToToday();
-
-          // Call the callback if provided
+        onTap: () {
+          // Forward to the provided Today callback to centralize handling
           onTodayButtonPressed?.call();
         },
         borderRadius: BorderRadius.circular(8),

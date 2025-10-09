@@ -219,11 +219,9 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                       .read(scheduleCoordinatorProvider.notifier)
                       .setFocusedDay(selectedDate);
                 },
-                onTodayButtonPressed: () async {
-                  // Handle Today button press using the new goToToday method
-                  await ref
-                      .read(scheduleCoordinatorProvider.notifier)
-                      .goToToday();
+                onTodayButtonPressed: () {
+                  // Fire-and-forget Today action, keep UI responsive
+                  ref.read(scheduleCoordinatorProvider.notifier).goToToday();
 
                   // Force the PageView to rebuild around the new "today" day
                   _pageManager.rebuildDayPagesAroundDay(DateTime.now());
