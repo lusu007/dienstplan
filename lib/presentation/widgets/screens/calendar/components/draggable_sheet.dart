@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
@@ -91,13 +92,24 @@ class _DraggableSheetState extends ConsumerState<DraggableSheet>
   }
 
   List<double> _getSnapPoints(CalendarFormat format) {
+    final double viewportHeight = MediaQuery.of(context).size.height;
+
+    // Compute responsive snap points with safe clamping to the viewport.
+    // This prevents the sheet from covering the calendar on smaller devices.
+    final double minSnapMonth = math.min(240.0, viewportHeight * 0.28);
+    final double maxSnapMonth = math.min(550.0, viewportHeight * 0.70);
+    final double minSnapTwoWeeks = math.min(420.0, viewportHeight * 0.55);
+    final double maxSnapTwoWeeks = math.min(550.0, viewportHeight * 0.78);
+    final double minSnapWeek = math.min(480.0, viewportHeight * 0.65);
+    final double maxSnapWeek = math.min(550.0, viewportHeight * 0.82);
+
     switch (format) {
       case CalendarFormat.month:
-        return const [240.0, 550.0];
-      case CalendarFormat.week:
-        return const [550.0, 550.0];
+        return <double>[minSnapMonth, maxSnapMonth];
       case CalendarFormat.twoWeeks:
-        return const [475.0, 550.0];
+        return <double>[minSnapTwoWeeks, maxSnapTwoWeeks];
+      case CalendarFormat.week:
+        return <double>[minSnapWeek, maxSnapWeek];
     }
   }
 }
