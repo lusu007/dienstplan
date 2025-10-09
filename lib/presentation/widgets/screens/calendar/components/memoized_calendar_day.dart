@@ -6,6 +6,7 @@ import 'package:dienstplan/presentation/state/school_holidays/school_holidays_no
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/duty_group_fallback.dart';
 
 /// Optimized calendar day widget with memoization and selective provider watching
 class MemoizedCalendarDay extends ConsumerWidget {
@@ -74,6 +75,12 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       ),
     );
 
+    final selectedGroup = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.selectedDutyGroup,
+      ),
+    );
+
     final partnerConfigName = ref.watch(
       scheduleCoordinatorProvider.select(
         (state) => state.value?.partnerConfigName,
@@ -106,6 +113,10 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       settingsProvider.select((s) => s.value?.holidayAccentColorValue),
     );
 
+    final myDutyGroup = ref.watch(
+      settingsProvider.select((s) => s.value?.myDutyGroup),
+    );
+
     // Watch school holidays state
     final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
@@ -119,11 +130,16 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
 
     // Memoized duty calculations
+    final String? effectiveMyGroup = computeEffectiveMyGroup(
+      preferredGroup: preferredGroup,
+      selectedGroup: selectedGroup,
+      myDutyGroup: myDutyGroup,
+    );
     final dutyData = _MemoizedDutyCalculator.calculateDutyData(
       day: day,
       schedules: schedules,
       activeConfigName: activeConfig,
-      preferredGroup: preferredGroup,
+      preferredGroup: effectiveMyGroup,
       partnerConfigName: partnerConfigName,
       partnerGroup: partnerGroup,
     );

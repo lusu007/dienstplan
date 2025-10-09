@@ -46,6 +46,7 @@ import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/services/config_query_service.dart';
+import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
 // School holidays
 import 'package:dienstplan/data/data_sources/school_holiday_local_data_source.dart';
@@ -323,6 +324,8 @@ Future<GenerateSchedulesUseCase> generateSchedulesUseCase(Ref ref) async {
   final ConfigRepository configRepo = await ref.watch(
     configRepositoryProvider.future,
   );
+  // Warm up the schedule generation isolate to avoid first-use jank
+  await ScheduleGenerationIsolate.initialize();
   return GenerateSchedulesUseCase(scheduleRepo, configRepo);
 }
 
@@ -382,7 +385,8 @@ ScheduleMergeService scheduleMergeService(Ref ref) {
 
 @riverpod
 DateRangePolicy dateRangePolicy(Ref ref) {
-  return const PlusMinusMonthsPolicy(monthsBefore: 3, monthsAfter: 3);
+  // Use defaults tied to kMonthsPrefetchRadius for symmetric prefetch
+  return const PlusMinusMonthsPolicy();
 }
 
 @riverpod
@@ -393,13 +397,13 @@ ConfigQueryService configQueryService(Ref ref) {
 // Use cases (additional)
 @riverpod
 Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
-  final GetSchedulesUseCase get = await ref.watch(
-    getSchedulesUseCaseProvider.future,
+  final ScheduleRepository repo = await ref.watch(
+    scheduleRepositoryProvider.future,
   );
   final GenerateSchedulesUseCase gen = await ref.watch(
     generateSchedulesUseCaseProvider.future,
   );
-  return EnsureMonthSchedulesUseCase(get, gen);
+  return EnsureMonthSchedulesUseCase(repo, gen);
 }
 
 // School holiday providers

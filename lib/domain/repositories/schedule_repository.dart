@@ -29,4 +29,9 @@ abstract class ScheduleRepository {
 
   Future<List<DutyType>> getDutyTypes({required String configName});
   Future<Result<List<DutyType>>> getDutyTypesSafe({required String configName});
+
+  Future<int> countSchedulesForMonth({
+    required DateTime month,
+    String? configName,
+  });
 }

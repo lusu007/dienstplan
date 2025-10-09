@@ -4,7 +4,6 @@ import 'package:table_calendar/table_calendar.dart' as tc;
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_day_builders.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
-import 'package:dienstplan/domain/entities/schedule.dart';
 
 /// Optimized table calendar with RepaintBoundary and const constructors
 class CalendarTable extends ConsumerWidget {
@@ -27,21 +26,18 @@ class CalendarTable extends ConsumerWidget {
     final calendarFormat = state?.calendarFormat ?? tc.CalendarFormat.month;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 
-    // Create unique hash from schedule content of the visible calendar area
-    final tableCalendarKeyHash = _createTableCalendarKeyHash(
-      focusedDay,
-      state?.schedules ?? const <Schedule>[],
-      state?.activeConfigName,
-      state?.preferredDutyGroup,
-      state?.partnerConfigName,
-      state?.partnerDutyGroup,
-    );
+    // Stable calendar key per month/config/locale/format to avoid full rebuilds on data changes
+    final String stableCalendarKey =
+        'cal_${focusedDay.year}_${focusedDay.month}_'
+        '${state?.activeConfigName ?? ''}_'
+        '${Localizations.localeOf(context).languageCode}_'
+        '${calendarFormat.index}';
 
     return RepaintBoundary(
       child: SizedBox(
         height: CalendarConfig.kCalendarHeight,
         child: tc.TableCalendar(
-          key: ValueKey<int>(tableCalendarKeyHash),
+          key: ValueKey<String>(stableCalendarKey),
           firstDay: CalendarConfig.firstDay,
           lastDay: CalendarConfig.lastDay,
           focusedDay: focusedDay,
@@ -75,57 +71,6 @@ class CalendarTable extends ConsumerWidget {
           locale: Localizations.localeOf(context).languageCode,
         ),
       ),
-    );
-  }
-
-  int _createTableCalendarKeyHash(
-    DateTime focusedDay,
-    List<Schedule> schedules,
-    String? activeConfigName,
-    String? preferredDutyGroup,
-    String? partnerConfigName,
-    String? partnerDutyGroup,
-  ) {
-    // Include previous, current and next months so "out days" changes also trigger rebuilds
-    final DateTime hashStartMonth = DateTime(
-      focusedDay.year,
-      focusedDay.month - 1,
-      1,
-    );
-    final DateTime hashEndMonth = DateTime(
-      focusedDay.year,
-      focusedDay.month + 2,
-      0,
-    );
-
-    final List<Schedule> visibleSchedulesForHash = schedules
-        .where(
-          (schedule) =>
-              schedule.date.isAfter(
-                hashStartMonth.subtract(const Duration(days: 1)),
-              ) &&
-              schedule.date.isBefore(hashEndMonth.add(const Duration(days: 1))),
-        )
-        .toList();
-
-    visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
-
-    // Build a compact hash of visible data to force TableCalendar to rebuild
-    final String visibleSignature = visibleSchedulesForHash
-        .map(
-          (s) =>
-              '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}',
-        )
-        .join(';');
-
-    return Object.hash(
-      focusedDay.year,
-      focusedDay.month,
-      visibleSignature.hashCode,
-      activeConfigName,
-      preferredDutyGroup,
-      partnerConfigName,
-      partnerDutyGroup,
     );
   }
 }
