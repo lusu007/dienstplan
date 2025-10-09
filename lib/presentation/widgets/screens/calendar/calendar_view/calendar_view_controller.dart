@@ -11,6 +11,8 @@ class CalendarViewController {
   static const int _expansionThreshold =
       5; // Load more when within 5 pages of edge
   static const int _expansionSize = 30; // Add 30 days in each direction
+  static const int _maxTotalDays =
+      180; // Bound total pages to avoid unbounded growth
 
   CalendarViewController()
     : pageController = PageController(
@@ -123,6 +125,9 @@ class CalendarViewController {
     if (pageController.hasClients) {
       pageController.jumpToPage(currentPageIndex);
     }
+
+    // Trim from the end if exceeding max size
+    _trimIfExceedingMax();
   }
 
   /// Expands the range forward (later dates)
@@ -135,6 +140,9 @@ class CalendarViewController {
     for (int i = 1; i <= _expansionSize; i++) {
       dayPages.add(lastDay.add(Duration(days: i)));
     }
+
+    // Trim from the start if exceeding max size
+    _trimIfExceedingMax();
   }
 
   /// Gets the current date range covered by the loaded pages
@@ -145,5 +153,33 @@ class CalendarViewController {
     }
 
     return DateTimeRange(start: dayPages.first, end: dayPages.last);
+  }
+
+  void _trimIfExceedingMax() {
+    if (dayPages.length <= _maxTotalDays) return;
+    final int overflow = dayPages.length - _maxTotalDays;
+    // Trim evenly from the side opposite to the user's direction to retain context
+    // Here, prefer trimming from the farther side relative to currentPageIndex
+    final int trimFromStart = currentPageIndex > dayPages.length / 2
+        ? overflow
+        : 0;
+    final int trimFromEnd = currentPageIndex <= dayPages.length / 2
+        ? overflow
+        : 0;
+
+    if (trimFromStart > 0) {
+      dayPages.removeRange(0, trimFromStart);
+      currentPageIndex = (currentPageIndex - trimFromStart).clamp(
+        0,
+        dayPages.length - 1,
+      );
+      if (pageController.hasClients) {
+        pageController.jumpToPage(currentPageIndex);
+      }
+    } else if (trimFromEnd > 0) {
+      final int newLength = dayPages.length - trimFromEnd;
+      dayPages.removeRange(newLength, dayPages.length);
+      // currentPageIndex remains valid
+    }
   }
 }
