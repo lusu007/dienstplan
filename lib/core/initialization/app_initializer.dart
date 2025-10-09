@@ -8,6 +8,7 @@ import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 
 class AppInitializer {
   static bool _sentryInitialized = false;
@@ -27,8 +28,16 @@ class AppInitializer {
     await container.read(languageServiceProvider.future);
     // Pre-warm settings to avoid theme flash on startup
     await container.read(settingsProvider.future);
-    // Pre-warm school holidays to ensure they're loaded if enabled
-    await container.read(schoolHolidaysProvider.future);
+    // Conditionally pre-warm school holidays using domain settings
+    final GetSettingsUseCase getSettingsUseCase = await container.read(
+      getSettingsUseCaseProvider.future,
+    );
+    final settings = await getSettingsUseCase.execute();
+    if (settings?.showSchoolHolidays == true &&
+        settings?.schoolHolidayStateCode != null &&
+        settings!.schoolHolidayStateCode!.isNotEmpty) {
+      await container.read(schoolHolidaysProvider.future);
+    }
 
     // Initialize heavy tasks after first frame to avoid jank
     SchedulerBinding.instance.addPostFrameCallback((_) async {

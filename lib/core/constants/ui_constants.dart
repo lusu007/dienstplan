@@ -9,3 +9,6 @@ const int kAlphaBadge = 50;
 
 // Typography
 const double kHiddenFontSize = 0.0;
+
+// List metrics
+const double kDutyListItemExtent = 80.0; // 72 item height + 8 bottom margin

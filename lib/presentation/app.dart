@@ -29,7 +29,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
     // Process any pending notifications once the UI is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      NotificationService().processPendingNotifications();
+      ref.read(notificationServiceProvider).processPendingNotifications();
     });
   }
 
