@@ -8,16 +8,19 @@ import 'package:dienstplan/domain/value_objects/date_range.dart';
 class ScheduleIndex {
   final Map<String, List<DateRange>> _coverageRanges;
   final Map<String, List<Schedule>> _schedulesByConfig;
+  final Map<String, List<Schedule>> _sortedByConfig;
 
   /// Default constructor for creating an empty index.
   const ScheduleIndex()
     : _coverageRanges = const {},
-      _schedulesByConfig = const {};
+      _schedulesByConfig = const {},
+      _sortedByConfig = const {};
 
   /// Creates an index with initial schedules.
   ScheduleIndex.withSchedules(List<Schedule> schedules)
     : _coverageRanges = {},
-      _schedulesByConfig = {} {
+      _schedulesByConfig = {},
+      _sortedByConfig = {} {
     addSchedules(schedules);
   }
 
@@ -42,6 +45,12 @@ class ScheduleIndex {
       _schedulesByConfig
           .putIfAbsent(configName, () => [])
           .addAll(configSchedules);
+
+      // Maintain sorted cache incrementally
+      final List<Schedule> sorted = List<Schedule>.from(
+        _schedulesByConfig[configName]!,
+      )..sort((a, b) => a.date.compareTo(b.date));
+      _sortedByConfig[configName] = sorted;
 
       // Update coverage ranges
       _updateCoverageRanges(configName, configSchedules);
@@ -75,6 +84,11 @@ class ScheduleIndex {
                 schedule.configName == toRemove.configName,
           ),
         );
+
+        // Maintain sorted cache after removal
+        final List<Schedule> sorted = List<Schedule>.from(configSchedules)
+          ..sort((a, b) => a.date.compareTo(b.date));
+        _sortedByConfig[configName] = sorted;
       }
 
       // Rebuild coverage ranges for this config
@@ -85,6 +99,9 @@ class ScheduleIndex {
   /// Replaces all schedules for a config and updates coverage ranges.
   void replaceSchedulesForConfig(String configName, List<Schedule> schedules) {
     _schedulesByConfig[configName] = List.from(schedules);
+    final List<Schedule> sorted = List<Schedule>.from(schedules)
+      ..sort((a, b) => a.date.compareTo(b.date));
+    _sortedByConfig[configName] = sorted;
     _updateCoverageRanges(configName, schedules);
   }
 
@@ -126,12 +143,17 @@ class ScheduleIndex {
     DateTime startDate,
     DateTime endDate,
   ) {
-    final schedules = _schedulesByConfig[configName];
-    if (schedules == null || schedules.isEmpty) return false;
+    final schedules = _sortedByConfig[configName];
+    if (schedules == null || schedules.isEmpty) {
+      // If sorted schedules are missing, this is a logic error.
+      throw StateError(
+        'Sorted schedules for config "$configName" are missing. '
+        'Ensure _sortedByConfig is always populated for binary search.',
+      );
+    }
 
-    // Sort schedules by date for binary search
-    final sortedSchedules = List<Schedule>.from(schedules)
-      ..sort((a, b) => a.date.compareTo(b.date));
+    // Already sorted view
+    final sortedSchedules = schedules;
 
     final start = startDate.subtract(const Duration(days: 1));
     final end = endDate.add(const Duration(days: 1));

@@ -112,12 +112,12 @@ class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
     }
 
     // Get holiday data for the selected day
-    final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
-    final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
+    final holidaysState = ref.watch(
+      schoolHolidaysProvider.select((s) => s.value),
+    );
 
     // Get holiday accent color from settings
-    final settingsAsyncValue = ref.watch(settingsProvider);
-    final settingsState = settingsAsyncValue.whenData((data) => data).value;
+    final settingsState = ref.watch(settingsProvider.select((s) => s.value));
     _holidayAccentColorValue = settingsState?.holidayAccentColorValue;
 
     if (widget.selectedDay != null && holidaysState?.isEnabled == true) {
@@ -153,145 +153,143 @@ class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
   }
 
   Widget _buildCombinedList(List<Schedule> schedules, bool hasHolidays) {
-    final List<Widget> items = [];
-
-    // Add holiday items first if they exist
-    if (hasHolidays && _holidaysForSelectedDay != null) {
-      for (final holiday in _holidaysForSelectedDay!) {
-        items.add(
-          VacationDayItem(
-            holiday: holiday,
-            holidayAccentColorValue: _holidayAccentColorValue,
-          ),
-        );
-      }
-    }
-
-    // Add duty items
-    if (schedules.isNotEmpty) {
-      items.addAll(_buildDutyItems(schedules));
-    }
+    final int holidaysCount = hasHolidays && _holidaysForSelectedDay != null
+        ? _holidaysForSelectedDay!.length
+        : 0;
+    final int dutiesCount = schedules.length;
+    final int totalCount = holidaysCount + dutiesCount;
 
     return ListView.builder(
       controller: widget.scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-      itemCount: items.length,
-      itemBuilder: (context, index) => items[index],
-    );
-  }
+      itemCount: totalCount,
+      itemBuilder: (context, index) {
+        if (index < holidaysCount) {
+          final holiday = _holidaysForSelectedDay![index];
+          return VacationDayItem(
+            holiday: holiday,
+            holidayAccentColorValue: _holidayAccentColorValue,
+          );
+        }
+        final int dutyIndex = index - holidaysCount;
+        final schedule = schedules[dutyIndex];
+        final Color partnerColor = Color(
+          _partnerAccentColorValue ??
+              AccentColorDefaults.partnerAccentColorValue,
+        );
+        final Color myAccentColor = Color(
+          _myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
+        );
+        final bool matchesPartnerConfig =
+            (_partnerConfigName != null && _partnerConfigName!.isNotEmpty)
+            ? schedule.configName == _partnerConfigName
+            : (widget.activeConfigName == null ||
+                  schedule.configName == widget.activeConfigName);
+        final bool matchesPartnerGroup =
+            (_partnerDutyGroupName != null && _partnerDutyGroupName!.isNotEmpty)
+            ? schedule.dutyGroupName == _partnerDutyGroupName
+            : false;
+        final bool isPartner = matchesPartnerConfig && matchesPartnerGroup;
+        final bool isSelected =
+            widget.selectedDutyGroup == schedule.dutyGroupName;
+        final Color primaryColor = Theme.of(context).colorScheme.primary;
+        final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
+        final bool isOwn =
+            (_myDutyGroupName != null &&
+            _myDutyGroupName!.isNotEmpty &&
+            schedule.dutyGroupName == _myDutyGroupName);
+        final Color baseColor = isPartner
+            ? partnerColor
+            : (isOwn ? myAccentColor : outlineColor);
+        final Color borderColor = isSelected ? primaryColor : baseColor;
+        final Color badgeColor = baseColor;
 
-  List<Widget> _buildDutyItems(List<Schedule> schedules) {
-    final Color partnerColor = Color(
-      _partnerAccentColorValue ?? AccentColorDefaults.partnerAccentColorValue,
-    );
-    final Color myAccentColor = Color(
-      _myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
-    );
-
-    return schedules.map((schedule) {
-      final bool matchesPartnerConfig =
-          (_partnerConfigName != null && _partnerConfigName!.isNotEmpty)
-          ? schedule.configName == _partnerConfigName
-          : (widget.activeConfigName == null ||
-                schedule.configName == widget.activeConfigName);
-      final bool matchesPartnerGroup =
-          (_partnerDutyGroupName != null && _partnerDutyGroupName!.isNotEmpty)
-          ? schedule.dutyGroupName == _partnerDutyGroupName
-          : false;
-      final bool isPartner = matchesPartnerConfig && matchesPartnerGroup;
-      final bool isSelected =
-          widget.selectedDutyGroup == schedule.dutyGroupName;
-      final Color primaryColor = Theme.of(context).colorScheme.primary;
-      final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
-      final bool isOwn =
-          (_myDutyGroupName != null &&
-          _myDutyGroupName!.isNotEmpty &&
-          schedule.dutyGroupName == _myDutyGroupName);
-      final Color baseColor = isPartner
-          ? partnerColor
-          : (isOwn ? myAccentColor : outlineColor);
-      final Color borderColor = isSelected ? primaryColor : baseColor;
-      final Color badgeColor = baseColor;
-
-      return Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => _onDutyGroupSelected(
-              isSelected ? null : schedule.dutyGroupName,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              height: 72,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? primaryColor.withAlpha(kAlphaCardSelected)
-                    : Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: borderColor,
-                  width: isSelected ? 2.5 : 1,
-                ),
+        return Container(
+          key: ValueKey(
+            '${schedule.date}-${schedule.configName}-${schedule.dutyGroupName}-${schedule.dutyTypeId}-${schedule.service}',
+          ),
+          margin: const EdgeInsets.only(bottom: 8),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _onDutyGroupSelected(
+                isSelected ? null : schedule.dutyGroupName,
               ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: badgeColor.withAlpha(kAlphaBadge),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      _getDutyTypeIcon(schedule.dutyTypeId),
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Theme.of(context).colorScheme.onSurface
-                          : badgeColor,
-                      size: 24,
-                    ),
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                height: 72,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? primaryColor.withAlpha(kAlphaCardSelected)
+                      : Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: borderColor,
+                    width: isSelected ? 2.5 : 1,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            schedule.service,
-                            style: Theme.of(context).textTheme.titleMedium
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: badgeColor.withAlpha(kAlphaBadge),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        _getDutyTypeIcon(schedule.dutyTypeId),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onSurface
+                            : badgeColor,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              schedule.service,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
+                                  ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            schedule.dutyGroupName,
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
                                   color: Theme.of(
                                     context,
-                                  ).colorScheme.onSurface,
+                                  ).colorScheme.onSurfaceVariant,
                                 ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          schedule.dutyGroupName,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-    }).toList();
+        );
+      },
+    );
   }
 
   IconData _getDutyTypeIcon(String dutyTypeId) {

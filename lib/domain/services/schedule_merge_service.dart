@@ -9,17 +9,18 @@ class ScheduleMergeService {
     required List<Schedule> existing,
     required List<Schedule> incoming,
   }) {
-    final List<Schedule> result = <Schedule>[];
-    for (final Schedule oldItem in existing) {
-      final bool willBeReplaced = incoming.any(
-        (Schedule inc) => _isSameScheduleDayAndGroup(inc, oldItem),
-      );
-      if (!willBeReplaced) {
-        result.add(oldItem);
-      }
+    if (existing.isEmpty) return List<Schedule>.from(incoming);
+    if (incoming.isEmpty) return List<Schedule>.from(existing);
+
+    // O(n + m) using map keyed by composite schedule identity
+    final Map<String, Schedule> byKey = <String, Schedule>{};
+    for (final Schedule s in existing) {
+      byKey[_keyOf(s)] = s;
     }
-    result.addAll(incoming);
-    return result;
+    for (final Schedule s in incoming) {
+      byKey[_keyOf(s)] = s; // replace or insert
+    }
+    return byKey.values.toList(growable: false);
   }
 
   List<Schedule> mergeOutsideRange({
@@ -52,51 +53,35 @@ class ScheduleMergeService {
     required DateRange range,
     required String replaceConfigName,
   }) {
-    final List<Schedule> merged = <Schedule>[];
-    for (final Schedule oldItem in existing) {
-      final bool isInsideRange = range.containsDate(oldItem.date);
-      final bool isSameConfig = oldItem.configName == replaceConfigName;
-      if (!isInsideRange) {
-        merged.add(oldItem);
-        continue;
-      }
-      // Inside range: keep only if it belongs to a different config
-      if (!isSameConfig) {
-        // Avoid duplicates with incoming
-        final bool willBeAddedByIncoming = incoming.any(
-          (Schedule inc) =>
-              _isSameScheduleDayAndGroup(inc, oldItem) &&
-              inc.configName == oldItem.configName,
-        );
-        if (!willBeAddedByIncoming) {
-          merged.add(oldItem);
-        }
+    // Build a set of keys to replace inside the range for the given config
+    final Set<String> replaceKeys = <String>{};
+    for (final Schedule s in incoming) {
+      if (s.configName == replaceConfigName && range.containsDate(s.date)) {
+        replaceKeys.add(_keyOf(s));
       }
     }
-    for (final Schedule newItem in incoming) {
-      final bool exists = merged.any(
-        (Schedule s) =>
-            _isSameScheduleDayAndGroup(s, newItem) &&
-            s.configName == newItem.configName,
-      );
-      if (!exists) {
-        merged.add(newItem);
+
+    final Map<String, Schedule> result = <String, Schedule>{};
+    for (final Schedule s in existing) {
+      final bool inRange = range.containsDate(s.date);
+      if (!(inRange && s.configName == replaceConfigName)) {
+        // keep all outside the replace window or different config
+        result[_keyOf(s)] = s;
       }
     }
-    return merged;
+    for (final Schedule s in incoming) {
+      result[_keyOf(s)] = s;
+    }
+    return result.values.toList(growable: false);
   }
 
   List<Schedule> deduplicate(List<Schedule> schedules) {
-    final List<Schedule> result = <Schedule>[];
+    if (schedules.isEmpty) return const <Schedule>[];
+    final Map<String, Schedule> byKey = <String, Schedule>{};
     for (final Schedule s in schedules) {
-      final bool exists = result.any(
-        (Schedule e) => _isSameScheduleDayAndGroup(e, s),
-      );
-      if (!exists) {
-        result.add(s);
-      }
+      byKey[_keyOf(s)] = s;
     }
-    return result;
+    return byKey.values.toList(growable: false);
   }
 
   /// Removes schedules outside the specified date range to prevent memory accumulation
@@ -200,6 +185,11 @@ class ScheduleMergeService {
         a.date.day == b.date.day &&
         a.dutyGroupName == b.dutyGroupName &&
         a.configName == b.configName;
+  }
+
+  String _keyOf(Schedule s) {
+    final DateTime d = s.date;
+    return '${d.year}-${d.month}-${d.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}|${s.service}';
   }
 
   /// Checks if the schedules list is already sorted by date in ascending order
