@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.2](https://github.com/lusu007/dienstplan/compare/v0.12.1...v0.12.2) (2025-10-09)
+
+
+### Bug Fixes
+
+* Fix holiday color selection ([#318](https://github.com/lusu007/dienstplan/issues/318)) ([bbf9ab4](https://github.com/lusu007/dienstplan/commit/bbf9ab4897c87eb2872c785e303b8059d1b1e263))
+* Improve loading performance ([#321](https://github.com/lusu007/dienstplan/issues/321)) ([6ab5f5e](https://github.com/lusu007/dienstplan/commit/6ab5f5e70c8c5f9218ef5f9527e7124aacbe131e))
+* Improve month switch performance ([#317](https://github.com/lusu007/dienstplan/issues/317)) ([d432afa](https://github.com/lusu007/dienstplan/commit/d432afaf73f1da89d2798b677a4e37f2c6b71357))
+
 ## [0.12.1](https://github.com/lusu007/dienstplan/compare/v0.12.0...v0.12.1) (2025-10-08)
 
 
