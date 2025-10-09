@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.3](https://github.com/lusu007/dienstplan/compare/v0.12.2...v0.12.3) (2025-10-09)
+
+
+### Bug Fixes
+
+* More performance improvements ([#324](https://github.com/lusu007/dienstplan/issues/324)) ([4d0b8fa](https://github.com/lusu007/dienstplan/commit/4d0b8fad41c55a959e0cd6382bcb2c3f5f33d26d))
+* Offload heavy operations to isolate ([#325](https://github.com/lusu007/dienstplan/issues/325)) ([ccfd223](https://github.com/lusu007/dienstplan/commit/ccfd223a8c79f6b5be3129cf52fa2b80e8ad5cce))
+* Upgrade dependencies ([#322](https://github.com/lusu007/dienstplan/issues/322)) ([2073694](https://github.com/lusu007/dienstplan/commit/2073694faa4c06894dba76fe5f10048c3b9d4ab4))
+
 ## [0.12.2](https://github.com/lusu007/dienstplan/compare/v0.12.1...v0.12.2) (2025-10-09)
 
 
