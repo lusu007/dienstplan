@@ -3,9 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_builders_helper.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_day_builders.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector_header.dart';
@@ -319,44 +318,7 @@ class _TableCalendarWrapper extends ConsumerWidget {
               .setFocusedDay(focusedDay);
           onPageChanged(focusedDay);
         },
-        calendarBuilders: CalendarBuilders(
-          defaultBuilder: (context, day, focusedDay) {
-            return ReactiveCalendarDay(
-              day: day,
-              dayType: CalendarDayType.default_,
-              width: CalendarConfig.kCalendarDayWidth,
-              height: CalendarConfig.kCalendarDayHeight,
-              onDaySelected: onDaySelected,
-            );
-          },
-          outsideBuilder: (context, day, focusedDay) {
-            return ReactiveCalendarDay(
-              day: day,
-              dayType: CalendarDayType.outside,
-              width: CalendarConfig.kCalendarDayWidth,
-              height: CalendarConfig.kCalendarDayHeight,
-              onDaySelected: onDaySelected,
-            );
-          },
-          selectedBuilder: (context, day, focusedDay) {
-            return ReactiveCalendarDay(
-              day: day,
-              dayType: CalendarDayType.selected,
-              width: CalendarConfig.kCalendarDayWidth,
-              height: CalendarConfig.kCalendarDayHeight,
-              onDaySelected: onDaySelected,
-            );
-          },
-          todayBuilder: (context, day, focusedDay) {
-            return ReactiveCalendarDay(
-              day: day,
-              dayType: CalendarDayType.today,
-              width: CalendarConfig.kCalendarDayHeight,
-              height: CalendarConfig.kCalendarDayHeight,
-              onDaySelected: onDaySelected,
-            );
-          },
-        ),
+        calendarBuilders: CalendarDayBuilders.create(),
         calendarStyle: CalendarConfig.createCalendarStyle(context),
         headerStyle: CalendarConfig.createHeaderStyle(),
         locale: Localizations.localeOf(context).languageCode,
