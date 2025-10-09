@@ -63,8 +63,8 @@ class CalendarTable extends ConsumerWidget {
                 .ensureActiveDay(selectedDay);
             onDaySelected();
           },
-          onPageChanged: (focusedDay) async {
-            await ref
+          onPageChanged: (focusedDay) {
+            ref
                 .read(scheduleCoordinatorProvider.notifier)
                 .setFocusedDay(focusedDay);
             onPageChanged(focusedDay);
