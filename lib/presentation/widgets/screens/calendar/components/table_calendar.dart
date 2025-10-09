@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart' as tc;
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_builders.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_day_builders.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 
@@ -69,7 +69,7 @@ class CalendarTable extends ConsumerWidget {
                 .setFocusedDay(focusedDay);
             onPageChanged(focusedDay);
           },
-          calendarBuilders: CustomCalendarBuilders.create(),
+          calendarBuilders: CalendarDayBuilders.create(),
           calendarStyle: CalendarConfig.createCalendarStyle(context),
           headerStyle: CalendarConfig.createHeaderStyle(),
           locale: Localizations.localeOf(context).languageCode,

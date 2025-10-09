@@ -143,17 +143,6 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       isSelected: isSelected,
       hasSchoolHoliday: hasSchoolHoliday,
       schoolHolidayName: schoolHolidayName,
-      onTap: () async {
-        try {
-          // Trigger day selection via provider
-          await ref
-              .read(scheduleCoordinatorProvider.notifier)
-              .setSelectedDay(day);
-          ref.read(scheduleCoordinatorProvider.notifier).setFocusedDay(day);
-        } catch (e) {
-          // Ignore errors during day selection
-        }
-      },
     );
   }
 
