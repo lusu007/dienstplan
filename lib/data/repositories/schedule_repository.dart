@@ -220,4 +220,24 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
       return Result.createFailure<List<DutyType>>(failure);
     }
   }
+
+  @override
+  Future<int> countSchedulesForMonth({
+    required DateTime month,
+    String? configName,
+  }) async {
+    try {
+      return await _schedulesDao.countSchedulesForMonth(
+        month: month,
+        configName: configName,
+      );
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'ScheduleRepository: Error counting schedules for month',
+        e,
+        stackTrace,
+      );
+      rethrow;
+    }
+  }
 }

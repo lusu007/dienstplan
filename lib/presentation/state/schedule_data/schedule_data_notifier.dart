@@ -291,30 +291,37 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     final current = await future;
     if (!ref.mounted) return;
 
-    try {
-      await _ensureMonthSchedulesUseCase!.execute(
-        monthStart: month,
-        configName: configName,
-      );
+    // Deduplicate ensures/loads by month using loading queue
+    final DateTime startDate = DateTime(month.year, month.month, 1);
+    final DateTime endDate = DateTime(month.year, month.month + 1, 0);
+    final String operationKey = _loadingQueue.generateOperationKey(
+      startDate,
+      endDate,
+      configName,
+    );
 
-      if (!ref.mounted) return;
-
-      // Reload schedules for the month
-      final startDate = DateTime(month.year, month.month, 1);
-      final endDate = DateTime(month.year, month.month + 1, 0);
-
-      await loadSchedulesForDateRange(
-        startDate: startDate,
-        endDate: endDate,
-        configName: configName,
-      );
-    } catch (e) {
-      if (ref.mounted) {
-        state = AsyncData(
-          current.copyWith(error: 'Failed to ensure month schedules'),
+    await _loadingQueue.executeIfNotPending(operationKey, () async {
+      try {
+        await _ensureMonthSchedulesUseCase!.execute(
+          monthStart: month,
+          configName: configName,
         );
+
+        if (!ref.mounted) return;
+
+        await loadSchedulesForDateRange(
+          startDate: startDate,
+          endDate: endDate,
+          configName: configName,
+        );
+      } catch (e) {
+        if (ref.mounted) {
+          state = AsyncData(
+            current.copyWith(error: 'Failed to ensure month schedules'),
+          );
+        }
       }
-    }
+    });
   }
 
   Future<void> setSelectedDutyGroup(String? dutyGroup) async {

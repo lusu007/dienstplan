@@ -11,7 +11,6 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/c
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/draggable_sheet_container.dart';
 
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/domain/entities/schedule.dart';
 
 class CalendarViewUiBuilder {
   static Widget buildCalendarHeader({
@@ -218,8 +217,14 @@ class _TableCalendarWrapper extends ConsumerWidget {
     final holidaysAsync = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsync.value;
 
-    // Create unique hash from schedule content of the visible calendar area
-    // Include previous, current and next months so "out days" changes also trigger rebuilds
+    // Stable calendar key per month/config/locale/format to avoid full rebuilds on data changes
+    final String stableCalendarKey =
+        'cal_${focusedDay.year}_${focusedDay.month}_'
+        '${state?.activeConfigName ?? ''}_'
+        '${Localizations.localeOf(context).languageCode}_'
+        '${calendarFormat.index}';
+
+    // Compute visible month range around focused month for holiday loading
     final DateTime hashStartMonth = DateTime(
       focusedDay.year,
       focusedDay.month - 1,
@@ -230,35 +235,6 @@ class _TableCalendarWrapper extends ConsumerWidget {
       focusedDay.month + 2,
       0,
     ); // end of next month
-    final List<Schedule> visibleSchedulesForHash =
-        (state?.schedules ?? const <Schedule>[])
-            .where(
-              (schedule) =>
-                  schedule.date.isAfter(
-                    hashStartMonth.subtract(const Duration(days: 1)),
-                  ) &&
-                  schedule.date.isBefore(
-                    hashEndMonth.add(const Duration(days: 1)),
-                  ),
-            )
-            .toList();
-    visibleSchedulesForHash.sort((a, b) => a.date.compareTo(b.date));
-    // Build a compact hash of visible data to force TableCalendar to rebuild
-    final String visibleSignature = visibleSchedulesForHash
-        .map(
-          (s) =>
-              '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}',
-        )
-        .join(';');
-    final int tableCalendarKeyHash = Object.hash(
-      focusedDay.year,
-      focusedDay.month,
-      visibleSignature.hashCode,
-      state?.activeConfigName,
-      state?.preferredDutyGroup,
-      state?.partnerConfigName,
-      state?.partnerDutyGroup,
-    );
 
     // Ensure school holidays are loaded for the visible range when enabled
     if (holidaysState != null &&
@@ -281,7 +257,7 @@ class _TableCalendarWrapper extends ConsumerWidget {
     return SizedBox(
       height: CalendarConfig.kCalendarHeight,
       child: TableCalendar(
-        key: ValueKey<int>(tableCalendarKeyHash),
+        key: ValueKey<String>(stableCalendarKey),
         firstDay: CalendarConfig.firstDay,
         lastDay: CalendarConfig.lastDay,
         focusedDay: focusedDay,

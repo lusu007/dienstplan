@@ -126,9 +126,13 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
         _navigationDebouncer.debounceNavigation(
           'month_change_${newDay.year}_${newDay.month}',
           () {
-            // Also set selected day to ensure the duty list has a day to show
-            ref.read(calendarProvider.notifier).setSelectedDay(newDay);
-            ref.read(calendarProvider.notifier).setFocusedDay(newDay);
+            // Route through coordinator so dynamic loading/ensuring is triggered
+            ref
+                .read(scheduleCoordinatorProvider.notifier)
+                .setSelectedDay(newDay);
+            ref
+                .read(scheduleCoordinatorProvider.notifier)
+                .setFocusedDay(newDay);
           },
         );
 

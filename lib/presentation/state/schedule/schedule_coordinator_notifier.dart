@@ -98,6 +98,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> setFocusedDay(DateTime day) async {
     await ref.read(calendarProvider.notifier).setFocusedDay(day);
     await _updateCalendarStateOnly();
+    // Ensure own data for the newly focused range so own chips render immediately
+    await _ensureOwnDataForFocusedRange();
     unawaited(_ensurePartnerDataForFocusedRange());
     // Trigger dynamic loading for the new focused range
     unawaited(_triggerDynamicLoadingForFocusedDay(day));
@@ -762,7 +764,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       }
 
       await Future.wait(<Future<void>>[
-        for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+        for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
           ensurePartnerMonth(DateTime(focused.year, focused.month + i, 1)),
       ]);
       final List<Schedule> existingNow =
@@ -781,6 +783,73 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       );
     } catch (e, stack) {
       AppLogger.e('Error in _ensurePartnerDataForFocusedRange', e, stack);
+    }
+  }
+
+  Future<void> _ensureOwnDataForFocusedRange() async {
+    try {
+      final ScheduleUiState current;
+      if (state.value != null) {
+        current = state.value!;
+      } else {
+        current = await future;
+      }
+
+      final String? activeName = current.activeConfigName;
+      if (activeName == null || activeName.isEmpty) return;
+
+      final DateTime focused = current.focusedDay ?? DateTime.now();
+      final DateRange focusedRange = _dateRangePolicy!.computeFocusedRange(
+        focused,
+      );
+      final DateTime? selected = current.selectedDay;
+      DateRange combinedRange = focusedRange;
+      if (selected != null) {
+        final DateRange selectedRange = _dateRangePolicy!.computeSelectedRange(
+          selected,
+        );
+        combinedRange = DateRange.union(focusedRange, selectedRange);
+      }
+
+      // Load own schedules for combined range
+      final ownResult = await _getSchedulesUseCase!.executeForDateRangeSafe(
+        startDate: combinedRange.start,
+        endDate: combinedRange.end,
+        configName: activeName,
+      );
+      if (ownResult.isFailure) return;
+
+      // Ensure own months around the focused period so data exists for chips
+      final List<Schedule> allOwn = <Schedule>[...ownResult.value];
+      Future<void> ensureOwnMonth(DateTime monthStart) async {
+        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
+            .execute(configName: activeName, monthStart: monthStart);
+        if (ensured.isNotEmpty) {
+          allOwn.addAll(ensured);
+        }
+      }
+
+      await Future.wait(<Future<void>>[
+        for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
+          ensureOwnMonth(DateTime(focused.year, focused.month + i, 1)),
+      ]);
+
+      final List<Schedule> existingNow =
+          (state.value?.schedules ?? current.schedules).toList();
+      final List<Schedule> merged = _scheduleMergeService!
+          .mergeReplacingConfigInRange(
+            existing: existingNow,
+            incoming: allOwn,
+            range: combinedRange,
+            replaceConfigName: activeName,
+          );
+      state = AsyncData(
+        (state.value ?? current)
+            .copyWith(schedules: merged)
+            .updateScheduleIndex(),
+      );
+    } catch (e, stack) {
+      AppLogger.e('Error in _ensureOwnDataForFocusedRange', e, stack);
     }
   }
 
