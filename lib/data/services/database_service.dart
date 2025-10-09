@@ -14,7 +14,10 @@ class DatabaseService {
   Future<Database> get database async {
     if (_database != null) return _database!;
     final dbPath = join(await getDatabasesPath(), 'dienstplan.db');
-    AppLogger.i('Opening optimized database connection at: $dbPath');
+    assert(() {
+      AppLogger.i('Opening optimized database connection at: $dbPath');
+      return true;
+    }());
     _database = await openDatabase(
       dbPath,
       version: _currentVersion,
@@ -26,7 +29,10 @@ class DatabaseService {
   }
 
   Future<void> _configureDatabase(Database db) async {
-    AppLogger.i('Configuring database with performance optimizations');
+    assert(() {
+      AppLogger.i('Configuring database with performance optimizations');
+      return true;
+    }());
 
     try {
       // Enable WAL mode for better write performance and concurrent reads
@@ -46,7 +52,10 @@ class DatabaseService {
         'PRAGMA temp_store=MEMORY',
       ); // Store temporary tables in memory
 
-      AppLogger.i('Database performance optimizations applied');
+      assert(() {
+        AppLogger.i('Database performance optimizations applied');
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error applying database optimizations', e, stackTrace);
       // Continue without optimizations rather than failing completely
@@ -54,7 +63,10 @@ class DatabaseService {
   }
 
   Future<void> _createDatabase(Database db, int version) async {
-    AppLogger.i('Creating optimized database tables');
+    assert(() {
+      AppLogger.i('Creating optimized database tables');
+      return true;
+    }());
 
     // Create tables with optimized structure
     await db.execute('''
@@ -127,11 +139,17 @@ class DatabaseService {
     // Create optimized indexes
     await _createOptimizedIndexes(db);
 
-    AppLogger.i('Optimized database tables and indexes created successfully');
+    assert(() {
+      AppLogger.i('Optimized database tables and indexes created successfully');
+      return true;
+    }());
   }
 
   Future<void> _createOptimizedIndexes(DatabaseExecutor db) async {
-    AppLogger.i('Creating optimized database indexes');
+    assert(() {
+      AppLogger.i('Creating optimized database indexes');
+      return true;
+    }());
 
     // Composite indexes for common query patterns
     await db.execute('''
@@ -209,7 +227,10 @@ class DatabaseService {
       AppLogger.i('date_ymd column not available, skipping date_ymd indexes');
     }
 
-    AppLogger.i('Optimized indexes created successfully');
+    assert(() {
+      AppLogger.i('Optimized indexes created successfully');
+      return true;
+    }());
   }
 
   Future<void> _upgradeDatabase(
@@ -217,7 +238,10 @@ class DatabaseService {
     int oldVersion,
     int newVersion,
   ) async {
-    AppLogger.i('Upgrading database from version $oldVersion to $newVersion');
+    assert(() {
+      AppLogger.i('Upgrading database from version $oldVersion to $newVersion');
+      return true;
+    }());
     await db.transaction((txn) async {
       if (oldVersion < 5) {
         await _migrateToVersion5(txn);
@@ -257,9 +281,12 @@ class DatabaseService {
 
   Future<void> _migrateToVersion5(DatabaseExecutor db) async {
     try {
-      AppLogger.i(
-        'Migrating to version 5: Removing focused_day and selected_day columns',
-      );
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 5: Removing focused_day and selected_day columns',
+        );
+        return true;
+      }());
 
       // Create a new settings table without the date columns
       await db.execute('''
@@ -293,9 +320,12 @@ class DatabaseService {
       // Rename the new table to the original name
       await db.execute('ALTER TABLE settings_new RENAME TO settings');
 
-      AppLogger.i(
-        'Successfully migrated to version 5: Removed date columns from settings',
-      );
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 5: Removed date columns from settings',
+        );
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 5', e, stackTrace);
       rethrow;
@@ -304,9 +334,12 @@ class DatabaseService {
 
   Future<void> _migrateToVersion6(DatabaseExecutor db) async {
     try {
-      AppLogger.i(
-        'Migrating to version 6: Rebuilding schedules table with collision-safe IDs',
-      );
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 6: Rebuilding schedules table with collision-safe IDs',
+        );
+        return true;
+      }());
 
       // Create a new schedules table
       await db.execute('''
@@ -346,9 +379,12 @@ class DatabaseService {
       await db.execute('DROP TABLE schedules');
       await db.execute('ALTER TABLE schedules_new RENAME TO schedules');
 
-      AppLogger.i(
-        'Successfully migrated to version 6: schedules IDs updated and duplicates removed',
-      );
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 6: schedules IDs updated and duplicates removed',
+        );
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 6', e, stackTrace);
       rethrow;
@@ -357,9 +393,12 @@ class DatabaseService {
 
   Future<void> _migrateToVersion7(DatabaseExecutor db) async {
     try {
-      AppLogger.i(
-        'Migrating to version 7: Rebuilding schedules table with composite PK and date_ymd',
-      );
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 7: Rebuilding schedules table with composite PK and date_ymd',
+        );
+        return true;
+      }());
 
       await db.execute('''
         CREATE TABLE schedules_new_v7 (
@@ -397,9 +436,12 @@ class DatabaseService {
       await db.execute('DROP TABLE schedules');
       await db.execute('ALTER TABLE schedules_new_v7 RENAME TO schedules');
 
-      AppLogger.i(
-        'Successfully migrated to version 7: schedules now use composite PK and date_ymd',
-      );
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 7: schedules now use composite PK and date_ymd',
+        );
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 7', e, stackTrace);
       rethrow;
@@ -408,11 +450,17 @@ class DatabaseService {
 
   Future<void> _migrateToVersion8(DatabaseExecutor db) async {
     try {
-      AppLogger.i('Migrating to version 8: Add theme_mode to settings');
+      assert(() {
+        AppLogger.i('Migrating to version 8: Add theme_mode to settings');
+        return true;
+      }());
       await db.execute('''
         ALTER TABLE settings ADD COLUMN theme_mode TEXT
       ''');
-      AppLogger.i('Successfully migrated to version 8: theme_mode added');
+      assert(() {
+        AppLogger.i('Successfully migrated to version 8: theme_mode added');
+        return true;
+      }());
     } catch (e, stackTrace) {
       // Column might already exist if user reinstalled or partial migration
       AppLogger.e('Error during migration to version 8', e, stackTrace);
@@ -421,7 +469,10 @@ class DatabaseService {
 
   Future<void> _migrateToVersion9(DatabaseExecutor db) async {
     try {
-      AppLogger.i('Migrating to version 9: Add partner fields to settings');
+      assert(() {
+        AppLogger.i('Migrating to version 9: Add partner fields to settings');
+        return true;
+      }());
       await db.execute('''
         ALTER TABLE settings ADD COLUMN partner_config_name TEXT
       ''');
@@ -431,7 +482,10 @@ class DatabaseService {
       await db.execute('''
         ALTER TABLE settings ADD COLUMN partner_accent_color INTEGER
       ''');
-      AppLogger.i('Successfully migrated to version 9: partner fields added');
+      assert(() {
+        AppLogger.i('Successfully migrated to version 9: partner fields added');
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 9', e, stackTrace);
     }
@@ -439,7 +493,10 @@ class DatabaseService {
 
   Future<void> _migrateToVersion10(DatabaseExecutor db) async {
     try {
-      AppLogger.i('Migrating to version 10: Add my accent color to settings');
+      assert(() {
+        AppLogger.i('Migrating to version 10: Add my accent color to settings');
+        return true;
+      }());
 
       // First check if the column already exists
       final columns = await db.rawQuery('PRAGMA table_info(settings)');
@@ -451,24 +508,36 @@ class DatabaseService {
         await db.execute('''
           ALTER TABLE settings ADD COLUMN my_accent_color INTEGER
         ''');
-        AppLogger.i(
-          'Successfully migrated to version 10: my accent color added',
-        );
+        assert(() {
+          AppLogger.i(
+            'Successfully migrated to version 10: my accent color added',
+          );
+          return true;
+        }());
       } else {
-        AppLogger.i(
-          'Column my_accent_color already exists, skipping migration',
-        );
+        assert(() {
+          AppLogger.i(
+            'Column my_accent_color already exists, skipping migration',
+          );
+          return true;
+        }());
       }
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 10', e, stackTrace);
       // Don't rethrow - let the migration continue
-      AppLogger.i('Migration to version 10 failed, but continuing...');
+      assert(() {
+        AppLogger.i('Migration to version 10 failed, but continuing...');
+        return true;
+      }());
     }
   }
 
   Future<void> _migrateToVersion11(DatabaseExecutor db) async {
     try {
-      AppLogger.i('Migrating to version 11: Add schedule_configs table');
+      assert(() {
+        AppLogger.i('Migrating to version 11: Add schedule_configs table');
+        return true;
+      }());
 
       // Check if the table already exists
       final tables = await db.rawQuery(
@@ -491,26 +560,38 @@ class DatabaseService {
             updated_at INTEGER NOT NULL
           )
         ''');
-        AppLogger.i(
-          'Successfully migrated to version 11: schedule_configs table added',
-        );
+        assert(() {
+          AppLogger.i(
+            'Successfully migrated to version 11: schedule_configs table added',
+          );
+          return true;
+        }());
       } else {
-        AppLogger.i(
-          'Table schedule_configs already exists, skipping migration',
-        );
+        assert(() {
+          AppLogger.i(
+            'Table schedule_configs already exists, skipping migration',
+          );
+          return true;
+        }());
       }
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 11', e, stackTrace);
       // Don't rethrow - let the migration continue
-      AppLogger.i('Migration to version 11 failed, but continuing...');
+      assert(() {
+        AppLogger.i('Migration to version 11 failed, but continuing...');
+        return true;
+      }());
     }
   }
 
   Future<void> _migrateToVersion12(DatabaseExecutor db) async {
     try {
-      AppLogger.i(
-        'Migrating to version 12: Add school holiday fields to settings',
-      );
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 12: Add school holiday fields to settings',
+        );
+        return true;
+      }());
       // Add columns if they do not exist
       final columns = await db.rawQuery('PRAGMA table_info(settings)');
       final hasShowSchoolHolidays = columns.any(
@@ -582,25 +663,37 @@ class DatabaseService {
           await db.execute(
             'ALTER TABLE school_holidays ADD COLUMN state_name TEXT',
           );
-          AppLogger.i('Added state_name column to school_holidays table');
+          assert(() {
+            AppLogger.i('Added state_name column to school_holidays table');
+            return true;
+          }());
         }
 
         if (!columnNames.contains('description')) {
           await db.execute(
             'ALTER TABLE school_holidays ADD COLUMN description TEXT',
           );
-          AppLogger.i('Added description column to school_holidays table');
+          assert(() {
+            AppLogger.i('Added description column to school_holidays table');
+            return true;
+          }());
         }
 
         if (!columnNames.contains('type')) {
           await db.execute('ALTER TABLE school_holidays ADD COLUMN type TEXT');
-          AppLogger.i('Added type column to school_holidays table');
+          assert(() {
+            AppLogger.i('Added type column to school_holidays table');
+            return true;
+          }());
         }
       }
 
-      AppLogger.i(
-        'Successfully migrated to version 12: school holiday fields and table added',
-      );
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 12: school holiday fields and table added',
+        );
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 12', e, stackTrace);
     }
@@ -608,9 +701,15 @@ class DatabaseService {
 
   Future<void> _migrateToVersion13(DatabaseExecutor db) async {
     try {
-      AppLogger.i('Migrating to version 13: No changes needed');
+      assert(() {
+        AppLogger.i('Migrating to version 13: No changes needed');
+        return true;
+      }());
       // Version 13 was a placeholder - no actual migration needed
-      AppLogger.i('Successfully migrated to version 13: No changes applied');
+      assert(() {
+        AppLogger.i('Successfully migrated to version 13: No changes applied');
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 13', e, stackTrace);
     }
@@ -618,9 +717,12 @@ class DatabaseService {
 
   Future<void> _migrateToVersion14(DatabaseExecutor db) async {
     try {
-      AppLogger.i(
-        'Migrating to version 14: Add holiday accent color to settings',
-      );
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 14: Add holiday accent color to settings',
+        );
+        return true;
+      }());
 
       // Check if the column already exists
       final columns = await db.rawQuery('PRAGMA table_info(settings)');
@@ -630,16 +732,25 @@ class DatabaseService {
         await db.execute(
           'ALTER TABLE settings ADD COLUMN holiday_accent_color INTEGER',
         );
-        AppLogger.i('Added holiday_accent_color column to settings table');
+        assert(() {
+          AppLogger.i('Added holiday_accent_color column to settings table');
+          return true;
+        }());
       } else {
-        AppLogger.i(
-          'holiday_accent_color column already exists in settings table',
-        );
+        assert(() {
+          AppLogger.i(
+            'holiday_accent_color column already exists in settings table',
+          );
+          return true;
+        }());
       }
 
-      AppLogger.i(
-        'Successfully migrated to version 14: holiday accent color added',
-      );
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 14: holiday accent color added',
+        );
+        return true;
+      }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 14', e, stackTrace);
     }
@@ -647,7 +758,10 @@ class DatabaseService {
 
   Future<void> init() async {
     // Defer opening the database until first real use to avoid startup jank
-    AppLogger.d('Deferring database initialization until first access');
+    assert(() {
+      AppLogger.d('Deferring database initialization until first access');
+      return true;
+    }());
   }
 
   Future<void> close() async {

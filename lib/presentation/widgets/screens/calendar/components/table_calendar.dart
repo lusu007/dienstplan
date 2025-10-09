@@ -22,7 +22,7 @@ class CalendarTable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(scheduleCoordinatorProvider).value;
+    final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
     final calendarFormat = state?.calendarFormat ?? tc.CalendarFormat.month;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 

@@ -9,7 +9,9 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/components/drag
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_navigation_debouncer.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_ui_optimizer.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 
 class CalendarView extends ConsumerStatefulWidget {
   const CalendarView({super.key});
@@ -18,13 +20,15 @@ class CalendarView extends ConsumerStatefulWidget {
   ConsumerState<CalendarView> createState() => _CalendarViewState();
 }
 
-class _CalendarViewState extends ConsumerState<CalendarView> {
+class _CalendarViewState extends ConsumerState<CalendarView>
+    with ScheduleUiOptimizationMixin<CalendarView> {
   final GlobalKey _calendarKey = GlobalKey();
   final GlobalKey _headerKey = GlobalKey();
   late final CalendarViewController _pageManager;
   late final ScheduleNavigationDebouncer _navigationDebouncer;
   CalendarFormat? _lastKnownFormat;
   Key _pageViewKey = UniqueKey();
+  ProviderSubscription<AsyncValue<ScheduleUiState>>? _focusedDaySubscription;
 
   @override
   void initState() {
@@ -46,10 +50,25 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
         _onProviderChanged();
       }
     });
+
+    // Listen for focused day changes once (outside build to avoid re-registering)
+    _focusedDaySubscription = ref.listenManual(scheduleCoordinatorProvider, (
+      previous,
+      next,
+    ) {
+      final previousFocusedDay = previous?.value?.focusedDay;
+      final currentFocusedDay = next.value?.focusedDay;
+      if (previousFocusedDay != null &&
+          currentFocusedDay != null &&
+          !_isSameMonth(previousFocusedDay, currentFocusedDay)) {
+        _triggerDynamicLoadingForFocusedDayChange(currentFocusedDay);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _focusedDaySubscription?.close();
     _pageManager.dispose();
     _navigationDebouncer.dispose();
     super.dispose();
@@ -65,7 +84,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     if (_lastKnownFormat != currentFormat) {
       _lastKnownFormat = currentFormat;
       if (mounted) {
-        setState(() {});
+        batchStateUpdate('calendar_format_changed', null);
       }
       return; // Exit early to avoid multiple rebuilds
     }
@@ -77,9 +96,9 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
       // Update page manager efficiently
       _pageManager.rebuildDayPagesAroundDay(currentSelectedDay);
 
-      // Single rebuild for day change
+      // Single rebuild for day change (batched)
       if (mounted) {
-        setState(() {});
+        batchStateUpdate('selected_day_changed', null);
       }
     }
   }
@@ -104,7 +123,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
 
       // Trigger a rebuild to update the PageView with new pages
       if (mounted) {
-        setState(() {});
+        batchStateUpdate('expand_range_rebuild', null);
       }
 
       // Trigger dynamic loading for the expanded range
@@ -182,7 +201,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
 
     // Trigger a rebuild to update the PageView
     if (mounted) {
-      setState(() {});
+      batchStateUpdate('focused_day_changed', null);
     }
 
     // The schedule coordinator will handle the actual loading
@@ -193,19 +212,6 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   Widget build(BuildContext context) {
     // Ensure calendar provider is warmed up
     ref.watch(calendarProvider);
-
-    // Watch for focused day changes to trigger dynamic loading
-    ref.listen(scheduleCoordinatorProvider, (previous, next) {
-      final previousFocusedDay = previous?.value?.focusedDay;
-      final currentFocusedDay = next.value?.focusedDay;
-
-      if (previousFocusedDay != null &&
-          currentFocusedDay != null &&
-          !_isSameMonth(previousFocusedDay, currentFocusedDay)) {
-        // Focused day changed to a different month, trigger dynamic loading
-        _triggerDynamicLoadingForFocusedDayChange(currentFocusedDay);
-      }
-    });
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,

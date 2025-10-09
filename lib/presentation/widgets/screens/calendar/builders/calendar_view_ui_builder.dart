@@ -112,8 +112,9 @@ class CalendarViewUiBuilder {
   }) {
     return Consumer(
       builder: (context, ref, _) {
-        final asyncState = ref.watch(scheduleCoordinatorProvider);
-        final state = asyncState.value;
+        final state = ref.watch(
+          scheduleCoordinatorProvider.select((s) => s.value),
+        );
         final String? selectedGroup = state?.selectedDutyGroup;
 
         // Filter schedules for selected day (no config filter to avoid hiding data)
@@ -175,7 +176,9 @@ class CalendarViewUiBuilder {
     final l10n = AppLocalizations.of(context);
     return Consumer(
       builder: (context, ref, _) {
-        final state = ref.watch(scheduleCoordinatorProvider).value;
+        final state = ref.watch(
+          scheduleCoordinatorProvider.select((s) => s.value),
+        );
         final filterText = (state?.selectedDutyGroup ?? '').isNotEmpty
             ? state!.selectedDutyGroup!
             : l10n.all;

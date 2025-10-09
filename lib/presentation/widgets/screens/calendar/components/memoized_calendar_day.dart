@@ -262,27 +262,30 @@ class _MemoizedDutyCalculator {
   }
 
   static int _getSchedulesHash(List<Schedule> schedules, DateTime day) {
-    // Only hash schedules for the current month to avoid cache misses
-    final monthStart = DateTime(day.year, day.month, 1);
-    final monthEnd = DateTime(day.year, day.month + 1, 0);
+    // Compute a more accurate hash that includes content for the specific day
+    // This prevents cache misses when schedule content changes but length stays the same
+    final int monthMarker = day.year * 100 + day.month;
 
-    final relevantSchedules = schedules
-        .where(
-          (schedule) =>
-              schedule.date.isAfter(
-                monthStart.subtract(const Duration(days: 1)),
-              ) &&
-              schedule.date.isBefore(monthEnd.add(const Duration(days: 1))),
-        )
-        .toList();
+    // Filter schedules relevant to this day and month for more accurate hashing
+    final relevantSchedules = schedules.where((schedule) {
+      final scheduleDate = schedule.date;
+      return scheduleDate.year == day.year && scheduleDate.month == day.month;
+    }).toList();
 
-    return relevantSchedules
-        .map(
-          (s) =>
-              '${s.date.year}-${s.date.month}-${s.date.day}|${s.configName}|${s.dutyGroupName}|${s.dutyTypeId}',
-        )
-        .join(';')
-        .hashCode;
+    // Create a content-based hash that includes key schedule properties
+    // This ensures cache invalidation when schedule content changes
+    final contentHash = relevantSchedules.fold<int>(0, (hash, schedule) {
+      return hash ^
+          Object.hash(
+            schedule.date.day,
+            schedule.dutyTypeId,
+            schedule.dutyGroupName,
+            schedule.configName,
+            schedule.service,
+          );
+    });
+
+    return Object.hash(monthMarker, schedules.length, contentHash);
   }
 
   static void _cleanCache() {
