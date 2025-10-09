@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 
 /// Optimized calendar day card with selective provider watching
 class CalendarDayCard extends ConsumerWidget {
@@ -43,9 +44,7 @@ class CalendarDayCard extends ConsumerWidget {
     );
 
     final holidayAccentColor = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.holidayAccentColorValue,
-      ),
+      settingsProvider.select((s) => s.value?.holidayAccentColorValue),
     );
 
     // Watch school holidays state

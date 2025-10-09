@@ -5,6 +5,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 
 /// Optimized calendar day widget with memoization and selective provider watching
 class MemoizedCalendarDay extends ConsumerWidget {
@@ -102,9 +103,7 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
     );
 
     final holidayAccentColor = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.holidayAccentColorValue,
-      ),
+      settingsProvider.select((s) => s.value?.holidayAccentColorValue),
     );
 
     // Watch school holidays state

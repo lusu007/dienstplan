@@ -6,6 +6,7 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 
 class CalendarBuildersHelper {
   static CalendarBuilders createCalendarBuilders({
@@ -263,6 +264,11 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         : [];
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
 
+    // Watch holiday accent color directly from settings for instant updates
+    final int? holidayAccentColor = ref.watch(
+      settingsProvider.select((s) => s.value?.holidayAccentColorValue),
+    );
+
     try {
       return AnimatedCalendarDay(
         day: widget.day,
@@ -270,7 +276,7 @@ class _ReactiveCalendarDayState extends ConsumerState<ReactiveCalendarDay> {
         partnerDutyAbbreviation: partnerAbbreviation,
         partnerAccentColorValue: state?.partnerAccentColorValue,
         myAccentColorValue: state?.myAccentColorValue,
-        holidayAccentColorValue: state?.holidayAccentColorValue,
+        holidayAccentColorValue: holidayAccentColor,
         dayType: widget.dayType,
         width: widget.width,
         height: widget.height,
