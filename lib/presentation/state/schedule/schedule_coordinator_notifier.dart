@@ -97,8 +97,23 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   // Calendar methods - optimized for selective updates
   Future<void> setFocusedDay(DateTime day) async {
+    // Coalesce repeated calls: if month hasn't changed, only update calendar state
+    // Avoid awaiting future here to keep navigation snappy; fall back to calendar provider
+    final DateTime? currentFocused =
+        state.value?.focusedDay ?? ref.read(calendarProvider).value?.focusedDay;
+    final bool monthUnchanged =
+        currentFocused != null &&
+        currentFocused.year == day.year &&
+        currentFocused.month == day.month;
+
     await ref.read(calendarProvider.notifier).setFocusedDay(day);
     await _updateCalendarStateOnly();
+
+    if (monthUnchanged) {
+      // Skip heavy ensures/dynamic loading if month didn't change
+      return;
+    }
+
     // Ensure own data for the newly focused range so own chips render immediately
     await _ensureOwnDataForFocusedRange();
     unawaited(_ensurePartnerDataForFocusedRange());
@@ -759,18 +774,40 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       );
       if (result.isFailure) return;
       final List<Schedule> allPartner = <Schedule>[...result.value];
-      Future<void> ensurePartnerMonth(DateTime monthStart) async {
-        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-            .execute(configName: partnerConfig, monthStart: monthStart);
-        if (ensured.isNotEmpty) {
-          allPartner.addAll(ensured);
+      // Only ensure months outside current in-memory coverage
+      final DateRange? coverage = _getConfigCoverageRange(
+        (state.value ?? current).schedules,
+        partnerConfig,
+      );
+      final List<Future<void>> ensureTasks = <Future<void>>[];
+      for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++) {
+        final DateTime monthStart = DateTime(
+          focused.year,
+          focused.month + i,
+          1,
+        );
+        final DateTime monthEnd = DateTime(
+          monthStart.year,
+          monthStart.month + 1,
+          0,
+        );
+        final bool outsideCoverage =
+            coverage == null ||
+            monthEnd.isBefore(coverage.start) ||
+            monthStart.isAfter(coverage.end);
+        if (outsideCoverage) {
+          ensureTasks.add(() async {
+            final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
+                .execute(configName: partnerConfig, monthStart: monthStart);
+            if (ensured.isNotEmpty) {
+              allPartner.addAll(ensured);
+            }
+          }());
         }
       }
-
-      await Future.wait(<Future<void>>[
-        for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
-          ensurePartnerMonth(DateTime(focused.year, focused.month + i, 1)),
-      ]);
+      if (ensureTasks.isNotEmpty) {
+        await Future.wait(ensureTasks);
+      }
       final List<Schedule> existingNow =
           (state.value?.schedules ?? current.schedules).toList();
       final List<Schedule> merged =
@@ -823,20 +860,42 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       );
       if (ownResult.isFailure) return;
 
-      // Ensure own months around the focused period so data exists for chips
+      // Ensure own months around the focused period so data exists for chips,
+      // but only for months outside current in-memory coverage
       final List<Schedule> allOwn = <Schedule>[...ownResult.value];
-      Future<void> ensureOwnMonth(DateTime monthStart) async {
-        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-            .execute(configName: activeName, monthStart: monthStart);
-        if (ensured.isNotEmpty) {
-          allOwn.addAll(ensured);
+      final DateRange? coverage = _getConfigCoverageRange(
+        (state.value ?? current).schedules,
+        activeName,
+      );
+      final List<Future<void>> ensureTasks = <Future<void>>[];
+      for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++) {
+        final DateTime monthStart = DateTime(
+          focused.year,
+          focused.month + i,
+          1,
+        );
+        final DateTime monthEnd = DateTime(
+          monthStart.year,
+          monthStart.month + 1,
+          0,
+        );
+        final bool outsideCoverage =
+            coverage == null ||
+            monthEnd.isBefore(coverage.start) ||
+            monthStart.isAfter(coverage.end);
+        if (outsideCoverage) {
+          ensureTasks.add(() async {
+            final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
+                .execute(configName: activeName, monthStart: monthStart);
+            if (ensured.isNotEmpty) {
+              allOwn.addAll(ensured);
+            }
+          }());
         }
       }
-
-      await Future.wait(<Future<void>>[
-        for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
-          ensureOwnMonth(DateTime(focused.year, focused.month + i, 1)),
-      ]);
+      if (ensureTasks.isNotEmpty) {
+        await Future.wait(ensureTasks);
+      }
 
       final List<Schedule> existingNow =
           (state.value?.schedules ?? current.schedules).toList();
