@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.4](https://github.com/lusu007/dienstplan/compare/v0.12.3...v0.12.4) (2025-10-09)
+
+
+### Bug Fixes
+
+* Debounce month navigation ([#326](https://github.com/lusu007/dienstplan/issues/326)) ([3a3fb9d](https://github.com/lusu007/dienstplan/commit/3a3fb9d9b76023a6aaa9f56c3ca822087c504b23))
+* Make schedule list responsive ([#327](https://github.com/lusu007/dienstplan/issues/327)) ([00df14e](https://github.com/lusu007/dienstplan/commit/00df14ed8f4cd907ed4da64740cbeb0f05f04cf3))
+
 ## [0.12.3](https://github.com/lusu007/dienstplan/compare/v0.12.2...v0.12.3) (2025-10-09)
 
 
