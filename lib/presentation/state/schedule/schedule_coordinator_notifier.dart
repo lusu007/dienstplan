@@ -23,6 +23,7 @@ import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/utils/settings_utils.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
 part 'schedule_coordinator_notifier.g.dart';
 
@@ -476,11 +477,12 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
     final scheduleDataState = await ref.read(scheduleDataProvider.future);
 
-    // Merge incoming schedules with existing ones to preserve partner data
-    final List<Schedule> mergedSchedules = _scheduleMergeService!.upsertByKey(
-      existing: currentState.schedules,
-      incoming: scheduleDataState.schedules,
-    );
+    // Merge incoming schedules with existing ones to preserve partner data (offloaded)
+    final List<Schedule> mergedSchedules =
+        await ScheduleGenerationIsolate.mergeUpsertByKey(
+          existing: currentState.schedules,
+          incoming: scheduleDataState.schedules,
+        );
 
     // Only update schedule data-related fields and update index
     final updatedState = currentState
@@ -513,9 +515,10 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     // scheduleDataProvider reinitializes with a smaller initial range
     final List<Schedule> existing = currentState.schedules;
     final List<Schedule> incoming = scheduleDataState.schedules;
-    final List<Schedule> mergedSchedules = _scheduleMergeService!.deduplicate(
-      <Schedule>[...existing, ...incoming],
-    );
+    final List<Schedule> mergedSchedules =
+        await ScheduleGenerationIsolate.deduplicateSchedules(
+          schedules: <Schedule>[...existing, ...incoming],
+        );
 
     // Only update schedule data-related fields, but preserve the selectedDutyGroup
     final updatedState = currentState
@@ -573,15 +576,16 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     final List<Schedule> existing =
         state.value?.schedules ?? const <Schedule>[];
     final List<Schedule> incoming = scheduleDataState.schedules;
-    final List<Schedule> mergedSchedules = _scheduleMergeService!.deduplicate(
-      <Schedule>[...existing, ...incoming],
-    );
+    final List<Schedule> mergedSchedules =
+        await ScheduleGenerationIsolate.deduplicateSchedules(
+          schedules: <Schedule>[...existing, ...incoming],
+        );
 
     // Cleanup old schedules to prevent memory accumulation
     final DateTime currentDate = calendarState.focusedDay ?? DateTime.now();
     final DateTime? selectedDay = calendarState.selectedDay;
-    final List<Schedule> cleanedSchedules = _scheduleMergeService!
-        .cleanupOldSchedules(
+    final List<Schedule> cleanedSchedules =
+        await ScheduleGenerationIsolate.cleanupOldSchedules(
           schedules: mergedSchedules,
           currentDate: currentDate,
           monthsToKeep: kMonthsToKeepInMemory,
@@ -769,8 +773,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       ]);
       final List<Schedule> existingNow =
           (state.value?.schedules ?? current.schedules).toList();
-      final List<Schedule> merged = _scheduleMergeService!
-          .mergeReplacingConfigInRange(
+      final List<Schedule> merged =
+          await ScheduleGenerationIsolate.mergeReplacingConfigInRange(
             existing: existingNow,
             incoming: allPartner,
             range: combinedRange,
@@ -836,8 +840,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
       final List<Schedule> existingNow =
           (state.value?.schedules ?? current.schedules).toList();
-      final List<Schedule> merged = _scheduleMergeService!
-          .mergeReplacingConfigInRange(
+      final List<Schedule> merged =
+          await ScheduleGenerationIsolate.mergeReplacingConfigInRange(
             existing: existingNow,
             incoming: allOwn,
             range: combinedRange,

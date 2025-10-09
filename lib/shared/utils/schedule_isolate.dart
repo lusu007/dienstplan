@@ -1,6 +1,8 @@
 import 'dart:isolate';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
+import 'package:dienstplan/domain/services/schedule_merge_service.dart';
+import 'package:dienstplan/domain/value_objects/date_range.dart';
 
 /// Message types for isolate communication
 abstract class IsolateMessage {}
@@ -27,6 +29,57 @@ class ScheduleGenerationResult {
 }
 
 class ShutdownMessage extends IsolateMessage {}
+
+class MergeUpsertMessage extends IsolateMessage {
+  final List<Schedule> existing;
+  final List<Schedule> incoming;
+  final SendPort replyPort;
+
+  MergeUpsertMessage({
+    required this.existing,
+    required this.incoming,
+    required this.replyPort,
+  });
+}
+
+class DeduplicateMessage extends IsolateMessage {
+  final List<Schedule> schedules;
+  final SendPort replyPort;
+
+  DeduplicateMessage({required this.schedules, required this.replyPort});
+}
+
+class CleanupOldSchedulesMessage extends IsolateMessage {
+  final List<Schedule> schedules;
+  final DateTime currentDate;
+  final int monthsToKeep;
+  final DateTime? selectedDay;
+  final SendPort replyPort;
+
+  CleanupOldSchedulesMessage({
+    required this.schedules,
+    required this.currentDate,
+    required this.monthsToKeep,
+    required this.selectedDay,
+    required this.replyPort,
+  });
+}
+
+class MergeReplacingConfigInRangeMessage extends IsolateMessage {
+  final List<Schedule> existing;
+  final List<Schedule> incoming;
+  final DateRange range;
+  final String replaceConfigName;
+  final SendPort replyPort;
+
+  MergeReplacingConfigInRangeMessage({
+    required this.existing,
+    required this.incoming,
+    required this.range,
+    required this.replaceConfigName,
+    required this.replyPort,
+  });
+}
 
 /// Background isolate for schedule generation
 class ScheduleGenerationIsolate {
@@ -91,6 +144,14 @@ class ScheduleGenerationIsolate {
     receivePort.listen((message) {
       if (message is GenerateSchedulesMessage) {
         _handleGenerateSchedules(message);
+      } else if (message is MergeUpsertMessage) {
+        _handleMergeUpsert(message);
+      } else if (message is DeduplicateMessage) {
+        _handleDeduplicate(message);
+      } else if (message is CleanupOldSchedulesMessage) {
+        _handleCleanupOld(message);
+      } else if (message is MergeReplacingConfigInRangeMessage) {
+        _handleMergeReplacingInRange(message);
       } else if (message is ShutdownMessage) {
         receivePort.close();
       }
@@ -191,6 +252,132 @@ class ScheduleGenerationIsolate {
     }
 
     return schedules;
+  }
+
+  /// Isolate-side merge/dedup/cleanup using ScheduleMergeService
+  static final ScheduleMergeService _mergeService = ScheduleMergeService();
+
+  static void _handleMergeUpsert(MergeUpsertMessage message) {
+    try {
+      final merged = _mergeService.upsertByKey(
+        existing: message.existing,
+        incoming: message.incoming,
+      );
+      message.replyPort.send(merged);
+    } catch (e) {
+      message.replyPort.send(<Schedule>[]);
+    }
+  }
+
+  static void _handleDeduplicate(DeduplicateMessage message) {
+    try {
+      final deduped = _mergeService.deduplicate(message.schedules);
+      message.replyPort.send(deduped);
+    } catch (e) {
+      message.replyPort.send(<Schedule>[]);
+    }
+  }
+
+  static void _handleCleanupOld(CleanupOldSchedulesMessage message) {
+    try {
+      final cleaned = _mergeService.cleanupOldSchedules(
+        schedules: message.schedules,
+        currentDate: message.currentDate,
+        monthsToKeep: message.monthsToKeep,
+        selectedDay: message.selectedDay,
+      );
+      message.replyPort.send(cleaned);
+    } catch (e) {
+      message.replyPort.send(<Schedule>[]);
+    }
+  }
+
+  static void _handleMergeReplacingInRange(
+    MergeReplacingConfigInRangeMessage message,
+  ) {
+    try {
+      final merged = _mergeService.mergeReplacingConfigInRange(
+        existing: message.existing,
+        incoming: message.incoming,
+        range: message.range,
+        replaceConfigName: message.replaceConfigName,
+      );
+      message.replyPort.send(merged);
+    } catch (e) {
+      message.replyPort.send(<Schedule>[]);
+    }
+  }
+
+  // Public API wrappers
+  static Future<List<Schedule>> mergeUpsertByKey({
+    required List<Schedule> existing,
+    required List<Schedule> incoming,
+  }) async {
+    if (!_isInitialized) await initialize();
+    final receivePort = ReceivePort();
+    _sendPort!.send(
+      MergeUpsertMessage(
+        existing: existing,
+        incoming: incoming,
+        replyPort: receivePort.sendPort,
+      ),
+    );
+    final result = await receivePort.first as List<Schedule>;
+    return result;
+  }
+
+  static Future<List<Schedule>> deduplicateSchedules({
+    required List<Schedule> schedules,
+  }) async {
+    if (!_isInitialized) await initialize();
+    final receivePort = ReceivePort();
+    _sendPort!.send(
+      DeduplicateMessage(schedules: schedules, replyPort: receivePort.sendPort),
+    );
+    final result = await receivePort.first as List<Schedule>;
+    return result;
+  }
+
+  static Future<List<Schedule>> cleanupOldSchedules({
+    required List<Schedule> schedules,
+    required DateTime currentDate,
+    required int monthsToKeep,
+    DateTime? selectedDay,
+  }) async {
+    if (!_isInitialized) await initialize();
+    final receivePort = ReceivePort();
+    _sendPort!.send(
+      CleanupOldSchedulesMessage(
+        schedules: schedules,
+        currentDate: currentDate,
+        monthsToKeep: monthsToKeep,
+        selectedDay: selectedDay,
+        replyPort: receivePort.sendPort,
+      ),
+    );
+    final result = await receivePort.first as List<Schedule>;
+    return result;
+  }
+
+  static Future<List<Schedule>> mergeReplacingConfigInRange({
+    required List<Schedule> existing,
+    required List<Schedule> incoming,
+    required DateRange range,
+    required String replaceConfigName,
+  }) async {
+    if (!_isInitialized) await initialize();
+    final receivePort = ReceivePort();
+    _sendPort!.send(
+      MergeReplacingConfigInRangeMessage(
+        existing: existing,
+        incoming: incoming,
+        range: range,
+        replaceConfigName: replaceConfigName,
+        replyPort: receivePort.sendPort,
+      ),
+    );
+    final result = await receivePort.first as List<Schedule>;
+    return result;
   }
 
   /// Floor division helper

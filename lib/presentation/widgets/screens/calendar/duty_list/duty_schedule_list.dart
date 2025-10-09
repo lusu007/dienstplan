@@ -13,7 +13,7 @@ import 'package:dienstplan/presentation/state/school_holidays/school_holidays_no
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
-class DutyScheduleList extends ConsumerStatefulWidget {
+class DutyScheduleList extends ConsumerWidget {
   final List<Schedule> schedules;
   final String? selectedDutyGroup;
   final Function(String?)? onDutyGroupSelected;
@@ -40,52 +40,83 @@ class DutyScheduleList extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<DutyScheduleList> createState() => _DutyScheduleListState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheduleState = ref.watch(scheduleCoordinatorProvider).value;
+    final String? partnerConfigName = scheduleState?.partnerConfigName;
+    final int? partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
+    final String? partnerDutyGroupName = scheduleState?.partnerDutyGroup;
+    final String? myDutyGroupName = scheduleState?.preferredDutyGroup;
+    final int? myAccentColorValue = scheduleState?.myAccentColorValue;
+    final Map<String, DutyType>? dutyTypesMap =
+        scheduleState?.activeConfig?.dutyTypes ?? dutyTypes;
 
-class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
-  String? _partnerConfigName;
-  int? _partnerAccentColorValue;
-  String? _myDutyGroupName;
-  String? _partnerDutyGroupName;
-  int? _myAccentColorValue;
-  Map<String, DutyType>? _dutyTypes;
-  List<SchoolHoliday>? _holidaysForSelectedDay;
-  int? _holidayAccentColorValue;
+    final holidaysState = ref.watch(
+      schoolHolidaysProvider.select((s) => s.value),
+    );
+    final settingsState = ref.watch(settingsProvider.select((s) => s.value));
+    final int? holidayAccentColorValue = settingsState?.holidayAccentColorValue;
+
+    final List<SchoolHoliday>? holidaysForSelectedDay =
+        (selectedDay != null && holidaysState?.isEnabled == true)
+        ? holidaysState?.getHolidaysForDate(selectedDay!)
+        : null;
+
+    if (isLoading) {
+      return _buildSkeletonLoader(context);
+    }
+
+    final List<Schedule> filteredSchedules = _getFilteredSchedules();
+    final List<Schedule> sortedSchedules = _sortSchedules(filteredSchedules);
+
+    final bool hasHolidays =
+        holidaysForSelectedDay != null && holidaysForSelectedDay.isNotEmpty;
+    final bool hasSchedules = sortedSchedules.isNotEmpty;
+
+    if (!hasHolidays && !hasSchedules) {
+      return _buildEmptyState(context);
+    }
+
+    return _buildCombinedList(
+      context: context,
+      schedules: sortedSchedules,
+      holidaysForSelectedDay: holidaysForSelectedDay,
+      partnerConfigName: partnerConfigName,
+      partnerAccentColorValue: partnerAccentColorValue,
+      partnerDutyGroupName: partnerDutyGroupName,
+      myDutyGroupName: myDutyGroupName,
+      myAccentColorValue: myAccentColorValue,
+      dutyTypesMap: dutyTypesMap,
+      holidayAccentColorValue: holidayAccentColorValue,
+    );
+  }
+
   List<Schedule> _getFilteredSchedules() {
-    final List<Schedule> base = widget.schedules.where((schedule) {
+    final List<Schedule> base = schedules.where((Schedule schedule) {
       final bool isActiveConfig =
-          widget.activeConfigName == null ||
-          widget.activeConfigName!.isEmpty ||
-          schedule.configName == widget.activeConfigName;
+          activeConfigName == null ||
+          activeConfigName!.isEmpty ||
+          schedule.configName == activeConfigName;
       return isActiveConfig;
     }).toList();
 
-    if (widget.selectedDutyGroup == null || widget.selectedDutyGroup!.isEmpty) {
+    if (selectedDutyGroup == null || selectedDutyGroup!.isEmpty) {
       return base;
     }
 
     final List<Schedule> byGroup = base
-        .where((s) => s.dutyGroupName == widget.selectedDutyGroup)
+        .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
         .toList();
-
-    // Fallback: if the selected group has no services for this day,
-    // show all groups instead of an empty list to avoid a blank UI.
     return byGroup.isEmpty ? base : byGroup;
   }
 
-  List<Schedule> _sortSchedules(List<Schedule> schedules) {
-    if (widget.dutyTypeOrder == null || widget.dutyTypeOrder!.isEmpty) {
-      return schedules;
+  List<Schedule> _sortSchedules(List<Schedule> input) {
+    if (dutyTypeOrder == null || dutyTypeOrder!.isEmpty) {
+      return input;
     }
-
-    return List.from(schedules)..sort((a, b) {
-      final aIndex = widget.dutyTypeOrder!.indexOf(a.dutyTypeId);
-      final bIndex = widget.dutyTypeOrder!.indexOf(b.dutyTypeId);
-
-      if (aIndex != -1 && bIndex != -1) {
-        return aIndex.compareTo(bIndex);
-      }
+    return List<Schedule>.from(input)..sort((Schedule a, Schedule b) {
+      final int aIndex = dutyTypeOrder!.indexOf(a.dutyTypeId);
+      final int bIndex = dutyTypeOrder!.indexOf(b.dutyTypeId);
+      if (aIndex != -1 && bIndex != -1) return aIndex.compareTo(bIndex);
       if (aIndex != -1) return -1;
       if (bIndex != -1) return 1;
       return a.dutyTypeId.compareTo(b.dutyTypeId);
@@ -93,111 +124,73 @@ class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
   }
 
   void _onDutyGroupSelected(String? dutyGroupId) {
-    widget.onDutyGroupSelected?.call(dutyGroupId);
+    onDutyGroupSelected?.call(dutyGroupId);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Read partner config and color via Riverpod
-    final scheduleState = ref.watch(scheduleCoordinatorProvider).value;
-    _partnerConfigName = scheduleState?.partnerConfigName;
-    _partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
-    _partnerDutyGroupName = scheduleState?.partnerDutyGroup;
-    _myDutyGroupName = scheduleState?.preferredDutyGroup;
-    _myAccentColorValue = scheduleState?.myAccentColorValue;
-
-    // Convert duty types list to map for easier lookup
-    if (scheduleState?.activeConfig != null) {
-      _dutyTypes = scheduleState!.activeConfig!.dutyTypes;
-    }
-
-    // Get holiday data for the selected day
-    final holidaysState = ref.watch(
-      schoolHolidaysProvider.select((s) => s.value),
-    );
-
-    // Get holiday accent color from settings
-    final settingsState = ref.watch(settingsProvider.select((s) => s.value));
-    _holidayAccentColorValue = settingsState?.holidayAccentColorValue;
-
-    if (widget.selectedDay != null && holidaysState?.isEnabled == true) {
-      _holidaysForSelectedDay = holidaysState?.getHolidaysForDate(
-        widget.selectedDay!,
-      );
-    } else {
-      _holidaysForSelectedDay = null;
-    }
-
-    if (widget.isLoading) {
-      return _buildSkeletonLoader();
-    }
-
-    final filteredSchedules = _getFilteredSchedules();
-    final sortedSchedules = _sortSchedules(filteredSchedules);
-
-    // Check if we have holidays to show
-    final hasHolidays =
-        _holidaysForSelectedDay != null && _holidaysForSelectedDay!.isNotEmpty;
-    final hasSchedules = sortedSchedules.isNotEmpty;
-
-    if (!hasHolidays && !hasSchedules) {
-      return _buildEmptyState();
-    }
-
-    return _buildCombinedList(sortedSchedules, hasHolidays);
-  }
-
-  Widget _buildEmptyState() {
-    final l10n = AppLocalizations.of(context);
+  Widget _buildEmptyState(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
     return DutyItemUiBuilder.buildEmptyState(l10n.noServicesForDay);
   }
 
-  Widget _buildCombinedList(List<Schedule> schedules, bool hasHolidays) {
-    final int holidaysCount = hasHolidays && _holidaysForSelectedDay != null
-        ? _holidaysForSelectedDay!.length
+  Widget _buildCombinedList({
+    required BuildContext context,
+    required List<Schedule> schedules,
+    required List<SchoolHoliday>? holidaysForSelectedDay,
+    required String? partnerConfigName,
+    required int? partnerAccentColorValue,
+    required String? partnerDutyGroupName,
+    required String? myDutyGroupName,
+    required int? myAccentColorValue,
+    required Map<String, DutyType>? dutyTypesMap,
+    required int? holidayAccentColorValue,
+  }) {
+    final int holidaysCount = holidaysForSelectedDay != null
+        ? holidaysForSelectedDay.length
         : 0;
     final int dutiesCount = schedules.length;
     final int totalCount = holidaysCount + dutiesCount;
 
     return ListView.builder(
-      controller: widget.scrollController,
+      controller: scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
       itemCount: totalCount,
-      itemBuilder: (context, index) {
+      itemExtent: kDutyListItemExtent,
+      itemBuilder: (BuildContext context, int index) {
         if (index < holidaysCount) {
-          final holiday = _holidaysForSelectedDay![index];
+          final SchoolHoliday holiday = holidaysForSelectedDay![index];
           return VacationDayItem(
             holiday: holiday,
-            holidayAccentColorValue: _holidayAccentColorValue,
+            holidayAccentColorValue: holidayAccentColorValue,
           );
         }
+
         final int dutyIndex = index - holidaysCount;
-        final schedule = schedules[dutyIndex];
+        final Schedule schedule = schedules[dutyIndex];
         final Color partnerColor = Color(
-          _partnerAccentColorValue ??
+          partnerAccentColorValue ??
               AccentColorDefaults.partnerAccentColorValue,
         );
         final Color myAccentColor = Color(
-          _myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
+          myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
         );
+
         final bool matchesPartnerConfig =
-            (_partnerConfigName != null && _partnerConfigName!.isNotEmpty)
-            ? schedule.configName == _partnerConfigName
-            : (widget.activeConfigName == null ||
-                  schedule.configName == widget.activeConfigName);
+            (partnerConfigName != null && partnerConfigName.isNotEmpty)
+            ? schedule.configName == partnerConfigName
+            : (activeConfigName == null ||
+                  schedule.configName == activeConfigName);
         final bool matchesPartnerGroup =
-            (_partnerDutyGroupName != null && _partnerDutyGroupName!.isNotEmpty)
-            ? schedule.dutyGroupName == _partnerDutyGroupName
+            (partnerDutyGroupName != null && partnerDutyGroupName.isNotEmpty)
+            ? schedule.dutyGroupName == partnerDutyGroupName
             : false;
         final bool isPartner = matchesPartnerConfig && matchesPartnerGroup;
-        final bool isSelected =
-            widget.selectedDutyGroup == schedule.dutyGroupName;
+        final bool isSelected = selectedDutyGroup == schedule.dutyGroupName;
         final Color primaryColor = Theme.of(context).colorScheme.primary;
         final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
         final bool isOwn =
-            (_myDutyGroupName != null &&
-            _myDutyGroupName!.isNotEmpty &&
-            schedule.dutyGroupName == _myDutyGroupName);
+            (myDutyGroupName != null &&
+            myDutyGroupName.isNotEmpty &&
+            schedule.dutyGroupName == myDutyGroupName);
         final Color baseColor = isPartner
             ? partnerColor
             : (isOwn ? myAccentColor : outlineColor);
@@ -205,7 +198,7 @@ class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
         final Color badgeColor = baseColor;
 
         return Container(
-          key: ValueKey(
+          key: ValueKey<String>(
             '${schedule.date}-${schedule.configName}-${schedule.dutyGroupName}-${schedule.dutyTypeId}-${schedule.service}',
           ),
           margin: const EdgeInsets.only(bottom: 8),
@@ -241,7 +234,7 @@ class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        _getDutyTypeIcon(schedule.dutyTypeId),
+                        _getDutyTypeIcon(schedule.dutyTypeId, dutyTypesMap),
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Theme.of(context).colorScheme.onSurface
                             : badgeColor,
@@ -292,23 +285,27 @@ class _DutyScheduleListState extends ConsumerState<DutyScheduleList> {
     );
   }
 
-  IconData _getDutyTypeIcon(String dutyTypeId) {
-    // Use the icon from the duty type configuration if available
-    return DutyItemUiBuilder.getDutyTypeIcon(dutyTypeId, _dutyTypes);
+  IconData _getDutyTypeIcon(
+    String dutyTypeId,
+    Map<String, DutyType>? dutyTypesMap,
+  ) {
+    return DutyItemUiBuilder.getDutyTypeIcon(dutyTypeId, dutyTypesMap);
   }
 
-  Widget _buildSkeletonLoader() {
+  Widget _buildSkeletonLoader(BuildContext context) {
+    // Fixed-height skeleton items; no margins to allow itemExtent usage if needed later
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
       itemCount: 5,
-      itemBuilder: (context, index) => _buildSkeletonItem(),
+      itemExtent: kDutyListItemExtent,
+      itemBuilder: (BuildContext context, int index) =>
+          _buildSkeletonItem(context),
     );
   }
 
-  Widget _buildSkeletonItem() {
+  Widget _buildSkeletonItem(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      height: 72,
+      height: kDutyListItemExtent,
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,

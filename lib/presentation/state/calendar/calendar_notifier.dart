@@ -47,6 +47,17 @@ class CalendarNotifier extends _$CalendarNotifier {
 
   Future<void> setSelectedDay(DateTime? day) async {
     final current = state.value ?? CalendarUiState.initial();
+    // Early return if the day didn't change to avoid redundant emits
+    final DateTime? prev = current.selectedDay;
+    final bool isSame =
+        prev != null &&
+        day != null &&
+        prev.year == day.year &&
+        prev.month == day.month &&
+        prev.day == day.day;
+    if (isSame || (prev == null && day == null)) {
+      return;
+    }
     state = AsyncData(current.copyWith(selectedDay: day));
   }
 
