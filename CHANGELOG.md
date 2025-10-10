@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.6](https://github.com/lusu007/dienstplan/compare/v0.12.5...v0.12.6) (2025-10-10)
+
+
+### Bug Fixes
+
+* Invalidate cache when Dienstplan version changes ([#333](https://github.com/lusu007/dienstplan/issues/333)) ([8797da0](https://github.com/lusu007/dienstplan/commit/8797da0d8e6627f4100b42bd459593d566a7f77d))
+
 ## [0.12.5](https://github.com/lusu007/dienstplan/compare/v0.12.4...v0.12.5) (2025-10-10)
 
 
