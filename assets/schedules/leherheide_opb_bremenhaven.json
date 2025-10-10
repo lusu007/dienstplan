@@ -1,12 +1,12 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "meta": {
     "name": "Polizeirevier Leherheide",
     "created_by": "Lukas",
     "description": "3-wöchiger Rotationsplan für das Polizeirevier Leherheide der OPB Bremenhaven",
     "icon": "directions_car",
     "start_week_day": "Monday",
-    "start_date": "2023-07-01",
+    "start_date": "2025-10-06",
     "police_authority": "OPB Bremenhaven",
     "days": [
       "Mo",
@@ -43,15 +43,6 @@
       "length_weeks": 3,
       "pattern": [
         [
-          "-",
-          "F",
-          "F",
-          "F",
-          "F",
-          "-",
-          "-"
-        ],
-        [
           "S",
           "S",
           "S",
@@ -68,6 +59,15 @@
           "S",
           "S",
           "S"
+        ],
+        [
+          "-",
+          "F",
+          "F",
+          "F",
+          "F",
+          "-",
+          "-"
         ]
       ]
     }
@@ -77,19 +77,19 @@
       "id": "DG1",
       "name": "Dienstgruppe 1",
       "rhythm": "3wochen_leherheide",
-      "offset_weeks": 0
+      "offset_weeks": 1
     },
     {
       "id": "DG2",
       "name": "Dienstgruppe 2",
       "rhythm": "3wochen_leherheide",
-      "offset_weeks": 1
+      "offset_weeks": 2
     },
     {
       "id": "DG3",
       "name": "Dienstgruppe 3",
       "rhythm": "3wochen_leherheide",
-      "offset_weeks": 2
+      "offset_weeks": 0
     }
   ]
 }
