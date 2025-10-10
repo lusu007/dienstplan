@@ -58,7 +58,7 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
-          runSpacing: 8,
+          runSpacing: 6,
           children: [
             ...availableAuthorities.map(
               (authority) => _buildFilterChip(
@@ -83,6 +83,7 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
         authority,
         style: TextStyle(
           fontSize: 12,
+          height: 1.0,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
           color: isSelected ? Colors.white : AppColors.primary,
         ),
@@ -96,7 +97,9 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
     );
   }
 }
