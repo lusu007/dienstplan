@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "meta": {
     "name": "2-Schichtplan 5-Tage",
     "created_by": "Lukas",
@@ -7,7 +7,7 @@
     "icon": "directions_car",
     "start_week_day": "Monday",
     "start_date": "2025-09-15",
-    "police_authority": "Polizei Bremen",
+    "police_authority": "Allgemein",
     "days": [
       "Mo",
       "Di",

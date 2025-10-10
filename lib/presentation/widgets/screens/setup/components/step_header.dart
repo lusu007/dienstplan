@@ -13,7 +13,7 @@ class StepHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Text(description, style: const TextStyle(fontSize: 18.0)),

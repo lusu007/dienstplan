@@ -46,6 +46,7 @@ class ThemeStepComponent extends ConsumerWidget {
             title: l10n.welcome,
             description: l10n.themeModeDescription,
           ),
+          const SizedBox(height: 16),
           _buildThemeCard(
             Icons.wb_sunny_outlined,
             l10n.themeModeLight,
