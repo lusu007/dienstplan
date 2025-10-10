@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.5](https://github.com/lusu007/dienstplan/compare/v0.12.4...v0.12.5) (2025-10-10)
+
+
+### Bug Fixes
+
+* Correct wrong week offset for Leherheide schedule ([#329](https://github.com/lusu007/dienstplan/issues/329)) ([097269c](https://github.com/lusu007/dienstplan/commit/097269c47983989048e66b6c3298925443fba9f5))
+* Improve setup spacing ([#331](https://github.com/lusu007/dienstplan/issues/331)) ([f7fa0fa](https://github.com/lusu007/dienstplan/commit/f7fa0fa3a97bfe88922b210912d6e6ab9fa31c3b))
+* Scale draggable sheet ([#332](https://github.com/lusu007/dienstplan/issues/332)) ([74cc022](https://github.com/lusu007/dienstplan/commit/74cc02225f638b4e49da1b43f05ef51241cbd924))
+
 ## [0.12.4](https://github.com/lusu007/dienstplan/compare/v0.12.3...v0.12.4) (2025-10-09)
 
 
