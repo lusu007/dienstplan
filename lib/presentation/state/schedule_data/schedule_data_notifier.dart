@@ -32,6 +32,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   static const Duration _cacheValidityDuration = Duration(minutes: 5);
   static final ScheduleCacheManager _cacheManager = ScheduleCacheManager();
   static final ScheduleLoadingQueue _loadingQueue = ScheduleLoadingQueue();
+  static final Map<String, String> _lastKnownConfigVersions =
+      <String, String>{};
 
   @override
   Future<ScheduleDataUiState> build() async {
@@ -63,6 +65,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
   Future<ScheduleDataUiState> _initialize() async {
     try {
+      // Detect config version changes and invalidate caches if needed
+      await _invalidateCacheOnVersionChange();
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
@@ -120,6 +124,49 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
       return ScheduleDataUiState.initial().copyWith(
         error: 'Failed to initialize schedule data',
       );
+    }
+  }
+
+  Future<void> _invalidateCacheOnVersionChange() async {
+    try {
+      final getConfigs = await ref.read(getConfigsUseCaseProvider.future);
+      final configs = await getConfigs.execute();
+      bool anyInvalidated = false;
+      for (final c in configs) {
+        final String name = c.name;
+        final String version = c.version;
+        final String? previous = _lastKnownConfigVersions[name];
+        if (previous != null && previous != version) {
+          _cacheManager.clearCacheForConfig(name);
+          anyInvalidated = true;
+        }
+        _lastKnownConfigVersions[name] = version;
+      }
+      if (anyInvalidated) {
+        _cachedState = null;
+        _lastCacheTime = null;
+        // Proactively ensure current month for active config so UI updates
+        final settingsResult = await _getSettingsUseCase!.executeSafe();
+        final settings = settingsResult.isSuccess ? settingsResult.value : null;
+        final String? activeName = settings?.activeConfigName;
+        if (activeName != null && activeName.isNotEmpty) {
+          final DateTime now = DateTime.now();
+          await _ensureMonthSchedulesUseCase!.execute(
+            monthStart: DateTime(now.year, now.month, 1),
+            configName: activeName,
+          );
+          // Reload the range into state and cache
+          final DateTime startDate = DateTime(now.year, now.month, 1);
+          final DateTime endDate = DateTime(now.year, now.month + 1, 0);
+          await loadSchedulesForDateRange(
+            startDate: startDate,
+            endDate: endDate,
+            configName: activeName,
+          );
+        }
+      }
+    } catch (_) {
+      // Best-effort invalidation; ignore errors
     }
   }
 

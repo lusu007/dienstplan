@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart';
 import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
-import 'package:dienstplan/data/daos/schedules_dao.dart';
+import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/prefs_keys.dart';
 import 'package:dienstplan/data/services/notification_service.dart';
@@ -17,7 +17,7 @@ import 'package:dienstplan/core/l10n/app_localizations_de.dart';
 class ScheduleConfigService extends ChangeNotifier {
   final SharedPreferences _prefs;
   final ScheduleConfigsDao _scheduleConfigsDao;
-  final SchedulesDao _schedulesDao;
+  final SchedulesAdminDao _schedulesAdminDao;
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _defaultConfig;
   late Directory _configsPath;
@@ -27,7 +27,7 @@ class ScheduleConfigService extends ChangeNotifier {
   ScheduleConfigService(
     this._prefs,
     this._scheduleConfigsDao,
-    this._schedulesDao,
+    this._schedulesAdminDao,
   );
 
   List<DutyScheduleConfig> get configs => _configs;
@@ -391,21 +391,17 @@ class ScheduleConfigService extends ChangeNotifier {
               'Version mismatch for config ${config.name}: stored=$storedVersion, current=${config.version}. Invalidating schedules.',
             );
 
-            // Delete all schedules for this config
-            await _schedulesDao.deleteSchedulesByConfigName(config.name);
+            // Delete all schedules and duty types for this config
+            await _schedulesAdminDao.clearDutySchedule(config.name);
 
-            // Update the stored config with new version
-            await _scheduleConfigsDao.saveScheduleConfig(
-              name: config.name,
-              version: config.version,
-              displayName: config.meta.name,
-              description: config.meta.description,
-              policeAuthority: config.meta.policeAuthority,
-              icon: config.meta.icon,
-              startDate: config.meta.startDate,
-              startWeekDay: config.meta.startWeekDay,
-              days: config.meta.days,
+            // Also replace the persisted config file to match the latest asset
+            final File configFile = File(
+              path.join(_configsPath.path, '${config.name}.json'),
             );
+            if (configFile.existsSync()) {
+              await configFile.delete();
+            }
+            await saveConfig(config);
 
             // Track updated config for notification
             updatedConfigs.add({
@@ -423,7 +419,7 @@ class ScheduleConfigService extends ChangeNotifier {
             );
           }
         } else {
-          // Config not in database yet, save it
+          // Config not in database yet, save it (file + DB)
           AppLogger.i(
             'New config ${config.name} version ${config.version}, saving to database',
           );
