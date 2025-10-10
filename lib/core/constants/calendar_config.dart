@@ -28,9 +28,17 @@ class CalendarConfig {
   }
 
   // Calendar dimensions
-  static const double kCalendarHeight = 500.0; // Increased from 400.0 to 500.0
+  static const double kCalendarHeight = 500.0; // Legacy fallback height
   static const double kCalendarDayHeight = 70.0; // Increased from 60.0 to 70.0
   static const double kCalendarDayWidth = 50.0; // Increased from 45.0 to 50.0
+  static const double kDaysOfWeekRowHeight = 32.0;
+
+  // Compute total month calendar height based on number of week rows.
+  // Includes a small padding above rows via the +8 already used for rowHeight.
+  static double computeMonthHeight({required int weekRows}) {
+    const double row = kCalendarDayHeight + 8;
+    return (weekRows * row) + kDaysOfWeekRowHeight;
+  }
 
   static DateTime get firstDay => DateTime.utc(2018, 1, 1);
   static DateTime get lastDay => DateTime.utc(2100, 12, 31);

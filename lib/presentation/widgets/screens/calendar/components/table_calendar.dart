@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart' as tc;
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_day_builders.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_layout_utils.dart';
 
 /// Optimized table calendar with RepaintBoundary and const constructors
 class CalendarTable extends ConsumerWidget {
@@ -34,42 +35,61 @@ class CalendarTable extends ConsumerWidget {
         '${calendarFormat.index}';
 
     return RepaintBoundary(
-      child: SizedBox(
-        height: CalendarConfig.kCalendarHeight,
-        child: tc.TableCalendar(
-          key: ValueKey<String>(stableCalendarKey),
-          firstDay: CalendarConfig.firstDay,
-          lastDay: CalendarConfig.lastDay,
-          focusedDay: focusedDay,
-          calendarFormat: calendarFormat,
-          startingDayOfWeek: CalendarConfig.startingDayOfWeek,
-          rowHeight: CalendarConfig.kCalendarDayHeight + 8,
-          selectedDayPredicate: (day) {
-            return tc.isSameDay(state?.selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) async {
-            await ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .setSelectedDay(selectedDay);
-            ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .setFocusedDay(focusedDay);
-            await ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .ensureActiveDay(selectedDay);
-            onDaySelected();
-          },
-          onPageChanged: (focusedDay) {
-            ref
-                .read(scheduleCoordinatorProvider.notifier)
-                .setFocusedDay(focusedDay);
-            onPageChanged(focusedDay);
-          },
-          calendarBuilders: CalendarDayBuilders.create(),
-          calendarStyle: CalendarConfig.createCalendarStyle(context),
-          headerStyle: CalendarConfig.createHeaderStyle(),
-          locale: Localizations.localeOf(context).languageCode,
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final int weekRows = getWeekRowsForMonth(
+            focusedDay,
+            starting: CalendarConfig.startingDayOfWeek,
+          );
+          final double calendarHeight = CalendarConfig.computeMonthHeight(
+            weekRows: weekRows,
+          );
+
+          final Widget calendar = tc.TableCalendar(
+            key: ValueKey<String>(stableCalendarKey),
+            firstDay: CalendarConfig.firstDay,
+            lastDay: CalendarConfig.lastDay,
+            focusedDay: focusedDay,
+            calendarFormat: calendarFormat,
+            startingDayOfWeek: CalendarConfig.startingDayOfWeek,
+            headerVisible: false,
+            daysOfWeekHeight: CalendarConfig.kDaysOfWeekRowHeight,
+            rowHeight: CalendarConfig.kCalendarDayHeight + 8,
+            selectedDayPredicate: (day) {
+              return tc.isSameDay(state?.selectedDay, day);
+            },
+            onDaySelected: (selectedDay, focusedDay) async {
+              await ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .setSelectedDay(selectedDay);
+              ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .setFocusedDay(focusedDay);
+              await ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .ensureActiveDay(selectedDay);
+              onDaySelected();
+            },
+            onPageChanged: (focusedDay) {
+              ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .setFocusedDay(focusedDay);
+              onPageChanged(focusedDay);
+            },
+            calendarBuilders: CalendarDayBuilders.create(),
+            calendarStyle: CalendarConfig.createCalendarStyle(context),
+            headerStyle: CalendarConfig.createHeaderStyle(),
+            locale: Localizations.localeOf(context).languageCode,
+          );
+
+          if (calendarHeight <= constraints.maxHeight) {
+            return SizedBox(height: calendarHeight, child: calendar);
+          }
+
+          return SingleChildScrollView(
+            child: SizedBox(height: calendarHeight, child: calendar),
+          );
+        },
       ),
     );
   }

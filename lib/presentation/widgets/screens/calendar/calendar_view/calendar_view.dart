@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -7,6 +8,8 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/components/cale
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/table_calendar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/draggable_sheet.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_layout_utils.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_navigation_debouncer.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_optimizer.dart';
@@ -213,45 +216,61 @@ class _CalendarViewState extends ConsumerState<CalendarView>
     // Ensure calendar provider is warmed up
     ref.watch(calendarProvider);
 
+    // Compute week rows for current month to decide bottom padding
+    final DateTime focusedDay =
+        ref.watch(scheduleCoordinatorProvider).value?.focusedDay ??
+        DateTime.now();
+    final bool hasSixWeekMonth = isSixWeekMonth(
+      focusedDay,
+      starting: CalendarConfig.startingDayOfWeek,
+    );
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           // Main content with calendar
-          Column(
-            children: [
-              const SizedBox(height: 16), // Abstand zur AppBar
-              CalendarHeader(
-                headerKey: _headerKey,
-                onDateSelected: (selectedDate) {
-                  // Only change the focused day, keep the selected day unchanged
-                  ref
-                      .read(scheduleCoordinatorProvider.notifier)
-                      .setFocusedDay(selectedDate);
-                },
-                onTodayButtonPressed: () {
-                  // Fire-and-forget Today action, keep UI responsive
-                  ref.read(scheduleCoordinatorProvider.notifier).goToToday();
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: hasSixWeekMonth
+                  ? _minSheetHeightForMonth(context, true)
+                  : 0.0,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 16), // Abstand zur AppBar
+                CalendarHeader(
+                  headerKey: _headerKey,
+                  onDateSelected: (selectedDate) {
+                    // Only change the focused day, keep the selected day unchanged
+                    ref
+                        .read(scheduleCoordinatorProvider.notifier)
+                        .setFocusedDay(selectedDate);
+                  },
+                  onTodayButtonPressed: () {
+                    // Fire-and-forget Today action, keep UI responsive
+                    ref.read(scheduleCoordinatorProvider.notifier).goToToday();
 
-                  // Force the PageView to rebuild around the new "today" day
-                  _pageManager.rebuildDayPagesAroundDay(DateTime.now());
+                    // Force the PageView to rebuild around the new "today" day
+                    _pageManager.rebuildDayPagesAroundDay(DateTime.now());
 
-                  // Force a complete rebuild of the PageView by changing its key
-                  setState(() {
-                    _pageViewKey = UniqueKey();
-                  });
-                },
-              ),
-              // Calendar section
-              Expanded(
-                child: CalendarTable(
-                  calendarKey: _calendarKey,
-                  onFormatChanged: (format) {},
-                  onPageChanged: (focusedDay) {},
-                  onDaySelected: () {},
+                    // Force a complete rebuild of the PageView by changing its key
+                    setState(() {
+                      _pageViewKey = UniqueKey();
+                    });
+                  },
                 ),
-              ),
-            ],
+                // Calendar section
+                Expanded(
+                  child: CalendarTable(
+                    calendarKey: _calendarKey,
+                    onFormatChanged: (format) {},
+                    onPageChanged: (focusedDay) {},
+                    onDaySelected: () {},
+                  ),
+                ),
+              ],
+            ),
           ),
           // Draggable sheet overlay
           Positioned(
@@ -275,5 +294,12 @@ class _CalendarViewState extends ConsumerState<CalendarView>
       context: context,
       shouldAnimate: false,
     );
+  }
+
+  double _minSheetHeightForMonth(BuildContext context, bool isSixWeekMonth) {
+    final double viewport = MediaQuery.of(context).size.height;
+    return isSixWeekMonth
+        ? math.min(160.0, viewport * 0.20)
+        : math.min(240.0, viewport * 0.28);
   }
 }
