@@ -3,6 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_view_ui_builder.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_layout_utils.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -41,8 +44,17 @@ class _DraggableSheetState extends ConsumerState<DraggableSheet>
         final currentFormat =
             calendarState.value?.calendarFormat ?? CalendarFormat.month;
 
-        // Define static snap points for each calendar format
-        final snapPoints = _getSnapPoints(currentFormat);
+        // Compute if current focused month has 6 rows to adapt snap points
+        final DateTime focusedDay =
+            ref.watch(scheduleCoordinatorProvider).value?.focusedDay ??
+            DateTime.now();
+        final bool hasSixWeekMonth = isSixWeekMonth(
+          focusedDay,
+          starting: CalendarConfig.startingDayOfWeek,
+        );
+
+        // Define responsive snap points based on current month layout
+        final snapPoints = _getSnapPoints(currentFormat, hasSixWeekMonth);
         final snapMinHeight = snapPoints.first;
         final initialHeight = snapPoints.first;
         final maxHeight = snapPoints.length > 1
@@ -91,12 +103,14 @@ class _DraggableSheetState extends ConsumerState<DraggableSheet>
     );
   }
 
-  List<double> _getSnapPoints(CalendarFormat format) {
+  List<double> _getSnapPoints(CalendarFormat format, bool isSixWeekMonth) {
     final double viewportHeight = MediaQuery.of(context).size.height;
 
     // Compute responsive snap points with safe clamping to the viewport.
     // This prevents the sheet from covering the calendar on smaller devices.
-    final double minSnapMonth = math.min(240.0, viewportHeight * 0.28);
+    final double minSnapMonth = isSixWeekMonth
+        ? math.min(160.0, viewportHeight * 0.20)
+        : math.min(240.0, viewportHeight * 0.28);
     final double maxSnapMonth = math.min(550.0, viewportHeight * 0.70);
     final double minSnapTwoWeeks = math.min(420.0, viewportHeight * 0.55);
     final double maxSnapTwoWeeks = math.min(550.0, viewportHeight * 0.78);
