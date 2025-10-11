@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.7](https://github.com/lusu007/dienstplan/compare/v0.12.6...v0.12.7) (2025-10-11)
+
+
+### Bug Fixes
+
+* Invalidate schedule data when version changes ([#335](https://github.com/lusu007/dienstplan/issues/335)) ([2439b0b](https://github.com/lusu007/dienstplan/commit/2439b0ba9f61f75cb2e39d7d58e7d64c26c8d348))
+* Make debug screen more readable and add schedule files section ([#338](https://github.com/lusu007/dienstplan/issues/338)) ([1040e02](https://github.com/lusu007/dienstplan/commit/1040e0289b6a16f79ff6c112868c151598c425c0))
+* Remove unused created_by field from schedules ([#337](https://github.com/lusu007/dienstplan/issues/337)) ([f0406c3](https://github.com/lusu007/dienstplan/commit/f0406c38a7257ff7f5e192f143b176e8e24144e4))
+
 ## [0.12.6](https://github.com/lusu007/dienstplan/compare/v0.12.5...v0.12.6) (2025-10-10)
 
 
