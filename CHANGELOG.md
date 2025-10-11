@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.12.8](https://github.com/lusu007/dienstplan/compare/v0.12.7...v0.12.8) (2025-10-11)
+
+
+### Bug Fixes
+
+* Address PlayConsole Recommendations ([#342](https://github.com/lusu007/dienstplan/issues/342)) ([14a8c20](https://github.com/lusu007/dienstplan/commit/14a8c20a8bec7df4ea5613a013c2d8ac3b347d41))
+* Remove dead code ([#339](https://github.com/lusu007/dienstplan/issues/339)) ([2a2ab81](https://github.com/lusu007/dienstplan/commit/2a2ab810657d067efc3ec5ae65f5fc1bd6282f97))
+
 ## [0.12.7](https://github.com/lusu007/dienstplan/compare/v0.12.6...v0.12.7) (2025-10-11)
 
 
