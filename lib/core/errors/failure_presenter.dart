@@ -20,12 +20,6 @@ class FailurePresenter {
         return l10n.genericValidationError;
       case FailureCode.notFound:
         return l10n.genericNotFoundError;
-      case FailureCode.conflict:
-        return l10n.genericConflictError;
-      case FailureCode.unauthorized:
-        return l10n.genericUnauthorizedError;
-      case FailureCode.forbidden:
-        return l10n.genericForbiddenError;
       case FailureCode.network:
         return l10n.genericNetworkError;
       case FailureCode.timeout:
@@ -34,8 +28,6 @@ class FailurePresenter {
         return l10n.genericStorageError;
       case FailureCode.serialization:
         return l10n.genericSerializationError;
-      case FailureCode.cancellation:
-        return l10n.genericCancellationError;
       case FailureCode.unknown:
         return l10n.genericUnknownError;
     }

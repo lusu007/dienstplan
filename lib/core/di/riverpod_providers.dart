@@ -41,7 +41,6 @@ import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
-import 'package:dienstplan/domain/use_cases/load_default_config_use_case.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
@@ -371,14 +370,6 @@ Future<SetActiveConfigUseCase> setActiveConfigUseCase(Ref ref) async {
     configRepositoryProvider.future,
   );
   return SetActiveConfigUseCase(repo);
-}
-
-@riverpod
-Future<LoadDefaultConfigUseCase> loadDefaultConfigUseCase(Ref ref) async {
-  final ConfigRepository repo = await ref.watch(
-    configRepositoryProvider.future,
-  );
-  return LoadDefaultConfigUseCase(repo);
 }
 
 // Utilities / Services
