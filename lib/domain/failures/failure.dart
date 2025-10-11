@@ -4,14 +4,10 @@ import 'package:flutter/foundation.dart';
 enum FailureCode {
   validation,
   notFound,
-  conflict,
-  unauthorized,
-  forbidden,
   network,
   timeout,
   storage,
   serialization,
-  cancellation,
   unknown,
 }
 
@@ -63,36 +59,6 @@ class NotFoundFailure extends Failure {
   }) : super(code: FailureCode.notFound);
 }
 
-class ConflictFailure extends Failure {
-  const ConflictFailure({
-    required super.technicalMessage,
-    super.cause,
-    super.stackTrace,
-    super.userMessageKey,
-    super.userMessageArgs,
-  }) : super(code: FailureCode.conflict);
-}
-
-class UnauthorizedFailure extends Failure {
-  const UnauthorizedFailure({
-    required super.technicalMessage,
-    super.cause,
-    super.stackTrace,
-    super.userMessageKey,
-    super.userMessageArgs,
-  }) : super(code: FailureCode.unauthorized);
-}
-
-class ForbiddenFailure extends Failure {
-  const ForbiddenFailure({
-    required super.technicalMessage,
-    super.cause,
-    super.stackTrace,
-    super.userMessageKey,
-    super.userMessageArgs,
-  }) : super(code: FailureCode.forbidden);
-}
-
 class NetworkFailure extends Failure {
   const NetworkFailure({
     required super.technicalMessage,
@@ -131,16 +97,6 @@ class SerializationFailure extends Failure {
     super.userMessageKey,
     super.userMessageArgs,
   }) : super(code: FailureCode.serialization);
-}
-
-class CancellationFailure extends Failure {
-  const CancellationFailure({
-    required super.technicalMessage,
-    super.cause,
-    super.stackTrace,
-    super.userMessageKey,
-    super.userMessageArgs,
-  }) : super(code: FailureCode.cancellation);
 }
 
 class UnknownFailure extends Failure {

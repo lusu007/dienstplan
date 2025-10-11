@@ -327,7 +327,7 @@ final class ScheduleConfigServiceProvider
 }
 
 String _$scheduleConfigServiceHash() =>
-    r'95de82c5f03d157c3e329fb6fa90cc7c0cc77230';
+    r'336862459ddd8fee5a46b83428c634b5d7a269f4';
 
 @ProviderFor(languageService)
 const languageServiceProvider = LanguageServiceProvider._();
@@ -893,7 +893,7 @@ final class GenerateSchedulesUseCaseProvider
 }
 
 String _$generateSchedulesUseCaseHash() =>
-    r'874c6ae60aedc505bde3f82dd256a1433cedc421';
+    r'58c47e188f4c6a5861575cc67b6ed6324a2e9b25';
 
 @ProviderFor(getSettingsUseCase)
 const getSettingsUseCaseProvider = GetSettingsUseCaseProvider._();
@@ -1104,48 +1104,6 @@ final class SetActiveConfigUseCaseProvider
 String _$setActiveConfigUseCaseHash() =>
     r'd34ae1da55cd543bdf7ae3c8a247dd7e691b8b69';
 
-@ProviderFor(loadDefaultConfigUseCase)
-const loadDefaultConfigUseCaseProvider = LoadDefaultConfigUseCaseProvider._();
-
-final class LoadDefaultConfigUseCaseProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<LoadDefaultConfigUseCase>,
-          LoadDefaultConfigUseCase,
-          FutureOr<LoadDefaultConfigUseCase>
-        >
-    with
-        $FutureModifier<LoadDefaultConfigUseCase>,
-        $FutureProvider<LoadDefaultConfigUseCase> {
-  const LoadDefaultConfigUseCaseProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'loadDefaultConfigUseCaseProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$loadDefaultConfigUseCaseHash();
-
-  @$internal
-  @override
-  $FutureProviderElement<LoadDefaultConfigUseCase> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<LoadDefaultConfigUseCase> create(Ref ref) {
-    return loadDefaultConfigUseCase(ref);
-  }
-}
-
-String _$loadDefaultConfigUseCaseHash() =>
-    r'9442b2cd68d7f9d5431de98b86b2754d05932c74';
-
 @ProviderFor(scheduleMergeService)
 const scheduleMergeServiceProvider = ScheduleMergeServiceProvider._();
 
@@ -1234,7 +1192,7 @@ final class DateRangePolicyProvider
   }
 }
 
-String _$dateRangePolicyHash() => r'5b1ef2d79621ce28df46dfb1a59009d336d0f102';
+String _$dateRangePolicyHash() => r'5a03b97bb502d325b1b306ff3a2c3bf40d17c658';
 
 @ProviderFor(configQueryService)
 const configQueryServiceProvider = ConfigQueryServiceProvider._();
@@ -1325,7 +1283,7 @@ final class EnsureMonthSchedulesUseCaseProvider
 }
 
 String _$ensureMonthSchedulesUseCaseHash() =>
-    r'6fa0fa93ee9d14338bb7a8b8a72390c72e88a23b';
+    r'b59a52a776c0a99c693f9f336bfe573c2cc525e6';
 
 @ProviderFor(schoolHolidayRemoteDataSource)
 const schoolHolidayRemoteDataSourceProvider =
