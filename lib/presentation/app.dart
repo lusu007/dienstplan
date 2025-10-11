@@ -24,23 +24,42 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     _appRouter = AppRouter();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _configureSystemUI();
 
     // Process any pending notifications once the UI is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(notificationServiceProvider).processPendingNotifications();
+      _setOrientationBasedOnScreenSize();
     });
+  }
+
+  void _setOrientationBasedOnScreenSize() {
+    final MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
+    final double screenWidth = mediaQuery?.size.width ?? 0.0;
+
+    // Use 600dp as the breakpoint between phones and tablets/foldables
+    // This follows Material Design guidelines for responsive layouts
+    if (mediaQuery == null || screenWidth < 600) {
+      // Phones or unknown: Lock to portrait only
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    } else {
+      // Tablets/foldables: Allow all orientations
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
   }
 
   void _configureSystemUI() {
     // Configure system UI overlay style to handle navigation bar properly
+    // Note: Status bar icon brightness will be handled dynamically by the theme
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         // Status bar configuration
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
         // Navigation bar configuration
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
@@ -48,7 +67,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       ),
     );
 
-    // Enable edge-to-edge display
+    // Enable edge-to-edge display for Android 12+ compatibility
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
