@@ -7,6 +7,10 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
+import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
+import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:io';
@@ -14,6 +18,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
+import 'package:dart_flutter_version/dart_flutter_version.dart';
+import 'package:intl/intl.dart';
 
 @RoutePage()
 class DebugScreen extends ConsumerStatefulWidget {
@@ -101,6 +107,21 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                         _getCalendarFormat(l10n),
                       ),
                       _buildInfoRow('Language', _getCurrentLanguage()),
+                      _buildInfoRow('Theme Preference', _getThemePreference()),
+                      _buildInfoRow('Partner Config', _getPartnerConfigName()),
+                      _buildInfoRow(
+                        'Partner Duty Group',
+                        _getPartnerDutyGroup(),
+                      ),
+                      _buildInfoRow('My Accent Color', _getMyAccentColor()),
+                      _buildInfoRow(
+                        'Partner Accent Color',
+                        _getPartnerAccentColor(),
+                      ),
+                      _buildInfoRow(
+                        'Holiday Accent Color',
+                        _getHolidayAccentColor(),
+                      ),
                     ]),
                     const SizedBox(height: 24),
                     _buildSection('Database & Storage', [
@@ -112,6 +133,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                     ]),
                     const SizedBox(height: 24),
                     _buildSection('Technical Details', [
+                      _buildInfoRow('Flutter Version', _getFlutterVersion()),
                       _buildInfoRow('Dart Version', _getDartVersion()),
                       _buildInfoRow('Platform', _getPlatform()),
                       _buildInfoRow('Build Type', _getBuildType()),
@@ -121,6 +143,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                       _buildInfoRow('Sentry Enabled', _getSentryStatus()),
                       _buildInfoRow('Database Status', _getDatabaseStatus()),
                     ]),
+                    const SizedBox(height: 24),
+                    _buildSchoolHolidaysSection(),
                     const SizedBox(height: 24),
                     _buildScheduleFilesSection(),
                   ],
@@ -152,7 +176,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, dynamic value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -169,13 +193,15 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                fontFamily: 'monospace',
-              ),
-            ),
+            child: value is Widget
+                ? value
+                : Text(
+                    value.toString(),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
           ),
         ],
       ),
@@ -194,8 +220,24 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
     }
   }
 
+  String _getFlutterVersion() {
+    try {
+      final versionInfo = DartFlutterVersion();
+      final flutterVersion = versionInfo.flutterVersion;
+      return flutterVersion?.toString() ?? 'Unknown';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
   String _getDartVersion() {
-    return Platform.version;
+    try {
+      final versionInfo = DartFlutterVersion();
+      final dartVersion = versionInfo.dartVersion;
+      return dartVersion?.toString() ?? Platform.version;
+    } catch (e) {
+      return Platform.version;
+    }
   }
 
   String _getPlatform() {
@@ -268,15 +310,309 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
     }
   }
 
+  String _formatFileSize(int bytes) {
+    if (bytes < 1024) {
+      return '$bytes B';
+    } else if (bytes < 1024 * 1024) {
+      return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    } else {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+
+  String _formatColorAsHex(int colorValue) {
+    return '#${colorValue.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}';
+  }
+
+  ({int size, DateTime lastModified}) _getFileInfo(File file) {
+    final size = file.lengthSync();
+    final lastModified = file.lastModifiedSync();
+    return (size: size, lastModified: lastModified);
+  }
+
+  // Holiday helper methods
+  String _getHolidayStatus() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+    return holidayState?.isEnabled == true ? 'Enabled' : 'Disabled';
+  }
+
+  String _getHolidayStateCode() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+    return holidayState?.selectedStateCode ?? 'None';
+  }
+
+  String _getHolidayStateName() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+    final stateCode = holidayState?.selectedStateCode;
+    if (stateCode == null) return 'N/A';
+
+    // Map state codes to full names
+    const stateNames = {
+      'BW': 'Baden-Württemberg',
+      'BY': 'Bavaria',
+      'BE': 'Berlin',
+      'BB': 'Brandenburg',
+      'HB': 'Bremen',
+      'HH': 'Hamburg',
+      'HE': 'Hesse',
+      'MV': 'Mecklenburg-Vorpommern',
+      'NI': 'Lower Saxony',
+      'NW': 'North Rhine-Westphalia',
+      'RP': 'Rhineland-Palatinate',
+      'SL': 'Saarland',
+      'SN': 'Saxony',
+      'ST': 'Saxony-Anhalt',
+      'SH': 'Schleswig-Holstein',
+      'TH': 'Thuringia',
+    };
+
+    return stateNames[stateCode] ?? stateCode;
+  }
+
+  String _getTotalHolidaysCount() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+    return '${holidayState?.allHolidays.length ?? 0} holidays';
+  }
+
+  String _getHolidayLastRefresh() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+    final lastRefresh = holidayState?.lastRefreshTime;
+    if (lastRefresh == null) return 'Never';
+    return _formatDate(lastRefresh);
+  }
+
+  // Settings helper methods
+  String _getThemePreference() {
+    final settings = ref.watch(settingsProvider).value;
+    if (settings?.themePreference == null) return 'System';
+
+    switch (settings!.themePreference) {
+      case ThemePreference.system:
+        return 'System';
+      case ThemePreference.light:
+        return 'Light';
+      case ThemePreference.dark:
+        return 'Dark';
+      default:
+        return 'System';
+    }
+  }
+
+  String _getPartnerConfigName() {
+    final settings = ref.watch(settingsProvider).value;
+    return settings?.partnerConfigName ?? 'None';
+  }
+
+  String _getPartnerDutyGroup() {
+    final settings = ref.watch(settingsProvider).value;
+    return settings?.partnerDutyGroup ?? 'None';
+  }
+
+  Widget _getMyAccentColor() {
+    final settings = ref.watch(settingsProvider).value;
+    final colorValue = settings?.myAccentColorValue;
+
+    Color color;
+    String hexString;
+
+    if (colorValue == null) {
+      // Use default my accent color
+      color = AccentColorDefaults.myAccentColor;
+      hexString =
+          'Default (${_formatColorAsHex(AccentColorDefaults.myAccentColorValue)})';
+    } else {
+      color = Color(colorValue);
+      hexString = _formatColorAsHex(colorValue);
+    }
+
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+              width: 0.5,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          hexString,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontFamily: 'monospace',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getPartnerAccentColor() {
+    final settings = ref.watch(settingsProvider).value;
+    final colorValue = settings?.partnerAccentColorValue;
+
+    Color color;
+    String hexString;
+
+    if (colorValue == null) {
+      // Use default partner accent color
+      color = AccentColorDefaults.partnerAccentColor;
+      hexString =
+          'Default (${_formatColorAsHex(AccentColorDefaults.partnerAccentColorValue)})';
+    } else {
+      color = Color(colorValue);
+      hexString = _formatColorAsHex(colorValue);
+    }
+
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+              width: 0.5,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          hexString,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontFamily: 'monospace',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getHolidayAccentColor() {
+    final settings = ref.watch(settingsProvider).value;
+    final colorValue = settings?.holidayAccentColorValue;
+
+    Color color;
+    String hexString;
+
+    if (colorValue == null) {
+      // Use default holiday accent color
+      color = AccentColorDefaults.holidayAccentColor;
+      hexString =
+          'Default (${_formatColorAsHex(AccentColorDefaults.holidayAccentColorValue)})';
+    } else {
+      color = Color(colorValue);
+      hexString = _formatColorAsHex(colorValue);
+    }
+
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+              width: 0.5,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          hexString,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            fontFamily: 'monospace',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSchoolHolidaysSection() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+
+    return _buildSection('School Holidays', [
+      _buildInfoRow('Feature Status', _getHolidayStatus()),
+      _buildInfoRow('Selected State', _getHolidayStateCode()),
+      _buildInfoRow('State Name', _getHolidayStateName()),
+      _buildInfoRow('Total Holidays', _getTotalHolidaysCount()),
+      _buildInfoRow('Last Refresh', _getHolidayLastRefresh()),
+      if (holidayState?.allHolidays.isNotEmpty == true) ...[
+        const SizedBox(height: 8),
+        _buildUpcomingHolidays(),
+      ],
+    ]);
+  }
+
+  Widget _buildUpcomingHolidays() {
+    final holidayState = ref.read(schoolHolidaysProvider).value;
+    final holidays = holidayState?.allHolidays ?? [];
+
+    if (holidays.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Get next 3 holidays from today
+    final now = DateTime.now();
+    final upcomingHolidays =
+        holidays.where((holiday) => holiday.endDate.isAfter(now)).toList()
+          ..sort((a, b) => a.startDate.compareTo(b.startDate));
+
+    final displayHolidays = upcomingHolidays.take(3).toList();
+
+    if (displayHolidays.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Upcoming Holidays:',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        const SizedBox(height: 4),
+        ...displayHolidays.map(
+          (holiday) => Padding(
+            padding: const EdgeInsets.only(left: 8, top: 2),
+            child: Text(
+              '• ${holiday.name} (${_formatDate(holiday.startDate)} - ${_formatDate(holiday.endDate)})',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontFamily: 'monospace',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _loadScheduleFiles() async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       final configsDir = Directory('${appDir.path}/configs');
 
       if (configsDir.existsSync()) {
-        final files = await configsDir.list().toList();
-        _scheduleFiles = files
-            .where((file) => file is File && file.path.endsWith('.json'))
+        _scheduleFiles = await configsDir
+            .list()
+            .where((entity) => entity is File && entity.path.endsWith('.json'))
             .cast<File>()
             .toList();
       }
@@ -330,26 +666,45 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   Widget _buildScheduleFileItem(File file) {
     final fileName = file.path.split('/').last;
-    final fileSize = file.lengthSync();
-    final lastModified = file.lastModifiedSync();
 
-    return ListTile(
-      title: Text(
-        fileName,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: Theme.of(context).colorScheme.onSurface,
+    try {
+      final fileInfo = _getFileInfo(file);
+      return ListTile(
+        title: Text(
+          fileName,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
-      ),
-      subtitle: Text(
-        '${(fileSize / 1024).toStringAsFixed(1)} KB • ${lastModified.toString().split(' ')[0]}',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        subtitle: Text(
+          '${_formatFileSize(fileInfo.size)} • ${_formatDate(fileInfo.lastModified)}',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
-      trailing: const Icon(Icons.visibility),
-      onTap: () => _viewScheduleFile(file),
-    );
+        trailing: const Icon(Icons.visibility),
+        onTap: () => _viewScheduleFile(file),
+      );
+    } catch (e) {
+      return ListTile(
+        title: Text(
+          fileName,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        subtitle: Text(
+          'Error loading file info',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        trailing: const Icon(Icons.visibility),
+        onTap: () => _viewScheduleFile(file),
+      );
+    }
   }
 
   Future<void> _viewScheduleFile(File file) async {
