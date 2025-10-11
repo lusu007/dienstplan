@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_ui_state.dart';
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
@@ -408,9 +409,27 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   }
 
   /// Invalidates the cached state to force reload with new settings
+  /// This instance method only affects the current instance's cache
   void invalidateCache() {
     _cachedState = null;
     _lastCacheTime = null;
+  }
+
+  /// Static method to invalidate cache for a specific config from external services
+  /// This method is safe to call from external services as it only modifies static cache fields
+  /// and uses the shared cache manager which is designed for multi-instance scenarios
+  static void invalidateCacheForConfig(String configName) {
+    // Clear the cache manager for the specific config
+    _cacheManager.clearCacheForConfig(configName);
+
+    // Clear static cache state to force reload on next access
+    _cachedState = null;
+    _lastCacheTime = null;
+    _lastKnownConfigVersions.remove(configName);
+
+    AppLogger.i(
+      'ScheduleDataNotifier: Invalidated cache for config $configName',
+    );
   }
 
   Future<String> _presentFailure(Failure failure) async {

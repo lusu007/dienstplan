@@ -112,10 +112,14 @@ Future<ScheduleConfigService> scheduleConfigService(Ref ref) async {
   final SchedulesAdminDao schedulesAdmin = await ref.watch(
     schedulesAdminDaoProvider.future,
   );
+  final DatabaseService databaseService = await ref.watch(
+    databaseServiceProvider.future,
+  );
   final ScheduleConfigService service = ScheduleConfigService(
     prefs,
     configsDao,
     schedulesAdmin,
+    databaseService,
   );
   await service.initialize();
   return service;
