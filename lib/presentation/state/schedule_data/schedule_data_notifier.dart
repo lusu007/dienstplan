@@ -11,10 +11,12 @@ import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_cache_manager.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_loading_queue.dart';
+import 'package:dienstplan/core/constants/schedule_constants.dart';
 
 part 'schedule_data_notifier.g.dart';
 
@@ -28,13 +30,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   DateRangePolicy? _dateRangePolicy;
   ScheduleMergeService? _scheduleMergeService;
 
-  static ScheduleDataUiState? _cachedState;
-  static DateTime? _lastCacheTime;
-  static const Duration _cacheValidityDuration = Duration(minutes: 5);
-  static final ScheduleCacheManager _cacheManager = ScheduleCacheManager();
-  static final ScheduleLoadingQueue _loadingQueue = ScheduleLoadingQueue();
-  static final Map<String, String> _lastKnownConfigVersions =
-      <String, String>{};
+  // Non-static instance variables
+  ScheduleDataUiState? _cachedState;
+  DateTime? _lastCacheTime;
+  ScheduleCacheManager? _cacheManager;
+  ScheduleLoadingQueue? _loadingQueue;
+  final Map<String, String> _lastKnownConfigVersions = <String, String>{};
 
   @override
   Future<ScheduleDataUiState> build() async {
@@ -50,6 +51,10 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
 
+    // Initialize cache and queue from providers
+    _cacheManager ??= ref.read(scheduleCacheManagerProvider);
+    _loadingQueue ??= ref.read(scheduleLoadingQueueProvider);
+
     // Return cached state if available and still valid, otherwise initialize
     if (_cachedState != null && _isCacheValid()) {
       AppLogger.d('ScheduleDataNotifier: Returning cached state');
@@ -61,7 +66,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
   bool _isCacheValid() {
     if (_lastCacheTime == null) return false;
-    return DateTime.now().difference(_lastCacheTime!) < _cacheValidityDuration;
+    return DateTime.now().difference(_lastCacheTime!) <
+        kScheduleDataCacheValidityDuration;
   }
 
   Future<ScheduleDataUiState> _initialize() async {
@@ -138,7 +144,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         final String version = c.version;
         final String? previous = _lastKnownConfigVersions[name];
         if (previous != null && previous != version) {
-          _cacheManager.clearCacheForConfig(name);
+          _cacheManager?.clearCacheForConfig(name);
           anyInvalidated = true;
         }
         _lastKnownConfigVersions[name] = version;
@@ -177,7 +183,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     required String configName,
   }) async {
     // Check cache first
-    final cachedSchedules = _cacheManager.getSchedules(
+    final cachedSchedules = _cacheManager!.getSchedules(
       startDate,
       endDate,
       configName,
@@ -206,12 +212,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     }
 
     // Use loading queue to prevent duplicate requests
-    final operationKey = _loadingQueue.generateOperationKey(
+    final operationKey = _loadingQueue!.generateOperationKey(
       startDate,
       endDate,
       configName,
     );
-    final wasQueued = await _loadingQueue.executeIfNotPending(
+    final wasQueued = await _loadingQueue!.executeIfNotPending(
       operationKey,
       () async => await _performScheduleLoading(startDate, endDate, configName),
     );
@@ -226,70 +232,106 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     DateTime endDate,
     String configName,
   ) async {
-    // Ensure dependencies are available even if provider rebuilt and returned cached state
+    await _ensureDependencies();
+    final baseline = await _setLoadingState();
+
+    try {
+      final schedulesResult = await _loadSchedulesFromRepository(
+        startDate,
+        endDate,
+        configName,
+      );
+
+      if (schedulesResult.isSuccess) {
+        await _handleSuccessfulScheduleLoad(
+          schedulesResult.value,
+          baseline,
+          startDate,
+          endDate,
+          configName,
+        );
+      } else {
+        await _handleFailedScheduleLoad(schedulesResult.failure, baseline);
+      }
+    } catch (e) {
+      await _handleScheduleLoadException(e);
+    }
+  }
+
+  Future<void> _ensureDependencies() async {
     _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
+  }
 
-    final ScheduleDataUiState baseline =
-        state.value ?? _cachedState ?? await future;
-    final ScheduleDataUiState loadingState = baseline.copyWith(isLoading: true);
+  Future<ScheduleDataUiState> _setLoadingState() async {
+    final baseline = state.value ?? _cachedState ?? await future;
+    final loadingState = baseline.copyWith(isLoading: true);
     _cachedState = loadingState;
     if (ref.mounted) {
       state = AsyncData(loadingState);
     }
+    return baseline;
+  }
 
-    try {
-      final schedulesResult = await _getSchedulesUseCase!
-          .executeForDateRangeSafe(
-            startDate: startDate,
-            endDate: endDate,
-            configName: configName,
-          );
+  Future<Result<List<Schedule>>> _loadSchedulesFromRepository(
+    DateTime startDate,
+    DateTime endDate,
+    String configName,
+  ) async {
+    return await _getSchedulesUseCase!.executeForDateRangeSafe(
+      startDate: startDate,
+      endDate: endDate,
+      configName: configName,
+    );
+  }
 
-      if (schedulesResult.isSuccess) {
-        final newSchedules = schedulesResult.value;
+  Future<void> _handleSuccessfulScheduleLoad(
+    List<Schedule> newSchedules,
+    ScheduleDataUiState baseline,
+    DateTime startDate,
+    DateTime endDate,
+    String configName,
+  ) async {
+    _cacheManager!.setSchedules(startDate, endDate, configName, newSchedules);
 
-        // Cache the results
-        _cacheManager.setSchedules(
-          startDate,
-          endDate,
-          configName,
-          newSchedules,
-        );
+    final mergedSchedules = _scheduleMergeService!.upsertByKey(
+      existing: baseline.schedules,
+      incoming: newSchedules,
+    );
 
-        // Use upsert merge to avoid dropping existing items when loading deltas
-        final List<Schedule> mergedSchedules = _scheduleMergeService!
-            .upsertByKey(existing: baseline.schedules, incoming: newSchedules);
+    final updated = baseline.copyWith(
+      schedules: mergedSchedules,
+      activeConfigName: configName,
+      isLoading: false,
+    );
+    _cachedState = updated;
+    _lastCacheTime = DateTime.now();
+    if (ref.mounted) {
+      state = AsyncData(updated);
+    }
+  }
 
-        final ScheduleDataUiState updated = baseline.copyWith(
-          schedules: mergedSchedules,
-          activeConfigName: configName,
+  Future<void> _handleFailedScheduleLoad(
+    Failure failure,
+    ScheduleDataUiState baseline,
+  ) async {
+    final message = await _presentFailure(failure);
+    final errored = baseline.copyWith(error: message, isLoading: false);
+    _cachedState = errored;
+    if (ref.mounted) {
+      state = AsyncData(errored);
+    }
+  }
+
+  Future<void> _handleScheduleLoadException(dynamic error) async {
+    final errored =
+        (state.value ?? _cachedState ?? ScheduleDataUiState.initial()).copyWith(
+          error: 'Failed to load schedules',
           isLoading: false,
         );
-        _cachedState = updated;
-        _lastCacheTime = DateTime.now();
-        if (ref.mounted) {
-          state = AsyncData(updated);
-        }
-      } else {
-        final message = await _presentFailure(schedulesResult.failure);
-        final ScheduleDataUiState errored = baseline.copyWith(
-          error: message,
-          isLoading: false,
-        );
-        _cachedState = errored;
-        if (ref.mounted) {
-          state = AsyncData(errored);
-        }
-      }
-    } catch (e) {
-      final ScheduleDataUiState errored =
-          (state.value ?? _cachedState ?? ScheduleDataUiState.initial())
-              .copyWith(error: 'Failed to load schedules', isLoading: false);
-      _cachedState = errored;
-      if (ref.mounted) {
-        state = AsyncData(errored);
-      }
+    _cachedState = errored;
+    if (ref.mounted) {
+      state = AsyncData(errored);
     }
   }
 
@@ -342,13 +384,13 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     // Deduplicate ensures/loads by month using loading queue
     final DateTime startDate = DateTime(month.year, month.month, 1);
     final DateTime endDate = DateTime(month.year, month.month + 1, 0);
-    final String operationKey = _loadingQueue.generateOperationKey(
+    final String operationKey = _loadingQueue!.generateOperationKey(
       startDate,
       endDate,
       configName,
     );
 
-    await _loadingQueue.executeIfNotPending(operationKey, () async {
+    await _loadingQueue!.executeIfNotPending(operationKey, () async {
       try {
         await _ensureMonthSchedulesUseCase!.execute(
           monthStart: month,
@@ -415,14 +457,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _lastCacheTime = null;
   }
 
-  /// Static method to invalidate cache for a specific config from external services
-  /// This method is safe to call from external services as it only modifies static cache fields
-  /// and uses the shared cache manager which is designed for multi-instance scenarios
-  static void invalidateCacheForConfig(String configName) {
+  /// Method to invalidate cache for a specific config from external services
+  void invalidateCacheForConfig(String configName) {
     // Clear the cache manager for the specific config
-    _cacheManager.clearCacheForConfig(configName);
+    _cacheManager?.clearCacheForConfig(configName);
 
-    // Clear static cache state to force reload on next access
+    // Clear cache state to force reload on next access
     _cachedState = null;
     _lastCacheTime = null;
     _lastKnownConfigVersions.remove(configName);

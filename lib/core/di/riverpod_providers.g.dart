@@ -688,6 +688,102 @@ final class NotificationServiceProvider
 String _$notificationServiceHash() =>
     r'cda5ea9d196dce85bee56839a4a0f035021752e3';
 
+@ProviderFor(scheduleCacheManager)
+const scheduleCacheManagerProvider = ScheduleCacheManagerProvider._();
+
+final class ScheduleCacheManagerProvider
+    extends
+        $FunctionalProvider<
+          ScheduleCacheManager,
+          ScheduleCacheManager,
+          ScheduleCacheManager
+        >
+    with $Provider<ScheduleCacheManager> {
+  const ScheduleCacheManagerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleCacheManagerProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleCacheManagerHash();
+
+  @$internal
+  @override
+  $ProviderElement<ScheduleCacheManager> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ScheduleCacheManager create(Ref ref) {
+    return scheduleCacheManager(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ScheduleCacheManager value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ScheduleCacheManager>(value),
+    );
+  }
+}
+
+String _$scheduleCacheManagerHash() =>
+    r'317b6c8d6a0580b544d7a4637f47ecec9824841c';
+
+@ProviderFor(scheduleLoadingQueue)
+const scheduleLoadingQueueProvider = ScheduleLoadingQueueProvider._();
+
+final class ScheduleLoadingQueueProvider
+    extends
+        $FunctionalProvider<
+          ScheduleLoadingQueue,
+          ScheduleLoadingQueue,
+          ScheduleLoadingQueue
+        >
+    with $Provider<ScheduleLoadingQueue> {
+  const ScheduleLoadingQueueProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scheduleLoadingQueueProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$scheduleLoadingQueueHash();
+
+  @$internal
+  @override
+  $ProviderElement<ScheduleLoadingQueue> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ScheduleLoadingQueue create(Ref ref) {
+    return scheduleLoadingQueue(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ScheduleLoadingQueue value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ScheduleLoadingQueue>(value),
+    );
+  }
+}
+
+String _$scheduleLoadingQueueHash() =>
+    r'a3e2d6f10d55d88a06c802118318040c7a91553e';
+
 @ProviderFor(scheduleRepository)
 const scheduleRepositoryProvider = ScheduleRepositoryProvider._();
 

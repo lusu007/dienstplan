@@ -15,11 +15,8 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
   final DutyTypesDao _dutyTypesDao;
   final ExceptionMapper _exceptionMapper;
 
-  ScheduleRepositoryImpl(
-    this._schedulesDao,
-    this._dutyTypesDao, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  ScheduleRepositoryImpl(this._schedulesDao, this._dutyTypesDao)
+    : _exceptionMapper = const ExceptionMapper();
 
   @override
   Future<List<Schedule>> getSchedules() async {
