@@ -12,12 +12,15 @@ import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/prefs_keys.dart';
 import 'package:dienstplan/data/services/notification_service.dart';
+import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/core/l10n/app_localizations_de.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ScheduleConfigService extends ChangeNotifier {
   final SharedPreferences _prefs;
   final ScheduleConfigsDao _scheduleConfigsDao;
   final SchedulesAdminDao _schedulesAdminDao;
+  final DatabaseService _databaseService;
   List<DutyScheduleConfig> _configs = [];
   DutyScheduleConfig? _defaultConfig;
   late Directory _configsPath;
@@ -28,6 +31,7 @@ class ScheduleConfigService extends ChangeNotifier {
     this._prefs,
     this._scheduleConfigsDao,
     this._schedulesAdminDao,
+    this._databaseService,
   );
 
   List<DutyScheduleConfig> get configs => _configs;
@@ -101,10 +105,21 @@ class ScheduleConfigService extends ChangeNotifier {
             final json = jsonDecode(jsonString) as Map<String, dynamic>;
             final config = DutyScheduleConfig.fromMap(json);
 
-            configsByName[config.name] = config;
-            AppLogger.i(
-              'Loaded config from app directory: ${config.name} (version ${config.version})',
-            );
+            // Only overwrite if this config has a higher version or if no config exists yet
+            final existingConfig = configsByName[config.name];
+            if (existingConfig == null ||
+                _compareVersions(config.version, existingConfig.version) > 0) {
+              configsByName[config.name] = config;
+              AppLogger.i(
+                'Loaded config from app directory: ${config.name} (version ${config.version})',
+              );
+            } else {
+              // Delete the older file since we have a newer version
+              AppLogger.i(
+                'Deleting outdated config file: ${file.path} (version ${config.version}, newer version ${existingConfig.version} exists)',
+              );
+              await file.delete();
+            }
           } catch (e) {
             AppLogger.e('Error loading config file ${file.path}: $e');
           }
@@ -147,6 +162,11 @@ class ScheduleConfigService extends ChangeNotifier {
           // Save to app directory
           final fileName = path.basename(assetFile);
           final configFile = File(path.join(_configsPath.path, fileName));
+
+          // Always overwrite existing files to ensure we have the latest version
+          if (configFile.existsSync()) {
+            await configFile.delete();
+          }
           await configFile.writeAsString(jsonString);
 
           AppLogger.i(
@@ -198,6 +218,49 @@ class ScheduleConfigService extends ChangeNotifier {
       return -((-a + b - 1) ~/ b);
     }
     return a ~/ b;
+  }
+
+  /// Compares two version strings (e.g., "1.2" vs "1.0")
+  /// Returns: 1 if version1 > version2, -1 if version1 < version2, 0 if equal
+  /// Handles version strings with non-numeric parts (e.g., "1.2-beta", "2.0.0-rc1")
+  int _compareVersions(String version1, String version2) {
+    final parts1 = _parseVersionParts(version1);
+    final parts2 = _parseVersionParts(version2);
+
+    final maxLength = parts1.length > parts2.length
+        ? parts1.length
+        : parts2.length;
+
+    for (int i = 0; i < maxLength; i++) {
+      final v1 = i < parts1.length ? parts1[i] : 0;
+      final v2 = i < parts2.length ? parts2[i] : 0;
+
+      if (v1 > v2) return 1;
+      if (v1 < v2) return -1;
+    }
+
+    return 0;
+  }
+
+  /// Parses version string parts, handling non-numeric suffixes
+  /// Extracts only the numeric part from each version segment
+  /// Examples: "1.2-beta" -> [1, 2], "2.0.0-rc1" -> [2, 0, 0]
+  List<int> _parseVersionParts(String version) {
+    try {
+      return version.split('.').map((part) {
+        // Extract only the numeric part from each segment
+        final match = RegExp(r'^\d+').firstMatch(part);
+        if (match != null) {
+          return int.parse(match.group(0)!);
+        }
+        // If no numeric part found, default to 0
+        return 0;
+      }).toList();
+    } catch (e) {
+      AppLogger.w('Failed to parse version parts for "$version": $e');
+      // Return a default version (0.0.0) if parsing fails
+      return [0];
+    }
   }
 
   Future<List<Schedule>> generateSchedulesForConfig(
@@ -394,14 +457,75 @@ class ScheduleConfigService extends ChangeNotifier {
             // Delete all schedules and duty types for this config
             await _schedulesAdminDao.clearDutySchedule(config.name);
 
-            // Also replace the persisted config file to match the latest asset
-            final File configFile = File(
-              path.join(_configsPath.path, '${config.name}.json'),
+            // The config file is already up-to-date from _syncAssetsToAppDirectory()
+            // Just update the database with the new config data
+            await _scheduleConfigsDao.saveScheduleConfig(
+              name: config.name,
+              version: config.version,
+              displayName: config.meta.name,
+              description: config.meta.description,
+              policeAuthority: config.meta.policeAuthority,
+              icon: config.meta.icon,
+              startDate: config.meta.startDate,
+              startWeekDay: config.meta.startWeekDay,
+              days: config.meta.days,
             );
-            if (configFile.existsSync()) {
-              await configFile.delete();
+
+            // Reload the config into memory to ensure start_date and other metadata are fresh
+            final configIndex = _configs.indexWhere(
+              (c) => c.name == config.name,
+            );
+            if (configIndex >= 0) {
+              _configs[configIndex] = config;
+              AppLogger.i(
+                'Reloaded config ${config.name} into memory with start_date: ${config.meta.startDate.toIso8601String()}',
+              );
+            } else {
+              AppLogger.w(
+                'Could not find config ${config.name} in _configs list to reload',
+              );
             }
-            await saveConfig(config);
+
+            // Note: Schedule data cache will be invalidated automatically
+            // when the ScheduleDataNotifier._invalidateCacheOnVersionChange()
+            // method detects the version change on next app startup
+            AppLogger.i(
+              'Config ${config.name} database updated - schedule caches will be invalidated on next load',
+            );
+
+            // Generate new schedules for the updated config to ensure services are positioned correctly
+            try {
+              AppLogger.i(
+                'Generating new schedules for updated config ${config.name}',
+              );
+              final now = DateTime.now();
+              final startDate = DateTime(now.year, now.month, 1);
+              final endDate = DateTime(
+                now.year,
+                now.month + 3,
+                0,
+              ); // Generate 3 months ahead
+
+              final newSchedules = await generateSchedulesForConfig(
+                config,
+                startDate: startDate,
+                endDate: endDate,
+              );
+
+              // Save the generated schedules to database
+              if (newSchedules.isNotEmpty) {
+                await _saveSchedulesToDatabase(newSchedules);
+                AppLogger.i(
+                  'Saved ${newSchedules.length} new schedules to database for ${config.name}',
+                );
+              } else {
+                AppLogger.w('No schedules generated for ${config.name}');
+              }
+            } catch (e) {
+              AppLogger.w(
+                'Failed to generate schedules for ${config.name}: $e',
+              );
+            }
 
             // Track updated config for notification
             updatedConfigs.add({
@@ -517,13 +641,69 @@ class ScheduleConfigService extends ChangeNotifier {
           .map((String key) => path.basenameWithoutExtension(key))
           .toList();
 
+      // Also get the config names from assets to detect duplicates
+      final Map<String, String> configNameToFileName = {};
+
+      // Build a map of config names to their asset file names
+      for (final assetFile
+          in manifestMap.keys
+              .where((String key) => key.startsWith('assets/schedules/'))
+              .where((String key) => key.endsWith('.json'))) {
+        try {
+          final jsonString = await rootBundle.loadString(assetFile);
+          final json = jsonDecode(jsonString) as Map<String, dynamic>;
+          final configName = json['meta']['name'] as String;
+          final fileName = path.basenameWithoutExtension(assetFile);
+          configNameToFileName[configName] = fileName;
+        } catch (e) {
+          AppLogger.w('Error reading asset file $assetFile during cleanup: $e');
+        }
+      }
+
       final files = await _configsPath.list().toList();
       int deletedCount = 0;
       for (final file in files) {
         if (file is File && file.path.endsWith('.json')) {
           final fileName = path.basenameWithoutExtension(file.path);
+          bool shouldDelete = false;
+
+          // Delete if file name is not in assets
           if (!assetConfigNames.contains(fileName)) {
-            AppLogger.i('Deleting obsolete config file: ${file.path}');
+            shouldDelete = true;
+            AppLogger.i(
+              'Deleting obsolete config file (not in assets): ${file.path}',
+            );
+          } else {
+            // Check if this file has a config name that conflicts with assets
+            try {
+              final jsonString = await file.readAsString();
+              final json = jsonDecode(jsonString) as Map<String, dynamic>;
+              final configName = json['meta']['name'] as String;
+              final configVersion = json['version'] as String;
+              final expectedFileName = configNameToFileName[configName];
+
+              if (expectedFileName != null && expectedFileName != fileName) {
+                shouldDelete = true;
+                AppLogger.i(
+                  'Deleting duplicate config file (name conflict): ${file.path} (config: $configName, expected file: $expectedFileName)',
+                );
+              } else if (expectedFileName != null &&
+                  expectedFileName == fileName) {
+                // This is the correct asset file, but check if it's outdated
+                // We'll let the version comparison in _loadConfigFiles handle this
+                AppLogger.d(
+                  'Keeping asset file: ${file.path} (config: $configName, version: $configVersion)',
+                );
+              }
+            } catch (e) {
+              AppLogger.w(
+                'Error reading config file ${file.path} during cleanup: $e',
+              );
+              shouldDelete = true;
+            }
+          }
+
+          if (shouldDelete) {
             await file.delete();
             deletedCount++;
           }
@@ -534,6 +714,40 @@ class ScheduleConfigService extends ChangeNotifier {
       );
     } catch (e, stackTrace) {
       AppLogger.e('Error cleaning up old config files', e, stackTrace);
+    }
+  }
+
+  /// Saves generated schedules to the database
+  Future<void> _saveSchedulesToDatabase(List<Schedule> schedules) async {
+    try {
+      final db = await _databaseService.database;
+      final batch = db.batch();
+
+      // Store timestamp once to avoid multiple DateTime.now() calls
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      for (final schedule in schedules) {
+        batch.insert('schedules', {
+          'date': schedule.date.toIso8601String(),
+          'date_ymd': schedule.date.toIso8601String().substring(0, 10),
+          'service': schedule.service,
+          'duty_group_id': schedule.dutyGroupId,
+          'duty_group_name': schedule.dutyGroupName,
+          'duty_type_id': schedule.dutyTypeId,
+          'is_all_day': schedule.isAllDay ? 1 : 0,
+          'config_name': schedule.configName,
+          'created_at': timestamp,
+          'updated_at': timestamp,
+        }, conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+
+      await batch.commit();
+      AppLogger.i(
+        'Successfully saved ${schedules.length} schedules to database',
+      );
+    } catch (e, stackTrace) {
+      AppLogger.e('Error saving schedules to database', e, stackTrace);
+      rethrow;
     }
   }
 }
