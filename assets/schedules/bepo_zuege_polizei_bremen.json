@@ -1,8 +1,7 @@
 {
-    "version": "1.3",
+    "version": "1.4",
     "meta": {
       "name": "Bereitschaftspolizei Züge",
-      "created_by": "Lukas",
       "description": "Rotationsplan für die Züge der Bereitschaftspolizei der Polizei Bremen",
       "icon": "shield",
       "start_week_day": "Monday",
