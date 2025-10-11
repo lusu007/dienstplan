@@ -13,8 +13,8 @@ class ConfigRepositoryImpl implements domain_repo.ConfigRepository {
   final ScheduleConfigService _configService;
   final ExceptionMapper _exceptionMapper;
 
-  ConfigRepositoryImpl(this._configService, {ExceptionMapper? exceptionMapper})
-    : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  ConfigRepositoryImpl(this._configService)
+    : _exceptionMapper = const ExceptionMapper();
 
   @override
   Future<List<domain.DutyScheduleConfig>> getConfigs() async {

@@ -22,3 +22,6 @@ const int kMaxCacheEntries = 25;
 
 // UI optimization
 const Duration kBatchDelay = Duration(milliseconds: 16); // ~60fps
+
+// Schedule data cache configuration
+const Duration kScheduleDataCacheValidityDuration = Duration(minutes: 5);

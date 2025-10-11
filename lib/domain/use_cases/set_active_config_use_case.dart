@@ -9,10 +9,8 @@ class SetActiveConfigUseCase {
   final ConfigRepository _configRepository;
   final ExceptionMapper _exceptionMapper;
 
-  SetActiveConfigUseCase(
-    this._configRepository, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  SetActiveConfigUseCase(this._configRepository)
+    : _exceptionMapper = const ExceptionMapper();
 
   Future<void> execute(String configName) async {
     try {

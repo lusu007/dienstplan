@@ -9,10 +9,8 @@ class GetSchedulesUseCase {
   final ScheduleRepository _scheduleRepository;
   final ExceptionMapper _exceptionMapper;
 
-  GetSchedulesUseCase(
-    this._scheduleRepository, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  GetSchedulesUseCase(this._scheduleRepository)
+    : _exceptionMapper = const ExceptionMapper();
 
   Future<List<Schedule>> execute() async {
     try {

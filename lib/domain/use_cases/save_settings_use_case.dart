@@ -10,10 +10,8 @@ class SaveSettingsUseCase {
   final SettingsRepository _settingsRepository;
   final ExceptionMapper _exceptionMapper;
 
-  SaveSettingsUseCase(
-    this._settingsRepository, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  SaveSettingsUseCase(this._settingsRepository)
+    : _exceptionMapper = const ExceptionMapper();
 
   Future<void> execute(Settings settings) async {
     try {
