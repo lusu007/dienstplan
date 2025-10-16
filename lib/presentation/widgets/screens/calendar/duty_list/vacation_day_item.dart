@@ -32,31 +32,31 @@ class VacationDayItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            height: 56, // Shorter than duty items (72px)
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            height: 44, // More compact than duty items (72px)
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: theme.cardColor,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: holidayColor, width: 1.5),
             ),
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
                     color: holidayColor.withAlpha(kAlphaBadge),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: Icon(
                     Icons.beach_access,
                     color: theme.brightness == Brightness.dark
                         ? theme.colorScheme.onSurface
                         : holidayColor,
-                    size: 24, // Same size as duty icons
+                    size: 18, // Smaller icon for compact layout
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class VacationDayItem extends StatelessWidget {
                       Text(
                         holiday.name,
                         style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.onSurface,
                         ),
@@ -77,7 +77,7 @@ class VacationDayItem extends StatelessWidget {
                         Text(
                           holiday.description!,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: 12,
+                            fontSize: 11,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -88,17 +88,17 @@ class VacationDayItem extends StatelessWidget {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: 6,
+                    vertical: 3,
                   ),
                   decoration: BoxDecoration(
                     color: holidayColor.withAlpha(kAlphaBadge),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     _getHolidayTypeText(context, holiday.type),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: 10,
+                      fontSize: 9,
                       fontWeight: FontWeight.w500,
                       color: theme.brightness == Brightness.dark
                           ? theme.colorScheme.onSurface
