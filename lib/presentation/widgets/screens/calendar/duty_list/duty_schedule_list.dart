@@ -154,7 +154,6 @@ class DutyScheduleList extends ConsumerWidget {
       controller: scrollController,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
       itemCount: totalCount,
-      itemExtent: kDutyListItemExtent,
       itemBuilder: (BuildContext context, int index) {
         if (index < holidaysCount) {
           final SchoolHoliday holiday = holidaysForSelectedDay![index];
