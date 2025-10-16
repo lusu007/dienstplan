@@ -55,6 +55,10 @@ import 'package:dienstplan/data/repositories/school_holiday_repository.dart'
     as data_repos;
 import 'package:dienstplan/domain/use_cases/get_school_holidays_use_case.dart';
 
+// Cache and queue imports
+import 'package:dienstplan/presentation/state/schedule/schedule_cache_manager.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_loading_queue.dart';
+
 part 'riverpod_providers.g.dart';
 
 // Services
@@ -286,6 +290,19 @@ ShareService shareService(Ref ref) {
 @riverpod
 NotificationService notificationService(Ref ref) {
   return NotificationService();
+}
+
+// Cache and queue providers
+@Riverpod(keepAlive: true)
+ScheduleCacheManager scheduleCacheManager(Ref ref) {
+  final manager = ScheduleCacheManager();
+  ref.onDispose(() => manager.dispose());
+  return manager;
+}
+
+@Riverpod(keepAlive: true)
+ScheduleLoadingQueue scheduleLoadingQueue(Ref ref) {
+  return ScheduleLoadingQueue();
 }
 
 // Repositories

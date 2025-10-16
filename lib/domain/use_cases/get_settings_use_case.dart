@@ -10,10 +10,8 @@ class GetSettingsUseCase {
   final SettingsRepository _settingsRepository;
   final ExceptionMapper _exceptionMapper;
 
-  GetSettingsUseCase(
-    this._settingsRepository, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  GetSettingsUseCase(this._settingsRepository)
+    : _exceptionMapper = const ExceptionMapper();
 
   Future<Settings?> execute() async {
     try {
