@@ -338,16 +338,16 @@ abstract class AppLocalizations {
   /// **'My Accent Color'**
   String get myAccentColor;
 
-  /// Primary blue accent color
+  /// Blue accent color
   ///
   /// In en, this message translates to:
-  /// **'Primary Blue'**
+  /// **'Blue'**
   String get accentPrimaryBlue;
 
-  /// Warm orange accent color
+  /// Orange accent color
   ///
   /// In en, this message translates to:
-  /// **'Warm Orange'**
+  /// **'Orange'**
   String get accentWarmOrange;
 
   /// Pink color name
@@ -356,28 +356,28 @@ abstract class AppLocalizations {
   /// **'Pink'**
   String get accentPink;
 
-  /// Violet accent color
+  /// Purple accent color
   ///
   /// In en, this message translates to:
-  /// **'Violet'**
+  /// **'Purple'**
   String get accentViolet;
 
-  /// Fresh green accent color
+  /// Green accent color
   ///
   /// In en, this message translates to:
-  /// **'Fresh Green'**
+  /// **'Green'**
   String get accentFreshGreen;
 
-  /// Turquoise green accent color
+  /// Teal accent color
   ///
   /// In en, this message translates to:
-  /// **'Turquoise Green'**
+  /// **'Teal'**
   String get accentTurquoiseGreen;
 
-  /// Sunny yellow accent color
+  /// Yellow accent color
   ///
   /// In en, this message translates to:
-  /// **'Sunny Yellow'**
+  /// **'Yellow'**
   String get accentSunnyYellow;
 
   /// Red color name
@@ -386,10 +386,10 @@ abstract class AppLocalizations {
   /// **'Red'**
   String get accentRed;
 
-  /// Light grey accent color
+  /// Gray accent color
   ///
   /// In en, this message translates to:
-  /// **'Light Grey'**
+  /// **'Gray'**
   String get accentLightGrey;
 
   /// Title for holiday accent color setting

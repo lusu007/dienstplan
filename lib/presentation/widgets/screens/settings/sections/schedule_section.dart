@@ -6,12 +6,12 @@ import 'package:dienstplan/presentation/widgets/screens/settings/settings_sectio
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/duty_schedule_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_duty_group_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/my_accent_color_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_group_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_config_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/partner/partner_color_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/duty_schedule_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/my_duty_group_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/my_accent_color_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/partner_group_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/partner_config_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/partner_color_bottomsheet.dart';
 
 class ScheduleSection extends StatelessWidget {
   final ScheduleUiState state;
@@ -31,13 +31,19 @@ class ScheduleSection extends StatelessWidget {
               icon: Icons.calendar_month_outlined,
               title: l10n.myDutySchedule,
               subtitle: _getDutyScheduleDisplayName(state, l10n),
-              onTap: () => DutyScheduleDialog.show(context),
+              onTap: () => DutyScheduleBottomsheet.show(
+                context,
+                heightPercentage: 0.8, // 80% für Config-Auswahl mit Filtern
+              ),
             ),
             NavigationCard(
               icon: Icons.favorite_outlined,
               title: l10n.myDutyGroup,
               subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
-              onTap: () => MyDutyGroupDialog.show(context),
+              onTap: () => MyDutyGroupBottomsheet.show(
+                context,
+                heightPercentage: 0.5, // 50% für einfache Gruppenauswahl
+              ),
             ),
             NavigationCard(
               icon: Icons.color_lens_outlined,
@@ -47,7 +53,10 @@ class ScheduleSection extends StatelessWidget {
                 context,
                 state.myAccentColorValue,
               ),
-              onTap: () => MyAccentColorDialog.show(context),
+              onTap: () => MyAccentColorBottomsheet.show(
+                context,
+                heightPercentage: 0.6, // 60% für Farbauswahl
+              ),
             ),
           ],
         ),
@@ -61,13 +70,19 @@ class ScheduleSection extends StatelessWidget {
               subtitle: state.partnerConfigName?.isNotEmpty == true
                   ? state.partnerConfigName!
                   : l10n.noDutySchedule,
-              onTap: () => PartnerConfigDialog.show(context),
+              onTap: () => PartnerConfigBottomsheet.show(
+                context,
+                heightPercentage: 0.8, // 80% für Config-Auswahl mit Filtern
+              ),
             ),
             NavigationCard(
               icon: Icons.group_outlined,
               title: l10n.partnerDutyGroup,
               subtitle: _getPartnerGroupDisplayName(state, l10n),
-              onTap: () => PartnerGroupDialog.show(context),
+              onTap: () => PartnerGroupBottomsheet.show(
+                context,
+                heightPercentage: 0.5, // 50% für einfache Gruppenauswahl
+              ),
               enabled: _isPartnerDutyGroupEnabled(state),
             ),
             NavigationCard(
@@ -78,7 +93,10 @@ class ScheduleSection extends StatelessWidget {
                 context,
                 state.partnerAccentColorValue,
               ),
-              onTap: () => PartnerColorDialog.show(context),
+              onTap: () => PartnerColorBottomsheet.show(
+                context,
+                heightPercentage: 0.6, // 60% für Farbauswahl
+              ),
             ),
           ],
         ),

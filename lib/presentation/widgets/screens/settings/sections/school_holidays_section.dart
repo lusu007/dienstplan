@@ -5,8 +5,8 @@ import 'package:dienstplan/presentation/state/school_holidays/school_holidays_no
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/school_holidays/german_state_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/school_holidays/holiday_color_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/german_state_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/holiday_color_bottomsheet.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/presentation/extensions/accent_color_extensions.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -79,11 +79,9 @@ class SchoolHolidaysSection extends ConsumerWidget {
               enabled: isEnabled,
               onTap: isEnabled
                   ? () async {
-                      final selected = await showDialog<String>(
-                        context: context,
-                        builder: (context) => GermanStateDialog(
-                          selectedStateCode: state.selectedStateCode,
-                        ),
+                      final selected = await GermanStateBottomsheet.show(
+                        context,
+                        state.selectedStateCode,
                       );
 
                       if (selected != null) {
@@ -118,7 +116,10 @@ class SchoolHolidaysSection extends ConsumerWidget {
               ),
               enabled: isEnabled && state.selectedStateCode != null,
               onTap: (isEnabled && state.selectedStateCode != null)
-                  ? () => HolidayColorDialog.show(context)
+                  ? () => HolidayColorBottomsheet.show(
+                      context,
+                      heightPercentage: 0.6, // 60% wie Duty Group Akzentfarbe
+                    )
                   : null,
             ),
             NavigationCard(
