@@ -189,12 +189,8 @@ class ScheduleConfigService extends ChangeNotifier {
 
   Future<void> saveConfig(DutyScheduleConfig config) async {
     try {
-      // Save to file system
-      final file = File('${_configsPath.path}/${config.name}.json');
-      final json = config.toMap();
-      await file.writeAsString(jsonEncode(json));
-
-      // Save to database
+      // Note: Config files are read-only from assets, do not save to file system
+      // Only save metadata to database for version tracking
       await _scheduleConfigsDao.saveScheduleConfig(
         name: config.name,
         version: config.version,

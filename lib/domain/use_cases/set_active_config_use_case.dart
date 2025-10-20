@@ -40,8 +40,8 @@ class SetActiveConfigUseCase {
       final config = configs.firstWhere((config) => config.name == configName);
       _validateConfig(config);
 
-      // Save the active config (implementation depends on your storage strategy)
-      await _configRepository.saveConfig(config);
+      // Note: Config is already loaded from assets, no need to save the file
+      // The active config reference is stored in SharedPreferences via setDefaultConfig()
 
       AppLogger.i(
         'SetActiveConfigUseCase: Active config set successfully: $configName',
