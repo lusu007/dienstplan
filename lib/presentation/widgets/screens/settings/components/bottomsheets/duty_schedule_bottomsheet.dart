@@ -57,7 +57,7 @@ class DutyScheduleBottomsheet {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'No duty schedules available',
+                        l10n.noDutySchedules,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Colors.grey[600],
                         ),

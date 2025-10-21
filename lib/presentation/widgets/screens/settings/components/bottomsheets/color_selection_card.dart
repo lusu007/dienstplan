@@ -24,7 +24,9 @@ class ColorSelectionCard extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primary : Colors.grey[300]!,
+            color: isSelected
+                ? AppColors.primary
+                : Theme.of(context).colorScheme.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
         ),

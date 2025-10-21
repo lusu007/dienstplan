@@ -41,7 +41,7 @@ class AppSection extends ConsumerWidget {
               : l10n.english,
           onTap: () => LanguageBottomsheet.show(
             context,
-            heightPercentage: 0.4, // 40% für einfache Sprachauswahl
+            heightPercentage: 0.4, // 40% for simple language selection
           ),
         ),
         NavigationCard(
@@ -50,7 +50,7 @@ class AppSection extends ConsumerWidget {
           subtitle: _getCalendarFormatName(calendarFormat, l10n),
           onTap: () => CalendarFormatBottomsheet.show(
             context,
-            heightPercentage: 0.5, // 40% für einfache Kalenderformat-Auswahl
+            heightPercentage: 0.5, // 50% for simple calendar format selection
           ),
         ),
         NavigationCard(
@@ -61,7 +61,7 @@ class AppSection extends ConsumerWidget {
           onTap: () => ThemeModeBottomsheet.show(
             context,
             ref,
-            heightPercentage: 0.5, // 40% für einfache Design-Auswahl
+            heightPercentage: 0.5, // 50% for simple design selection
           ),
         ),
         NavigationCard(

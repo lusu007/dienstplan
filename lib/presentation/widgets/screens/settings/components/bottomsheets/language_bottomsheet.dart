@@ -40,7 +40,7 @@ class LanguageBottomsheet {
                   top: Radius.circular(16),
                 ),
               ),
-              child: const Center(child: Text('Error loading languages')),
+              child: Center(child: Text(l10n.errorLoading)),
             ),
             data: (languageService) {
               final currentLanguage =

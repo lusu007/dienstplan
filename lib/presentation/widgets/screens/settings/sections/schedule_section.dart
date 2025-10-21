@@ -33,7 +33,7 @@ class ScheduleSection extends StatelessWidget {
               subtitle: _getDutyScheduleDisplayName(state, l10n),
               onTap: () => DutyScheduleBottomsheet.show(
                 context,
-                heightPercentage: 0.8, // 80% für Config-Auswahl mit Filtern
+                heightPercentage: 0.8, // 80% for config selection with filters
               ),
             ),
             NavigationCard(
@@ -42,7 +42,7 @@ class ScheduleSection extends StatelessWidget {
               subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
               onTap: () => MyDutyGroupBottomsheet.show(
                 context,
-                heightPercentage: 0.5, // 50% für einfache Gruppenauswahl
+                heightPercentage: 0.5, // 50% for simple group selection
               ),
             ),
             NavigationCard(
@@ -55,7 +55,7 @@ class ScheduleSection extends StatelessWidget {
               ),
               onTap: () => MyAccentColorBottomsheet.show(
                 context,
-                heightPercentage: 0.6, // 60% für Farbauswahl
+                heightPercentage: 0.6, // 60% for color selection
               ),
             ),
           ],
@@ -72,7 +72,7 @@ class ScheduleSection extends StatelessWidget {
                   : l10n.noDutySchedule,
               onTap: () => PartnerConfigBottomsheet.show(
                 context,
-                heightPercentage: 0.8, // 80% für Config-Auswahl mit Filtern
+                heightPercentage: 0.8, // 80% for config selection with filters
               ),
             ),
             NavigationCard(
@@ -81,7 +81,7 @@ class ScheduleSection extends StatelessWidget {
               subtitle: _getPartnerGroupDisplayName(state, l10n),
               onTap: () => PartnerGroupBottomsheet.show(
                 context,
-                heightPercentage: 0.5, // 50% für einfache Gruppenauswahl
+                heightPercentage: 0.5, // 50% for simple group selection
               ),
               enabled: _isPartnerDutyGroupEnabled(state),
             ),
@@ -95,7 +95,7 @@ class ScheduleSection extends StatelessWidget {
               ),
               onTap: () => PartnerColorBottomsheet.show(
                 context,
-                heightPercentage: 0.6, // 60% für Farbauswahl
+                heightPercentage: 0.6, // 60% for color selection
               ),
             ),
           ],

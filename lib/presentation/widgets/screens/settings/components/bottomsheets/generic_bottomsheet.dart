@@ -127,7 +127,6 @@ class SelectionList extends StatelessWidget {
           subtitle: item.subtitle,
           isSelected: selectedValue == item.value,
           onTap: () {
-            Navigator.of(context).pop();
             onItemSelected(item.value);
           },
           mainColor: AppColors.primary,

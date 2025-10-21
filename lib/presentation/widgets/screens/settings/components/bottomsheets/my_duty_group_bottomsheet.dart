@@ -49,7 +49,7 @@ class MyDutyGroupBottomsheet {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'No active duty schedule selected',
+                        l10n.noMyDutyGroup,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: Colors.grey[600],
                         ),

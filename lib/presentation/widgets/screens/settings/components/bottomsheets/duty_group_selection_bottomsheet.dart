@@ -82,7 +82,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
     if (dutyGroups.isEmpty) {
       return Center(
         child: Text(
-          'No duty groups available',
+          l10n.noDutyGroup,
           style: Theme.of(
             context,
           ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),

@@ -118,7 +118,7 @@ class SchoolHolidaysSection extends ConsumerWidget {
               onTap: (isEnabled && state.selectedStateCode != null)
                   ? () => HolidayColorBottomsheet.show(
                       context,
-                      heightPercentage: 0.6, // 60% wie Duty Group Akzentfarbe
+                      heightPercentage: 0.6, // 60% like Duty Group accent color
                     )
                   : null,
             ),
