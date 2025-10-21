@@ -68,10 +68,7 @@ class SchoolHolidaysNotifier extends _$SchoolHolidaysNotifier {
       }
       final updatedSettings = currentSettings.copyWith(
         showSchoolHolidays: enabled,
-        // Reset state and timestamp when disabling
-        schoolHolidayStateCode: enabled
-            ? currentSettings.schoolHolidayStateCode
-            : null,
+        // Preserve state code selection, only reset timestamp when disabling
         lastSchoolHolidayRefresh: enabled
             ? currentSettings.lastSchoolHolidayRefresh
             : null,
