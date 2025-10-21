@@ -6,7 +6,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/legal/app_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/dialogs/app_dialog.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';

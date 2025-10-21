@@ -133,31 +133,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myAccentColor => 'My Accent Color';
 
   @override
-  String get accentPrimaryBlue => 'Primary Blue';
+  String get accentPrimaryBlue => 'Blue';
 
   @override
-  String get accentWarmOrange => 'Warm Orange';
+  String get accentWarmOrange => 'Orange';
 
   @override
   String get accentPink => 'Pink';
 
   @override
-  String get accentViolet => 'Violet';
+  String get accentViolet => 'Purple';
 
   @override
-  String get accentFreshGreen => 'Fresh Green';
+  String get accentFreshGreen => 'Green';
 
   @override
-  String get accentTurquoiseGreen => 'Turquoise Green';
+  String get accentTurquoiseGreen => 'Teal';
 
   @override
-  String get accentSunnyYellow => 'Sunny Yellow';
+  String get accentSunnyYellow => 'Yellow';
 
   @override
   String get accentRed => 'Red';
 
   @override
-  String get accentLightGrey => 'Light Grey';
+  String get accentLightGrey => 'Gray';
 
   @override
   String get holidayAccentColor => 'Holiday Accent Color';

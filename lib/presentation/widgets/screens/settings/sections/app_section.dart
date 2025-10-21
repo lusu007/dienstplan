@@ -6,10 +6,10 @@ import 'package:dienstplan/presentation/widgets/screens/settings/settings_sectio
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/language_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/theme_mode_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/reset_dialog.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/dialogs/general/calendar_format_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/language_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/theme_mode_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/reset_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/calendar_format_bottomsheet.dart';
 import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
 
 class AppSection extends ConsumerWidget {
@@ -39,25 +39,35 @@ class AppSection extends ConsumerWidget {
               (languageService?.currentLocale.languageCode ?? 'de') == 'de'
               ? l10n.german
               : l10n.english,
-          onTap: () => LanguageDialog.show(context),
+          onTap: () => LanguageBottomsheet.show(
+            context,
+            heightPercentage: 0.4, // 40% for simple language selection
+          ),
         ),
         NavigationCard(
           icon: Icons.view_week_outlined,
           title: l10n.calendarFormat,
           subtitle: _getCalendarFormatName(calendarFormat, l10n),
-          onTap: () => CalendarFormatDialog.show(context),
+          onTap: () => CalendarFormatBottomsheet.show(
+            context,
+            heightPercentage: 0.5, // 50% for simple calendar format selection
+          ),
         ),
         NavigationCard(
           icon: Icons.color_lens_outlined,
           title: l10n.themeMode,
           subtitle: _themeSubtitle(l10n, effectivePref),
           trailing: _buildThemeIndicator(effectivePref),
-          onTap: () => ThemeModeDialog.show(context, ref),
+          onTap: () => ThemeModeBottomsheet.show(
+            context,
+            ref,
+            heightPercentage: 0.5, // 50% for simple design selection
+          ),
         ),
         NavigationCard(
           icon: Icons.delete_forever_outlined,
           title: l10n.resetData,
-          onTap: () => ResetDialog.show(context),
+          onTap: () => ResetBottomsheet.show(context),
           iconColor: Colors.red,
         ),
       ],

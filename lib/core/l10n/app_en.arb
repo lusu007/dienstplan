@@ -165,41 +165,41 @@
   "@myAccentColor": {
     "description": "Title for my accent color"
   },
-  "accentPrimaryBlue": "Primary Blue",
+  "accentPrimaryBlue": "Blue",
   "@accentPrimaryBlue": {
-    "description": "Primary blue accent color"
+    "description": "Blue accent color"
   },
-  "accentWarmOrange": "Warm Orange",
+  "accentWarmOrange": "Orange",
   "@accentWarmOrange": {
-    "description": "Warm orange accent color"
+    "description": "Orange accent color"
   },
   "accentPink": "Pink",
   "@accentPink": {
     "description": "Pink color name"
   },
-  "accentViolet": "Violet",
+  "accentViolet": "Purple",
   "@accentViolet": {
-    "description": "Violet accent color"
+    "description": "Purple accent color"
   },
-  "accentFreshGreen": "Fresh Green",
+  "accentFreshGreen": "Green",
   "@accentFreshGreen": {
-    "description": "Fresh green accent color"
+    "description": "Green accent color"
   },
-  "accentTurquoiseGreen": "Turquoise Green",
+  "accentTurquoiseGreen": "Teal",
   "@accentTurquoiseGreen": {
-    "description": "Turquoise green accent color"
+    "description": "Teal accent color"
   },
-  "accentSunnyYellow": "Sunny Yellow",
+  "accentSunnyYellow": "Yellow",
   "@accentSunnyYellow": {
-    "description": "Sunny yellow accent color"
+    "description": "Yellow accent color"
   },
   "accentRed": "Red",
   "@accentRed": {
     "description": "Red color name"
   },
-  "accentLightGrey": "Light Grey",
+  "accentLightGrey": "Gray",
   "@accentLightGrey": {
-    "description": "Light grey accent color"
+    "description": "Gray accent color"
   },
   "holidayAccentColor": "Holiday Accent Color",
   "@holidayAccentColor": {

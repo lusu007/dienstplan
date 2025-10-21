@@ -178,41 +178,41 @@
   "@myAccentColor": {
     "description": "Titel für meine Akzentfarbe"
   },
-  "accentPrimaryBlue": "Primäres Blau",
+  "accentPrimaryBlue": "Blau",
   "@accentPrimaryBlue": {
-    "description": "Akzentfarbe Primäres Blau"
+    "description": "Akzentfarbe Blau"
   },
-  "accentWarmOrange": "Warm Orange",
+  "accentWarmOrange": "Orange",
   "@accentWarmOrange": {
-    "description": "Akzentfarbe Warm Orange"
+    "description": "Akzentfarbe Orange"
   },
   "accentPink": "Pink",
   "@accentPink": {
     "description": "Farbname Pink"
   },
-  "accentViolet": "Violett",
+  "accentViolet": "Lila",
   "@accentViolet": {
-    "description": "Akzentfarbe Violett"
+    "description": "Akzentfarbe Lila"
   },
-  "accentFreshGreen": "Frisches Grün",
+  "accentFreshGreen": "Grün",
   "@accentFreshGreen": {
-    "description": "Akzentfarbe Frisches Grün"
+    "description": "Akzentfarbe Grün"
   },
-  "accentTurquoiseGreen": "Türkisgrün",
+  "accentTurquoiseGreen": "Türkis",
   "@accentTurquoiseGreen": {
-    "description": "Akzentfarbe Türkisgrün"
+    "description": "Akzentfarbe Türkis"
   },
-  "accentSunnyYellow": "Sonnengelb",
+  "accentSunnyYellow": "Gelb",
   "@accentSunnyYellow": {
-    "description": "Akzentfarbe Sonnengelb"
+    "description": "Akzentfarbe Gelb"
   },
   "accentRed": "Rot",
   "@accentRed": {
     "description": "Farbname Rot"
   },
-  "accentLightGrey": "Hellgrau",
+  "accentLightGrey": "Grau",
   "@accentLightGrey": {
-    "description": "Akzentfarbe Hellgrau"
+    "description": "Akzentfarbe Grau"
   },
   "holidayAccentColor": "Ferien-Akzentfarbe",
   "@holidayAccentColor": {
