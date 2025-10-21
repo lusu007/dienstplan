@@ -40,10 +40,13 @@ class ScheduleSection extends StatelessWidget {
               icon: Icons.favorite_outlined,
               title: l10n.myDutyGroup,
               subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
-              onTap: () => MyDutyGroupBottomsheet.show(
-                context,
-                heightPercentage: 0.5, // 50% for simple group selection
-              ),
+              enabled: _isMyDutyGroupEnabled(state),
+              onTap: _isMyDutyGroupEnabled(state)
+                  ? () => MyDutyGroupBottomsheet.show(
+                      context,
+                      heightPercentage: 0.5, // 50% for simple group selection
+                    )
+                  : () => _showDutyScheduleRequiredMessage(context, l10n),
             ),
             NavigationCard(
               icon: Icons.color_lens_outlined,
@@ -53,10 +56,13 @@ class ScheduleSection extends StatelessWidget {
                 context,
                 state.myAccentColorValue,
               ),
-              onTap: () => MyAccentColorBottomsheet.show(
-                context,
-                heightPercentage: 0.6, // 60% for color selection
-              ),
+              enabled: _isMyDutyGroupEnabled(state),
+              onTap: _isMyDutyGroupEnabled(state)
+                  ? () => MyAccentColorBottomsheet.show(
+                      context,
+                      heightPercentage: 0.6, // 60% for color selection
+                    )
+                  : () => _showDutyScheduleRequiredMessage(context, l10n),
             ),
           ],
         ),
@@ -79,11 +85,14 @@ class ScheduleSection extends StatelessWidget {
               icon: Icons.group_outlined,
               title: l10n.partnerDutyGroup,
               subtitle: _getPartnerGroupDisplayName(state, l10n),
-              onTap: () => PartnerGroupBottomsheet.show(
-                context,
-                heightPercentage: 0.5, // 50% for simple group selection
-              ),
               enabled: _isPartnerDutyGroupEnabled(state),
+              onTap: _isPartnerDutyGroupEnabled(state)
+                  ? () => PartnerGroupBottomsheet.show(
+                      context,
+                      heightPercentage: 0.5, // 50% for simple group selection
+                    )
+                  : () =>
+                        _showPartnerDutyScheduleRequiredMessage(context, l10n),
             ),
             NavigationCard(
               icon: Icons.color_lens_outlined,
@@ -93,10 +102,14 @@ class ScheduleSection extends StatelessWidget {
                 context,
                 state.partnerAccentColorValue,
               ),
-              onTap: () => PartnerColorBottomsheet.show(
-                context,
-                heightPercentage: 0.6, // 60% for color selection
-              ),
+              enabled: _isPartnerDutyGroupEnabled(state),
+              onTap: _isPartnerDutyGroupEnabled(state)
+                  ? () => PartnerColorBottomsheet.show(
+                      context,
+                      heightPercentage: 0.6, // 60% for color selection
+                    )
+                  : () =>
+                        _showPartnerDutyScheduleRequiredMessage(context, l10n),
             ),
           ],
         ),
@@ -140,7 +153,7 @@ class ScheduleSection extends StatelessWidget {
   ) {
     try {
       if ((state.activeConfigName ?? '').isEmpty) {
-        return l10n.noDutySchedules;
+        return l10n.noDutySchedule;
       }
       return state.activeConfig?.meta.name ?? state.activeConfigName!;
     } catch (e) {
@@ -148,7 +161,7 @@ class ScheduleSection extends StatelessWidget {
         'ScheduleSection: Error getting duty schedule display name',
         e,
       );
-      return l10n.noDutySchedules;
+      return l10n.noDutySchedule;
     }
   }
 
@@ -201,10 +214,6 @@ class ScheduleSection extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     try {
-      // If no partner duty plan is selected, show a helpful message
-      if ((state.partnerConfigName ?? '').isEmpty) {
-        return l10n.noDutySchedule;
-      }
       if ((state.partnerDutyGroup ?? '').isEmpty) {
         return l10n.noPartnerGroup;
       }
@@ -216,5 +225,33 @@ class ScheduleSection extends StatelessWidget {
 
   bool _isPartnerDutyGroupEnabled(ScheduleUiState state) {
     return (state.partnerConfigName ?? '').isNotEmpty;
+  }
+
+  bool _isMyDutyGroupEnabled(ScheduleUiState state) {
+    return (state.activeConfigName ?? '').isNotEmpty;
+  }
+
+  void _showDutyScheduleRequiredMessage(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.selectMyDutyScheduleFirst),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showPartnerDutyScheduleRequiredMessage(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.selectPartnerDutyScheduleFirst),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 }

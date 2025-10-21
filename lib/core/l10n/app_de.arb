@@ -154,11 +154,11 @@
   "@partnerDutyGroup": {
     "description": "Titel für Partner Dienstgruppe Einstellung"
   },
-  "noPartnerGroup": "Keine Partner Dienstgruppe",
+  "noPartnerGroup": "Keine Dienstgruppe ausgewählt",
   "@noPartnerGroup": {
     "description": "Angezeigt, wenn keine Partner Dienstgruppe gewählt ist"
   },
-  "noDutySchedule": "Kein Dienstplan",
+  "noDutySchedule": "Kein Dienstplan ausgewählt",
   "@noDutySchedule": {
     "description": "Option um keinen Dienstplan zu wählen"
   },
@@ -169,6 +169,10 @@
   "selectPartnerDutyScheduleFirst": "Bitte wähle zuerst einen Partner Dienstplan aus",
   "@selectPartnerDutyScheduleFirst": {
     "description": "Nachricht, die angezeigt wird, wenn kein Partner Dienstplan ausgewählt ist"
+  },
+  "selectMyDutyScheduleFirst": "Bitte wähle zuerst einen Dienstplan aus",
+  "@selectMyDutyScheduleFirst": {
+    "description": "Nachricht, die angezeigt wird, wenn kein Dienstplan ausgewählt ist"
   },
   "accentColor": "Partner Akzentfarbe",
   "@accentColor": {

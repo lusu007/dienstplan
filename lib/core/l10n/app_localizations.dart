@@ -416,6 +416,12 @@ abstract class AppLocalizations {
   /// **'Please select a partner duty schedule first'**
   String get selectPartnerDutyScheduleFirst;
 
+  /// Message shown when no duty schedule is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a duty schedule first'**
+  String get selectMyDutyScheduleFirst;
+
   /// Title for the about dialog
   ///
   /// In en, this message translates to:

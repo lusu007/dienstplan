@@ -124,7 +124,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get partnerDutySchedule => 'Partner Dienstplan';
 
   @override
-  String get noPartnerGroup => 'Keine Partner Dienstgruppe';
+  String get noPartnerGroup => 'Keine Dienstgruppe ausgewählt';
 
   @override
   String get accentColor => 'Partner Akzentfarbe';
@@ -163,7 +163,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get holidayAccentColor => 'Ferien-Akzentfarbe';
 
   @override
-  String get noDutySchedule => 'Kein Dienstplan';
+  String get noDutySchedule => 'Kein Dienstplan ausgewählt';
 
   @override
   String get selectPartnerDutyGroup => 'Partner Dienstgruppe auswählen';
@@ -171,6 +171,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get selectPartnerDutyScheduleFirst =>
       'Bitte wähle zuerst einen Partner Dienstplan aus';
+
+  @override
+  String get selectMyDutyScheduleFirst =>
+      'Bitte wähle zuerst einen Dienstplan aus';
 
   @override
   String get about => 'Über';

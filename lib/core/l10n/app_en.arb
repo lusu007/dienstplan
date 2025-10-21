@@ -217,6 +217,10 @@
   "@selectPartnerDutyScheduleFirst": {
     "description": "Message shown when no partner duty schedule is selected"
   },
+  "selectMyDutyScheduleFirst": "Please select a duty schedule first",
+  "@selectMyDutyScheduleFirst": {
+    "description": "Message shown when no duty schedule is selected"
+  },
   "about": "About",
   "@about": {
     "description": "Title for the about dialog"

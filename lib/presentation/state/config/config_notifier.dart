@@ -37,21 +37,18 @@ class ConfigNotifier extends _$ConfigNotifier {
       final settingsResult = await _getSettingsUseCase!.executeSafe();
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
-      final activeConfigName =
-          settings?.activeConfigName ??
-          (configs.isNotEmpty ? configs.first.name : null);
+      final String? activeConfigName = settings?.activeConfigName;
 
-      final dutyGroups = activeConfigName != null
+      final List<String> dutyGroups =
+          (activeConfigName != null && activeConfigName.isNotEmpty)
           ? _configQueryService!.extractDutyGroups(configs, activeConfigName)
           : <String>[];
 
-      final DutyScheduleConfig? activeConfig = (configs.isNotEmpty)
-          ? (activeConfigName != null
-                ? configs.firstWhere(
-                    (c) => c.name == activeConfigName,
-                    orElse: () => configs.first,
-                  )
-                : configs.first)
+      final DutyScheduleConfig? activeConfig =
+          (activeConfigName != null && activeConfigName.isNotEmpty)
+          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
+                ? configs.firstWhere((c) => c.name == activeConfigName)
+                : null)
           : null;
 
       return ConfigUiState(
@@ -146,21 +143,18 @@ class ConfigNotifier extends _$ConfigNotifier {
 
       final settings = settingsResult.isSuccess ? settingsResult.value : null;
 
-      final activeConfigName =
-          settings?.activeConfigName ??
-          (configs.isNotEmpty ? configs.first.name : null);
+      final String? activeConfigName = settings?.activeConfigName;
 
-      final dutyGroups = activeConfigName != null
+      final List<String> dutyGroups =
+          (activeConfigName != null && activeConfigName.isNotEmpty)
           ? _configQueryService!.extractDutyGroups(configs, activeConfigName)
           : <String>[];
 
-      final DutyScheduleConfig? activeConfig = (configs.isNotEmpty)
-          ? (activeConfigName != null
-                ? configs.firstWhere(
-                    (c) => c.name == activeConfigName,
-                    orElse: () => configs.first,
-                  )
-                : configs.first)
+      final DutyScheduleConfig? activeConfig =
+          (activeConfigName != null && activeConfigName.isNotEmpty)
+          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
+                ? configs.firstWhere((c) => c.name == activeConfigName)
+                : null)
           : null;
 
       if (!ref.mounted) return;
