@@ -88,8 +88,6 @@ class PartnerGroupBottomsheet {
             title: l10n.partnerDutyGroup,
             dutyGroups: groupsForSelected,
             selectedDutyGroup: state?.partnerDutyGroup,
-            showNoGroupOption: true,
-            noGroupTitle: l10n.noPartnerGroup,
             heightPercentage: heightPercentage,
             onDutyGroupSelected: (group) async {
               await notifier.setPartnerDutyGroup(group);

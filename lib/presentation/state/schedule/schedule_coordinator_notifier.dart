@@ -211,6 +211,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           activeConfigName: null,
           activeConfig: null,
           dutyGroups: const <String>[],
+          preferredDutyGroup: null,
+          myAccentColorValue: null,
         ),
       );
 

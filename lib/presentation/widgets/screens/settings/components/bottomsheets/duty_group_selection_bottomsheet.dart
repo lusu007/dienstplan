@@ -109,12 +109,13 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
         }
 
         final group = dutyGroups[index];
+        final bool isAlreadySelected = selectedDutyGroup == group;
         return SelectionCard(
           title: group,
-          isSelected: selectedDutyGroup == group,
+          isSelected: isAlreadySelected,
           onTap: () {
             Navigator.of(context).pop();
-            onDutyGroupSelected(group);
+            onDutyGroupSelected(isAlreadySelected ? null : group);
           },
           mainColor: AppColors.primary,
           useDialogStyle: true,

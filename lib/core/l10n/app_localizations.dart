@@ -323,7 +323,7 @@ abstract class AppLocalizations {
   /// Shown when no partner group is selected
   ///
   /// In en, this message translates to:
-  /// **'No partner group'**
+  /// **'No partner duty group selected'**
   String get noPartnerGroup;
 
   /// Generic accent color title
@@ -421,6 +421,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select a duty schedule first'**
   String get selectMyDutyScheduleFirst;
+
+  /// Error message when clearing active config fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error clearing active config'**
+  String get errorClearingActiveConfig;
 
   /// Title for the about dialog
   ///

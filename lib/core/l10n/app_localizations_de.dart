@@ -124,7 +124,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get partnerDutySchedule => 'Partner Dienstplan';
 
   @override
-  String get noPartnerGroup => 'Keine Dienstgruppe ausgewählt';
+  String get noPartnerGroup => 'Keine Partner-Dienstgruppe ausgewählt';
 
   @override
   String get accentColor => 'Partner Akzentfarbe';
@@ -175,6 +175,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get selectMyDutyScheduleFirst =>
       'Bitte wähle zuerst einen Dienstplan aus';
+
+  @override
+  String get errorClearingActiveConfig =>
+      'Fehler beim Löschen des aktiven Dienstplans';
 
   @override
   String get about => 'Über';

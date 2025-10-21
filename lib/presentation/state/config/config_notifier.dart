@@ -46,9 +46,13 @@ class ConfigNotifier extends _$ConfigNotifier {
 
       final DutyScheduleConfig? activeConfig =
           (activeConfigName != null && activeConfigName.isNotEmpty)
-          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
-                ? configs.firstWhere((c) => c.name == activeConfigName)
-                : null)
+          ? (() {
+              try {
+                return configs.firstWhere((c) => c.name == activeConfigName);
+              } catch (e) {
+                return null;
+              }
+            })()
           : null;
 
       return ConfigUiState(
@@ -152,9 +156,13 @@ class ConfigNotifier extends _$ConfigNotifier {
 
       final DutyScheduleConfig? activeConfig =
           (activeConfigName != null && activeConfigName.isNotEmpty)
-          ? (configs.where((c) => c.name == activeConfigName).isNotEmpty
-                ? configs.firstWhere((c) => c.name == activeConfigName)
-                : null)
+          ? (() {
+              try {
+                return configs.firstWhere((c) => c.name == activeConfigName);
+              } catch (e) {
+                return null;
+              }
+            })()
           : null;
 
       if (!ref.mounted) return;

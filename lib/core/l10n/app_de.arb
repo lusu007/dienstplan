@@ -154,7 +154,7 @@
   "@partnerDutyGroup": {
     "description": "Titel für Partner Dienstgruppe Einstellung"
   },
-  "noPartnerGroup": "Keine Dienstgruppe ausgewählt",
+  "noPartnerGroup": "Keine Partner-Dienstgruppe ausgewählt",
   "@noPartnerGroup": {
     "description": "Angezeigt, wenn keine Partner Dienstgruppe gewählt ist"
   },
@@ -173,6 +173,10 @@
   "selectMyDutyScheduleFirst": "Bitte wähle zuerst einen Dienstplan aus",
   "@selectMyDutyScheduleFirst": {
     "description": "Nachricht, die angezeigt wird, wenn kein Dienstplan ausgewählt ist"
+  },
+  "errorClearingActiveConfig": "Fehler beim Löschen des aktiven Dienstplans",
+  "@errorClearingActiveConfig": {
+    "description": "Fehlermeldung beim Löschen des aktiven Dienstplans"
   },
   "accentColor": "Partner Akzentfarbe",
   "@accentColor": {

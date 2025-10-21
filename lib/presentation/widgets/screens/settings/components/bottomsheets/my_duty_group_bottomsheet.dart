@@ -65,8 +65,6 @@ class MyDutyGroupBottomsheet {
             title: l10n.myDutyGroup,
             dutyGroups: dutyGroups,
             selectedDutyGroup: state?.preferredDutyGroup,
-            showNoGroupOption: true,
-            noGroupTitle: l10n.noDutyGroup,
             heightPercentage: heightPercentage,
             onDutyGroupSelected: (group) async {
               await ref

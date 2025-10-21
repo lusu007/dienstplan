@@ -132,7 +132,7 @@ class DutyScheduleBottomsheet {
                       SnackBar(
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         content: Text(
-                          'Error clearing active config: ${e.toString()}',
+                          l10n.errorClearingActiveConfig,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
