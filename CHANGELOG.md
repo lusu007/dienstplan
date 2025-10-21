@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.13.0](https://github.com/lusu007/dienstplan/compare/v0.12.8...v0.13.0) (2025-10-21)
+
+
+### Features
+
+* Rework settings to use more user friendly bottom sheets ([#348](https://github.com/lusu007/dienstplan/issues/348)) ([de9e208](https://github.com/lusu007/dienstplan/commit/de9e20874f698fe76906d642a65f92a75d01e0c3))
+
+
+### Bug Fixes
+
+* deactivate color selection when no duty schedule is selected ([#350](https://github.com/lusu007/dienstplan/issues/350)) ([e64040e](https://github.com/lusu007/dienstplan/commit/e64040ebaadd2b019322e77e71badbb3ad200b7f))
+* Do not change configs name ([#345](https://github.com/lusu007/dienstplan/issues/345)) ([b18599a](https://github.com/lusu007/dienstplan/commit/b18599a35cf12a3d050d8977bc2449cddedbb01b))
+* Holiday state selection not saving settings ([#349](https://github.com/lusu007/dienstplan/issues/349)) ([49f0520](https://github.com/lusu007/dienstplan/commit/49f05208bd0270eb511e5e3377450595b45b3566))
+
 ## [0.12.8](https://github.com/lusu007/dienstplan/compare/v0.12.7...v0.12.8) (2025-10-16)
 
 
