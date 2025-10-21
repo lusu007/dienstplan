@@ -75,14 +75,10 @@ class DutyScheduleBottomsheet {
             selectedConfigName: state?.activeConfigName,
             heightPercentage: heightPercentage,
             onConfigSelected: (config) async {
+              // Get notifier
+              final notifier = ref.read(scheduleCoordinatorProvider.notifier);
               if (config != null) {
                 try {
-                  // Get notifier
-                  final notifier = ref.read(
-                    scheduleCoordinatorProvider.notifier,
-                  );
-
-                  // Perform operations
                   // First set the active config so coordinator state reflects it immediately
                   await notifier.setActiveConfig(config.name);
                   // Reset my duty group selection and clear filter when duty plan changes
@@ -106,6 +102,37 @@ class DutyScheduleBottomsheet {
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         content: Text(
                           'Error setting active config: ${e.toString()}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                }
+              } else {
+                // Deselection path: clear active config and related selections
+                try {
+                  await notifier.clearActiveConfig();
+                  await notifier.setPreferredDutyGroup(
+                    '',
+                    activeConfigNameOverride: null,
+                  );
+                  await notifier.setSelectedDutyGroup(null);
+                  await notifier.applyOwnSelectionChanges();
+                } catch (e, stackTrace) {
+                  AppLogger.e(
+                    'DutyScheduleDialog: Error clearing active config',
+                    e,
+                    stackTrace,
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        content: Text(
+                          l10n.errorClearingActiveConfig,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),

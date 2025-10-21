@@ -70,8 +70,6 @@ class PartnerConfigBottomsheet {
             title: l10n.partnerDutySchedule,
             configs: configs,
             selectedConfigName: state?.partnerConfigName,
-            showNoConfigOption: true,
-            noConfigTitle: l10n.noDutySchedule,
             onConfigSelected: (config) async {
               if (config != null) {
                 // Perform operations after dialog is closed

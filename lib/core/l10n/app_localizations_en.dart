@@ -124,7 +124,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get partnerDutySchedule => 'Partner Duty Schedule';
 
   @override
-  String get noPartnerGroup => 'No partner group';
+  String get noPartnerGroup => 'No partner duty group selected';
 
   @override
   String get accentColor => 'Partner Accent Color';
@@ -171,6 +171,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get selectPartnerDutyScheduleFirst =>
       'Please select a partner duty schedule first';
+
+  @override
+  String get selectMyDutyScheduleFirst => 'Please select a duty schedule first';
+
+  @override
+  String get errorClearingActiveConfig => 'Error clearing active config';
 
   @override
   String get about => 'About';

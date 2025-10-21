@@ -153,7 +153,7 @@
   "@partnerDutySchedule": {
     "description": "Section title for partner duty schedule settings"
   },
-  "noPartnerGroup": "No partner group",
+  "noPartnerGroup": "No partner duty group selected",
   "@noPartnerGroup": {
     "description": "Shown when no partner group is selected"
   },
@@ -216,6 +216,14 @@
   "selectPartnerDutyScheduleFirst": "Please select a partner duty schedule first",
   "@selectPartnerDutyScheduleFirst": {
     "description": "Message shown when no partner duty schedule is selected"
+  },
+  "selectMyDutyScheduleFirst": "Please select a duty schedule first",
+  "@selectMyDutyScheduleFirst": {
+    "description": "Message shown when no duty schedule is selected"
+  },
+  "errorClearingActiveConfig": "Error clearing active config",
+  "@errorClearingActiveConfig": {
+    "description": "Error message when clearing active config fails"
   },
   "about": "About",
   "@about": {

@@ -202,6 +202,52 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _updatePartnerStateOnly();
   }
 
+  Future<void> clearActiveConfig() async {
+    try {
+      // Update combined state optimistically
+      final ScheduleUiState existingState = state.value ?? await future;
+      state = AsyncData(
+        existingState.copyWith(
+          activeConfigName: null,
+          activeConfig: null,
+          dutyGroups: const <String>[],
+          preferredDutyGroup: null,
+          myAccentColorValue: null,
+        ),
+      );
+
+      // Persist to settings
+      final getSettingsUseCase = await ref.read(
+        getSettingsUseCaseProvider.future,
+      );
+      final saveSettingsUseCase = await ref.read(
+        saveSettingsUseCaseProvider.future,
+      );
+      final settingsResult = await getSettingsUseCase.executeSafe();
+      final existing = settingsResult.isSuccess ? settingsResult.value : null;
+      if (existing != null) {
+        await saveSettingsUseCase.executeSafe(
+          existing.copyWith(activeConfigName: null),
+        );
+      }
+
+      // Invalidate caches and refresh providers
+      ref.invalidate(getSettingsUseCaseProvider);
+      SettingsCache.clearCache();
+
+      // Refresh config provider to reflect cleared selection
+      await ref.read(configProvider.notifier).refreshConfigs();
+      await _updateScheduleDataStateOnly();
+      await _refreshState();
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'ScheduleCoordinatorNotifier: clearActiveConfig failed',
+        e,
+        stackTrace,
+      );
+    }
+  }
+
   Future<void> setMyAccentColor(int? colorValue) async {
     await ref.read(partnerProvider.notifier).setMyAccentColor(colorValue);
     await _updatePartnerStateOnly();

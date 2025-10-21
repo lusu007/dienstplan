@@ -181,13 +181,17 @@ class _ConfigSelectionBottomsheetState
                     }
 
                     final config = _filteredConfigs[index];
+                    final bool isAlreadySelected =
+                        widget.selectedConfigName == config.name;
                     return SelectionCard(
                       title: _buildConfigTitle(config),
                       subtitle: _buildConfigSubtitle(config),
-                      isSelected: widget.selectedConfigName == config.name,
+                      isSelected: isAlreadySelected,
                       onTap: () {
                         Navigator.of(context).pop();
-                        widget.onConfigSelected(config);
+                        widget.onConfigSelected(
+                          isAlreadySelected ? null : config,
+                        );
                       },
                       mainColor: AppColors.primary,
                       useDialogStyle: true,
