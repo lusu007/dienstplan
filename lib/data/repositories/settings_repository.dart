@@ -13,8 +13,8 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   final SettingsDao _settingsDao;
   final ExceptionMapper _exceptionMapper;
 
-  SettingsRepositoryImpl(this._settingsDao, {ExceptionMapper? exceptionMapper})
-    : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  SettingsRepositoryImpl(this._settingsDao)
+    : _exceptionMapper = const ExceptionMapper();
 
   @override
   Future<domain.Settings?> getSettings() async {
