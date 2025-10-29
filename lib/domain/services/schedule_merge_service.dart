@@ -193,21 +193,32 @@ class ScheduleMergeService {
   }
 
   /// Checks if the schedules list is already sorted by date in ascending order
-  /// Performs early termination for better average-case performance
+  /// Performs sample-based check for better average-case performance
   bool _isAlreadySorted(List<Schedule> schedules) {
     if (schedules.length <= 1) return true;
 
     // Sample-based approach for large lists (10% sample)
     // If sample is sorted, assume list is sorted to avoid O(n) check
     if (schedules.length > 100) {
-      final sampleSize = (schedules.length * 0.1).toInt();
-      final step = schedules.length ~/ sampleSize;
+      final sampleSize = (schedules.length * 0.1).toInt().clamp(1, schedules.length - 1);
+      final step = schedules.length ~/ (sampleSize + 1);
       
-      for (int i = step; i < schedules.length; i += step) {
-        if (schedules[i - step].date.isAfter(schedules[i].date)) {
+      // Ensure step is at least 1 to avoid infinite loop
+      final effectiveStep = step.clamp(1, schedules.length - 1);
+      
+      for (int i = effectiveStep; i < schedules.length; i += effectiveStep) {
+        if (schedules[i - effectiveStep].date.isAfter(schedules[i].date)) {
           return false;
         }
       }
+      
+      // Also check the last element to ensure we don't miss unsorted data at the end
+      if (schedules.length > effectiveStep) {
+        if (schedules[schedules.length - effectiveStep - 1].date.isAfter(schedules.last.date)) {
+          return false;
+        }
+      }
+      
       return true; // Sample indicates sorted
     }
 
