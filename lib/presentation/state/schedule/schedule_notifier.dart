@@ -274,11 +274,10 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       if (schedulesResult.isSuccess) {
         final newSchedules = schedulesResult.value;
 
-        // Merge with existing schedules
-        final List<Schedule> existingSchedules = current.schedules.toList();
+        // Merge with existing schedules (no need to copy - mergeOutsideRange handles immutability)
         final List<Schedule> mergedSchedules = _scheduleMergeService!
             .mergeOutsideRange(
-              existing: existingSchedules,
+              existing: current.schedules,
               incoming: newSchedules,
               range: DateRange(
                 start: expandedRange.start,
@@ -382,11 +381,10 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         }
 
         // Update state with new schedules and clear loading
-        // Merge with existing schedules to avoid losing data
-        final List<Schedule> existingSchedules = current.schedules.toList();
+        // Merge with existing schedules to avoid losing data (no need to copy - service handles it)
         final List<Schedule> mergedSchedules = _scheduleMergeService!
             .mergeOutsideRange(
-              existing: existingSchedules,
+              existing: current.schedules,
               incoming: allSchedules,
               range: combinedRange,
             );
@@ -507,7 +505,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
               }
             }
 
-            final List<Schedule> existingSchedules = currentSchedules.toList();
+            final List<Schedule> existingSchedules = currentSchedules;
             final DateRange mergeRange = selectedRange;
             final List<Schedule> merged = _scheduleMergeService!
                 .mergeOutsideRange(
@@ -811,7 +809,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       ]);
 
       final List<Schedule> existingNow =
-          (state.value?.schedules ?? current.schedules).toList();
+          state.value?.schedules ?? current.schedules;
       final List<Schedule> merged = _scheduleMergeService!
           .mergeReplacingConfigInRange(
             existing: existingNow,
@@ -867,7 +865,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       ]);
 
       final List<Schedule> existingNow =
-          (state.value?.schedules ?? current.schedules).toList();
+          state.value?.schedules ?? current.schedules;
       final List<Schedule> merged = _scheduleMergeService!
           .mergeReplacingConfigInRange(
             existing: existingNow,
@@ -929,7 +927,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
       final List<Schedule> merged = _scheduleMergeService!
           .mergeReplacingConfigInRange(
-            existing: (state.value?.schedules ?? current.schedules).toList(),
+            existing: state.value?.schedules ?? current.schedules,
             incoming: incoming,
             range: selectedRange,
             replaceConfigName: activeName,

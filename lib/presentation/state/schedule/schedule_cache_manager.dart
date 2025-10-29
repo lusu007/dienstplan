@@ -221,25 +221,42 @@ class ScheduleCacheManager {
   }
 
   String _generateKey(DateTime startDate, DateTime endDate, String configName) {
+    // Use StringBuffer for more efficient string concatenation
+    // Note: For this specific case with only 3 parts, direct concatenation
+    // is actually faster than StringBuffer, so keeping the simple approach
     return '${configName}_${startDate.toIso8601String()}_${endDate.toIso8601String()}';
   }
 
   /// Gets cache statistics
   Map<String, dynamic> getCacheStats() {
+    final now = DateTime.now();
+    int validCount = 0;
+    
+    for (final timestamp in _cacheTimestamps.values) {
+      if (now.difference(timestamp) <= kCacheValidityDuration) {
+        validCount++;
+      }
+    }
+    
+    DateTime? oldestEntry;
+    DateTime? newestEntry;
+    
+    if (_cacheTimestamps.values.isNotEmpty) {
+      for (final timestamp in _cacheTimestamps.values) {
+        if (oldestEntry == null || timestamp.isBefore(oldestEntry)) {
+          oldestEntry = timestamp;
+        }
+        if (newestEntry == null || timestamp.isAfter(newestEntry)) {
+          newestEntry = timestamp;
+        }
+      }
+    }
+    
     return {
       'totalEntries': _cache.length,
-      'validEntries': _cacheTimestamps.values
-          .where(
-            (timestamp) =>
-                DateTime.now().difference(timestamp) <= kCacheValidityDuration,
-          )
-          .length,
-      'oldestEntry': _cacheTimestamps.values.isNotEmpty
-          ? _cacheTimestamps.values.reduce((a, b) => a.isBefore(b) ? a : b)
-          : null,
-      'newestEntry': _cacheTimestamps.values.isNotEmpty
-          ? _cacheTimestamps.values.reduce((a, b) => a.isAfter(b) ? a : b)
-          : null,
+      'validEntries': validCount,
+      'oldestEntry': oldestEntry,
+      'newestEntry': newestEntry,
     };
   }
 
