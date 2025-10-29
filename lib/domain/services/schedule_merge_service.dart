@@ -193,36 +193,31 @@ class ScheduleMergeService {
   }
 
   /// Checks if the schedules list is already sorted by date in ascending order
-  /// Performs sample-based check for better average-case performance
+  /// Uses sampling for large lists to improve performance
   bool _isAlreadySorted(List<Schedule> schedules) {
     if (schedules.length <= 1) return true;
 
-    // Sample-based approach for large lists (10% sample)
-    // If sample is sorted, assume list is sorted to avoid O(n) check
+    // Sample-based approach for large lists
+    // Check every Nth element to determine if sorted
     if (schedules.length > 100) {
-      final sampleSize = (schedules.length * 0.1).toInt().clamp(1, schedules.length - 1);
-      final step = schedules.length ~/ (sampleSize + 1);
+      const int sampleInterval = 10; // Check every 10th element
       
-      // Ensure step is at least 1 to avoid infinite loop
-      final effectiveStep = step.clamp(1, schedules.length - 1);
-      
-      for (int i = effectiveStep; i < schedules.length; i += effectiveStep) {
-        if (schedules[i - effectiveStep].date.isAfter(schedules[i].date)) {
+      for (int i = sampleInterval; i < schedules.length; i += sampleInterval) {
+        if (schedules[i - sampleInterval].date.isAfter(schedules[i].date)) {
           return false;
         }
       }
       
-      // Also check the last element to ensure we don't miss unsorted data at the end
-      if (schedules.length > effectiveStep) {
-        if (schedules[schedules.length - effectiveStep - 1].date.isAfter(schedules.last.date)) {
-          return false;
-        }
+      // Always check the last element with its predecessor
+      if (schedules.length > 1 &&
+          schedules[schedules.length - 2].date.isAfter(schedules.last.date)) {
+        return false;
       }
       
-      return true; // Sample indicates sorted
+      return true;
     }
 
-    // Full check for smaller lists
+    // Full check for smaller lists (100 or fewer items)
     for (int i = 1; i < schedules.length; i++) {
       if (schedules[i - 1].date.isAfter(schedules[i].date)) {
         return false;
