@@ -28,21 +28,21 @@ class ScheduleMergeService {
     required List<Schedule> incoming,
     required DateRange range,
   }) {
-    final List<Schedule> merged = <Schedule>[];
+    final Map<String, Schedule> mergedMap = <String, Schedule>{};
+    
+    // Add existing items that are outside the range
     for (final Schedule oldItem in existing) {
       if (!range.containsDate(oldItem.date)) {
-        merged.add(oldItem);
+        mergedMap[_keyOf(oldItem)] = oldItem;
       }
     }
+    
+    // Add incoming items, using map to avoid O(n*m) complexity
     for (final Schedule newItem in incoming) {
-      final bool exists = merged.any(
-        (Schedule s) => _isSameScheduleDayAndGroup(s, newItem),
-      );
-      if (!exists) {
-        merged.add(newItem);
-      }
+      mergedMap[_keyOf(newItem)] = newItem;
     }
-    return merged;
+    
+    return mergedMap.values.toList(growable: false);
   }
 
   // Merge that preserves existing items inside range for other configs,
