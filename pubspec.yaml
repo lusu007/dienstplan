@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.13.0
 
 environment:
-  sdk: '>=3.8.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,7 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  sentry_flutter: ^9.7.0
+  sentry_flutter: ^9.9.0
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -43,7 +43,7 @@ dependencies:
   path: ^1.9.1
   # UI Components
   table_calendar: ^3.2.0
-  flutter_local_notifications: ^19.4.2
+  flutter_local_notifications: ^19.5.0
   # Utils
   intl: ^0.20.2
   shared_preferences: ^2.5.3
@@ -51,22 +51,22 @@ dependencies:
   logger: ^2.6.2
   package_info_plus: ^9.0.0
   url_launcher: ^6.3.2
-  share_plus: ^12.0.0
+  share_plus: ^12.0.1
   # HTTP Client
   dio: ^5.9.0
   json_annotation: ^4.9.0
   dartz: ^0.10.1
-  dart_flutter_version: ^1.0.18
+  dart_flutter_version: ^1.0.25
 
 dev_dependencies:
-  sentry_dart_plugin: ^3.1.1
+  sentry_dart_plugin: ^3.2.0
   flutter_launcher_icons: ^0.14.4
-  flutter_native_splash: ^2.4.6
-  build_runner: ^2.7.1
+  flutter_native_splash: ^2.4.7
+  build_runner: ^2.10.4
   riverpod_generator: ^3.0.3
   freezed: ^3.2.3
   auto_route_generator: ^10.2.4
-  json_serializable: ^6.11.1
+  json_serializable: ^6.11.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
