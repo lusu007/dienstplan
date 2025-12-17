@@ -26,6 +26,13 @@ class ScheduleConfigService extends ChangeNotifier {
   late Directory _configsPath;
   static const String _configDirName = 'configs';
   static const String _setupCompletedKey = kPrefsKeySetupCompleted;
+  static const List<String> _fallbackScheduleAssets = [
+    'assets/schedules/2-schicht-5-tage.json',
+    'assets/schedules/bepo_zuege_polizei_bremen.json',
+    'assets/schedules/esd_polizei_bremen.json',
+    'assets/schedules/lehe_opb_bremenhaven.json',
+    'assets/schedules/leherheide_opb_bremenhaven.json',
+  ];
 
   ScheduleConfigService(
     this._prefs,
@@ -135,19 +142,40 @@ class ScheduleConfigService extends ChangeNotifier {
     return configs;
   }
 
+  /// Gets list of schedule asset files using modern AssetManifest API
+  /// Falls back to hardcoded list if AssetManifest is not available
+  Future<List<String>> _getScheduleAssetFiles() async {
+    try {
+      // Try modern AssetManifest API first
+      final assetManifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+      final allAssets = assetManifest.listAssets();
+      final scheduleFiles = allAssets
+          .where((String key) => key.startsWith('assets/schedules/'))
+          .where((String key) => key.endsWith('.json'))
+          .toList();
+
+      AppLogger.i(
+        'Found ${scheduleFiles.length} schedule files using AssetManifest API',
+      );
+      return scheduleFiles;
+    } catch (e) {
+      // Fallback to hardcoded list if AssetManifest is not available
+      AppLogger.w('AssetManifest API not available, using fallback list: $e');
+      AppLogger.i(
+        'Using fallback list with ${_fallbackScheduleAssets.length} schedule files',
+      );
+      return _fallbackScheduleAssets;
+    }
+  }
+
   /// Syncs all schedule config files from assets to app directory
   /// This ensures the app directory always has the latest versions
   Future<void> _syncAssetsToAppDirectory() async {
     try {
       AppLogger.i('Syncing schedule configs from assets to app directory');
 
-      // Load asset manifest to find all schedule files
-      final manifestContent = await rootBundle.loadString('AssetManifest.json');
-      final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-      final scheduleFiles = manifestMap.keys
-          .where((String key) => key.startsWith('assets/schedules/'))
-          .where((String key) => key.endsWith('.json'))
-          .toList();
+      // Get schedule asset files using modern API with fallback
+      final scheduleFiles = await _getScheduleAssetFiles();
 
       AppLogger.i('Found ${scheduleFiles.length} schedule files in assets');
 
@@ -629,11 +657,8 @@ class ScheduleConfigService extends ChangeNotifier {
 
       // Since we now always sync from assets, we can be more aggressive in cleanup
       // Delete any files that are not in the current assets
-      final manifestContent = await rootBundle.loadString('AssetManifest.json');
-      final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-      final assetConfigNames = manifestMap.keys
-          .where((String key) => key.startsWith('assets/schedules/'))
-          .where((String key) => key.endsWith('.json'))
+      final scheduleAssetFiles = await _getScheduleAssetFiles();
+      final assetConfigNames = scheduleAssetFiles
           .map((String key) => path.basenameWithoutExtension(key))
           .toList();
 
@@ -641,10 +666,7 @@ class ScheduleConfigService extends ChangeNotifier {
       final Map<String, String> configNameToFileName = {};
 
       // Build a map of config names to their asset file names
-      for (final assetFile
-          in manifestMap.keys
-              .where((String key) => key.startsWith('assets/schedules/'))
-              .where((String key) => key.endsWith('.json'))) {
+      for (final assetFile in scheduleAssetFiles) {
         try {
           final jsonString = await rootBundle.loadString(assetFile);
           final json = jsonDecode(jsonString) as Map<String, dynamic>;

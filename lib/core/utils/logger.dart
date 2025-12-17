@@ -109,8 +109,8 @@ class AppLogger {
             Sentry.logger.error(
               message,
               attributes: {
-                'local_level': SentryLogAttribute.string(level),
-                'timestamp': SentryLogAttribute.string(timestamp),
+                'local_level': SentryAttribute.string(level),
+                'timestamp': SentryAttribute.string(timestamp),
               },
             );
           } else {
@@ -119,8 +119,8 @@ class AppLogger {
                 Sentry.logger.debug(
                   message,
                   attributes: {
-                    'local_level': SentryLogAttribute.string(level),
-                    'timestamp': SentryLogAttribute.string(timestamp),
+                    'local_level': SentryAttribute.string(level),
+                    'timestamp': SentryAttribute.string(timestamp),
                   },
                 );
                 break;
@@ -128,8 +128,8 @@ class AppLogger {
                 Sentry.logger.info(
                   message,
                   attributes: {
-                    'local_level': SentryLogAttribute.string(level),
-                    'timestamp': SentryLogAttribute.string(timestamp),
+                    'local_level': SentryAttribute.string(level),
+                    'timestamp': SentryAttribute.string(timestamp),
                   },
                 );
                 break;
@@ -137,8 +137,8 @@ class AppLogger {
                 Sentry.logger.warn(
                   message,
                   attributes: {
-                    'local_level': SentryLogAttribute.string(level),
-                    'timestamp': SentryLogAttribute.string(timestamp),
+                    'local_level': SentryAttribute.string(level),
+                    'timestamp': SentryAttribute.string(timestamp),
                   },
                 );
                 break;
@@ -146,8 +146,8 @@ class AppLogger {
                 Sentry.logger.error(
                   message,
                   attributes: {
-                    'local_level': SentryLogAttribute.string(level),
-                    'timestamp': SentryLogAttribute.string(timestamp),
+                    'local_level': SentryAttribute.string(level),
+                    'timestamp': SentryAttribute.string(timestamp),
                   },
                 );
                 break;
@@ -155,8 +155,8 @@ class AppLogger {
                 Sentry.logger.fatal(
                   message,
                   attributes: {
-                    'local_level': SentryLogAttribute.string(level),
-                    'timestamp': SentryLogAttribute.string(timestamp),
+                    'local_level': SentryAttribute.string(level),
+                    'timestamp': SentryAttribute.string(timestamp),
                   },
                 );
                 break;
@@ -164,8 +164,8 @@ class AppLogger {
                 Sentry.logger.info(
                   message,
                   attributes: {
-                    'local_level': SentryLogAttribute.string(level),
-                    'timestamp': SentryLogAttribute.string(timestamp),
+                    'local_level': SentryAttribute.string(level),
+                    'timestamp': SentryAttribute.string(timestamp),
                   },
                 );
             }
