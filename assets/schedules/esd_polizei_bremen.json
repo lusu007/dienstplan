@@ -1,11 +1,11 @@
 {
-  "version": "1.3",
+  "version": "1.4",
   "meta": {
     "name": "Einsatz- und Streifendienst",
     "description": "5-wöchiger Rotationsplan für den Einsatz- und Streifendienst der Polizei Bremen",
     "icon": "directions_car",
     "start_week_day": "Monday",
-    "start_date": "2025-03-17",
+    "start_date": "2025-11-10",
     "police_authority": "Polizei Bremen",
     "days": [
       "Mo",
@@ -50,12 +50,57 @@
   ],
   "rhythms": {
     "5wochen_standard": {
-      "length_weeks": 5,
+      "length_weeks": 10,
       "pattern": [
         [
           "-",
           "ZD",
           "ZD",
+          "-",
+          "ZD",
+          "-",
+          "-"
+        ],
+        [
+          "N",
+          "N",
+          "-",
+          "-",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "S",
+          "S",
+          "N",
+          "N",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "F",
+          "F",
+          "S",
+          "S",
+          "N",
+          "N",
+          "N"
+        ],
+        [
+          "-",
+          "-",
+          "F",
+          "F",
+          "S",
+          "S",
+          "S"
+        ],
+        [
+          "-",
+          "ZD",
+          "-",
           "-",
           "ZD",
           "-",
@@ -105,31 +150,31 @@
       "id": "DG1",
       "name": "Dienstgruppe 1",
       "rhythm": "5wochen_standard",
-      "offset_weeks": 1
+      "offset_weeks": 2
     },
     {
       "id": "DG2",
       "name": "Dienstgruppe 2",
       "rhythm": "5wochen_standard",
-      "offset_weeks": 0
+      "offset_weeks": 1
     },
     {
       "id": "DG3",
       "name": "Dienstgruppe 3",
       "rhythm": "5wochen_standard",
-      "offset_weeks": 4
+      "offset_weeks": 0
     },
     {
       "id": "DG4",
       "name": "Dienstgruppe 4",
       "rhythm": "5wochen_standard",
-      "offset_weeks": 3
+      "offset_weeks": 4
     },
     {
       "id": "DG5",
       "name": "Dienstgruppe 5",
       "rhythm": "5wochen_standard",
-      "offset_weeks": 2
+      "offset_weeks": 3
     }
   ]
 }
