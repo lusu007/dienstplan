@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/lusu007/dienstplan/compare/v0.13.0...v0.14.0) (2025-12-24)
+
+
+### Features
+
+* Add 3 and 2 duties zd week to esd schedule config ([#356](https://github.com/lusu007/dienstplan/issues/356)) ([2634650](https://github.com/lusu007/dienstplan/commit/263465004b0f21d673af11c7d5ed8cd168113144))
+
 ## [0.13.0](https://github.com/lusu007/dienstplan/compare/v0.12.8...v0.13.0) (2025-10-21)
 
 
