@@ -33,7 +33,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  auto_route: ^10.1.2
+  auto_route: ^11.1.0
   # State management
   flutter_riverpod: ^3.0.3
   riverpod_annotation: ^3.0.3
