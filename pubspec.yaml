@@ -43,7 +43,7 @@ dependencies:
   path: ^1.9.1
   # UI Components
   table_calendar: ^3.2.0
-  flutter_local_notifications: ^19.5.0
+  flutter_local_notifications: ^20.0.0
   # Utils
   intl: ^0.20.2
   shared_preferences: ^2.5.3
