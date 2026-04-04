@@ -357,6 +357,84 @@
   "@all": {
     "description": "Label for showing all items (no filter)"
   },
+  "exportCalendar": "Export Calendar",
+  "@exportCalendar": {
+    "description": "Title for calendar export option"
+  },
+  "exportCalendarDescription": "Export duty entries as an .ics calendar file",
+  "@exportCalendarDescription": {
+    "description": "Description for calendar export option"
+  },
+  "exportCalendarStartDate": "Start date",
+  "@exportCalendarStartDate": {
+    "description": "Label for export start date"
+  },
+  "exportCalendarEndDate": "End date",
+  "@exportCalendarEndDate": {
+    "description": "Label for export end date"
+  },
+  "exportCalendarIncludePartner": "Include partner schedule",
+  "@exportCalendarIncludePartner": {
+    "description": "Label for including partner schedule in export"
+  },
+  "exportCalendarIncludePartnerDescription": "Add the configured partner duty group to the export",
+  "@exportCalendarIncludePartnerDescription": {
+    "description": "Description for including partner schedule in export"
+  },
+  "exportCalendarIncludeHolidays": "Include holidays",
+  "@exportCalendarIncludeHolidays": {
+    "description": "Label for including holidays in export"
+  },
+  "exportCalendarIncludeHolidaysDescription": "Add configured school holidays to the export",
+  "@exportCalendarIncludeHolidaysDescription": {
+    "description": "Description for including holidays in export"
+  },
+  "exportCalendarButton": "Export .ics file",
+  "@exportCalendarButton": {
+    "description": "Button label for starting calendar export"
+  },
+  "exportCalendarSubject": "Duty schedule calendar export",
+  "@exportCalendarSubject": {
+    "description": "Subject for shared calendar export"
+  },
+  "exportCalendarShareText": "Import this file into your calendar app.",
+  "@exportCalendarShareText": {
+    "description": "Share text for calendar export"
+  },
+  "exportCalendarInvalidRange": "The start date must be before or equal to the end date.",
+  "@exportCalendarInvalidRange": {
+    "description": "Validation message for invalid export range"
+  },
+  "exportCalendarNoActiveSchedule": "Select your duty schedule before exporting.",
+  "@exportCalendarNoActiveSchedule": {
+    "description": "Validation message when no active schedule is configured"
+  },
+  "exportCalendarPartnerUnavailable": "Configure a partner schedule and duty group to enable this option.",
+  "@exportCalendarPartnerUnavailable": {
+    "description": "Message when partner export is unavailable"
+  },
+  "exportCalendarHolidayUnavailable": "Configure school holidays to enable this option.",
+  "@exportCalendarHolidayUnavailable": {
+    "description": "Message when holiday export is unavailable"
+  },
+  "exportCalendarEmpty": "No calendar entries were found for the selected range.",
+  "@exportCalendarEmpty": {
+    "description": "Message when no calendar entries are available for export"
+  },
+  "exportCalendarError": "Calendar export failed.",
+  "@exportCalendarError": {
+    "description": "Message when calendar export fails"
+  },
+  "exportCalendarSuccess": "{entryCount} calendar entries exported",
+  "@exportCalendarSuccess": {
+    "description": "Message when calendar export succeeds",
+    "placeholders": {
+      "entryCount": {
+        "type": "int",
+        "example": "42"
+      }
+    }
+  },
   "shareApp": "Share App",
   "@shareApp": {
     "description": "Title for share app option"

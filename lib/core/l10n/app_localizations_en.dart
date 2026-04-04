@@ -288,6 +288,71 @@ class AppLocalizationsEn extends AppLocalizations {
   String get all => 'All';
 
   @override
+  String get exportCalendar => 'Export Calendar';
+
+  @override
+  String get exportCalendarDescription =>
+      'Export duty entries as an .ics calendar file';
+
+  @override
+  String get exportCalendarStartDate => 'Start date';
+
+  @override
+  String get exportCalendarEndDate => 'End date';
+
+  @override
+  String get exportCalendarIncludePartner => 'Include partner schedule';
+
+  @override
+  String get exportCalendarIncludePartnerDescription =>
+      'Add the configured partner duty group to the export';
+
+  @override
+  String get exportCalendarIncludeHolidays => 'Include holidays';
+
+  @override
+  String get exportCalendarIncludeHolidaysDescription =>
+      'Add configured school holidays to the export';
+
+  @override
+  String get exportCalendarButton => 'Export .ics file';
+
+  @override
+  String get exportCalendarSubject => 'Duty schedule calendar export';
+
+  @override
+  String get exportCalendarShareText =>
+      'Import this file into your calendar app.';
+
+  @override
+  String get exportCalendarInvalidRange =>
+      'The start date must be before or equal to the end date.';
+
+  @override
+  String get exportCalendarNoActiveSchedule =>
+      'Select your duty schedule before exporting.';
+
+  @override
+  String get exportCalendarPartnerUnavailable =>
+      'Configure a partner schedule and duty group to enable this option.';
+
+  @override
+  String get exportCalendarHolidayUnavailable =>
+      'Configure school holidays to enable this option.';
+
+  @override
+  String get exportCalendarEmpty =>
+      'No calendar entries were found for the selected range.';
+
+  @override
+  String get exportCalendarError => 'Calendar export failed.';
+
+  @override
+  String exportCalendarSuccess(int entryCount) {
+    return '$entryCount calendar entries exported';
+  }
+
+  @override
   String get shareApp => 'Share App';
 
   @override

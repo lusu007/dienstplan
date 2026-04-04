@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/data/services/language_service.dart';
@@ -12,6 +13,7 @@ import 'package:dienstplan/data/services/schedule_config_service.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/data/services/share_service.dart';
 import 'package:dienstplan/data/services/notification_service.dart';
+import 'package:dienstplan/data/services/calendar_export_service.dart';
 
 // DAOs
 import 'package:dienstplan/data/daos/schedules_dao.dart';
@@ -41,6 +43,7 @@ import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
+import 'package:dienstplan/domain/use_cases/generate_calendar_export_use_case.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
@@ -286,6 +289,10 @@ ShareService shareService(Ref ref) {
   return ShareService();
 }
 
+final calendarExportServiceProvider = Provider<CalendarExportService>((ref) {
+  return CalendarExportService();
+});
+
 @riverpod
 NotificationService notificationService(Ref ref) {
   return NotificationService();
@@ -406,6 +413,23 @@ Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
   );
   return EnsureMonthSchedulesUseCase(repo, gen);
 }
+
+final generateCalendarExportUseCaseProvider =
+    FutureProvider<GenerateCalendarExportUseCase>((ref) async {
+      final generateSchedules = await ref.watch(
+        generateSchedulesUseCaseProvider.future,
+      );
+      final getSchoolHolidays = await ref.watch(
+        getSchoolHolidaysUseCaseProvider.future,
+      );
+      final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
+
+      return GenerateCalendarExportUseCase(
+        generateSchedules,
+        getSchoolHolidays,
+        getSettings,
+      );
+    });
 
 // School holiday providers
 @riverpod

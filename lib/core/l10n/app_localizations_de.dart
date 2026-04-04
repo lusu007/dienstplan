@@ -290,6 +290,71 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all => 'Alle';
 
   @override
+  String get exportCalendar => 'Kalender exportieren';
+
+  @override
+  String get exportCalendarDescription =>
+      'Exportiere Diensteinträge als .ics-Kalenderdatei';
+
+  @override
+  String get exportCalendarStartDate => 'Startdatum';
+
+  @override
+  String get exportCalendarEndDate => 'Enddatum';
+
+  @override
+  String get exportCalendarIncludePartner => 'Partnerdienstplan einschließen';
+
+  @override
+  String get exportCalendarIncludePartnerDescription =>
+      'Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu';
+
+  @override
+  String get exportCalendarIncludeHolidays => 'Ferien einschließen';
+
+  @override
+  String get exportCalendarIncludeHolidaysDescription =>
+      'Fügt konfigurierte Schulferien zum Export hinzu';
+
+  @override
+  String get exportCalendarButton => '.ics-Datei exportieren';
+
+  @override
+  String get exportCalendarSubject => 'Dienstplan Kalenderexport';
+
+  @override
+  String get exportCalendarShareText =>
+      'Importiere diese Datei in deine Kalender-App.';
+
+  @override
+  String get exportCalendarInvalidRange =>
+      'Das Startdatum muss vor oder auf dem Enddatum liegen.';
+
+  @override
+  String get exportCalendarNoActiveSchedule =>
+      'Wähle zuerst deinen Dienstplan aus, bevor du exportierst.';
+
+  @override
+  String get exportCalendarPartnerUnavailable =>
+      'Konfiguriere einen Partnerdienstplan und eine Dienstgruppe, um diese Option zu aktivieren.';
+
+  @override
+  String get exportCalendarHolidayUnavailable =>
+      'Konfiguriere Schulferien, um diese Option zu aktivieren.';
+
+  @override
+  String get exportCalendarEmpty =>
+      'Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.';
+
+  @override
+  String get exportCalendarError => 'Kalenderexport fehlgeschlagen.';
+
+  @override
+  String exportCalendarSuccess(int entryCount) {
+    return '$entryCount Kalendereinträge exportiert';
+  }
+
+  @override
   String get shareApp => 'App weiterempfehlen';
 
   @override
