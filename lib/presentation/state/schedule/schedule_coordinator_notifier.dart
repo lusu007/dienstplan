@@ -650,12 +650,17 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     required String configName,
   }) async {
     try {
+      final DateRange expandedRange = _dateRangePolicy!.computeExpandedRange(
+        currentRange,
+        targetDate,
+      );
+
       // Delegate to the schedule data notifier
       await ref
           .read(scheduleDataProvider.notifier)
           .loadSchedulesForDateRange(
-            startDate: currentRange.start,
-            endDate: currentRange.end,
+            startDate: expandedRange.start,
+            endDate: expandedRange.end,
             configName: configName,
           );
     } catch (e) {

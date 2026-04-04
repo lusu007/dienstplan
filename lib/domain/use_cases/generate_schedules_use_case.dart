@@ -81,7 +81,6 @@ class GenerateSchedulesUseCase {
           existingSchedules,
           startDate,
           endDate,
-          configName,
         );
         if (missingDates.isEmpty) {
           AppLogger.d(
@@ -93,7 +92,7 @@ class GenerateSchedulesUseCase {
           'GenerateSchedulesUseCase: Generating schedules for ${missingDates.length} missing dates',
         );
         final Result<List<Schedule>> missingResult =
-            await _generateForMissingDates(configName, missingDates, config);
+            await _generateForMissingDates(missingDates, config);
         if (missingResult.isFailure) {
           return missingResult;
         }
@@ -134,7 +133,6 @@ class GenerateSchedulesUseCase {
     List<Schedule> existingSchedules,
     DateTime startDate,
     DateTime endDate,
-    String configName,
   ) {
     final Set<DateTime> existingDates = existingSchedules
         .map((Schedule s) => DateTime(s.date.year, s.date.month, s.date.day))
@@ -154,21 +152,26 @@ class GenerateSchedulesUseCase {
   }
 
   Future<Result<List<Schedule>>> _generateForMissingDates(
-    String configName,
     List<DateTime> missingDates,
     DutyScheduleConfig config,
   ) async {
     if (missingDates.isEmpty) {
       return Result.success<List<Schedule>>(<Schedule>[]);
     }
-    final DateTime startDate = missingDates.first;
-    final DateTime endDate = missingDates.last;
-    final List<Schedule> schedules =
-        await ScheduleGenerationIsolate.generateSchedules(
-          config: config,
-          startDate: startDate,
-          endDate: endDate,
-        );
+
+    final List<_DateSpan> missingSpans = _groupConsecutiveDates(missingDates);
+    final List<Schedule> schedules = <Schedule>[];
+
+    for (final _DateSpan span in missingSpans) {
+      final List<Schedule> generated =
+          await ScheduleGenerationIsolate.generateSchedules(
+            config: config,
+            startDate: span.startDate,
+            endDate: span.endDate,
+          );
+      schedules.addAll(generated);
+    }
+
     final Result<void> saveResult = await _scheduleRepository.saveSchedules(
       schedules,
     );
@@ -177,4 +180,36 @@ class GenerateSchedulesUseCase {
     }
     return Result.success<List<Schedule>>(schedules);
   }
+
+  List<_DateSpan> _groupConsecutiveDates(List<DateTime> dates) {
+    if (dates.isEmpty) {
+      return const <_DateSpan>[];
+    }
+
+    final List<_DateSpan> spans = <_DateSpan>[];
+    DateTime spanStart = dates.first;
+    DateTime previous = dates.first;
+
+    for (int i = 1; i < dates.length; i++) {
+      final DateTime current = dates[i];
+      final bool isConsecutive = current.difference(previous).inDays == 1;
+
+      if (!isConsecutive) {
+        spans.add(_DateSpan(startDate: spanStart, endDate: previous));
+        spanStart = current;
+      }
+
+      previous = current;
+    }
+
+    spans.add(_DateSpan(startDate: spanStart, endDate: previous));
+    return spans;
+  }
+}
+
+class _DateSpan {
+  final DateTime startDate;
+  final DateTime endDate;
+
+  const _DateSpan({required this.startDate, required this.endDate});
 }
