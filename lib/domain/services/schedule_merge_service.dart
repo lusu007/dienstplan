@@ -29,19 +29,22 @@ class ScheduleMergeService {
     required DateRange range,
   }) {
     final List<Schedule> merged = <Schedule>[];
+    final Set<String> mergedKeys = <String>{};
+
     for (final Schedule oldItem in existing) {
       if (!range.containsDate(oldItem.date)) {
         merged.add(oldItem);
+        mergedKeys.add(_keyOf(oldItem));
       }
     }
+
     for (final Schedule newItem in incoming) {
-      final bool exists = merged.any(
-        (Schedule s) => _isSameScheduleDayAndGroup(s, newItem),
-      );
-      if (!exists) {
+      final String key = _keyOf(newItem);
+      if (mergedKeys.add(key)) {
         merged.add(newItem);
       }
     }
+
     return merged;
   }
 
@@ -177,14 +180,6 @@ class ScheduleMergeService {
       }
     }
     return low;
-  }
-
-  bool _isSameScheduleDayAndGroup(Schedule a, Schedule b) {
-    return a.date.year == b.date.year &&
-        a.date.month == b.date.month &&
-        a.date.day == b.date.day &&
-        a.dutyGroupName == b.dutyGroupName &&
-        a.configName == b.configName;
   }
 
   String _keyOf(Schedule s) {

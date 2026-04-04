@@ -399,11 +399,9 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
         if (!ref.mounted) return;
 
-        await loadSchedulesForDateRange(
-          startDate: startDate,
-          endDate: endDate,
-          configName: configName,
-        );
+        // Load directly inside the existing queued operation to avoid
+        // re-entering the loading queue with the same key.
+        await _performScheduleLoading(startDate, endDate, configName);
       } catch (e) {
         if (ref.mounted) {
           state = AsyncData(

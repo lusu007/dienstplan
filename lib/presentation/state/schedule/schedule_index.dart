@@ -107,8 +107,8 @@ class ScheduleIndex {
 
   /// Checks if data exists for the given range using optimized algorithms.
   ///
-  /// First performs a fast coverage check (O(k)), then falls back to
-  /// binary search (O(log n)) if needed for maximum performance.
+  /// First performs a fast full-coverage check (O(k)), then falls back to
+  /// verifying contiguous day coverage from the sorted schedule list.
   bool hasDataForRange(
     String configName,
     DateTime startDate,
@@ -123,7 +123,7 @@ class ScheduleIndex {
     return _binarySearchRange(configName, startDate, endDate);
   }
 
-  /// Fast coverage check using pre-computed ranges.
+  /// Fast full-coverage check using pre-computed ranges.
   bool _hasCoverageForRange(
     String configName,
     DateTime startDate,
@@ -132,12 +132,18 @@ class ScheduleIndex {
     final ranges = _coverageRanges[configName];
     if (ranges == null || ranges.isEmpty) return false;
 
-    final queryRange = DateRange(start: startDate, end: endDate);
+    final DateTime normalizedStart = _normalizeDate(startDate);
+    final DateTime normalizedEnd = _normalizeDate(endDate);
 
-    return ranges.any((range) => _rangesOverlap(range, queryRange));
+    return ranges.any(
+      (range) =>
+          !range.start.isAfter(normalizedStart) &&
+          !range.end.isBefore(normalizedEnd),
+    );
   }
 
-  /// Binary search for precise range checking.
+  /// Verifies contiguous day coverage from the first schedule on or after the
+  /// requested start date.
   bool _binarySearchRange(
     String configName,
     DateTime startDate,
@@ -152,24 +158,37 @@ class ScheduleIndex {
       );
     }
 
-    // Already sorted view
-    final sortedSchedules = schedules;
+    final List<Schedule> sortedSchedules = schedules;
+    final DateTime normalizedStart = _normalizeDate(startDate);
+    final DateTime normalizedEnd = _normalizeDate(endDate);
 
-    final start = startDate.subtract(const Duration(days: 1));
-    final end = endDate.add(const Duration(days: 1));
-
-    // Binary search for first schedule >= start
-    final firstIndex = _binarySearchFirst(sortedSchedules, start);
+    // Binary search for first schedule on or after the requested start date.
+    final firstIndex = _binarySearchFirst(sortedSchedules, normalizedStart);
     if (firstIndex == -1) return false;
 
-    // Check if any schedule in range is <= end
+    DateTime expectedDate = normalizedStart;
+
     for (int i = firstIndex; i < sortedSchedules.length; i++) {
-      final schedule = sortedSchedules[i];
-      if (schedule.date.isAfter(end)) break;
-      // Inclusive range check: true if schedule.date is between original start and end (inclusive)
-      if (!schedule.date.isBefore(startDate) &&
-          !schedule.date.isAfter(endDate)) {
+      final DateTime scheduleDate = _normalizeDate(sortedSchedules[i].date);
+
+      if (scheduleDate.isBefore(expectedDate)) {
+        continue;
+      }
+
+      if (scheduleDate.isAfter(expectedDate)) {
+        return false;
+      }
+
+      if (!scheduleDate.isBefore(normalizedEnd) &&
+          !scheduleDate.isAfter(normalizedEnd)) {
         return true;
+      }
+
+      expectedDate = expectedDate.add(const Duration(days: 1));
+
+      while (i + 1 < sortedSchedules.length &&
+          _normalizeDate(sortedSchedules[i + 1].date) == scheduleDate) {
+        i++;
       }
     }
 
@@ -256,10 +275,8 @@ class ScheduleIndex {
     return difference == 1;
   }
 
-  /// Checks if two date ranges overlap.
-  bool _rangesOverlap(DateRange range1, DateRange range2) {
-    return range1.start.isBefore(range2.end) &&
-        range2.start.isBefore(range1.end);
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
   }
 
   /// Gets all schedules for a specific config.
