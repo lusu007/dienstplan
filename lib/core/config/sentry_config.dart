@@ -37,6 +37,7 @@ class SentryConfig {
     }
 
     options.tracesSampleRate = tracesSampleRate;
+    // ignore: experimental_member_use
     options.profilesSampleRate = profilesSampleRate;
     options.replay.sessionSampleRate = replaySessionSampleRate;
     options.replay.onErrorSampleRate = replayOnErrorSampleRate;

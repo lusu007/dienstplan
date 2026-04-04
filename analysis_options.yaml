@@ -43,7 +43,6 @@ linter:
     control_flow_in_finally: true
     empty_statements: true
     hash_and_equals: true
-    invariant_booleans: true
     literal_only_boolean_expressions: true
     no_adjacent_strings_in_list: true
     no_duplicate_case_values: true

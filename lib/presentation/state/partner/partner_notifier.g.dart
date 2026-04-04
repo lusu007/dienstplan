@@ -10,11 +10,11 @@ part of 'partner_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(PartnerNotifier)
-const partnerProvider = PartnerNotifierProvider._();
+final partnerProvider = PartnerNotifierProvider._();
 
 final class PartnerNotifierProvider
     extends $AsyncNotifierProvider<PartnerNotifier, PartnerUiState> {
-  const PartnerNotifierProvider._()
+  PartnerNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$PartnerNotifier extends $AsyncNotifier<PartnerUiState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<PartnerUiState>, PartnerUiState>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$PartnerNotifier extends $AsyncNotifier<PartnerUiState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

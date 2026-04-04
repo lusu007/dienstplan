@@ -10,7 +10,7 @@ part of 'riverpod_providers.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(databaseService)
-const databaseServiceProvider = DatabaseServiceProvider._();
+final databaseServiceProvider = DatabaseServiceProvider._();
 
 final class DatabaseServiceProvider
     extends
@@ -20,7 +20,7 @@ final class DatabaseServiceProvider
           FutureOr<DatabaseService>
         >
     with $FutureModifier<DatabaseService>, $FutureProvider<DatabaseService> {
-  const DatabaseServiceProvider._()
+  DatabaseServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,7 @@ final class DatabaseServiceProvider
 String _$databaseServiceHash() => r'4b70714b1829eff89e609997d21e60bf44d5fd20';
 
 @ProviderFor(schedulesDao)
-const schedulesDaoProvider = SchedulesDaoProvider._();
+final schedulesDaoProvider = SchedulesDaoProvider._();
 
 final class SchedulesDaoProvider
     extends
@@ -59,7 +59,7 @@ final class SchedulesDaoProvider
           FutureOr<SchedulesDao>
         >
     with $FutureModifier<SchedulesDao>, $FutureProvider<SchedulesDao> {
-  const SchedulesDaoProvider._()
+  SchedulesDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -88,7 +88,7 @@ final class SchedulesDaoProvider
 String _$schedulesDaoHash() => r'04807b9767fa099dedfe88aed356c028d7ed74b8';
 
 @ProviderFor(settingsDao)
-const settingsDaoProvider = SettingsDaoProvider._();
+final settingsDaoProvider = SettingsDaoProvider._();
 
 final class SettingsDaoProvider
     extends
@@ -98,7 +98,7 @@ final class SettingsDaoProvider
           FutureOr<SettingsDao>
         >
     with $FutureModifier<SettingsDao>, $FutureProvider<SettingsDao> {
-  const SettingsDaoProvider._()
+  SettingsDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -127,7 +127,7 @@ final class SettingsDaoProvider
 String _$settingsDaoHash() => r'5c5a5dd3827b1d704fd1098298ef22cd6c39ad85';
 
 @ProviderFor(dutyTypesDao)
-const dutyTypesDaoProvider = DutyTypesDaoProvider._();
+final dutyTypesDaoProvider = DutyTypesDaoProvider._();
 
 final class DutyTypesDaoProvider
     extends
@@ -137,7 +137,7 @@ final class DutyTypesDaoProvider
           FutureOr<DutyTypesDao>
         >
     with $FutureModifier<DutyTypesDao>, $FutureProvider<DutyTypesDao> {
-  const DutyTypesDaoProvider._()
+  DutyTypesDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -166,7 +166,7 @@ final class DutyTypesDaoProvider
 String _$dutyTypesDaoHash() => r'246b1106d6cfb10bb0c000d7a8064d41308254a8';
 
 @ProviderFor(maintenanceDao)
-const maintenanceDaoProvider = MaintenanceDaoProvider._();
+final maintenanceDaoProvider = MaintenanceDaoProvider._();
 
 final class MaintenanceDaoProvider
     extends
@@ -176,7 +176,7 @@ final class MaintenanceDaoProvider
           FutureOr<MaintenanceDao>
         >
     with $FutureModifier<MaintenanceDao>, $FutureProvider<MaintenanceDao> {
-  const MaintenanceDaoProvider._()
+  MaintenanceDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -205,7 +205,7 @@ final class MaintenanceDaoProvider
 String _$maintenanceDaoHash() => r'c7b50b2f513c05906fdf19e0b8cd9e1019c017d7';
 
 @ProviderFor(schedulesAdminDao)
-const schedulesAdminDaoProvider = SchedulesAdminDaoProvider._();
+final schedulesAdminDaoProvider = SchedulesAdminDaoProvider._();
 
 final class SchedulesAdminDaoProvider
     extends
@@ -217,7 +217,7 @@ final class SchedulesAdminDaoProvider
     with
         $FutureModifier<SchedulesAdminDao>,
         $FutureProvider<SchedulesAdminDao> {
-  const SchedulesAdminDaoProvider._()
+  SchedulesAdminDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -246,7 +246,7 @@ final class SchedulesAdminDaoProvider
 String _$schedulesAdminDaoHash() => r'364472462048526c0a0336d7e8bc21265d9c1276';
 
 @ProviderFor(scheduleConfigsDao)
-const scheduleConfigsDaoProvider = ScheduleConfigsDaoProvider._();
+final scheduleConfigsDaoProvider = ScheduleConfigsDaoProvider._();
 
 final class ScheduleConfigsDaoProvider
     extends
@@ -258,7 +258,7 @@ final class ScheduleConfigsDaoProvider
     with
         $FutureModifier<ScheduleConfigsDao>,
         $FutureProvider<ScheduleConfigsDao> {
-  const ScheduleConfigsDaoProvider._()
+  ScheduleConfigsDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -288,7 +288,7 @@ String _$scheduleConfigsDaoHash() =>
     r'ecac450006a3623baa28efbf479217677fef2517';
 
 @ProviderFor(scheduleConfigService)
-const scheduleConfigServiceProvider = ScheduleConfigServiceProvider._();
+final scheduleConfigServiceProvider = ScheduleConfigServiceProvider._();
 
 final class ScheduleConfigServiceProvider
     extends
@@ -300,7 +300,7 @@ final class ScheduleConfigServiceProvider
     with
         $FutureModifier<ScheduleConfigService>,
         $FutureProvider<ScheduleConfigService> {
-  const ScheduleConfigServiceProvider._()
+  ScheduleConfigServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -330,7 +330,7 @@ String _$scheduleConfigServiceHash() =>
     r'336862459ddd8fee5a46b83428c634b5d7a269f4';
 
 @ProviderFor(languageService)
-const languageServiceProvider = LanguageServiceProvider._();
+final languageServiceProvider = LanguageServiceProvider._();
 
 final class LanguageServiceProvider
     extends
@@ -340,7 +340,7 @@ final class LanguageServiceProvider
           FutureOr<LanguageService>
         >
     with $FutureModifier<LanguageService>, $FutureProvider<LanguageService> {
-  const LanguageServiceProvider._()
+  LanguageServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -369,12 +369,12 @@ final class LanguageServiceProvider
 String _$languageServiceHash() => r'7a5e6d1f64f2dcbbed73ac955594882881122816';
 
 @ProviderFor(currentLocale)
-const currentLocaleProvider = CurrentLocaleProvider._();
+final currentLocaleProvider = CurrentLocaleProvider._();
 
 final class CurrentLocaleProvider
     extends $FunctionalProvider<AsyncValue<Locale>, Locale, Stream<Locale>>
     with $FutureModifier<Locale>, $StreamProvider<Locale> {
-  const CurrentLocaleProvider._()
+  CurrentLocaleProvider._()
     : super(
         from: null,
         argument: null,
@@ -402,7 +402,7 @@ final class CurrentLocaleProvider
 String _$currentLocaleHash() => r'd0a4fd9ce7251dd9223ed358e73c9430989c43eb';
 
 @ProviderFor(themeMode)
-const themeModeProvider = ThemeModeProvider._();
+final themeModeProvider = ThemeModeProvider._();
 
 final class ThemeModeProvider
     extends
@@ -412,7 +412,7 @@ final class ThemeModeProvider
           FutureOr<ThemeMode>
         >
     with $FutureModifier<ThemeMode>, $FutureProvider<ThemeMode> {
-  const ThemeModeProvider._()
+  ThemeModeProvider._()
     : super(
         from: null,
         argument: null,
@@ -440,12 +440,12 @@ final class ThemeModeProvider
 String _$themeModeHash() => r'dda9d7999fad7cc0ae5fbfb278c6784fe57c032c';
 
 @ProviderFor(appTheme)
-const appThemeProvider = AppThemeProvider._();
+final appThemeProvider = AppThemeProvider._();
 
 final class AppThemeProvider
     extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
     with $Provider<ThemeData> {
-  const AppThemeProvider._()
+  AppThemeProvider._()
     : super(
         from: null,
         argument: null,
@@ -481,12 +481,12 @@ final class AppThemeProvider
 String _$appThemeHash() => r'454b3d0b42eea01c9b9904767ed1fa1cb1f72736';
 
 @ProviderFor(appDarkTheme)
-const appDarkThemeProvider = AppDarkThemeProvider._();
+final appDarkThemeProvider = AppDarkThemeProvider._();
 
 final class AppDarkThemeProvider
     extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
     with $Provider<ThemeData> {
-  const AppDarkThemeProvider._()
+  AppDarkThemeProvider._()
     : super(
         from: null,
         argument: null,
@@ -522,7 +522,7 @@ final class AppDarkThemeProvider
 String _$appDarkThemeHash() => r'33cb551912c40fc143ef06166fe3bd3e0526bbb0';
 
 @ProviderFor(sentryService)
-const sentryServiceProvider = SentryServiceProvider._();
+final sentryServiceProvider = SentryServiceProvider._();
 
 final class SentryServiceProvider
     extends
@@ -532,7 +532,7 @@ final class SentryServiceProvider
           FutureOr<SentryService>
         >
     with $FutureModifier<SentryService>, $FutureProvider<SentryService> {
-  const SentryServiceProvider._()
+  SentryServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -561,7 +561,7 @@ final class SentryServiceProvider
 String _$sentryServiceHash() => r'19d9cf5817b25b1b47269423b011ebaf31667ecf';
 
 @ProviderFor(sentryState)
-const sentryStateProvider = SentryStateProvider._();
+final sentryStateProvider = SentryStateProvider._();
 
 final class SentryStateProvider
     extends
@@ -571,7 +571,7 @@ final class SentryStateProvider
           FutureOr<SentryState>
         >
     with $FutureModifier<SentryState>, $FutureProvider<SentryState> {
-  const SentryStateProvider._()
+  SentryStateProvider._()
     : super(
         from: null,
         argument: null,
@@ -600,12 +600,12 @@ final class SentryStateProvider
 String _$sentryStateHash() => r'8ccc406f1ec2372f7761c9ab5db407e93d2eefa8';
 
 @ProviderFor(shareService)
-const shareServiceProvider = ShareServiceProvider._();
+final shareServiceProvider = ShareServiceProvider._();
 
 final class ShareServiceProvider
     extends $FunctionalProvider<ShareService, ShareService, ShareService>
     with $Provider<ShareService> {
-  const ShareServiceProvider._()
+  ShareServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -641,7 +641,7 @@ final class ShareServiceProvider
 String _$shareServiceHash() => r'ef854f8cb5e4f22a89f2b3a66f5bbe6980bc56c4';
 
 @ProviderFor(notificationService)
-const notificationServiceProvider = NotificationServiceProvider._();
+final notificationServiceProvider = NotificationServiceProvider._();
 
 final class NotificationServiceProvider
     extends
@@ -651,7 +651,7 @@ final class NotificationServiceProvider
           NotificationService
         >
     with $Provider<NotificationService> {
-  const NotificationServiceProvider._()
+  NotificationServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -689,7 +689,7 @@ String _$notificationServiceHash() =>
     r'cda5ea9d196dce85bee56839a4a0f035021752e3';
 
 @ProviderFor(scheduleRepository)
-const scheduleRepositoryProvider = ScheduleRepositoryProvider._();
+final scheduleRepositoryProvider = ScheduleRepositoryProvider._();
 
 final class ScheduleRepositoryProvider
     extends
@@ -701,7 +701,7 @@ final class ScheduleRepositoryProvider
     with
         $FutureModifier<ScheduleRepository>,
         $FutureProvider<ScheduleRepository> {
-  const ScheduleRepositoryProvider._()
+  ScheduleRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -731,7 +731,7 @@ String _$scheduleRepositoryHash() =>
     r'fa5bf5b634dd91faa6925ae2afd7fe3fabe833ea';
 
 @ProviderFor(settingsRepository)
-const settingsRepositoryProvider = SettingsRepositoryProvider._();
+final settingsRepositoryProvider = SettingsRepositoryProvider._();
 
 final class SettingsRepositoryProvider
     extends
@@ -743,7 +743,7 @@ final class SettingsRepositoryProvider
     with
         $FutureModifier<SettingsRepository>,
         $FutureProvider<SettingsRepository> {
-  const SettingsRepositoryProvider._()
+  SettingsRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -773,7 +773,7 @@ String _$settingsRepositoryHash() =>
     r'3e3bf3608489e6dee17ae04fd8353851d040cff5';
 
 @ProviderFor(configRepository)
-const configRepositoryProvider = ConfigRepositoryProvider._();
+final configRepositoryProvider = ConfigRepositoryProvider._();
 
 final class ConfigRepositoryProvider
     extends
@@ -783,7 +783,7 @@ final class ConfigRepositoryProvider
           FutureOr<ConfigRepository>
         >
     with $FutureModifier<ConfigRepository>, $FutureProvider<ConfigRepository> {
-  const ConfigRepositoryProvider._()
+  ConfigRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -812,7 +812,7 @@ final class ConfigRepositoryProvider
 String _$configRepositoryHash() => r'440bff749a354e5110271371491471b123d94b33';
 
 @ProviderFor(getSchedulesUseCase)
-const getSchedulesUseCaseProvider = GetSchedulesUseCaseProvider._();
+final getSchedulesUseCaseProvider = GetSchedulesUseCaseProvider._();
 
 final class GetSchedulesUseCaseProvider
     extends
@@ -824,7 +824,7 @@ final class GetSchedulesUseCaseProvider
     with
         $FutureModifier<GetSchedulesUseCase>,
         $FutureProvider<GetSchedulesUseCase> {
-  const GetSchedulesUseCaseProvider._()
+  GetSchedulesUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -854,7 +854,7 @@ String _$getSchedulesUseCaseHash() =>
     r'56d340caa864d78e6a0475892da7374ead3863d5';
 
 @ProviderFor(generateSchedulesUseCase)
-const generateSchedulesUseCaseProvider = GenerateSchedulesUseCaseProvider._();
+final generateSchedulesUseCaseProvider = GenerateSchedulesUseCaseProvider._();
 
 final class GenerateSchedulesUseCaseProvider
     extends
@@ -866,7 +866,7 @@ final class GenerateSchedulesUseCaseProvider
     with
         $FutureModifier<GenerateSchedulesUseCase>,
         $FutureProvider<GenerateSchedulesUseCase> {
-  const GenerateSchedulesUseCaseProvider._()
+  GenerateSchedulesUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -896,7 +896,7 @@ String _$generateSchedulesUseCaseHash() =>
     r'58c47e188f4c6a5861575cc67b6ed6324a2e9b25';
 
 @ProviderFor(getSettingsUseCase)
-const getSettingsUseCaseProvider = GetSettingsUseCaseProvider._();
+final getSettingsUseCaseProvider = GetSettingsUseCaseProvider._();
 
 final class GetSettingsUseCaseProvider
     extends
@@ -908,7 +908,7 @@ final class GetSettingsUseCaseProvider
     with
         $FutureModifier<GetSettingsUseCase>,
         $FutureProvider<GetSettingsUseCase> {
-  const GetSettingsUseCaseProvider._()
+  GetSettingsUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -938,7 +938,7 @@ String _$getSettingsUseCaseHash() =>
     r'10f652a22347a13cf24ec272bd25aa0ccbf2ebbd';
 
 @ProviderFor(saveSettingsUseCase)
-const saveSettingsUseCaseProvider = SaveSettingsUseCaseProvider._();
+final saveSettingsUseCaseProvider = SaveSettingsUseCaseProvider._();
 
 final class SaveSettingsUseCaseProvider
     extends
@@ -950,7 +950,7 @@ final class SaveSettingsUseCaseProvider
     with
         $FutureModifier<SaveSettingsUseCase>,
         $FutureProvider<SaveSettingsUseCase> {
-  const SaveSettingsUseCaseProvider._()
+  SaveSettingsUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -980,7 +980,7 @@ String _$saveSettingsUseCaseHash() =>
     r'e6fb3271d9d975ce57edbea7265a593aaeec5100';
 
 @ProviderFor(resetSettingsUseCase)
-const resetSettingsUseCaseProvider = ResetSettingsUseCaseProvider._();
+final resetSettingsUseCaseProvider = ResetSettingsUseCaseProvider._();
 
 final class ResetSettingsUseCaseProvider
     extends
@@ -992,7 +992,7 @@ final class ResetSettingsUseCaseProvider
     with
         $FutureModifier<ResetSettingsUseCase>,
         $FutureProvider<ResetSettingsUseCase> {
-  const ResetSettingsUseCaseProvider._()
+  ResetSettingsUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -1022,7 +1022,7 @@ String _$resetSettingsUseCaseHash() =>
     r'd0b674822db80c3c24f1d2a003cd5d435b9d19c2';
 
 @ProviderFor(getConfigsUseCase)
-const getConfigsUseCaseProvider = GetConfigsUseCaseProvider._();
+final getConfigsUseCaseProvider = GetConfigsUseCaseProvider._();
 
 final class GetConfigsUseCaseProvider
     extends
@@ -1034,7 +1034,7 @@ final class GetConfigsUseCaseProvider
     with
         $FutureModifier<GetConfigsUseCase>,
         $FutureProvider<GetConfigsUseCase> {
-  const GetConfigsUseCaseProvider._()
+  GetConfigsUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -1063,7 +1063,7 @@ final class GetConfigsUseCaseProvider
 String _$getConfigsUseCaseHash() => r'c5cf41e41bbd51d13a93e5c79f7f3e4b032cb918';
 
 @ProviderFor(setActiveConfigUseCase)
-const setActiveConfigUseCaseProvider = SetActiveConfigUseCaseProvider._();
+final setActiveConfigUseCaseProvider = SetActiveConfigUseCaseProvider._();
 
 final class SetActiveConfigUseCaseProvider
     extends
@@ -1075,7 +1075,7 @@ final class SetActiveConfigUseCaseProvider
     with
         $FutureModifier<SetActiveConfigUseCase>,
         $FutureProvider<SetActiveConfigUseCase> {
-  const SetActiveConfigUseCaseProvider._()
+  SetActiveConfigUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -1105,7 +1105,7 @@ String _$setActiveConfigUseCaseHash() =>
     r'd34ae1da55cd543bdf7ae3c8a247dd7e691b8b69';
 
 @ProviderFor(scheduleMergeService)
-const scheduleMergeServiceProvider = ScheduleMergeServiceProvider._();
+final scheduleMergeServiceProvider = ScheduleMergeServiceProvider._();
 
 final class ScheduleMergeServiceProvider
     extends
@@ -1115,7 +1115,7 @@ final class ScheduleMergeServiceProvider
           ScheduleMergeService
         >
     with $Provider<ScheduleMergeService> {
-  const ScheduleMergeServiceProvider._()
+  ScheduleMergeServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -1153,13 +1153,13 @@ String _$scheduleMergeServiceHash() =>
     r'1329084894b6b3282eaea9f02398d399839f9a3d';
 
 @ProviderFor(dateRangePolicy)
-const dateRangePolicyProvider = DateRangePolicyProvider._();
+final dateRangePolicyProvider = DateRangePolicyProvider._();
 
 final class DateRangePolicyProvider
     extends
         $FunctionalProvider<DateRangePolicy, DateRangePolicy, DateRangePolicy>
     with $Provider<DateRangePolicy> {
-  const DateRangePolicyProvider._()
+  DateRangePolicyProvider._()
     : super(
         from: null,
         argument: null,
@@ -1195,7 +1195,7 @@ final class DateRangePolicyProvider
 String _$dateRangePolicyHash() => r'5a03b97bb502d325b1b306ff3a2c3bf40d17c658';
 
 @ProviderFor(configQueryService)
-const configQueryServiceProvider = ConfigQueryServiceProvider._();
+final configQueryServiceProvider = ConfigQueryServiceProvider._();
 
 final class ConfigQueryServiceProvider
     extends
@@ -1205,7 +1205,7 @@ final class ConfigQueryServiceProvider
           ConfigQueryService
         >
     with $Provider<ConfigQueryService> {
-  const ConfigQueryServiceProvider._()
+  ConfigQueryServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -1243,7 +1243,7 @@ String _$configQueryServiceHash() =>
     r'3bbd10deb49c014e9eb60d18d5c37e655f267d1b';
 
 @ProviderFor(ensureMonthSchedulesUseCase)
-const ensureMonthSchedulesUseCaseProvider =
+final ensureMonthSchedulesUseCaseProvider =
     EnsureMonthSchedulesUseCaseProvider._();
 
 final class EnsureMonthSchedulesUseCaseProvider
@@ -1256,7 +1256,7 @@ final class EnsureMonthSchedulesUseCaseProvider
     with
         $FutureModifier<EnsureMonthSchedulesUseCase>,
         $FutureProvider<EnsureMonthSchedulesUseCase> {
-  const EnsureMonthSchedulesUseCaseProvider._()
+  EnsureMonthSchedulesUseCaseProvider._()
     : super(
         from: null,
         argument: null,
@@ -1286,7 +1286,7 @@ String _$ensureMonthSchedulesUseCaseHash() =>
     r'b59a52a776c0a99c693f9f336bfe573c2cc525e6';
 
 @ProviderFor(schoolHolidayRemoteDataSource)
-const schoolHolidayRemoteDataSourceProvider =
+final schoolHolidayRemoteDataSourceProvider =
     SchoolHolidayRemoteDataSourceProvider._();
 
 final class SchoolHolidayRemoteDataSourceProvider
@@ -1297,7 +1297,7 @@ final class SchoolHolidayRemoteDataSourceProvider
           SchoolHolidayRemoteDataSource
         >
     with $Provider<SchoolHolidayRemoteDataSource> {
-  const SchoolHolidayRemoteDataSourceProvider._()
+  SchoolHolidayRemoteDataSourceProvider._()
     : super(
         from: null,
         argument: null,
@@ -1337,7 +1337,7 @@ String _$schoolHolidayRemoteDataSourceHash() =>
     r'797594b55f01054d0ce9fe0b8d2ab489f762e25c';
 
 @ProviderFor(schoolHolidaysDao)
-const schoolHolidaysDaoProvider = SchoolHolidaysDaoProvider._();
+final schoolHolidaysDaoProvider = SchoolHolidaysDaoProvider._();
 
 final class SchoolHolidaysDaoProvider
     extends
@@ -1347,7 +1347,7 @@ final class SchoolHolidaysDaoProvider
           SchoolHolidaysDao
         >
     with $Provider<SchoolHolidaysDao> {
-  const SchoolHolidaysDaoProvider._()
+  SchoolHolidaysDaoProvider._()
     : super(
         from: null,
         argument: null,
@@ -1384,7 +1384,7 @@ final class SchoolHolidaysDaoProvider
 String _$schoolHolidaysDaoHash() => r'd1a89dc4edd8a297702eb4d347f2ad99a7d976f8';
 
 @ProviderFor(schoolHolidayLocalDataSource)
-const schoolHolidayLocalDataSourceProvider =
+final schoolHolidayLocalDataSourceProvider =
     SchoolHolidayLocalDataSourceProvider._();
 
 final class SchoolHolidayLocalDataSourceProvider
@@ -1397,7 +1397,7 @@ final class SchoolHolidayLocalDataSourceProvider
     with
         $FutureModifier<SchoolHolidayLocalDataSource>,
         $FutureProvider<SchoolHolidayLocalDataSource> {
-  const SchoolHolidayLocalDataSourceProvider._()
+  SchoolHolidayLocalDataSourceProvider._()
     : super(
         from: null,
         argument: null,
@@ -1427,7 +1427,7 @@ String _$schoolHolidayLocalDataSourceHash() =>
     r'1161606996f63d69383798240663c5961e3be4d6';
 
 @ProviderFor(schoolHolidayRepository)
-const schoolHolidayRepositoryProvider = SchoolHolidayRepositoryProvider._();
+final schoolHolidayRepositoryProvider = SchoolHolidayRepositoryProvider._();
 
 final class SchoolHolidayRepositoryProvider
     extends
@@ -1439,7 +1439,7 @@ final class SchoolHolidayRepositoryProvider
     with
         $FutureModifier<SchoolHolidayRepository>,
         $FutureProvider<SchoolHolidayRepository> {
-  const SchoolHolidayRepositoryProvider._()
+  SchoolHolidayRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -1469,7 +1469,7 @@ String _$schoolHolidayRepositoryHash() =>
     r'6a7e9e57d3f02de496d3f99a46c05a1b29cb503c';
 
 @ProviderFor(getSchoolHolidaysUseCase)
-const getSchoolHolidaysUseCaseProvider = GetSchoolHolidaysUseCaseProvider._();
+final getSchoolHolidaysUseCaseProvider = GetSchoolHolidaysUseCaseProvider._();
 
 final class GetSchoolHolidaysUseCaseProvider
     extends
@@ -1481,7 +1481,7 @@ final class GetSchoolHolidaysUseCaseProvider
     with
         $FutureModifier<GetSchoolHolidaysUseCase>,
         $FutureProvider<GetSchoolHolidaysUseCase> {
-  const GetSchoolHolidaysUseCaseProvider._()
+  GetSchoolHolidaysUseCaseProvider._()
     : super(
         from: null,
         argument: null,

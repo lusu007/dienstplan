@@ -10,12 +10,12 @@ part of 'school_holidays_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(SchoolHolidaysNotifier)
-const schoolHolidaysProvider = SchoolHolidaysNotifierProvider._();
+final schoolHolidaysProvider = SchoolHolidaysNotifierProvider._();
 
 final class SchoolHolidaysNotifierProvider
     extends
         $AsyncNotifierProvider<SchoolHolidaysNotifier, SchoolHolidaysUiState> {
-  const SchoolHolidaysNotifierProvider._()
+  SchoolHolidaysNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -35,7 +35,7 @@ final class SchoolHolidaysNotifierProvider
 }
 
 String _$schoolHolidaysNotifierHash() =>
-    r'46cc8ba6a88c9b82cfe48dada95e4a7fc5376806';
+    r'969756444bb7721aa6d78bd4180b09e3169f95a1';
 
 abstract class _$SchoolHolidaysNotifier
     extends $AsyncNotifier<SchoolHolidaysUiState> {
@@ -43,7 +43,6 @@ abstract class _$SchoolHolidaysNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref
             as $Ref<AsyncValue<SchoolHolidaysUiState>, SchoolHolidaysUiState>;
@@ -58,6 +57,6 @@ abstract class _$SchoolHolidaysNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
