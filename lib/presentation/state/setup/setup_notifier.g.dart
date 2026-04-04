@@ -33,7 +33,7 @@ final class SetupNotifierProvider
   SetupNotifier create() => SetupNotifier();
 }
 
-String _$setupNotifierHash() => r'8f537f7ebafcab4b4f9074672ed4cd46ff583c58';
+String _$setupNotifierHash() => r'abbfcf24705c832def73f5db264eda80783284d4';
 
 abstract class _$SetupNotifier extends $AsyncNotifier<SetupUiState> {
   FutureOr<SetupUiState> build();

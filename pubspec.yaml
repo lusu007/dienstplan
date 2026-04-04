@@ -55,7 +55,6 @@ dependencies:
   # HTTP Client
   dio: ^5.9.2
   json_annotation: ^4.11.0
-  dartz: ^0.10.1
   dart_flutter_version: ^1.0.36
 
 dev_dependencies:

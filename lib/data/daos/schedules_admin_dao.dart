@@ -8,7 +8,7 @@ class SchedulesAdminDao {
 
   Future<void> clearSchedules() async {
     try {
-      AppLogger.i('SchedulesAdminDao: Clearing schedules');
+      AppLogger.d('SchedulesAdminDao: Clearing schedules');
       final db = await _databaseService.database;
       await db.delete('schedules');
     } catch (e, stackTrace) {
@@ -19,7 +19,7 @@ class SchedulesAdminDao {
 
   Future<void> clearDutySchedule(String configName) async {
     try {
-      AppLogger.i('SchedulesAdminDao: Clearing duty schedule for $configName');
+      AppLogger.d('SchedulesAdminDao: Clearing duty schedule for $configName');
       final db = await _databaseService.database;
       await db.delete(
         'schedules',

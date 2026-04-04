@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/cache_constants.dart';
+import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/domain/failures/result.dart';
 
 /// Cache for settings to reduce database queries during startup
 class SettingsCache {
@@ -10,14 +12,13 @@ class SettingsCache {
   static const Duration _cacheValidity = kSettingsCacheTtl;
   static const Duration _startupCacheValidity =
       kSettingsStartupCacheTtl; // More aggressive during startup
-  static Completer<Settings?>? _loadingCompleter;
+  static Completer<Result<Settings?>>? _loadingCompleter;
   static bool _isStartupPhase = true;
 
-  /// Get settings from cache or execute the provided function
-  static Future<Settings?> getSettings(
-    Future<Settings?> Function() settingsLoader,
+  /// Get settings from cache or execute the provided loader ([Result] from repository).
+  static Future<Result<Settings?>> getSettings(
+    Future<Result<Settings?>> Function() settingsLoader,
   ) async {
-    // Check if we have valid cached settings
     final cacheValidity = _isStartupPhase
         ? _startupCacheValidity
         : _cacheValidity;
@@ -27,49 +28,50 @@ class SettingsCache {
         DateTime.now().difference(_lastCacheTime!) < cacheValidity;
 
     if (isValid) {
-      AppLogger.i(
+      AppLogger.d(
         'SettingsCache: Cache hit - returning cached settings (avoided database query)',
       );
-      return _cachedSettings;
+      return Result.success<Settings?>(_cachedSettings);
     }
 
-    // Debug logging for cache state
     AppLogger.d(
       'SettingsCache: Cache state - cachedSettings: ${_cachedSettings != null}, lastCacheTime: ${_lastCacheTime?.toIso8601String()}, isValid: $isValid, isStartupPhase: $_isStartupPhase',
     );
 
-    // If already loading, wait for the current request to complete
     if (_loadingCompleter != null) {
-      AppLogger.i(
+      AppLogger.d(
         'SettingsCache: Already loading settings, waiting for completion',
       );
       return _loadingCompleter!.future;
     }
 
-    // Start loading
-    _loadingCompleter = Completer<Settings?>();
-    AppLogger.i('SettingsCache: Cache miss - loading settings from database');
+    _loadingCompleter = Completer<Result<Settings?>>();
+    AppLogger.d('SettingsCache: Cache miss - loading settings from database');
 
     try {
-      final settings = await settingsLoader();
-
-      // Update cache
-      _cachedSettings = settings;
-      _lastCacheTime = DateTime.now();
-
-      AppLogger.d('SettingsCache: Settings loaded and cached successfully');
-
-      // Complete the loading completer
-      _loadingCompleter!.complete(settings);
-
-      return settings;
+      final Result<Settings?> loaded = await settingsLoader();
+      if (loaded.isSuccess) {
+        _cachedSettings = loaded.valueIfSuccess;
+        _lastCacheTime = DateTime.now();
+        AppLogger.d('SettingsCache: Settings loaded and cached successfully');
+      } else {
+        AppLogger.d(
+          'SettingsCache: Settings load failed, not updating cache (failure=${loaded.failure.code})',
+        );
+      }
+      _loadingCompleter!.complete(loaded);
+      return loaded;
     } catch (e, stackTrace) {
       AppLogger.e('SettingsCache: Error loading settings', e, stackTrace);
-
-      // Complete the loading completer with error
-      _loadingCompleter!.completeError(e, stackTrace);
-
-      rethrow;
+      final Result<Settings?> failure = Result.createFailure<Settings?>(
+        UnknownFailure(
+          technicalMessage: 'Settings cache load error: $e',
+          cause: e,
+          stackTrace: stackTrace,
+        ),
+      );
+      _loadingCompleter!.complete(failure);
+      return failure;
     } finally {
       _loadingCompleter = null;
     }

@@ -154,7 +154,10 @@ Future<ThemeMode> themeMode(Ref ref) async {
   final GetSettingsUseCase getSettings = await ref.watch(
     getSettingsUseCaseProvider.future,
   );
-  final domain.Settings? settings = await getSettings.execute();
+  final domain.Settings? settings = switch (await getSettings.execute()) {
+    final r when r.isFailure => null,
+    final r => r.valueIfSuccess,
+  };
   switch (settings?.themePreference) {
     case domain.ThemePreference.light:
       return ThemeMode.light;
@@ -345,7 +348,10 @@ Future<SaveSettingsUseCase> saveSettingsUseCase(Ref ref) async {
   final SettingsRepository repo = await ref.watch(
     settingsRepositoryProvider.future,
   );
-  return SaveSettingsUseCase(repo);
+  final GetSettingsUseCase getSettings = await ref.watch(
+    getSettingsUseCaseProvider.future,
+  );
+  return SaveSettingsUseCase(repo, getSettings);
 }
 
 @riverpod

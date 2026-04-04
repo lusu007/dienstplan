@@ -17,75 +17,47 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
     : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   @override
-  Future<domain.Settings?> getSettings() async {
+  Future<Result<domain.Settings?>> getSettings() async {
     try {
-      AppLogger.i('SettingsRepository: Getting settings');
+      AppLogger.d('SettingsRepository: Getting settings');
       final dataSettings = await _settingsDao.load();
       if (dataSettings == null) {
-        AppLogger.i('SettingsRepository: No settings found');
-        return null;
+        AppLogger.d('SettingsRepository: No settings found');
+        return Result.success<domain.Settings?>(null);
       }
-      AppLogger.i('SettingsRepository: Retrieved settings');
-      return _toDomainSettings(dataSettings);
+      AppLogger.d('SettingsRepository: Retrieved settings');
+      return Result.success<domain.Settings?>(_toDomainSettings(dataSettings));
     } catch (e, stackTrace) {
       AppLogger.e('SettingsRepository: Error getting settings', e, stackTrace);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Result<domain.Settings?>> getSettingsSafe() async {
-    try {
-      final settings = await getSettings();
-      return Result.success<domain.Settings?>(settings);
-    } catch (e, stackTrace) {
       final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
       return Result.createFailure<domain.Settings?>(failure);
     }
   }
 
   @override
-  Future<void> saveSettings(domain.Settings settings) async {
+  Future<Result<void>> saveSettings(domain.Settings settings) async {
     try {
-      AppLogger.i('SettingsRepository: Saving settings');
+      AppLogger.d('SettingsRepository: Saving settings');
       final dataSettings = _toDataSettings(settings);
       await _settingsDao.save(dataSettings);
-      AppLogger.i('SettingsRepository: Successfully saved settings');
-    } catch (e, stackTrace) {
-      AppLogger.e('SettingsRepository: Error saving settings', e, stackTrace);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Result<void>> saveSettingsSafe(domain.Settings settings) async {
-    try {
-      await saveSettings(settings);
+      AppLogger.d('SettingsRepository: Successfully saved settings');
       return Result.success<void>(null);
     } catch (e, stackTrace) {
+      AppLogger.e('SettingsRepository: Error saving settings', e, stackTrace);
       final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
       return Result.createFailure<void>(failure);
     }
   }
 
   @override
-  Future<void> clearSettings() async {
+  Future<Result<void>> clearSettings() async {
     try {
-      AppLogger.i('SettingsRepository: Clearing settings');
+      AppLogger.d('SettingsRepository: Clearing settings');
       await _settingsDao.clear();
-      AppLogger.i('SettingsRepository: Successfully cleared settings');
-    } catch (e, stackTrace) {
-      AppLogger.e('SettingsRepository: Error clearing settings', e, stackTrace);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Result<void>> clearSettingsSafe() async {
-    try {
-      await clearSettings();
+      AppLogger.d('SettingsRepository: Successfully cleared settings');
       return Result.success<void>(null);
     } catch (e, stackTrace) {
+      AppLogger.e('SettingsRepository: Error clearing settings', e, stackTrace);
       final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
       return Result.createFailure<void>(failure);
     }

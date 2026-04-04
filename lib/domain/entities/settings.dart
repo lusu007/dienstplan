@@ -28,4 +28,23 @@ abstract class Settings with _$Settings {
   }) = _Settings;
 
   const Settings._();
+
+  /// Defaults when creating the first persisted settings row.
+  factory Settings.withDefaults({
+    CalendarFormat calendarFormat = CalendarFormat.month,
+    String? language,
+    ThemePreference? themePreference,
+    String? activeConfigName,
+    String? myDutyGroup,
+    int? holidayAccentColorValue,
+  }) => Settings(
+    calendarFormat: calendarFormat,
+    language: language,
+    themePreference: themePreference ?? ThemePreference.system,
+    activeConfigName: activeConfigName,
+    myDutyGroup: myDutyGroup,
+    holidayAccentColorValue: holidayAccentColorValue,
+    schoolHolidayStateCode: null,
+    showSchoolHolidays: null,
+  );
 }

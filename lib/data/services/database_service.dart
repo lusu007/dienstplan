@@ -224,7 +224,7 @@ class DatabaseService {
         ON schedules(config_name, date_ymd);
       ''');
     } catch (e) {
-      AppLogger.i('date_ymd column not available, skipping date_ymd indexes');
+      AppLogger.d('date_ymd column not available, skipping date_ymd indexes');
     }
 
     assert(() {

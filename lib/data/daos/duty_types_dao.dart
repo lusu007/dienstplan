@@ -13,7 +13,7 @@ class DutyTypesDao {
     Map<String, data_model.DutyType> dutyTypes,
   ) async {
     try {
-      AppLogger.i('DutyTypesDao: Replacing duty types for $configName');
+      AppLogger.d('DutyTypesDao: Replacing duty types for $configName');
       final Database db = await _databaseService.database;
       final int now = DateTime.now().millisecondsSinceEpoch;
       await db.transaction((Transaction txn) async {
@@ -46,7 +46,7 @@ class DutyTypesDao {
     String configName,
   ) async {
     try {
-      AppLogger.i('DutyTypesDao: Loading duty types for $configName');
+      AppLogger.d('DutyTypesDao: Loading duty types for $configName');
       final Database db = await _databaseService.database;
       final List<Map<String, Object?>> rows = await db.query(
         'duty_types',

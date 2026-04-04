@@ -22,8 +22,8 @@ class CalendarNotifier extends _$CalendarNotifier {
   Future<CalendarUiState> _initialize() async {
     try {
       final DateTime now = DateTime.now();
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final settings = settingsResult.isSuccess ? settingsResult.value : null;
+      final settingsResult = await _getSettingsUseCase!.execute();
+      final settings = settingsResult.valueIfSuccess;
       final format = settings?.calendarFormat ?? CalendarFormat.month;
 
       return CalendarUiState(
@@ -66,12 +66,17 @@ class CalendarNotifier extends _$CalendarNotifier {
     state = AsyncData(current.copyWith(calendarFormat: format));
 
     // Save to settings
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+    final settingsResult = await _getSettingsUseCase!.execute();
+    final existing = settingsResult.valueIfSuccess;
     if (existing != null) {
-      await _saveSettingsUseCase!.executeSafe(
+      final saveResult = await _saveSettingsUseCase!.execute(
         existing.copyWith(calendarFormat: format),
       );
+      if (saveResult.isFailure) {
+        state = AsyncData(
+          current.copyWith(error: 'Failed to save calendar format'),
+        );
+      }
     }
   }
 

@@ -9,11 +9,11 @@ class MaintenanceDao {
 
   Future<void> optimizeDatabase() async {
     try {
-      AppLogger.i('MaintenanceDao: Optimizing database');
+      AppLogger.d('MaintenanceDao: Optimizing database');
       final db = await _databaseService.database;
       await db.execute('ANALYZE');
       await db.execute('VACUUM');
-      AppLogger.i('MaintenanceDao: Optimization completed');
+      AppLogger.d('MaintenanceDao: Optimization completed');
     } catch (e, stackTrace) {
       AppLogger.e('MaintenanceDao: Error optimizing database', e, stackTrace);
       rethrow;
@@ -22,7 +22,7 @@ class MaintenanceDao {
 
   Future<void> cleanupOldData({int daysToKeep = 365}) async {
     try {
-      AppLogger.i(
+      AppLogger.d(
         'MaintenanceDao: Cleaning up data older than $daysToKeep days',
       );
       final db = await _databaseService.database;
@@ -34,7 +34,7 @@ class MaintenanceDao {
         where: 'date_ymd < ?',
         whereArgs: <Object?>[cutoffYmd],
       );
-      AppLogger.i('MaintenanceDao: Deleted $deleted old schedules');
+      AppLogger.d('MaintenanceDao: Deleted $deleted old schedules');
     } catch (e, stackTrace) {
       AppLogger.e('MaintenanceDao: Error cleaning up old data', e, stackTrace);
       rethrow;
@@ -69,7 +69,7 @@ class MaintenanceDao {
           (settingsCount ?? 0) > 0 ||
           (holidaysCount ?? 0) > 0 ||
           (configsCount ?? 0) > 0;
-      AppLogger.i('MaintenanceDao: hasData = $result');
+      AppLogger.d('MaintenanceDao: hasData = $result');
       return result;
     } catch (e, stackTrace) {
       AppLogger.e('MaintenanceDao: Error checking hasData', e, stackTrace);
@@ -79,14 +79,14 @@ class MaintenanceDao {
 
   Future<void> clearAllData() async {
     try {
-      AppLogger.i('MaintenanceDao: Clearing all tables');
+      AppLogger.d('MaintenanceDao: Clearing all tables');
       final db = await _databaseService.database;
       await db.delete('schedules');
       await db.delete('duty_types');
       await db.delete('settings');
       await db.delete('school_holidays');
       await db.delete('schedule_configs');
-      AppLogger.i('MaintenanceDao: Cleared all tables');
+      AppLogger.d('MaintenanceDao: Cleared all tables');
     } catch (e, stackTrace) {
       AppLogger.e('MaintenanceDao: Error clearing all data', e, stackTrace);
       rethrow;

@@ -9,6 +9,7 @@ import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
+import 'package:dienstplan/domain/entities/settings.dart' as domain;
 
 class AppInitializer {
   static bool _sentryInitialized = false;
@@ -32,7 +33,10 @@ class AppInitializer {
     final GetSettingsUseCase getSettingsUseCase = await container.read(
       getSettingsUseCaseProvider.future,
     );
-    final settings = await getSettingsUseCase.execute();
+    final settingsResult = await getSettingsUseCase.execute();
+    final domain.Settings? settings = settingsResult.isFailure
+        ? null
+        : settingsResult.valueIfSuccess;
     if (settings?.showSchoolHolidays == true &&
         settings?.schoolHolidayStateCode != null &&
         settings!.schoolHolidayStateCode!.isNotEmpty) {

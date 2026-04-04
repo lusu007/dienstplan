@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:dienstplan/presentation/state/setup/setup_ui_state.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/domain/use_cases/get_configs_use_case.dart';
 import 'package:dienstplan/domain/use_cases/set_active_config_use_case.dart';
@@ -19,6 +20,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 import 'package:dienstplan/presentation/state/config/config_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
+import 'package:dienstplan/domain/failures/result.dart';
 import 'dart:async';
 
 part 'setup_notifier.g.dart';
@@ -58,7 +60,12 @@ class SetupNotifier extends _$SetupNotifier {
     state = const AsyncLoading();
     try {
       AppLogger.i('Loading duty schedule configurations');
-      final configs = await _getConfigsUseCase!.execute();
+      final Result<List<DutyScheduleConfig>> configsResult =
+          await _getConfigsUseCase!.execute();
+      if (configsResult.isFailure) {
+        throw Exception(configsResult.failure.technicalMessage);
+      }
+      final List<DutyScheduleConfig> configs = configsResult.value;
       AppLogger.i('Loaded ${configs.length} configurations');
 
       return _createStateWithConfigs(
@@ -287,22 +294,41 @@ class SetupNotifier extends _$SetupNotifier {
       state = AsyncData(current.copyWith(isGeneratingSchedules: true));
 
       if (current.selectedConfig != null) {
-        await _configRepository!.setDefaultConfig(current.selectedConfig!);
-        await _setActiveConfigUseCase!.execute(current.selectedConfig!.name);
+        final Result<void> setDef = await _configRepository!.setDefaultConfig(
+          current.selectedConfig!,
+        );
+        if (setDef.isFailure) {
+          throw Exception(setDef.failure.technicalMessage);
+        }
+        final Result<void> setActive = await _setActiveConfigUseCase!.execute(
+          current.selectedConfig!.name,
+        );
+        if (setActive.isFailure) {
+          throw Exception(setActive.failure.technicalMessage);
+        }
       }
 
       final DateTime now = DateTime.now();
       final initialRange = _dateRangePolicy!.computeInitialRange(now);
 
       if (current.selectedConfig != null) {
-        await _generateSchedulesUseCase!.execute(
-          configName: current.selectedConfig!.name,
-          startDate: initialRange.start,
-          endDate: initialRange.end,
-        );
+        final Result<List<Schedule>> genResult =
+            await _generateSchedulesUseCase!.execute(
+              configName: current.selectedConfig!.name,
+              startDate: initialRange.start,
+              endDate: initialRange.end,
+            );
+        if (genResult.isFailure) {
+          throw Exception(genResult.failure.technicalMessage);
+        }
       }
 
-      final existingSettings = await _getSettingsUseCase!.execute();
+      final Result<Settings?> existingResult = await _getSettingsUseCase!
+          .execute();
+      final Settings? existingSettings = existingResult.valueIfSuccess;
+      if (existingResult.isFailure) {
+        throw Exception(existingResult.failure.technicalMessage);
+      }
       final initialSettings = Settings(
         calendarFormat:
             existingSettings?.calendarFormat ?? CalendarFormat.month,
@@ -315,7 +341,12 @@ class SetupNotifier extends _$SetupNotifier {
         schoolHolidayStateCode: existingSettings?.schoolHolidayStateCode,
         showSchoolHolidays: existingSettings?.showSchoolHolidays,
       );
-      await _saveSettingsUseCase!.execute(initialSettings);
+      final Result<void> saveInitial = await _saveSettingsUseCase!.execute(
+        initialSettings,
+      );
+      if (saveInitial.isFailure) {
+        throw Exception(saveInitial.failure.technicalMessage);
+      }
 
       await _scheduleConfigService!.markSetupCompleted();
       AppLogger.i(
@@ -336,7 +367,12 @@ class SetupNotifier extends _$SetupNotifier {
         showSchoolHolidays: existingSettings?.showSchoolHolidays,
         partnerDutyGroup: current.selectedPartnerDutyGroup,
       );
-      await _saveSettingsUseCase!.execute(finalSettings);
+      final Result<void> saveFinal = await _saveSettingsUseCase!.execute(
+        finalSettings,
+      );
+      if (saveFinal.isFailure) {
+        throw Exception(saveFinal.failure.technicalMessage);
+      }
 
       // Ensure consumers pick up the latest settings immediately
       SettingsCache.clearCache();

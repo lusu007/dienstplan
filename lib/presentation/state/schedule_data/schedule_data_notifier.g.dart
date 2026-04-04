@@ -34,7 +34,7 @@ final class ScheduleDataNotifierProvider
 }
 
 String _$scheduleDataNotifierHash() =>
-    r'1ebfa74befd0967d2ae9a6cbac3b51b9ddf7a0c2';
+    r'1daa74234142a1fc296efd4c2a32019631e35c65';
 
 abstract class _$ScheduleDataNotifier
     extends $AsyncNotifier<ScheduleDataUiState> {

@@ -23,6 +23,8 @@ import 'package:flutter/material.dart';
 
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
+import 'package:dienstplan/domain/failures/result.dart';
 part 'schedule_notifier.g.dart';
 
 @riverpod
@@ -63,10 +65,21 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     state = const AsyncLoading();
     try {
       final DateTime now = DateTime.now();
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final settings = settingsResult.isSuccess ? settingsResult.value : null;
-      final configs = await _getConfigsUseCase!.execute();
-      final activeName =
+      final Result<Settings?> settingsResult = await _getSettingsUseCase!
+          .execute();
+      final Settings? settings = settingsResult.valueIfSuccess;
+      if (settingsResult.isFailure) {
+        final message = await _presentFailure(settingsResult.failure);
+        return ScheduleUiState.initial().copyWith(error: message);
+      }
+      final Result<List<DutyScheduleConfig>> configsResult =
+          await _getConfigsUseCase!.execute();
+      if (configsResult.isFailure) {
+        final message = await _presentFailure(configsResult.failure);
+        return ScheduleUiState.initial().copyWith(error: message);
+      }
+      final List<DutyScheduleConfig> configs = configsResult.value;
+      final String? activeName =
           settings?.activeConfigName ??
           (configs.isNotEmpty ? configs.first.name : null);
       final format = settings?.calendarFormat ?? CalendarFormat.month;
@@ -77,12 +90,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         final DateRange initialRange = _dateRangePolicy!.computeInitialRange(
           now,
         );
-        final schedulesResult = await _getSchedulesUseCase!
-            .executeForDateRangeSafe(
-              startDate: initialRange.start,
-              endDate: initialRange.end,
-              configName: activeName,
-            );
+        final schedulesResult = await _getSchedulesUseCase!.executeForDateRange(
+          startDate: initialRange.start,
+          endDate: initialRange.end,
+          configName: activeName,
+        );
         if (schedulesResult.isFailure) {
           final message = await _presentFailure(schedulesResult.failure);
           return ScheduleUiState(
@@ -115,19 +127,20 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           )
             DateTime(now.year, now.month + i, 1),
         ];
-        final List<Future<List<Schedule>>> ensureFutures =
-            <Future<List<Schedule>>>[
+        final List<Future<Result<List<Schedule>>>> ensureFutures =
+            <Future<Result<List<Schedule>>>>[
               for (final DateTime monthStart in monthsToEnsure)
                 _ensureMonthSchedulesUseCase!.execute(
                   configName: activeName,
                   monthStart: monthStart,
                 ),
             ];
-        final List<List<Schedule>> ensuredChunks = await Future.wait(
+        final List<Result<List<Schedule>>> ensuredResults = await Future.wait(
           ensureFutures,
         );
         final List<Schedule> ensured = <Schedule>[
-          for (final List<Schedule> chunk in ensuredChunks) ...chunk,
+          for (final Result<List<Schedule>> r in ensuredResults)
+            if (r.isSuccess) ...r.value,
         ];
         if (ensured.isNotEmpty) {
           schedules = _scheduleMergeService!.deduplicate(<Schedule>[
@@ -139,12 +152,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         // Load partner config schedules if configured
         final String? partnerConfig = settings?.partnerConfigName;
         if (partnerConfig != null && partnerConfig.isNotEmpty) {
-          final partnerResult = await _getSchedulesUseCase!
-              .executeForDateRangeSafe(
-                startDate: initialRange.start,
-                endDate: initialRange.end,
-                configName: partnerConfig,
-              );
+          final partnerResult = await _getSchedulesUseCase!.executeForDateRange(
+            startDate: initialRange.start,
+            endDate: initialRange.end,
+            configName: partnerConfig,
+          );
           if (partnerResult.isSuccess) {
             schedules = _scheduleMergeService!.deduplicate(<Schedule>[
               ...schedules,
@@ -152,19 +164,19 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             ]);
           }
           // Ensure partner months too
-          final List<Future<List<Schedule>>> ensurePartnerFutures =
-              <Future<List<Schedule>>>[
+          final List<Future<Result<List<Schedule>>>> ensurePartnerFutures =
+              <Future<Result<List<Schedule>>>>[
                 for (final DateTime monthStart in monthsToEnsure)
                   _ensureMonthSchedulesUseCase!.execute(
                     configName: partnerConfig,
                     monthStart: monthStart,
                   ),
               ];
-          final List<List<Schedule>> ensuredPartnerChunks = await Future.wait(
-            ensurePartnerFutures,
-          );
+          final List<Result<List<Schedule>>> ensuredPartnerResults =
+              await Future.wait(ensurePartnerFutures);
           final List<Schedule> ensuredPartner = <Schedule>[
-            for (final List<Schedule> chunk in ensuredPartnerChunks) ...chunk,
+            for (final Result<List<Schedule>> r in ensuredPartnerResults)
+              if (r.isSuccess) ...r.value,
           ];
           if (ensuredPartner.isNotEmpty) {
             schedules = _scheduleMergeService!.deduplicate(<Schedule>[
@@ -208,9 +220,15 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       return;
     }
     try {
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final settings = settingsResult.isSuccess ? settingsResult.value : null;
-      final configs = await _getConfigsUseCase!.execute();
+      final Result<Settings?> settingsResult = await _getSettingsUseCase!
+          .execute();
+      final Settings? settings = settingsResult.valueIfSuccess;
+      final Result<List<DutyScheduleConfig>> configsResult =
+          await _getConfigsUseCase!.execute();
+      if (configsResult.isFailure || settingsResult.isFailure) {
+        return;
+      }
+      final List<DutyScheduleConfig> configs = configsResult.value;
       final String? activeName =
           settings?.activeConfigName ??
           (configs.isNotEmpty ? configs.first.name : null);
@@ -262,12 +280,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       );
 
       // Load schedules for the expanded range
-      final schedulesResult = await _getSchedulesUseCase!
-          .executeForDateRangeSafe(
-            startDate: expandedRange.start,
-            endDate: expandedRange.end,
-            configName: configName,
-          );
+      final schedulesResult = await _getSchedulesUseCase!.executeForDateRange(
+        startDate: expandedRange.start,
+        endDate: expandedRange.end,
+        configName: configName,
+      );
 
       if (!ref.mounted) return;
 
@@ -326,12 +343,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         }
 
         // First try to load existing schedules (safe)
-        final initialResult = await _getSchedulesUseCase!
-            .executeForDateRangeSafe(
-              startDate: combinedRange.start,
-              endDate: combinedRange.end,
-              configName: activeName,
-            );
+        final initialResult = await _getSchedulesUseCase!.executeForDateRange(
+          startDate: combinedRange.start,
+          endDate: combinedRange.end,
+          configName: activeName,
+        );
         if (initialResult.isFailure) {
           final message = await _presentFailure(initialResult.failure);
           state = AsyncData(current.copyWith(isLoading: false, error: message));
@@ -343,12 +359,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         final String? partnerConfig =
             (state.value ?? current).partnerConfigName;
         if (partnerConfig != null && partnerConfig.isNotEmpty) {
-          final partnerResult = await _getSchedulesUseCase!
-              .executeForDateRangeSafe(
-                startDate: combinedRange.start,
-                endDate: combinedRange.end,
-                configName: partnerConfig,
-              );
+          final partnerResult = await _getSchedulesUseCase!.executeForDateRange(
+            startDate: combinedRange.start,
+            endDate: combinedRange.end,
+            configName: partnerConfig,
+          );
           if (partnerResult.isSuccess) {
             allSchedules.addAll(partnerResult.value);
           }
@@ -356,9 +371,14 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
         // Ensure focused, previous and next months exist (generate only when empty or without valid items for active config)
         Future<void> ensureMonthGenerated(DateTime monthStart) async {
-          final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-              .execute(configName: activeName, monthStart: monthStart);
-          allSchedules.addAll(ensured);
+          final Result<List<Schedule>> ensuredResult =
+              await _ensureMonthSchedulesUseCase!.execute(
+                configName: activeName,
+                monthStart: monthStart,
+              );
+          if (ensuredResult.isSuccess) {
+            allSchedules.addAll(ensuredResult.value);
+          }
         }
 
         // Generate focused month and next N months in parallel using isolate
@@ -370,9 +390,14 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         // Ensure partner months as well
         if (partnerConfig != null && partnerConfig.isNotEmpty) {
           Future<void> ensurePartnerMonthGenerated(DateTime monthStart) async {
-            final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-                .execute(configName: partnerConfig, monthStart: monthStart);
-            allSchedules.addAll(ensured);
+            final Result<List<Schedule>> ensuredResult =
+                await _ensureMonthSchedulesUseCase!.execute(
+                  configName: partnerConfig,
+                  monthStart: monthStart,
+                );
+            if (ensuredResult.isSuccess) {
+              allSchedules.addAll(ensuredResult.value);
+            }
           }
 
           await Future.wait(<Future<void>>[
@@ -446,7 +471,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
             // First try to load existing schedules (safe)
             final selectedResult = await _getSchedulesUseCase!
-                .executeForDateRangeSafe(
+                .executeForDateRange(
                   startDate: selectedRange.start,
                   endDate: selectedRange.end,
                   configName: activeName,
@@ -468,7 +493,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
                 (state.value ?? current).partnerConfigName;
             if (partnerConfig != null && partnerConfig.isNotEmpty) {
               final partnerResult = await _getSchedulesUseCase!
-                  .executeForDateRangeSafe(
+                  .executeForDateRange(
                     startDate: selectedRange.start,
                     endDate: selectedRange.end,
                     configName: partnerConfig,
@@ -491,19 +516,32 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             );
 
             if (newSchedules.isEmpty || !hasSelectedInLoaded) {
-              final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-                  .execute(configName: activeName, monthStart: monthStart);
-              newSchedules = <Schedule>[...newSchedules, ...ensured];
+              final Result<List<Schedule>> ensuredResult =
+                  await _ensureMonthSchedulesUseCase!.execute(
+                    configName: activeName,
+                    monthStart: monthStart,
+                  );
+              if (ensuredResult.isSuccess) {
+                newSchedules = <Schedule>[
+                  ...newSchedules,
+                  ...ensuredResult.value,
+                ];
+              }
               // Ensure partner month as well
               final String? partnerConfig =
                   (state.value ?? current).partnerConfigName;
               if (partnerConfig != null && partnerConfig.isNotEmpty) {
-                final List<Schedule> ensuredPartner =
+                final Result<List<Schedule>> ensuredPartnerResult =
                     await _ensureMonthSchedulesUseCase!.execute(
                       configName: partnerConfig,
                       monthStart: monthStart,
                     );
-                newSchedules = <Schedule>[...newSchedules, ...ensuredPartner];
+                if (ensuredPartnerResult.isSuccess) {
+                  newSchedules = <Schedule>[
+                    ...newSchedules,
+                    ...ensuredPartnerResult.value,
+                  ];
+                }
               }
             }
 
@@ -539,10 +577,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setCalendarFormat(CalendarFormat format) async {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(calendarFormat: format));
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+    final Result<Settings?> settingsResult = await _getSettingsUseCase!
+        .execute();
+    final Settings? existing = settingsResult.valueIfSuccess;
     if (existing != null) {
-      await _saveSettingsUseCase!.executeSafe(
+      await _saveSettingsUseCase!.execute(
         existing.copyWith(calendarFormat: format),
       );
     }
@@ -557,7 +596,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(isLoading: true));
     try {
-      final setResult = await _setActiveConfigUseCase!.executeSafe(config.name);
+      final setResult = await _setActiveConfigUseCase!.execute(config.name);
       if (setResult.isFailure) {
         final message = await _presentFailure(setResult.failure);
         state = AsyncData(current.copyWith(isLoading: false, error: message));
@@ -578,12 +617,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       final DateRange range = _dateRangePolicy!.computeInitialRange(now);
 
       // First try to load existing schedules (safe)
-      final schedulesResult = await _getSchedulesUseCase!
-          .executeForDateRangeSafe(
-            startDate: range.start,
-            endDate: range.end,
-            configName: config.name,
-          );
+      final schedulesResult = await _getSchedulesUseCase!.executeForDateRange(
+        startDate: range.start,
+        endDate: range.end,
+        configName: config.name,
+      );
       List<Schedule> schedules = <Schedule>[];
       if (schedulesResult.isSuccess) {
         schedules = schedulesResult.value;
@@ -595,21 +633,29 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
       // If no schedules found, generate them
       if (schedules.isEmpty) {
-        schedules = await _generateSchedulesUseCase!.execute(
-          configName: config.name,
-          startDate: range.start,
-          endDate: range.end,
-        );
+        final Result<List<Schedule>> genResult =
+            await _generateSchedulesUseCase!.execute(
+              configName: config.name,
+              startDate: range.start,
+              endDate: range.end,
+            );
+        if (genResult.isFailure) {
+          final message = await _presentFailure(genResult.failure);
+          state = AsyncData(current.copyWith(isLoading: false, error: message));
+          return;
+        }
+        schedules = genResult.value;
       }
 
       state = AsyncData(updated.copyWith(schedules: schedules));
 
       // Save settings (safe)
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
-      if (existing != null) {
-        final saveResult = await _saveSettingsUseCase!.executeSafe(
-          existing.copyWith(activeConfigName: config.name),
+      final Result<Settings?> settingsResult2 = await _getSettingsUseCase!
+          .execute();
+      final Settings? existing2 = settingsResult2.valueIfSuccess;
+      if (existing2 != null) {
+        final saveResult = await _saveSettingsUseCase!.execute(
+          existing2.copyWith(activeConfigName: config.name),
         );
         if (saveResult.isFailure) {
           final message = await _presentFailure(saveResult.failure);
@@ -628,10 +674,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setPreferredDutyGroup(String? group) async {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(preferredDutyGroup: group));
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+    final Result<Settings?> settingsResult = await _getSettingsUseCase!
+        .execute();
+    final Settings? existing = settingsResult.valueIfSuccess;
     if (existing != null) {
-      final saveResult = await _saveSettingsUseCase!.executeSafe(
+      final saveResult = await _saveSettingsUseCase!.execute(
         existing.copyWith(myDutyGroup: group),
       );
 
@@ -664,14 +711,15 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         partnerDutyGroup: isClearing ? null : current.partnerDutyGroup,
       ),
     );
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+    final Result<Settings?> settingsResult = await _getSettingsUseCase!
+        .execute();
+    final Settings? existing = settingsResult.valueIfSuccess;
     if (existing != null) {
       final updated = existing.copyWith(
         partnerConfigName: configName,
         partnerDutyGroup: isClearing ? null : existing.partnerDutyGroup,
       );
-      await _saveSettingsUseCase!.executeSafe(updated);
+      await _saveSettingsUseCase!.execute(updated);
     }
     if (silent) {
       // Only update settings and state fields; avoid heavy loads
@@ -698,11 +746,12 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setPartnerDutyGroup(String? group, {bool silent = false}) async {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(partnerDutyGroup: group));
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
-    if (existing != null) {
-      await _saveSettingsUseCase!.executeSafe(
-        existing.copyWith(partnerDutyGroup: group),
+    final Result<Settings?> settingsResultPg = await _getSettingsUseCase!
+        .execute();
+    final Settings? existingPg = settingsResultPg.valueIfSuccess;
+    if (existingPg != null) {
+      await _saveSettingsUseCase!.execute(
+        existingPg.copyWith(partnerDutyGroup: group),
       );
     }
     if (silent) {
@@ -730,11 +779,12 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setPartnerAccentColor(int? colorValue) async {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(partnerAccentColorValue: colorValue));
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
-    if (existing != null) {
-      await _saveSettingsUseCase!.executeSafe(
-        existing.copyWith(partnerAccentColorValue: colorValue),
+    final Result<Settings?> settingsResultPac = await _getSettingsUseCase!
+        .execute();
+    final Settings? existingPac = settingsResultPac.valueIfSuccess;
+    if (existingPac != null) {
+      await _saveSettingsUseCase!.execute(
+        existingPac.copyWith(partnerAccentColorValue: colorValue),
       );
     }
   }
@@ -742,11 +792,12 @@ class ScheduleNotifier extends _$ScheduleNotifier {
   Future<void> setMyAccentColor(int? colorValue) async {
     final current = state.value ?? ScheduleUiState.initial();
     state = AsyncData(current.copyWith(myAccentColorValue: colorValue));
-    final settingsResult = await _getSettingsUseCase!.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
-    if (existing != null) {
-      await _saveSettingsUseCase!.executeSafe(
-        existing.copyWith(myAccentColorValue: colorValue),
+    final Result<Settings?> settingsResultMac = await _getSettingsUseCase!
+        .execute();
+    final Settings? existingMac = settingsResultMac.valueIfSuccess;
+    if (existingMac != null) {
+      await _saveSettingsUseCase!.execute(
+        existingMac.copyWith(myAccentColorValue: colorValue),
       );
     }
   }
@@ -788,7 +839,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       }
 
       // Load partner schedules for combined range
-      final partnerResult = await _getSchedulesUseCase!.executeForDateRangeSafe(
+      final partnerResult = await _getSchedulesUseCase!.executeForDateRange(
         startDate: combinedRange.start,
         endDate: combinedRange.end,
         configName: partnerConfig,
@@ -798,10 +849,13 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       // Also ensure partner months around the focused period so data exists
       final List<Schedule> allPartner = <Schedule>[...partnerResult.value];
       Future<void> ensurePartnerMonth(DateTime monthStart) async {
-        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-            .execute(configName: partnerConfig, monthStart: monthStart);
-        if (ensured.isNotEmpty) {
-          allPartner.addAll(ensured);
+        final Result<List<Schedule>> ensuredResult =
+            await _ensureMonthSchedulesUseCase!.execute(
+              configName: partnerConfig,
+              monthStart: monthStart,
+            );
+        if (ensuredResult.isSuccess && ensuredResult.value.isNotEmpty) {
+          allPartner.addAll(ensuredResult.value);
         }
       }
 
@@ -845,7 +899,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
         combinedRange = DateRange.union(focusedRange, selectedRange);
       }
 
-      final activeResult = await _getSchedulesUseCase!.executeForDateRangeSafe(
+      final activeResult = await _getSchedulesUseCase!.executeForDateRange(
         startDate: combinedRange.start,
         endDate: combinedRange.end,
         configName: activeName,
@@ -854,10 +908,13 @@ class ScheduleNotifier extends _$ScheduleNotifier {
 
       final List<Schedule> allActive = <Schedule>[...activeResult.value];
       Future<void> ensureActiveMonth(DateTime monthStart) async {
-        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-            .execute(configName: activeName, monthStart: monthStart);
-        if (ensured.isNotEmpty) {
-          allActive.addAll(ensured);
+        final Result<List<Schedule>> ensuredResult =
+            await _ensureMonthSchedulesUseCase!.execute(
+              configName: activeName,
+              monthStart: monthStart,
+            );
+        if (ensuredResult.isSuccess && ensuredResult.value.isNotEmpty) {
+          allActive.addAll(ensuredResult.value);
         }
       }
 
@@ -902,7 +959,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       final DateRange selectedRange = _dateRangePolicy!.computeSelectedRange(
         day,
       );
-      final result = await _getSchedulesUseCase!.executeForDateRangeSafe(
+      final result = await _getSchedulesUseCase!.executeForDateRange(
         startDate: selectedRange.start,
         endDate: selectedRange.end,
         configName: activeName,
@@ -919,12 +976,14 @@ class ScheduleNotifier extends _$ScheduleNotifier {
             s.date.day == day.day,
       );
       if (!hasInIncoming) {
-        final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-            .execute(
+        final Result<List<Schedule>> ensuredResult =
+            await _ensureMonthSchedulesUseCase!.execute(
               configName: activeName,
               monthStart: DateTime(day.year, day.month, 1),
             );
-        incoming = <Schedule>[...incoming, ...ensured];
+        if (ensuredResult.isSuccess) {
+          incoming = <Schedule>[...incoming, ...ensuredResult.value];
+        }
       }
 
       final List<Schedule> merged = _scheduleMergeService!

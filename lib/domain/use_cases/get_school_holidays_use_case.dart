@@ -1,7 +1,6 @@
-import 'package:dartz/dartz.dart';
-
 import '../entities/school_holiday.dart';
 import '../failures/failure.dart';
+import '../failures/result.dart';
 import '../repositories/school_holiday_repository.dart';
 
 /// Use case for fetching school holidays
@@ -11,14 +10,14 @@ class GetSchoolHolidaysUseCase {
   GetSchoolHolidaysUseCase(this._repository);
 
   /// Get school holidays for the current settings and date range
-  Future<Either<Failure, List<SchoolHoliday>>> call({
+  Future<Result<List<SchoolHoliday>>> call({
     required String stateCode,
     required DateTime startDate,
     required DateTime endDate,
   }) async {
     if (stateCode.isEmpty) {
-      return const Left(
-        ValidationFailure(
+      return Result.createFailure<List<SchoolHoliday>>(
+        const ValidationFailure(
           technicalMessage: 'No state selected for school holidays',
         ),
       );
@@ -32,13 +31,13 @@ class GetSchoolHolidaysUseCase {
   }
 
   /// Get school holidays for a specific year
-  Future<Either<Failure, List<SchoolHoliday>>> forYear({
+  Future<Result<List<SchoolHoliday>>> forYear({
     required String stateCode,
     required int year,
   }) async {
     if (stateCode.isEmpty) {
-      return const Left(
-        ValidationFailure(
+      return Result.createFailure<List<SchoolHoliday>>(
+        const ValidationFailure(
           technicalMessage: 'No state selected for school holidays',
         ),
       );
@@ -48,13 +47,13 @@ class GetSchoolHolidaysUseCase {
   }
 
   /// Refresh holidays from the API
-  Future<Either<Failure, List<SchoolHoliday>>> refresh({
+  Future<Result<List<SchoolHoliday>>> refresh({
     required String stateCode,
     required int year,
   }) async {
     if (stateCode.isEmpty) {
-      return const Left(
-        ValidationFailure(
+      return Result.createFailure<List<SchoolHoliday>>(
+        const ValidationFailure(
           technicalMessage: 'No state selected for school holidays',
         ),
       );
@@ -64,7 +63,7 @@ class GetSchoolHolidaysUseCase {
   }
 
   /// Clear all cached holidays
-  Future<Either<Failure, Unit>> clearCache() async {
+  Future<Result<void>> clearCache() async {
     return _repository.clearCache();
   }
 }

@@ -5,161 +5,176 @@ import 'package:dienstplan/domain/repositories/config_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
+import 'package:dienstplan/domain/failures/result.dart';
+import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/core/errors/exception_mapper.dart';
 
 class GenerateSchedulesUseCase {
   final ScheduleRepository _scheduleRepository;
   final ConfigRepository _configRepository;
+  final ExceptionMapper _exceptionMapper;
 
-  GenerateSchedulesUseCase(this._scheduleRepository, this._configRepository);
+  GenerateSchedulesUseCase(
+    this._scheduleRepository,
+    this._configRepository, {
+    ExceptionMapper? exceptionMapper,
+  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
-  Future<List<Schedule>> execute({
+  Future<Result<List<Schedule>>> execute({
     required String configName,
     required DateTime startDate,
     required DateTime endDate,
   }) async {
     try {
-      AppLogger.i(
+      AppLogger.d(
         'GenerateSchedulesUseCase: Generating schedules for config: $configName from $startDate to $endDate',
       );
-
-      // Business logic: Validate date range
       if (startDate.isAfter(endDate)) {
-        throw ArgumentError('Start date cannot be after end date');
+        return Result.createFailure<List<Schedule>>(
+          const ValidationFailure(
+            technicalMessage: 'Start date cannot be after end date',
+          ),
+        );
       }
-
-      // Get the configuration first
-      final configs = await _configRepository.getConfigs();
-      final config = configs.firstWhere(
-        (c) => c.name == configName,
-        orElse: () =>
-            throw ArgumentError('Configuration not found: $configName'),
-      );
-
-      // Check if schedules already exist for this range
-      final existingSchedules = await _scheduleRepository
+      final Result<List<DutyScheduleConfig>> configsResult =
+          await _configRepository.getConfigs();
+      if (configsResult.isFailure) {
+        return Result.createFailure<List<Schedule>>(configsResult.failure);
+      }
+      final List<DutyScheduleConfig> configs = configsResult.value;
+      DutyScheduleConfig? matched;
+      for (final DutyScheduleConfig c in configs) {
+        if (c.name == configName) {
+          matched = c;
+          break;
+        }
+      }
+      if (matched == null) {
+        return Result.createFailure<List<Schedule>>(
+          ValidationFailure(
+            technicalMessage: 'Configuration not found: $configName',
+          ),
+        );
+      }
+      final DutyScheduleConfig config = matched;
+      final Result<List<Schedule>> existingResult = await _scheduleRepository
           .getSchedulesForDateRange(
             start: startDate,
             end: endDate,
             configName: configName,
           );
-
-      // If we have schedules for most of the range, only generate missing ones
-      const int expectedSchedulesPerDay =
-          kExpectedSchedulesPerDay; // Approximate number of duty groups
-      final daysDifference = endDate.difference(startDate).inDays;
+      if (existingResult.isFailure) {
+        return Result.createFailure<List<Schedule>>(existingResult.failure);
+      }
+      final List<Schedule> existingSchedules = existingResult.value;
+      const int expectedSchedulesPerDay = kExpectedSchedulesPerDay;
+      final int daysDifference = endDate.difference(startDate).inDays;
       final int expectedTotalSchedules =
           daysDifference * expectedSchedulesPerDay;
-      const double coverageThreshold =
-          kCoverageThreshold; // 80% coverage threshold
-
+      const double coverageThreshold = kCoverageThreshold;
       if (existingSchedules.length >=
           expectedTotalSchedules * coverageThreshold) {
-        AppLogger.i(
+        AppLogger.d(
           'GenerateSchedulesUseCase: Found ${existingSchedules.length} existing schedules, checking for gaps',
         );
-
-        // Find date gaps and only generate for missing dates
-        final missingDates = _findMissingDates(
+        final List<DateTime> missingDates = _findMissingDates(
           existingSchedules,
           startDate,
           endDate,
           configName,
         );
-
         if (missingDates.isEmpty) {
-          AppLogger.i(
+          AppLogger.d(
             'GenerateSchedulesUseCase: All schedules already exist, returning existing schedules',
           );
-          return existingSchedules;
+          return Result.success<List<Schedule>>(existingSchedules);
         }
-
-        AppLogger.i(
+        AppLogger.d(
           'GenerateSchedulesUseCase: Generating schedules for ${missingDates.length} missing dates',
         );
-
-        // Generate only for missing dates
-        final missingSchedules = await _generateForMissingDates(
-          configName,
-          missingDates,
-          config,
-        );
-
-        // Combine existing and new schedules
-        final allSchedules = [...existingSchedules, ...missingSchedules];
-        return allSchedules;
+        final Result<List<Schedule>> missingResult =
+            await _generateForMissingDates(configName, missingDates, config);
+        if (missingResult.isFailure) {
+          return missingResult;
+        }
+        final List<Schedule> allSchedules = <Schedule>[
+          ...existingSchedules,
+          ...missingResult.value,
+        ];
+        return Result.success<List<Schedule>>(allSchedules);
       }
-
-      // Use background isolate for schedule generation
-      final schedules = await ScheduleGenerationIsolate.generateSchedules(
-        config: config,
-        startDate: startDate,
-        endDate: endDate,
+      final List<Schedule> schedules =
+          await ScheduleGenerationIsolate.generateSchedules(
+            config: config,
+            startDate: startDate,
+            endDate: endDate,
+          );
+      final Result<void> saveResult = await _scheduleRepository.saveSchedules(
+        schedules,
       );
-
-      // Save generated schedules
-      await _scheduleRepository.saveSchedules(schedules);
-
-      AppLogger.i(
+      if (saveResult.isFailure) {
+        return Result.createFailure<List<Schedule>>(saveResult.failure);
+      }
+      AppLogger.d(
         'GenerateSchedulesUseCase: Generated and saved ${schedules.length} schedules',
       );
-      return schedules;
+      return Result.success<List<Schedule>>(schedules);
     } catch (e, stackTrace) {
       AppLogger.e(
         'GenerateSchedulesUseCase: Error generating schedules',
         e,
         stackTrace,
       );
-      rethrow;
+      final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
+      return Result.createFailure<List<Schedule>>(failure);
     }
   }
 
-  // Find missing dates in the schedule range
   List<DateTime> _findMissingDates(
     List<Schedule> existingSchedules,
     DateTime startDate,
     DateTime endDate,
     String configName,
   ) {
-    final existingDates = existingSchedules
-        .map((s) => DateTime(s.date.year, s.date.month, s.date.day))
+    final Set<DateTime> existingDates = existingSchedules
+        .map((Schedule s) => DateTime(s.date.year, s.date.month, s.date.day))
         .toSet();
-
-    final missingDates = <DateTime>[];
+    final List<DateTime> missingDates = <DateTime>[];
     for (
-      var date = startDate;
+      DateTime date = startDate;
       date.isBefore(endDate.add(const Duration(days: 1)));
       date = date.add(const Duration(days: 1))
     ) {
-      final normalizedDate = DateTime(date.year, date.month, date.day);
+      final DateTime normalizedDate = DateTime(date.year, date.month, date.day);
       if (!existingDates.contains(normalizedDate)) {
         missingDates.add(normalizedDate);
       }
     }
-
     return missingDates;
   }
 
-  // Generate schedules for missing dates only
-  Future<List<Schedule>> _generateForMissingDates(
+  Future<Result<List<Schedule>>> _generateForMissingDates(
     String configName,
     List<DateTime> missingDates,
     DutyScheduleConfig config,
   ) async {
-    if (missingDates.isEmpty) return [];
-
-    final startDate = missingDates.first;
-    final endDate = missingDates.last;
-
-    // Generate schedules for missing date range using isolate
-    final schedules = await ScheduleGenerationIsolate.generateSchedules(
-      config: config,
-      startDate: startDate,
-      endDate: endDate,
+    if (missingDates.isEmpty) {
+      return Result.success<List<Schedule>>(<Schedule>[]);
+    }
+    final DateTime startDate = missingDates.first;
+    final DateTime endDate = missingDates.last;
+    final List<Schedule> schedules =
+        await ScheduleGenerationIsolate.generateSchedules(
+          config: config,
+          startDate: startDate,
+          endDate: endDate,
+        );
+    final Result<void> saveResult = await _scheduleRepository.saveSchedules(
+      schedules,
     );
-
-    // Save generated schedules
-    await _scheduleRepository.saveSchedules(schedules);
-
-    return schedules;
+    if (saveResult.isFailure) {
+      return Result.createFailure<List<Schedule>>(saveResult.failure);
+    }
+    return Result.success<List<Schedule>>(schedules);
   }
 }
