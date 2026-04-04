@@ -10,12 +10,12 @@ part of 'schedule_coordinator_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(ScheduleCoordinatorNotifier)
-const scheduleCoordinatorProvider = ScheduleCoordinatorNotifierProvider._();
+final scheduleCoordinatorProvider = ScheduleCoordinatorNotifierProvider._();
 
 final class ScheduleCoordinatorNotifierProvider
     extends
         $AsyncNotifierProvider<ScheduleCoordinatorNotifier, ScheduleUiState> {
-  const ScheduleCoordinatorNotifierProvider._()
+  ScheduleCoordinatorNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -35,7 +35,7 @@ final class ScheduleCoordinatorNotifierProvider
 }
 
 String _$scheduleCoordinatorNotifierHash() =>
-    r'08721c63ab5725da52e832a184e33f935a722fb5';
+    r'ea404a5bf1508e9ec5b105a0c18f7690e87bb800';
 
 abstract class _$ScheduleCoordinatorNotifier
     extends $AsyncNotifier<ScheduleUiState> {
@@ -43,7 +43,6 @@ abstract class _$ScheduleCoordinatorNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<ScheduleUiState>, ScheduleUiState>;
     final element =
         ref.element
@@ -53,6 +52,6 @@ abstract class _$ScheduleCoordinatorNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

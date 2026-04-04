@@ -83,3 +83,6 @@ pubspec.lock
 *.db
 *.db-journal 
 sentry.properties
+
+# Codex
+.codex

@@ -10,11 +10,11 @@ part of 'schedule_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(ScheduleNotifier)
-const scheduleProvider = ScheduleNotifierProvider._();
+final scheduleProvider = ScheduleNotifierProvider._();
 
 final class ScheduleNotifierProvider
     extends $AsyncNotifierProvider<ScheduleNotifier, ScheduleUiState> {
-  const ScheduleNotifierProvider._()
+  ScheduleNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$ScheduleNotifier extends $AsyncNotifier<ScheduleUiState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<ScheduleUiState>, ScheduleUiState>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$ScheduleNotifier extends $AsyncNotifier<ScheduleUiState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

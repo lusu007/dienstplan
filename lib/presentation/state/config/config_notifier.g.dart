@@ -10,11 +10,11 @@ part of 'config_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(ConfigNotifier)
-const configProvider = ConfigNotifierProvider._();
+final configProvider = ConfigNotifierProvider._();
 
 final class ConfigNotifierProvider
     extends $AsyncNotifierProvider<ConfigNotifier, ConfigUiState> {
-  const ConfigNotifierProvider._()
+  ConfigNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -33,14 +33,13 @@ final class ConfigNotifierProvider
   ConfigNotifier create() => ConfigNotifier();
 }
 
-String _$configNotifierHash() => r'2320046248533ff44aec4b1904e9877db7cae9af';
+String _$configNotifierHash() => r'4a48220890b237ba89a3c0389a25ce80d2fccfd3';
 
 abstract class _$ConfigNotifier extends $AsyncNotifier<ConfigUiState> {
   FutureOr<ConfigUiState> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<ConfigUiState>, ConfigUiState>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$ConfigNotifier extends $AsyncNotifier<ConfigUiState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

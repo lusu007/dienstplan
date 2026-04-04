@@ -10,11 +10,11 @@ part of 'setup_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(SetupNotifier)
-const setupProvider = SetupNotifierProvider._();
+final setupProvider = SetupNotifierProvider._();
 
 final class SetupNotifierProvider
     extends $AsyncNotifierProvider<SetupNotifier, SetupUiState> {
-  const SetupNotifierProvider._()
+  SetupNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$SetupNotifier extends $AsyncNotifier<SetupUiState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<SetupUiState>, SetupUiState>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$SetupNotifier extends $AsyncNotifier<SetupUiState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

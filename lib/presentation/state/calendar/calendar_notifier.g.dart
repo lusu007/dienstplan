@@ -10,11 +10,11 @@ part of 'calendar_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(CalendarNotifier)
-const calendarProvider = CalendarNotifierProvider._();
+final calendarProvider = CalendarNotifierProvider._();
 
 final class CalendarNotifierProvider
     extends $AsyncNotifierProvider<CalendarNotifier, CalendarUiState> {
-  const CalendarNotifierProvider._()
+  CalendarNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$CalendarNotifier extends $AsyncNotifier<CalendarUiState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<CalendarUiState>, CalendarUiState>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$CalendarNotifier extends $AsyncNotifier<CalendarUiState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
