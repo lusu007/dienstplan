@@ -20,7 +20,7 @@ class SchedulesDao {
     DateTime? endDate,
   }) async {
     try {
-      AppLogger.i('SchedulesDao: Loading schedules');
+      AppLogger.d('SchedulesDao: Loading schedules');
       final Database db = await _databaseService.database;
 
       String whereClause = '1=1';
@@ -65,7 +65,7 @@ class SchedulesDao {
     String? configName,
   }) async {
     try {
-      AppLogger.i('SchedulesDao: Loading schedules for range');
+      AppLogger.d('SchedulesDao: Loading schedules for range');
       final Database db = await _databaseService.database;
 
       // Use date_ymd for better index utilization when possible
@@ -105,7 +105,7 @@ class SchedulesDao {
       return;
     }
     try {
-      AppLogger.i(
+      AppLogger.d(
         'SchedulesDao: Saving ${schedules.length} schedules in chunks',
       );
       final Database db = await _databaseService.database;
@@ -142,7 +142,7 @@ class SchedulesDao {
         }
       });
 
-      AppLogger.i('SchedulesDao: Saved schedules');
+      AppLogger.d('SchedulesDao: Saved schedules');
     } catch (e, stackTrace) {
       AppLogger.e('SchedulesDao: Error saving schedules', e, stackTrace);
       rethrow;
@@ -151,7 +151,7 @@ class SchedulesDao {
 
   Future<void> deleteByCompositeId(String id) async {
     try {
-      AppLogger.i('SchedulesDao: Deleting schedule by composite id');
+      AppLogger.d('SchedulesDao: Deleting schedule by composite id');
       final Database db = await _databaseService.database;
       final ScheduleKeyParts parts = ScheduleKeyHelper.parseScheduleId(id);
       await db.delete(
@@ -166,7 +166,7 @@ class SchedulesDao {
           parts.service,
         ],
       );
-      AppLogger.i('SchedulesDao: Deleted schedule');
+      AppLogger.d('SchedulesDao: Deleted schedule');
     } catch (e, stackTrace) {
       AppLogger.e('SchedulesDao: Error deleting schedule', e, stackTrace);
       rethrow;
@@ -179,7 +179,7 @@ class SchedulesDao {
     String? configName,
   }) async {
     try {
-      AppLogger.i('SchedulesDao: Loading schedules for specific day');
+      AppLogger.d('SchedulesDao: Loading schedules for specific day');
       final Database db = await _databaseService.database;
 
       String whereClause = 'date_ymd = ?';
@@ -218,7 +218,7 @@ class SchedulesDao {
     String? configName,
   }) async {
     try {
-      AppLogger.i('SchedulesDao: Loading schedules for specific month');
+      AppLogger.d('SchedulesDao: Loading schedules for specific month');
       final Database db = await _databaseService.database;
 
       // Format month start and end for precise matching
@@ -296,7 +296,7 @@ class SchedulesDao {
 
   Future<void> clear() async {
     try {
-      AppLogger.i('SchedulesDao: Clearing schedules');
+      AppLogger.d('SchedulesDao: Clearing schedules');
       final Database db = await _databaseService.database;
       await db.delete('schedules');
     } catch (e, stackTrace) {
@@ -308,14 +308,14 @@ class SchedulesDao {
   /// Delete all schedules for a specific config
   Future<void> deleteSchedulesByConfigName(String configName) async {
     try {
-      AppLogger.i('SchedulesDao: Deleting schedules for config: $configName');
+      AppLogger.d('SchedulesDao: Deleting schedules for config: $configName');
       final Database db = await _databaseService.database;
       final int deletedCount = await db.delete(
         'schedules',
         where: 'config_name = ?',
         whereArgs: <Object?>[configName],
       );
-      AppLogger.i(
+      AppLogger.d(
         'SchedulesDao: Deleted $deletedCount schedules for config: $configName',
       );
     } catch (e, stackTrace) {

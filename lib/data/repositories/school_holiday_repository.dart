@@ -1,7 +1,6 @@
-import 'package:dartz/dartz.dart';
-
 import '../../domain/entities/school_holiday.dart' as domain;
 import '../../domain/failures/failure.dart';
+import '../../domain/failures/result.dart';
 import '../../domain/repositories/school_holiday_repository.dart';
 import '../data_sources/school_holiday_local_data_source.dart';
 import '../data_sources/school_holiday_remote_data_source.dart';
@@ -25,7 +24,7 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
        _mapper = mapper ?? const SchoolHolidayMapper();
 
   @override
-  Future<Either<Failure, List<domain.SchoolHoliday>>> getSchoolHolidays({
+  Future<Result<List<domain.SchoolHoliday>>> getSchoolHolidays({
     required String stateCode,
     required int year,
   }) async {
@@ -46,7 +45,9 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
         if (lastUpdate != null &&
             DateTime.now().difference(lastUpdate) < _cacheValidityDuration) {
           // Return cached data
-          return Right(_mapper.toDomainList(cachedHolidays));
+          return Result.success<List<domain.SchoolHoliday>>(
+            _mapper.toDomainList(cachedHolidays),
+          );
         }
       }
 
@@ -63,7 +64,9 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
         holidays: remoteHolidays,
       );
 
-      return Right(_mapper.toDomainList(remoteHolidays));
+      return Result.success<List<domain.SchoolHoliday>>(
+        _mapper.toDomainList(remoteHolidays),
+      );
     } catch (e) {
       // If remote fetch fails but we have cached data, return it
       final cachedHolidays = await _localDataSource.getCachedHolidays(
@@ -72,10 +75,12 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
       );
 
       if (cachedHolidays != null) {
-        return Right(_mapper.toDomainList(cachedHolidays));
+        return Result.success<List<domain.SchoolHoliday>>(
+          _mapper.toDomainList(cachedHolidays),
+        );
       }
 
-      return Left(
+      return Result.createFailure<List<domain.SchoolHoliday>>(
         NetworkFailure(
           technicalMessage: 'Failed to fetch school holidays: ${e.toString()}',
           stackTrace: StackTrace.current,
@@ -85,8 +90,7 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
   }
 
   @override
-  Future<Either<Failure, List<domain.SchoolHoliday>>>
-  getSchoolHolidaysForRange({
+  Future<Result<List<domain.SchoolHoliday>>> getSchoolHolidaysForRange({
     required String stateCode,
     required DateTime startDate,
     required DateTime endDate,
@@ -102,25 +106,27 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
 
       // Fetch holidays for each year
       for (final year in years) {
-        final result = await getSchoolHolidays(
-          stateCode: stateCode,
-          year: year,
-        );
+        final Result<List<domain.SchoolHoliday>> result =
+            await getSchoolHolidays(stateCode: stateCode, year: year);
 
-        result.fold((failure) => throw failure, (yearHolidays) {
-          // Filter holidays that fall within the date range
-          holidays.addAll(
-            yearHolidays.where((holiday) {
-              return !holiday.endDate.isBefore(startDate) &&
-                  !holiday.startDate.isAfter(endDate);
-            }),
+        if (result.isFailure) {
+          return Result.createFailure<List<domain.SchoolHoliday>>(
+            result.failure,
           );
-        });
+        }
+
+        final List<domain.SchoolHoliday> yearHolidays = result.value;
+        holidays.addAll(
+          yearHolidays.where((domain.SchoolHoliday holiday) {
+            return !holiday.endDate.isBefore(startDate) &&
+                !holiday.startDate.isAfter(endDate);
+          }),
+        );
       }
 
-      return Right(holidays);
+      return Result.success<List<domain.SchoolHoliday>>(holidays);
     } catch (e) {
-      return Left(
+      return Result.createFailure<List<domain.SchoolHoliday>>(
         NetworkFailure(
           technicalMessage:
               'Failed to fetch holidays for range: ${e.toString()}',
@@ -131,7 +137,7 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
   }
 
   @override
-  Future<Either<Failure, List<domain.SchoolHoliday>>> getCachedHolidays({
+  Future<Result<List<domain.SchoolHoliday>>> getCachedHolidays({
     required String stateCode,
     required int year,
   }) async {
@@ -142,12 +148,16 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
       );
 
       if (cachedHolidays == null) {
-        return const Right([]);
+        return Result.success<List<domain.SchoolHoliday>>(
+          <domain.SchoolHoliday>[],
+        );
       }
 
-      return Right(_mapper.toDomainList(cachedHolidays));
+      return Result.success<List<domain.SchoolHoliday>>(
+        _mapper.toDomainList(cachedHolidays),
+      );
     } catch (e) {
-      return Left(
+      return Result.createFailure<List<domain.SchoolHoliday>>(
         StorageFailure(
           technicalMessage: 'Failed to get cached holidays: ${e.toString()}',
           stackTrace: StackTrace.current,
@@ -157,12 +167,12 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> clearCache() async {
+  Future<Result<void>> clearCache() async {
     try {
       await _localDataSource.clearCache();
-      return const Right(unit);
+      return Result.success<void>(null);
     } catch (e) {
-      return Left(
+      return Result.createFailure<void>(
         StorageFailure(
           technicalMessage: 'Failed to clear cache: ${e.toString()}',
           stackTrace: StackTrace.current,
@@ -172,7 +182,7 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
   }
 
   @override
-  Future<Either<Failure, List<domain.SchoolHoliday>>> refreshHolidays({
+  Future<Result<List<domain.SchoolHoliday>>> refreshHolidays({
     required String stateCode,
     required int year,
   }) async {
@@ -190,9 +200,11 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
         holidays: remoteHolidays,
       );
 
-      return Right(_mapper.toDomainList(remoteHolidays));
+      return Result.success<List<domain.SchoolHoliday>>(
+        _mapper.toDomainList(remoteHolidays),
+      );
     } catch (e) {
-      return Left(
+      return Result.createFailure<List<domain.SchoolHoliday>>(
         NetworkFailure(
           technicalMessage: 'Failed to refresh holidays: ${e.toString()}',
           stackTrace: StackTrace.current,

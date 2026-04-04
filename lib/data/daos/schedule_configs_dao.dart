@@ -20,7 +20,7 @@ class ScheduleConfigsDao {
     required List<String> days,
   }) async {
     try {
-      AppLogger.i('ScheduleConfigsDao: Saving schedule config $name');
+      AppLogger.d('ScheduleConfigsDao: Saving schedule config $name');
       final Database db = await _databaseService.database;
       final int now = DateTime.now().millisecondsSinceEpoch;
 
@@ -38,7 +38,7 @@ class ScheduleConfigsDao {
         'updated_at': now,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
 
-      AppLogger.i('ScheduleConfigsDao: Saved schedule config $name');
+      AppLogger.d('ScheduleConfigsDao: Saved schedule config $name');
     } catch (e, stackTrace) {
       AppLogger.e(
         'ScheduleConfigsDao: Error saving schedule config',
@@ -51,7 +51,7 @@ class ScheduleConfigsDao {
 
   Future<List<Map<String, dynamic>>> getAllScheduleConfigs() async {
     try {
-      AppLogger.i('ScheduleConfigsDao: Loading all schedule configs');
+      AppLogger.d('ScheduleConfigsDao: Loading all schedule configs');
       final Database db = await _databaseService.database;
 
       final List<Map<String, Object?>> rows = await db.query(
@@ -73,7 +73,7 @@ class ScheduleConfigsDao {
         };
       }).toList();
 
-      AppLogger.i(
+      AppLogger.d(
         'ScheduleConfigsDao: Loaded ${configs.length} schedule configs',
       );
       return configs;
@@ -89,7 +89,7 @@ class ScheduleConfigsDao {
 
   Future<Map<String, dynamic>?> getScheduleConfigByName(String name) async {
     try {
-      AppLogger.i('ScheduleConfigsDao: Loading schedule config $name');
+      AppLogger.d('ScheduleConfigsDao: Loading schedule config $name');
       final Database db = await _databaseService.database;
 
       final List<Map<String, Object?>> rows = await db.query(
@@ -100,7 +100,7 @@ class ScheduleConfigsDao {
       );
 
       if (rows.isEmpty) {
-        AppLogger.i('ScheduleConfigsDao: No schedule config found for $name');
+        AppLogger.d('ScheduleConfigsDao: No schedule config found for $name');
         return null;
       }
 
@@ -117,7 +117,7 @@ class ScheduleConfigsDao {
         'days': jsonDecode(row['days'] as String) as List<dynamic>,
       };
 
-      AppLogger.i('ScheduleConfigsDao: Loaded schedule config $name');
+      AppLogger.d('ScheduleConfigsDao: Loaded schedule config $name');
       return config;
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -131,12 +131,12 @@ class ScheduleConfigsDao {
 
   Future<void> deleteScheduleConfig(String name) async {
     try {
-      AppLogger.i('ScheduleConfigsDao: Deleting schedule config $name');
+      AppLogger.d('ScheduleConfigsDao: Deleting schedule config $name');
       final Database db = await _databaseService.database;
 
       await db.delete('schedule_configs', where: 'name = ?', whereArgs: [name]);
 
-      AppLogger.i('ScheduleConfigsDao: Deleted schedule config $name');
+      AppLogger.d('ScheduleConfigsDao: Deleted schedule config $name');
     } catch (e, stackTrace) {
       AppLogger.e(
         'ScheduleConfigsDao: Error deleting schedule config $name',
@@ -149,12 +149,12 @@ class ScheduleConfigsDao {
 
   Future<void> clearAllScheduleConfigs() async {
     try {
-      AppLogger.i('ScheduleConfigsDao: Clearing all schedule configs');
+      AppLogger.d('ScheduleConfigsDao: Clearing all schedule configs');
       final Database db = await _databaseService.database;
 
       await db.delete('schedule_configs');
 
-      AppLogger.i('ScheduleConfigsDao: Cleared all schedule configs');
+      AppLogger.d('ScheduleConfigsDao: Cleared all schedule configs');
     } catch (e, stackTrace) {
       AppLogger.e(
         'ScheduleConfigsDao: Error clearing schedule configs',

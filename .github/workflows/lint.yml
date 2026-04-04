@@ -38,7 +38,7 @@ jobs:
         run: flutter gen-l10n
 
       - name: 📦 Format generated localizations
-        run: dart format lib/l10n
+        run: dart format lib/core/l10n
 
       - name: 🔍 Analyze project source
         run: flutter analyze

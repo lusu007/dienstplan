@@ -437,7 +437,7 @@ final class ThemeModeProvider
   }
 }
 
-String _$themeModeHash() => r'dda9d7999fad7cc0ae5fbfb278c6784fe57c032c';
+String _$themeModeHash() => r'85bb753abb97a06bf73f382f6af611d6a89d2b48';
 
 @ProviderFor(appTheme)
 final appThemeProvider = AppThemeProvider._();
@@ -977,7 +977,7 @@ final class SaveSettingsUseCaseProvider
 }
 
 String _$saveSettingsUseCaseHash() =>
-    r'e6fb3271d9d975ce57edbea7265a593aaeec5100';
+    r'85dad0abe2b3425265dd712fb1834cbd957fce83';
 
 @ProviderFor(resetSettingsUseCase)
 final resetSettingsUseCaseProvider = ResetSettingsUseCaseProvider._();

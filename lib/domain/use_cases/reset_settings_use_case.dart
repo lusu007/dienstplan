@@ -3,43 +3,44 @@ import 'package:dienstplan/domain/repositories/settings_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
+import 'package:dienstplan/domain/failures/result.dart';
 
 class ResetSettingsUseCase {
   final SettingsRepository _settingsRepository;
 
   ResetSettingsUseCase(this._settingsRepository);
 
-  Future<void> execute() async {
-    try {
-      AppLogger.i('ResetSettingsUseCase: Executing reset settings');
-
-      // Clear existing settings
-      await _settingsRepository.clearSettings();
-
-      // Create default settings
-      final defaultSettings = _createDefaultSettings();
-
-      // Save default settings
-      await _settingsRepository.saveSettings(defaultSettings);
-
-      // Update cache with new default settings
-      SettingsCache.updateCache(defaultSettings);
-
-      AppLogger.i(
-        'ResetSettingsUseCase: Settings reset to defaults successfully and cache updated',
-      );
-    } catch (e, stackTrace) {
+  Future<Result<void>> execute() async {
+    AppLogger.d('ResetSettingsUseCase: Executing reset settings');
+    final Result<void> clearResult = await _settingsRepository.clearSettings();
+    if (clearResult.isFailure) {
       AppLogger.e(
         'ResetSettingsUseCase: Error resetting settings',
-        e,
-        stackTrace,
+        clearResult.failure.cause ?? clearResult.failure,
+        clearResult.failure.stackTrace,
       );
-      rethrow;
+      return clearResult;
     }
+    final Settings defaultSettings = _createDefaultSettings();
+    final Result<void> saveResult = await _settingsRepository.saveSettings(
+      defaultSettings,
+    );
+    if (saveResult.isFailure) {
+      AppLogger.e(
+        'ResetSettingsUseCase: Error resetting settings',
+        saveResult.failure.cause ?? saveResult.failure,
+        saveResult.failure.stackTrace,
+      );
+      return saveResult;
+    }
+    SettingsCache.updateCache(defaultSettings);
+    AppLogger.d(
+      'ResetSettingsUseCase: Settings reset to defaults successfully and cache updated',
+    );
+    return Result.success<void>(null);
   }
 
   Settings _createDefaultSettings() {
-    // Business logic: Create default settings
     return const Settings(
       calendarFormat: CalendarFormat.month,
       selectedDutyGroup: null,

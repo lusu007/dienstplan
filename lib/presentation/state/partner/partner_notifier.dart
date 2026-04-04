@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
@@ -23,8 +24,8 @@ class PartnerNotifier extends _$PartnerNotifier {
       if (!ref.mounted) {
         return PartnerUiState.initial();
       }
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final settings = settingsResult.isSuccess ? settingsResult.value : null;
+      final settingsResult = await _getSettingsUseCase!.execute();
+      final settings = settingsResult.valueIfSuccess;
 
       return PartnerUiState(
         isLoading: false,
@@ -42,128 +43,89 @@ class PartnerNotifier extends _$PartnerNotifier {
   }
 
   Future<void> setPartnerConfigName(String? configName) async {
-    final current = await future;
-    if (!ref.mounted) return;
-    state = AsyncData(current.copyWith(isLoading: true));
-
-    try {
-      if (!ref.mounted) return;
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
-
-      if (existing != null) {
-        final updated = existing.copyWith(partnerConfigName: configName);
-        await _saveSettingsUseCase!.executeSafe(updated);
-      }
-
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(partnerConfigName: configName, isLoading: false),
-      );
-    } catch (e) {
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(
-          error: 'Failed to save partner config name',
-          isLoading: false,
-        ),
-      );
-    }
+    await _persistPartnerField(
+      errorMessage: 'Failed to save partner config name',
+      patchSettings: (Settings existing) =>
+          existing.copyWith(partnerConfigName: configName),
+      buildSuccessState: (PartnerUiState current) =>
+          current.copyWith(partnerConfigName: configName, isLoading: false),
+    );
   }
 
   Future<void> setPartnerDutyGroup(String? dutyGroup) async {
-    final current = await future;
-    if (!ref.mounted) return;
-    state = AsyncData(current.copyWith(isLoading: true));
-
-    try {
-      if (!ref.mounted) return;
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
-
-      if (existing != null) {
-        final updated = existing.copyWith(partnerDutyGroup: dutyGroup);
-        await _saveSettingsUseCase!.executeSafe(updated);
-      }
-
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(partnerDutyGroup: dutyGroup, isLoading: false),
-      );
-    } catch (e) {
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(
-          error: 'Failed to save partner duty group',
-          isLoading: false,
-        ),
-      );
-    }
+    await _persistPartnerField(
+      errorMessage: 'Failed to save partner duty group',
+      patchSettings: (Settings existing) =>
+          existing.copyWith(partnerDutyGroup: dutyGroup),
+      buildSuccessState: (PartnerUiState current) =>
+          current.copyWith(partnerDutyGroup: dutyGroup, isLoading: false),
+    );
   }
 
   Future<void> setPartnerAccentColor(int? colorValue) async {
-    final current = await future;
-    if (!ref.mounted) return;
-    state = AsyncData(current.copyWith(isLoading: true));
-
-    try {
-      if (!ref.mounted) return;
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
-
-      if (existing != null) {
-        final updated = existing.copyWith(partnerAccentColorValue: colorValue);
-        await _saveSettingsUseCase!.executeSafe(updated);
-      }
-
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(partnerAccentColorValue: colorValue, isLoading: false),
-      );
-    } catch (e) {
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(
-          error: 'Failed to save partner accent color',
-          isLoading: false,
-        ),
-      );
-    }
+    await _persistPartnerField(
+      errorMessage: 'Failed to save partner accent color',
+      patchSettings: (Settings existing) =>
+          existing.copyWith(partnerAccentColorValue: colorValue),
+      buildSuccessState: (PartnerUiState current) => current.copyWith(
+        partnerAccentColorValue: colorValue,
+        isLoading: false,
+      ),
+    );
   }
 
   Future<void> setMyAccentColor(int? colorValue) async {
-    final current = await future;
-    if (!ref.mounted) return;
+    await _persistPartnerField(
+      errorMessage: 'Failed to save my accent color',
+      patchSettings: (Settings existing) =>
+          existing.copyWith(myAccentColorValue: colorValue),
+      buildSuccessState: (PartnerUiState current) =>
+          current.copyWith(myAccentColorValue: colorValue, isLoading: false),
+    );
+  }
+
+  Future<void> _persistPartnerField({
+    required String errorMessage,
+    required Settings Function(Settings existing) patchSettings,
+    required PartnerUiState Function(PartnerUiState current) buildSuccessState,
+  }) async {
+    final PartnerUiState current = await future;
+    if (!ref.mounted) {
+      return;
+    }
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
-      if (!ref.mounted) return;
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
+      if (!ref.mounted) {
+        return;
+      }
+      final settingsResult = await _getSettingsUseCase!.execute();
+      final Settings? existing = settingsResult.valueIfSuccess;
 
       if (existing != null) {
-        final updated = existing.copyWith(myAccentColorValue: colorValue);
-        await _saveSettingsUseCase!.executeSafe(updated);
+        final Settings updated = patchSettings(existing);
+        await _saveSettingsUseCase!.execute(updated);
       }
 
-      if (!ref.mounted) return;
-      state = AsyncData(
-        current.copyWith(myAccentColorValue: colorValue, isLoading: false),
-      );
+      if (!ref.mounted) {
+        return;
+      }
+      state = AsyncData(buildSuccessState(current));
     } catch (e) {
-      if (!ref.mounted) return;
+      if (!ref.mounted) {
+        return;
+      }
       state = AsyncData(
-        current.copyWith(
-          error: 'Failed to save my accent color',
-          isLoading: false,
-        ),
+        current.copyWith(error: errorMessage, isLoading: false),
       );
     }
   }
 
   Future<void> clearError() async {
     final current = await future;
-    if (!ref.mounted) return;
+    if (!ref.mounted) {
+      return;
+    }
     state = AsyncData(current.copyWith(error: null));
   }
 }

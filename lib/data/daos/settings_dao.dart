@@ -10,7 +10,7 @@ class SettingsDao {
 
   Future<data_model.Settings?> load() async {
     try {
-      AppLogger.i('SettingsDao: Loading settings');
+      AppLogger.d('SettingsDao: Loading settings');
       final Database db = await _databaseService.database;
       final List<Map<String, Object?>> rows = await db.query(
         'settings',
@@ -28,7 +28,7 @@ class SettingsDao {
 
   Future<void> save(data_model.Settings settings) async {
     try {
-      AppLogger.i('SettingsDao: Saving settings');
+      AppLogger.d('SettingsDao: Saving settings');
       final Database db = await _databaseService.database;
       final int now = DateTime.now().millisecondsSinceEpoch;
       final Map<String, Object?> values = settings.toMap()
@@ -60,7 +60,7 @@ class SettingsDao {
 
   Future<void> clear() async {
     try {
-      AppLogger.i('SettingsDao: Clearing settings');
+      AppLogger.d('SettingsDao: Clearing settings');
       final Database db = await _databaseService.database;
       await db.delete('settings');
     } catch (e, stackTrace) {

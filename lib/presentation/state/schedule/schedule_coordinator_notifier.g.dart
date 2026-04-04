@@ -35,7 +35,7 @@ final class ScheduleCoordinatorNotifierProvider
 }
 
 String _$scheduleCoordinatorNotifierHash() =>
-    r'ea404a5bf1508e9ec5b105a0c18f7690e87bb800';
+    r'41038a04026ad92bd0c5cc10594818364156763e';
 
 abstract class _$ScheduleCoordinatorNotifier
     extends $AsyncNotifier<ScheduleUiState> {

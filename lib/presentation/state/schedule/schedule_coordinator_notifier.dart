@@ -18,6 +18,8 @@ import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
+import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/utils/settings_utils.dart';
@@ -217,19 +219,12 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       );
 
       // Persist to settings
-      final getSettingsUseCase = await ref.read(
-        getSettingsUseCaseProvider.future,
-      );
-      final saveSettingsUseCase = await ref.read(
+      final SaveSettingsUseCase saveSettingsUseCase = await ref.read(
         saveSettingsUseCaseProvider.future,
       );
-      final settingsResult = await getSettingsUseCase.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
-      if (existing != null) {
-        await saveSettingsUseCase.executeSafe(
-          existing.copyWith(activeConfigName: null),
-        );
-      }
+      await saveSettingsUseCase.patchExistingIfPresent(
+        (Settings existing) => existing.copyWith(activeConfigName: null),
+      );
 
       // Invalidate caches and refresh providers
       ref.invalidate(getSettingsUseCaseProvider);
@@ -310,28 +305,22 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   Future<void> _saveSelectedDutyGroupToSettings(String? dutyGroup) async {
     try {
-      final getSettingsUseCase = await ref.read(
-        getSettingsUseCaseProvider.future,
-      );
-      final saveSettingsUseCase = await ref.read(
+      final SaveSettingsUseCase saveSettingsUseCase = await ref.read(
         saveSettingsUseCaseProvider.future,
       );
-
-      final settingsResult = await getSettingsUseCase.executeSafe();
-      final existing = settingsResult.isSuccess ? settingsResult.value : null;
-
-      if (existing != null) {
-        await saveSettingsUseCase.executeSafe(
-          existing.copyWith(selectedDutyGroup: dutyGroup),
-        );
-
-        // Refresh the schedule data provider to ensure it has the latest selectedDutyGroup
+      final patchResult = await saveSettingsUseCase.patchExistingIfPresent(
+        (Settings existing) => existing.copyWith(selectedDutyGroup: dutyGroup),
+      );
+      if (patchResult.isSuccess && patchResult.value == true) {
         await ref
             .read(scheduleDataProvider.notifier)
             .refreshSelectedDutyGroupFromSettings();
       }
     } catch (e) {
-      // Ignore settings save errors to avoid disrupting the filter
+      AppLogger.d(
+        'ScheduleCoordinatorNotifier: Best-effort save selectedDutyGroup skipped '
+        '(dutyGroup=$dutyGroup, error=$e)',
+      );
     }
   }
 
@@ -370,26 +359,20 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     state = AsyncData(existingState.copyWith(preferredDutyGroup: dutyGroup));
 
     // Save to settings using the provided override if present, otherwise the most recent activeConfigName
-    final getSettingsUseCase = await ref.read(
-      getSettingsUseCaseProvider.future,
-    );
-    final saveSettingsUseCase = await ref.read(
+    final SaveSettingsUseCase saveSettingsUseCase = await ref.read(
       saveSettingsUseCaseProvider.future,
     );
 
-    final settingsResult = await getSettingsUseCase.executeSafe();
-    final existing = settingsResult.isSuccess ? settingsResult.value : null;
+    final ConfigUiState configStateNow =
+        ref.read(configProvider).value ?? await ref.read(configProvider.future);
 
-    if (existing != null) {
-      // Prefer explicit override if provided to avoid races with async provider updates
+    final patchResult = await saveSettingsUseCase.patchExistingIfPresent((
+      Settings existing,
+    ) {
       String? activeConfigNameToPersist = activeConfigNameOverride;
 
       if (activeConfigNameToPersist == null ||
           activeConfigNameToPersist.isEmpty) {
-        // Fall back to the latest provider/coordinator state as the source of truth
-        final ConfigUiState configStateNow =
-            ref.read(configProvider).value ??
-            await ref.read(configProvider.future);
         final String? activeFromConfig = configStateNow.activeConfigName;
         final String? activeFromCoordinator =
             (state.value ?? existingState).activeConfigName;
@@ -402,18 +385,15 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
               existingActiveConfigName: existing.activeConfigName,
             );
       }
-      final saveResult = await saveSettingsUseCase.executeSafe(
-        existing.copyWith(
-          myDutyGroup: dutyGroup,
-          activeConfigName: activeConfigNameToPersist,
-        ),
+      return existing.copyWith(
+        myDutyGroup: dutyGroup,
+        activeConfigName: activeConfigNameToPersist,
       );
+    });
 
-      if (saveResult.isFailure) {
-        // If save fails, revert the state change
-        state = AsyncData(existingState);
-        return;
-      }
+    if (patchResult.isFailure) {
+      state = AsyncData(existingState);
+      return;
     }
 
     // Invalidate settings cache to ensure fresh data on next read
@@ -813,7 +793,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         );
         combinedRange = DateRange.union(focusedRange, selectedRange);
       }
-      final result = await _getSchedulesUseCase!.executeForDateRangeSafe(
+      final result = await _getSchedulesUseCase!.executeForDateRange(
         startDate: combinedRange.start,
         endDate: combinedRange.end,
         configName: partnerConfig,
@@ -843,8 +823,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
             monthStart.isAfter(coverage.end);
         if (outsideCoverage) {
           ensureTasks.add(() async {
-            final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-                .execute(configName: partnerConfig, monthStart: monthStart);
+            final result = await _ensureMonthSchedulesUseCase!.execute(
+              configName: partnerConfig,
+              monthStart: monthStart,
+            );
+            if (result.isFailure) {
+              return;
+            }
+            final List<Schedule> ensured = result.value;
             if (ensured.isNotEmpty) {
               allPartner.addAll(ensured);
             }
@@ -899,7 +885,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       }
 
       // Load own schedules for combined range
-      final ownResult = await _getSchedulesUseCase!.executeForDateRangeSafe(
+      final ownResult = await _getSchedulesUseCase!.executeForDateRange(
         startDate: combinedRange.start,
         endDate: combinedRange.end,
         configName: activeName,
@@ -931,8 +917,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
             monthStart.isAfter(coverage.end);
         if (outsideCoverage) {
           ensureTasks.add(() async {
-            final List<Schedule> ensured = await _ensureMonthSchedulesUseCase!
-                .execute(configName: activeName, monthStart: monthStart);
+            final result = await _ensureMonthSchedulesUseCase!.execute(
+              configName: activeName,
+              monthStart: monthStart,
+            );
+            if (result.isFailure) {
+              return;
+            }
+            final List<Schedule> ensured = result.value;
             if (ensured.isNotEmpty) {
               allOwn.addAll(ensured);
             }

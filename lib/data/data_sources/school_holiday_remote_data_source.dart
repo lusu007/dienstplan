@@ -47,7 +47,7 @@ class SchoolHolidayRemoteDataSourceImpl
       final String slug = _getStateNameFromCode(stateCode);
       final String start = '$year-01-01';
       final String end = '$year-12-31';
-      await AppLogger.i(
+      await AppLogger.d(
         'SchoolHolidayRemote: Request GET /federal-states/$slug/periods?start_date=$start&end_date=$end',
       );
       final response = await _dio.get(
@@ -117,7 +117,7 @@ class SchoolHolidayRemoteDataSourceImpl
     try {
       // Some APIs might use state names or IDs instead of codes
       final stateName = _getStateNameFromCode(stateCode);
-      await AppLogger.i(
+      await AppLogger.d(
         'SchoolHolidayRemote: Request GET /states/$stateName/holidays/$year',
       );
       final response = await _dio.get('/states/$stateName/holidays/$year');

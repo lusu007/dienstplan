@@ -1,106 +1,99 @@
+import 'package:dienstplan/domain/entities/duty_group.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/repositories/config_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/failures/result.dart';
-import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 
 class SetActiveConfigUseCase {
   final ConfigRepository _configRepository;
-  final ExceptionMapper _exceptionMapper;
 
-  SetActiveConfigUseCase(
-    this._configRepository, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  SetActiveConfigUseCase(this._configRepository);
 
-  Future<void> execute(String configName) async {
-    try {
-      AppLogger.i('SetActiveConfigUseCase: Setting active config: $configName');
-
-      // Validate input parameter
-      if (configName.isEmpty) {
-        throw ArgumentError('Config name cannot be empty');
-      }
-
-      // Business logic: Validate config exists
-      final configs = await _configRepository.getConfigs();
-
-      if (configs.isEmpty) {
-        throw ArgumentError('No configurations available');
-      }
-
-      final configExists = configs.any((config) => config.name == configName);
-
-      if (!configExists) {
-        throw ArgumentError('Configuration not found: $configName');
-      }
-
-      // Business logic: Validate config is valid
-      final config = configs.firstWhere((config) => config.name == configName);
-      _validateConfig(config);
-
-      // Note: Config is already loaded from assets, no need to save the file
-      // The active config reference is stored in SharedPreferences via setDefaultConfig()
-
-      AppLogger.i(
-        'SetActiveConfigUseCase: Active config set successfully: $configName',
+  Future<Result<void>> execute(String configName) async {
+    AppLogger.d('SetActiveConfigUseCase: Setting active config: $configName');
+    if (configName.isEmpty) {
+      return Result.createFailure<void>(
+        const ValidationFailure(
+          technicalMessage: 'Validation error: Config name cannot be empty',
+        ),
       );
-    } catch (e, stackTrace) {
-      AppLogger.e(
-        'SetActiveConfigUseCase: Error setting active config',
-        e,
-        stackTrace,
-      );
-      rethrow;
     }
+    final Result<List<DutyScheduleConfig>> configsResult =
+        await _configRepository.getConfigs();
+    if (configsResult.isFailure) {
+      return Result.createFailure<void>(configsResult.failure);
+    }
+    final List<DutyScheduleConfig> configs = configsResult.value;
+    if (configs.isEmpty) {
+      return Result.createFailure<void>(
+        const ValidationFailure(
+          technicalMessage: 'Validation error: No configurations available',
+        ),
+      );
+    }
+    final bool configExists = configs.any(
+      (DutyScheduleConfig config) => config.name == configName,
+    );
+    if (!configExists) {
+      return Result.createFailure<void>(
+        ValidationFailure(
+          technicalMessage:
+              'Validation error: Configuration not found: $configName',
+        ),
+      );
+    }
+    final DutyScheduleConfig config = configs.firstWhere(
+      (DutyScheduleConfig c) => c.name == configName,
+    );
+    final Result<void> validation = _validateConfig(config);
+    if (validation.isFailure) {
+      return validation;
+    }
+    AppLogger.d(
+      'SetActiveConfigUseCase: Active config set successfully: $configName',
+    );
+    return Result.success<void>(null);
   }
 
-  Future<Result<void>> executeSafe(String configName) async {
-    try {
-      await execute(configName);
-      return Result.success<void>(null);
-    } catch (e, stackTrace) {
-      final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
-      return Result.createFailure<void>(failure);
-    }
-  }
-
-  void _validateConfig(DutyScheduleConfig config) {
-    // Business logic: Validate configuration before setting as active
-
-    // Check if config has duty types
+  Result<void> _validateConfig(DutyScheduleConfig config) {
     if (config.dutyTypes.isEmpty) {
-      throw ArgumentError(
-        'Configuration "${config.name}" must have at least one duty type',
+      return Result.createFailure<void>(
+        ValidationFailure(
+          technicalMessage:
+              'Configuration "${config.name}" must have at least one duty type',
+        ),
       );
     }
-
-    // Check if config has duty groups
     if (config.dutyGroups.isEmpty) {
-      throw ArgumentError(
-        'Configuration "${config.name}" must have at least one duty group',
+      return Result.createFailure<void>(
+        ValidationFailure(
+          technicalMessage:
+              'Configuration "${config.name}" must have at least one duty group',
+        ),
       );
     }
-
-    // Check if config has rhythms
     if (config.rhythms.isEmpty) {
-      throw ArgumentError(
-        'Configuration "${config.name}" must have at least one rhythm',
+      return Result.createFailure<void>(
+        ValidationFailure(
+          technicalMessage:
+              'Configuration "${config.name}" must have at least one rhythm',
+        ),
       );
     }
-
-    // Validate that all duty groups reference valid rhythms
-    for (final dutyGroup in config.dutyGroups) {
+    for (final DutyGroup dutyGroup in config.dutyGroups) {
       if (!config.rhythms.containsKey(dutyGroup.rhythm)) {
-        throw ArgumentError(
-          'Duty group "${dutyGroup.name}" in configuration "${config.name}" references invalid rhythm: ${dutyGroup.rhythm}',
+        return Result.createFailure<void>(
+          ValidationFailure(
+            technicalMessage:
+                'Duty group "${dutyGroup.name}" in configuration "${config.name}" references invalid rhythm: ${dutyGroup.rhythm}',
+          ),
         );
       }
     }
-
     AppLogger.d(
       'SetActiveConfigUseCase: Config validation passed for ${config.name}',
     );
+    return Result.success<void>(null);
   }
 }

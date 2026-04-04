@@ -6,11 +6,14 @@ import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/utils/settings_utils.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 import 'dart:async';
+
 part 'settings_notifier.g.dart';
 
 @riverpod
@@ -33,7 +36,14 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsUiState> _load() async {
     state = const AsyncLoading();
     try {
-      final settings = await _getSettingsUseCase!.execute();
+      final Result<Settings?> loadedResult = await _getSettingsUseCase!
+          .execute();
+      if (loadedResult.isFailure) {
+        return SettingsUiState.initial().copyWith(
+          error: 'Failed to load settings',
+        );
+      }
+      final Settings? settings = loadedResult.valueIfSuccess;
       return SettingsUiState(
         isLoading: false,
         language: settings?.language,
@@ -47,44 +57,55 @@ class SettingsNotifier extends _$SettingsNotifier {
         myAccentColorValue: settings?.myAccentColorValue,
         holidayAccentColorValue: settings?.holidayAccentColorValue,
       );
-    } catch (e) {
+    } catch (_) {
       return SettingsUiState.initial().copyWith(
         error: 'Failed to load settings',
       );
     }
   }
 
+  void _invalidateSettingsReadPath() {
+    ref.invalidate(getSettingsUseCaseProvider);
+    SettingsCache.clearCache();
+  }
+
+  /// Upsert persisted settings, invalidate read path; set UI error on failure.
+  Future<bool> _upsertPersisted(
+    Settings Function(Settings? current) build, {
+    void Function()? afterSuccess,
+  }) async {
+    try {
+      final Result<void> upsertResult = await _saveSettingsUseCase!.upsert(
+        build,
+      );
+      if (upsertResult.isFailure) {
+        final ui = state.value ?? SettingsUiState.initial();
+        state = AsyncData(ui.copyWith(error: 'Failed to save settings'));
+        return false;
+      }
+      _invalidateSettingsReadPath();
+      afterSuccess?.call();
+      return true;
+    } catch (_) {
+      final ui = state.value ?? SettingsUiState.initial();
+      state = AsyncData(ui.copyWith(error: 'Failed to save settings'));
+      return false;
+    }
+  }
+
   Future<void> setLanguage(String language) async {
     final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(language: language));
-    final existing = await _getSettingsUseCase!.execute();
-    if (existing != null) {
-      await _saveSettings(existing.copyWith(language: language));
-    } else {
-      // Create new settings with the language if none exist
-      final newSettings = Settings(
-        calendarFormat: CalendarFormat.month,
-        language: language,
-        themePreference: ThemePreference.system,
-        schoolHolidayStateCode: null,
-        showSchoolHolidays: null,
-      );
-      await _saveSettings(newSettings);
-    }
-
-    // Invalidate settings cache to ensure fresh data on next read
-    ref.invalidate(getSettingsUseCaseProvider);
-
-    // Clear the static settings cache to force reload with new settings
-    SettingsCache.clearCache();
+    await _upsertPersisted(
+      (Settings? c) => c != null
+          ? c.copyWith(language: language)
+          : Settings.withDefaults(language: language),
+    );
   }
 
   Future<void> setThemePreference(ThemePreference preference) async {
     final current = state.value ?? SettingsUiState.initial();
-    // Update UI immediately
     state = AsyncData(current.copyWith(themePreference: preference));
-
-    // Save in background without blocking UI
     unawaited(_saveThemePreferenceInBackground(preference));
   }
 
@@ -92,121 +113,82 @@ class SettingsNotifier extends _$SettingsNotifier {
     ThemePreference preference,
   ) async {
     try {
-      final existing = await _getSettingsUseCase!.execute();
-      if (existing != null) {
-        await _saveSettings(existing.copyWith(themePreference: preference));
-      } else {
-        // Create new settings with the theme preference if none exist
-        final newSettings = Settings(
-          calendarFormat: CalendarFormat.month,
-          themePreference: preference,
-        );
-        await _saveSettings(newSettings);
+      final Result<void> upsertResult = await _saveSettingsUseCase!.upsert(
+        (Settings? c) => c != null
+            ? c.copyWith(themePreference: preference)
+            : Settings.withDefaults(themePreference: preference),
+      );
+      if (upsertResult.isFailure) {
+        return;
       }
-
-      // Invalidate settings cache to ensure fresh data on next read
       ref.invalidate(getSettingsUseCaseProvider);
     } catch (e) {
-      // Silently handle errors for background saves
-      // The UI state is already updated, so we don't need to revert
+      AppLogger.d(
+        'SettingsNotifier: Best-effort save themePreference skipped '
+        '(preference=$preference, error=$e)',
+      );
     }
   }
 
   Future<void> setCalendarFormat(CalendarFormat format) async {
     final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(calendarFormat: format));
-    final existing = await _getSettingsUseCase!.execute();
-    if (existing != null) {
-      await _saveSettings(existing.copyWith(calendarFormat: format));
-    } else {
-      // Create new settings with the calendar format if none exist
-      final newSettings = Settings(
-        calendarFormat: format,
-        themePreference: ThemePreference.system,
-      );
-      await _saveSettings(newSettings);
+    final ok = await _upsertPersisted(
+      (Settings? c) => c != null
+          ? c.copyWith(calendarFormat: format)
+          : Settings.withDefaults(calendarFormat: format),
+    );
+    if (ok) {
+      await ref
+          .read(scheduleCoordinatorProvider.notifier)
+          .updateCalendarFormatOnly(format);
     }
-
-    // Invalidate settings cache to ensure fresh data on next read
-    ref.invalidate(getSettingsUseCaseProvider);
-
-    // Clear the static settings cache to force reload with new settings
-    SettingsCache.clearCache();
-
-    // Update schedule notifier calendar format without full invalidation
-    final scheduleNotifier = ref.read(scheduleCoordinatorProvider.notifier);
-    await scheduleNotifier.updateCalendarFormatOnly(format);
   }
 
   Future<void> setActiveConfigName(String name) async {
     final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(activeConfigName: name));
-    final existing = await _getSettingsUseCase!.execute();
-    if (existing != null) {
-      await _saveSettings(existing.copyWith(activeConfigName: name));
-    } else {
-      // Create new settings with the active config if none exist
-      final newSettings = Settings(
-        calendarFormat: CalendarFormat.month,
-        activeConfigName: name,
-        themePreference: ThemePreference.system,
-        schoolHolidayStateCode: null,
-        showSchoolHolidays: null,
-      );
-      await _saveSettings(newSettings);
-    }
-
-    // Invalidate settings cache to ensure fresh data on next read
-    ref.invalidate(getSettingsUseCaseProvider);
-
-    // Clear the static settings cache to force reload with new settings
-    SettingsCache.clearCache();
+    await _upsertPersisted(
+      (Settings? c) => c != null
+          ? c.copyWith(activeConfigName: name)
+          : Settings.withDefaults(activeConfigName: name),
+    );
   }
 
   Future<void> setMyDutyGroup(String? group) async {
     final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(myDutyGroup: group));
-    final existing = await _getSettingsUseCase!.execute();
-    if (existing != null) {
-      // Preserve current activeConfigName when saving myDutyGroup
-      await _saveSettings(
-        existing.copyWith(
-          myDutyGroup: group,
-          activeConfigName: SettingsUtils.selectActiveConfigNameToPersist(
-            currentActiveConfigName: current.activeConfigName,
-            existingActiveConfigName: existing.activeConfigName,
-          ),
-        ),
-      );
-    } else {
-      // Create new settings with the duty group if none exist
-      final newSettings = Settings(
-        calendarFormat: CalendarFormat.month,
-        myDutyGroup: group,
-        themePreference: ThemePreference.system,
-        schoolHolidayStateCode: null,
-        showSchoolHolidays: null,
-      );
-      await _saveSettings(newSettings);
+    final ok = await _upsertPersisted(
+      (Settings? c) {
+        if (c != null) {
+          return c.copyWith(
+            myDutyGroup: group,
+            activeConfigName: SettingsUtils.selectActiveConfigNameToPersist(
+              currentActiveConfigName: current.activeConfigName,
+              existingActiveConfigName: c.activeConfigName,
+            ),
+          );
+        }
+        return Settings.withDefaults(myDutyGroup: group);
+      },
+      afterSuccess: () {
+        ref.read(scheduleDataProvider.notifier).invalidateCache();
+        ref.invalidate(scheduleDataProvider);
+      },
+    );
+    if (!ok) {
+      return;
     }
-
-    // Invalidate settings cache to ensure fresh data on next read
-    ref.invalidate(getSettingsUseCaseProvider);
-
-    // Clear the static settings cache to force reload with new settings
-    SettingsCache.clearCache();
-
-    // Invalidate schedule data provider cache to force reload with new settings
-    ref.read(scheduleDataProvider.notifier).invalidateCache();
-
-    // Force refresh of the schedule data provider to get new settings
-    ref.invalidate(scheduleDataProvider);
   }
 
   Future<void> reset() async {
     try {
-      await _resetSettingsUseCase!.execute();
-      // Ensure all theme consumers recompute after reset
+      final Result<void> resetResult = await _resetSettingsUseCase!.execute();
+      if (resetResult.isFailure) {
+        final current = state.value ?? SettingsUiState.initial();
+        state = AsyncData(current.copyWith(error: 'Failed to reset settings'));
+        return;
+      }
       ref.invalidate(themeModeProvider);
       state = AsyncData(await _load());
     } catch (_) {
@@ -218,49 +200,20 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<void> setHolidayAccentColor(int? colorValue) async {
     final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(holidayAccentColorValue: colorValue));
-    final existing = await _getSettingsUseCase!.execute();
-    if (existing != null) {
-      await _saveSettings(
-        existing.copyWith(holidayAccentColorValue: colorValue),
-      );
-    } else {
-      // Create new settings with the holiday accent color if none exist
-      final newSettings = Settings(
-        calendarFormat: CalendarFormat.month,
-        holidayAccentColorValue: colorValue,
-        themePreference: ThemePreference.system,
-        schoolHolidayStateCode: null,
-        showSchoolHolidays: null,
-      );
-      await _saveSettings(newSettings);
+    final ok = await _upsertPersisted(
+      (Settings? c) => c != null
+          ? c.copyWith(holidayAccentColorValue: colorValue)
+          : Settings.withDefaults(holidayAccentColorValue: colorValue),
+    );
+    if (!ok) {
+      return;
     }
-
-    // Invalidate settings cache to ensure fresh data on next read
-    ref.invalidate(getSettingsUseCaseProvider);
-
-    // Clear the static settings cache to force reload with new settings
-    SettingsCache.clearCache();
-
-    // Refresh the schedule data provider and coordinator to update the holiday color in the calendar
-    // Do this after the settings are saved
     try {
-      // Invalidate the schedule data cache to force reload with new settings
       ref.read(scheduleDataProvider.notifier).invalidateCache();
-      // Also refresh the coordinator to ensure the calendar updates
       ref.invalidate(scheduleCoordinatorProvider);
     } catch (e) {
-      // If refresh fails, fall back to full invalidation
       ref.invalidate(scheduleDataProvider);
       ref.invalidate(scheduleCoordinatorProvider);
-    }
-  }
-
-  Future<void> _saveSettings(Settings settings) async {
-    try {
-      await _saveSettingsUseCase!.execute(settings);
-    } catch (_) {
-      final current = state.value ?? SettingsUiState.initial();
-      state = AsyncData(current.copyWith(error: 'Failed to save settings'));
     }
   }
 }

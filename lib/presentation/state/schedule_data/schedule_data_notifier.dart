@@ -11,7 +11,10 @@ import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
+import 'package:dienstplan/domain/failures/result.dart';
+import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_cache_manager.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_loading_queue.dart';
@@ -68,8 +71,16 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     try {
       // Detect config version changes and invalidate caches if needed
       await _invalidateCacheOnVersionChange();
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final settings = settingsResult.isSuccess ? settingsResult.value : null;
+      final Result<Settings?> settingsResult = await _getSettingsUseCase!
+          .execute();
+      if (settingsResult.isFailure) {
+        final message = await _presentFailure(settingsResult.failure);
+        return ScheduleDataUiState.initial().copyWith(
+          isLoading: false,
+          error: message,
+        );
+      }
+      final settings = settingsResult.valueIfSuccess;
 
       final activeConfigName = settings?.activeConfigName;
       final preferredDutyGroup = settings?.myDutyGroup;
@@ -86,12 +97,11 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
           'ScheduleDataNotifier: Initial load range: ${initialRange.start} to ${initialRange.end}',
         );
 
-        final schedulesResult = await _getSchedulesUseCase!
-            .executeForDateRangeSafe(
-              startDate: initialRange.start,
-              endDate: initialRange.end,
-              configName: activeConfigName,
-            );
+        final schedulesResult = await _getSchedulesUseCase!.executeForDateRange(
+          startDate: initialRange.start,
+          endDate: initialRange.end,
+          configName: activeConfigName,
+        );
 
         if (schedulesResult.isSuccess) {
           schedules = schedulesResult.value;
@@ -131,9 +141,14 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   Future<void> _invalidateCacheOnVersionChange() async {
     try {
       final getConfigs = await ref.read(getConfigsUseCaseProvider.future);
-      final configs = await getConfigs.execute();
+      final Result<List<DutyScheduleConfig>> configsResult = await getConfigs
+          .execute();
+      if (configsResult.isFailure) {
+        return;
+      }
+      final List<DutyScheduleConfig> configs = configsResult.value;
       bool anyInvalidated = false;
-      for (final c in configs) {
+      for (final DutyScheduleConfig c in configs) {
         final String name = c.name;
         final String version = c.version;
         final String? previous = _lastKnownConfigVersions[name];
@@ -147,15 +162,22 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         _cachedState = null;
         _lastCacheTime = null;
         // Proactively ensure current month for active config so UI updates
-        final settingsResult = await _getSettingsUseCase!.executeSafe();
-        final settings = settingsResult.isSuccess ? settingsResult.value : null;
+        final Result<Settings?> settingsResult = await _getSettingsUseCase!
+            .execute();
+        final Settings? settings = settingsResult.valueIfSuccess;
         final String? activeName = settings?.activeConfigName;
-        if (activeName != null && activeName.isNotEmpty) {
+        if (activeName != null &&
+            activeName.isNotEmpty &&
+            settingsResult.isSuccess) {
           final DateTime now = DateTime.now();
-          await _ensureMonthSchedulesUseCase!.execute(
-            monthStart: DateTime(now.year, now.month, 1),
-            configName: activeName,
-          );
+          final Result<List<Schedule>> ensureResult =
+              await _ensureMonthSchedulesUseCase!.execute(
+                monthStart: DateTime(now.year, now.month, 1),
+                configName: activeName,
+              );
+          if (ensureResult.isFailure) {
+            return;
+          }
           // Reload the range into state and cache
           final DateTime startDate = DateTime(now.year, now.month, 1);
           final DateTime endDate = DateTime(now.year, now.month + 1, 0);
@@ -239,12 +261,11 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     }
 
     try {
-      final schedulesResult = await _getSchedulesUseCase!
-          .executeForDateRangeSafe(
-            startDate: startDate,
-            endDate: endDate,
-            configName: configName,
-          );
+      final schedulesResult = await _getSchedulesUseCase!.executeForDateRange(
+        startDate: startDate,
+        endDate: endDate,
+        configName: configName,
+      );
 
       if (schedulesResult.isSuccess) {
         final newSchedules = schedulesResult.value;
@@ -303,11 +324,23 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     state = AsyncData(current.copyWith(isLoading: true));
 
     try {
-      await _generateSchedulesUseCase!.execute(
-        startDate: DateTime(month.year, month.month, 1),
-        endDate: DateTime(month.year, month.month + 1, 0),
-        configName: configName,
-      );
+      final Result<List<Schedule>> genResult = await _generateSchedulesUseCase!
+          .execute(
+            startDate: DateTime(month.year, month.month, 1),
+            endDate: DateTime(month.year, month.month + 1, 0),
+            configName: configName,
+          );
+      if (genResult.isFailure) {
+        if (ref.mounted) {
+          state = AsyncData(
+            current.copyWith(
+              error: genResult.failure.technicalMessage,
+              isLoading: false,
+            ),
+          );
+        }
+        return;
+      }
 
       if (!ref.mounted) return;
 
@@ -350,10 +383,19 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
     await _loadingQueue.executeIfNotPending(operationKey, () async {
       try {
-        await _ensureMonthSchedulesUseCase!.execute(
-          monthStart: month,
-          configName: configName,
-        );
+        final Result<List<Schedule>> ensureResult =
+            await _ensureMonthSchedulesUseCase!.execute(
+              monthStart: month,
+              configName: configName,
+            );
+        if (ensureResult.isFailure) {
+          if (ref.mounted) {
+            state = AsyncData(
+              current.copyWith(error: ensureResult.failure.technicalMessage),
+            );
+          }
+          return;
+        }
 
         if (!ref.mounted) return;
 
@@ -387,8 +429,9 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     if (!ref.mounted) return;
 
     try {
-      final settingsResult = await _getSettingsUseCase!.executeSafe();
-      final settings = settingsResult.isSuccess ? settingsResult.value : null;
+      final Result<Settings?> settingsResult = await _getSettingsUseCase!
+          .execute();
+      final Settings? settings = settingsResult.valueIfSuccess;
       final selectedDutyGroup = settings?.selectedDutyGroup;
 
       // Only update if the value actually changed
