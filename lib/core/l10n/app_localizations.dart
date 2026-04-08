@@ -626,6 +626,216 @@ abstract class AppLocalizations {
   /// **'All'**
   String get all;
 
+  /// Title for calendar export option
+  ///
+  /// In en, this message translates to:
+  /// **'Export Calendar'**
+  String get exportCalendar;
+
+  /// Description for calendar export option
+  ///
+  /// In en, this message translates to:
+  /// **'Export duty entries as an .ics calendar file'**
+  String get exportCalendarDescription;
+
+  /// Label for export start date
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get exportCalendarStartDate;
+
+  /// Label for export end date
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get exportCalendarEndDate;
+
+  /// Label for including partner schedule in export
+  ///
+  /// In en, this message translates to:
+  /// **'Include partner schedule'**
+  String get exportCalendarIncludePartner;
+
+  /// Description for including partner schedule in export
+  ///
+  /// In en, this message translates to:
+  /// **'Add the configured partner duty group to the export'**
+  String get exportCalendarIncludePartnerDescription;
+
+  /// Short label prepended to partner calendar event titles in ICS export (before colon)
+  ///
+  /// In en, this message translates to:
+  /// **'Partner'**
+  String get exportCalendarPartnerSummaryPrefix;
+
+  /// Label for including holidays in export
+  ///
+  /// In en, this message translates to:
+  /// **'Include holidays'**
+  String get exportCalendarIncludeHolidays;
+
+  /// Description for including holidays in export
+  ///
+  /// In en, this message translates to:
+  /// **'Add configured school holidays to the export'**
+  String get exportCalendarIncludeHolidaysDescription;
+
+  /// Button label for starting calendar export
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get exportCalendarButton;
+
+  /// Action: share ICS file
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exportCalendarActionShare;
+
+  /// Subtitle for share action
+  ///
+  /// In en, this message translates to:
+  /// **'Send via other apps'**
+  String get exportCalendarActionShareSubtitle;
+
+  /// Action: save ICS file
+  ///
+  /// In en, this message translates to:
+  /// **'Save to device'**
+  String get exportCalendarActionSave;
+
+  /// Subtitle for save action
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Downloads or a chosen folder'**
+  String get exportCalendarActionSaveSubtitle;
+
+  /// Action: open ICS in external app
+  ///
+  /// In en, this message translates to:
+  /// **'Open with calendar app'**
+  String get exportCalendarActionOpen;
+
+  /// Subtitle for open action
+  ///
+  /// In en, this message translates to:
+  /// **'Import directly into your calendar app'**
+  String get exportCalendarActionOpenSubtitle;
+
+  /// Short label for share in the export action button row (avoids overflow)
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exportCalendarActionRowShare;
+
+  /// Short label for save in the export action button row
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get exportCalendarActionRowSave;
+
+  /// Short label for open-in-calendar in the export action button row
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get exportCalendarActionRowOpen;
+
+  /// Button to return to export configuration
+  ///
+  /// In en, this message translates to:
+  /// **'Back to configuration'**
+  String get exportCalendarBackButton;
+
+  /// Success after share
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar file shared'**
+  String get exportCalendarShareSuccess;
+
+  /// Success after save
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar file saved'**
+  String get exportCalendarSaveSuccess;
+
+  /// Success after open
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar file opened'**
+  String get exportCalendarOpenSuccess;
+
+  /// User dismissed save dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Save cancelled.'**
+  String get exportCalendarSaveCancelled;
+
+  /// No handler for ICS
+  ///
+  /// In en, this message translates to:
+  /// **'No app found to open this file.'**
+  String get exportCalendarOpenNoApp;
+
+  /// Generic error when opening ICS
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the file.'**
+  String get exportCalendarOpenFailed;
+
+  /// Subject for shared calendar export
+  ///
+  /// In en, this message translates to:
+  /// **'Duty schedule calendar export'**
+  String get exportCalendarSubject;
+
+  /// Share text for calendar export
+  ///
+  /// In en, this message translates to:
+  /// **'Import this file into your calendar app.'**
+  String get exportCalendarShareText;
+
+  /// Validation message for invalid export range
+  ///
+  /// In en, this message translates to:
+  /// **'The start date must be before or equal to the end date.'**
+  String get exportCalendarInvalidRange;
+
+  /// Validation message when no active schedule is configured
+  ///
+  /// In en, this message translates to:
+  /// **'Select your duty schedule before exporting.'**
+  String get exportCalendarNoActiveSchedule;
+
+  /// Message when partner export is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'Configure a partner schedule and duty group to enable this option.'**
+  String get exportCalendarPartnerUnavailable;
+
+  /// Message when holiday export is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'Configure school holidays to enable this option.'**
+  String get exportCalendarHolidayUnavailable;
+
+  /// Message when no calendar entries are available for export
+  ///
+  /// In en, this message translates to:
+  /// **'No calendar entries were found for the selected range.'**
+  String get exportCalendarEmpty;
+
+  /// Message when calendar export fails
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar export failed.'**
+  String get exportCalendarError;
+
+  /// Message when calendar export succeeds
+  ///
+  /// In en, this message translates to:
+  /// **'{entryCount} calendar entries exported'**
+  String exportCalendarSuccess(int entryCount);
+
   /// Title for share app option
   ///
   /// In en, this message translates to:

@@ -290,6 +290,125 @@ class AppLocalizationsDe extends AppLocalizations {
   String get all => 'Alle';
 
   @override
+  String get exportCalendar => 'Kalender exportieren';
+
+  @override
+  String get exportCalendarDescription =>
+      'Exportiere Diensteinträge als .ics-Kalenderdatei';
+
+  @override
+  String get exportCalendarStartDate => 'Startdatum';
+
+  @override
+  String get exportCalendarEndDate => 'Enddatum';
+
+  @override
+  String get exportCalendarIncludePartner => 'Partnerdienstplan einschließen';
+
+  @override
+  String get exportCalendarIncludePartnerDescription =>
+      'Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu';
+
+  @override
+  String get exportCalendarPartnerSummaryPrefix => 'Partner';
+
+  @override
+  String get exportCalendarIncludeHolidays => 'Ferien einschließen';
+
+  @override
+  String get exportCalendarIncludeHolidaysDescription =>
+      'Fügt konfigurierte Schulferien zum Export hinzu';
+
+  @override
+  String get exportCalendarButton => 'Weiter';
+
+  @override
+  String get exportCalendarActionShare => 'Teilen';
+
+  @override
+  String get exportCalendarActionShareSubtitle => 'Über andere Apps versenden';
+
+  @override
+  String get exportCalendarActionSave => 'Auf dem Gerät speichern';
+
+  @override
+  String get exportCalendarActionSaveSubtitle =>
+      'In Downloads oder gewähltem Ordner sichern';
+
+  @override
+  String get exportCalendarActionOpen => 'Mit Kalender-App öffnen';
+
+  @override
+  String get exportCalendarActionOpenSubtitle =>
+      'Direkt in die Kalender-App importieren';
+
+  @override
+  String get exportCalendarActionRowShare => 'Teilen';
+
+  @override
+  String get exportCalendarActionRowSave => 'Speichern';
+
+  @override
+  String get exportCalendarActionRowOpen => 'In Kalender';
+
+  @override
+  String get exportCalendarBackButton => 'Zurück zur Konfiguration';
+
+  @override
+  String get exportCalendarShareSuccess => 'Kalenderdatei geteilt';
+
+  @override
+  String get exportCalendarSaveSuccess => 'Kalenderdatei gespeichert';
+
+  @override
+  String get exportCalendarOpenSuccess => 'Kalenderdatei geöffnet';
+
+  @override
+  String get exportCalendarSaveCancelled => 'Speichern abgebrochen.';
+
+  @override
+  String get exportCalendarOpenNoApp =>
+      'Keine passende App zum Öffnen dieser Datei gefunden.';
+
+  @override
+  String get exportCalendarOpenFailed => 'Datei konnte nicht geöffnet werden.';
+
+  @override
+  String get exportCalendarSubject => 'Dienstplan Kalenderexport';
+
+  @override
+  String get exportCalendarShareText =>
+      'Importiere diese Datei in deine Kalender-App.';
+
+  @override
+  String get exportCalendarInvalidRange =>
+      'Das Startdatum muss vor oder auf dem Enddatum liegen.';
+
+  @override
+  String get exportCalendarNoActiveSchedule =>
+      'Wähle zuerst deinen Dienstplan aus, bevor du exportierst.';
+
+  @override
+  String get exportCalendarPartnerUnavailable =>
+      'Konfiguriere einen Partnerdienstplan und eine Dienstgruppe, um diese Option zu aktivieren.';
+
+  @override
+  String get exportCalendarHolidayUnavailable =>
+      'Konfiguriere Schulferien, um diese Option zu aktivieren.';
+
+  @override
+  String get exportCalendarEmpty =>
+      'Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.';
+
+  @override
+  String get exportCalendarError => 'Kalenderexport fehlgeschlagen.';
+
+  @override
+  String exportCalendarSuccess(int entryCount) {
+    return '$entryCount Kalendereinträge exportiert';
+  }
+
+  @override
   String get shareApp => 'App weiterempfehlen';
 
   @override

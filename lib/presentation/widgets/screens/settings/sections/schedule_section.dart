@@ -12,6 +12,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/components/bott
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/partner_group_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/partner_config_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/partner_color_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/calendar_export_bottomsheet.dart';
 
 class ScheduleSection extends StatelessWidget {
   final ScheduleUiState state;
@@ -62,6 +63,15 @@ class ScheduleSection extends StatelessWidget {
                       context,
                       heightPercentage: 0.6, // 60% for color selection
                     )
+                  : () => _showDutyScheduleRequiredMessage(context, l10n),
+            ),
+            NavigationCard(
+              icon: Icons.ios_share_outlined,
+              title: l10n.exportCalendar,
+              subtitle: l10n.exportCalendarDescription,
+              enabled: _isMyDutyGroupEnabled(state),
+              onTap: _isMyDutyGroupEnabled(state)
+                  ? () => CalendarExportBottomsheet.show(context)
                   : () => _showDutyScheduleRequiredMessage(context, l10n),
             ),
           ],
