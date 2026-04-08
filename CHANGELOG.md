@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.15.0](https://github.com/lusu007/dienstplan/compare/v0.14.0...v0.15.0) (2026-04-08)
+
+
+### Features
+
+* schedule export ([#369](https://github.com/lusu007/dienstplan/issues/369)) ([b92d768](https://github.com/lusu007/dienstplan/commit/b92d768eab115c25147c8c2a80369f744242a441))
+
+
+### Bug Fixes
+
+* improve code quality and perf improv ([#367](https://github.com/lusu007/dienstplan/issues/367)) ([195de8c](https://github.com/lusu007/dienstplan/commit/195de8c121fba22b7c2846dfa72bf0e9a284713c))
+* improve generation and loading of schedules ([#368](https://github.com/lusu007/dienstplan/issues/368)) ([4fb25fa](https://github.com/lusu007/dienstplan/commit/4fb25fafbcf7a1fede44f0e7e8ea2b47400a2209))
+* **schedule:** align cold start with visible calendar range ([#370](https://github.com/lusu007/dienstplan/issues/370)) ([2250359](https://github.com/lusu007/dienstplan/commit/22503591b08056c4d29ecf17c2d5eee8fd62b47c))
+* update missing deps ([#365](https://github.com/lusu007/dienstplan/issues/365)) ([179379b](https://github.com/lusu007/dienstplan/commit/179379bf79ab875fc7297acb923901575eaba483))
+
 ## [0.14.0](https://github.com/lusu007/dienstplan/compare/v0.13.0...v0.14.0) (2025-12-24)
 
 
