@@ -10,6 +10,7 @@ import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
@@ -105,6 +106,41 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
         if (schedulesResult.isSuccess) {
           schedules = schedulesResult.value;
+          final List<Result<List<Schedule>>> ensureResults =
+              await Future.wait(<Future<Result<List<Schedule>>>>[
+                for (
+                  int i = -kMonthsPrefetchRadius;
+                  i <= kMonthsPrefetchRadius;
+                  i++
+                )
+                  _ensureMonthSchedulesUseCase!.execute(
+                    configName: activeConfigName,
+                    monthStart: DateTime(now.year, now.month + i, 1),
+                  ),
+              ]);
+          final int ensureCount = ensureResults.length;
+          for (int idx = 0; idx < ensureCount; idx++) {
+            final Result<List<Schedule>> ensured = ensureResults[idx];
+            final int monthOffset = -kMonthsPrefetchRadius + idx;
+            final DateTime ensuredMonth = DateTime(
+              now.year,
+              now.month + monthOffset,
+              1,
+            );
+            if (ensured.isSuccess) {
+              schedules = _scheduleMergeService!.upsertByKey(
+                existing: schedules,
+                incoming: ensured.value,
+              );
+            } else {
+              await AppLogger.w(
+                'Failed to ensure schedules during cold start '
+                '(configName=$activeConfigName, year=${ensuredMonth.year}, '
+                'month=${ensuredMonth.month}, failureCode=${ensured.failure.code}, '
+                'reason=${ensured.failure.technicalMessage})',
+              );
+            }
+          }
         } else {
           final message = await _presentFailure(schedulesResult.failure);
           return ScheduleDataUiState(

@@ -1,3 +1,4 @@
+import 'package:dienstplan/core/utils/calendar_date_math.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/repositories/schedule_repository.dart';
@@ -67,10 +68,14 @@ class GenerateSchedulesUseCase {
         return Result.createFailure<List<Schedule>>(existingResult.failure);
       }
       final List<Schedule> existingSchedules = existingResult.value;
-      const int expectedSchedulesPerDay = kExpectedSchedulesPerDay;
-      final int daysDifference = endDate.difference(startDate).inDays;
+      final int expectedSchedulesPerDay =
+          config.expectedSchedulesPerCalendarDay;
+      final int inclusiveCalendarDays = utcCalendarInclusiveDayCount(
+        startDate,
+        endDate,
+      );
       final int expectedTotalSchedules =
-          daysDifference * expectedSchedulesPerDay;
+          inclusiveCalendarDays * expectedSchedulesPerDay;
       const double coverageThreshold = kCoverageThreshold;
       if (existingSchedules.length >=
           expectedTotalSchedules * coverageThreshold) {

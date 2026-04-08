@@ -369,7 +369,8 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           }
         }
 
-        // Ensure focused, previous and next months exist (generate only when empty or without valid items for active config)
+        // Ensure previous, focused, and next months exist (must match
+        // computeFocusedRange visible trailing/leading days).
         Future<void> ensureMonthGenerated(DateTime monthStart) async {
           final Result<List<Schedule>> ensuredResult =
               await _ensureMonthSchedulesUseCase!.execute(
@@ -381,9 +382,8 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           }
         }
 
-        // Generate focused month and next N months in parallel using isolate
         await Future.wait(<Future<void>>[
-          for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+          for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
             ensureMonthGenerated(DateTime(day.year, day.month + i, 1)),
         ]);
 
@@ -401,7 +401,11 @@ class ScheduleNotifier extends _$ScheduleNotifier {
           }
 
           await Future.wait(<Future<void>>[
-            for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+            for (
+              int i = -kMonthsPrefetchRadius;
+              i <= kMonthsPrefetchRadius;
+              i++
+            )
               ensurePartnerMonthGenerated(DateTime(day.year, day.month + i, 1)),
           ]);
         }
@@ -860,7 +864,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       }
 
       await Future.wait(<Future<void>>[
-        for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+        for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
           ensurePartnerMonth(DateTime(focused.year, focused.month + i, 1)),
       ]);
 
@@ -919,7 +923,7 @@ class ScheduleNotifier extends _$ScheduleNotifier {
       }
 
       await Future.wait(<Future<void>>[
-        for (int i = 0; i <= kMonthsPrefetchRadius; i++)
+        for (int i = -kMonthsPrefetchRadius; i <= kMonthsPrefetchRadius; i++)
           ensureActiveMonth(DateTime(focused.year, focused.month + i, 1)),
       ]);
 

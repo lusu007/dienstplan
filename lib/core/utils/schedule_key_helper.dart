@@ -17,11 +17,13 @@ class ScheduleKeyParts {
 class ScheduleKeyHelper {
   static const String _separator = '_';
 
+  /// Calendar y-m-d in [date]'s timezone (local or UTC). Do not use [toUtc] here:
+  /// local midnights for range ends (e.g. last day of month) must not shift to the
+  /// previous UTC day, or SQL `date_ymd` bounds drop the last calendar day (DST).
   static String formatDateYmd(DateTime date) {
-    final DateTime utc = date.toUtc();
-    final String y = utc.year.toString().padLeft(4, '0');
-    final String m = utc.month.toString().padLeft(2, '0');
-    final String d = utc.day.toString().padLeft(2, '0');
+    final String y = date.year.toString().padLeft(4, '0');
+    final String m = date.month.toString().padLeft(2, '0');
+    final String d = date.day.toString().padLeft(2, '0');
     return '$y-$m-$d';
   }
 

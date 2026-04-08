@@ -9,6 +9,7 @@ import 'package:dienstplan/data/models/schedule.dart';
 import 'package:dienstplan/data/models/duty_schedule_config.dart';
 import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
 import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
+import 'package:dienstplan/core/utils/calendar_date_math.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/prefs_keys.dart';
 import 'package:dienstplan/data/services/notification_service.dart';
@@ -299,9 +300,11 @@ class ScheduleConfigService extends ChangeNotifier {
     final effectiveEndDate =
         endDate ?? config.startDate.add(const Duration(days: 27375));
 
-    final daysToGenerate = effectiveEndDate
-        .difference(effectiveStartDate)
-        .inDays;
+    final DateTime rangeStart = utcCalendarDateOnly(effectiveStartDate);
+    final int daysToGenerate = utcCalendarDaySpan(
+      effectiveStartDate,
+      effectiveEndDate,
+    );
     AppLogger.i(
       'Generating schedules for ${daysToGenerate + 1} days from ${effectiveStartDate.toIso8601String()} to ${effectiveEndDate.toIso8601String()}',
     );
@@ -336,8 +339,7 @@ class ScheduleConfigService extends ChangeNotifier {
       final batchSchedules = <Schedule>[];
 
       for (var i = batchStart; i <= batchEnd; i++) {
-        final date = effectiveStartDate.add(Duration(days: i));
-        final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+        final DateTime normalizedDate = rangeStart.add(Duration(days: i));
 
         final deltaDays = normalizedDate.difference(normalizedStartDate).inDays;
 
