@@ -1,3 +1,4 @@
+import 'package:dienstplan/core/utils/schedule_key_helper.dart';
 import 'package:dienstplan/data/services/database_service.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:sqflite/sqflite.dart';
@@ -28,7 +29,7 @@ class MaintenanceDao {
       final db = await _databaseService.database;
       final cutoffDate = DateTime.now().subtract(Duration(days: daysToKeep));
       // Use date_ymd for better index utilization
-      final cutoffYmd = _formatDateYmd(cutoffDate);
+      final cutoffYmd = ScheduleKeyHelper.formatDateYmd(cutoffDate);
       final deleted = await db.delete(
         'schedules',
         where: 'date_ymd < ?',
@@ -39,14 +40,6 @@ class MaintenanceDao {
       AppLogger.e('MaintenanceDao: Error cleaning up old data', e, stackTrace);
       rethrow;
     }
-  }
-
-  String _formatDateYmd(DateTime date) {
-    final DateTime utc = date.toUtc();
-    final String y = utc.year.toString().padLeft(4, '0');
-    final String m = utc.month.toString().padLeft(2, '0');
-    final String d = utc.day.toString().padLeft(2, '0');
-    return '$y-$m-$d';
   }
 
   Future<bool> hasData() async {

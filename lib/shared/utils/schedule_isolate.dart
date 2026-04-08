@@ -1,4 +1,5 @@
 import 'dart:isolate';
+import 'package:dienstplan/core/utils/calendar_date_math.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
@@ -186,7 +187,8 @@ class ScheduleGenerationIsolate {
   ) {
     final schedules = <Schedule>[];
 
-    final daysToGenerate = endDate.difference(startDate).inDays;
+    final DateTime rangeStart = utcCalendarDateOnly(startDate);
+    final int daysToGenerate = utcCalendarDaySpan(startDate, endDate);
 
     // Pre-calculate normalized start date
     final normalizedStartDate = DateTime.utc(
@@ -208,8 +210,7 @@ class ScheduleGenerationIsolate {
     final dutyTypes = config.dutyTypes;
 
     for (var i = 0; i <= daysToGenerate; i++) {
-      final date = startDate.add(Duration(days: i));
-      final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+      final DateTime normalizedDate = rangeStart.add(Duration(days: i));
 
       final deltaDays = normalizedDate.difference(normalizedStartDate).inDays;
 

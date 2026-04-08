@@ -21,4 +21,7 @@ abstract class DutyScheduleConfig with _$DutyScheduleConfig {
 
   String get name => meta.name;
   DateTime get startDate => meta.startDate;
+
+  /// Generation emits at most one schedule row per duty group per calendar day.
+  int get expectedSchedulesPerCalendarDay => dutyGroups.length;
 }

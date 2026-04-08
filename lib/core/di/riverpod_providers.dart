@@ -408,10 +408,13 @@ Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
   final ScheduleRepository repo = await ref.watch(
     scheduleRepositoryProvider.future,
   );
+  final ConfigRepository configRepo = await ref.watch(
+    configRepositoryProvider.future,
+  );
   final GenerateSchedulesUseCase gen = await ref.watch(
     generateSchedulesUseCaseProvider.future,
   );
-  return EnsureMonthSchedulesUseCase(repo, gen);
+  return EnsureMonthSchedulesUseCase(repo, configRepo, gen);
 }
 
 final generateCalendarExportUseCaseProvider =

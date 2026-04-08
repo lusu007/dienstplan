@@ -23,15 +23,9 @@ class PlusMinusMonthsPolicy implements DateRangePolicy {
 
   @override
   DateRange computeInitialRange(DateTime anchor) {
-    // Load only current month + 1 month ahead for initial load
-    // This allows dynamic loading to be tested when navigating beyond this range
-    final DateTime start = DateTime(anchor.year, anchor.month, 1);
-    final DateTime end = DateTime(
-      anchor.year,
-      anchor.month + 2, // Current month + 1 month ahead
-      0,
-    );
-    return DateRange(start: start, end: end);
+    // Must match visible month grid (leading/trailing days): same window as
+    // computeFocusedRange so cold start loads data for neighbor months.
+    return computeFocusedRange(anchor);
   }
 
   @override

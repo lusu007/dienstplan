@@ -10,9 +10,6 @@ const int kInitialEnsureMonthsRadius = 1;
 // Number of months to keep in memory to prevent accumulation (past months)
 const int kMonthsToKeepInMemory = 4;
 
-// Expected number of schedules per day (used for coverage heuristic)
-const int kExpectedSchedulesPerDay = 5;
-
 // Fraction of expected schedules that indicates sufficient coverage
 const double kCoverageThreshold = 0.8;
 
