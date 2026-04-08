@@ -308,6 +308,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add the configured partner duty group to the export';
 
   @override
+  String get exportCalendarPartnerSummaryPrefix => 'Partner';
+
+  @override
   String get exportCalendarIncludeHolidays => 'Include holidays';
 
   @override
@@ -315,7 +318,57 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add configured school holidays to the export';
 
   @override
-  String get exportCalendarButton => 'Export .ics file';
+  String get exportCalendarButton => 'Continue';
+
+  @override
+  String get exportCalendarActionShare => 'Share';
+
+  @override
+  String get exportCalendarActionShareSubtitle => 'Send via other apps';
+
+  @override
+  String get exportCalendarActionSave => 'Save to device';
+
+  @override
+  String get exportCalendarActionSaveSubtitle =>
+      'Save to Downloads or a chosen folder';
+
+  @override
+  String get exportCalendarActionOpen => 'Open with calendar app';
+
+  @override
+  String get exportCalendarActionOpenSubtitle =>
+      'Import directly into your calendar app';
+
+  @override
+  String get exportCalendarActionRowShare => 'Share';
+
+  @override
+  String get exportCalendarActionRowSave => 'Save';
+
+  @override
+  String get exportCalendarActionRowOpen => 'Open';
+
+  @override
+  String get exportCalendarBackButton => 'Back to configuration';
+
+  @override
+  String get exportCalendarShareSuccess => 'Calendar file shared';
+
+  @override
+  String get exportCalendarSaveSuccess => 'Calendar file saved';
+
+  @override
+  String get exportCalendarOpenSuccess => 'Calendar file opened';
+
+  @override
+  String get exportCalendarSaveCancelled => 'Save cancelled.';
+
+  @override
+  String get exportCalendarOpenNoApp => 'No app found to open this file.';
+
+  @override
+  String get exportCalendarOpenFailed => 'Could not open the file.';
 
   @override
   String get exportCalendarSubject => 'Duty schedule calendar export';

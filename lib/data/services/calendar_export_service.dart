@@ -1,70 +1,206 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/entities/calendar_export_payload.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/failures/result.dart';
+import 'package:file_saver/file_saver.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-class CalendarExportShareResult {
+class CalendarExportPreparedResult {
   final String filePath;
   final int entryCount;
+  final String fileName;
 
-  const CalendarExportShareResult({
+  const CalendarExportPreparedResult({
     required this.filePath,
     required this.entryCount,
+    required this.fileName,
   });
 }
 
 class CalendarExportService {
-  Future<Result<CalendarExportShareResult>> shareCalendarExport({
-    required CalendarExportPayload payload,
-    required AppLocalizations l10n,
-  }) async {
+  Future<Result<CalendarExportPreparedResult>> writeCalendarExportToTemp(
+    CalendarExportPayload payload,
+  ) async {
     try {
       final directory = await getTemporaryDirectory();
       final file = File(path.join(directory.path, payload.fileName));
       final content = _buildIcsContent(payload);
-
       await file.writeAsString(content, encoding: utf8, flush: true);
-
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path, mimeType: 'text/calendar')],
-          subject: l10n.exportCalendarSubject,
-          text: l10n.exportCalendarShareText,
-        ),
-      );
-
       AppLogger.i(
-        'Calendar export shared successfully (filePath=${file.path}, entryCount=${payload.entries.length})',
+        'Calendar export prepared in temp (entryCount=${payload.entries.length})',
       );
-
-      return Result.success<CalendarExportShareResult>(
-        CalendarExportShareResult(
+      return Result.success<CalendarExportPreparedResult>(
+        CalendarExportPreparedResult(
           filePath: file.path,
           entryCount: payload.entries.length,
+          fileName: payload.fileName,
         ),
       );
     } catch (error, stackTrace) {
       AppLogger.e(
-        'Calendar export sharing failed (fileName=${payload.fileName}, entryCount=${payload.entries.length})',
+        'Calendar export temp write failed (fileName=${payload.fileName}, entryCount=${payload.entries.length})',
         error,
         stackTrace,
       );
-      return Result.createFailure<CalendarExportShareResult>(
+      return Result.createFailure<CalendarExportPreparedResult>(
         StorageFailure(
           technicalMessage:
-              'Calendar export sharing failed (fileName=${payload.fileName})',
+              'Calendar export temp write failed (fileName=${payload.fileName})',
           cause: error,
           stackTrace: stackTrace,
         ),
       );
     }
+  }
+
+  Future<Result<void>> sharePreparedCalendarExport({
+    required String filePath,
+    required int entryCount,
+    required AppLocalizations l10n,
+  }) async {
+    try {
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(filePath, mimeType: 'text/calendar')],
+          subject: l10n.exportCalendarSubject,
+          text: l10n.exportCalendarShareText,
+        ),
+      );
+      AppLogger.i(
+        'Calendar export shared successfully (entryCount=$entryCount)',
+      );
+      return Result.success<void>(null);
+    } catch (error, stackTrace) {
+      AppLogger.e(
+        'Calendar export sharing failed (entryCount=$entryCount)',
+        error,
+        stackTrace,
+      );
+      return Result.createFailure<void>(
+        StorageFailure(
+          technicalMessage:
+              'Calendar export sharing failed (entryCount=$entryCount)',
+          cause: error,
+          stackTrace: stackTrace,
+        ),
+      );
+    }
+  }
+
+  Future<Result<void>> savePreparedCalendarExport({
+    required String filePath,
+    required String fileName,
+    required int entryCount,
+  }) async {
+    try {
+      final baseName = _icsBaseName(fileName);
+      final savedPath = await FileSaver.instance.saveAs(
+        name: baseName,
+        filePath: filePath,
+        fileExtension: 'ics',
+        mimeType: MimeType.custom,
+        customMimeType: 'text/calendar',
+      );
+      if (savedPath == null || savedPath.isEmpty) {
+        AppLogger.i(
+          'Calendar export save dismissed by user (entryCount=$entryCount)',
+        );
+        return Result.createFailure<void>(
+          const ValidationFailure(
+            technicalMessage:
+                'Calendar export save cancelled (reason=user_dismissed)',
+            userMessageKey: 'calendarExportSaveCancelled',
+          ),
+        );
+      }
+      AppLogger.i(
+        'Calendar export saved to user-chosen location (entryCount=$entryCount)',
+      );
+      return Result.success<void>(null);
+    } catch (error, stackTrace) {
+      AppLogger.e(
+        'Calendar export save failed (entryCount=$entryCount)',
+        error,
+        stackTrace,
+      );
+      return Result.createFailure<void>(
+        StorageFailure(
+          technicalMessage:
+              'Calendar export save failed (entryCount=$entryCount)',
+          cause: error,
+          stackTrace: stackTrace,
+        ),
+      );
+    }
+  }
+
+  Future<Result<void>> openPreparedCalendarExport({
+    required String filePath,
+    required int entryCount,
+  }) async {
+    try {
+      final OpenResult openResult = await OpenFilex.open(
+        filePath,
+        type: 'text/calendar',
+      );
+      if (openResult.type == ResultType.done) {
+        AppLogger.i(
+          'Calendar export opened with external app (entryCount=$entryCount)',
+        );
+        return Result.success<void>(null);
+      }
+      if (openResult.type == ResultType.noAppToOpen) {
+        AppLogger.w(
+          'Calendar export open failed: no app to handle ics (entryCount=$entryCount)',
+        );
+        return Result.createFailure<void>(
+          const ValidationFailure(
+            technicalMessage:
+                'Calendar export open failed (reason=no_app_to_open)',
+            userMessageKey: 'calendarExportOpenNoApp',
+          ),
+        );
+      }
+      AppLogger.w(
+        'Calendar export open finished with status (type=${openResult.type.name}, message=${openResult.message}, entryCount=$entryCount)',
+      );
+      return Result.createFailure<void>(
+        ValidationFailure(
+          technicalMessage:
+              'Calendar export open failed (type=${openResult.type.name}, message=${openResult.message})',
+          userMessageKey: 'calendarExportOpenFailed',
+        ),
+      );
+    } catch (error, stackTrace) {
+      AppLogger.e(
+        'Calendar export open threw (entryCount=$entryCount)',
+        error,
+        stackTrace,
+      );
+      return Result.createFailure<void>(
+        StorageFailure(
+          technicalMessage:
+              'Calendar export open failed (entryCount=$entryCount)',
+          cause: error,
+          stackTrace: stackTrace,
+        ),
+      );
+    }
+  }
+
+  String _icsBaseName(String fileName) {
+    const suffix = '.ics';
+    final lower = fileName.toLowerCase();
+    if (lower.endsWith(suffix)) {
+      return fileName.substring(0, fileName.length - suffix.length);
+    }
+    return fileName;
   }
 
   String _buildIcsContent(CalendarExportPayload payload) {
@@ -107,11 +243,44 @@ class CalendarExportService {
   }
 
   String _buildTextLine(String key, String value) {
-    return '$key:${_escapeText(value)}\r\n';
+    final String line = '$key:${_escapeText(value)}';
+    return '${_foldIcsContentLine(line)}\r\n';
   }
 
+  /// RFC 5545 §3.1: content lines MUST NOT exceed 75 octets (excluding CRLF);
+  /// long lines are folded with CRLF + one SPACE before the next segment.
+  String _foldIcsContentLine(String line) {
+    const int maxOctetsPerLine = 75;
+    final List<String> segments = <String>[];
+    final StringBuffer current = StringBuffer();
+    int currentOctets = 0;
+    for (final int rune in line.runes) {
+      final String character = String.fromCharCode(rune);
+      final int characterOctets = utf8.encode(character).length;
+      if (currentOctets + characterOctets > maxOctetsPerLine &&
+          current.isNotEmpty) {
+        segments.add(current.toString());
+        current
+          ..clear()
+          ..write(' ');
+        currentOctets = 1;
+      }
+      current.write(character);
+      currentOctets += characterOctets;
+    }
+    if (current.isNotEmpty) {
+      segments.add(current.toString());
+    }
+    return segments.join('\r\n');
+  }
+
+  /// RFC 5545 TEXT escaping for property values (SUMMARY, DESCRIPTION, …).
+  /// Normalizes line endings first, then escapes `\`, `;`, `,`, and newlines as `\n`.
   String _escapeText(String value) {
-    return value
+    final String normalized = value
+        .replaceAll('\r\n', '\n')
+        .replaceAll('\r', '\n');
+    return normalized
         .replaceAll(r'\', r'\\')
         .replaceAll('\n', r'\n')
         .replaceAll(',', r'\,')

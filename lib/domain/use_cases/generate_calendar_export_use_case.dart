@@ -4,22 +4,18 @@ import 'package:dienstplan/domain/entities/calendar_export_entry.dart';
 import 'package:dienstplan/domain/entities/calendar_export_options.dart';
 import 'package:dienstplan/domain/entities/calendar_export_payload.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
-import 'package:dienstplan/domain/entities/school_holiday.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
-import 'package:dienstplan/domain/use_cases/get_school_holidays_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 
 class GenerateCalendarExportUseCase {
   final GenerateSchedulesUseCase _generateSchedulesUseCase;
-  final GetSchoolHolidaysUseCase _getSchoolHolidaysUseCase;
   final GetSettingsUseCase _getSettingsUseCase;
   final ExceptionMapper _exceptionMapper;
 
   GenerateCalendarExportUseCase(
     this._generateSchedulesUseCase,
-    this._getSchoolHolidaysUseCase,
     this._getSettingsUseCase, {
     ExceptionMapper? exceptionMapper,
   }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
@@ -111,36 +107,8 @@ class GenerateCalendarExportUseCase {
         for (final entry in _mapScheduleEntries(
           schedules: partnerResult.value,
           dutyGroupName: partnerDutyGroup,
-          summaryPrefix: 'Partner',
+          summaryPrefix: options.partnerSummaryPrefix,
         )) {
-          entriesByUid[entry.uid] = entry;
-        }
-      }
-
-      if (options.includeHolidays) {
-        final stateCode = settings?.schoolHolidayStateCode;
-        if (stateCode == null || stateCode.isEmpty) {
-          return Result.createFailure<CalendarExportPayload>(
-            const ValidationFailure(
-              technicalMessage:
-                  'Calendar export failed (reason=holidays_unavailable)',
-              userMessageKey: 'calendarExportHolidayUnavailable',
-            ),
-          );
-        }
-
-        final holidaysResult = await _getSchoolHolidaysUseCase.call(
-          stateCode: stateCode,
-          startDate: startDate,
-          endDate: endDate,
-        );
-        if (holidaysResult.isFailure) {
-          return Result.createFailure<CalendarExportPayload>(
-            holidaysResult.failure,
-          );
-        }
-
-        for (final entry in _mapHolidayEntries(holidaysResult.value)) {
           entriesByUid[entry.uid] = entry;
         }
       }
@@ -165,7 +133,7 @@ class GenerateCalendarExportUseCase {
       }
 
       AppLogger.i(
-        'Calendar export prepared successfully (startDate=${startDate.toIso8601String()}, endDate=${endDate.toIso8601String()}, includePartner=${options.includePartnerSchedule}, includeHolidays=${options.includeHolidays}, entryCount=${entries.length})',
+        'Calendar export prepared successfully (startDate=${startDate.toIso8601String()}, endDate=${endDate.toIso8601String()}, includePartner=${options.includePartnerSchedule}, entryCount=${entries.length})',
       );
 
       return Result.success<CalendarExportPayload>(
@@ -177,7 +145,7 @@ class GenerateCalendarExportUseCase {
       );
     } catch (error, stackTrace) {
       AppLogger.e(
-        'Calendar export failed (startDate=${startDate.toIso8601String()}, endDate=${endDate.toIso8601String()}, includePartner=${options.includePartnerSchedule}, includeHolidays=${options.includeHolidays}, reason=unexpected_error)',
+        'Calendar export failed (startDate=${startDate.toIso8601String()}, endDate=${endDate.toIso8601String()}, includePartner=${options.includePartnerSchedule}, reason=unexpected_error)',
         error,
         stackTrace,
       );
@@ -222,28 +190,6 @@ class GenerateCalendarExportUseCase {
           );
         })
         .toList();
-  }
-
-  List<CalendarExportEntry> _mapHolidayEntries(List<SchoolHoliday> holidays) {
-    return holidays.map((holiday) {
-      return CalendarExportEntry(
-        uid: 'holiday-${holiday.id}',
-        summary: holiday.name,
-        description: holiday.description?.isNotEmpty == true
-            ? holiday.description
-            : 'State: ${holiday.stateName}',
-        startDate: DateTime(
-          holiday.startDate.year,
-          holiday.startDate.month,
-          holiday.startDate.day,
-        ),
-        endDateExclusive: DateTime(
-          holiday.endDate.year,
-          holiday.endDate.month,
-          holiday.endDate.day,
-        ).add(const Duration(days: 1)),
-      );
-    }).toList();
   }
 
   String _buildFileName(DateTime startDate, DateTime endDate) {

@@ -1,26 +1,35 @@
+import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/data/services/calendar_export_service.dart';
 import 'package:dienstplan/domain/entities/calendar_export_options.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
-import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CalendarExportBottomsheet extends ConsumerStatefulWidget {
-  const CalendarExportBottomsheet({super.key});
+  static const double _defaultHeightPercentage = 0.76;
+
+  final double heightPercentage;
+
+  const CalendarExportBottomsheet({
+    super.key,
+    this.heightPercentage = _defaultHeightPercentage,
+  });
 
   static Future<void> show(
     BuildContext context, {
-    double heightPercentage = 0.72,
+    double heightPercentage = _defaultHeightPercentage,
   }) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const CalendarExportBottomsheet(),
+      builder: (_) =>
+          CalendarExportBottomsheet(heightPercentage: heightPercentage),
     );
   }
 
@@ -34,8 +43,9 @@ class _CalendarExportBottomsheetState
   late DateTime _startDate;
   late DateTime _endDate;
   bool _includePartnerSchedule = false;
-  bool _includeHolidays = false;
-  bool _isExporting = false;
+  bool _isActionBusy = false;
+  CalendarExportPreparedResult? _cachedPrepared;
+  _CalendarExportCacheKey? _cacheKey;
 
   @override
   void initState() {
@@ -48,112 +58,126 @@ class _CalendarExportBottomsheetState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final settingsState = ref.watch(settingsProvider).value;
-    final holidaysState = ref.watch(schoolHolidaysProvider).value;
+    return GenericBottomsheet(
+      title: l10n.exportCalendar,
+      heightPercentage: widget.heightPercentage,
+      children: [_buildSheetContent(context)],
+    );
+  }
 
+  Widget _buildSheetContent(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final settingsState = ref.watch(settingsProvider).value;
     final hasPartnerSchedule =
         (settingsState?.partnerConfigName?.isNotEmpty ?? false) &&
         (settingsState?.partnerDutyGroup?.isNotEmpty ?? false);
-    final hasHolidayConfiguration =
-        holidaysState?.selectedStateCode?.isNotEmpty ?? false;
     final effectiveIncludePartner =
         hasPartnerSchedule && _includePartnerSchedule;
-    final effectiveIncludeHolidays =
-        hasHolidayConfiguration && _includeHolidays;
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return GenericBottomsheet(
-      title: l10n.exportCalendar,
-      heightPercentage: 0.76,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SingleChildScrollView(
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.exportCalendarDescription,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _DateCard(
+                  title: l10n.exportCalendarStartDate,
+                  value: _formatDate(context, _startDate),
+                  icon: Icons.date_range_outlined,
+                  onTap: () => _pickDate(
+                    initialDate: _startDate,
+                    firstDate: DateTime(2020, 1, 1),
+                    lastDate: DateTime(2100, 12, 31),
+                    onSelected: (value) => setState(() {
+                      _startDate = value;
+                      _invalidatePreparedCache();
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _DateCard(
+                  title: l10n.exportCalendarEndDate,
+                  value: _formatDate(context, _endDate),
+                  icon: Icons.event_outlined,
+                  onTap: () => _pickDate(
+                    initialDate: _endDate,
+                    firstDate: DateTime(2020, 1, 1),
+                    lastDate: DateTime(2100, 12, 31),
+                    onSelected: (value) => setState(() {
+                      _endDate = value;
+                      _invalidatePreparedCache();
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _ToggleCard(
+                  title: l10n.exportCalendarIncludePartner,
+                  subtitle: hasPartnerSchedule
+                      ? l10n.exportCalendarIncludePartnerDescription
+                      : l10n.exportCalendarPartnerUnavailable,
+                  value: effectiveIncludePartner,
+                  enabled: hasPartnerSchedule,
+                  onChanged: (value) {
+                    if (!hasPartnerSchedule) return;
+                    setState(() {
+                      _includePartnerSchedule = value;
+                      _invalidatePreparedCache();
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        ),
+        Padding(
           padding: EdgeInsets.only(
             left: 16,
             right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+            top: 8,
+            bottom: bottomInset + 16,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                l10n.exportCalendarDescription,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 20),
-              _DateCard(
-                title: l10n.exportCalendarStartDate,
-                value: _formatDate(context, _startDate),
-                icon: Icons.date_range_outlined,
-                onTap: () => _pickDate(
-                  initialDate: _startDate,
-                  firstDate: DateTime(2020, 1, 1),
-                  lastDate: DateTime(2100, 12, 31),
-                  onSelected: (value) => setState(() => _startDate = value),
-                ),
-              ),
-              const SizedBox(height: 12),
-              _DateCard(
-                title: l10n.exportCalendarEndDate,
-                value: _formatDate(context, _endDate),
-                icon: Icons.event_outlined,
-                onTap: () => _pickDate(
-                  initialDate: _endDate,
-                  firstDate: DateTime(2020, 1, 1),
-                  lastDate: DateTime(2100, 12, 31),
-                  onSelected: (value) => setState(() => _endDate = value),
-                ),
-              ),
-              const SizedBox(height: 20),
-              _ToggleCard(
-                title: l10n.exportCalendarIncludePartner,
-                subtitle: hasPartnerSchedule
-                    ? l10n.exportCalendarIncludePartnerDescription
-                    : l10n.exportCalendarPartnerUnavailable,
-                value: effectiveIncludePartner,
-                enabled: hasPartnerSchedule,
-                onChanged: (value) {
-                  if (!hasPartnerSchedule) {
-                    return;
-                  }
-                  setState(() => _includePartnerSchedule = value);
-                },
-              ),
-              const SizedBox(height: 12),
-              _ToggleCard(
-                title: l10n.exportCalendarIncludeHolidays,
-                subtitle: hasHolidayConfiguration
-                    ? l10n.exportCalendarIncludeHolidaysDescription
-                    : l10n.exportCalendarHolidayUnavailable,
-                value: effectiveIncludeHolidays,
-                enabled: hasHolidayConfiguration,
-                onChanged: (value) {
-                  if (!hasHolidayConfiguration) {
-                    return;
-                  }
-                  setState(() => _includeHolidays = value);
-                },
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              _CalendarExportActionButtonGroup(
+                enabled: !_isActionBusy,
+                mainColor: AppColors.primary,
+                segments: [
+                  _CalendarExportActionSegment(
+                    icon: Icons.ios_share_outlined,
+                    title: l10n.exportCalendarActionRowShare,
+                    tooltip:
+                        '${l10n.exportCalendarActionShare}: ${l10n.exportCalendarActionShareSubtitle}',
+                    onTap: _exportAndShare,
                   ),
-                  onPressed: _isExporting ? null : _exportCalendar,
-                  icon: _isExporting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.ios_share_outlined),
-                  label: Text(l10n.exportCalendarButton),
-                ),
+                  _CalendarExportActionSegment(
+                    icon: Icons.save_alt_outlined,
+                    title: l10n.exportCalendarActionRowSave,
+                    tooltip:
+                        '${l10n.exportCalendarActionSave}: ${l10n.exportCalendarActionSaveSubtitle}',
+                    onTap: _exportAndSave,
+                  ),
+                  _CalendarExportActionSegment(
+                    icon: Icons.event_outlined,
+                    title: l10n.exportCalendarActionRowOpen,
+                    tooltip:
+                        '${l10n.exportCalendarActionOpen}: ${l10n.exportCalendarActionOpenSubtitle}',
+                    onTap: _exportAndOpen,
+                  ),
+                ],
               ),
             ],
           ),
@@ -174,7 +198,6 @@ class _CalendarExportBottomsheetState
       firstDate: firstDate,
       lastDate: lastDate,
     );
-
     if (selected != null) {
       onSelected(DateTime(selected.year, selected.month, selected.day));
     }
@@ -184,19 +207,21 @@ class _CalendarExportBottomsheetState
     return MaterialLocalizations.of(context).formatMediumDate(value);
   }
 
-  Future<void> _exportCalendar() async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
+  void _invalidatePreparedCache() {
+    _cachedPrepared = null;
+    _cacheKey = null;
+  }
+
+  Future<CalendarExportPreparedResult?> _ensurePreparedFile(
+    AppLocalizations l10n,
+    ScaffoldMessengerState messenger,
+  ) async {
     final settingsState = ref.read(settingsProvider).value;
-    final holidaysState = ref.read(schoolHolidaysProvider).value;
     final hasPartnerSchedule =
         (settingsState?.partnerConfigName?.isNotEmpty ?? false) &&
         (settingsState?.partnerDutyGroup?.isNotEmpty ?? false);
-    final hasHolidayConfiguration =
-        holidaysState?.selectedStateCode?.isNotEmpty ?? false;
     final includePartnerSchedule =
         hasPartnerSchedule && _includePartnerSchedule;
-    final includeHolidays = hasHolidayConfiguration && _includeHolidays;
 
     if (_startDate.isAfter(_endDate)) {
       messenger.showSnackBar(
@@ -205,10 +230,21 @@ class _CalendarExportBottomsheetState
           behavior: SnackBarBehavior.floating,
         ),
       );
-      return;
+      return null;
     }
 
-    setState(() => _isExporting = true);
+    final cacheKey = _CalendarExportCacheKey(
+      startDate: DateTime.utc(
+        _startDate.year,
+        _startDate.month,
+        _startDate.day,
+      ),
+      endDate: DateTime.utc(_endDate.year, _endDate.month, _endDate.day),
+      includePartner: includePartnerSchedule,
+    );
+    if (_cacheKey == cacheKey && _cachedPrepared != null) {
+      return _cachedPrepared;
+    }
 
     try {
       final generateExportUseCase = await ref.read(
@@ -219,35 +255,72 @@ class _CalendarExportBottomsheetState
           startDate: _startDate,
           endDate: _endDate,
           includePartnerSchedule: includePartnerSchedule,
-          includeHolidays: includeHolidays,
+          partnerSummaryPrefix: l10n.exportCalendarPartnerSummaryPrefix,
         ),
       );
 
       if (exportResult.isFailure) {
-        if (!mounted) {
-          return;
-        }
-
+        if (!mounted) return null;
         messenger.showSnackBar(
           SnackBar(
             content: Text(_resolveFailureMessage(exportResult.failure, l10n)),
             behavior: SnackBarBehavior.floating,
           ),
         );
-        return;
+        return null;
       }
 
       final calendarExportService = ref.read(calendarExportServiceProvider);
-      final shareResult = await calendarExportService.shareCalendarExport(
-        payload: exportResult.value,
-        l10n: l10n,
+      final writeResult = await calendarExportService.writeCalendarExportToTemp(
+        exportResult.value,
       );
 
-      if (shareResult.isFailure) {
-        if (!mounted) {
-          return;
-        }
+      if (writeResult.isFailure) {
+        if (!mounted) return null;
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.exportCalendarError),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return null;
+      }
 
+      _cacheKey = cacheKey;
+      _cachedPrepared = writeResult.value;
+      return writeResult.value;
+    } catch (error, stackTrace) {
+      AppLogger.e(
+        'Calendar export failed (startDate=${_startDate.toIso8601String()}, endDate=${_endDate.toIso8601String()}, includePartner=$includePartnerSchedule, reason=unexpected_ui_error)',
+        error,
+        stackTrace,
+      );
+      if (!mounted) return null;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.exportCalendarError),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return null;
+    }
+  }
+
+  Future<void> _exportAndShare() async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isActionBusy = true);
+    try {
+      final prepared = await _ensurePreparedFile(l10n, messenger);
+      if (!mounted || prepared == null) return;
+      final calendarExportService = ref.read(calendarExportServiceProvider);
+      final result = await calendarExportService.sharePreparedCalendarExport(
+        filePath: prepared.filePath,
+        entryCount: prepared.entryCount,
+        l10n: l10n,
+      );
+      if (!mounted) return;
+      if (result.isFailure) {
         messenger.showSnackBar(
           SnackBar(
             content: Text(l10n.exportCalendarError),
@@ -256,40 +329,81 @@ class _CalendarExportBottomsheetState
         );
         return;
       }
-
-      if (!mounted) {
-        return;
-      }
-
-      Navigator.of(context).pop();
       messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            l10n.exportCalendarSuccess(shareResult.value.entryCount),
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } catch (error, stackTrace) {
-      AppLogger.e(
-        'Calendar export failed (startDate=${_startDate.toIso8601String()}, endDate=${_endDate.toIso8601String()}, includePartner=$includePartnerSchedule, includeHolidays=$includeHolidays, reason=unexpected_ui_error)',
-        error,
-        stackTrace,
-      );
-      if (!mounted) {
-        return;
-      }
-
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportCalendarError),
+          content: Text(l10n.exportCalendarShareSuccess),
           behavior: SnackBarBehavior.floating,
         ),
       );
     } finally {
-      if (mounted) {
-        setState(() => _isExporting = false);
+      if (mounted) setState(() => _isActionBusy = false);
+    }
+  }
+
+  Future<void> _exportAndSave() async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isActionBusy = true);
+    try {
+      final prepared = await _ensurePreparedFile(l10n, messenger);
+      if (!mounted || prepared == null) return;
+      final calendarExportService = ref.read(calendarExportServiceProvider);
+      final result = await calendarExportService.savePreparedCalendarExport(
+        filePath: prepared.filePath,
+        fileName: prepared.fileName,
+        entryCount: prepared.entryCount,
+      );
+      if (!mounted) return;
+      if (result.isFailure) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(_resolveFailureMessage(result.failure, l10n)),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
       }
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.exportCalendarSaveSuccess),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isActionBusy = false);
+    }
+  }
+
+  Future<void> _exportAndOpen() async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isActionBusy = true);
+    try {
+      final prepared = await _ensurePreparedFile(l10n, messenger);
+      if (!mounted || prepared == null) return;
+      final calendarExportService = ref.read(calendarExportServiceProvider);
+      final result = await calendarExportService.openPreparedCalendarExport(
+        filePath: prepared.filePath,
+        entryCount: prepared.entryCount,
+      );
+      if (!mounted) return;
+      if (result.isFailure) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(_resolveFailureMessage(result.failure, l10n)),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.exportCalendarOpenSuccess),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isActionBusy = false);
     }
   }
 
@@ -301,13 +415,160 @@ class _CalendarExportBottomsheetState
         return l10n.exportCalendarNoActiveSchedule;
       case 'calendarExportPartnerUnavailable':
         return l10n.exportCalendarPartnerUnavailable;
-      case 'calendarExportHolidayUnavailable':
-        return l10n.exportCalendarHolidayUnavailable;
       case 'calendarExportEmpty':
         return l10n.exportCalendarEmpty;
+      case 'calendarExportSaveCancelled':
+        return l10n.exportCalendarSaveCancelled;
+      case 'calendarExportOpenNoApp':
+        return l10n.exportCalendarOpenNoApp;
+      case 'calendarExportOpenFailed':
+        return l10n.exportCalendarOpenFailed;
       default:
         return l10n.exportCalendarError;
     }
+  }
+}
+
+@immutable
+class _CalendarExportCacheKey {
+  final DateTime startDate;
+  final DateTime endDate;
+  final bool includePartner;
+
+  const _CalendarExportCacheKey({
+    required this.startDate,
+    required this.endDate,
+    required this.includePartner,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _CalendarExportCacheKey &&
+          startDate.year == other.startDate.year &&
+          startDate.month == other.startDate.month &&
+          startDate.day == other.startDate.day &&
+          endDate.year == other.endDate.year &&
+          endDate.month == other.endDate.month &&
+          endDate.day == other.endDate.day &&
+          includePartner == other.includePartner;
+
+  @override
+  int get hashCode => Object.hash(
+    startDate.year,
+    startDate.month,
+    startDate.day,
+    endDate.year,
+    endDate.month,
+    endDate.day,
+    includePartner,
+  );
+}
+
+class _CalendarExportActionSegment {
+  final IconData icon;
+  final String title;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _CalendarExportActionSegment({
+    required this.icon,
+    required this.title,
+    required this.tooltip,
+    required this.onTap,
+  });
+}
+
+/// Single outlined control: three labeled actions with shared border (button group).
+class _CalendarExportActionButtonGroup extends StatelessWidget {
+  /// Fixed row height: parent Column may pass unbounded vertical constraints
+  /// (Expanded scroll area + bottom actions). [VerticalDivider] needs a
+  /// bounded height; single title line under each icon.
+  static const double _actionRowHeight = 88;
+
+  final bool enabled;
+  final Color mainColor;
+  final List<_CalendarExportActionSegment> segments;
+
+  const _CalendarExportActionButtonGroup({
+    required this.enabled,
+    required this.mainColor,
+    required this.segments,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final Color activeColor = mainColor;
+    final Color mutedColor = mainColor.withValues(alpha: 0.38);
+    final Color fg = enabled ? activeColor : mutedColor;
+
+    return SizedBox(
+      height: _actionRowHeight,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: mainColor),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (int i = 0; i < segments.length; i++) ...[
+              if (i > 0)
+                VerticalDivider(
+                  width: 1,
+                  thickness: 1,
+                  color: mainColor.withValues(alpha: 0.35),
+                ),
+              Expanded(
+                child: Tooltip(
+                  message: segments[i].tooltip,
+                  child: Semantics(
+                    button: true,
+                    label: segments[i].tooltip,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: enabled ? segments[i].onTap : null,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 10,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(segments[i].icon, size: 24, color: fg),
+                              const SizedBox(height: 6),
+                              Text(
+                                segments[i].title,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: enabled
+                                      ? theme.colorScheme.onSurface
+                                      : theme.colorScheme.onSurface.withValues(
+                                          alpha: 0.38,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }
 

@@ -2,18 +2,23 @@ class CalendarExportOptions {
   final DateTime startDate;
   final DateTime endDate;
   final bool includePartnerSchedule;
-  final bool includeHolidays;
+
+  /// Prepended to partner event titles in ICS, e.g. "Partner: …" (localized).
+  final String partnerSummaryPrefix;
 
   const CalendarExportOptions({
     required this.startDate,
     required this.endDate,
     required this.includePartnerSchedule,
-    required this.includeHolidays,
+    required this.partnerSummaryPrefix,
   });
 
+  /// UTC date-only instants from the picker's calendar year/month/day fields.
+  /// Aligns with DB range queries (YMD from `DateTime.toUtc()`) and schedule
+  /// generation, which builds `DateTime.utc(y, m, d)` from those components.
   DateTime get normalizedStartDate =>
-      DateTime(startDate.year, startDate.month, startDate.day);
+      DateTime.utc(startDate.year, startDate.month, startDate.day);
 
   DateTime get normalizedEndDate =>
-      DateTime(endDate.year, endDate.month, endDate.day);
+      DateTime.utc(endDate.year, endDate.month, endDate.day);
 }

@@ -662,6 +662,12 @@ abstract class AppLocalizations {
   /// **'Add the configured partner duty group to the export'**
   String get exportCalendarIncludePartnerDescription;
 
+  /// Short label prepended to partner calendar event titles in ICS export (before colon)
+  ///
+  /// In en, this message translates to:
+  /// **'Partner'**
+  String get exportCalendarPartnerSummaryPrefix;
+
   /// Label for including holidays in export
   ///
   /// In en, this message translates to:
@@ -677,8 +683,104 @@ abstract class AppLocalizations {
   /// Button label for starting calendar export
   ///
   /// In en, this message translates to:
-  /// **'Export .ics file'**
+  /// **'Continue'**
   String get exportCalendarButton;
+
+  /// Action: share ICS file
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exportCalendarActionShare;
+
+  /// Subtitle for share action
+  ///
+  /// In en, this message translates to:
+  /// **'Send via other apps'**
+  String get exportCalendarActionShareSubtitle;
+
+  /// Action: save ICS file
+  ///
+  /// In en, this message translates to:
+  /// **'Save to device'**
+  String get exportCalendarActionSave;
+
+  /// Subtitle for save action
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Downloads or a chosen folder'**
+  String get exportCalendarActionSaveSubtitle;
+
+  /// Action: open ICS in external app
+  ///
+  /// In en, this message translates to:
+  /// **'Open with calendar app'**
+  String get exportCalendarActionOpen;
+
+  /// Subtitle for open action
+  ///
+  /// In en, this message translates to:
+  /// **'Import directly into your calendar app'**
+  String get exportCalendarActionOpenSubtitle;
+
+  /// Short label for share in the export action button row (avoids overflow)
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get exportCalendarActionRowShare;
+
+  /// Short label for save in the export action button row
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get exportCalendarActionRowSave;
+
+  /// Short label for open-in-calendar in the export action button row
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get exportCalendarActionRowOpen;
+
+  /// Button to return to export configuration
+  ///
+  /// In en, this message translates to:
+  /// **'Back to configuration'**
+  String get exportCalendarBackButton;
+
+  /// Success after share
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar file shared'**
+  String get exportCalendarShareSuccess;
+
+  /// Success after save
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar file saved'**
+  String get exportCalendarSaveSuccess;
+
+  /// Success after open
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar file opened'**
+  String get exportCalendarOpenSuccess;
+
+  /// User dismissed save dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Save cancelled.'**
+  String get exportCalendarSaveCancelled;
+
+  /// No handler for ICS
+  ///
+  /// In en, this message translates to:
+  /// **'No app found to open this file.'**
+  String get exportCalendarOpenNoApp;
+
+  /// Generic error when opening ICS
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the file.'**
+  String get exportCalendarOpenFailed;
 
   /// Subject for shared calendar export
   ///

@@ -419,16 +419,9 @@ final generateCalendarExportUseCaseProvider =
       final generateSchedules = await ref.watch(
         generateSchedulesUseCaseProvider.future,
       );
-      final getSchoolHolidays = await ref.watch(
-        getSchoolHolidaysUseCaseProvider.future,
-      );
       final getSettings = await ref.watch(getSettingsUseCaseProvider.future);
 
-      return GenerateCalendarExportUseCase(
-        generateSchedules,
-        getSchoolHolidays,
-        getSettings,
-      );
+      return GenerateCalendarExportUseCase(generateSchedules, getSettings);
     });
 
 // School holiday providers

@@ -310,6 +310,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu';
 
   @override
+  String get exportCalendarPartnerSummaryPrefix => 'Partner';
+
+  @override
   String get exportCalendarIncludeHolidays => 'Ferien einschließen';
 
   @override
@@ -317,7 +320,58 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fügt konfigurierte Schulferien zum Export hinzu';
 
   @override
-  String get exportCalendarButton => '.ics-Datei exportieren';
+  String get exportCalendarButton => 'Weiter';
+
+  @override
+  String get exportCalendarActionShare => 'Teilen';
+
+  @override
+  String get exportCalendarActionShareSubtitle => 'Über andere Apps versenden';
+
+  @override
+  String get exportCalendarActionSave => 'Auf dem Gerät speichern';
+
+  @override
+  String get exportCalendarActionSaveSubtitle =>
+      'In Downloads oder gewähltem Ordner sichern';
+
+  @override
+  String get exportCalendarActionOpen => 'Mit Kalender-App öffnen';
+
+  @override
+  String get exportCalendarActionOpenSubtitle =>
+      'Direkt in die Kalender-App importieren';
+
+  @override
+  String get exportCalendarActionRowShare => 'Teilen';
+
+  @override
+  String get exportCalendarActionRowSave => 'Speichern';
+
+  @override
+  String get exportCalendarActionRowOpen => 'In Kalender';
+
+  @override
+  String get exportCalendarBackButton => 'Zurück zur Konfiguration';
+
+  @override
+  String get exportCalendarShareSuccess => 'Kalenderdatei geteilt';
+
+  @override
+  String get exportCalendarSaveSuccess => 'Kalenderdatei gespeichert';
+
+  @override
+  String get exportCalendarOpenSuccess => 'Kalenderdatei geöffnet';
+
+  @override
+  String get exportCalendarSaveCancelled => 'Speichern abgebrochen.';
+
+  @override
+  String get exportCalendarOpenNoApp =>
+      'Keine passende App zum Öffnen dieser Datei gefunden.';
+
+  @override
+  String get exportCalendarOpenFailed => 'Datei konnte nicht geöffnet werden.';
 
   @override
   String get exportCalendarSubject => 'Dienstplan Kalenderexport';

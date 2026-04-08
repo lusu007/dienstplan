@@ -378,6 +378,10 @@
   "@exportCalendarIncludePartnerDescription": {
     "description": "Beschreibung für das Einschließen des Partnerdienstplans"
   },
+  "exportCalendarPartnerSummaryPrefix": "Partner",
+  "@exportCalendarPartnerSummaryPrefix": {
+    "description": "Kurzes Präfix vor Partner-Terminen im ICS-Export (vor dem Doppelpunkt)"
+  },
   "exportCalendarIncludeHolidays": "Ferien einschließen",
   "@exportCalendarIncludeHolidays": {
     "description": "Beschriftung für das Einschließen von Ferien"
@@ -386,9 +390,73 @@
   "@exportCalendarIncludeHolidaysDescription": {
     "description": "Beschreibung für das Einschließen von Ferien"
   },
-  "exportCalendarButton": ".ics-Datei exportieren",
+  "exportCalendarButton": "Weiter",
   "@exportCalendarButton": {
     "description": "Beschriftung für den Start des Kalenderexports"
+  },
+  "exportCalendarActionShare": "Teilen",
+  "@exportCalendarActionShare": {
+    "description": "Aktion: ICS-Datei teilen"
+  },
+  "exportCalendarActionShareSubtitle": "Über andere Apps versenden",
+  "@exportCalendarActionShareSubtitle": {
+    "description": "Untertitel für die Teilen-Aktion"
+  },
+  "exportCalendarActionSave": "Auf dem Gerät speichern",
+  "@exportCalendarActionSave": {
+    "description": "Aktion: ICS-Datei speichern"
+  },
+  "exportCalendarActionSaveSubtitle": "In Downloads oder gewähltem Ordner sichern",
+  "@exportCalendarActionSaveSubtitle": {
+    "description": "Untertitel für die Speichern-Aktion"
+  },
+  "exportCalendarActionOpen": "Mit Kalender-App öffnen",
+  "@exportCalendarActionOpen": {
+    "description": "Aktion: ICS mit externer App öffnen"
+  },
+  "exportCalendarActionOpenSubtitle": "Direkt in die Kalender-App importieren",
+  "@exportCalendarActionOpenSubtitle": {
+    "description": "Untertitel für die Öffnen-Aktion"
+  },
+  "exportCalendarActionRowShare": "Teilen",
+  "@exportCalendarActionRowShare": {
+    "description": "Kurzbeschriftung Teilen in der Export-Aktionszeile (Overflow vermeiden)"
+  },
+  "exportCalendarActionRowSave": "Speichern",
+  "@exportCalendarActionRowSave": {
+    "description": "Kurzbeschriftung Speichern in der Export-Aktionszeile"
+  },
+  "exportCalendarActionRowOpen": "In Kalender",
+  "@exportCalendarActionRowOpen": {
+    "description": "Kurzbeschriftung Kalender öffnen in der Export-Aktionszeile"
+  },
+  "exportCalendarBackButton": "Zurück zur Konfiguration",
+  "@exportCalendarBackButton": {
+    "description": "Button um zur Export-Konfiguration zurückzukehren"
+  },
+  "exportCalendarShareSuccess": "Kalenderdatei geteilt",
+  "@exportCalendarShareSuccess": {
+    "description": "Erfolg nach Teilen"
+  },
+  "exportCalendarSaveSuccess": "Kalenderdatei gespeichert",
+  "@exportCalendarSaveSuccess": {
+    "description": "Erfolg nach Speichern"
+  },
+  "exportCalendarOpenSuccess": "Kalenderdatei geöffnet",
+  "@exportCalendarOpenSuccess": {
+    "description": "Erfolg nach Öffnen mit externer App"
+  },
+  "exportCalendarSaveCancelled": "Speichern abgebrochen.",
+  "@exportCalendarSaveCancelled": {
+    "description": "Nutzer hat den Speichern-Dialog abgebrochen"
+  },
+  "exportCalendarOpenNoApp": "Keine passende App zum Öffnen dieser Datei gefunden.",
+  "@exportCalendarOpenNoApp": {
+    "description": "Kein Handler für ICS-Dateien"
+  },
+  "exportCalendarOpenFailed": "Datei konnte nicht geöffnet werden.",
+  "@exportCalendarOpenFailed": {
+    "description": "Generischer Fehler beim Öffnen der ICS-Datei"
   },
   "exportCalendarSubject": "Dienstplan Kalenderexport",
   "@exportCalendarSubject": {
