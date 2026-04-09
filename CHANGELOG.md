@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/lusu007/dienstplan/compare/v0.15.0...v0.15.1) (2026-04-09)
+
+
+### Bug Fixes
+
+* switch file open libr ([#371](https://github.com/lusu007/dienstplan/issues/371)) ([4d4065e](https://github.com/lusu007/dienstplan/commit/4d4065edc23725f89e093ea39495d222dbc7e031))
+
 ## [0.15.0](https://github.com/lusu007/dienstplan/compare/v0.14.0...v0.15.0) (2026-04-08)
 
 
