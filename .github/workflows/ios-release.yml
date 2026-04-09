@@ -3,6 +3,7 @@ name: 🚀 Release iOS App
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy-ios:
@@ -22,7 +23,26 @@ jobs:
       - name: 🔧 Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.4'
+          xcode-version: '26.2'
+
+      - name: ✅ Verify Xcode major version
+        run: |
+          set -euo pipefail
+          XCODE_VERSION="$(xcodebuild -version | awk '/Xcode/{print $2}')"
+          if [ -z "${XCODE_VERSION}" ]; then
+            echo "Failed to detect Xcode version."
+            exit 1
+          fi
+          XCODE_MAJOR="${XCODE_VERSION%%.*}"
+          if ! [[ "${XCODE_MAJOR}" =~ ^[0-9]+$ ]]; then
+            echo "Parsed invalid Xcode major version: ${XCODE_MAJOR}"
+            exit 1
+          fi
+          echo "Selected Xcode version: ${XCODE_VERSION}"
+          if [ "${XCODE_MAJOR}" -lt 26 ]; then
+            echo "Xcode 26 or newer is required for App Store uploads."
+            exit 1
+          fi
 
       - name: 📱 Setup Flutter
         uses: subosito/flutter-action@v2
