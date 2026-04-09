@@ -6,7 +6,7 @@ import 'package:dienstplan/domain/entities/calendar_export_payload.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:open_filex/open_filex.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -145,7 +145,7 @@ class CalendarExportService {
     required int entryCount,
   }) async {
     try {
-      final OpenResult openResult = await OpenFilex.open(
+      final OpenResult openResult = await OpenFile.open(
         filePath,
         type: 'text/calendar',
       );
