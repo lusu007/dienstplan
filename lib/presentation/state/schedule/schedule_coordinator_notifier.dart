@@ -29,7 +29,7 @@ import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
 part 'schedule_coordinator_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   GetSchedulesUseCase? _getSchedulesUseCase;
   EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
@@ -38,12 +38,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   @override
   Future<ScheduleUiState> build() async {
+    // Sync deps before any await so user-driven calls (e.g. setFocusedDay) never
+    // see null _dateRangePolicy while build() is suspended.
+    _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
+    _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
     _getSchedulesUseCase ??= await ref.read(getSchedulesUseCaseProvider.future);
     _ensureMonthSchedulesUseCase ??= await ref.read(
       ensureMonthSchedulesUseCaseProvider.future,
     );
-    _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
-    _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
     // Initialize all sub-notifiers
     final calendarState = await ref.read(calendarProvider.future);
     final configState = await ref.read(configProvider.future);
@@ -55,11 +57,16 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       configState,
       partnerState,
       scheduleDataState,
-    );
+    ).updateScheduleIndex();
     // Kick off partner data ensure in the background so partner chips can render
     // without blocking initial build.
     unawaited(_ensurePartnerDataForFocusedRange());
     return combined;
+  }
+
+  DateRangePolicy _resolveDateRangePolicy() {
+    _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
+    return _dateRangePolicy!;
   }
 
   ScheduleUiState _combineStates(
@@ -650,10 +657,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     required String configName,
   }) async {
     try {
-      final DateRange expandedRange = _dateRangePolicy!.computeExpandedRange(
-        currentRange,
-        targetDate,
-      );
+      final DateRange expandedRange = _resolveDateRangePolicy()
+          .computeExpandedRange(currentRange, targetDate);
 
       // Delegate to the schedule data notifier
       await ref
@@ -706,9 +711,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       }
 
       // Calculate the range around the focused day
-      final DateRange focusedRange = _dateRangePolicy!.computeFocusedRange(
-        focusedDay,
-      );
+      final DateRange focusedRange = _resolveDateRangePolicy()
+          .computeFocusedRange(focusedDay);
 
       // Determine minimal missing ranges compared to current in-memory coverage.
       final DateRange? coverage = _getConfigCoverageRange(
@@ -787,15 +791,13 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       final String? partnerConfig = current.partnerConfigName;
       if (partnerConfig == null || partnerConfig.isEmpty) return;
       final DateTime focused = current.focusedDay ?? DateTime.now();
-      final DateRange focusedRange = _dateRangePolicy!.computeFocusedRange(
-        focused,
-      );
+      final DateRange focusedRange = _resolveDateRangePolicy()
+          .computeFocusedRange(focused);
       final DateTime? selected = current.selectedDay;
       DateRange combinedRange = focusedRange;
       if (selected != null) {
-        final DateRange selectedRange = _dateRangePolicy!.computeSelectedRange(
-          selected,
-        );
+        final DateRange selectedRange = _resolveDateRangePolicy()
+            .computeSelectedRange(selected);
         combinedRange = DateRange.union(focusedRange, selectedRange);
       }
       final result = await _getSchedulesUseCase!.executeForDateRange(
@@ -877,15 +879,13 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       if (activeName == null || activeName.isEmpty) return;
 
       final DateTime focused = current.focusedDay ?? DateTime.now();
-      final DateRange focusedRange = _dateRangePolicy!.computeFocusedRange(
-        focused,
-      );
+      final DateRange focusedRange = _resolveDateRangePolicy()
+          .computeFocusedRange(focused);
       final DateTime? selected = current.selectedDay;
       DateRange combinedRange = focusedRange;
       if (selected != null) {
-        final DateRange selectedRange = _dateRangePolicy!.computeSelectedRange(
-          selected,
-        );
+        final DateRange selectedRange = _resolveDateRangePolicy()
+            .computeSelectedRange(selected);
         combinedRange = DateRange.union(focusedRange, selectedRange);
       }
 

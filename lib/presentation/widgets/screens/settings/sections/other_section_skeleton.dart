@@ -11,20 +11,20 @@ class OtherSectionSkeleton extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context);
     return SettingsSection(
       title: l10n.other,
-      cards: const [
+      cards: [
         NavigationCardSkeleton(
           icon: Icons.info_outline,
-          title: 'About',
+          title: l10n.about,
           showSubtitleSkeleton: false,
         ),
         NavigationCardSkeleton(
           icon: Icons.email_outlined,
-          title: 'Contact',
+          title: l10n.contact,
           showSubtitleSkeleton: false,
         ),
         NavigationCardSkeleton(
           icon: Icons.share_outlined,
-          title: 'Share App',
+          title: l10n.shareApp,
           showSubtitleSkeleton: false,
         ),
       ],

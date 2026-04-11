@@ -707,7 +707,7 @@ final class ScheduleRepositoryProvider
         argument: null,
         retry: null,
         name: r'scheduleRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -728,7 +728,7 @@ final class ScheduleRepositoryProvider
 }
 
 String _$scheduleRepositoryHash() =>
-    r'fa5bf5b634dd91faa6925ae2afd7fe3fabe833ea';
+    r'daa4c00231473dfb86689c01206720156e1f4759';
 
 @ProviderFor(settingsRepository)
 final settingsRepositoryProvider = SettingsRepositoryProvider._();
@@ -789,7 +789,7 @@ final class ConfigRepositoryProvider
         argument: null,
         retry: null,
         name: r'configRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -809,7 +809,7 @@ final class ConfigRepositoryProvider
   }
 }
 
-String _$configRepositoryHash() => r'440bff749a354e5110271371491471b123d94b33';
+String _$configRepositoryHash() => r'7a6c6fcd1939f701b317fae9a4ab766eb5810e21';
 
 @ProviderFor(getSchedulesUseCase)
 final getSchedulesUseCaseProvider = GetSchedulesUseCaseProvider._();
@@ -830,7 +830,7 @@ final class GetSchedulesUseCaseProvider
         argument: null,
         retry: null,
         name: r'getSchedulesUseCaseProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -851,7 +851,7 @@ final class GetSchedulesUseCaseProvider
 }
 
 String _$getSchedulesUseCaseHash() =>
-    r'56d340caa864d78e6a0475892da7374ead3863d5';
+    r'957e2a94538b8d1d8b0ba399d6049a6c4ca6a9a4';
 
 @ProviderFor(generateSchedulesUseCase)
 final generateSchedulesUseCaseProvider = GenerateSchedulesUseCaseProvider._();
@@ -872,7 +872,7 @@ final class GenerateSchedulesUseCaseProvider
         argument: null,
         retry: null,
         name: r'generateSchedulesUseCaseProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -893,7 +893,7 @@ final class GenerateSchedulesUseCaseProvider
 }
 
 String _$generateSchedulesUseCaseHash() =>
-    r'58c47e188f4c6a5861575cc67b6ed6324a2e9b25';
+    r'f4376c41dd486cc00bb0494422624182c30a4adf';
 
 @ProviderFor(getSettingsUseCase)
 final getSettingsUseCaseProvider = GetSettingsUseCaseProvider._();
@@ -1262,7 +1262,7 @@ final class EnsureMonthSchedulesUseCaseProvider
         argument: null,
         retry: null,
         name: r'ensureMonthSchedulesUseCaseProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -1283,7 +1283,7 @@ final class EnsureMonthSchedulesUseCaseProvider
 }
 
 String _$ensureMonthSchedulesUseCaseHash() =>
-    r'b59a52a776c0a99c693f9f336bfe573c2cc525e6';
+    r'4c80d45631aa17b8e86f3054560ed15a3bf28378';
 
 @ProviderFor(schoolHolidayRemoteDataSource)
 final schoolHolidayRemoteDataSourceProvider =

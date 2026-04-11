@@ -11,19 +11,19 @@ class PrivacySectionSkeleton extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context);
     return SettingsSection(
       title: l10n.privacy,
-      cards: const [
+      cards: [
         ToggleCardSkeleton(
           icon: Icons.analytics_outlined,
-          title: 'Sentry Analytics',
-          subtitle: 'Anonymous error analytics',
+          title: l10n.sentryAnalytics,
+          subtitle: l10n.sentryAnalyticsDescription,
           showSubtitleSkeleton: false,
           value: false,
           enabled: true,
         ),
         ToggleCardSkeleton(
           icon: Icons.videocam_outlined,
-          title: 'Sentry Replay',
-          subtitle: 'Session replay',
+          title: l10n.sentryReplay,
+          subtitle: l10n.sentryReplayDescription,
           showSubtitleSkeleton: false,
           value: false,
           enabled: false,

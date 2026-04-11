@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedule_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/school_holidays_section.dart';
@@ -10,13 +12,9 @@ import 'package:dienstplan/presentation/widgets/screens/settings/sections/privac
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/other_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/footer_section.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/sections/schedule_section_skeleton.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/sections/app_section_skeleton.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/sections/privacy_section_skeleton.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/sections/other_section_skeleton.dart';
 import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/core/errors/failure_presenter.dart';
-import 'package:dienstplan/core/di/riverpod_providers.dart';
 
 @RoutePage(name: 'SettingsRoute')
 class SettingsScreen extends ConsumerWidget {
@@ -24,91 +22,80 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-
-    final scheduleAsync = ref.watch(scheduleCoordinatorProvider);
-    return scheduleAsync.when(
-      loading: () => Scaffold(
-        appBar: AppBar(title: Text(l10n.settings)),
-        body: SafeAreaWrapper(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: ListView(
-              children: [
-                const ScheduleSectionSkeleton(),
-                const SizedBox(height: 16),
-                const AppSectionSkeleton(),
-                const SizedBox(height: 16),
-                const AppSectionSkeleton(), // Using app skeleton for holidays section
-                const SizedBox(height: 16),
-                const PrivacySectionSkeleton(),
-                const SizedBox(height: 16),
-                const OtherSectionSkeleton(),
-              ],
-            ),
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.settings)),
+      body: SafeAreaWrapper(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ListView(
+            children: [
+              const _SettingsScheduleBlock(),
+              const SizedBox(height: 16),
+              const AppSection(),
+              const SizedBox(height: 16),
+              const SchoolHolidaysSection(),
+              const SizedBox(height: 16),
+              const PrivacySection(),
+              const SizedBox(height: 16),
+              const OtherSection(),
+              const SizedBox(height: 32),
+              const SettingsFooter(),
+              const SizedBox(height: 32),
+            ],
           ),
         ),
       ),
-      error: (e, st) => Scaffold(
-        appBar: AppBar(title: Text(l10n.settings)),
-        body: SafeAreaWrapper(
-          child: Center(
+    );
+  }
+}
+
+/// Schedule-dependent settings; loading/error here does not block the rest of Settings.
+class _SettingsScheduleBlock extends ConsumerWidget {
+  const _SettingsScheduleBlock();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final AsyncValue<ScheduleUiState> scheduleAsync = ref.watch(
+      scheduleCoordinatorProvider,
+    );
+    return scheduleAsync.when(
+      loading: () => const ScheduleSectionSkeleton(),
+      error: (Object e, StackTrace st) {
+        AppLogger.e(
+          'SettingsScreen: scheduleCoordinatorProvider failed',
+          e,
+          st,
+        );
+        const FailurePresenter presenter = FailurePresenter();
+        final Failure failure = e is Failure
+            ? e
+            : UnknownFailure(
+                technicalMessage: e.toString(),
+                cause: e,
+                stackTrace: st,
+              );
+        final String message = presenter.present(failure, l10n);
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                const SizedBox(height: 16),
-                Builder(
-                  builder: (context) {
-                    const presenter = FailurePresenter();
-                    return FutureBuilder(
-                      future: ref.read(languageServiceProvider.future),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const SizedBox.shrink();
-                        }
-                        final l10nResolved = AppLocalizations.of(context);
-                        final Failure failure = e is Failure
-                            ? e
-                            : const UnknownFailure(technicalMessage: 'unknown');
-                        final String message = presenter.present(
-                          failure,
-                          l10nResolved,
-                        );
-                        return Text(message, textAlign: TextAlign.center);
-                      },
-                    );
-                  },
+                const Icon(Icons.error_outline, size: 40, color: Colors.red),
+                const SizedBox(height: 12),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
           ),
-        ),
-      ),
-      data: (state) => Scaffold(
-        appBar: AppBar(title: Text(l10n.settings)),
-        body: SafeAreaWrapper(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: ListView(
-              children: [
-                ScheduleSection(state: state),
-                const SizedBox(height: 16),
-                const AppSection(),
-                const SizedBox(height: 16),
-                const SchoolHolidaysSection(),
-                const SizedBox(height: 16),
-                const PrivacySection(),
-                const SizedBox(height: 16),
-                const OtherSection(),
-                const SizedBox(height: 32),
-                const SettingsFooter(),
-                const SizedBox(height: 32),
-              ],
-            ),
-          ),
-        ),
-      ),
+        );
+      },
+      data: (ScheduleUiState state) => ScheduleSection(state: state),
     );
   }
 }
