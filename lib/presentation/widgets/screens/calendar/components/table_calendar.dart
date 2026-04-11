@@ -27,12 +27,13 @@ class CalendarTable extends ConsumerWidget {
     final calendarFormat = state?.calendarFormat ?? tc.CalendarFormat.month;
     final focusedDay = state?.focusedDay ?? DateTime.now();
 
-    // Stable calendar key per month/config/locale/format to avoid full rebuilds on data changes
+    // Include schedule count so day cells rebuild when data arrives (same month/config).
     final String stableCalendarKey =
         'cal_${focusedDay.year}_${focusedDay.month}_'
         '${state?.activeConfigName ?? ''}_'
         '${Localizations.localeOf(context).languageCode}_'
-        '${calendarFormat.index}';
+        '${calendarFormat.index}_'
+        'n${state?.schedules.length ?? 0}';
 
     return RepaintBoundary(
       child: LayoutBuilder(

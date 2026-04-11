@@ -11,20 +11,20 @@ class ScheduleSectionSkeleton extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context);
     return SettingsSection(
       title: l10n.schedule,
-      cards: const [
+      cards: [
         NavigationCardSkeleton(
           icon: Icons.calendar_today_outlined,
-          title: 'Duty Schedule',
+          title: l10n.myDutySchedule,
           showSubtitleSkeleton: true,
         ),
         NavigationCardSkeleton(
           icon: Icons.favorite_outlined,
-          title: 'My Duty Group',
+          title: l10n.myDutyGroup,
           showSubtitleSkeleton: true,
         ),
         NavigationCardSkeleton(
           icon: Icons.view_week_outlined,
-          title: 'Calendar Format',
+          title: l10n.calendarFormat,
           showSubtitleSkeleton: true,
         ),
       ],

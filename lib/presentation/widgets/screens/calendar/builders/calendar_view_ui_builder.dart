@@ -220,12 +220,13 @@ class _TableCalendarWrapper extends ConsumerWidget {
     final holidaysAsync = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsync.value;
 
-    // Stable calendar key per month/config/locale/format to avoid full rebuilds on data changes
+    // Include schedule count so day cells rebuild when data arrives (same month/config).
     final String stableCalendarKey =
         'cal_${focusedDay.year}_${focusedDay.month}_'
         '${state?.activeConfigName ?? ''}_'
         '${Localizations.localeOf(context).languageCode}_'
-        '${calendarFormat.index}';
+        '${calendarFormat.index}_'
+        'n${state?.schedules.length ?? 0}';
 
     // Compute visible month range around focused month for holiday loading
     final DateTime hashStartMonth = DateTime(

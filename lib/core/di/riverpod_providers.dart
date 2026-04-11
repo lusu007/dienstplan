@@ -298,8 +298,9 @@ NotificationService notificationService(Ref ref) {
   return NotificationService();
 }
 
-// Repositories
-@riverpod
+// Repositories (keepAlive: async create uses multiple awaits; autoDispose caused
+// "Ref after disposed" when coordinator or dependents rebuilt during awaits.)
+@Riverpod(keepAlive: true)
 Future<ScheduleRepository> scheduleRepository(Ref ref) async {
   final SchedulesDao schedules = await ref.watch(schedulesDaoProvider.future);
   final DutyTypesDao dutyTypes = await ref.watch(dutyTypesDaoProvider.future);
@@ -312,7 +313,7 @@ Future<SettingsRepository> settingsRepository(Ref ref) async {
   return data_repos.SettingsRepositoryImpl(dao);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<ConfigRepository> configRepository(Ref ref) async {
   final ScheduleConfigService cfg = await ref.watch(
     scheduleConfigServiceProvider.future,
@@ -320,8 +321,8 @@ Future<ConfigRepository> configRepository(Ref ref) async {
   return data_repos.ConfigRepositoryImpl(cfg);
 }
 
-// Use cases
-@riverpod
+// Use cases (keepAlive: same async-gap disposal issue as scheduleRepository.)
+@Riverpod(keepAlive: true)
 Future<GetSchedulesUseCase> getSchedulesUseCase(Ref ref) async {
   final ScheduleRepository repo = await ref.watch(
     scheduleRepositoryProvider.future,
@@ -329,7 +330,7 @@ Future<GetSchedulesUseCase> getSchedulesUseCase(Ref ref) async {
   return GetSchedulesUseCase(repo);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<GenerateSchedulesUseCase> generateSchedulesUseCase(Ref ref) async {
   final ScheduleRepository scheduleRepo = await ref.watch(
     scheduleRepositoryProvider.future,
@@ -403,7 +404,7 @@ ConfigQueryService configQueryService(Ref ref) {
 }
 
 // Use cases (additional)
-@riverpod
+@Riverpod(keepAlive: true)
 Future<EnsureMonthSchedulesUseCase> ensureMonthSchedulesUseCase(Ref ref) async {
   final ScheduleRepository repo = await ref.watch(
     scheduleRepositoryProvider.future,

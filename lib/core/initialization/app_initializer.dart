@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
@@ -6,6 +8,7 @@ import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
@@ -51,6 +54,18 @@ class AppInitializer {
         AppLogger.i('Schedule generation isolate initialized');
         // Warm up database lazily
         await container.read(databaseServiceProvider.future);
+        // Start schedule coordinator so calendar/settings get data without waiting for a tap.
+        unawaited(() async {
+          try {
+            await container.read(scheduleCoordinatorProvider.future);
+          } catch (e, st) {
+            AppLogger.e(
+              'Pre-warm scheduleCoordinatorProvider failed (non-fatal)',
+              e,
+              st,
+            );
+          }
+        }());
       } catch (e, stackTrace) {
         AppLogger.e('Error during post-frame initialization', e, stackTrace);
       }

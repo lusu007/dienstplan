@@ -21,7 +21,7 @@ final class ScheduleCoordinatorNotifierProvider
         argument: null,
         retry: null,
         name: r'scheduleCoordinatorProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -35,7 +35,7 @@ final class ScheduleCoordinatorNotifierProvider
 }
 
 String _$scheduleCoordinatorNotifierHash() =>
-    r'41038a04026ad92bd0c5cc10594818364156763e';
+    r'7888ccb4c02daa4c95a405cc5511b791cf1e47c4';
 
 abstract class _$ScheduleCoordinatorNotifier
     extends $AsyncNotifier<ScheduleUiState> {

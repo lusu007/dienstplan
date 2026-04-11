@@ -11,15 +11,15 @@ class AppSectionSkeleton extends StatelessWidget {
     final AppLocalizations l10n = AppLocalizations.of(context);
     return SettingsSection(
       title: l10n.app,
-      cards: const [
+      cards: [
         NavigationCardSkeleton(
           icon: Icons.language_outlined,
-          title: 'Language',
+          title: l10n.language,
           showSubtitleSkeleton: false,
         ),
         NavigationCardSkeleton(
           icon: Icons.delete_forever_outlined,
-          title: 'Reset Data',
+          title: l10n.resetData,
           showSubtitleSkeleton: false,
         ),
       ],
