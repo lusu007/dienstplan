@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.2](https://github.com/lusu007/dienstplan/compare/v0.15.1...v0.15.2) (2026-04-11)
+
+
+### Bug Fixes
+
+* schedule and settings loading on startup ([#375](https://github.com/lusu007/dienstplan/issues/375)) ([ef9316f](https://github.com/lusu007/dienstplan/commit/ef9316f0c157393cdae3853691adb0f8551f3276))
+
 ## [0.15.1](https://github.com/lusu007/dienstplan/compare/v0.15.0...v0.15.1) (2026-04-09)
 
 
