@@ -162,7 +162,7 @@ jobs:
           echo "IPA_PATH=build/export/$NEW_NAME" >> $GITHUB_ENV
         
       - name: ⬆️ Upload IPA to Existing Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ${{ env.IPA_PATH }}
         env:
