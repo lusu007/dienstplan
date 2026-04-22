@@ -135,6 +135,27 @@ class DatabaseService {
       )
     ''');
 
+    await db.execute('''
+      CREATE TABLE personal_calendar_entries (
+        id TEXT NOT NULL PRIMARY KEY,
+        kind TEXT NOT NULL,
+        title TEXT NOT NULL,
+        notes TEXT,
+        date_ymd TEXT NOT NULL,
+        is_all_day INTEGER NOT NULL DEFAULT 1,
+        start_minutes INTEGER,
+        end_minutes INTEGER,
+        duty_group_name TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_personal_calendar_date_ymd
+      ON personal_calendar_entries(date_ymd)
+    ''');
+
     // Create optimized indexes
     await _createOptimizedIndexes(db);
 
@@ -274,6 +295,9 @@ class DatabaseService {
       }
       if (oldVersion < 15) {
         await _migrateToVersion15(txn);
+      }
+      if (oldVersion < 16) {
+        await _migrateToVersion16(txn);
       }
 
       // Create any missing indexes after all migrations are complete
@@ -814,6 +838,50 @@ class DatabaseService {
       }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 15', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion16(DatabaseExecutor db) async {
+    try {
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 16: personal_calendar_entries table',
+        );
+        return true;
+      }());
+      final List<Map<String, Object?>> tables = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='personal_calendar_entries'",
+      );
+      if (tables.isEmpty) {
+        await db.execute('''
+          CREATE TABLE personal_calendar_entries (
+            id TEXT NOT NULL PRIMARY KEY,
+            kind TEXT NOT NULL,
+            title TEXT NOT NULL,
+            notes TEXT,
+            date_ymd TEXT NOT NULL,
+            is_all_day INTEGER NOT NULL DEFAULT 1,
+            start_minutes INTEGER,
+            end_minutes INTEGER,
+            duty_group_name TEXT NOT NULL,
+            created_at INTEGER NOT NULL,
+            updated_at INTEGER NOT NULL
+          )
+        ''');
+        await db.execute('''
+          CREATE INDEX IF NOT EXISTS idx_personal_calendar_date_ymd
+          ON personal_calendar_entries(date_ymd)
+        ''');
+      }
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 16: personal_calendar_entries',
+        );
+        return true;
+      }());
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 16', e, stackTrace);
       rethrow;
     }
   }

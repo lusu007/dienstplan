@@ -770,5 +770,73 @@
   "holidayTypesInfo": "Shows school holidays and public holidays",
   "@holidayTypesInfo": {
     "description": "Information about what types of holidays are displayed"
+  },
+  "addPersonalEntryTooltip": "Add personal appointment or duty",
+  "@addPersonalEntryTooltip": {
+    "description": "Tooltip for adding a personal calendar entry"
+  },
+  "personalEntrySheetTitleNew": "New entry",
+  "@personalEntrySheetTitleNew": {
+    "description": "Title for new personal calendar entry sheet"
+  },
+  "personalEntrySheetTitleEdit": "Edit entry",
+  "@personalEntrySheetTitleEdit": {
+    "description": "Title for editing a personal calendar entry"
+  },
+  "personalEntryKindAppointment": "Appointment",
+  "@personalEntryKindAppointment": {
+    "description": "Label for appointment kind"
+  },
+  "personalEntryKindDuty": "Own duty",
+  "@personalEntryKindDuty": {
+    "description": "Label for personal duty kind"
+  },
+  "personalEntryDateLabel": "Date",
+  "@personalEntryDateLabel": {
+    "description": "Label for personal entry date picker"
+  },
+  "personalEntryTitleLabel": "Title",
+  "@personalEntryTitleLabel": {
+    "description": "Label for personal entry title field"
+  },
+  "personalEntryNotesLabel": "Notes (optional)",
+  "@personalEntryNotesLabel": {
+    "description": "Label for optional notes"
+  },
+  "personalEntryAllDayLabel": "All day",
+  "@personalEntryAllDayLabel": {
+    "description": "Label for all-day toggle"
+  },
+  "personalEntryStartTime": "Start",
+  "@personalEntryStartTime": {
+    "description": "Label for start time"
+  },
+  "personalEntryEndTime": "End",
+  "@personalEntryEndTime": {
+    "description": "Label for end time"
+  },
+  "personalEntrySaved": "Entry saved",
+  "@personalEntrySaved": {
+    "description": "Snackbar after saving personal entry"
+  },
+  "personalEntryDeleted": "Entry deleted",
+  "@personalEntryDeleted": {
+    "description": "Snackbar after deleting personal entry"
+  },
+  "personalEntryValidationTitle": "Please enter a title.",
+  "@personalEntryValidationTitle": {
+    "description": "Validation: empty title"
+  },
+  "personalEntryValidationTimes": "Please pick start and end time.",
+  "@personalEntryValidationTimes": {
+    "description": "Validation: missing times for timed entry"
+  },
+  "personalEntryValidationTimeRange": "Invalid time of day.",
+  "@personalEntryValidationTimeRange": {
+    "description": "Validation: time out of range"
+  },
+  "personalEntryValidationEndAfterStart": "End time must be after start time.",
+  "@personalEntryValidationEndAfterStart": {
+    "description": "Validation: end before start"
   }
 }

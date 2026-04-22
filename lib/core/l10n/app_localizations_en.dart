@@ -586,4 +586,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get holidayTypesInfo => 'Shows school holidays and public holidays';
+
+  @override
+  String get addPersonalEntryTooltip => 'Add personal appointment or duty';
+
+  @override
+  String get personalEntrySheetTitleNew => 'New entry';
+
+  @override
+  String get personalEntrySheetTitleEdit => 'Edit entry';
+
+  @override
+  String get personalEntryKindAppointment => 'Appointment';
+
+  @override
+  String get personalEntryKindDuty => 'Own duty';
+
+  @override
+  String get personalEntryDateLabel => 'Date';
+
+  @override
+  String get personalEntryTitleLabel => 'Title';
+
+  @override
+  String get personalEntryNotesLabel => 'Notes (optional)';
+
+  @override
+  String get personalEntryAllDayLabel => 'All day';
+
+  @override
+  String get personalEntryStartTime => 'Start';
+
+  @override
+  String get personalEntryEndTime => 'End';
+
+  @override
+  String get personalEntrySaved => 'Entry saved';
+
+  @override
+  String get personalEntryDeleted => 'Entry deleted';
+
+  @override
+  String get personalEntryValidationTitle => 'Please enter a title.';
+
+  @override
+  String get personalEntryValidationTimes => 'Please pick start and end time.';
+
+  @override
+  String get personalEntryValidationTimeRange => 'Invalid time of day.';
+
+  @override
+  String get personalEntryValidationEndAfterStart =>
+      'End time must be after start time.';
 }

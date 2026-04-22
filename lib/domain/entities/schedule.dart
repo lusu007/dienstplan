@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 
 part 'schedule.freezed.dart';
 
@@ -12,6 +13,14 @@ abstract class Schedule with _$Schedule {
     required String dutyGroupName,
     required String configName,
     @Default(false) bool isAllDay,
+    @Default(false) bool isUserDefined,
+    String? personalEntryId,
+    PersonalCalendarEntryKind? personalEntryKind,
+    int? startMinutesFromMidnight,
+    int? endMinutesFromMidnight,
+    String? personalNotes,
+    int? personalCreatedAtMs,
+    int? personalUpdatedAtMs,
   }) = _Schedule;
 
   const Schedule._();

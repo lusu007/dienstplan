@@ -54,6 +54,14 @@ class FailurePresenter {
         // Extract year from args if available
         final year = args?['year'] ?? '0';
         return l10n.noHolidayDataForYear(int.tryParse(year) ?? 0);
+      case 'personalEntryValidationTitle':
+        return l10n.personalEntryValidationTitle;
+      case 'personalEntryValidationTimes':
+        return l10n.personalEntryValidationTimes;
+      case 'personalEntryValidationTimeRange':
+        return l10n.personalEntryValidationTimeRange;
+      case 'personalEntryValidationEndAfterStart':
+        return l10n.personalEntryValidationEndAfterStart;
       case 'errorUnknown':
       default:
         return l10n.genericUnknownError;

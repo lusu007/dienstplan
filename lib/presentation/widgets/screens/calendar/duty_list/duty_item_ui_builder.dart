@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
+import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
+import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
@@ -120,6 +121,20 @@ class DutyItemUiBuilder {
         ),
       ),
     );
+  }
+
+  static IconData iconForSchedule(
+    Schedule schedule,
+    Map<String, DutyType>? dutyTypes,
+  ) {
+    if (schedule.isUserDefined) {
+      if (schedule.personalEntryKind ==
+          PersonalCalendarEntryKind.personalDuty) {
+        return Icons.work_history_outlined;
+      }
+      return Icons.event_outlined;
+    }
+    return getDutyTypeIcon(schedule.dutyTypeId, dutyTypes);
   }
 
   static IconData getDutyTypeIcon(

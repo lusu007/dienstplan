@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 /// Visual style for [DutyScheduleList] items.
@@ -93,6 +94,7 @@ class DutyScheduleList extends ConsumerWidget {
 
     return _buildCombinedList(
       context: context,
+      ref: ref,
       schedules: sortedSchedules,
       holidaysForSelectedDay: holidaysForSelectedDay,
       partnerConfigName: partnerConfigName,
@@ -106,36 +108,64 @@ class DutyScheduleList extends ConsumerWidget {
   }
 
   List<Schedule> _getFilteredSchedules() {
-    final List<Schedule> base = schedules.where((Schedule schedule) {
-      final bool isActiveConfig =
-          activeConfigName == null ||
-          activeConfigName!.isEmpty ||
-          schedule.configName == activeConfigName;
-      return isActiveConfig;
-    }).toList();
-
-    if (selectedDutyGroup == null || selectedDutyGroup!.isEmpty) {
-      return base;
+    final List<Schedule> userRows =
+        schedules.where((Schedule s) => s.isUserDefined).toList();
+    final List<Schedule> officialAll = schedules
+        .where((Schedule s) => !s.isUserDefined)
+        .toList();
+    final List<Schedule> officialFiltered = officialAll
+        .where((Schedule schedule) {
+          final bool isActiveConfig =
+              activeConfigName == null ||
+              activeConfigName!.isEmpty ||
+              schedule.configName == activeConfigName;
+          return isActiveConfig;
+        })
+        .toList();
+    final bool showAllGroups =
+        selectedDutyGroup == null || selectedDutyGroup!.isEmpty;
+    if (showAllGroups) {
+      return <Schedule>[...userRows, ...officialFiltered];
     }
-
-    final List<Schedule> byGroup = base
+    final List<Schedule> byGroup = officialFiltered
         .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
         .toList();
-    return byGroup.isEmpty ? base : byGroup;
+    final List<Schedule> officialPart =
+        byGroup.isEmpty ? officialFiltered : byGroup;
+    final List<Schedule> userPart = userRows
+        .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
+        .toList();
+    return <Schedule>[...userPart, ...officialPart];
   }
 
   List<Schedule> _sortSchedules(List<Schedule> input) {
+    final List<Schedule> users =
+        input.where((Schedule s) => s.isUserDefined).toList();
+    final List<Schedule> official =
+        input.where((Schedule s) => !s.isUserDefined).toList();
+    users.sort((Schedule a, Schedule b) {
+      final int as = a.startMinutesFromMidnight ?? -1;
+      final int bs = b.startMinutesFromMidnight ?? -1;
+      return as.compareTo(bs);
+    });
     if (dutyTypeOrder == null || dutyTypeOrder!.isEmpty) {
-      return input;
+      return <Schedule>[...users, ...official];
     }
-    return List<Schedule>.from(input)..sort((Schedule a, Schedule b) {
+    official.sort((Schedule a, Schedule b) {
       final int aIndex = dutyTypeOrder!.indexOf(a.dutyTypeId);
       final int bIndex = dutyTypeOrder!.indexOf(b.dutyTypeId);
-      if (aIndex != -1 && bIndex != -1) return aIndex.compareTo(bIndex);
-      if (aIndex != -1) return -1;
-      if (bIndex != -1) return 1;
+      if (aIndex != -1 && bIndex != -1) {
+        return aIndex.compareTo(bIndex);
+      }
+      if (aIndex != -1) {
+        return -1;
+      }
+      if (bIndex != -1) {
+        return 1;
+      }
       return a.dutyTypeId.compareTo(b.dutyTypeId);
     });
+    return <Schedule>[...users, ...official];
   }
 
   void _onDutyGroupSelected(String? dutyGroupId) {
@@ -175,6 +205,7 @@ class DutyScheduleList extends ConsumerWidget {
 
   Widget _buildCombinedList({
     required BuildContext context,
+    required WidgetRef ref,
     required List<Schedule> schedules,
     required List<SchoolHoliday>? holidaysForSelectedDay,
     required String? partnerConfigName,
@@ -207,6 +238,9 @@ class DutyScheduleList extends ConsumerWidget {
 
         final int dutyIndex = index - holidaysCount;
         final Schedule schedule = schedules[dutyIndex];
+        final String? personalTimeLabel = schedule.isUserDefined
+            ? _personalTimeRightLabel(context, schedule)
+            : null;
         final Color partnerColor = Color(
           partnerAccentColorValue ??
               AccentColorDefaults.partnerAccentColorValue,
@@ -228,10 +262,11 @@ class DutyScheduleList extends ConsumerWidget {
         final bool isSelected = selectedDutyGroup == schedule.dutyGroupName;
         final Color primaryColor = Theme.of(context).colorScheme.primary;
         final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
-        final bool isOwn =
+        final bool isPersonal = schedule.isUserDefined;
+        final bool isOwn = isPersonal ||
             (myDutyGroupName != null &&
-            myDutyGroupName.isNotEmpty &&
-            schedule.dutyGroupName == myDutyGroupName);
+                myDutyGroupName.isNotEmpty &&
+                schedule.dutyGroupName == myDutyGroupName);
         final Color baseColor = isPartner
             ? partnerColor
             : (isOwn ? myAccentColor : outlineColor);
@@ -247,12 +282,23 @@ class DutyScheduleList extends ConsumerWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => _onDutyGroupSelected(
-                isSelected ? null : schedule.dutyGroupName,
-              ),
+              onTap: () {
+                if (schedule.isUserDefined) {
+                  showPersonalCalendarEntrySheet(
+                    context: context,
+                    ref: ref,
+                    day: schedule.date,
+                    existingSchedule: schedule,
+                  );
+                } else {
+                  _onDutyGroupSelected(
+                    isSelected ? null : schedule.dutyGroupName,
+                  );
+                }
+              },
               borderRadius: BorderRadius.circular(16),
               child: Container(
-                height: 72,
+                constraints: const BoxConstraints(minHeight: 72),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 16,
@@ -273,7 +319,10 @@ class DutyScheduleList extends ConsumerWidget {
                         isDark: isDark,
                       ),
                       child: Icon(
-                        _getDutyTypeIcon(schedule.dutyTypeId, dutyTypesMap),
+                        DutyItemUiBuilder.iconForSchedule(
+                          schedule,
+                          dutyTypesMap,
+                        ),
                         color: _resolveIconColor(
                           context: context,
                           badgeColor: badgeColor,
@@ -285,34 +334,83 @@ class DutyScheduleList extends ConsumerWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Row(
-                        children: [
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
                           Expanded(
-                            child: Text(
-                              schedule.service,
-                              style: Theme.of(context).textTheme.titleMedium
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  schedule.service,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (schedule.isUserDefined &&
+                                    _personalNotesLine(schedule) != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Text(
+                                      _personalNotesLine(schedule)!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          if (personalTimeLabel != null &&
+                              personalTimeLabel.isNotEmpty) ...<Widget>[
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Text(
+                                  personalTimeLabel,
+                                  textAlign: TextAlign.end,
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ] else ...<Widget>[
+                            const SizedBox(width: 8),
+                            Text(
+                              schedule.dutyGroupName,
+                              style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
                                     color: Theme.of(
                                       context,
-                                    ).colorScheme.onSurface,
+                                    ).colorScheme.onSurfaceVariant,
                                   ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            schedule.dutyGroupName,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
-                                ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          ],
                         ],
                       ),
                     ),
@@ -397,11 +495,38 @@ class DutyScheduleList extends ConsumerWidget {
     return isDark ? Colors.white : badgeColor;
   }
 
-  IconData _getDutyTypeIcon(
-    String dutyTypeId,
-    Map<String, DutyType>? dutyTypesMap,
-  ) {
-    return DutyItemUiBuilder.getDutyTypeIcon(dutyTypeId, dutyTypesMap);
+  /// Time range or all-day label for the right column (personal entries only).
+  String? _personalTimeRightLabel(BuildContext context, Schedule schedule) {
+    if (!schedule.isUserDefined) {
+      return null;
+    }
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    if (schedule.isAllDay) {
+      return l10n.personalEntryAllDayLabel;
+    }
+    final int? start = schedule.startMinutesFromMidnight;
+    final int? end = schedule.endMinutesFromMidnight;
+    if (start == null || end == null) {
+      return null;
+    }
+    final TimeOfDay startT = TimeOfDay(hour: start ~/ 60, minute: start % 60);
+    final TimeOfDay endT = TimeOfDay(hour: end ~/ 60, minute: end % 60);
+    return '${startT.format(context)} – ${endT.format(context)}';
+  }
+
+  String? _personalNotesLine(Schedule schedule) {
+    if (!schedule.isUserDefined) {
+      return null;
+    }
+    final String? notes = schedule.personalNotes;
+    if (notes == null) {
+      return null;
+    }
+    final String trimmed = notes.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+    return trimmed;
   }
 
   Widget _buildSkeletonLoader(BuildContext context) {

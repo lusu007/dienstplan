@@ -7,6 +7,7 @@ class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
   final String? dutyAbbreviation;
   final String? partnerDutyAbbreviation;
+  final bool hasPersonalCalendarEntry;
   final int? partnerAccentColorValue;
   final int? myAccentColorValue;
   final int? holidayAccentColorValue;
@@ -23,6 +24,7 @@ class AnimatedCalendarDay extends StatefulWidget {
     required this.day,
     this.dutyAbbreviation,
     this.partnerDutyAbbreviation,
+    this.hasPersonalCalendarEntry = false,
     this.partnerAccentColorValue,
     this.myAccentColorValue,
     this.holidayAccentColorValue,
@@ -68,7 +70,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           children: [
             _buildDayNumber(theme),
             _buildHolidayIndicator(),
-            _buildPrimaryChip(theme),
+            _buildPrimaryColumn(theme),
             _buildPartnerChip(theme),
           ],
         ),
@@ -103,21 +105,51 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  Widget _buildPrimaryChip(ThemeData theme) {
-    final hasPrimary = widget.dutyAbbreviation?.isNotEmpty ?? false;
-    final hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
-
+  Widget _buildPrimaryColumn(ThemeData theme) {
+    final bool hasPrimary = widget.dutyAbbreviation?.isNotEmpty ?? false;
+    final bool hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+    final List<Widget> children = <Widget>[];
     if (hasPrimary) {
-      return _buildChip(
-        text: widget.dutyAbbreviation!,
-        decoration: _getDutyBadgeDecoration(theme),
-        textStyle: _getDutyBadgeTextStyle(theme),
-        margin: const EdgeInsets.only(bottom: _chipBottomMargin),
+      children.add(
+        _buildChip(
+          text: widget.dutyAbbreviation!,
+          decoration: _getDutyBadgeDecoration(theme),
+          textStyle: _getDutyBadgeTextStyle(theme),
+          margin: EdgeInsets.only(
+            bottom: widget.hasPersonalCalendarEntry ? 0 : _chipBottomMargin,
+          ),
+        ),
       );
     } else if (hasPartner) {
-      return _buildPlaceholder();
+      children.add(_buildPlaceholder());
+    } else if (widget.hasPersonalCalendarEntry) {
+      children.add(
+        _buildChip(
+          text: '+',
+          decoration: _getDutyBadgeDecoration(theme),
+          textStyle: _getDutyBadgeTextStyle(theme).copyWith(fontSize: 10),
+          margin: const EdgeInsets.only(bottom: _chipBottomMargin),
+        ),
+      );
     }
-    return const SizedBox.shrink();
+    if (widget.hasPersonalCalendarEntry && hasPrimary) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: _chipBottomMargin),
+          child: Text(
+            '+',
+            style: _getDutyBadgeTextStyle(theme).copyWith(fontSize: 9),
+          ),
+        ),
+      );
+    }
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
   }
 
   Widget _buildPartnerChip(ThemeData theme) {

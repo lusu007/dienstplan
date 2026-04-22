@@ -287,6 +287,49 @@ final class ScheduleConfigsDaoProvider
 String _$scheduleConfigsDaoHash() =>
     r'ecac450006a3623baa28efbf479217677fef2517';
 
+@ProviderFor(personalCalendarEntriesDao)
+final personalCalendarEntriesDaoProvider =
+    PersonalCalendarEntriesDaoProvider._();
+
+final class PersonalCalendarEntriesDaoProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PersonalCalendarEntriesDao>,
+          PersonalCalendarEntriesDao,
+          FutureOr<PersonalCalendarEntriesDao>
+        >
+    with
+        $FutureModifier<PersonalCalendarEntriesDao>,
+        $FutureProvider<PersonalCalendarEntriesDao> {
+  PersonalCalendarEntriesDaoProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'personalCalendarEntriesDaoProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$personalCalendarEntriesDaoHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<PersonalCalendarEntriesDao> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<PersonalCalendarEntriesDao> create(Ref ref) {
+    return personalCalendarEntriesDao(ref);
+  }
+}
+
+String _$personalCalendarEntriesDaoHash() =>
+    r'0a2f0ff6c65cd96c91820abb6bfe10290a378ca1';
+
 @ProviderFor(scheduleConfigService)
 final scheduleConfigServiceProvider = ScheduleConfigServiceProvider._();
 
@@ -730,6 +773,49 @@ final class ScheduleRepositoryProvider
 String _$scheduleRepositoryHash() =>
     r'daa4c00231473dfb86689c01206720156e1f4759';
 
+@ProviderFor(personalCalendarRepository)
+final personalCalendarRepositoryProvider =
+    PersonalCalendarRepositoryProvider._();
+
+final class PersonalCalendarRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PersonalCalendarRepository>,
+          PersonalCalendarRepository,
+          FutureOr<PersonalCalendarRepository>
+        >
+    with
+        $FutureModifier<PersonalCalendarRepository>,
+        $FutureProvider<PersonalCalendarRepository> {
+  PersonalCalendarRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'personalCalendarRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$personalCalendarRepositoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<PersonalCalendarRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<PersonalCalendarRepository> create(Ref ref) {
+    return personalCalendarRepository(ref);
+  }
+}
+
+String _$personalCalendarRepositoryHash() =>
+    r'163977145aef88a3aae50a7cd9d2b92a5e038ae3';
+
 @ProviderFor(settingsRepository)
 final settingsRepositoryProvider = SettingsRepositoryProvider._();
 
@@ -852,6 +938,137 @@ final class GetSchedulesUseCaseProvider
 
 String _$getSchedulesUseCaseHash() =>
     r'957e2a94538b8d1d8b0ba399d6049a6c4ca6a9a4';
+
+@ProviderFor(listPersonalCalendarEntriesUseCase)
+final listPersonalCalendarEntriesUseCaseProvider =
+    ListPersonalCalendarEntriesUseCaseProvider._();
+
+final class ListPersonalCalendarEntriesUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ListPersonalCalendarEntriesUseCase>,
+          ListPersonalCalendarEntriesUseCase,
+          FutureOr<ListPersonalCalendarEntriesUseCase>
+        >
+    with
+        $FutureModifier<ListPersonalCalendarEntriesUseCase>,
+        $FutureProvider<ListPersonalCalendarEntriesUseCase> {
+  ListPersonalCalendarEntriesUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'listPersonalCalendarEntriesUseCaseProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$listPersonalCalendarEntriesUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<ListPersonalCalendarEntriesUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ListPersonalCalendarEntriesUseCase> create(Ref ref) {
+    return listPersonalCalendarEntriesUseCase(ref);
+  }
+}
+
+String _$listPersonalCalendarEntriesUseCaseHash() =>
+    r'1f493e4f2408cab0bde7641c7e1c704dec144b81';
+
+@ProviderFor(savePersonalCalendarEntryUseCase)
+final savePersonalCalendarEntryUseCaseProvider =
+    SavePersonalCalendarEntryUseCaseProvider._();
+
+final class SavePersonalCalendarEntryUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<SavePersonalCalendarEntryUseCase>,
+          SavePersonalCalendarEntryUseCase,
+          FutureOr<SavePersonalCalendarEntryUseCase>
+        >
+    with
+        $FutureModifier<SavePersonalCalendarEntryUseCase>,
+        $FutureProvider<SavePersonalCalendarEntryUseCase> {
+  SavePersonalCalendarEntryUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'savePersonalCalendarEntryUseCaseProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$savePersonalCalendarEntryUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<SavePersonalCalendarEntryUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<SavePersonalCalendarEntryUseCase> create(Ref ref) {
+    return savePersonalCalendarEntryUseCase(ref);
+  }
+}
+
+String _$savePersonalCalendarEntryUseCaseHash() =>
+    r'483b197a749b7671738af756bc2c38466309814f';
+
+@ProviderFor(deletePersonalCalendarEntryUseCase)
+final deletePersonalCalendarEntryUseCaseProvider =
+    DeletePersonalCalendarEntryUseCaseProvider._();
+
+final class DeletePersonalCalendarEntryUseCaseProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<DeletePersonalCalendarEntryUseCase>,
+          DeletePersonalCalendarEntryUseCase,
+          FutureOr<DeletePersonalCalendarEntryUseCase>
+        >
+    with
+        $FutureModifier<DeletePersonalCalendarEntryUseCase>,
+        $FutureProvider<DeletePersonalCalendarEntryUseCase> {
+  DeletePersonalCalendarEntryUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'deletePersonalCalendarEntryUseCaseProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$deletePersonalCalendarEntryUseCaseHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<DeletePersonalCalendarEntryUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<DeletePersonalCalendarEntryUseCase> create(Ref ref) {
+    return deletePersonalCalendarEntryUseCase(ref);
+  }
+}
+
+String _$deletePersonalCalendarEntryUseCaseHash() =>
+    r'9fff7ed2f38f74933dad74a6b759165088aa55a7';
 
 @ProviderFor(generateSchedulesUseCase)
 final generateSchedulesUseCaseProvider = GenerateSchedulesUseCaseProvider._();

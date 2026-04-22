@@ -767,5 +767,73 @@
   "holidayTypesInfo": "Zeigt Schulferien und gesetzliche Feiertage an",
   "@holidayTypesInfo": {
     "description": "Information about what types of holidays are displayed"
+  },
+  "addPersonalEntryTooltip": "Eigenen Termin oder Dienst eintragen",
+  "@addPersonalEntryTooltip": {
+    "description": "Tooltip for adding a personal calendar entry"
+  },
+  "personalEntrySheetTitleNew": "Neuer Eintrag",
+  "@personalEntrySheetTitleNew": {
+    "description": "Title for new personal calendar entry sheet"
+  },
+  "personalEntrySheetTitleEdit": "Eintrag bearbeiten",
+  "@personalEntrySheetTitleEdit": {
+    "description": "Title for editing a personal calendar entry"
+  },
+  "personalEntryKindAppointment": "Termin",
+  "@personalEntryKindAppointment": {
+    "description": "Label for appointment kind"
+  },
+  "personalEntryKindDuty": "Eigener Dienst",
+  "@personalEntryKindDuty": {
+    "description": "Label for personal duty kind"
+  },
+  "personalEntryDateLabel": "Datum",
+  "@personalEntryDateLabel": {
+    "description": "Label for personal entry date picker"
+  },
+  "personalEntryTitleLabel": "Titel",
+  "@personalEntryTitleLabel": {
+    "description": "Label for personal entry title field"
+  },
+  "personalEntryNotesLabel": "Notizen (optional)",
+  "@personalEntryNotesLabel": {
+    "description": "Label for optional notes"
+  },
+  "personalEntryAllDayLabel": "Ganztägig",
+  "@personalEntryAllDayLabel": {
+    "description": "Label for all-day toggle"
+  },
+  "personalEntryStartTime": "Beginn",
+  "@personalEntryStartTime": {
+    "description": "Label for start time"
+  },
+  "personalEntryEndTime": "Ende",
+  "@personalEntryEndTime": {
+    "description": "Label for end time"
+  },
+  "personalEntrySaved": "Eintrag gespeichert",
+  "@personalEntrySaved": {
+    "description": "Snackbar after saving personal entry"
+  },
+  "personalEntryDeleted": "Eintrag gelöscht",
+  "@personalEntryDeleted": {
+    "description": "Snackbar after deleting personal entry"
+  },
+  "personalEntryValidationTitle": "Bitte gib einen Titel ein.",
+  "@personalEntryValidationTitle": {
+    "description": "Validation: empty title"
+  },
+  "personalEntryValidationTimes": "Bitte Start- und Endzeit wählen.",
+  "@personalEntryValidationTimes": {
+    "description": "Validation: missing times for timed entry"
+  },
+  "personalEntryValidationTimeRange": "Ungültige Uhrzeit.",
+  "@personalEntryValidationTimeRange": {
+    "description": "Validation: time out of range"
+  },
+  "personalEntryValidationEndAfterStart": "Ende muss nach dem Beginn liegen.",
+  "@personalEntryValidationEndAfterStart": {
+    "description": "Validation: end before start"
   }
 }

@@ -156,6 +156,7 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       day: day,
       dutyAbbreviation: dutyData.myDuty,
       partnerDutyAbbreviation: dutyData.partnerDuty,
+      hasPersonalCalendarEntry: dutyData.hasPersonalEntry,
       partnerAccentColorValue: partnerAccentColor,
       myAccentColorValue: myAccentColor,
       holidayAccentColorValue: holidayAccentColor,
@@ -180,19 +181,25 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 class DutyData {
   final String myDuty;
   final String partnerDuty;
+  final bool hasPersonalEntry;
 
-  const DutyData({required this.myDuty, required this.partnerDuty});
+  const DutyData({
+    required this.myDuty,
+    required this.partnerDuty,
+    required this.hasPersonalEntry,
+  });
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is DutyData &&
         other.myDuty == myDuty &&
-        other.partnerDuty == partnerDuty;
+        other.partnerDuty == partnerDuty &&
+        other.hasPersonalEntry == hasPersonalEntry;
   }
 
   @override
-  int get hashCode => Object.hash(myDuty, partnerDuty);
+  int get hashCode => Object.hash(myDuty, partnerDuty, hasPersonalEntry);
 }
 
 /// Memoized duty calculator with caching
@@ -235,7 +242,13 @@ class _MemoizedDutyCalculator {
       partnerGroup: partnerGroup,
     );
 
-    final dutyData = DutyData(myDuty: myDuty, partnerDuty: partnerDuty);
+    final bool hasPersonal = _hasPersonalEntryOnDay(day: day, schedules: schedules);
+
+    final dutyData = DutyData(
+      myDuty: myDuty,
+      partnerDuty: partnerDuty,
+      hasPersonalEntry: hasPersonal,
+    );
 
     _cache[cacheKey] = dutyData;
 
@@ -270,7 +283,12 @@ class _MemoizedDutyCalculator {
       return scheduleDate.year == day.year && scheduleDate.month == day.month;
     }).toList();
 
-    final contentHash = relevantSchedules.fold<int>(0, (hash, schedule) {
+    // Create a content-based hash that includes key schedule properties
+    // This ensures cache invalidation when schedule content changes
+    final int contentHash = relevantSchedules.fold<int>(0, (
+      int hash,
+      Schedule schedule,
+    ) {
       return hash ^
           Object.hash(
             schedule.date.day,
@@ -278,6 +296,8 @@ class _MemoizedDutyCalculator {
             schedule.dutyGroupName,
             schedule.configName,
             schedule.service,
+            schedule.isUserDefined,
+            schedule.personalEntryId,
           );
     });
 
@@ -289,6 +309,27 @@ class _MemoizedDutyCalculator {
     for (final key in keysToRemove) {
       _cache.remove(key);
     }
+  }
+
+  static bool _hasPersonalEntryOnDay({
+    required DateTime day,
+    required List<Schedule> schedules,
+  }) {
+    final DateTime dayDate = DateTime(day.year, day.month, day.day);
+    for (final Schedule schedule in schedules) {
+      if (!schedule.isUserDefined) {
+        continue;
+      }
+      final DateTime scheduleDate = DateTime(
+        schedule.date.year,
+        schedule.date.month,
+        schedule.date.day,
+      );
+      if (scheduleDate.isAtSameMomentAs(dayDate)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static String _getDutyAbbreviationForDate({
