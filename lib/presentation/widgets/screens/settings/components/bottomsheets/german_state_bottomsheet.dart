@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/german_state.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/selection_bottomsheet.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
 class GermanStateBottomsheet {
   static Future<String?> show(BuildContext context, String? selectedStateCode) {

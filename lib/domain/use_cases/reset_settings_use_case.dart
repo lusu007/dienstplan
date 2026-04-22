@@ -1,7 +1,6 @@
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/domain/repositories/settings_repository.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 
@@ -42,7 +41,6 @@ class ResetSettingsUseCase {
 
   Settings _createDefaultSettings() {
     return const Settings(
-      calendarFormat: CalendarFormat.month,
       selectedDutyGroup: null,
       myDutyGroup: null,
       themePreference: null,

@@ -5,8 +5,8 @@ import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/dialogs/app_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/dialogs/app_license_page.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
-import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
@@ -17,36 +17,29 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.about)),
-      body: SafeAreaWrapper(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // App Info Section
-              _buildAppInfoSection(context, l10n),
-              const SizedBox(height: 16),
-
-              // Credits Section
-              _buildCreditsSection(context, l10n),
-              const SizedBox(height: 16),
-
-              // Legal Section
-              _buildLegalSection(context, l10n),
-            ],
-          ),
+    return GlassScreenScaffold(
+      title: l10n.about,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildAppInfoSection(context, l10n),
+            const SizedBox(height: 16),
+            _buildCreditsSection(context, l10n),
+            const SizedBox(height: 16),
+            _buildLegalSection(context, l10n),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildAppInfoSection(BuildContext context, AppLocalizations l10n) {
+    final Color subtle = Theme.of(context).colorScheme.onSurfaceVariant;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // App Icon and Name
         Center(
           child: Column(
             children: [
@@ -56,6 +49,7 @@ class AboutScreen extends StatelessWidget {
                 AppInfo.appName,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
@@ -67,14 +61,16 @@ class AboutScreen extends StatelessWidget {
                       children: [
                         Text(
                           AppInfo.appLegalese,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey.shade600),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: subtle),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           snapshot.data!,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey.shade600),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: subtle),
                         ),
                       ],
                     );
@@ -83,7 +79,11 @@ class AboutScreen extends StatelessWidget {
                     width: 80,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: Colors.white.withValues(
+                        alpha: Theme.of(context).brightness == Brightness.dark
+                            ? 0.1
+                            : 0.28,
+                      ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   );
@@ -93,23 +93,19 @@ class AboutScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-
-        // About Description
         Text(
           l10n.aboutDescription,
           style: Theme.of(
             context,
-          ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
+          ).textTheme.bodyMedium?.copyWith(color: subtle),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
-
-        // Disclaimer
         Text(
           l10n.aboutDisclaimer,
           style: Theme.of(
             context,
-          ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
+          ).textTheme.bodyMedium?.copyWith(color: subtle),
           textAlign: TextAlign.center,
         ),
       ],

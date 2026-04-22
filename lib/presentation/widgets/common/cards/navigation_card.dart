@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
 
 class NavigationCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? subtitle;
   final VoidCallback? onTap;
-  final Color iconColor;
+  final Color? iconColor;
   final Widget? trailing;
   final bool enabled;
 
@@ -16,7 +17,7 @@ class NavigationCard extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.onTap,
-    this.iconColor = AppColors.primary,
+    this.iconColor,
     this.trailing,
     this.enabled = true,
   });
@@ -26,60 +27,55 @@ class NavigationCard extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
 
-    final effectiveIconColor = enabled ? iconColor : scheme.onSurfaceVariant;
-    final effectiveTitleColor = enabled
+    final Color effectiveTitleColor = enabled
         ? scheme.onSurface
         : scheme.onSurfaceVariant;
-    final effectiveSubtitleColor = enabled
+    final Color effectiveSubtitleColor = enabled
         ? scheme.onSurfaceVariant
         : scheme.onSurfaceVariant.withValues(alpha: 0.6);
 
-    return Container(
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        child: Container(
-          decoration: BoxDecoration(
-            color: enabled
-                ? theme.cardColor
-                : theme.cardColor.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: enabled
-                  ? scheme.outlineVariant
-                  : scheme.outlineVariant.withValues(alpha: 0.5),
-              width: 1,
-            ),
-          ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-            minVerticalPadding: 20,
-            leading: Icon(icon, color: effectiveIconColor, size: 40),
-            title: Text(
-              title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: effectiveTitleColor,
+      enabled: enabled,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GlassIconBadge(icon: icon, tintColor: iconColor, enabled: enabled),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 17,
+                      color: effectiveTitleColor,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        color: effectiveSubtitleColor,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            subtitle: subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
-                      color: effectiveSubtitleColor,
-                    ),
-                  )
-                : null,
-            trailing: trailing != null && !enabled
-                ? Opacity(opacity: 0.5, child: trailing!)
-                : trailing,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            selectedTileColor: Colors.transparent,
-            onTap: onTap,
-          ),
+            if (trailing != null) ...[
+              const SizedBox(width: 12),
+              !enabled ? Opacity(opacity: 0.5, child: trailing!) : trailing!,
+            ],
+          ],
         ),
       ),
     );

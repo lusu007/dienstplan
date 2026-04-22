@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_index.dart';
@@ -13,7 +12,6 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     String? error,
     DateTime? selectedDay,
     DateTime? focusedDay,
-    CalendarFormat? calendarFormat,
     @Default(<Schedule>[]) List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
@@ -39,7 +37,6 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     isLoading: false,
     selectedDay: DateTime.now(),
     focusedDay: DateTime.now(),
-    calendarFormat: CalendarFormat.month,
     activeConfigName: '',
     preferredDutyGroup: '',
     partnerConfigName: null,

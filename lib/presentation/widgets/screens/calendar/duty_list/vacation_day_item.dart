@@ -3,24 +3,33 @@ import 'package:dienstplan/domain/entities/school_holiday.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 
-/// A widget that displays a vacation day item in the schedule list
+/// A widget that displays a vacation day item in the schedule list.
+///
+/// Supports both the default card look and a translucent glass variant via
+/// [visualStyle] so it visually matches the schedules dialog.
 class VacationDayItem extends StatelessWidget {
   final SchoolHoliday holiday;
   final int? holidayAccentColorValue;
   final VoidCallback? onTap;
+  final DutyListVisualStyle visualStyle;
 
   const VacationDayItem({
     super.key,
     required this.holiday,
     this.holidayAccentColorValue,
     this.onTap,
+    this.visualStyle = DutyListVisualStyle.card,
   });
+
+  bool get _isGlass => visualStyle == DutyListVisualStyle.glass;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final holidayColor = Color(
+    final bool isDark = theme.brightness == Brightness.dark;
+    final Color holidayColor = Color(
       holidayAccentColorValue ?? AccentColorDefaults.holidayAccentColorValue,
     );
 
@@ -32,28 +41,26 @@ class VacationDayItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            height: 44, // More compact than duty items (72px)
+            height: 44,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: holidayColor, width: 1.5),
+            decoration: _buildContainerDecoration(
+              theme: theme,
+              isDark: isDark,
+              holidayColor: holidayColor,
             ),
             child: Row(
               children: [
                 Container(
                   width: 28,
                   height: 28,
-                  decoration: BoxDecoration(
-                    color: holidayColor.withAlpha(kAlphaBadge),
-                    borderRadius: BorderRadius.circular(6),
+                  decoration: _buildBadgeDecoration(
+                    isDark: isDark,
+                    holidayColor: holidayColor,
                   ),
                   child: Icon(
                     Icons.beach_access,
-                    color: theme.brightness == Brightness.dark
-                        ? theme.colorScheme.onSurface
-                        : holidayColor,
-                    size: 18, // Smaller icon for compact layout
+                    color: _resolveIconColor(theme, isDark, holidayColor),
+                    size: 18,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -91,18 +98,16 @@ class VacationDayItem extends StatelessWidget {
                     horizontal: 6,
                     vertical: 3,
                   ),
-                  decoration: BoxDecoration(
-                    color: holidayColor.withAlpha(kAlphaBadge),
-                    borderRadius: BorderRadius.circular(8),
+                  decoration: _buildBadgeDecoration(
+                    isDark: isDark,
+                    holidayColor: holidayColor,
                   ),
                   child: Text(
                     _getHolidayTypeText(context, holiday.type),
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: 9,
                       fontWeight: FontWeight.w500,
-                      color: theme.brightness == Brightness.dark
-                          ? theme.colorScheme.onSurface
-                          : holidayColor,
+                      color: _resolveIconColor(theme, isDark, holidayColor),
                     ),
                   ),
                 ),
@@ -112,6 +117,49 @@ class VacationDayItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  BoxDecoration _buildContainerDecoration({
+    required ThemeData theme,
+    required bool isDark,
+    required Color holidayColor,
+  }) {
+    if (!_isGlass) {
+      return BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: holidayColor, width: 1.5),
+      );
+    }
+    return BoxDecoration(
+      color: Colors.white.withValues(alpha: isDark ? 0.06 : 0.28),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: holidayColor.withValues(alpha: 0.6), width: 1),
+    );
+  }
+
+  BoxDecoration _buildBadgeDecoration({
+    required bool isDark,
+    required Color holidayColor,
+  }) {
+    if (!_isGlass) {
+      return BoxDecoration(
+        color: holidayColor.withAlpha(kAlphaBadge),
+        borderRadius: BorderRadius.circular(6),
+      );
+    }
+    return BoxDecoration(
+      color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.35),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: holidayColor.withValues(alpha: 0.55), width: 1),
+    );
+  }
+
+  Color _resolveIconColor(ThemeData theme, bool isDark, Color holidayColor) {
+    if (!_isGlass) {
+      return isDark ? theme.colorScheme.onSurface : holidayColor;
+    }
+    return isDark ? Colors.white : holidayColor;
   }
 
   String _getHolidayTypeText(BuildContext context, HolidayType? type) {

@@ -4,10 +4,9 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/selection_bottomsheet.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
 class LanguageBottomsheet {
-  static void show(BuildContext context, {double? heightPercentage}) {
+  static void show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     showModalBottomSheet(
@@ -19,9 +18,7 @@ class LanguageBottomsheet {
           final languageAsync = ref.watch(languageServiceProvider);
           return languageAsync.when(
             loading: () => Container(
-              height: heightPercentage != null
-                  ? MediaQuery.of(context).size.height * heightPercentage
-                  : MediaQuery.of(context).size.height * 0.3,
+              height: 160,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: const BorderRadius.vertical(
@@ -31,9 +28,7 @@ class LanguageBottomsheet {
               child: const Center(child: CircularProgressIndicator()),
             ),
             error: (e, st) => Container(
-              height: heightPercentage != null
-                  ? MediaQuery.of(context).size.height * heightPercentage
-                  : MediaQuery.of(context).size.height * 0.3,
+              height: 160,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: const BorderRadius.vertical(
@@ -47,7 +42,6 @@ class LanguageBottomsheet {
                   languageService.currentLocale.languageCode;
               return SelectionBottomsheet(
                 title: l10n.selectLanguage,
-                heightPercentage: heightPercentage,
                 items: [
                   SelectionItem(title: l10n.german, value: 'de'),
                   SelectionItem(title: l10n.english, value: 'en'),

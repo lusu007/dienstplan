@@ -5,6 +5,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/duty_group_fallback.dart';
 
@@ -56,7 +57,6 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Selective provider watching - only watch specific parts of the state
     final schedules = ref.watch(
       scheduleCoordinatorProvider.select(
         (state) => state.value?.schedules ?? const <Schedule>[],
@@ -93,6 +93,14 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       ),
     );
 
+    // View-only visibility override: hiding the partner in the calendar
+    // must not mutate the persisted partner configuration.
+    final bool partnerVisible = ref.watch(calendarPartnerVisibilityProvider);
+    final String? effectivePartnerConfigName = partnerVisible
+        ? partnerConfigName
+        : null;
+    final String? effectivePartnerGroup = partnerVisible ? partnerGroup : null;
+
     final selectedDay = ref.watch(
       scheduleCoordinatorProvider.select((state) => state.value?.selectedDay),
     );
@@ -117,7 +125,6 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       settingsProvider.select((s) => s.value?.myDutyGroup),
     );
 
-    // Watch school holidays state
     final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
     final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
 
@@ -129,7 +136,6 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
         : [];
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
 
-    // Memoized duty calculations
     final String? effectiveMyGroup = computeEffectiveMyGroup(
       preferredGroup: preferredGroup,
       selectedGroup: selectedGroup,
@@ -140,8 +146,8 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       schedules: schedules,
       activeConfigName: activeConfig,
       preferredGroup: effectiveMyGroup,
-      partnerConfigName: partnerConfigName,
-      partnerGroup: partnerGroup,
+      partnerConfigName: effectivePartnerConfigName,
+      partnerGroup: effectivePartnerGroup,
     );
 
     final isSelected = _isSelected(selectedDay);
@@ -202,7 +208,6 @@ class _MemoizedDutyCalculator {
     required String? partnerConfigName,
     required String? partnerGroup,
   }) {
-    // Create cache key based on relevant parameters
     final cacheKey = _createCacheKey(
       day: day,
       activeConfigName: activeConfigName,
@@ -212,12 +217,10 @@ class _MemoizedDutyCalculator {
       schedulesHash: _getSchedulesHash(schedules, day),
     );
 
-    // Check cache first
     if (_cache.containsKey(cacheKey)) {
       return _cache[cacheKey]!;
     }
 
-    // Calculate duty data
     final myDuty = _getDutyAbbreviationForDate(
       day: day,
       schedules: schedules,
@@ -234,10 +237,8 @@ class _MemoizedDutyCalculator {
 
     final dutyData = DutyData(myDuty: myDuty, partnerDuty: partnerDuty);
 
-    // Cache the result
     _cache[cacheKey] = dutyData;
 
-    // Clean cache if it gets too large
     if (_cache.length > _maxCacheSize) {
       _cleanCache();
     }
@@ -262,18 +263,13 @@ class _MemoizedDutyCalculator {
   }
 
   static int _getSchedulesHash(List<Schedule> schedules, DateTime day) {
-    // Compute a more accurate hash that includes content for the specific day
-    // This prevents cache misses when schedule content changes but length stays the same
     final int monthMarker = day.year * 100 + day.month;
 
-    // Filter schedules relevant to this day and month for more accurate hashing
     final relevantSchedules = schedules.where((schedule) {
       final scheduleDate = schedule.date;
       return scheduleDate.year == day.year && scheduleDate.month == day.month;
     }).toList();
 
-    // Create a content-based hash that includes key schedule properties
-    // This ensures cache invalidation when schedule content changes
     final contentHash = relevantSchedules.fold<int>(0, (hash, schedule) {
       return hash ^
           Object.hash(
@@ -289,7 +285,6 @@ class _MemoizedDutyCalculator {
   }
 
   static void _cleanCache() {
-    // Remove oldest 50% of cache entries
     final keysToRemove = _cache.keys.take(_cache.length ~/ 2).toList();
     for (final key in keysToRemove) {
       _cache.remove(key);
@@ -307,9 +302,7 @@ class _MemoizedDutyCalculator {
         return '';
       }
 
-      // Get schedules for the specific day and active config
       final schedulesForDay = schedules.where((schedule) {
-        // Normalize dates to avoid timezone issues
         final scheduleDate = DateTime(
           schedule.date.year,
           schedule.date.month,
@@ -317,21 +310,17 @@ class _MemoizedDutyCalculator {
         );
         final dayDate = DateTime(day.year, day.month, day.day);
         final isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
-
-        // Only consider schedules from the active config
         final isActiveConfig = schedule.configName == activeConfigName;
 
         return isSameDay && isActiveConfig;
       }).toList();
 
-      // If no schedules found for the active config, return empty string (no chip)
       if (schedulesForDay.isEmpty) {
         return '';
       }
 
       final preferredGroupName = preferredGroup;
 
-      // Try to show duty abbreviation for preferred group first
       if (preferredGroupName != null && preferredGroupName.isNotEmpty) {
         Schedule? preferredSchedule;
         try {
@@ -348,21 +337,19 @@ class _MemoizedDutyCalculator {
           return preferredSchedule.dutyTypeId;
         }
 
-        // If preferred group has "-" or empty, check if it's a free day for that group
         try {
           final preferredGroupSchedule = schedulesForDay.firstWhere(
             (s) => s.dutyGroupName == preferredGroupName,
           );
           if (preferredGroupSchedule.dutyTypeId == '-' ||
               preferredGroupSchedule.dutyTypeId.isEmpty) {
-            return ''; // Free day for preferred group - no chip
+            return '';
           }
         } catch (_) {
           // No schedule for preferred group
         }
       }
 
-      // If no preferred group is set, don't show any duty chips
       if (preferredGroupName == null || preferredGroupName.isEmpty) {
         return '';
       }
@@ -407,7 +394,6 @@ class _MemoizedDutyCalculator {
           );
           return matched.dutyTypeId;
         } catch (_) {
-          // If partner group exists but is off that day, show nothing
           try {
             final Schedule off = schedulesForDay.firstWhere(
               (s) => s.dutyGroupName == partnerGroup,
@@ -418,7 +404,6 @@ class _MemoizedDutyCalculator {
           } catch (_) {}
         }
       }
-      // If no partner group specified, don't show any duty chips
       return '';
     } catch (_) {
       return '';

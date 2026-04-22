@@ -1,8 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:intl/intl.dart';
 
 class CalendarDateSelector extends ConsumerStatefulWidget {
@@ -90,6 +91,24 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     return baseBlockStart < 2018 ? 2018 : baseBlockStart;
   }
 
+  /// Total height of the 4×3 picker grid (matches [SliverGridDelegate] + grid padding in [_buildMonthGrid] / [_buildYearGrid]).
+  double _pickerGridHeightForLayoutWidth(double width) {
+    const int crossAxisCount = 4;
+    const double crossAxisSpacing = 10;
+    const double mainAxisSpacing = 10;
+    const double childAspectRatio = 1.2;
+    const double gridHorizontalPadding = 32; // 16 + 16 (LTRB in grid)
+    const double gridVerticalPadding = 24; // 12 + 12
+    final double innerWidth = (width - gridHorizontalPadding).clamp(
+      0.0,
+      double.infinity,
+    );
+    final double cellWidth =
+        (innerWidth - (crossAxisCount - 1) * crossAxisSpacing) / crossAxisCount;
+    final double cellHeight = cellWidth / childAspectRatio;
+    return gridVerticalPadding + 3 * cellHeight + 2 * mainAxisSpacing;
+  }
+
   void _showDateSwitcher() {
     // Reset to current year when opening the modal, but respect year limits
     final currentYear = widget.currentDate.year;
@@ -114,12 +133,13 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     _pageControllerKey++; // Force rebuild of PageView
 
     _animationController.forward();
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) {
+      barrierColor: Colors.black.withValues(alpha: 0.35),
+      builder: (modalContext) => StatefulBuilder(
+        builder: (modalContext, setModalState) {
           return _buildDateSwitcherModal(setModalState);
         },
       ),
@@ -137,84 +157,97 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.45,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-          ),
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: Column(
-                children: [
-                  _buildDragHandle(),
-                  Builder(
-                    builder: (context) {
-                      return _isYearView
-                          ? _buildYearHeader(setModalState)
-                          : _buildMonthHeader(setModalState);
-                    },
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double layoutWidth = constraints.maxWidth;
+              final double gridHeight = _pickerGridHeightForLayoutWidth(
+                layoutWidth,
+              );
+              return FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: GlassDialogSurface(
+                    borderRadius: const BorderRadius.all(Radius.circular(28)),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildDragHandle(),
+                          _isYearView
+                              ? _buildYearHeader(setModalState)
+                              : _buildMonthHeader(setModalState),
+                          SizedBox(
+                            height: gridHeight,
+                            child: _isYearView
+                                ? (_yearPageController != null
+                                      ? PageView.builder(
+                                          key: ValueKey(
+                                            'year_$_pageControllerKey',
+                                          ),
+                                          controller: _yearPageController!,
+                                          physics:
+                                              const ClampingScrollPhysics(),
+                                          onPageChanged: (pageIndex) {
+                                            setState(() {
+                                              _yearBlockStart =
+                                                  _calculateYearBlockStart(
+                                                    2018 + (pageIndex * 12),
+                                                  );
+                                            });
+                                            setModalState(() {});
+                                          },
+                                          itemCount:
+                                              ((2100 - 2018) / 12).ceil() + 1,
+                                          itemBuilder: (context, index) {
+                                            return _buildYearGrid(
+                                              setModalState,
+                                            );
+                                          },
+                                        )
+                                      : const Center(
+                                          child: CircularProgressIndicator(),
+                                        ))
+                                : (_monthPageController != null
+                                      ? PageView.builder(
+                                          key: ValueKey(
+                                            'month_$_pageControllerKey',
+                                          ),
+                                          controller: _monthPageController!,
+                                          physics:
+                                              const ClampingScrollPhysics(),
+                                          onPageChanged: (pageIndex) {
+                                            final newYear = 2018 + pageIndex;
+                                            setState(() {
+                                              _displayedYear = newYear;
+                                              _selectedYear = newYear;
+                                            });
+                                            setModalState(() {});
+                                          },
+                                          itemCount: 2100 - 2018 + 1,
+                                          itemBuilder: (context, index) {
+                                            final int year = 2018 + index;
+                                            return _buildMonthGrid(
+                                              key: ValueKey(year),
+                                              displayedYear: year,
+                                            );
+                                          },
+                                        )
+                                      : const Center(
+                                          child: CircularProgressIndicator(),
+                                        )),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
+                    ),
                   ),
-                  Expanded(
-                    child: _isYearView
-                        ? (_yearPageController != null
-                              ? PageView.builder(
-                                  key: ValueKey('year_$_pageControllerKey'),
-                                  controller: _yearPageController!,
-                                  physics: const ClampingScrollPhysics(),
-                                  onPageChanged: (pageIndex) {
-                                    setState(() {
-                                      _yearBlockStart =
-                                          _calculateYearBlockStart(
-                                            2018 + (pageIndex * 12),
-                                          );
-                                    });
-                                    setModalState(() {});
-                                  },
-                                  itemCount: ((2100 - 2018) / 12).ceil() + 1,
-                                  itemBuilder: (context, index) {
-                                    return _buildYearGrid(setModalState);
-                                  },
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator(),
-                                ))
-                        : (_monthPageController != null
-                              ? PageView.builder(
-                                  key: ValueKey('month_$_pageControllerKey'),
-                                  controller: _monthPageController!,
-                                  physics: const ClampingScrollPhysics(),
-                                  onPageChanged: (pageIndex) {
-                                    final newYear = 2018 + pageIndex;
-                                    setState(() {
-                                      _displayedYear = newYear;
-                                      _selectedYear =
-                                          newYear; // Keep selected year in sync
-                                    });
-                                    setModalState(() {});
-                                  },
-                                  itemCount: 2100 - 2018 + 1,
-                                  itemBuilder: (context, index) {
-                                    final year = 2018 + index;
-                                    return _buildMonthGrid(
-                                      key: ValueKey(year),
-                                      displayedYear: _selectedYear,
-                                    );
-                                  },
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator(),
-                                )),
-                  ),
-                  const SizedBox(height: 16), // Bottom padding inside modal
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       },
@@ -222,160 +255,136 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   }
 
   Widget _buildDragHandle() {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      margin: const EdgeInsets.only(top: 4, bottom: 16),
-      width: 40,
+      margin: const EdgeInsets.only(top: 10, bottom: 14),
+      width: 44,
       height: 4,
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey.shade400
-            : Theme.of(context).colorScheme.outlineVariant,
+        color: Colors.white.withValues(alpha: isDark ? 0.35 : 0.55),
         borderRadius: BorderRadius.circular(2),
       ),
     );
   }
 
   Widget _buildMonthHeader(StateSetter setModalState) {
-    final yearText = _displayedYear.toString();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: _displayedYear > 2018 && _monthPageController != null
-                ? () {
-                    _monthPageController!.previousPage(
-                      duration: kAnimDefault,
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                : null,
-          ),
-          Expanded(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _isYearView = true;
-                    // Preserve selected year when switching to year view
-                    _displayedYear = _selectedYear;
-                    _yearBlockStart = _calculateYearBlockStart(_selectedYear);
-                  });
-                  setModalState(() {});
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    yearText,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Theme.of(context).colorScheme.primary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: _displayedYear < 2100 && _monthPageController != null
-                ? () {
-                    _monthPageController!.nextPage(
-                      duration: kAnimDefault,
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                : null,
-          ),
-        ],
-      ),
+    final String yearText = _displayedYear.toString();
+    return _buildPickerHeader(
+      label: yearText,
+      onLeft: _displayedYear > 2018 && _monthPageController != null
+          ? () {
+              _monthPageController!.previousPage(
+                duration: kAnimDefault,
+                curve: Curves.easeInOut,
+              );
+            }
+          : null,
+      onRight: _displayedYear < 2100 && _monthPageController != null
+          ? () {
+              _monthPageController!.nextPage(
+                duration: kAnimDefault,
+                curve: Curves.easeInOut,
+              );
+            }
+          : null,
+      onCenterTap: () {
+        setState(() {
+          _isYearView = true;
+          _displayedYear = _selectedYear;
+          _yearBlockStart = _calculateYearBlockStart(_selectedYear);
+        });
+        setModalState(() {});
+      },
     );
   }
 
   Widget _buildYearHeader(StateSetter setModalState) {
+    final String label = '$_yearBlockStart – ${_yearBlockStart + 11}';
+    return _buildPickerHeader(
+      label: label,
+      onLeft: _yearBlockStart > 2018 && _yearPageController != null
+          ? () {
+              _yearPageController!.previousPage(
+                duration: kAnimDefault,
+                curve: Curves.easeInOut,
+              );
+            }
+          : null,
+      onRight: _yearBlockStart + 11 < 2100 && _yearPageController != null
+          ? () {
+              _yearPageController!.nextPage(
+                duration: kAnimDefault,
+                curve: Curves.easeInOut,
+              );
+            }
+          : null,
+      onCenterTap: () {
+        setState(() {
+          _isYearView = false;
+          _displayedYear = _selectedYear;
+        });
+        setModalState(() {});
+      },
+    );
+  }
+
+  Widget _buildPickerHeader({
+    required String label,
+    required VoidCallback? onLeft,
+    required VoidCallback? onRight,
+    required VoidCallback onCenterTap,
+  }) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color foreground = Theme.of(context).colorScheme.onSurface;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: _yearBlockStart > 2018 && _yearPageController != null
-                ? () {
-                    _yearPageController!.previousPage(
-                      duration: kAnimDefault,
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                : null,
+          _GlassPickerIconButton(
+            icon: Icons.chevron_left_rounded,
+            onPressed: onLeft,
           ),
           Expanded(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    _isYearView = false;
-                    // Preserve selected year when switching to month view
-                    _displayedYear = _selectedYear;
-                  });
-                  setModalState(() {});
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '$_yearBlockStart – ${_yearBlockStart + 11}',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Theme.of(context).colorScheme.primary,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onCenterTap,
+                  borderRadius: BorderRadius.circular(999),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 18,
                     ),
-                    textAlign: TextAlign.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(
+                        alpha: isDark ? 0.08 : 0.28,
+                      ),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: Colors.white.withValues(
+                          alpha: isDark ? 0.18 : 0.45,
+                        ),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: foreground,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed:
-                _yearBlockStart + 11 < 2100 && _yearPageController != null
-                ? () {
-                    _yearPageController!.nextPage(
-                      duration: kAnimDefault,
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                : null,
+          _GlassPickerIconButton(
+            icon: Icons.chevron_right_rounded,
+            onPressed: onRight,
           ),
         ],
       ),
@@ -383,123 +392,86 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   }
 
   Widget _buildMonthGrid({Key? key, int? displayedYear}) {
-    final months = List.generate(12, (index) => index + 1);
-    final now = DateTime.now();
+    final List<int> months = List<int>.generate(12, (index) => index + 1);
+    final DateTime now = DateTime.now();
     return GridView.builder(
       key: key,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         childAspectRatio: 1.2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
       itemCount: 12,
       itemBuilder: (context, index) {
-        final month = months[index];
-        final currentDisplayedYear =
-            displayedYear ??
-            _selectedYear; // Use selected year instead of displayed year
-        final isCurrentMonth =
+        final int month = months[index];
+        final int currentDisplayedYear = displayedYear ?? _selectedYear;
+        final bool isCurrentMonth =
             month == now.month && currentDisplayedYear == now.year;
-        final isFocusedMonth =
+        final bool isFocusedMonth =
             month == widget.currentDate.month &&
             currentDisplayedYear == widget.currentDate.year;
-        final monthName = DateFormat(
+        final String monthName = DateFormat(
           'MMM',
           widget.locale.languageCode,
         ).format(DateTime(currentDisplayedYear, month));
-        return GestureDetector(
+        return _GlassPickerTile(
+          label: monthName,
+          isFocused: isFocusedMonth,
+          isCurrent: isCurrentMonth,
           onTap: () {
             setState(() {
               _selectedMonth = month;
-              _selectedYear = currentDisplayedYear; // Use the displayed year
+              _selectedYear = currentDisplayedYear;
             });
             _selectDate();
           },
-          child: Container(
-            decoration: BoxDecoration(
-              color: isFocusedMonth
-                  ? Theme.of(context).colorScheme.primary
-                  : (isCurrentMonth
-                        ? Theme.of(
-                            context,
-                          ).colorScheme.primary.withAlpha(kAlphaToday)
-                        : Colors.transparent),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                monthName,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: (isFocusedMonth || isCurrentMonth)
-                      ? Colors.white
-                      : null,
-                ),
-              ),
-            ),
-          ),
         );
       },
     );
   }
 
   Widget _buildYearGrid(StateSetter setModalState) {
-    final years = List.generate(12, (index) => _yearBlockStart + index);
-    final now = DateTime.now();
+    final List<int> years = List<int>.generate(
+      12,
+      (index) => _yearBlockStart + index,
+    );
+    final DateTime now = DateTime.now();
     return GridView.builder(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         childAspectRatio: 1.2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
       itemCount: 12,
       itemBuilder: (context, index) {
-        final year = years[index];
-        final isCurrentYear = year == now.year;
-        final isFocusedYear = year == widget.currentDate.year;
-        final isValidYear = year >= 2018 && year <= 2100;
+        final int year = years[index];
+        final bool isCurrentYear = year == now.year;
+        final bool isFocusedYear = year == widget.currentDate.year;
+        final bool isValidYear = year >= 2018 && year <= 2100;
 
-        return GestureDetector(
+        return _GlassPickerTile(
+          label: year.toString(),
+          isFocused: isFocusedYear && isValidYear,
+          isCurrent: isCurrentYear && isValidYear,
+          isEnabled: isValidYear,
           onTap: isValidYear
               ? () {
                   setState(() {
                     _displayedYear = year;
-                    _selectedYear =
-                        year; // Set selected year when year is chosen
+                    _selectedYear = year;
                     _isYearView = false;
                   });
                   setModalState(() {});
                 }
               : null,
-          child: Container(
-            decoration: BoxDecoration(
-              color: isValidYear
-                  ? (isFocusedYear
-                        ? Theme.of(context).colorScheme.primary
-                        : (isCurrentYear
-                              ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withAlpha(kAlphaToday)
-                              : Colors.transparent))
-                  : Colors.grey.withAlpha((0.1 * 255).toInt()),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                year.toString(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: isValidYear
-                      ? ((isFocusedYear || isCurrentYear) ? Colors.white : null)
-                      : Colors.grey,
-                ),
-              ),
-            ),
-          ),
         );
       },
     );
@@ -540,44 +512,171 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
 
   @override
   Widget build(BuildContext context) {
-    final monthYearText = DateFormat(
+    final String monthYearText = DateFormat(
       'MMMM yyyy',
       widget.locale.languageCode,
     ).format(widget.currentDate);
-    return GestureDetector(
-      onTap: _showDateSwitcher,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(
-                  context,
-                ).colorScheme.primary.withAlpha((0.1 * 255).toInt()),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              monthYearText,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Theme.of(context).colorScheme.onSurface,
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color foreground = Theme.of(context).colorScheme.onSurface;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: _showDateSwitcher,
+        borderRadius: BorderRadius.circular(999),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(18, 10, 14, 10),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.3),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: isDark ? 0.2 : 0.5),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    monthYearText,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: foreground,
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.expand_more_rounded, color: foreground, size: 20),
+                ],
               ),
             ),
-            const SizedBox(width: 8),
-            Icon(
-              Icons.keyboard_arrow_down,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Theme.of(context).colorScheme.primary,
-              size: 20,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlassPickerIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  const _GlassPickerIconButton({required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color foreground = Theme.of(context).colorScheme.onSurface;
+    final bool enabled = onPressed != null;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(22),
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: isDark ? 0.06 : 0.22),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: isDark ? 0.14 : 0.38),
+              width: 1,
             ),
-          ],
+          ),
+          child: Icon(
+            icon,
+            color: foreground.withValues(alpha: enabled ? 1.0 : 0.35),
+            size: 22,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlassPickerTile extends StatelessWidget {
+  final String label;
+  final bool isFocused;
+  final bool isCurrent;
+  final bool isEnabled;
+  final VoidCallback? onTap;
+
+  const _GlassPickerTile({
+    required this.label,
+    required this.isFocused,
+    required this.isCurrent,
+    this.isEnabled = true,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color primary = colorScheme.primary;
+
+    Color background;
+    Color borderColor;
+    Color textColor;
+    FontWeight fontWeight;
+    List<BoxShadow> boxShadow = const [];
+
+    if (!isEnabled) {
+      background = Colors.white.withValues(alpha: isDark ? 0.02 : 0.08);
+      borderColor = Colors.white.withValues(alpha: isDark ? 0.06 : 0.18);
+      textColor = colorScheme.onSurfaceVariant.withValues(alpha: 0.45);
+      fontWeight = FontWeight.w500;
+    } else if (isFocused) {
+      background = primary.withValues(alpha: isDark ? 0.45 : 0.38);
+      borderColor = Colors.white.withValues(alpha: isDark ? 0.28 : 0.55);
+      textColor = Colors.white;
+      fontWeight = FontWeight.w700;
+      boxShadow = [
+        BoxShadow(
+          color: primary.withValues(alpha: isDark ? 0.35 : 0.28),
+          blurRadius: 14,
+          offset: const Offset(0, 4),
+        ),
+      ];
+    } else if (isCurrent) {
+      background = primary.withValues(alpha: isDark ? 0.2 : 0.16);
+      borderColor = primary.withValues(alpha: 0.55);
+      textColor = colorScheme.onSurface;
+      fontWeight = FontWeight.w700;
+    } else {
+      background = Colors.white.withValues(alpha: isDark ? 0.06 : 0.2);
+      borderColor = Colors.white.withValues(alpha: isDark ? 0.14 : 0.35);
+      textColor = colorScheme.onSurface;
+      fontWeight = FontWeight.w600;
+    }
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: borderColor, width: 1),
+            boxShadow: boxShadow,
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: fontWeight,
+                color: textColor,
+              ),
+            ),
+          ),
         ),
       ),
     );

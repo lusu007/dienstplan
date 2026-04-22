@@ -14,7 +14,6 @@ import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/config/config_notifier.dart';
@@ -330,8 +329,6 @@ class SetupNotifier extends _$SetupNotifier {
         throw Exception(existingResult.failure.technicalMessage);
       }
       final initialSettings = Settings(
-        calendarFormat:
-            existingSettings?.calendarFormat ?? CalendarFormat.month,
         selectedDutyGroup: null, // Start with no active filter (All)
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig?.name,
@@ -356,8 +353,6 @@ class SetupNotifier extends _$SetupNotifier {
       await Future.delayed(kUiDelayShort);
 
       final finalSettings = Settings(
-        calendarFormat:
-            existingSettings?.calendarFormat ?? CalendarFormat.month,
         selectedDutyGroup: null, // Keep filter as All after setup
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig!.name,

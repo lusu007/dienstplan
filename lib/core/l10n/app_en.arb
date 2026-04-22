@@ -76,22 +76,6 @@
   "@welcomeMessage": {
     "description": "Welcome message text"
   },
-  "calendarFormat": "Calendar Format",
-  "@calendarFormat": {
-    "description": "Label for calendar format selection"
-  },
-  "calendarFormatMonth": "Month",
-  "@calendarFormatMonth": {
-    "description": "Label for month view in calendar format selector"
-  },
-  "calendarFormatTwoWeeks": "Two Weeks",
-  "@calendarFormatTwoWeeks": {
-    "description": "Label for two weeks view in calendar format selector"
-  },
-  "calendarFormatWeek": "Week",
-  "@calendarFormatWeek": {
-    "description": "Label for week view in calendar format selector"
-  },
   "resetData": "Reset App",
   "@resetData": {
     "description": "Reset app button text"

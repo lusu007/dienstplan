@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
 
 class ToggleCard extends StatelessWidget {
   final IconData icon;
@@ -7,7 +8,7 @@ class ToggleCard extends StatelessWidget {
   final String? subtitle;
   final bool value;
   final ValueChanged<bool>? onChanged;
-  final Color iconColor;
+  final Color? iconColor;
   final bool enabled;
 
   const ToggleCard({
@@ -17,7 +18,7 @@ class ToggleCard extends StatelessWidget {
     this.subtitle,
     required this.value,
     this.onChanged,
-    this.iconColor = AppColors.primary,
+    this.iconColor,
     this.enabled = true,
   });
 
@@ -26,66 +27,54 @@ class ToggleCard extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
 
-    // Use disabled colors when not enabled
-    final Color effectiveIconColor = enabled
-        ? iconColor
-        : theme.colorScheme.onSurfaceVariant;
     final Color effectiveTitleColor = enabled
-        ? theme.colorScheme.onSurface
-        : theme.colorScheme.onSurfaceVariant;
+        ? scheme.onSurface
+        : scheme.onSurfaceVariant;
     final Color effectiveSubtitleColor = enabled
-        ? theme.colorScheme.onSurfaceVariant
-        : theme.colorScheme.onSurface.withValues(alpha: 0.38);
+        ? scheme.onSurfaceVariant
+        : scheme.onSurface.withValues(alpha: 0.38);
 
-    return Container(
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scheme.outlineVariant, width: 1),
-      ),
+      enabled: enabled,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(icon, color: effectiveIconColor, size: 40),
-            const SizedBox(width: 16),
+            GlassIconBadge(icon: icon, tintColor: iconColor, enabled: enabled),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 17,
                       color: effectiveTitleColor,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: subtitle != null
-                            ? Text(
-                                subtitle!,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontSize: 15,
-                                  color: effectiveSubtitleColor,
-                                ),
-                              )
-                            : const SizedBox.shrink(),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        color: effectiveSubtitleColor,
                       ),
-                      Switch(
-                        value: value,
-                        onChanged: enabled ? onChanged : null,
-                        activeThumbColor: AppColors.primary,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ],
               ),
+            ),
+            const SizedBox(width: 8),
+            Switch(
+              value: value,
+              onChanged: enabled ? onChanged : null,
+              activeThumbColor: scheme.primary,
             ),
           ],
         ),

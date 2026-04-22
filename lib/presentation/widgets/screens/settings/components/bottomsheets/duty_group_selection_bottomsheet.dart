@@ -91,7 +91,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
       itemCount: dutyGroups.length + (showNoGroupOption ? 1 : 0),
       itemBuilder: (context, index) {
         // Show "No Group" option at the end if enabled

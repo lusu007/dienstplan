@@ -88,7 +88,6 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
       return const SizedBox.shrink();
     }
 
-    // Use default color if no color is explicitly set
     final int colorValue =
         widget.holidayAccentColorValue ??
         AccentColorDefaults.holidayAccentColorValue;

@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 part 'calendar_ui_state.freezed.dart';
 
@@ -10,7 +9,6 @@ abstract class CalendarUiState with _$CalendarUiState {
     String? error,
     DateTime? selectedDay,
     DateTime? focusedDay,
-    CalendarFormat? calendarFormat,
   }) = _CalendarUiState;
 
   const CalendarUiState._();
@@ -19,6 +17,5 @@ abstract class CalendarUiState with _$CalendarUiState {
     isLoading: false,
     selectedDay: DateTime.now(),
     focusedDay: DateTime.now(),
-    calendarFormat: CalendarFormat.month,
   );
 }

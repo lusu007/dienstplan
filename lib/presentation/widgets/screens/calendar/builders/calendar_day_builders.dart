@@ -4,11 +4,13 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/components/memo
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 
-/// Unified calendar builders using MemoizedCalendarDay.
+/// Unified calendar builders using [MemoizedCalendarDay].
 ///
-/// Selection is handled exclusively by TableCalendar.onDaySelected.
+/// Selection is handled exclusively by [tc.TableCalendar.onDaySelected].
 class CalendarDayBuilders {
-  static tc.CalendarBuilders create() {
+  static tc.CalendarBuilders create({double? cellHeight}) {
+    final double effectiveHeight =
+        cellHeight ?? CalendarConfig.kCalendarDayHeight;
     return tc.CalendarBuilders(
       defaultBuilder:
           (BuildContext context, DateTime day, DateTime focusedDay) {
@@ -17,7 +19,7 @@ class CalendarDayBuilders {
               day: day,
               dayType: CalendarDayType.default_,
               width: CalendarConfig.kCalendarDayWidth,
-              height: CalendarConfig.kCalendarDayHeight,
+              height: effectiveHeight,
             );
           },
       outsideBuilder:
@@ -27,7 +29,7 @@ class CalendarDayBuilders {
               day: day,
               dayType: CalendarDayType.outside,
               width: CalendarConfig.kCalendarDayWidth,
-              height: CalendarConfig.kCalendarDayHeight,
+              height: effectiveHeight,
             );
           },
       selectedBuilder:
@@ -37,7 +39,7 @@ class CalendarDayBuilders {
               day: day,
               dayType: CalendarDayType.selected,
               width: CalendarConfig.kCalendarDayWidth,
-              height: CalendarConfig.kCalendarDayHeight,
+              height: effectiveHeight,
             );
           },
       todayBuilder: (BuildContext context, DateTime day, DateTime focusedDay) {
@@ -46,7 +48,7 @@ class CalendarDayBuilders {
           day: day,
           dayType: CalendarDayType.today,
           width: CalendarConfig.kCalendarDayWidth,
-          height: CalendarConfig.kCalendarDayHeight,
+          height: effectiveHeight,
         );
       },
     );

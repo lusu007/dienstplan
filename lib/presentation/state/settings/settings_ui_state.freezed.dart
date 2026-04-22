@@ -16,7 +16,6 @@ mixin _$SettingsUiState {
   bool get isLoading;
   String? get error;
   String? get language;
-  CalendarFormat? get calendarFormat;
   String? get activeConfigName;
   String? get myDutyGroup;
   ThemePreference? get themePreference; // Partner duty group UI values
@@ -46,8 +45,6 @@ mixin _$SettingsUiState {
             (identical(other.error, error) || other.error == error) &&
             (identical(other.language, language) ||
                 other.language == language) &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat) &&
             (identical(other.activeConfigName, activeConfigName) ||
                 other.activeConfigName == activeConfigName) &&
             (identical(other.myDutyGroup, myDutyGroup) ||
@@ -78,7 +75,6 @@ mixin _$SettingsUiState {
     isLoading,
     error,
     language,
-    calendarFormat,
     activeConfigName,
     myDutyGroup,
     themePreference,
@@ -91,7 +87,7 @@ mixin _$SettingsUiState {
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -106,7 +102,6 @@ abstract mixin class $SettingsUiStateCopyWith<$Res> {
     bool isLoading,
     String? error,
     String? language,
-    CalendarFormat? calendarFormat,
     String? activeConfigName,
     String? myDutyGroup,
     ThemePreference? themePreference,
@@ -134,7 +129,6 @@ class _$SettingsUiStateCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? error = freezed,
     Object? language = freezed,
-    Object? calendarFormat = freezed,
     Object? activeConfigName = freezed,
     Object? myDutyGroup = freezed,
     Object? themePreference = freezed,
@@ -158,10 +152,6 @@ class _$SettingsUiStateCopyWithImpl<$Res>
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable
                   as String?,
-        calendarFormat: freezed == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat?,
         activeConfigName: freezed == activeConfigName
             ? _self.activeConfigName
             : activeConfigName // ignore: cast_nullable_to_non_nullable
@@ -296,7 +286,6 @@ extension SettingsUiStatePatterns on SettingsUiState {
       bool isLoading,
       String? error,
       String? language,
-      CalendarFormat? calendarFormat,
       String? activeConfigName,
       String? myDutyGroup,
       ThemePreference? themePreference,
@@ -316,7 +305,6 @@ extension SettingsUiStatePatterns on SettingsUiState {
           _that.isLoading,
           _that.error,
           _that.language,
-          _that.calendarFormat,
           _that.activeConfigName,
           _that.myDutyGroup,
           _that.themePreference,
@@ -350,7 +338,6 @@ extension SettingsUiStatePatterns on SettingsUiState {
       bool isLoading,
       String? error,
       String? language,
-      CalendarFormat? calendarFormat,
       String? activeConfigName,
       String? myDutyGroup,
       ThemePreference? themePreference,
@@ -369,7 +356,6 @@ extension SettingsUiStatePatterns on SettingsUiState {
           _that.isLoading,
           _that.error,
           _that.language,
-          _that.calendarFormat,
           _that.activeConfigName,
           _that.myDutyGroup,
           _that.themePreference,
@@ -402,7 +388,6 @@ extension SettingsUiStatePatterns on SettingsUiState {
       bool isLoading,
       String? error,
       String? language,
-      CalendarFormat? calendarFormat,
       String? activeConfigName,
       String? myDutyGroup,
       ThemePreference? themePreference,
@@ -421,7 +406,6 @@ extension SettingsUiStatePatterns on SettingsUiState {
           _that.isLoading,
           _that.error,
           _that.language,
-          _that.calendarFormat,
           _that.activeConfigName,
           _that.myDutyGroup,
           _that.themePreference,
@@ -444,7 +428,6 @@ class _SettingsUiState extends SettingsUiState {
     required this.isLoading,
     this.error,
     this.language,
-    this.calendarFormat,
     this.activeConfigName,
     this.myDutyGroup,
     this.themePreference,
@@ -461,8 +444,6 @@ class _SettingsUiState extends SettingsUiState {
   final String? error;
   @override
   final String? language;
-  @override
-  final CalendarFormat? calendarFormat;
   @override
   final String? activeConfigName;
   @override
@@ -501,8 +482,6 @@ class _SettingsUiState extends SettingsUiState {
             (identical(other.error, error) || other.error == error) &&
             (identical(other.language, language) ||
                 other.language == language) &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat) &&
             (identical(other.activeConfigName, activeConfigName) ||
                 other.activeConfigName == activeConfigName) &&
             (identical(other.myDutyGroup, myDutyGroup) ||
@@ -533,7 +512,6 @@ class _SettingsUiState extends SettingsUiState {
     isLoading,
     error,
     language,
-    calendarFormat,
     activeConfigName,
     myDutyGroup,
     themePreference,
@@ -546,7 +524,7 @@ class _SettingsUiState extends SettingsUiState {
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, calendarFormat: $calendarFormat, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -563,7 +541,6 @@ abstract mixin class _$SettingsUiStateCopyWith<$Res>
     bool isLoading,
     String? error,
     String? language,
-    CalendarFormat? calendarFormat,
     String? activeConfigName,
     String? myDutyGroup,
     ThemePreference? themePreference,
@@ -591,7 +568,6 @@ class __$SettingsUiStateCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? error = freezed,
     Object? language = freezed,
-    Object? calendarFormat = freezed,
     Object? activeConfigName = freezed,
     Object? myDutyGroup = freezed,
     Object? themePreference = freezed,
@@ -615,10 +591,6 @@ class __$SettingsUiStateCopyWithImpl<$Res>
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable
                   as String?,
-        calendarFormat: freezed == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat?,
         activeConfigName: freezed == activeConfigName
             ? _self.activeConfigName
             : activeConfigName // ignore: cast_nullable_to_non_nullable

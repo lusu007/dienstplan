@@ -1,46 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
 
-class AppDialog extends StatelessWidget {
-  final String title;
-  final Widget content;
-  final List<Widget>? actions;
-  final bool showCloseButton;
-  final Color? mainColor;
-
-  const AppDialog({
-    super.key,
-    required this.title,
-    required this.content,
-    this.actions,
-    this.showCloseButton = true,
-    this.mainColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final effectiveMainColor = mainColor ?? AppColors.primary;
-    final l10n = AppLocalizations.of(context);
-
-    return AlertDialog(
-      title: Text(title),
-      content: content,
-      actions: [
-        if (actions != null) ...actions!,
-        if (showCloseButton)
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              l10n.close,
-              style: TextStyle(color: effectiveMainColor),
-            ),
-          ),
-      ],
-    );
-  }
-
-  static void show({
+/// Thin compatibility wrapper that keeps the old [AppDialog.show] API while
+/// rendering the dialog in the new glass-morphism style.
+class AppDialog {
+  static Future<T?> show<T>({
     required BuildContext context,
     required String title,
     required Widget content,
@@ -48,15 +13,32 @@ class AppDialog extends StatelessWidget {
     bool showCloseButton = true,
     Color? mainColor,
   }) {
-    showDialog(
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final Color accent = mainColor ?? Theme.of(context).colorScheme.primary;
+
+    final List<Widget> mergedActions = <Widget>[
+      if (actions != null) ...actions,
+      if (showCloseButton)
+        SizedBox(
+          width: double.infinity,
+          child: TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            child: Text(
+              l10n.close,
+              style: TextStyle(color: accent, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+    ];
+
+    return GlassAppDialog.show<T>(
       context: context,
-      builder: (context) => AppDialog(
-        title: title,
-        content: content,
-        actions: actions,
-        showCloseButton: showCloseButton,
-        mainColor: mainColor,
-      ),
+      title: title,
+      content: content,
+      actions: mergedActions,
     );
   }
 }

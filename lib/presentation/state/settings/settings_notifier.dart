@@ -4,7 +4,6 @@ import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/reset_settings_use_case.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
@@ -47,7 +46,6 @@ class SettingsNotifier extends _$SettingsNotifier {
       return SettingsUiState(
         isLoading: false,
         language: settings?.language,
-        calendarFormat: settings?.calendarFormat,
         activeConfigName: settings?.activeConfigName,
         myDutyGroup: settings?.myDutyGroup,
         themePreference: settings?.themePreference ?? ThemePreference.system,
@@ -127,21 +125,6 @@ class SettingsNotifier extends _$SettingsNotifier {
         'SettingsNotifier: Best-effort save themePreference skipped '
         '(preference=$preference, error=$e)',
       );
-    }
-  }
-
-  Future<void> setCalendarFormat(CalendarFormat format) async {
-    final current = state.value ?? SettingsUiState.initial();
-    state = AsyncData(current.copyWith(calendarFormat: format));
-    final ok = await _upsertPersisted(
-      (Settings? c) => c != null
-          ? c.copyWith(calendarFormat: format)
-          : Settings.withDefaults(calendarFormat: format),
-    );
-    if (ok) {
-      await ref
-          .read(scheduleCoordinatorProvider.notifier)
-          .updateCalendarFormatOnly(format);
     }
   }
 

@@ -4,14 +4,9 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/selection_bottomsheet.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
 class ThemeModeBottomsheet {
-  static Future<void> show(
-    BuildContext context,
-    WidgetRef ref, {
-    double? heightPercentage,
-  }) async {
+  static Future<void> show(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context);
 
     await showModalBottomSheet<void>(
@@ -25,7 +20,6 @@ class ThemeModeBottomsheet {
 
           return SelectionBottomsheet(
             title: l10n.themeMode,
-            heightPercentage: heightPercentage,
             items: [
               SelectionItem(
                 title: l10n.themeModeLight,

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 
+/// Thin compatibility wrapper around [GlassBottomSheet] so the many existing
+/// call sites in the settings bottom sheets don't need to change.
 class GenericBottomsheet extends StatelessWidget {
   final String title;
   final List<Widget> children;
   final double? heightPercentage;
   final bool showHandleBar;
+  final bool shrinkToContent;
 
   const GenericBottomsheet({
     super.key,
@@ -14,6 +17,7 @@ class GenericBottomsheet extends StatelessWidget {
     required this.children,
     this.heightPercentage,
     this.showHandleBar = true,
+    this.shrinkToContent = false,
   });
 
   static Future<T?> show<T>({
@@ -22,15 +26,19 @@ class GenericBottomsheet extends StatelessWidget {
     required List<Widget> children,
     double? heightPercentage,
     bool showHandleBar = true,
+    bool shrinkToContent = false,
   }) {
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: 0.35),
+      clipBehavior: Clip.antiAlias,
       builder: (context) => GenericBottomsheet(
         title: title,
         heightPercentage: heightPercentage,
         showHandleBar: showHandleBar,
+        shrinkToContent: shrinkToContent,
         children: children,
       ),
     );
@@ -38,53 +46,12 @@ class GenericBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final heightPercentage = this.heightPercentage ?? 0.8; // Default 80%
-    final height = screenHeight * heightPercentage;
-
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: Column(
-        children: [
-          // Handle bar
-          if (showHandleBar)
-            Container(
-              margin: const EdgeInsets.only(top: 8),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-
-          // Header
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              title,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ),
-
-          // Content - use Expanded to fill remaining space
-          if (children.isNotEmpty)
-            Expanded(
-              child: children.length == 1
-                  ? children.first
-                  : Column(mainAxisSize: MainAxisSize.min, children: children),
-            ),
-
-          // Bottom padding for safe area
-          const SizedBox(height: 16),
-        ],
-      ),
+    return GlassBottomSheet(
+      title: title,
+      heightPercentage: heightPercentage,
+      showHandleBar: showHandleBar,
+      shrinkToContent: shrinkToContent,
+      children: children,
     );
   }
 }
@@ -117,22 +84,24 @@ class SelectionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return SelectionCard(
-          title: item.title,
-          subtitle: item.subtitle,
-          isSelected: selectedValue == item.value,
-          onTap: () {
-            onItemSelected(item.value);
-          },
-          mainColor: AppColors.primary,
-          useDialogStyle: true,
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final SelectionItem item in items)
+            SelectionCard(
+              title: item.title,
+              subtitle: item.subtitle,
+              isSelected: selectedValue == item.value,
+              onTap: () {
+                onItemSelected(item.value);
+              },
+              useDialogStyle: true,
+            ),
+        ],
+      ),
     );
   }
 }
@@ -156,18 +125,16 @@ class GridContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: crossAxisSpacing,
-          mainAxisSpacing: mainAxisSpacing,
-          childAspectRatio: childAspectRatio,
-        ),
-        itemCount: children.length,
-        itemBuilder: (context, index) => children[index],
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisSpacing: mainAxisSpacing,
+        childAspectRatio: childAspectRatio,
       ),
+      itemCount: children.length,
+      itemBuilder: (context, index) => children[index],
     );
   }
 }

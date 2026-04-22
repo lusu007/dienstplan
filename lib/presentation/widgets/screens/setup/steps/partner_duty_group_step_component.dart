@@ -3,6 +3,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/step_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/duty_group_card.dart';
+import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
 class PartnerDutyGroupStepComponent extends StatelessWidget {
   final DutyScheduleConfig? selectedPartnerConfig;
@@ -34,25 +35,30 @@ class PartnerDutyGroupStepComponent extends StatelessWidget {
           description: l10n.selectPartnerDutyGroupMessage,
         ),
         Expanded(
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: dutyGroups
-                  .map(
-                    (group) => DutyGroupCard(
-                      dutyGroupName: group.name,
-                      isSelected: selectedPartnerDutyGroup == group.name,
-                      onTap: () {
-                        onPartnerDutyGroupChanged(
-                          selectedPartnerDutyGroup == group.name
-                              ? null
-                              : group.name,
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
+          child: ScrollFadeMask(
+            topFadeFraction: 0.05,
+            bottomFadeFraction: 0.06,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              padding: const EdgeInsets.only(top: 12, bottom: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: dutyGroups
+                    .map(
+                      (group) => DutyGroupCard(
+                        dutyGroupName: group.name,
+                        isSelected: selectedPartnerDutyGroup == group.name,
+                        onTap: () {
+                          onPartnerDutyGroupChanged(
+                            selectedPartnerDutyGroup == group.name
+                                ? null
+                                : group.name,
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
           ),
         ),

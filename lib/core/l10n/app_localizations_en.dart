@@ -67,18 +67,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Let\'s set up your duty schedule. Therefore choose your duty schedule.';
 
   @override
-  String get calendarFormat => 'Calendar Format';
-
-  @override
-  String get calendarFormatMonth => 'Month';
-
-  @override
-  String get calendarFormatTwoWeeks => 'Two Weeks';
-
-  @override
-  String get calendarFormatWeek => 'Week';
-
-  @override
   String get resetData => 'Reset App';
 
   @override

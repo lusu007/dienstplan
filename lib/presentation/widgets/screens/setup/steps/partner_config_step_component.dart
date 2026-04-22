@@ -7,6 +7,7 @@ import 'package:dienstplan/presentation/widgets/screens/setup/components/skeleto
 import 'package:dienstplan/presentation/widgets/screens/setup/components/config_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/police_authority_filter_chips.dart';
 import 'package:dienstplan/presentation/widgets/common/error_display.dart';
+import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
 class PartnerConfigStepComponent extends StatelessWidget {
   final SetupUiState state;
@@ -59,15 +60,19 @@ class PartnerConfigStepComponent extends StatelessWidget {
 
         // Scrollable content section
         Expanded(
-          child: _buildScrollableContent(
-            isLoading: state.isLoading,
-            loadingError: loadingError,
-            loadingErrorStackTrace: loadingErrorStackTrace,
-            onRetry: onRetry,
-            filteredConfigs: state.filteredConfigs,
-            selectedPartnerConfig: state.selectedPartnerConfig,
-            onPartnerConfigChanged: onPartnerConfigChanged,
-            scrollController: scrollController,
+          child: ScrollFadeMask(
+            topFadeFraction: 0.05,
+            bottomFadeFraction: 0.06,
+            child: _buildScrollableContent(
+              isLoading: state.isLoading,
+              loadingError: loadingError,
+              loadingErrorStackTrace: loadingErrorStackTrace,
+              onRetry: onRetry,
+              filteredConfigs: state.filteredConfigs,
+              selectedPartnerConfig: state.selectedPartnerConfig,
+              onPartnerConfigChanged: onPartnerConfigChanged,
+              scrollController: scrollController,
+            ),
           ),
         ),
       ],
@@ -87,6 +92,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
     if (isLoading) {
       return SingleChildScrollView(
         controller: scrollController,
+        padding: const EdgeInsets.only(top: 12, bottom: 32),
         child: Column(
           children: List.generate(3, (index) => const SkeletonCard()),
         ),
@@ -96,6 +102,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
     if (loadingError != null) {
       return SingleChildScrollView(
         controller: scrollController,
+        padding: const EdgeInsets.only(top: 12, bottom: 32),
         child: ErrorDisplay(
           error: loadingError,
           stackTrace: loadingErrorStackTrace,
@@ -106,7 +113,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
-      padding: const EdgeInsets.only(bottom: 32),
+      padding: const EdgeInsets.only(top: 12, bottom: 32),
       itemCount: filteredConfigs.length,
       itemBuilder: (context, index) {
         final config = filteredConfigs[index];
