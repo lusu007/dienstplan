@@ -17,7 +17,6 @@ mixin _$ScheduleUiState {
   String? get error;
   DateTime? get selectedDay;
   DateTime? get focusedDay;
-  CalendarFormat? get calendarFormat;
   List<Schedule> get schedules;
   String? get activeConfigName;
   String? get preferredDutyGroup;
@@ -55,8 +54,6 @@ mixin _$ScheduleUiState {
                 other.selectedDay == selectedDay) &&
             (identical(other.focusedDay, focusedDay) ||
                 other.focusedDay == focusedDay) &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat) &&
             const DeepCollectionEquality().equals(other.schedules, schedules) &&
             (identical(other.activeConfigName, activeConfigName) ||
                 other.activeConfigName == activeConfigName) &&
@@ -98,7 +95,6 @@ mixin _$ScheduleUiState {
     error,
     selectedDay,
     focusedDay,
-    calendarFormat,
     const DeepCollectionEquality().hash(schedules),
     activeConfigName,
     preferredDutyGroup,
@@ -116,7 +112,7 @@ mixin _$ScheduleUiState {
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
   }
 }
 
@@ -132,7 +128,6 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res> {
     String? error,
     DateTime? selectedDay,
     DateTime? focusedDay,
-    CalendarFormat? calendarFormat,
     List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
@@ -168,7 +163,6 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
     Object? error = freezed,
     Object? selectedDay = freezed,
     Object? focusedDay = freezed,
-    Object? calendarFormat = freezed,
     Object? schedules = null,
     Object? activeConfigName = freezed,
     Object? preferredDutyGroup = freezed,
@@ -201,10 +195,6 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
             ? _self.focusedDay
             : focusedDay // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
-        calendarFormat: freezed == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat?,
         schedules: null == schedules
             ? _self.schedules
             : schedules // ignore: cast_nullable_to_non_nullable
@@ -374,7 +364,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
       String? error,
       DateTime? selectedDay,
       DateTime? focusedDay,
-      CalendarFormat? calendarFormat,
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
@@ -400,7 +389,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
           _that.error,
           _that.selectedDay,
           _that.focusedDay,
-          _that.calendarFormat,
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
@@ -440,7 +428,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
       String? error,
       DateTime? selectedDay,
       DateTime? focusedDay,
-      CalendarFormat? calendarFormat,
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
@@ -465,7 +452,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
           _that.error,
           _that.selectedDay,
           _that.focusedDay,
-          _that.calendarFormat,
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
@@ -504,7 +490,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
       String? error,
       DateTime? selectedDay,
       DateTime? focusedDay,
-      CalendarFormat? calendarFormat,
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
@@ -529,7 +514,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
           _that.error,
           _that.selectedDay,
           _that.focusedDay,
-          _that.calendarFormat,
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
@@ -558,7 +542,6 @@ class _ScheduleUiState extends ScheduleUiState {
     this.error,
     this.selectedDay,
     this.focusedDay,
-    this.calendarFormat,
     final List<Schedule> schedules = const <Schedule>[],
     this.activeConfigName,
     this.preferredDutyGroup,
@@ -585,8 +568,6 @@ class _ScheduleUiState extends ScheduleUiState {
   final DateTime? selectedDay;
   @override
   final DateTime? focusedDay;
-  @override
-  final CalendarFormat? calendarFormat;
   final List<Schedule> _schedules;
   @override
   @JsonKey()
@@ -660,8 +641,6 @@ class _ScheduleUiState extends ScheduleUiState {
                 other.selectedDay == selectedDay) &&
             (identical(other.focusedDay, focusedDay) ||
                 other.focusedDay == focusedDay) &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat) &&
             const DeepCollectionEquality().equals(
               other._schedules,
               _schedules,
@@ -706,7 +685,6 @@ class _ScheduleUiState extends ScheduleUiState {
     error,
     selectedDay,
     focusedDay,
-    calendarFormat,
     const DeepCollectionEquality().hash(_schedules),
     activeConfigName,
     preferredDutyGroup,
@@ -724,7 +702,7 @@ class _ScheduleUiState extends ScheduleUiState {
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
   }
 }
 
@@ -742,7 +720,6 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res>
     String? error,
     DateTime? selectedDay,
     DateTime? focusedDay,
-    CalendarFormat? calendarFormat,
     List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
@@ -779,7 +756,6 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
     Object? error = freezed,
     Object? selectedDay = freezed,
     Object? focusedDay = freezed,
-    Object? calendarFormat = freezed,
     Object? schedules = null,
     Object? activeConfigName = freezed,
     Object? preferredDutyGroup = freezed,
@@ -812,10 +788,6 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
             ? _self.focusedDay
             : focusedDay // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
-        calendarFormat: freezed == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat?,
         schedules: null == schedules
             ? _self._schedules
             : schedules // ignore: cast_nullable_to_non_nullable

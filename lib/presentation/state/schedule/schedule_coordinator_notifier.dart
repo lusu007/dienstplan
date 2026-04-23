@@ -23,7 +23,6 @@ import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/utils/settings_utils.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
@@ -88,7 +87,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           scheduleDataState.error,
       selectedDay: calendarState.selectedDay,
       focusedDay: calendarState.focusedDay,
-      calendarFormat: calendarState.calendarFormat,
       schedules: scheduleDataState.schedules,
       activeConfigName: configState.activeConfigName,
       preferredDutyGroup: scheduleDataState.preferredDutyGroup,
@@ -133,11 +131,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   Future<void> setSelectedDay(DateTime? day) async {
     await ref.read(calendarProvider.notifier).setSelectedDay(day);
     await _updateCalendarStateOnly();
-  }
-
-  Future<void> setCalendarFormat(CalendarFormat format) async {
-    await ref.read(calendarProvider.notifier).setCalendarFormat(format);
-    await _refreshState();
   }
 
   Future<void> goToToday() async {
@@ -340,12 +333,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _refreshState();
   }
 
-  // Additional methods that were in the original ScheduleNotifier
-  Future<void> updateCalendarFormatOnly(CalendarFormat format) async {
-    await ref.read(calendarProvider.notifier).updateCalendarFormatOnly(format);
-    await _refreshState();
-  }
-
   Future<void> ensureActiveDay(DateTime day) async {
     // This method ensures the active day is properly set
     await setSelectedDay(day);
@@ -484,7 +471,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     final updatedState = currentState.copyWith(
       selectedDay: calendarState.selectedDay,
       focusedDay: calendarState.focusedDay,
-      calendarFormat: calendarState.calendarFormat,
       isLoading: calendarState.isLoading || currentState.isLoading,
       error: calendarState.error ?? currentState.error,
     );

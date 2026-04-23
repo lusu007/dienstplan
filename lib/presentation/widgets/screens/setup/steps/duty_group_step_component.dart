@@ -4,6 +4,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/step_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/duty_group_card.dart';
+import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 
 class DutyGroupStepComponent extends ConsumerWidget {
@@ -42,23 +43,28 @@ class DutyGroupStepComponent extends ConsumerWidget {
               : l10n.selectDutyGroupMessage,
         ),
         Expanded(
-          child: SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: dutyGroups
-                  .map(
-                    (group) => DutyGroupCard(
-                      dutyGroupName: group.name,
-                      isSelected: selectedDutyGroup == group.name,
-                      onTap: () {
-                        onDutyGroupChanged(
-                          selectedDutyGroup == group.name ? null : group.name,
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
+          child: ScrollFadeMask(
+            topFadeFraction: 0.05,
+            bottomFadeFraction: 0.06,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              padding: const EdgeInsets.only(top: 12, bottom: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: dutyGroups
+                    .map(
+                      (group) => DutyGroupCard(
+                        dutyGroupName: group.name,
+                        isSelected: selectedDutyGroup == group.name,
+                        onTap: () {
+                          onDutyGroupChanged(
+                            selectedDutyGroup == group.name ? null : group.name,
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
           ),
         ),

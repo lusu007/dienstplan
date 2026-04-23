@@ -2,17 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
-import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -59,98 +56,83 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Debug Info'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-      ),
-      body: SafeAreaWrapper(
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSection('App Information', [
-                      _buildInfoRow('App Name', _packageInfo?.appName ?? 'N/A'),
-                      _buildInfoRow(
-                        'Package Name',
-                        _packageInfo?.packageName ?? 'N/A',
-                      ),
-                      _buildInfoRow('Version', _packageInfo?.version ?? 'N/A'),
-                      _buildInfoRow(
-                        'Build Number',
-                        _packageInfo?.buildNumber ?? 'N/A',
-                      ),
-                      _buildInfoRow(
-                        'Full Version',
-                        '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}',
-                      ),
-                    ]),
-                    const SizedBox(height: 24),
-                    _buildSection('App-Specific Info', [
-                      _buildInfoRow('Active Schedule', _getActiveSchedule()),
-                      _buildInfoRow(
-                        'Loaded Schedules',
-                        _getLoadedSchedulesCount(),
-                      ),
-                      _buildInfoRow(
-                        'Preferred Duty Group',
-                        _getPreferredDutyGroup(),
-                      ),
-                      _buildInfoRow(
-                        'Calendar Format',
-                        _getCalendarFormat(l10n),
-                      ),
-                      _buildInfoRow('Language', _getCurrentLanguage()),
-                      _buildInfoRow('Theme Preference', _getThemePreference()),
-                      _buildInfoRow('Partner Config', _getPartnerConfigName()),
-                      _buildInfoRow(
-                        'Partner Duty Group',
-                        _getPartnerDutyGroup(),
-                      ),
-                      _buildInfoRow('My Accent Color', _getMyAccentColor()),
-                      _buildInfoRow(
-                        'Partner Accent Color',
-                        _getPartnerAccentColor(),
-                      ),
-                      _buildInfoRow(
-                        'Holiday Accent Color',
-                        _getHolidayAccentColor(),
-                      ),
-                    ]),
-                    const SizedBox(height: 24),
-                    _buildSection('Database & Storage', [
-                      _buildInfoRow(
-                        'Schedule Configs',
-                        _getScheduleConfigsCount(),
-                      ),
-                      _buildInfoRow('Cache Status', _getCacheStatus()),
-                    ]),
-                    const SizedBox(height: 24),
-                    _buildSection('Technical Details', [
-                      _buildInfoRow('Flutter Version', _getFlutterVersion()),
-                      _buildInfoRow('Dart Version', _getDartVersion()),
-                      _buildInfoRow('Platform', _getPlatform()),
-                      _buildInfoRow('Build Type', _getBuildType()),
-                    ]),
-                    const SizedBox(height: 24),
-                    _buildSection('Services Status', [
-                      _buildInfoRow('Sentry Enabled', _getSentryStatus()),
-                      _buildInfoRow('Database Status', _getDatabaseStatus()),
-                    ]),
-                    const SizedBox(height: 24),
-                    _buildSchoolHolidaysSection(),
-                    const SizedBox(height: 24),
-                    _buildScheduleFilesSection(),
-                  ],
-                ),
+    return GlassScreenScaffold(
+      title: 'Debug Info',
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSection('App Information', [
+                    _buildInfoRow('App Name', _packageInfo?.appName ?? 'N/A'),
+                    _buildInfoRow(
+                      'Package Name',
+                      _packageInfo?.packageName ?? 'N/A',
+                    ),
+                    _buildInfoRow('Version', _packageInfo?.version ?? 'N/A'),
+                    _buildInfoRow(
+                      'Build Number',
+                      _packageInfo?.buildNumber ?? 'N/A',
+                    ),
+                    _buildInfoRow(
+                      'Full Version',
+                      '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}',
+                    ),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildSection('App-Specific Info', [
+                    _buildInfoRow('Active Schedule', _getActiveSchedule()),
+                    _buildInfoRow(
+                      'Loaded Schedules',
+                      _getLoadedSchedulesCount(),
+                    ),
+                    _buildInfoRow(
+                      'Preferred Duty Group',
+                      _getPreferredDutyGroup(),
+                    ),
+                    _buildInfoRow('Language', _getCurrentLanguage()),
+                    _buildInfoRow('Theme Preference', _getThemePreference()),
+                    _buildInfoRow('Partner Config', _getPartnerConfigName()),
+                    _buildInfoRow('Partner Duty Group', _getPartnerDutyGroup()),
+                    _buildInfoRow('My Accent Color', _getMyAccentColor()),
+                    _buildInfoRow(
+                      'Partner Accent Color',
+                      _getPartnerAccentColor(),
+                    ),
+                    _buildInfoRow(
+                      'Holiday Accent Color',
+                      _getHolidayAccentColor(),
+                    ),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildSection('Database & Storage', [
+                    _buildInfoRow(
+                      'Schedule Configs',
+                      _getScheduleConfigsCount(),
+                    ),
+                    _buildInfoRow('Cache Status', _getCacheStatus()),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildSection('Technical Details', [
+                    _buildInfoRow('Flutter Version', _getFlutterVersion()),
+                    _buildInfoRow('Dart Version', _getDartVersion()),
+                    _buildInfoRow('Platform', _getPlatform()),
+                    _buildInfoRow('Build Type', _getBuildType()),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildSection('Services Status', [
+                    _buildInfoRow('Sentry Enabled', _getSentryStatus()),
+                    _buildInfoRow('Database Status', _getDatabaseStatus()),
+                  ]),
+                  const SizedBox(height: 24),
+                  _buildSchoolHolidaysSection(),
+                  const SizedBox(height: 24),
+                  _buildScheduleFilesSection(),
+                ],
               ),
-      ),
+            ),
     );
   }
 
@@ -263,22 +245,6 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   String _getPreferredDutyGroup() {
     final scheduleState = ref.read(scheduleCoordinatorProvider).value;
     return scheduleState?.preferredDutyGroup ?? 'None';
-  }
-
-  String _getCalendarFormat(AppLocalizations l10n) {
-    final scheduleState = ref.read(scheduleCoordinatorProvider).value;
-    if (scheduleState == null) return 'Unknown';
-
-    switch (scheduleState.calendarFormat) {
-      case CalendarFormat.month:
-        return 'Month';
-      case CalendarFormat.twoWeeks:
-        return 'Two Weeks';
-      case CalendarFormat.week:
-        return 'Week';
-      default:
-        return 'Unknown';
-    }
   }
 
   String _getCurrentLanguage() {

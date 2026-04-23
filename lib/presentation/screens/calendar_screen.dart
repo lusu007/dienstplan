@@ -1,14 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/animation_constants.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_app_bar.dart';
-import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
-import 'package:dienstplan/data/services/language_service.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
+import 'package:dienstplan/data/services/language_service.dart';
+import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/calendar_view.dart';
 
 @RoutePage(name: 'CalendarRoute')
 class CalendarScreen extends ConsumerStatefulWidget {
@@ -19,8 +17,7 @@ class CalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  late AnimationController _controller;
+    with WidgetsBindingObserver {
   late String _locale;
   LanguageService? _languageService;
 
@@ -28,28 +25,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controller = AnimationController(duration: kAnimDefault, vsync: this);
-
-    _controller.forward();
-    _locale = 'de_DE'; // Default locale
+    _locale = 'de_DE';
     initializeDateFormatting(_locale, null);
-
-    // Get services from DI container
     _initializeServices();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    if (_languageService != null) {
-      final appLocale = _languageService!.currentLocale.languageCode;
-      if (appLocale != _locale) {
-        setState(() {
-          _locale = appLocale;
-          initializeDateFormatting(_locale, null);
-        });
-      }
+    if (_languageService == null) {
+      return;
+    }
+    final String appLocale = _languageService!.currentLocale.languageCode;
+    if (appLocale != _locale) {
+      setState(() {
+        _locale = appLocale;
+        initializeDateFormatting(_locale, null);
+      });
     }
   }
 
@@ -59,17 +51,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      // No-op; provider handles state
-    }
-  }
-
-  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller.dispose();
     super.dispose();
   }
 
@@ -77,9 +60,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
   Widget build(BuildContext context) {
     // Warm up schedule coordinator provider (ensures initial load)
     ref.watch(scheduleCoordinatorProvider);
-    return const Scaffold(
-      appBar: CalendarAppBar(),
-      body: SafeAreaWrapper(child: CalendarView()),
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: const Scaffold(extendBody: true, body: CalendarView()),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
@@ -9,7 +8,6 @@ import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/language_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/theme_mode_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/reset_bottomsheet.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/calendar_format_bottomsheet.dart';
 import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
 
 class AppSection extends ConsumerWidget {
@@ -25,10 +23,6 @@ class AppSection extends ConsumerWidget {
     final ThemePreference effectivePref =
         settingsState.value?.themePreference ?? ThemePreference.system;
 
-    // Get calendar format from settings
-    final CalendarFormat calendarFormat =
-        settingsState.value?.calendarFormat ?? CalendarFormat.month;
-
     return SettingsSection(
       title: l10n.app,
       cards: [
@@ -39,30 +33,14 @@ class AppSection extends ConsumerWidget {
               (languageService?.currentLocale.languageCode ?? 'de') == 'de'
               ? l10n.german
               : l10n.english,
-          onTap: () => LanguageBottomsheet.show(
-            context,
-            heightPercentage: 0.4, // 40% for simple language selection
-          ),
-        ),
-        NavigationCard(
-          icon: Icons.view_week_outlined,
-          title: l10n.calendarFormat,
-          subtitle: _getCalendarFormatName(calendarFormat, l10n),
-          onTap: () => CalendarFormatBottomsheet.show(
-            context,
-            heightPercentage: 0.5, // 50% for simple calendar format selection
-          ),
+          onTap: () => LanguageBottomsheet.show(context),
         ),
         NavigationCard(
           icon: Icons.color_lens_outlined,
           title: l10n.themeMode,
           subtitle: _themeSubtitle(l10n, effectivePref),
           trailing: _buildThemeIndicator(effectivePref),
-          onTap: () => ThemeModeBottomsheet.show(
-            context,
-            ref,
-            heightPercentage: 0.5, // 50% for simple design selection
-          ),
+          onTap: () => ThemeModeBottomsheet.show(context, ref),
         ),
         NavigationCard(
           icon: Icons.delete_forever_outlined,
@@ -72,17 +50,6 @@ class AppSection extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  String _getCalendarFormatName(CalendarFormat format, AppLocalizations l10n) {
-    switch (format) {
-      case CalendarFormat.month:
-        return l10n.calendarFormatMonth;
-      case CalendarFormat.twoWeeks:
-        return l10n.calendarFormatTwoWeeks;
-      case CalendarFormat.week:
-        return l10n.calendarFormatWeek;
-    }
   }
 
   String _themeSubtitle(AppLocalizations l10n, ThemePreference pref) {

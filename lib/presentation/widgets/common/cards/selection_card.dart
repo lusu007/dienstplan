@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-// Removed AppColors direct usage for adaptive theming
-import 'package:dienstplan/core/constants/ui_constants.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 
 class SelectionCard extends StatelessWidget {
-  final dynamic title; // Can be String or Widget
+  final dynamic title;
   final String? subtitle;
   final IconData? leadingIcon;
   final bool isSelected;
@@ -30,88 +29,59 @@ class SelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveMainColor =
-        mainColor ?? Theme.of(context).colorScheme.primary;
-    final effectiveIconSize = iconSize ?? 40;
-    final effectiveContentPadding =
-        contentPadding ??
-        (useDialogStyle
-            ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
-            : const EdgeInsets.symmetric(horizontal: 20));
-    final effectiveMinVerticalPadding = minVerticalPadding ?? 20;
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
+    final Color accent = mainColor ?? scheme.primary;
 
     if (useDialogStyle) {
-      return _buildDialogStyle(
-        context,
-        effectiveMainColor,
-        effectiveContentPadding,
-      );
+      return _buildDialogStyle(context, theme, scheme, accent);
     }
-    return _buildGeneralStyle(
-      context,
-      effectiveMainColor,
-      effectiveIconSize,
-      effectiveContentPadding,
-      effectiveMinVerticalPadding,
-    );
+    return _buildGeneralStyle(context, theme, scheme, accent);
   }
 
   Widget _buildDialogStyle(
     BuildContext context,
-    Color mainColor,
-    EdgeInsets contentPadding,
+    ThemeData theme,
+    ColorScheme scheme,
+    Color accent,
   ) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme scheme = theme.colorScheme;
-    return Container(
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        elevation: isSelected ? 2 : 0,
-        shadowColor: mainColor.withAlpha(kAlphaShadowStrong),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: isSelected
-                ? mainColor.withAlpha(kAlphaCardSelected)
-                : theme.cardColor,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? mainColor : scheme.outlineVariant,
-              width: isSelected ? 2.5 : 1,
-            ),
-          ),
-          child: ListTile(
-            contentPadding: contentPadding,
-            leading: Icon(
+      isActive: isSelected,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: isSelected ? mainColor : scheme.onSurfaceVariant,
-              size: 28,
+              color: isSelected ? accent : scheme.onSurfaceVariant,
+              size: 26,
             ),
-            title: title is Widget
-                ? title
-                : Text(
-                    title as String,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: isSelected
-                          ? mainColor
-                          : theme.colorScheme.onSurface,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTitle(theme, scheme),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        color: isSelected
+                            ? scheme.onSurface.withValues(alpha: 0.85)
+                            : scheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-            subtitle: subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
-                      color: isSelected
-                          ? mainColor.withValues(alpha: 0.8)
-                          : theme.colorScheme.onSurfaceVariant,
-                    ),
-                  )
-                : null,
-            onTap: onTap,
-          ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -119,70 +89,65 @@ class SelectionCard extends StatelessWidget {
 
   Widget _buildGeneralStyle(
     BuildContext context,
-    Color mainColor,
-    double iconSize,
-    EdgeInsets contentPadding,
-    double minVerticalPadding,
+    ThemeData theme,
+    ColorScheme scheme,
+    Color accent,
   ) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme scheme = theme.colorScheme;
-    return Container(
+    final double size = iconSize ?? 32;
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        elevation: isSelected ? 4 : 0,
-        shadowColor: mainColor.withAlpha(kAlphaShadowStrong),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: isSelected
-                ? mainColor.withAlpha(kAlphaCardSelected)
-                : theme.cardColor,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? mainColor : scheme.outlineVariant,
-              width: isSelected ? 2.5 : 1,
-            ),
-          ),
-          child: ListTile(
-            contentPadding: contentPadding,
-            minVerticalPadding: minVerticalPadding,
-            leading: leadingIcon != null
-                ? Icon(leadingIcon, color: mainColor, size: iconSize)
-                : null,
-            title: title is Widget
-                ? title
-                : Text(
-                    title as String,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: theme.colorScheme.onSurface,
+      isActive: isSelected,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (leadingIcon != null) ...[
+              Icon(leadingIcon, color: accent, size: size),
+              const SizedBox(width: 16),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTitle(theme, scheme),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-            subtitle: subtitle != null
-                ? Text(
-                    subtitle!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  )
-                : null,
-            trailing: SizedBox(
-              width: 32,
-              child: Icon(
-                isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-                color: mainColor,
-                size: 28,
+                  ],
+                ],
               ),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+            const SizedBox(width: 12),
+            Icon(
+              isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
+              color: isSelected ? accent : scheme.onSurfaceVariant,
+              size: 26,
             ),
-            selectedTileColor: Colors.transparent,
-            onTap: onTap,
-          ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTitle(ThemeData theme, ColorScheme scheme) {
+    if (title is Widget) {
+      return title as Widget;
+    }
+    return Text(
+      title as String,
+      style: theme.textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+        fontSize: 17,
+        color: scheme.onSurface,
       ),
     );
   }

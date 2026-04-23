@@ -40,24 +40,30 @@ class ConfigCard extends StatelessWidget {
   }
 
   Widget _buildTitle() {
-    if (config.meta.policeAuthority != null &&
-        config.meta.policeAuthority!.isNotEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            config.meta.policeAuthority!,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(config.meta.name),
-        ],
-      );
-    }
-    return Text(config.meta.name);
+    return Builder(
+      builder: (BuildContext context) {
+        final ColorScheme scheme = Theme.of(context).colorScheme;
+        if (config.meta.policeAuthority != null &&
+            config.meta.policeAuthority!.isNotEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                config.meta.policeAuthority!,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: scheme.onSurfaceVariant,
+                  letterSpacing: 0.4,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(config.meta.name),
+            ],
+          );
+        }
+        return Text(config.meta.name);
+      },
+    );
   }
 }

@@ -13,7 +13,6 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$Settings {
-  CalendarFormat get calendarFormat;
   String? get language;
   String? get selectedDutyGroup;
   String? get myDutyGroup;
@@ -40,8 +39,6 @@ mixin _$Settings {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Settings &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat) &&
             (identical(other.language, language) ||
                 other.language == language) &&
             (identical(other.selectedDutyGroup, selectedDutyGroup) ||
@@ -82,7 +79,6 @@ mixin _$Settings {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    calendarFormat,
     language,
     selectedDutyGroup,
     myDutyGroup,
@@ -100,7 +96,7 @@ mixin _$Settings {
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -110,7 +106,6 @@ abstract mixin class $SettingsCopyWith<$Res> {
       _$SettingsCopyWithImpl;
   @useResult
   $Res call({
-    CalendarFormat calendarFormat,
     String? language,
     String? selectedDutyGroup,
     String? myDutyGroup,
@@ -139,7 +134,6 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? calendarFormat = null,
     Object? language = freezed,
     Object? selectedDutyGroup = freezed,
     Object? myDutyGroup = freezed,
@@ -156,10 +150,6 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
   }) {
     return _then(
       _self.copyWith(
-        calendarFormat: null == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat,
         language: freezed == language
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable
@@ -311,7 +301,6 @@ extension SettingsPatterns on Settings {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-      CalendarFormat calendarFormat,
       String? language,
       String? selectedDutyGroup,
       String? myDutyGroup,
@@ -333,7 +322,6 @@ extension SettingsPatterns on Settings {
     switch (_that) {
       case _Settings() when $default != null:
         return $default(
-          _that.calendarFormat,
           _that.language,
           _that.selectedDutyGroup,
           _that.myDutyGroup,
@@ -369,7 +357,6 @@ extension SettingsPatterns on Settings {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-      CalendarFormat calendarFormat,
       String? language,
       String? selectedDutyGroup,
       String? myDutyGroup,
@@ -390,7 +377,6 @@ extension SettingsPatterns on Settings {
     switch (_that) {
       case _Settings():
         return $default(
-          _that.calendarFormat,
           _that.language,
           _that.selectedDutyGroup,
           _that.myDutyGroup,
@@ -425,7 +411,6 @@ extension SettingsPatterns on Settings {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-      CalendarFormat calendarFormat,
       String? language,
       String? selectedDutyGroup,
       String? myDutyGroup,
@@ -446,7 +431,6 @@ extension SettingsPatterns on Settings {
     switch (_that) {
       case _Settings() when $default != null:
         return $default(
-          _that.calendarFormat,
           _that.language,
           _that.selectedDutyGroup,
           _that.myDutyGroup,
@@ -471,7 +455,6 @@ extension SettingsPatterns on Settings {
 
 class _Settings extends Settings {
   const _Settings({
-    required this.calendarFormat,
     this.language,
     this.selectedDutyGroup,
     this.myDutyGroup,
@@ -487,8 +470,6 @@ class _Settings extends Settings {
     this.holidayAccentColorValue,
   }) : super._();
 
-  @override
-  final CalendarFormat calendarFormat;
   @override
   final String? language;
   @override
@@ -532,8 +513,6 @@ class _Settings extends Settings {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Settings &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat) &&
             (identical(other.language, language) ||
                 other.language == language) &&
             (identical(other.selectedDutyGroup, selectedDutyGroup) ||
@@ -574,7 +553,6 @@ class _Settings extends Settings {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    calendarFormat,
     language,
     selectedDutyGroup,
     myDutyGroup,
@@ -592,7 +570,7 @@ class _Settings extends Settings {
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -604,7 +582,6 @@ abstract mixin class _$SettingsCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    CalendarFormat calendarFormat,
     String? language,
     String? selectedDutyGroup,
     String? myDutyGroup,
@@ -633,7 +610,6 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? calendarFormat = null,
     Object? language = freezed,
     Object? selectedDutyGroup = freezed,
     Object? myDutyGroup = freezed,
@@ -650,10 +626,6 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
   }) {
     return _then(
       _Settings(
-        calendarFormat: null == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat,
         language: freezed == language
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable

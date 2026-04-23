@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
+export 'generic_bottomsheet.dart' show SelectionItem;
+
 class SelectionBottomsheet extends StatelessWidget {
   final String title;
   final List<SelectionItem> items;
   final String? selectedValue;
   final Function(String?) onItemSelected;
-  final double? heightPercentage;
 
   const SelectionBottomsheet({
     super.key,
@@ -14,7 +15,6 @@ class SelectionBottomsheet extends StatelessWidget {
     required this.items,
     required this.selectedValue,
     required this.onItemSelected,
-    this.heightPercentage,
   });
 
   static Future<void> show({
@@ -23,12 +23,11 @@ class SelectionBottomsheet extends StatelessWidget {
     required List<SelectionItem> items,
     required String? selectedValue,
     required Function(String?) onItemSelected,
-    double? heightPercentage,
   }) {
     return GenericBottomsheet.show(
       context: context,
       title: title,
-      heightPercentage: heightPercentage,
+      shrinkToContent: true,
       children: [
         SelectionList(
           items: items,
@@ -43,7 +42,7 @@ class SelectionBottomsheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return GenericBottomsheet(
       title: title,
-      heightPercentage: heightPercentage,
+      shrinkToContent: true,
       children: [
         SelectionList(
           items: items,

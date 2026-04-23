@@ -67,18 +67,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Lass uns deinen Dienstplan einrichten. Wähle dafür deinen Dienstplan aus.';
 
   @override
-  String get calendarFormat => 'Kalenderformat';
-
-  @override
-  String get calendarFormatMonth => 'Monat';
-
-  @override
-  String get calendarFormatTwoWeeks => 'Zwei Wochen';
-
-  @override
-  String get calendarFormatWeek => 'Woche';
-
-  @override
   String get resetData => 'App zurücksetzen';
 
   @override

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 
+/// Glass-styled language switcher shown in the setup header.
+///
+/// Rolls through supported locales on tap. Visual style matches the other
+/// glass pill controls (Today button, month chip, etc.).
 class LanguageSelectorButton extends StatelessWidget {
   final LanguageService languageService;
   final VoidCallback? onLanguageChanged;
@@ -19,38 +23,53 @@ class LanguageSelectorButton extends StatelessWidget {
     return ListenableBuilder(
       listenable: languageService,
       builder: (context, child) {
-        final l10n = AppLocalizations.of(context);
+        final AppLocalizations l10n = AppLocalizations.of(context);
+        final bool isDark = Theme.of(context).brightness == Brightness.dark;
+        final Color foreground = Theme.of(context).colorScheme.onSurface;
+        final double opacity = disabled ? 0.5 : 1.0;
+        final String label = languageService.currentLocale.languageCode == 'de'
+            ? l10n.german
+            : l10n.english;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.white,
-              side: const BorderSide(color: Colors.white),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: disabled
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: disabled
                 ? null
                 : () {
                     const locales = [Locale('de'), Locale('en')];
-                    final currentIndex = locales.indexOf(
+                    final int currentIndex = locales.indexOf(
                       languageService.currentLocale,
                     );
-                    final nextIndex = (currentIndex + 1) % locales.length;
+                    final int nextIndex = (currentIndex + 1) % locales.length;
                     languageService.setLanguage(
                       locales[nextIndex].languageCode,
                     );
-                    // Remove onLanguageChanged call to prevent double update
+                    onLanguageChanged?.call();
                   },
-            child: Text(
-              languageService.currentLocale.languageCode == 'de'
-                  ? l10n.german
-                  : l10n.english,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            borderRadius: BorderRadius.circular(999),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(
+                  alpha: (isDark ? 0.08 : 0.28) * opacity,
+                ),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: Colors.white.withValues(
+                    alpha: (isDark ? 0.18 : 0.45) * opacity,
+                  ),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: foreground.withValues(alpha: opacity),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  letterSpacing: 0.3,
+                ),
               ),
             ),
           ),

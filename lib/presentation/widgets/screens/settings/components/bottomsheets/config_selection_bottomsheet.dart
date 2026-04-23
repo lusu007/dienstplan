@@ -6,6 +6,7 @@ import 'package:dienstplan/core/utils/config_filter_utils.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/police_authority_filter_chips.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
+import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
 class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
@@ -160,43 +161,47 @@ class _ConfigSelectionBottomsheetState
                     ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
                   ),
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount:
-                      _filteredConfigs.length +
-                      (widget.showNoConfigOption ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    // Show "No Config" option at the end if enabled
-                    if (widget.showNoConfigOption &&
-                        index == _filteredConfigs.length) {
+              : ScrollFadeMask(
+                  topFadeFraction: 0.05,
+                  bottomFadeFraction: 0.06,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    itemCount:
+                        _filteredConfigs.length +
+                        (widget.showNoConfigOption ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      // Show "No Config" option at the end if enabled
+                      if (widget.showNoConfigOption &&
+                          index == _filteredConfigs.length) {
+                        return SelectionCard(
+                          title: widget.noConfigTitle ?? l10n.noDutySchedule,
+                          isSelected: (widget.selectedConfigName ?? '').isEmpty,
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            widget.onConfigSelected(null);
+                          },
+                          useDialogStyle: true,
+                        );
+                      }
+
+                      final config = _filteredConfigs[index];
+                      final bool isAlreadySelected =
+                          widget.selectedConfigName == config.name;
                       return SelectionCard(
-                        title: widget.noConfigTitle ?? l10n.noDutySchedule,
-                        isSelected: (widget.selectedConfigName ?? '').isEmpty,
+                        title: _buildConfigTitle(config),
+                        subtitle: _buildConfigSubtitle(config),
+                        isSelected: isAlreadySelected,
                         onTap: () {
                           Navigator.of(context).pop();
-                          widget.onConfigSelected(null);
+                          widget.onConfigSelected(
+                            isAlreadySelected ? null : config,
+                          );
                         },
+                        mainColor: AppColors.primary,
                         useDialogStyle: true,
                       );
-                    }
-
-                    final config = _filteredConfigs[index];
-                    final bool isAlreadySelected =
-                        widget.selectedConfigName == config.name;
-                    return SelectionCard(
-                      title: _buildConfigTitle(config),
-                      subtitle: _buildConfigSubtitle(config),
-                      isSelected: isAlreadySelected,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        widget.onConfigSelected(
-                          isAlreadySelected ? null : config,
-                        );
-                      },
-                      mainColor: AppColors.primary,
-                      useDialogStyle: true,
-                    );
-                  },
+                    },
+                  ),
                 ),
         ),
       ],

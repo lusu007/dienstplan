@@ -22,11 +22,6 @@ class ScheduleSectionSkeleton extends StatelessWidget {
           title: l10n.myDutyGroup,
           showSubtitleSkeleton: true,
         ),
-        NavigationCardSkeleton(
-          icon: Icons.view_week_outlined,
-          title: l10n.calendarFormat,
-          showSubtitleSkeleton: true,
-        ),
       ],
     );
   }

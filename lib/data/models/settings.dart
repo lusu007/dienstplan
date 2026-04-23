@@ -1,8 +1,6 @@
-import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
 
 class Settings {
-  final CalendarFormat calendarFormat;
   final String? language;
   final String? selectedDutyGroup;
   final String? myDutyGroup;
@@ -20,7 +18,6 @@ class Settings {
   final int? holidayAccentColorValue;
 
   const Settings({
-    required this.calendarFormat,
     this.language,
     this.selectedDutyGroup,
     this.myDutyGroup,
@@ -38,10 +35,6 @@ class Settings {
 
   factory Settings.fromMap(Map<String, dynamic> map) {
     return Settings(
-      calendarFormat: CalendarFormat.values.firstWhere(
-        (format) => format.name == map['calendar_format'],
-        orElse: () => CalendarFormat.month,
-      ),
       language: _safeStringCast(map['language']),
       selectedDutyGroup: _safeStringCast(map['selected_duty_group']),
       myDutyGroup: _safeStringCast(map['my_duty_group']),
@@ -62,7 +55,6 @@ class Settings {
 
   Map<String, dynamic> toMap() {
     return {
-      'calendar_format': calendarFormat.name,
       if (language != null) 'language': language,
       if (selectedDutyGroup != null) 'selected_duty_group': selectedDutyGroup,
       if (myDutyGroup != null) 'my_duty_group': myDutyGroup,
@@ -86,7 +78,6 @@ class Settings {
   }
 
   Settings copyWith({
-    CalendarFormat? calendarFormat,
     String? language,
     String? selectedDutyGroup,
     String? myDutyGroup,
@@ -102,7 +93,6 @@ class Settings {
     int? holidayAccentColorValue,
   }) {
     return Settings(
-      calendarFormat: calendarFormat ?? this.calendarFormat,
       language: language ?? this.language,
       selectedDutyGroup: selectedDutyGroup ?? this.selectedDutyGroup,
       myDutyGroup: myDutyGroup ?? this.myDutyGroup,
@@ -125,14 +115,13 @@ class Settings {
 
   @override
   String toString() {
-    return 'Settings(calendarFormat: $calendarFormat, language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is Settings &&
-        other.calendarFormat == calendarFormat &&
         other.language == language &&
         other.selectedDutyGroup == selectedDutyGroup &&
         other.myDutyGroup == myDutyGroup &&
@@ -149,8 +138,7 @@ class Settings {
 
   @override
   int get hashCode {
-    return calendarFormat.hashCode ^
-        language.hashCode ^
+    return language.hashCode ^
         selectedDutyGroup.hashCode ^
         myDutyGroup.hashCode ^
         activeConfigName.hashCode ^

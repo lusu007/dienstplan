@@ -6,17 +6,22 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calend
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_layout_utils.dart';
 
-/// Optimized table calendar with RepaintBoundary and const constructors
+/// Month-only table calendar that stretches its rows to fill the vertical
+/// space it is given by the parent layout.
+///
+/// [onDaySelected] is fired after the coordinator has been updated so the
+/// parent can trigger UI reactions (e.g. opening the schedules dialog).
 class CalendarTable extends ConsumerWidget {
+  static const double _minRowHeight = 78.0;
+  static const double _maxRowHeight = 140.0;
+
   final GlobalKey calendarKey;
-  final Function(tc.CalendarFormat) onFormatChanged;
-  final Function(DateTime) onPageChanged;
-  final VoidCallback onDaySelected;
+  final ValueChanged<DateTime> onPageChanged;
+  final ValueChanged<DateTime> onDaySelected;
 
   const CalendarTable({
     super.key,
     required this.calendarKey,
-    required this.onFormatChanged,
     required this.onPageChanged,
     required this.onDaySelected,
   });
@@ -24,38 +29,37 @@ class CalendarTable extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
-    final calendarFormat = state?.calendarFormat ?? tc.CalendarFormat.month;
-    final focusedDay = state?.focusedDay ?? DateTime.now();
+    final DateTime focusedDay = state?.focusedDay ?? DateTime.now();
+    final int weekRows = getWeekRowsForMonth(
+      focusedDay,
+      starting: CalendarConfig.startingDayOfWeek,
+    );
 
-    // Include schedule count so day cells rebuild when data arrives (same month/config).
-    final String stableCalendarKey =
-        'cal_${focusedDay.year}_${focusedDay.month}_'
-        '${state?.activeConfigName ?? ''}_'
-        '${Localizations.localeOf(context).languageCode}_'
-        '${calendarFormat.index}_'
-        'n${state?.schedules.length ?? 0}';
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double available = constraints.maxHeight;
+        final double rowHeight = _resolveRowHeight(available, weekRows);
+        final double cellHeight = rowHeight - 4.0; // account for 2px margins
 
-    return RepaintBoundary(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final int weekRows = getWeekRowsForMonth(
-            focusedDay,
-            starting: CalendarConfig.startingDayOfWeek,
-          );
-          final double calendarHeight = CalendarConfig.computeMonthHeight(
-            weekRows: weekRows,
-          );
+        final String stableCalendarKey =
+            'cal_${focusedDay.year}_${focusedDay.month}_'
+            '${state?.activeConfigName ?? ''}_'
+            '${Localizations.localeOf(context).languageCode}_'
+            'n${state?.schedules.length ?? 0}_'
+            'rh${rowHeight.toStringAsFixed(1)}';
 
-          final Widget calendar = tc.TableCalendar(
+        return RepaintBoundary(
+          child: tc.TableCalendar(
             key: ValueKey<String>(stableCalendarKey),
             firstDay: CalendarConfig.firstDay,
             lastDay: CalendarConfig.lastDay,
             focusedDay: focusedDay,
-            calendarFormat: calendarFormat,
+            calendarFormat: tc.CalendarFormat.month,
+            availableCalendarFormats: const {tc.CalendarFormat.month: ''},
             startingDayOfWeek: CalendarConfig.startingDayOfWeek,
             headerVisible: false,
             daysOfWeekHeight: CalendarConfig.kDaysOfWeekRowHeight,
-            rowHeight: CalendarConfig.kCalendarDayHeight + 8,
+            rowHeight: rowHeight,
             selectedDayPredicate: (day) {
               return tc.isSameDay(state?.selectedDay, day);
             },
@@ -69,7 +73,7 @@ class CalendarTable extends ConsumerWidget {
               await ref
                   .read(scheduleCoordinatorProvider.notifier)
                   .ensureActiveDay(selectedDay);
-              onDaySelected();
+              onDaySelected(selectedDay);
             },
             onPageChanged: (focusedDay) {
               ref
@@ -77,21 +81,26 @@ class CalendarTable extends ConsumerWidget {
                   .setFocusedDay(focusedDay);
               onPageChanged(focusedDay);
             },
-            calendarBuilders: CalendarDayBuilders.create(),
+            calendarBuilders: CalendarDayBuilders.create(
+              cellHeight: cellHeight,
+            ),
             calendarStyle: CalendarConfig.createCalendarStyle(context),
             headerStyle: CalendarConfig.createHeaderStyle(),
             locale: Localizations.localeOf(context).languageCode,
-          );
-
-          if (calendarHeight <= constraints.maxHeight) {
-            return SizedBox(height: calendarHeight, child: calendar);
-          }
-
-          return SingleChildScrollView(
-            child: SizedBox(height: calendarHeight, child: calendar),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
+  }
+
+  double _resolveRowHeight(double availableHeight, int weekRows) {
+    if (availableHeight.isFinite && availableHeight > 0 && weekRows > 0) {
+      final double rawRowHeight =
+          (availableHeight - CalendarConfig.kDaysOfWeekRowHeight) / weekRows;
+      if (rawRowHeight > 0) {
+        return rawRowHeight.clamp(_minRowHeight, _maxRowHeight);
+      }
+    }
+    return _minRowHeight;
   }
 }

@@ -212,30 +212,6 @@ abstract class AppLocalizations {
   /// **'Let\'s set up your duty schedule. Therefore choose your duty schedule.'**
   String get welcomeMessage;
 
-  /// Label for calendar format selection
-  ///
-  /// In en, this message translates to:
-  /// **'Calendar Format'**
-  String get calendarFormat;
-
-  /// Label for month view in calendar format selector
-  ///
-  /// In en, this message translates to:
-  /// **'Month'**
-  String get calendarFormatMonth;
-
-  /// Label for two weeks view in calendar format selector
-  ///
-  /// In en, this message translates to:
-  /// **'Two Weeks'**
-  String get calendarFormatTwoWeeks;
-
-  /// Label for week view in calendar format selector
-  ///
-  /// In en, this message translates to:
-  /// **'Week'**
-  String get calendarFormatWeek;
-
   /// Reset app button text
   ///
   /// In en, this message translates to:

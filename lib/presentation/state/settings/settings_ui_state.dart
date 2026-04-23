@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
 
 part 'settings_ui_state.freezed.dart';
@@ -10,7 +9,6 @@ abstract class SettingsUiState with _$SettingsUiState {
     required bool isLoading,
     String? error,
     String? language,
-    CalendarFormat? calendarFormat,
     String? activeConfigName,
     String? myDutyGroup,
     ThemePreference? themePreference,

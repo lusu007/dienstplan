@@ -13,6 +13,13 @@ import 'package:dienstplan/presentation/state/school_holidays/school_holidays_no
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
+/// Visual style for [DutyScheduleList] items.
+///
+/// [card]: existing opaque material card look (default).
+/// [glass]: translucent, softly-bordered surface that lets a blurred
+/// background shine through. Used inside the glass schedules dialog.
+enum DutyListVisualStyle { card, glass }
+
 class DutyScheduleList extends ConsumerWidget {
   final List<Schedule> schedules;
   final String? selectedDutyGroup;
@@ -24,6 +31,9 @@ class DutyScheduleList extends ConsumerWidget {
   final String? activeConfigName;
   final bool isLoading;
   final DateTime? selectedDay;
+  final double topPadding;
+  final double bottomPadding;
+  final DutyListVisualStyle visualStyle;
 
   const DutyScheduleList({
     super.key,
@@ -37,7 +47,12 @@ class DutyScheduleList extends ConsumerWidget {
     this.activeConfigName,
     this.isLoading = false,
     this.selectedDay,
+    this.topPadding = 0.0,
+    this.bottomPadding = 0.0,
+    this.visualStyle = DutyListVisualStyle.card,
   });
+
+  bool get _isGlass => visualStyle == DutyListVisualStyle.glass;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -129,7 +144,33 @@ class DutyScheduleList extends ConsumerWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    return DutyItemUiBuilder.buildEmptyState(l10n.noServicesForDay);
+    if (!_isGlass) {
+      return DutyItemUiBuilder.buildEmptyState(l10n.noServicesForDay);
+    }
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.event_busy_rounded,
+              size: 36,
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.55),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.noServicesForDay,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildCombinedList({
@@ -152,7 +193,7 @@ class DutyScheduleList extends ConsumerWidget {
 
     return ListView.builder(
       controller: scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+      padding: EdgeInsets.fromLTRB(16.0, topPadding, 16.0, bottomPadding),
       itemCount: totalCount,
       itemBuilder: (BuildContext context, int index) {
         if (index < holidaysCount) {
@@ -160,6 +201,7 @@ class DutyScheduleList extends ConsumerWidget {
           return VacationDayItem(
             holiday: holiday,
             holidayAccentColorValue: holidayAccentColorValue,
+            visualStyle: visualStyle,
           );
         }
 
@@ -195,6 +237,7 @@ class DutyScheduleList extends ConsumerWidget {
             : (isOwn ? myAccentColor : outlineColor);
         final Color borderColor = isSelected ? primaryColor : baseColor;
         final Color badgeColor = baseColor;
+        final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
         return Container(
           key: ValueKey<String>(
@@ -214,29 +257,28 @@ class DutyScheduleList extends ConsumerWidget {
                   horizontal: 20,
                   vertical: 16,
                 ),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? primaryColor.withAlpha(kAlphaCardSelected)
-                      : Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: borderColor,
-                    width: isSelected ? 2.5 : 1,
-                  ),
+                decoration: _buildDutyItemDecoration(
+                  context: context,
+                  isSelected: isSelected,
+                  isDark: isDark,
+                  borderColor: borderColor,
+                  primaryColor: primaryColor,
                 ),
                 child: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: badgeColor.withAlpha(kAlphaBadge),
-                        borderRadius: BorderRadius.circular(8),
+                      decoration: _buildIconBadgeDecoration(
+                        badgeColor: badgeColor,
+                        isDark: isDark,
                       ),
                       child: Icon(
                         _getDutyTypeIcon(schedule.dutyTypeId, dutyTypesMap),
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Theme.of(context).colorScheme.onSurface
-                            : badgeColor,
+                        color: _resolveIconColor(
+                          context: context,
+                          badgeColor: badgeColor,
+                          isDark: isDark,
+                        ),
                         size: 24,
                       ),
                     ),
@@ -284,6 +326,77 @@ class DutyScheduleList extends ConsumerWidget {
     );
   }
 
+  BoxDecoration _buildDutyItemDecoration({
+    required BuildContext context,
+    required bool isSelected,
+    required bool isDark,
+    required Color borderColor,
+    required Color primaryColor,
+  }) {
+    if (!_isGlass) {
+      return BoxDecoration(
+        color: isSelected
+            ? primaryColor.withAlpha(kAlphaCardSelected)
+            : Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor, width: isSelected ? 2.5 : 1),
+      );
+    }
+    final Color baseBackground = Colors.white.withValues(
+      alpha: isDark ? 0.06 : 0.28,
+    );
+    final Color selectedBackground = primaryColor.withValues(
+      alpha: isDark ? 0.18 : 0.22,
+    );
+    return BoxDecoration(
+      color: isSelected ? selectedBackground : baseBackground,
+      borderRadius: BorderRadius.circular(18),
+      border: Border.all(
+        color: isSelected
+            ? primaryColor.withValues(alpha: 0.85)
+            : borderColor.withValues(alpha: 0.55),
+        width: isSelected ? 1.5 : 1,
+      ),
+      boxShadow: isSelected
+          ? [
+              BoxShadow(
+                color: primaryColor.withValues(alpha: isDark ? 0.32 : 0.28),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ]
+          : const [],
+    );
+  }
+
+  BoxDecoration _buildIconBadgeDecoration({
+    required Color badgeColor,
+    required bool isDark,
+  }) {
+    if (!_isGlass) {
+      return BoxDecoration(
+        color: badgeColor.withAlpha(kAlphaBadge),
+        borderRadius: BorderRadius.circular(8),
+      );
+    }
+    return BoxDecoration(
+      color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.35),
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: badgeColor.withValues(alpha: 0.55), width: 1),
+    );
+  }
+
+  Color _resolveIconColor({
+    required BuildContext context,
+    required Color badgeColor,
+    required bool isDark,
+  }) {
+    if (!_isGlass) {
+      return isDark ? Theme.of(context).colorScheme.onSurface : badgeColor;
+    }
+    return isDark ? Colors.white : badgeColor;
+  }
+
   IconData _getDutyTypeIcon(
     String dutyTypeId,
     Map<String, DutyType>? dutyTypesMap,
@@ -292,9 +405,8 @@ class DutyScheduleList extends ConsumerWidget {
   }
 
   Widget _buildSkeletonLoader(BuildContext context) {
-    // Fixed-height skeleton items; no margins to allow itemExtent usage if needed later
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+      padding: EdgeInsets.fromLTRB(16.0, topPadding, 16.0, bottomPadding),
       itemCount: 5,
       itemExtent: kDutyListItemExtent,
       itemBuilder: (BuildContext context, int index) =>
@@ -303,54 +415,142 @@ class DutyScheduleList extends ConsumerWidget {
   }
 
   Widget _buildSkeletonItem(BuildContext context) {
-    return Container(
-      height: kDutyListItemExtent,
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.outlineVariant,
-              borderRadius: BorderRadius.circular(8),
-            ),
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    if (!_isGlass) {
+      return Container(
+        height: kDutyListItemExtent,
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant,
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 16,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(4),
+        ),
+        child: _buildSkeletonRow(context, isGlass: false),
+      );
+    }
+    return _PulsingGlassSkeleton(
+      isDark: isDark,
+      child: _buildSkeletonRow(context, isGlass: true),
+    );
+  }
+
+  Widget _buildSkeletonRow(BuildContext context, {required bool isGlass}) {
+    final Color barColor = isGlass
+        ? Colors.white.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.12
+                : 0.32,
+          )
+        : Theme.of(context).colorScheme.outlineVariant;
+    final Color subBarColor = isGlass
+        ? Colors.white.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark
+                ? 0.08
+                : 0.22,
+          )
+        : Theme.of(context).colorScheme.surfaceContainerHighest;
+    return Row(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: barColor,
+            borderRadius: BorderRadius.circular(isGlass ? 10 : 8),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 16,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: barColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 12,
+                width: MediaQuery.of(context).size.width * 0.4,
+                decoration: BoxDecoration(
+                  color: subBarColor,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PulsingGlassSkeleton extends StatefulWidget {
+  final Widget child;
+  final bool isDark;
+
+  const _PulsingGlassSkeleton({required this.child, required this.isDark});
+
+  @override
+  State<_PulsingGlassSkeleton> createState() => _PulsingGlassSkeletonState();
+}
+
+class _PulsingGlassSkeletonState extends State<_PulsingGlassSkeleton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final double t = Curves.easeInOut.transform(_controller.value);
+        final double opacity = 0.4 + (0.4 * t);
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Opacity(
+            opacity: opacity,
+            child: Container(
+              height: kDutyListItemExtent - 8,
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(
+                  alpha: widget.isDark ? 0.06 : 0.18,
+                ),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: Colors.white.withValues(
+                    alpha: widget.isDark ? 0.12 : 0.35,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  height: 12,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ],
+              ),
+              child: widget.child,
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

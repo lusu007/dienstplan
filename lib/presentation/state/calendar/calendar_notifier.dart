@@ -1,37 +1,23 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_ui_state.dart';
-import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
-import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
-import 'package:dienstplan/core/di/riverpod_providers.dart';
 
 part 'calendar_notifier.g.dart';
 
 @riverpod
 class CalendarNotifier extends _$CalendarNotifier {
-  GetSettingsUseCase? _getSettingsUseCase;
-  SaveSettingsUseCase? _saveSettingsUseCase;
-
   @override
   Future<CalendarUiState> build() async {
-    _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
-    _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     return await _initialize();
   }
 
   Future<CalendarUiState> _initialize() async {
     try {
       final DateTime now = DateTime.now();
-      final settingsResult = await _getSettingsUseCase!.execute();
-      final settings = settingsResult.valueIfSuccess;
-      final format = settings?.calendarFormat ?? CalendarFormat.month;
-
       return CalendarUiState(
         isLoading: false,
         error: null,
         selectedDay: now,
         focusedDay: now,
-        calendarFormat: format,
       );
     } catch (e) {
       return CalendarUiState.initial().copyWith(
@@ -59,30 +45,6 @@ class CalendarNotifier extends _$CalendarNotifier {
       return;
     }
     state = AsyncData(current.copyWith(selectedDay: day));
-  }
-
-  Future<void> setCalendarFormat(CalendarFormat format) async {
-    final current = state.value ?? CalendarUiState.initial();
-    state = AsyncData(current.copyWith(calendarFormat: format));
-
-    // Save to settings
-    final settingsResult = await _getSettingsUseCase!.execute();
-    final existing = settingsResult.valueIfSuccess;
-    if (existing != null) {
-      final saveResult = await _saveSettingsUseCase!.execute(
-        existing.copyWith(calendarFormat: format),
-      );
-      if (saveResult.isFailure) {
-        state = AsyncData(
-          current.copyWith(error: 'Failed to save calendar format'),
-        );
-      }
-    }
-  }
-
-  Future<void> updateCalendarFormatOnly(CalendarFormat format) async {
-    final current = state.value ?? CalendarUiState.initial();
-    state = AsyncData(current.copyWith(calendarFormat: format));
   }
 
   Future<void> goToToday() async {

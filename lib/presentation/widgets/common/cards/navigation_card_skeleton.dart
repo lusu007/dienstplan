@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
-import 'package:dienstplan/core/constants/animation_constants.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
 
-class NavigationCardSkeleton extends StatefulWidget {
+class NavigationCardSkeleton extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? subtitle;
@@ -17,86 +17,95 @@ class NavigationCardSkeleton extends StatefulWidget {
   });
 
   @override
-  State<NavigationCardSkeleton> createState() => _NavigationCardSkeletonState();
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
+
+    return GlassCard(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GlassIconBadge(icon: icon),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 17,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                  if (showSubtitleSkeleton) ...[
+                    const SizedBox(height: 6),
+                    const _PulsingBar(),
+                  ] else if (subtitle != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontSize: 14,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _NavigationCardSkeletonState extends State<NavigationCardSkeleton>
+class _PulsingBar extends StatefulWidget {
+  const _PulsingBar();
+
+  @override
+  State<_PulsingBar> createState() => _PulsingBarState();
+}
+
+class _PulsingBarState extends State<_PulsingBar>
     with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _animation;
+  late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: kAnimSkeleton,
+    _controller = AnimationController(
       vsync: this,
-    );
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    _animationController.repeat();
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme scheme = theme.colorScheme;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scheme.outlineVariant, width: 1),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-        minVerticalPadding: 20,
-        leading: Icon(widget.icon, color: AppColors.primary, size: 40),
-        title: Text(
-          widget.title,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-        subtitle: widget.showSubtitleSkeleton
-            ? _buildSkeletonSubtitle()
-            : widget.subtitle != null
-            ? Text(
-                widget.subtitle!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 15,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              )
-            : null,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        selectedTileColor: Colors.transparent,
-      ),
-    );
-  }
-
-  Widget _buildSkeletonSubtitle() {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
+      animation: _controller,
+      builder: (context, _) {
+        final double t = Curves.easeInOut.transform(_controller.value);
+        final double alpha = isDark ? (0.08 + (0.12 * t)) : (0.18 + (0.22 * t));
         return Container(
-          height: 15,
+          height: 12,
           width: double.infinity,
-          margin: const EdgeInsets.only(top: 4),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.outlineVariant.withValues(
-              alpha: 0.2 + (_animation.value * 0.3),
-            ),
-            borderRadius: BorderRadius.circular(4),
+            color: Colors.white.withValues(alpha: alpha),
+            borderRadius: BorderRadius.circular(6),
           ),
         );
       },

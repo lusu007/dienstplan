@@ -1,16 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/data/services/language_service.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
-import 'package:dienstplan/presentation/widgets/screens/setup/setup_back_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_button.dart';
-import 'package:dienstplan/presentation/widgets/common/primary_app_bar.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
-import 'package:dienstplan/core/utils/app_info.dart';
+import 'package:dienstplan/presentation/widgets/screens/setup/setup_back_button.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 // Step components
 import 'package:dienstplan/presentation/widgets/screens/setup/steps/theme_step_component.dart';
@@ -77,14 +78,12 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         return ActionButton(
           text: l10n.continueButton,
           onPressed: state.isSetupCompleted ? null : _nextStepWithScroll,
-          mainColor: AppColors.primary,
         );
       case 2:
         return Row(
           children: [
             SetupBackButton(
               onPressed: state.currentStep > 1 ? _previousStep : null,
-              mainColor: AppColors.primary,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -94,7 +93,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                     state.isSetupCompleted || state.selectedConfig == null
                     ? null
                     : _nextStepWithScroll,
-                mainColor: AppColors.primary,
               ),
             ),
           ],
@@ -104,7 +102,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           children: [
             SetupBackButton(
               onPressed: state.currentStep > 1 ? _previousStep : null,
-              mainColor: AppColors.primary,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -113,7 +110,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                     ? l10n.continueButton
                     : l10n.skipPartnerSetup,
                 onPressed: state.isSetupCompleted ? null : _nextStepWithScroll,
-                mainColor: AppColors.primary,
               ),
             ),
           ],
@@ -123,7 +119,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           children: [
             SetupBackButton(
               onPressed: state.currentStep > 1 ? _previousStep : null,
-              mainColor: AppColors.primary,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -133,7 +128,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                     : l10n.skipPartnerSetup,
                 onPressed: state.isSetupCompleted ? null : _nextStepWithScroll,
                 isLoading: state.isGeneratingSchedules,
-                mainColor: AppColors.primary,
               ),
             ),
           ],
@@ -143,7 +137,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
           children: [
             SetupBackButton(
               onPressed: state.currentStep > 1 ? _previousStep : null,
-              mainColor: AppColors.primary,
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -155,7 +148,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                     ? null
                     : _nextStepWithScroll,
                 isLoading: state.isGeneratingSchedules,
-                mainColor: AppColors.primary,
               ),
             ),
           ],
@@ -229,92 +221,136 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   Widget build(BuildContext context) {
     final setupAsync = ref.watch(setupProvider);
     final languageAsync = ref.watch(languageServiceProvider);
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return setupAsync.when(
-      loading: () => const Scaffold(
-        appBar: PrimaryAppBar(titleText: AppInfo.appName),
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (e, st) => Scaffold(
-        appBar: const PrimaryAppBar(titleText: AppInfo.appName),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Setup Error: ${e.toString()}'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () =>
-                    ref.read(setupProvider.notifier).retryLoading(),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      ),
-      data: (setupState) {
-        // Navigate to calendar screen if setup is completed
-        if (setupState.isSetupCompleted) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.router.replace(const CalendarRoute());
-          });
-          // Keep showing the current setup step until navigation completes
-        }
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        extendBody: true,
+        body: CalendarBackdrop(
+          child: setupAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, st) => _buildErrorState(context, e),
+            data: (setupState) {
+              if (setupState.isSetupCompleted) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.router.replace(const CalendarRoute());
+                });
+              }
 
-        return languageAsync.when(
-          loading: () => const Scaffold(
-            appBar: PrimaryAppBar(titleText: AppInfo.appName),
-            body: Center(child: CircularProgressIndicator()),
-          ),
-          error: (e, st) => const Scaffold(
-            appBar: PrimaryAppBar(titleText: AppInfo.appName),
-            body: Center(child: CircularProgressIndicator()),
-          ),
-          data: (languageService) => ListenableBuilder(
-            listenable: languageService,
-            builder: (context, child) {
-              return Scaffold(
-                appBar: PrimaryAppBar(
-                  titleText: AppInfo.appName,
-                  actions: [
-                    LanguageSelectorButton(
-                      languageService: languageService,
-                      disabled: setupState.isGeneratingSchedules,
-                      onLanguageChanged: null,
-                    ),
-                  ],
-                ),
-                body: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        StepIndicator(
-                          currentStep: setupState.currentStep,
-                          totalSteps: setupState.selectedPartnerConfig != null
-                              ? 5
-                              : 4,
-                          activeColor: AppColors.primary,
-                          halfSteps: setupState.selectedPartnerConfig != null
-                              ? [3, 4]
-                              : null,
-                        ),
-                        const SizedBox(height: 24),
-                        Expanded(child: _buildCurrentStepContent(setupState)),
-                        const SizedBox(height: 24),
-                        _buildStepButtons(setupState),
-                      ],
-                    ),
+              return languageAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (_, _) =>
+                    const Center(child: CircularProgressIndicator()),
+                data: (languageService) => SafeArea(
+                  bottom: false,
+                  child: ListenableBuilder(
+                    listenable: languageService,
+                    builder: (context, child) {
+                      return _buildSetupLayout(
+                        context: context,
+                        state: setupState,
+                        languageService: languageService,
+                      );
+                    },
                   ),
                 ),
               );
             },
           ),
-        );
-      },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSetupLayout({
+    required BuildContext context,
+    required SetupUiState state,
+    required LanguageService languageService,
+  }) {
+    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildHeader(state: state, languageService: languageService),
+          const SizedBox(height: 12),
+          StepIndicator(
+            currentStep: state.currentStep,
+            totalSteps: state.selectedPartnerConfig != null ? 5 : 4,
+            activeColor: scheme.primary,
+            inactiveColor: Colors.white.withValues(alpha: isDark ? 0.15 : 0.38),
+            halfSteps: state.selectedPartnerConfig != null ? [3, 4] : null,
+          ),
+          const SizedBox(height: 20),
+          Expanded(child: _buildCurrentStepContent(state)),
+          const SizedBox(height: 16),
+          _buildStepButtons(state),
+          SizedBox(height: MediaQuery.of(context).padding.bottom + 4),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader({
+    required SetupUiState state,
+    required LanguageService languageService,
+  }) {
+    final Color foreground = Theme.of(context).colorScheme.onSurface;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          AppInfo.appName,
+          style: TextStyle(
+            color: foreground,
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
+            letterSpacing: 0.2,
+            height: 1.0,
+          ),
+        ),
+        const Spacer(),
+        LanguageSelectorButton(
+          languageService: languageService,
+          disabled: state.isGeneratingSchedules,
+          onLanguageChanged: null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorState(BuildContext context, Object error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Setup Error: ${error.toString()}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ActionButton(
+              text: 'Retry',
+              onPressed: () => ref.read(setupProvider.notifier).retryLoading(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

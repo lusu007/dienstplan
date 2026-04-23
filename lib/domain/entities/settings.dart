@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 part 'settings.freezed.dart';
 
@@ -8,7 +7,6 @@ enum ThemePreference { system, light, dark }
 @freezed
 abstract class Settings with _$Settings {
   const factory Settings({
-    required CalendarFormat calendarFormat,
     String? language,
     String? selectedDutyGroup,
     String? myDutyGroup,
@@ -31,14 +29,12 @@ abstract class Settings with _$Settings {
 
   /// Defaults when creating the first persisted settings row.
   factory Settings.withDefaults({
-    CalendarFormat calendarFormat = CalendarFormat.month,
     String? language,
     ThemePreference? themePreference,
     String? activeConfigName,
     String? myDutyGroup,
     int? holidayAccentColorValue,
   }) => Settings(
-    calendarFormat: calendarFormat,
     language: language,
     themePreference: themePreference ?? ThemePreference.system,
     activeConfigName: activeConfigName,

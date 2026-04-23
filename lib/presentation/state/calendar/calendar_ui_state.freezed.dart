@@ -17,7 +17,6 @@ mixin _$CalendarUiState {
   String? get error;
   DateTime? get selectedDay;
   DateTime? get focusedDay;
-  CalendarFormat? get calendarFormat;
 
   /// Create a copy of CalendarUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -40,24 +39,16 @@ mixin _$CalendarUiState {
             (identical(other.selectedDay, selectedDay) ||
                 other.selectedDay == selectedDay) &&
             (identical(other.focusedDay, focusedDay) ||
-                other.focusedDay == focusedDay) &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat));
+                other.focusedDay == focusedDay));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    selectedDay,
-    focusedDay,
-    calendarFormat,
-  );
+  int get hashCode =>
+      Object.hash(runtimeType, isLoading, error, selectedDay, focusedDay);
 
   @override
   String toString() {
-    return 'CalendarUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat)';
+    return 'CalendarUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay)';
   }
 }
 
@@ -73,7 +64,6 @@ abstract mixin class $CalendarUiStateCopyWith<$Res> {
     String? error,
     DateTime? selectedDay,
     DateTime? focusedDay,
-    CalendarFormat? calendarFormat,
   });
 }
 
@@ -94,7 +84,6 @@ class _$CalendarUiStateCopyWithImpl<$Res>
     Object? error = freezed,
     Object? selectedDay = freezed,
     Object? focusedDay = freezed,
-    Object? calendarFormat = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -114,10 +103,6 @@ class _$CalendarUiStateCopyWithImpl<$Res>
             ? _self.focusedDay
             : focusedDay // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
-        calendarFormat: freezed == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat?,
       ),
     );
   }
@@ -221,7 +206,6 @@ extension CalendarUiStatePatterns on CalendarUiState {
       String? error,
       DateTime? selectedDay,
       DateTime? focusedDay,
-      CalendarFormat? calendarFormat,
     )?
     $default, {
     required TResult orElse(),
@@ -234,7 +218,6 @@ extension CalendarUiStatePatterns on CalendarUiState {
           _that.error,
           _that.selectedDay,
           _that.focusedDay,
-          _that.calendarFormat,
         );
       case _:
         return orElse();
@@ -261,7 +244,6 @@ extension CalendarUiStatePatterns on CalendarUiState {
       String? error,
       DateTime? selectedDay,
       DateTime? focusedDay,
-      CalendarFormat? calendarFormat,
     )
     $default,
   ) {
@@ -273,7 +255,6 @@ extension CalendarUiStatePatterns on CalendarUiState {
           _that.error,
           _that.selectedDay,
           _that.focusedDay,
-          _that.calendarFormat,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -299,7 +280,6 @@ extension CalendarUiStatePatterns on CalendarUiState {
       String? error,
       DateTime? selectedDay,
       DateTime? focusedDay,
-      CalendarFormat? calendarFormat,
     )?
     $default,
   ) {
@@ -311,7 +291,6 @@ extension CalendarUiStatePatterns on CalendarUiState {
           _that.error,
           _that.selectedDay,
           _that.focusedDay,
-          _that.calendarFormat,
         );
       case _:
         return null;
@@ -327,7 +306,6 @@ class _CalendarUiState extends CalendarUiState {
     this.error,
     this.selectedDay,
     this.focusedDay,
-    this.calendarFormat,
   }) : super._();
 
   @override
@@ -338,8 +316,6 @@ class _CalendarUiState extends CalendarUiState {
   final DateTime? selectedDay;
   @override
   final DateTime? focusedDay;
-  @override
-  final CalendarFormat? calendarFormat;
 
   /// Create a copy of CalendarUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -360,24 +336,16 @@ class _CalendarUiState extends CalendarUiState {
             (identical(other.selectedDay, selectedDay) ||
                 other.selectedDay == selectedDay) &&
             (identical(other.focusedDay, focusedDay) ||
-                other.focusedDay == focusedDay) &&
-            (identical(other.calendarFormat, calendarFormat) ||
-                other.calendarFormat == calendarFormat));
+                other.focusedDay == focusedDay));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    selectedDay,
-    focusedDay,
-    calendarFormat,
-  );
+  int get hashCode =>
+      Object.hash(runtimeType, isLoading, error, selectedDay, focusedDay);
 
   @override
   String toString() {
-    return 'CalendarUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, calendarFormat: $calendarFormat)';
+    return 'CalendarUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay)';
   }
 }
 
@@ -395,7 +363,6 @@ abstract mixin class _$CalendarUiStateCopyWith<$Res>
     String? error,
     DateTime? selectedDay,
     DateTime? focusedDay,
-    CalendarFormat? calendarFormat,
   });
 }
 
@@ -416,7 +383,6 @@ class __$CalendarUiStateCopyWithImpl<$Res>
     Object? error = freezed,
     Object? selectedDay = freezed,
     Object? focusedDay = freezed,
-    Object? calendarFormat = freezed,
   }) {
     return _then(
       _CalendarUiState(
@@ -436,10 +402,6 @@ class __$CalendarUiStateCopyWithImpl<$Res>
             ? _self.focusedDay
             : focusedDay // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
-        calendarFormat: freezed == calendarFormat
-            ? _self.calendarFormat
-            : calendarFormat // ignore: cast_nullable_to_non_nullable
-                  as CalendarFormat?,
       ),
     );
   }

@@ -101,7 +101,6 @@ class DatabaseService {
     await db.execute('''
       CREATE TABLE settings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        calendar_format TEXT NOT NULL,
         language TEXT,
         selected_duty_group TEXT,
         my_duty_group TEXT,
@@ -272,6 +271,9 @@ class DatabaseService {
       }
       if (oldVersion < 14) {
         await _migrateToVersion14(txn);
+      }
+      if (oldVersion < 15) {
+        await _migrateToVersion15(txn);
       }
 
       // Create any missing indexes after all migrations are complete
@@ -753,6 +755,66 @@ class DatabaseService {
       }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 14', e, stackTrace);
+    }
+  }
+
+  Future<void> _migrateToVersion15(DatabaseExecutor db) async {
+    try {
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 15: Remove calendar_format from settings',
+        );
+        return true;
+      }());
+
+      await db.execute('''
+        CREATE TABLE settings_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          language TEXT,
+          selected_duty_group TEXT,
+          my_duty_group TEXT,
+          active_config_name TEXT,
+          theme_mode TEXT,
+          partner_config_name TEXT,
+          partner_duty_group TEXT,
+          partner_accent_color INTEGER,
+          my_accent_color INTEGER,
+          show_school_holidays INTEGER,
+          school_holiday_state_code TEXT,
+          last_school_holiday_refresh TEXT,
+          holiday_accent_color INTEGER,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        )
+      ''');
+
+      await db.execute('''
+        INSERT INTO settings_new (
+          id, language, selected_duty_group, my_duty_group, active_config_name,
+          theme_mode, partner_config_name, partner_duty_group, partner_accent_color,
+          my_accent_color, show_school_holidays, school_holiday_state_code,
+          last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
+        )
+        SELECT
+          id, language, selected_duty_group, my_duty_group, active_config_name,
+          theme_mode, partner_config_name, partner_duty_group, partner_accent_color,
+          my_accent_color, show_school_holidays, school_holiday_state_code,
+          last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
+        FROM settings
+      ''');
+
+      await db.execute('DROP TABLE settings');
+      await db.execute('ALTER TABLE settings_new RENAME TO settings');
+
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 15: calendar_format removed from settings',
+        );
+        return true;
+      }());
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 15', e, stackTrace);
+      rethrow;
     }
   }
 

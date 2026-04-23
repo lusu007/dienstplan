@@ -13,3 +13,7 @@ const double kHiddenFontSize = 0.0;
 // List metrics
 const double kDutyListItemExtent = 80.0; // 72 item height + 8 bottom margin
 const double kVacationListItemExtent = 52.0; // 44 item height + 8 bottom margin
+
+// Glass morphism layout metrics
+const double kGlassBarReservedHeight =
+    96.0; // Bottom padding reserved for floating action bar
