@@ -134,10 +134,9 @@ class DutyScheduleList extends ConsumerWidget {
     final List<Schedule> officialPart = byGroup.isEmpty
         ? officialFiltered
         : byGroup;
-    final List<Schedule> userPart = userRows
-        .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
-        .toList();
-    return <Schedule>[...userPart, ...officialPart];
+    // Personal entries are not tied to the calendar's duty-group chip filter;
+    // always show all user-defined rows for this day.
+    return <Schedule>[...userRows, ...officialPart];
   }
 
   List<Schedule> _sortSchedules(List<Schedule> input) {

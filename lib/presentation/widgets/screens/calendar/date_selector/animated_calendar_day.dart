@@ -7,7 +7,9 @@ class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
   final String? dutyAbbreviation;
   final String? partnerDutyAbbreviation;
-  final bool hasPersonalCalendarEntry;
+
+  /// Titles of user-defined (personal) calendar entries on this day (order: time, then title).
+  final List<String> personalCalendarTitles;
   final int? partnerAccentColorValue;
   final int? myAccentColorValue;
   final int? holidayAccentColorValue;
@@ -24,7 +26,7 @@ class AnimatedCalendarDay extends StatefulWidget {
     required this.day,
     this.dutyAbbreviation,
     this.partnerDutyAbbreviation,
-    this.hasPersonalCalendarEntry = false,
+    this.personalCalendarTitles = const <String>[],
     this.partnerAccentColorValue,
     this.myAccentColorValue,
     this.holidayAccentColorValue,
@@ -54,6 +56,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   static const double _stripePersonalHeight = 2.0;
   static const double _compactStripeTopPadding = 0.5;
   static const double _compactStripeBottomMargin = 1.0;
+  static const int _kMaxPersonalStripesInCompact = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         widget.width ?? CalendarConfig.kCalendarDayWidth;
     final double effectiveHeight =
         widget.height ?? CalendarConfig.kCalendarDayHeight;
-    final bool useCompactDutyStripes =
+    final bool compactCell =
         effectiveHeight <=
         CalendarConfig.kCalendarDayCompactDutyStripesMaxHeight;
 
@@ -77,10 +80,11 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _buildDayNumber(theme, useCompactDutyStripes),
+            _buildDayNumber(theme, compactCell),
             _buildHolidayIndicator(),
-            _buildPrimaryColumn(theme, useCompactDutyStripes),
-            _buildPartnerChip(theme, useCompactDutyStripes),
+            _buildPrimaryColumn(theme, compactCell),
+            _buildPartnerChip(theme, compactCell),
+            _buildPersonalCalendarSection(theme, compactCell),
           ],
         ),
       ),
@@ -114,12 +118,23 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  Widget _buildPrimaryColumn(ThemeData theme, bool compact) {
+  Widget _buildPrimaryColumn(ThemeData theme, bool compactCell) {
     final bool hasPrimary = widget.dutyAbbreviation?.isNotEmpty ?? false;
     final bool hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+    final bool hasPersonal = widget.personalCalendarTitles.isNotEmpty;
 
-    if (compact) {
-      return _buildPrimaryColumnCompact(theme, hasPrimary, hasPartner);
+    if (compactCell) {
+      if (!hasPrimary) {
+        return const SizedBox.shrink();
+      }
+      final bool moreBelow = hasPartner || hasPersonal;
+      return _buildDutyStripe(
+        decoration: _stripeDecorationDuty(theme),
+        margin: EdgeInsets.only(
+          bottom: moreBelow ? 0 : _compactStripeBottomMargin,
+        ),
+        height: _stripeHeight,
+      );
     }
 
     final List<Widget> children = <Widget>[];
@@ -130,32 +145,12 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           decoration: _getDutyBadgeDecoration(theme),
           textStyle: _getDutyBadgeTextStyle(theme),
           margin: EdgeInsets.only(
-            bottom: widget.hasPersonalCalendarEntry ? 0 : _chipBottomMargin,
+            bottom: (hasPartner || hasPersonal) ? 0 : _chipBottomMargin,
           ),
         ),
       );
     } else if (hasPartner) {
       children.add(_buildPlaceholder());
-    } else if (widget.hasPersonalCalendarEntry) {
-      children.add(
-        _buildChip(
-          text: '+',
-          decoration: _getDutyBadgeDecoration(theme),
-          textStyle: _getDutyBadgeTextStyle(theme).copyWith(fontSize: 10),
-          margin: const EdgeInsets.only(bottom: _chipBottomMargin),
-        ),
-      );
-    }
-    if (widget.hasPersonalCalendarEntry && hasPrimary) {
-      children.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: _chipBottomMargin),
-          child: Text(
-            '+',
-            style: _getDutyBadgeTextStyle(theme).copyWith(fontSize: 9),
-          ),
-        ),
-      );
     }
     if (children.isEmpty) {
       return const SizedBox.shrink();
@@ -163,62 +158,113 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
-  Widget _buildPrimaryColumnCompact(
-    ThemeData theme,
-    bool hasPrimary,
-    bool hasPartner,
-  ) {
-    final List<Widget> children = <Widget>[];
-    if (hasPrimary) {
-      children.add(
-        _buildDutyStripe(
-          decoration: _stripeDecorationDuty(theme),
-          margin: EdgeInsets.only(
-            bottom: widget.hasPersonalCalendarEntry
-                ? 0
-                : _compactStripeBottomMargin,
-          ),
-        ),
-      );
-      if (widget.hasPersonalCalendarEntry) {
-        children.add(
-          _buildDutyStripe(
-            decoration: _personalAddonStripeDecoration(theme),
-            height: _stripePersonalHeight,
-            margin: const EdgeInsets.only(bottom: _compactStripeBottomMargin),
-          ),
-        );
-      }
-    } else if (!hasPartner && widget.hasPersonalCalendarEntry) {
-      children.add(
-        _buildDutyStripe(
-          decoration: _stripeDecorationDuty(theme),
-          margin: const EdgeInsets.only(bottom: _compactStripeBottomMargin),
-        ),
-      );
-    }
-    if (children.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    return Column(mainAxisSize: MainAxisSize.min, children: children);
-  }
-
-  Widget _buildPartnerChip(ThemeData theme, bool compact) {
+  Widget _buildPartnerChip(ThemeData theme, bool compactCell) {
     final bool hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
     if (!hasPartner) {
       return const SizedBox.shrink();
     }
-    if (compact) {
+    final bool hasPersonal = widget.personalCalendarTitles.isNotEmpty;
+    if (compactCell) {
       return _buildDutyStripe(
         decoration: _stripeDecorationPartner(theme),
-        margin: EdgeInsets.zero,
+        margin: EdgeInsets.only(
+          bottom: hasPersonal ? 0 : _compactStripeBottomMargin,
+        ),
+        height: _stripeHeight,
       );
     }
     return _buildChip(
       text: widget.partnerDutyAbbreviation!,
       decoration: _getPartnerBadgeDecoration(theme),
       textStyle: _getPartnerBadgeTextStyle(theme),
+      margin: EdgeInsets.only(bottom: hasPersonal ? 0 : _chipBottomMargin),
     );
+  }
+
+  Widget _buildPersonalCalendarSection(ThemeData theme, bool compactCell) {
+    final List<String> titles = widget.personalCalendarTitles;
+    if (titles.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    if (compactCell) {
+      final int n = titles.length;
+      final int stripeCount = n < _kMaxPersonalStripesInCompact
+          ? n
+          : _kMaxPersonalStripesInCompact;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          for (int i = 0; i < stripeCount; i++)
+            _buildDutyStripe(
+              decoration: _personalEntryStripeDecoration(theme),
+              height: _stripePersonalHeight,
+              margin: EdgeInsets.only(
+                bottom: i == stripeCount - 1 ? _compactStripeBottomMargin : 1,
+              ),
+            ),
+        ],
+      );
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        for (int i = 0; i < titles.length; i++)
+          _buildPersonalTitleChip(
+            theme,
+            titles[i],
+            isLast: i == titles.length - 1,
+          ),
+      ],
+    );
+  }
+
+  Widget _buildPersonalTitleChip(
+    ThemeData theme,
+    String title, {
+    required bool isLast,
+  }) {
+    const double fontSize = 9.0;
+    return Padding(
+      padding: const EdgeInsets.only(top: _chipPadding),
+      child: Container(
+        margin: EdgeInsets.only(bottom: isLast ? _chipBottomMargin : 1),
+        padding: const EdgeInsets.symmetric(
+          horizontal: _chipHorizontalPadding,
+          vertical: _chipVerticalPadding,
+        ),
+        decoration: _personalEntryDecoration(theme),
+        width: double.infinity,
+        child: Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+          style: _personalEntryTextStyle(theme, fontSize),
+        ),
+      ),
+    );
+  }
+
+  /// Thin bar in compact mode; colors match personal title chips.
+  BoxDecoration _personalEntryStripeDecoration(ThemeData theme) {
+    return _personalEntryDecoration(
+      theme,
+    ).copyWith(borderRadius: BorderRadius.circular(2));
+  }
+
+  /// Compact duty row; fill matches duty badge.
+  BoxDecoration _stripeDecorationDuty(ThemeData theme) {
+    return _getDutyBadgeDecoration(
+      theme,
+    ).copyWith(borderRadius: BorderRadius.circular(3));
+  }
+
+  /// Compact partner row; fill matches partner badge.
+  BoxDecoration _stripeDecorationPartner(ThemeData theme) {
+    return _getPartnerBadgeDecoration(
+      theme,
+    ).copyWith(borderRadius: BorderRadius.circular(3));
   }
 
   Widget _buildDutyStripe({
@@ -237,48 +283,44 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  /// On selected days, letter chips use a white fill with colored text; stripes
-  /// use solid accent colors so my vs partner stay distinguishable.
-  BoxDecoration _stripeDecorationDuty(ThemeData theme) {
-    if (widget.dayType == CalendarDayType.selected) {
-      final Color c = Color(
-        widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
-      );
-      return BoxDecoration(color: c, borderRadius: BorderRadius.circular(3));
-    }
-    return _getDutyBadgeDecoration(theme);
-  }
-
-  BoxDecoration _stripeDecorationPartner(ThemeData theme) {
-    if (widget.dayType == CalendarDayType.selected) {
-      final Color c = Color(
-        widget.partnerAccentColorValue ??
-            AccentColorDefaults.partnerAccentColorValue,
-      );
-      return BoxDecoration(color: c, borderRadius: BorderRadius.circular(3));
-    }
-    return _getPartnerBadgeDecoration(theme);
-  }
-
-  BoxDecoration _personalAddonStripeDecoration(ThemeData theme) {
+  BoxDecoration _personalEntryDecoration(ThemeData theme) {
     switch (widget.dayType) {
       case CalendarDayType.selected:
         return BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.92),
-          borderRadius: BorderRadius.circular(2),
+          color: Colors.black.withValues(alpha: 0.36),
+          borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.outside:
         return BoxDecoration(
-          color: theme.colorScheme.outline.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.default_:
       case CalendarDayType.today:
         return BoxDecoration(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
-          borderRadius: BorderRadius.circular(2),
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(4),
         );
     }
+  }
+
+  TextStyle _personalEntryTextStyle(ThemeData theme, double fontSize) {
+    final Color color = switch (widget.dayType) {
+      CalendarDayType.selected => Colors.white,
+      CalendarDayType.outside => theme.colorScheme.onSurfaceVariant,
+      CalendarDayType.default_ => theme.colorScheme.onSurface.withValues(
+        alpha: 0.85,
+      ),
+      CalendarDayType.today => theme.colorScheme.onSurface.withValues(
+        alpha: 0.85,
+      ),
+    };
+    return TextStyle(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w600,
+      color: color,
+      height: 1.1,
+    );
   }
 
   Widget _buildChip({
@@ -296,7 +338,15 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           vertical: _chipVerticalPadding,
         ),
         decoration: decoration,
-        child: Text(text, style: textStyle),
+        width: double.infinity,
+        child: Text(
+          text,
+          style: textStyle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -390,8 +440,12 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         );
       case CalendarDayType.selected:
         return BoxDecoration(
-          color: Colors.white,
+          color: accentColor,
           borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.4),
+            width: 1,
+          ),
         );
     }
   }
@@ -422,10 +476,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           color: Colors.white,
         );
       case CalendarDayType.selected:
-        return TextStyle(
+        return const TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.bold,
-          color: accentColor,
+          color: Colors.white,
         );
     }
   }

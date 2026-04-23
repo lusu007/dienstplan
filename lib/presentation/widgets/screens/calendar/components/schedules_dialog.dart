@@ -65,7 +65,20 @@ class SchedulesDialog extends ConsumerStatefulWidget {
       pageBuilder: (context, animation, secondaryAnimation) {
         return SchedulesDialog(day: day);
       },
-    );
+    ).then((void _) {
+      if (!context.mounted) {
+        return;
+      }
+      // Restoring focus after a route pop often selects the first TextField
+      // (bottom quick title), which opens the IME and shrinks the calendar.
+      // Clear focus on the next frame so that does not run.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) {
+          return;
+        }
+        FocusManager.instance.primaryFocus?.unfocus();
+      });
+    });
   }
 
   @override

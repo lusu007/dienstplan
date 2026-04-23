@@ -81,6 +81,17 @@ void main() {
       expect(r.isFailure, isTrue);
     });
 
+    test('rejects timed entry ending at 24:00', () async {
+      final _FakeRepo repo = _FakeRepo();
+      final SavePersonalCalendarEntryUseCase uc =
+          SavePersonalCalendarEntryUseCase(repo);
+      final Result<void> r = await uc.execute(
+        _base(isAllDay: false, start: 1380, end: 1440),
+      );
+      expect(r.isFailure, isTrue);
+      expect(repo.lastUpsert, isNull);
+    });
+
     test('persists valid timed entry', () async {
       final _FakeRepo repo = _FakeRepo();
       final SavePersonalCalendarEntryUseCase uc =

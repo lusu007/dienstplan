@@ -10,6 +10,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/services/personal_entry_schedule_mapper.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
@@ -222,6 +223,9 @@ class _PersonalCalendarEntrySheetState
     await ref
         .read(scheduleDataProvider.notifier)
         .refreshPersonalCalendarEntries();
+    await ref
+        .read(scheduleCoordinatorProvider.notifier)
+        .syncScheduleDataFromProvider();
     if (mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(
@@ -253,6 +257,9 @@ class _PersonalCalendarEntrySheetState
     await ref
         .read(scheduleDataProvider.notifier)
         .refreshPersonalCalendarEntries();
+    await ref
+        .read(scheduleCoordinatorProvider.notifier)
+        .syncScheduleDataFromProvider();
     if (mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(
@@ -302,7 +309,7 @@ class _PersonalCalendarEntrySheetState
                     Set<WidgetState> states,
                   ) {
                     if (states.contains(WidgetState.selected)) {
-                      return colorScheme.primary.withValues(alpha: 0.42);
+                      return colorScheme.primary;
                     }
                     return colorScheme.onSurface.withValues(alpha: 0.1);
                   }),

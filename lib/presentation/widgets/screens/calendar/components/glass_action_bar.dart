@@ -27,11 +27,24 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
   void initState() {
     super.initState();
     _quickTitleController = TextEditingController();
-    _quickTitleFocusNode = FocusNode();
+    // Avoid opening the keyboard (and calendar compact mode) on screen load;
+    // the field only requests focus after the user taps it. See _onQuickFieldFocusChange.
+    _quickTitleFocusNode = FocusNode(canRequestFocus: false);
+    _quickTitleFocusNode.addListener(_onQuickFieldFocusChange);
+  }
+
+  void _onQuickFieldFocusChange() {
+    if (!mounted) {
+      return;
+    }
+    if (!_quickTitleFocusNode.hasFocus) {
+      _quickTitleFocusNode.canRequestFocus = false;
+    }
   }
 
   @override
   void dispose() {
+    _quickTitleFocusNode.removeListener(_onQuickFieldFocusChange);
     _quickTitleController.dispose();
     _quickTitleFocusNode.dispose();
     super.dispose();
@@ -49,6 +62,11 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
       existingSchedule: null,
       initialTitle: initialTitle,
     );
+  }
+
+  void _onQuickFieldTap() {
+    _quickTitleFocusNode.canRequestFocus = true;
+    _quickTitleFocusNode.requestFocus();
   }
 
   void _onQuickTitleSubmitted(String value) {
@@ -85,6 +103,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
                 child: _QuickPersonalEntryField(
                   controller: _quickTitleController,
                   focusNode: _quickTitleFocusNode,
+                  onTap: _onQuickFieldTap,
                   hintText: l10n.personalEntryQuickTitleHint(dateLabel),
                   semanticLabel: l10n.personalEntryQuickTitleSemanticLabel(
                     dateLabel,
@@ -128,6 +147,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
 class _QuickPersonalEntryField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
+  final VoidCallback onTap;
   final String hintText;
   final String semanticLabel;
   final ValueChanged<String> onSubmitted;
@@ -135,6 +155,7 @@ class _QuickPersonalEntryField extends StatelessWidget {
   const _QuickPersonalEntryField({
     required this.controller,
     required this.focusNode,
+    required this.onTap,
     required this.hintText,
     required this.semanticLabel,
     required this.onSubmitted,
@@ -154,6 +175,10 @@ class _QuickPersonalEntryField extends StatelessWidget {
       child: TextField(
         controller: controller,
         focusNode: focusNode,
+        onTap: onTap,
+        onTapOutside: (PointerDownEvent event) {
+          focusNode.unfocus();
+        },
         style: _textStyle,
         cursorColor: Colors.white,
         textInputAction: TextInputAction.done,

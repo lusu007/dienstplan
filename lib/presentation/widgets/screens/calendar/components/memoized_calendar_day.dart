@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
@@ -156,7 +157,7 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       day: day,
       dutyAbbreviation: dutyData.myDuty,
       partnerDutyAbbreviation: dutyData.partnerDuty,
-      hasPersonalCalendarEntry: dutyData.hasPersonalEntry,
+      personalCalendarTitles: dutyData.personalCalendarTitles,
       partnerAccentColorValue: partnerAccentColor,
       myAccentColorValue: myAccentColor,
       holidayAccentColorValue: holidayAccentColor,
@@ -181,12 +182,12 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 class DutyData {
   final String myDuty;
   final String partnerDuty;
-  final bool hasPersonalEntry;
+  final List<String> personalCalendarTitles;
 
   const DutyData({
     required this.myDuty,
     required this.partnerDuty,
-    required this.hasPersonalEntry,
+    required this.personalCalendarTitles,
   });
 
   @override
@@ -195,17 +196,23 @@ class DutyData {
     return other is DutyData &&
         other.myDuty == myDuty &&
         other.partnerDuty == partnerDuty &&
-        other.hasPersonalEntry == hasPersonalEntry;
+        listEquals(other.personalCalendarTitles, personalCalendarTitles);
   }
 
   @override
-  int get hashCode => Object.hash(myDuty, partnerDuty, hasPersonalEntry);
+  int get hashCode =>
+      Object.hash(myDuty, partnerDuty, Object.hashAll(personalCalendarTitles));
 }
 
 /// Memoized duty calculator with caching
 class _MemoizedDutyCalculator {
   static final Map<String, DutyData> _cache = {};
   static const int _maxCacheSize = 200;
+
+  /// Bump when [DutyData] shape changes so hot reload / stale isolates cannot
+  /// return cached entries incompatible with current getters.
+  static const int _kDutyDataCacheSchema = 2;
+  static int _appliedDutyDataCacheSchema = 0;
 
   static DutyData calculateDutyData({
     required DateTime day,
@@ -215,6 +222,11 @@ class _MemoizedDutyCalculator {
     required String? partnerConfigName,
     required String? partnerGroup,
   }) {
+    if (_appliedDutyDataCacheSchema != _kDutyDataCacheSchema) {
+      _cache.clear();
+      _appliedDutyDataCacheSchema = _kDutyDataCacheSchema;
+    }
+
     final cacheKey = _createCacheKey(
       day: day,
       activeConfigName: activeConfigName,
@@ -242,7 +254,7 @@ class _MemoizedDutyCalculator {
       partnerGroup: partnerGroup,
     );
 
-    final bool hasPersonal = _hasPersonalEntryOnDay(
+    final List<String> personalTitles = _personalEntryTitlesOnDay(
       day: day,
       schedules: schedules,
     );
@@ -250,7 +262,7 @@ class _MemoizedDutyCalculator {
     final dutyData = DutyData(
       myDuty: myDuty,
       partnerDuty: partnerDuty,
-      hasPersonalEntry: hasPersonal,
+      personalCalendarTitles: personalTitles,
     );
 
     _cache[cacheKey] = dutyData;
@@ -314,11 +326,12 @@ class _MemoizedDutyCalculator {
     }
   }
 
-  static bool _hasPersonalEntryOnDay({
+  static List<String> _personalEntryTitlesOnDay({
     required DateTime day,
     required List<Schedule> schedules,
   }) {
     final DateTime dayDate = DateTime(day.year, day.month, day.day);
+    final List<Schedule> personal = <Schedule>[];
     for (final Schedule schedule in schedules) {
       if (!schedule.isUserDefined) {
         continue;
@@ -329,10 +342,24 @@ class _MemoizedDutyCalculator {
         schedule.date.day,
       );
       if (scheduleDate.isAtSameMomentAs(dayDate)) {
-        return true;
+        personal.add(schedule);
       }
     }
-    return false;
+    personal.sort((Schedule a, Schedule b) {
+      final int as = a.startMinutesFromMidnight ?? -1;
+      final int bs = b.startMinutesFromMidnight ?? -1;
+      final int byTime = as.compareTo(bs);
+      if (byTime != 0) {
+        return byTime;
+      }
+      return a.service.compareTo(b.service);
+    });
+    return personal
+        .map((Schedule s) {
+          final String t = s.service.trim();
+          return t.isEmpty ? '—' : t;
+        })
+        .toList(growable: false);
   }
 
   static String _getDutyAbbreviationForDate({

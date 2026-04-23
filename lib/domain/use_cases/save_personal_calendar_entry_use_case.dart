@@ -51,7 +51,7 @@ class SavePersonalCalendarEntryUseCase {
     if (start < 0 ||
         start >= _minutesPerDay ||
         end < 0 ||
-        end > _minutesPerDay) {
+        end >= _minutesPerDay) {
       return Result.createFailure<void>(
         const ValidationFailure(
           technicalMessage: 'Personal entry time out of range',
