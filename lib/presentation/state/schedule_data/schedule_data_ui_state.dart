@@ -11,7 +11,6 @@ abstract class ScheduleDataUiState with _$ScheduleDataUiState {
     @Default(<Schedule>[]) List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
-    String? selectedDutyGroup,
     int? holidayAccentColorValue,
   }) = _ScheduleDataUiState;
 

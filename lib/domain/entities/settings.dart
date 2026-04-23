@@ -8,7 +8,6 @@ enum ThemePreference { system, light, dark }
 abstract class Settings with _$Settings {
   const factory Settings({
     String? language,
-    String? selectedDutyGroup,
     String? myDutyGroup,
     String? activeConfigName,
     ThemePreference? themePreference,

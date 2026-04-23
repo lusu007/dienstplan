@@ -5,7 +5,6 @@ import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
-import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/list_personal_calendar_entries_use_case.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
@@ -31,7 +30,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   GenerateSchedulesUseCase? _generateSchedulesUseCase;
   EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
   GetSettingsUseCase? _getSettingsUseCase;
-  SaveSettingsUseCase? _saveSettingsUseCase;
   DateRangePolicy? _dateRangePolicy;
   ScheduleMergeService? _scheduleMergeService;
   ListPersonalCalendarEntriesUseCase? _listPersonalCalendarEntriesUseCase;
@@ -54,7 +52,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
       ensureMonthSchedulesUseCaseProvider.future,
     );
     _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
-    _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
     _listPersonalCalendarEntriesUseCase ??= await ref.read(
@@ -92,7 +89,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
       final activeConfigName = settings?.activeConfigName;
       final preferredDutyGroup = settings?.myDutyGroup;
-      final selectedDutyGroup = settings?.selectedDutyGroup;
 
       final DateTime now = DateTime.now();
       final DateRange initialRange = _dateRangePolicy!.computeInitialRange(now);
@@ -154,7 +150,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
             schedules: const <Schedule>[],
             activeConfigName: activeConfigName,
             preferredDutyGroup: preferredDutyGroup,
-            selectedDutyGroup: selectedDutyGroup,
             holidayAccentColorValue: settings?.holidayAccentColorValue,
           );
         }
@@ -172,7 +167,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         schedules: schedules,
         activeConfigName: activeConfigName ?? '',
         preferredDutyGroup: preferredDutyGroup ?? '',
-        selectedDutyGroup: selectedDutyGroup,
         holidayAccentColorValue: settings?.holidayAccentColorValue,
       );
       _cachedState = initialState;
@@ -566,37 +560,6 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         }
       }
     });
-  }
-
-  Future<void> setSelectedDutyGroup(String? dutyGroup) async {
-    final current = await future;
-    if (!ref.mounted) return;
-
-    // Only update if the value actually changed to avoid unnecessary rebuilds
-    if (current.selectedDutyGroup != dutyGroup) {
-      state = AsyncData(current.copyWith(selectedDutyGroup: dutyGroup));
-    }
-  }
-
-  Future<void> refreshSelectedDutyGroupFromSettings() async {
-    final current = await future;
-    if (!ref.mounted) return;
-
-    try {
-      final Result<Settings?> settingsResult = await _getSettingsUseCase!
-          .execute();
-      final Settings? settings = settingsResult.valueIfSuccess;
-      final selectedDutyGroup = settings?.selectedDutyGroup;
-
-      // Only update if the value actually changed
-      if (current.selectedDutyGroup != selectedDutyGroup) {
-        state = AsyncData(
-          current.copyWith(selectedDutyGroup: selectedDutyGroup),
-        );
-      }
-    } catch (e) {
-      // Ignore errors to avoid disrupting the filter
-    }
   }
 
   Future<void> clearError() async {

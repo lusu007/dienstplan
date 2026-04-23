@@ -18,7 +18,6 @@ mixin _$ScheduleDataUiState {
   List<Schedule> get schedules;
   String? get activeConfigName;
   String? get preferredDutyGroup;
-  String? get selectedDutyGroup;
   int? get holidayAccentColorValue;
 
   /// Create a copy of ScheduleDataUiState
@@ -44,8 +43,6 @@ mixin _$ScheduleDataUiState {
                 other.activeConfigName == activeConfigName) &&
             (identical(other.preferredDutyGroup, preferredDutyGroup) ||
                 other.preferredDutyGroup == preferredDutyGroup) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
             (identical(
                   other.holidayAccentColorValue,
                   holidayAccentColorValue,
@@ -61,13 +58,12 @@ mixin _$ScheduleDataUiState {
     const DeepCollectionEquality().hash(schedules),
     activeConfigName,
     preferredDutyGroup,
-    selectedDutyGroup,
     holidayAccentColorValue,
   );
 
   @override
   String toString() {
-    return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -84,7 +80,6 @@ abstract mixin class $ScheduleDataUiStateCopyWith<$Res> {
     List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
-    String? selectedDutyGroup,
     int? holidayAccentColorValue,
   });
 }
@@ -107,7 +102,6 @@ class _$ScheduleDataUiStateCopyWithImpl<$Res>
     Object? schedules = null,
     Object? activeConfigName = freezed,
     Object? preferredDutyGroup = freezed,
-    Object? selectedDutyGroup = freezed,
     Object? holidayAccentColorValue = freezed,
   }) {
     return _then(
@@ -131,10 +125,6 @@ class _$ScheduleDataUiStateCopyWithImpl<$Res>
         preferredDutyGroup: freezed == preferredDutyGroup
             ? _self.preferredDutyGroup
             : preferredDutyGroup // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        selectedDutyGroup: freezed == selectedDutyGroup
-            ? _self.selectedDutyGroup
-            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
                   as String?,
         holidayAccentColorValue: freezed == holidayAccentColorValue
             ? _self.holidayAccentColorValue
@@ -244,7 +234,6 @@ extension ScheduleDataUiStatePatterns on ScheduleDataUiState {
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
-      String? selectedDutyGroup,
       int? holidayAccentColorValue,
     )?
     $default, {
@@ -259,7 +248,6 @@ extension ScheduleDataUiStatePatterns on ScheduleDataUiState {
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
-          _that.selectedDutyGroup,
           _that.holidayAccentColorValue,
         );
       case _:
@@ -288,7 +276,6 @@ extension ScheduleDataUiStatePatterns on ScheduleDataUiState {
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
-      String? selectedDutyGroup,
       int? holidayAccentColorValue,
     )
     $default,
@@ -302,7 +289,6 @@ extension ScheduleDataUiStatePatterns on ScheduleDataUiState {
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
-          _that.selectedDutyGroup,
           _that.holidayAccentColorValue,
         );
       case _:
@@ -330,7 +316,6 @@ extension ScheduleDataUiStatePatterns on ScheduleDataUiState {
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
-      String? selectedDutyGroup,
       int? holidayAccentColorValue,
     )?
     $default,
@@ -344,7 +329,6 @@ extension ScheduleDataUiStatePatterns on ScheduleDataUiState {
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
-          _that.selectedDutyGroup,
           _that.holidayAccentColorValue,
         );
       case _:
@@ -362,7 +346,6 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
     final List<Schedule> schedules = const <Schedule>[],
     this.activeConfigName,
     this.preferredDutyGroup,
-    this.selectedDutyGroup,
     this.holidayAccentColorValue,
   }) : _schedules = schedules,
        super._();
@@ -384,8 +367,6 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
   final String? activeConfigName;
   @override
   final String? preferredDutyGroup;
-  @override
-  final String? selectedDutyGroup;
   @override
   final int? holidayAccentColorValue;
 
@@ -416,8 +397,6 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
                 other.activeConfigName == activeConfigName) &&
             (identical(other.preferredDutyGroup, preferredDutyGroup) ||
                 other.preferredDutyGroup == preferredDutyGroup) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
             (identical(
                   other.holidayAccentColorValue,
                   holidayAccentColorValue,
@@ -433,13 +412,12 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
     const DeepCollectionEquality().hash(_schedules),
     activeConfigName,
     preferredDutyGroup,
-    selectedDutyGroup,
     holidayAccentColorValue,
   );
 
   @override
   String toString() {
-    return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -458,7 +436,6 @@ abstract mixin class _$ScheduleDataUiStateCopyWith<$Res>
     List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
-    String? selectedDutyGroup,
     int? holidayAccentColorValue,
   });
 }
@@ -481,7 +458,6 @@ class __$ScheduleDataUiStateCopyWithImpl<$Res>
     Object? schedules = null,
     Object? activeConfigName = freezed,
     Object? preferredDutyGroup = freezed,
-    Object? selectedDutyGroup = freezed,
     Object? holidayAccentColorValue = freezed,
   }) {
     return _then(
@@ -505,10 +481,6 @@ class __$ScheduleDataUiStateCopyWithImpl<$Res>
         preferredDutyGroup: freezed == preferredDutyGroup
             ? _self.preferredDutyGroup
             : preferredDutyGroup // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        selectedDutyGroup: freezed == selectedDutyGroup
-            ? _self.selectedDutyGroup
-            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
                   as String?,
         holidayAccentColorValue: freezed == holidayAccentColorValue
             ? _self.holidayAccentColorValue

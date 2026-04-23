@@ -20,7 +20,6 @@ mixin _$ScheduleUiState {
   List<Schedule> get schedules;
   String? get activeConfigName;
   String? get preferredDutyGroup;
-  String? get selectedDutyGroup;
   List<String> get dutyGroups;
   List<DutyScheduleConfig> get configs;
   DutyScheduleConfig? get activeConfig; // Partner group extended state
@@ -59,8 +58,6 @@ mixin _$ScheduleUiState {
                 other.activeConfigName == activeConfigName) &&
             (identical(other.preferredDutyGroup, preferredDutyGroup) ||
                 other.preferredDutyGroup == preferredDutyGroup) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
             const DeepCollectionEquality().equals(
               other.dutyGroups,
               dutyGroups,
@@ -98,7 +95,6 @@ mixin _$ScheduleUiState {
     const DeepCollectionEquality().hash(schedules),
     activeConfigName,
     preferredDutyGroup,
-    selectedDutyGroup,
     const DeepCollectionEquality().hash(dutyGroups),
     const DeepCollectionEquality().hash(configs),
     activeConfig,
@@ -112,7 +108,7 @@ mixin _$ScheduleUiState {
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
   }
 }
 
@@ -131,7 +127,6 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res> {
     List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
-    String? selectedDutyGroup,
     List<String> dutyGroups,
     List<DutyScheduleConfig> configs,
     DutyScheduleConfig? activeConfig,
@@ -166,7 +161,6 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
     Object? schedules = null,
     Object? activeConfigName = freezed,
     Object? preferredDutyGroup = freezed,
-    Object? selectedDutyGroup = freezed,
     Object? dutyGroups = null,
     Object? configs = null,
     Object? activeConfig = freezed,
@@ -206,10 +200,6 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
         preferredDutyGroup: freezed == preferredDutyGroup
             ? _self.preferredDutyGroup
             : preferredDutyGroup // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        selectedDutyGroup: freezed == selectedDutyGroup
-            ? _self.selectedDutyGroup
-            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
                   as String?,
         dutyGroups: null == dutyGroups
             ? _self.dutyGroups
@@ -367,7 +357,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
-      String? selectedDutyGroup,
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
       DutyScheduleConfig? activeConfig,
@@ -392,7 +381,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
-          _that.selectedDutyGroup,
           _that.dutyGroups,
           _that.configs,
           _that.activeConfig,
@@ -431,7 +419,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
-      String? selectedDutyGroup,
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
       DutyScheduleConfig? activeConfig,
@@ -455,7 +442,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
-          _that.selectedDutyGroup,
           _that.dutyGroups,
           _that.configs,
           _that.activeConfig,
@@ -493,7 +479,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
       List<Schedule> schedules,
       String? activeConfigName,
       String? preferredDutyGroup,
-      String? selectedDutyGroup,
       List<String> dutyGroups,
       List<DutyScheduleConfig> configs,
       DutyScheduleConfig? activeConfig,
@@ -517,7 +502,6 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
           _that.schedules,
           _that.activeConfigName,
           _that.preferredDutyGroup,
-          _that.selectedDutyGroup,
           _that.dutyGroups,
           _that.configs,
           _that.activeConfig,
@@ -545,7 +529,6 @@ class _ScheduleUiState extends ScheduleUiState {
     final List<Schedule> schedules = const <Schedule>[],
     this.activeConfigName,
     this.preferredDutyGroup,
-    this.selectedDutyGroup,
     final List<String> dutyGroups = const <String>[],
     final List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
     this.activeConfig,
@@ -581,8 +564,6 @@ class _ScheduleUiState extends ScheduleUiState {
   final String? activeConfigName;
   @override
   final String? preferredDutyGroup;
-  @override
-  final String? selectedDutyGroup;
   final List<String> _dutyGroups;
   @override
   @JsonKey()
@@ -649,8 +630,6 @@ class _ScheduleUiState extends ScheduleUiState {
                 other.activeConfigName == activeConfigName) &&
             (identical(other.preferredDutyGroup, preferredDutyGroup) ||
                 other.preferredDutyGroup == preferredDutyGroup) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
             const DeepCollectionEquality().equals(
               other._dutyGroups,
               _dutyGroups,
@@ -688,7 +667,6 @@ class _ScheduleUiState extends ScheduleUiState {
     const DeepCollectionEquality().hash(_schedules),
     activeConfigName,
     preferredDutyGroup,
-    selectedDutyGroup,
     const DeepCollectionEquality().hash(_dutyGroups),
     const DeepCollectionEquality().hash(_configs),
     activeConfig,
@@ -702,7 +680,7 @@ class _ScheduleUiState extends ScheduleUiState {
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, selectedDutyGroup: $selectedDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
   }
 }
 
@@ -723,7 +701,6 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res>
     List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
-    String? selectedDutyGroup,
     List<String> dutyGroups,
     List<DutyScheduleConfig> configs,
     DutyScheduleConfig? activeConfig,
@@ -759,7 +736,6 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
     Object? schedules = null,
     Object? activeConfigName = freezed,
     Object? preferredDutyGroup = freezed,
-    Object? selectedDutyGroup = freezed,
     Object? dutyGroups = null,
     Object? configs = null,
     Object? activeConfig = freezed,
@@ -799,10 +775,6 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
         preferredDutyGroup: freezed == preferredDutyGroup
             ? _self.preferredDutyGroup
             : preferredDutyGroup // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        selectedDutyGroup: freezed == selectedDutyGroup
-            ? _self.selectedDutyGroup
-            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
                   as String?,
         dutyGroups: null == dutyGroups
             ? _self._dutyGroups

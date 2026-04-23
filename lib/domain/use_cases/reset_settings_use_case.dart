@@ -41,7 +41,6 @@ class ResetSettingsUseCase {
 
   Settings _createDefaultSettings() {
     return const Settings(
-      selectedDutyGroup: null,
       myDutyGroup: null,
       themePreference: null,
       schoolHolidayStateCode: null,

@@ -15,7 +15,6 @@ abstract class ScheduleUiState with _$ScheduleUiState {
     @Default(<Schedule>[]) List<Schedule> schedules,
     String? activeConfigName,
     String? preferredDutyGroup,
-    String? selectedDutyGroup,
     @Default(<String>[]) List<String> dutyGroups,
     @Default(<DutyScheduleConfig>[]) List<DutyScheduleConfig> configs,
     DutyScheduleConfig? activeConfig,

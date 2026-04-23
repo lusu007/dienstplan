@@ -329,7 +329,6 @@ class SetupNotifier extends _$SetupNotifier {
         throw Exception(existingResult.failure.technicalMessage);
       }
       final initialSettings = Settings(
-        selectedDutyGroup: null, // Start with no active filter (All)
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig?.name,
         themePreference: current.selectedTheme,
@@ -353,7 +352,6 @@ class SetupNotifier extends _$SetupNotifier {
       await Future.delayed(kUiDelayShort);
 
       final finalSettings = Settings(
-        selectedDutyGroup: null, // Keep filter as All after setup
         myDutyGroup: current.selectedDutyGroup,
         activeConfigName: current.selectedConfig!.name,
         themePreference: current.selectedTheme,

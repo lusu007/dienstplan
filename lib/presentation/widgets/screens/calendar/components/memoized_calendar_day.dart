@@ -76,12 +76,6 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       ),
     );
 
-    final selectedGroup = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.selectedDutyGroup,
-      ),
-    );
-
     final partnerConfigName = ref.watch(
       scheduleCoordinatorProvider.select(
         (state) => state.value?.partnerConfigName,
@@ -139,7 +133,6 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 
     final String? effectiveMyGroup = computeEffectiveMyGroup(
       preferredGroup: preferredGroup,
-      selectedGroup: selectedGroup,
       myDutyGroup: myDutyGroup,
     );
     final dutyData = _MemoizedDutyCalculator.calculateDutyData(

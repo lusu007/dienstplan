@@ -8,6 +8,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_day_filtering.dart';
 
 /// Glass-morphism styled dialog presenting the duties for a single day.
 ///
@@ -95,7 +96,7 @@ class _SchedulesDialogState extends ConsumerState<SchedulesDialog> {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
-    final List<Schedule> schedulesForDay = _filterSchedulesForDay(
+    final List<Schedule> schedulesForDay = filterSchedulesForSingleDay(
       state?.schedules,
       widget.day,
     );
@@ -103,7 +104,10 @@ class _SchedulesDialogState extends ConsumerState<SchedulesDialog> {
     final bool isLoadingSelectedDay =
         (state?.isLoading ?? false) && !hasSchedulesForDay;
 
-    _ensureSchedulesLoaded(
+    schedulePostFrameEnsureDayIfEmpty(
+      ref: ref,
+      context: context,
+      day: widget.day,
       hasSchedulesForDay: hasSchedulesForDay,
       isLoadingSelectedDay: isLoadingSelectedDay,
       activeConfigName: state?.activeConfigName,
@@ -164,15 +168,9 @@ class _SchedulesDialogState extends ConsumerState<SchedulesDialog> {
                         bottomFadeFraction: 0.08,
                         child: DutyScheduleList(
                           schedules: schedulesForDay,
-                          selectedDutyGroup: state?.selectedDutyGroup,
                           activeConfigName: state?.activeConfigName,
                           dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
                           dutyTypes: state?.activeConfig?.dutyTypes,
-                          onDutyGroupSelected: (group) {
-                            ref
-                                .read(scheduleCoordinatorProvider.notifier)
-                                .setSelectedDutyGroup(group);
-                          },
                           shouldAnimate: false,
                           isLoading: isLoadingSelectedDay,
                           selectedDay: widget.day,
@@ -190,43 +188,6 @@ class _SchedulesDialogState extends ConsumerState<SchedulesDialog> {
         ),
       ),
     );
-  }
-
-  List<Schedule> _filterSchedulesForDay(
-    List<Schedule>? allSchedules,
-    DateTime day,
-  ) {
-    if (allSchedules == null) {
-      return const <Schedule>[];
-    }
-    final DateTime target = DateTime.utc(day.year, day.month, day.day);
-    return allSchedules.where((Schedule s) {
-      final DateTime scheduleDate = DateTime.utc(
-        s.date.year,
-        s.date.month,
-        s.date.day,
-      );
-      return scheduleDate.isAtSameMomentAs(target);
-    }).toList();
-  }
-
-  void _ensureSchedulesLoaded({
-    required bool hasSchedulesForDay,
-    required bool isLoadingSelectedDay,
-    required String? activeConfigName,
-  }) {
-    if (hasSchedulesForDay ||
-        isLoadingSelectedDay ||
-        activeConfigName == null) {
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        ref
-            .read(scheduleCoordinatorProvider.notifier)
-            .setSelectedDay(widget.day);
-      }
-    });
   }
 }
 

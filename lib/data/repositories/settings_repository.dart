@@ -66,7 +66,6 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   domain.Settings _toDomainSettings(data.Settings s) {
     return domain.Settings(
       language: s.language,
-      selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
       themePreference: _mapThemeModeToPreference(s.themeMode),
@@ -84,7 +83,6 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   data.Settings _toDataSettings(domain.Settings s) {
     return data.Settings(
       language: s.language,
-      selectedDutyGroup: s.selectedDutyGroup,
       myDutyGroup: s.myDutyGroup,
       activeConfigName: s.activeConfigName,
       themeMode: _mapPreferenceToThemeMode(s.themePreference),
