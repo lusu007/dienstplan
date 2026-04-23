@@ -6,25 +6,6 @@ import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class DutyItemUiBuilder {
-  static Widget buildFilterStatusText({
-    required BuildContext context,
-    required String filterText,
-    required String filteredByText,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Text(
-        '$filteredByText: $filterText',
-        style: TextStyle(
-          fontSize: 12.0,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-    );
-  }
-
   static Widget buildDutyItem({
     required BuildContext context,
     required Schedule schedule,

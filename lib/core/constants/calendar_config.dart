@@ -64,6 +64,11 @@ class CalendarConfig {
   /// is above the nominal [kCalendarDayHeight] to avoid [RenderFlex] overflow.
   static const double kCalendarDayCompactDutyStripesMaxHeight = 100.0;
 
+  /// Max height for the month table in split layout (day list below). Kept
+  /// low enough that row height yields compact duty stripes like IME/keyboard
+  /// shrink, not full chips.
+  static const double kSplitLayoutCalendarMaxHeight = 300.0;
+
   // Compute total month calendar height based on number of week rows.
   // Includes a small padding above rows via the +8 already used for rowHeight.
   static double computeMonthHeight({required int weekRows}) {

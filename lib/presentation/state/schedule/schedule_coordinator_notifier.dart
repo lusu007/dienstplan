@@ -90,7 +90,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       schedules: scheduleDataState.schedules,
       activeConfigName: configState.activeConfigName,
       preferredDutyGroup: scheduleDataState.preferredDutyGroup,
-      selectedDutyGroup: scheduleDataState.selectedDutyGroup,
       dutyGroups: configState.dutyGroups,
       configs: configState.configs,
       activeConfig: configState.activeConfig,
@@ -291,46 +290,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _updateScheduleDataStateOnly();
   }
 
-  Future<void> setSelectedDutyGroup(String? dutyGroup) async {
-    // Update state immediately for instant UI feedback
-    final current = state.value;
-    if (current != null) {
-      state = AsyncData(current.copyWith(selectedDutyGroup: dutyGroup));
-    }
-
-    // Update the schedule data provider
-    await ref
-        .read(scheduleDataProvider.notifier)
-        .setSelectedDutyGroup(dutyGroup);
-
-    // Update state once with all changes, but preserve the selectedDutyGroup
-    await _updateScheduleDataStateOnlyPreservingSelectedDutyGroup(dutyGroup);
-
-    // Save to settings for persistence (in background)
-    unawaited(_saveSelectedDutyGroupToSettings(dutyGroup));
-  }
-
-  Future<void> _saveSelectedDutyGroupToSettings(String? dutyGroup) async {
-    try {
-      final SaveSettingsUseCase saveSettingsUseCase = await ref.read(
-        saveSettingsUseCaseProvider.future,
-      );
-      final patchResult = await saveSettingsUseCase.patchExistingIfPresent(
-        (Settings existing) => existing.copyWith(selectedDutyGroup: dutyGroup),
-      );
-      if (patchResult.isSuccess && patchResult.value == true) {
-        await ref
-            .read(scheduleDataProvider.notifier)
-            .refreshSelectedDutyGroupFromSettings();
-      }
-    } catch (e) {
-      AppLogger.d(
-        'ScheduleCoordinatorNotifier: Best-effort save selectedDutyGroup skipped '
-        '(dutyGroup=$dutyGroup, error=$e)',
-      );
-    }
-  }
-
   // Utility methods
   Future<void> clearError() async {
     await ref.read(calendarProvider.notifier).clearError();
@@ -424,16 +383,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     // Ensure schedule data provider is refreshed first so new active config is reflected
     ref.read(scheduleDataProvider.notifier).invalidateCache();
     ref.invalidate(scheduleDataProvider);
-    // Preserve current selected duty group through the refresh
-    final String? selectedBefore;
-    if (state.value != null) {
-      selectedBefore = state.value!.selectedDutyGroup;
-    } else {
-      selectedBefore = (await future).selectedDutyGroup;
-    }
-    await _updateScheduleDataStateOnlyPreservingSelectedDutyGroup(
-      selectedBefore,
-    );
+    await _updateScheduleDataStateOnly();
     // Finally, refresh combined state and ensure partner data for current range
     await _refreshState();
     await _ensurePartnerDataForFocusedRange();
@@ -537,47 +487,6 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         .copyWith(
           schedules: mergedSchedules,
           preferredDutyGroup: scheduleDataState.preferredDutyGroup,
-          selectedDutyGroup: scheduleDataState.selectedDutyGroup,
-          holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
-          isLoading: scheduleDataState.isLoading || currentState.isLoading,
-          error: scheduleDataState.error ?? currentState.error,
-        )
-        .updateScheduleIndex();
-
-    state = AsyncData(updatedState);
-  }
-
-  /// Optimized method to update only schedule data state while preserving selectedDutyGroup
-  Future<void> _updateScheduleDataStateOnlyPreservingSelectedDutyGroup(
-    String? selectedDutyGroup,
-  ) async {
-    final currentState = state.value;
-    if (currentState == null) {
-      await _refreshState();
-      return;
-    }
-
-    final scheduleDataState = await ref.read(scheduleDataProvider.future);
-
-    // Merge schedules to avoid losing dynamically loaded months when
-    // scheduleDataProvider reinitializes with a smaller initial range.
-    // User-defined rows must come only from incoming (same as [_updateScheduleDataStateOnly]).
-    final List<Schedule> existing = _officialSchedulesOnly(
-      currentState.schedules,
-    );
-    final List<Schedule> incoming = scheduleDataState.schedules;
-    final List<Schedule> mergedSchedules =
-        await ScheduleGenerationIsolate.deduplicateSchedules(
-          schedules: <Schedule>[...existing, ...incoming],
-        );
-
-    // Only update schedule data-related fields, but preserve the selectedDutyGroup
-    final updatedState = currentState
-        .copyWith(
-          schedules: mergedSchedules,
-          preferredDutyGroup: scheduleDataState.preferredDutyGroup,
-          selectedDutyGroup:
-              selectedDutyGroup, // Use the provided value instead of scheduleDataState
           holidayAccentColorValue: scheduleDataState.holidayAccentColorValue,
           isLoading: scheduleDataState.isLoading || currentState.isLoading,
           error: scheduleDataState.error ?? currentState.error,

@@ -81,12 +81,11 @@ class DutyScheduleBottomsheet {
                 try {
                   // First set the active config so coordinator state reflects it immediately
                   await notifier.setActiveConfig(config.name);
-                  // Reset my duty group selection and clear filter when duty plan changes
+                  // Reset my duty group selection when duty plan changes
                   await notifier.setPreferredDutyGroup(
                     '',
                     activeConfigNameOverride: config.name,
                   );
-                  await notifier.setSelectedDutyGroup(null);
                   // Apply changes immediately so a second change isn't required
                   await notifier.applyOwnSelectionChanges();
                 } catch (e, stackTrace) {
@@ -119,7 +118,6 @@ class DutyScheduleBottomsheet {
                     '',
                     activeConfigNameOverride: null,
                   );
-                  await notifier.setSelectedDutyGroup(null);
                   await notifier.applyOwnSelectionChanges();
                 } catch (e, stackTrace) {
                   AppLogger.e(

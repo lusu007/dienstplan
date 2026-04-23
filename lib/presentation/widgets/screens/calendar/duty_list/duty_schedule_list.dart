@@ -19,12 +19,69 @@ import 'package:dienstplan/core/constants/ui_constants.dart';
 /// [card]: existing opaque material card look (default).
 /// [glass]: translucent, softly-bordered surface that lets a blurred
 /// background shine through. Used inside the glass schedules dialog.
-enum DutyListVisualStyle { card, glass }
+/// [compact]: same card chrome as [card], with smaller type and padding for
+/// embedded lists (rare; prefer [glassCompact] for the split calendar).
+/// [glassCompact]: same translucent glass as [glass], with compact type and
+/// padding for the split/calendar day list.
+enum DutyListVisualStyle { card, glass, compact, glassCompact }
+
+class _DutyListItemMetrics {
+  const _DutyListItemMetrics._({
+    required this.titleSize,
+    required this.secondarySize,
+    required this.notesSize,
+    required this.iconSize,
+    required this.minHeight,
+    required this.contentPadding,
+    required this.badgeIconPadding,
+    required this.badgeIconRadius,
+    required this.gapAfterBadge,
+  });
+
+  final double titleSize;
+  final double secondarySize;
+  final double notesSize;
+  final double iconSize;
+  final double minHeight;
+  final EdgeInsets contentPadding;
+  final double badgeIconPadding;
+  final double badgeIconRadius;
+  final double gapAfterBadge;
+
+  static _DutyListItemMetrics from(DutyListVisualStyle style) {
+    switch (style) {
+      case DutyListVisualStyle.compact:
+      case DutyListVisualStyle.glassCompact:
+        return const _DutyListItemMetrics._(
+          titleSize: 15.0,
+          secondarySize: 12.0,
+          notesSize: 11.0,
+          iconSize: 20.0,
+          minHeight: 60.0,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          badgeIconPadding: 6.0,
+          badgeIconRadius: 6.0,
+          gapAfterBadge: 12.0,
+        );
+      case DutyListVisualStyle.card:
+      case DutyListVisualStyle.glass:
+        return const _DutyListItemMetrics._(
+          titleSize: 18.0,
+          secondarySize: 15.0,
+          notesSize: 0.0,
+          iconSize: 24.0,
+          minHeight: 72.0,
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          badgeIconPadding: 8.0,
+          badgeIconRadius: 8.0,
+          gapAfterBadge: 16.0,
+        );
+    }
+  }
+}
 
 class DutyScheduleList extends ConsumerWidget {
   final List<Schedule> schedules;
-  final String? selectedDutyGroup;
-  final Function(String?)? onDutyGroupSelected;
   final ScrollController? scrollController;
   final bool shouldAnimate;
   final Map<String, DutyType>? dutyTypes;
@@ -39,8 +96,6 @@ class DutyScheduleList extends ConsumerWidget {
   const DutyScheduleList({
     super.key,
     required this.schedules,
-    this.selectedDutyGroup,
-    this.onDutyGroupSelected,
     this.scrollController,
     this.shouldAnimate = false,
     this.dutyTypes,
@@ -53,7 +108,12 @@ class DutyScheduleList extends ConsumerWidget {
     this.visualStyle = DutyListVisualStyle.card,
   });
 
-  bool get _isGlass => visualStyle == DutyListVisualStyle.glass;
+  bool get _isGlass =>
+      visualStyle == DutyListVisualStyle.glass ||
+      visualStyle == DutyListVisualStyle.glassCompact;
+  bool get _isCompactLayout =>
+      visualStyle == DutyListVisualStyle.compact ||
+      visualStyle == DutyListVisualStyle.glassCompact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -123,20 +183,7 @@ class DutyScheduleList extends ConsumerWidget {
           schedule.configName == activeConfigName;
       return isActiveConfig;
     }).toList();
-    final bool showAllGroups =
-        selectedDutyGroup == null || selectedDutyGroup!.isEmpty;
-    if (showAllGroups) {
-      return <Schedule>[...userRows, ...officialFiltered];
-    }
-    final List<Schedule> byGroup = officialFiltered
-        .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
-        .toList();
-    final List<Schedule> officialPart = byGroup.isEmpty
-        ? officialFiltered
-        : byGroup;
-    // Personal entries are not tied to the calendar's duty-group chip filter;
-    // always show all user-defined rows for this day.
-    return <Schedule>[...userRows, ...officialPart];
+    return <Schedule>[...userRows, ...officialFiltered];
   }
 
   List<Schedule> _sortSchedules(List<Schedule> input) {
@@ -169,10 +216,6 @@ class DutyScheduleList extends ConsumerWidget {
       return a.dutyTypeId.compareTo(b.dutyTypeId);
     });
     return <Schedule>[...users, ...official];
-  }
-
-  void _onDutyGroupSelected(String? dutyGroupId) {
-    onDutyGroupSelected?.call(dutyGroupId);
   }
 
   Widget _buildEmptyState(BuildContext context) {
@@ -224,6 +267,7 @@ class DutyScheduleList extends ConsumerWidget {
         : 0;
     final int dutiesCount = schedules.length;
     final int totalCount = holidaysCount + dutiesCount;
+    final _DutyListItemMetrics m = _DutyListItemMetrics.from(visualStyle);
 
     return ListView.builder(
       controller: scrollController,
@@ -262,8 +306,6 @@ class DutyScheduleList extends ConsumerWidget {
             ? schedule.dutyGroupName == partnerDutyGroupName
             : false;
         final bool isPartner = matchesPartnerConfig && matchesPartnerGroup;
-        final bool isSelected = selectedDutyGroup == schedule.dutyGroupName;
-        final Color primaryColor = Theme.of(context).colorScheme.primary;
         final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
         final bool isPersonal = schedule.isUserDefined;
         final bool isOwn =
@@ -274,7 +316,7 @@ class DutyScheduleList extends ConsumerWidget {
         final Color baseColor = isPartner
             ? partnerColor
             : (isOwn ? myAccentColor : outlineColor);
-        final Color borderColor = isSelected ? primaryColor : baseColor;
+        final Color borderColor = baseColor;
         final Color badgeColor = baseColor;
         final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -286,41 +328,33 @@ class DutyScheduleList extends ConsumerWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () {
-                if (schedule.isUserDefined) {
-                  showPersonalCalendarEntrySheet(
-                    context: context,
-                    ref: ref,
-                    day: schedule.date,
-                    existingSchedule: schedule,
-                  );
-                } else {
-                  _onDutyGroupSelected(
-                    isSelected ? null : schedule.dutyGroupName,
-                  );
-                }
-              },
+              onTap: schedule.isUserDefined
+                  ? () {
+                      showPersonalCalendarEntrySheet(
+                        context: context,
+                        ref: ref,
+                        day: schedule.date,
+                        existingSchedule: schedule,
+                      );
+                    }
+                  : null,
               borderRadius: BorderRadius.circular(16),
               child: Container(
-                constraints: const BoxConstraints(minHeight: 72),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 16,
-                ),
+                constraints: BoxConstraints(minHeight: m.minHeight),
+                padding: m.contentPadding,
                 decoration: _buildDutyItemDecoration(
                   context: context,
-                  isSelected: isSelected,
                   isDark: isDark,
                   borderColor: borderColor,
-                  primaryColor: primaryColor,
                 ),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(m.badgeIconPadding),
                       decoration: _buildIconBadgeDecoration(
                         badgeColor: badgeColor,
                         isDark: isDark,
+                        cardIconRadius: m.badgeIconRadius,
                       ),
                       child: Icon(
                         DutyItemUiBuilder.iconForSchedule(
@@ -332,10 +366,10 @@ class DutyScheduleList extends ConsumerWidget {
                           badgeColor: badgeColor,
                           isDark: isDark,
                         ),
-                        size: 24,
+                        size: m.iconSize,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: m.gapAfterBadge),
                     Expanded(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -349,7 +383,7 @@ class DutyScheduleList extends ConsumerWidget {
                                   schedule.service,
                                   style: Theme.of(context).textTheme.titleMedium
                                       ?.copyWith(
-                                        fontSize: 18,
+                                        fontSize: m.titleSize,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(
                                           context,
@@ -367,6 +401,9 @@ class DutyScheduleList extends ConsumerWidget {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
+                                            fontSize: m.notesSize > 0
+                                                ? m.notesSize
+                                                : null,
                                             color: Theme.of(
                                               context,
                                             ).colorScheme.onSurfaceVariant,
@@ -389,7 +426,7 @@ class DutyScheduleList extends ConsumerWidget {
                                   textAlign: TextAlign.end,
                                   style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(
-                                        fontSize: 15,
+                                        fontSize: m.secondarySize,
                                         fontWeight: FontWeight.w400,
                                         color: Theme.of(
                                           context,
@@ -406,7 +443,7 @@ class DutyScheduleList extends ConsumerWidget {
                               schedule.dutyGroupName,
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(
-                                    fontSize: 15,
+                                    fontSize: m.secondarySize,
                                     fontWeight: FontWeight.w400,
                                     color: Theme.of(
                                       context,
@@ -430,55 +467,36 @@ class DutyScheduleList extends ConsumerWidget {
 
   BoxDecoration _buildDutyItemDecoration({
     required BuildContext context,
-    required bool isSelected,
     required bool isDark,
     required Color borderColor,
-    required Color primaryColor,
   }) {
     if (!_isGlass) {
       return BoxDecoration(
-        color: isSelected
-            ? primaryColor.withAlpha(kAlphaCardSelected)
-            : Theme.of(context).cardColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: borderColor, width: isSelected ? 2.5 : 1),
+        border: Border.all(color: borderColor, width: 1),
       );
     }
     final Color baseBackground = Colors.white.withValues(
       alpha: isDark ? 0.06 : 0.28,
     );
-    final Color selectedBackground = primaryColor.withValues(
-      alpha: isDark ? 0.18 : 0.22,
-    );
     return BoxDecoration(
-      color: isSelected ? selectedBackground : baseBackground,
+      color: baseBackground,
       borderRadius: BorderRadius.circular(18),
-      border: Border.all(
-        color: isSelected
-            ? primaryColor.withValues(alpha: 0.85)
-            : borderColor.withValues(alpha: 0.55),
-        width: isSelected ? 1.5 : 1,
-      ),
-      boxShadow: isSelected
-          ? [
-              BoxShadow(
-                color: primaryColor.withValues(alpha: isDark ? 0.32 : 0.28),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-              ),
-            ]
-          : const [],
+      border: Border.all(color: borderColor.withValues(alpha: 0.55), width: 1),
+      boxShadow: const [],
     );
   }
 
   BoxDecoration _buildIconBadgeDecoration({
     required Color badgeColor,
     required bool isDark,
+    required double cardIconRadius,
   }) {
     if (!_isGlass) {
       return BoxDecoration(
         color: badgeColor.withAlpha(kAlphaBadge),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(cardIconRadius),
       );
     }
     return BoxDecoration(
@@ -534,10 +552,11 @@ class DutyScheduleList extends ConsumerWidget {
   }
 
   Widget _buildSkeletonLoader(BuildContext context) {
+    final double itemExtent = _isCompactLayout ? 64.0 : kDutyListItemExtent;
     return ListView.builder(
       padding: EdgeInsets.fromLTRB(16.0, topPadding, 16.0, bottomPadding),
       itemCount: 5,
-      itemExtent: kDutyListItemExtent,
+      itemExtent: itemExtent,
       itemBuilder: (BuildContext context, int index) =>
           _buildSkeletonItem(context),
     );
@@ -546,9 +565,11 @@ class DutyScheduleList extends ConsumerWidget {
   Widget _buildSkeletonItem(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     if (!_isGlass) {
+      final double h = _isCompactLayout ? 64.0 : kDutyListItemExtent;
+      final double pad = _isCompactLayout ? 12.0 : 16.0;
       return Container(
-        height: kDutyListItemExtent,
-        padding: const EdgeInsets.all(16.0),
+        height: h,
+        padding: EdgeInsets.all(pad),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
@@ -556,16 +577,29 @@ class DutyScheduleList extends ConsumerWidget {
             color: Theme.of(context).colorScheme.outlineVariant,
           ),
         ),
-        child: _buildSkeletonRow(context, isGlass: false),
+        child: _buildSkeletonRow(
+          context,
+          isGlass: false,
+          compact: _isCompactLayout,
+        ),
       );
     }
     return _PulsingGlassSkeleton(
       isDark: isDark,
-      child: _buildSkeletonRow(context, isGlass: true),
+      compact: _isCompactLayout,
+      child: _buildSkeletonRow(
+        context,
+        isGlass: true,
+        compact: _isCompactLayout,
+      ),
     );
   }
 
-  Widget _buildSkeletonRow(BuildContext context, {required bool isGlass}) {
+  Widget _buildSkeletonRow(
+    BuildContext context, {
+    required bool isGlass,
+    required bool compact,
+  }) {
     final Color barColor = isGlass
         ? Colors.white.withValues(
             alpha: Theme.of(context).brightness == Brightness.dark
@@ -580,33 +614,39 @@ class DutyScheduleList extends ConsumerWidget {
                 : 0.22,
           )
         : Theme.of(context).colorScheme.surfaceContainerHighest;
+    final double iconBox = compact ? 32.0 : 40.0;
+    final double gap = compact ? 12.0 : 16.0;
+    final double line1H = compact ? 14.0 : 16.0;
+    final double line2H = compact ? 10.0 : 12.0;
     return Row(
       children: [
         Container(
-          width: 40,
-          height: 40,
+          width: iconBox,
+          height: iconBox,
           decoration: BoxDecoration(
             color: barColor,
-            borderRadius: BorderRadius.circular(isGlass ? 10 : 8),
+            borderRadius: BorderRadius.circular(
+              isGlass ? 10 : (compact ? 6.0 : 8.0),
+            ),
           ),
         ),
-        const SizedBox(width: 16),
+        SizedBox(width: gap),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 16,
+                height: line1H,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: barColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: compact ? 6.0 : 8.0),
               Container(
-                height: 12,
+                height: line2H,
                 width: MediaQuery.of(context).size.width * 0.4,
                 decoration: BoxDecoration(
                   color: subBarColor,
@@ -624,8 +664,13 @@ class DutyScheduleList extends ConsumerWidget {
 class _PulsingGlassSkeleton extends StatefulWidget {
   final Widget child;
   final bool isDark;
+  final bool compact;
 
-  const _PulsingGlassSkeleton({required this.child, required this.isDark});
+  const _PulsingGlassSkeleton({
+    required this.child,
+    required this.isDark,
+    this.compact = false,
+  });
 
   @override
   State<_PulsingGlassSkeleton> createState() => _PulsingGlassSkeletonState();
@@ -662,13 +707,15 @@ class _PulsingGlassSkeletonState extends State<_PulsingGlassSkeleton>
           child: Opacity(
             opacity: opacity,
             child: Container(
-              height: kDutyListItemExtent - 8,
-              padding: const EdgeInsets.all(16.0),
+              height: widget.compact ? 56.0 : (kDutyListItemExtent - 8),
+              padding: EdgeInsets.all(widget.compact ? 12.0 : 16.0),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(
                   alpha: widget.isDark ? 0.06 : 0.18,
                 ),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(
+                  widget.compact ? 16.0 : 18.0,
+                ),
                 border: Border.all(
                   color: Colors.white.withValues(
                     alpha: widget.isDark ? 0.12 : 0.35,

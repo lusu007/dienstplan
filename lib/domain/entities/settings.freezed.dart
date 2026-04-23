@@ -14,7 +14,6 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Settings {
   String? get language;
-  String? get selectedDutyGroup;
   String? get myDutyGroup;
   String? get activeConfigName;
   ThemePreference? get themePreference; // Partner duty group feature
@@ -41,8 +40,6 @@ mixin _$Settings {
             other is Settings &&
             (identical(other.language, language) ||
                 other.language == language) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
             (identical(other.myDutyGroup, myDutyGroup) ||
                 other.myDutyGroup == myDutyGroup) &&
             (identical(other.activeConfigName, activeConfigName) ||
@@ -80,7 +77,6 @@ mixin _$Settings {
   int get hashCode => Object.hash(
     runtimeType,
     language,
-    selectedDutyGroup,
     myDutyGroup,
     activeConfigName,
     themePreference,
@@ -96,7 +92,7 @@ mixin _$Settings {
 
   @override
   String toString() {
-    return 'Settings(language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -107,7 +103,6 @@ abstract mixin class $SettingsCopyWith<$Res> {
   @useResult
   $Res call({
     String? language,
-    String? selectedDutyGroup,
     String? myDutyGroup,
     String? activeConfigName,
     ThemePreference? themePreference,
@@ -135,7 +130,6 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
   @override
   $Res call({
     Object? language = freezed,
-    Object? selectedDutyGroup = freezed,
     Object? myDutyGroup = freezed,
     Object? activeConfigName = freezed,
     Object? themePreference = freezed,
@@ -153,10 +147,6 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
         language: freezed == language
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        selectedDutyGroup: freezed == selectedDutyGroup
-            ? _self.selectedDutyGroup
-            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
                   as String?,
         myDutyGroup: freezed == myDutyGroup
             ? _self.myDutyGroup
@@ -302,7 +292,6 @@ extension SettingsPatterns on Settings {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
       String? language,
-      String? selectedDutyGroup,
       String? myDutyGroup,
       String? activeConfigName,
       ThemePreference? themePreference,
@@ -323,7 +312,6 @@ extension SettingsPatterns on Settings {
       case _Settings() when $default != null:
         return $default(
           _that.language,
-          _that.selectedDutyGroup,
           _that.myDutyGroup,
           _that.activeConfigName,
           _that.themePreference,
@@ -358,7 +346,6 @@ extension SettingsPatterns on Settings {
   TResult when<TResult extends Object?>(
     TResult Function(
       String? language,
-      String? selectedDutyGroup,
       String? myDutyGroup,
       String? activeConfigName,
       ThemePreference? themePreference,
@@ -378,7 +365,6 @@ extension SettingsPatterns on Settings {
       case _Settings():
         return $default(
           _that.language,
-          _that.selectedDutyGroup,
           _that.myDutyGroup,
           _that.activeConfigName,
           _that.themePreference,
@@ -412,7 +398,6 @@ extension SettingsPatterns on Settings {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
       String? language,
-      String? selectedDutyGroup,
       String? myDutyGroup,
       String? activeConfigName,
       ThemePreference? themePreference,
@@ -432,7 +417,6 @@ extension SettingsPatterns on Settings {
       case _Settings() when $default != null:
         return $default(
           _that.language,
-          _that.selectedDutyGroup,
           _that.myDutyGroup,
           _that.activeConfigName,
           _that.themePreference,
@@ -456,7 +440,6 @@ extension SettingsPatterns on Settings {
 class _Settings extends Settings {
   const _Settings({
     this.language,
-    this.selectedDutyGroup,
     this.myDutyGroup,
     this.activeConfigName,
     this.themePreference,
@@ -472,8 +455,6 @@ class _Settings extends Settings {
 
   @override
   final String? language;
-  @override
-  final String? selectedDutyGroup;
   @override
   final String? myDutyGroup;
   @override
@@ -515,8 +496,6 @@ class _Settings extends Settings {
             other is _Settings &&
             (identical(other.language, language) ||
                 other.language == language) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
             (identical(other.myDutyGroup, myDutyGroup) ||
                 other.myDutyGroup == myDutyGroup) &&
             (identical(other.activeConfigName, activeConfigName) ||
@@ -554,7 +533,6 @@ class _Settings extends Settings {
   int get hashCode => Object.hash(
     runtimeType,
     language,
-    selectedDutyGroup,
     myDutyGroup,
     activeConfigName,
     themePreference,
@@ -570,7 +548,7 @@ class _Settings extends Settings {
 
   @override
   String toString() {
-    return 'Settings(language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -583,7 +561,6 @@ abstract mixin class _$SettingsCopyWith<$Res>
   @useResult
   $Res call({
     String? language,
-    String? selectedDutyGroup,
     String? myDutyGroup,
     String? activeConfigName,
     ThemePreference? themePreference,
@@ -611,7 +588,6 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? language = freezed,
-    Object? selectedDutyGroup = freezed,
     Object? myDutyGroup = freezed,
     Object? activeConfigName = freezed,
     Object? themePreference = freezed,
@@ -629,10 +605,6 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
         language: freezed == language
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        selectedDutyGroup: freezed == selectedDutyGroup
-            ? _self.selectedDutyGroup
-            : selectedDutyGroup // ignore: cast_nullable_to_non_nullable
                   as String?,
         myDutyGroup: freezed == myDutyGroup
             ? _self.myDutyGroup

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class Settings {
   final String? language;
-  final String? selectedDutyGroup;
   final String? myDutyGroup;
   final String? activeConfigName;
   final ThemeMode? themeMode;
@@ -19,7 +18,6 @@ class Settings {
 
   const Settings({
     this.language,
-    this.selectedDutyGroup,
     this.myDutyGroup,
     this.activeConfigName,
     this.themeMode,
@@ -36,7 +34,6 @@ class Settings {
   factory Settings.fromMap(Map<String, dynamic> map) {
     return Settings(
       language: _safeStringCast(map['language']),
-      selectedDutyGroup: _safeStringCast(map['selected_duty_group']),
       myDutyGroup: _safeStringCast(map['my_duty_group']),
       activeConfigName: _safeStringCast(map['active_config_name']),
       themeMode: _parseThemeMode(_safeStringCast(map['theme_mode'])),
@@ -56,7 +53,6 @@ class Settings {
   Map<String, dynamic> toMap() {
     return {
       if (language != null) 'language': language,
-      if (selectedDutyGroup != null) 'selected_duty_group': selectedDutyGroup,
       if (myDutyGroup != null) 'my_duty_group': myDutyGroup,
       if (activeConfigName != null) 'active_config_name': activeConfigName,
       if (themeMode != null) 'theme_mode': themeMode!.name,
@@ -79,7 +75,6 @@ class Settings {
 
   Settings copyWith({
     String? language,
-    String? selectedDutyGroup,
     String? myDutyGroup,
     String? activeConfigName,
     ThemeMode? themeMode,
@@ -94,7 +89,6 @@ class Settings {
   }) {
     return Settings(
       language: language ?? this.language,
-      selectedDutyGroup: selectedDutyGroup ?? this.selectedDutyGroup,
       myDutyGroup: myDutyGroup ?? this.myDutyGroup,
       activeConfigName: activeConfigName ?? this.activeConfigName,
       themeMode: themeMode ?? this.themeMode,
@@ -115,7 +109,7 @@ class Settings {
 
   @override
   String toString() {
-    return 'Settings(language: $language, selectedDutyGroup: $selectedDutyGroup, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 
   @override
@@ -123,7 +117,6 @@ class Settings {
     if (identical(this, other)) return true;
     return other is Settings &&
         other.language == language &&
-        other.selectedDutyGroup == selectedDutyGroup &&
         other.myDutyGroup == myDutyGroup &&
         other.activeConfigName == activeConfigName &&
         other.themeMode == themeMode &&
@@ -139,7 +132,6 @@ class Settings {
   @override
   int get hashCode {
     return language.hashCode ^
-        selectedDutyGroup.hashCode ^
         myDutyGroup.hashCode ^
         activeConfigName.hashCode ^
         themeMode.hashCode ^

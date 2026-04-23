@@ -23,7 +23,12 @@ class VacationDayItem extends StatelessWidget {
     this.visualStyle = DutyListVisualStyle.card,
   });
 
-  bool get _isGlass => visualStyle == DutyListVisualStyle.glass;
+  bool get _isGlass =>
+      visualStyle == DutyListVisualStyle.glass ||
+      visualStyle == DutyListVisualStyle.glassCompact;
+  bool get _isCompact =>
+      visualStyle == DutyListVisualStyle.compact ||
+      visualStyle == DutyListVisualStyle.glassCompact;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +37,19 @@ class VacationDayItem extends StatelessWidget {
     final Color holidayColor = Color(
       holidayAccentColorValue ?? AccentColorDefaults.holidayAccentColorValue,
     );
+    final bool compact = _isCompact;
+    final double rowHeight = compact ? 40.0 : 44.0;
+    final EdgeInsets padding = compact
+        ? const EdgeInsets.symmetric(horizontal: 12, vertical: 6)
+        : const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+    final double iconBox = compact ? 24.0 : 28.0;
+    final double iconSize = compact ? 16.0 : 18.0;
+    final double gap = compact ? 10.0 : 12.0;
+    final double titleSize = compact ? 13.0 : 14.0;
+    final double descSize = compact ? 10.0 : 11.0;
+    final double chipHPad = compact ? 4.0 : 6.0;
+    final double chipVPad = compact ? 2.0 : 3.0;
+    final double chipFont = compact ? 8.0 : 9.0;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -41,8 +59,8 @@ class VacationDayItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            height: 44,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            height: rowHeight,
+            padding: padding,
             decoration: _buildContainerDecoration(
               theme: theme,
               isDark: isDark,
@@ -51,19 +69,20 @@ class VacationDayItem extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: iconBox,
+                  height: iconBox,
                   decoration: _buildBadgeDecoration(
                     isDark: isDark,
                     holidayColor: holidayColor,
+                    compact: compact,
                   ),
                   child: Icon(
                     Icons.beach_access,
                     color: _resolveIconColor(theme, isDark, holidayColor),
-                    size: 18,
+                    size: iconSize,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: gap),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +91,7 @@ class VacationDayItem extends StatelessWidget {
                       Text(
                         holiday.name,
                         style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 14,
+                          fontSize: titleSize,
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.onSurface,
                         ),
@@ -84,7 +103,7 @@ class VacationDayItem extends StatelessWidget {
                         Text(
                           holiday.description!,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: 11,
+                            fontSize: descSize,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -94,18 +113,19 @@ class VacationDayItem extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 3,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: chipHPad,
+                    vertical: chipVPad,
                   ),
                   decoration: _buildBadgeDecoration(
                     isDark: isDark,
                     holidayColor: holidayColor,
+                    compact: compact,
                   ),
                   child: Text(
                     _getHolidayTypeText(context, holiday.type),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: 9,
+                      fontSize: chipFont,
                       fontWeight: FontWeight.w500,
                       color: _resolveIconColor(theme, isDark, holidayColor),
                     ),
@@ -141,11 +161,12 @@ class VacationDayItem extends StatelessWidget {
   BoxDecoration _buildBadgeDecoration({
     required bool isDark,
     required Color holidayColor,
+    bool compact = false,
   }) {
     if (!_isGlass) {
       return BoxDecoration(
         color: holidayColor.withAlpha(kAlphaBadge),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(compact ? 4 : 6),
       );
     }
     return BoxDecoration(
