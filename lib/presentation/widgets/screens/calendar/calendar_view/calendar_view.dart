@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -49,17 +50,26 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.only(bottom: kGlassBarReservedHeight),
-              child: Column(
-                children: [
-                  const CalendarHeader(),
-                  Expanded(
-                    child: CalendarTable(
-                      calendarKey: _calendarKey,
-                      onPageChanged: (_) {},
-                      onDaySelected: _handleDaySelected,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                child: Column(
+                  children: [
+                    const CalendarHeader(),
+                    const SizedBox(
+                      height: CalendarConfig.kCalendarMonthPickerToGridSpacing,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: CalendarTable(
+                        calendarKey: _calendarKey,
+                        onPageChanged: (_) {},
+                        onDaySelected: _handleDaySelected,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -76,6 +86,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
 
   Future<void> _handleDaySelected(DateTime day) async {
     if (!mounted) return;
+    FocusManager.instance.primaryFocus?.unfocus();
     await SchedulesDialog.show(context, day);
   }
 }

@@ -23,11 +23,15 @@ import 'package:dienstplan/data/daos/maintenance_dao.dart';
 import 'package:dienstplan/data/daos/school_holidays_dao.dart';
 import 'package:dienstplan/data/daos/schedules_admin_dao.dart';
 import 'package:dienstplan/data/daos/schedule_configs_dao.dart';
+import 'package:dienstplan/data/daos/personal_calendar_entries_dao.dart';
 
 // Repositories (interfaces + implementations)
 import 'package:dienstplan/domain/repositories/schedule_repository.dart';
 import 'package:dienstplan/domain/repositories/settings_repository.dart';
 import 'package:dienstplan/domain/repositories/config_repository.dart';
+import 'package:dienstplan/domain/repositories/personal_calendar_repository.dart';
+import 'package:dienstplan/data/repositories/personal_calendar_repository_impl.dart'
+    as personal_calendar_repo;
 import 'package:dienstplan/data/repositories/schedule_repository.dart'
     as data_repos;
 import 'package:dienstplan/data/repositories/settings_repository.dart'
@@ -47,6 +51,9 @@ import 'package:dienstplan/domain/use_cases/generate_calendar_export_use_case.da
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
+import 'package:dienstplan/domain/use_cases/list_personal_calendar_entries_use_case.dart';
+import 'package:dienstplan/domain/use_cases/save_personal_calendar_entry_use_case.dart';
+import 'package:dienstplan/domain/use_cases/delete_personal_calendar_entry_use_case.dart';
 import 'package:dienstplan/domain/services/config_query_service.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
@@ -103,6 +110,12 @@ Future<SchedulesAdminDao> schedulesAdminDao(Ref ref) async {
 Future<ScheduleConfigsDao> scheduleConfigsDao(Ref ref) async {
   final DatabaseService db = await ref.watch(databaseServiceProvider.future);
   return ScheduleConfigsDao(db);
+}
+
+@riverpod
+Future<PersonalCalendarEntriesDao> personalCalendarEntriesDao(Ref ref) async {
+  final DatabaseService db = await ref.watch(databaseServiceProvider.future);
+  return PersonalCalendarEntriesDao(db);
 }
 
 @Riverpod(keepAlive: true)
@@ -307,6 +320,14 @@ Future<ScheduleRepository> scheduleRepository(Ref ref) async {
   return data_repos.ScheduleRepositoryImpl(schedules, dutyTypes);
 }
 
+@Riverpod(keepAlive: true)
+Future<PersonalCalendarRepository> personalCalendarRepository(Ref ref) async {
+  final PersonalCalendarEntriesDao dao = await ref.watch(
+    personalCalendarEntriesDaoProvider.future,
+  );
+  return personal_calendar_repo.PersonalCalendarRepositoryImpl(dao);
+}
+
 @riverpod
 Future<SettingsRepository> settingsRepository(Ref ref) async {
   final SettingsDao dao = await ref.watch(settingsDaoProvider.future);
@@ -328,6 +349,36 @@ Future<GetSchedulesUseCase> getSchedulesUseCase(Ref ref) async {
     scheduleRepositoryProvider.future,
   );
   return GetSchedulesUseCase(repo);
+}
+
+@Riverpod(keepAlive: true)
+Future<ListPersonalCalendarEntriesUseCase> listPersonalCalendarEntriesUseCase(
+  Ref ref,
+) async {
+  final PersonalCalendarRepository repo = await ref.watch(
+    personalCalendarRepositoryProvider.future,
+  );
+  return ListPersonalCalendarEntriesUseCase(repo);
+}
+
+@Riverpod(keepAlive: true)
+Future<SavePersonalCalendarEntryUseCase> savePersonalCalendarEntryUseCase(
+  Ref ref,
+) async {
+  final PersonalCalendarRepository repo = await ref.watch(
+    personalCalendarRepositoryProvider.future,
+  );
+  return SavePersonalCalendarEntryUseCase(repo);
+}
+
+@Riverpod(keepAlive: true)
+Future<DeletePersonalCalendarEntryUseCase> deletePersonalCalendarEntryUseCase(
+  Ref ref,
+) async {
+  final PersonalCalendarRepository repo = await ref.watch(
+    personalCalendarRepositoryProvider.future,
+  );
+  return DeletePersonalCalendarEntryUseCase(repo);
 }
 
 @Riverpod(keepAlive: true)

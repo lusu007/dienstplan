@@ -20,6 +20,14 @@ mixin _$Schedule {
   String get dutyGroupName;
   String get configName;
   bool get isAllDay;
+  bool get isUserDefined;
+  String? get personalEntryId;
+  PersonalCalendarEntryKind? get personalEntryKind;
+  int? get startMinutesFromMidnight;
+  int? get endMinutesFromMidnight;
+  String? get personalNotes;
+  int? get personalCreatedAtMs;
+  int? get personalUpdatedAtMs;
 
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
@@ -44,7 +52,26 @@ mixin _$Schedule {
             (identical(other.configName, configName) ||
                 other.configName == configName) &&
             (identical(other.isAllDay, isAllDay) ||
-                other.isAllDay == isAllDay));
+                other.isAllDay == isAllDay) &&
+            (identical(other.isUserDefined, isUserDefined) ||
+                other.isUserDefined == isUserDefined) &&
+            (identical(other.personalEntryId, personalEntryId) ||
+                other.personalEntryId == personalEntryId) &&
+            (identical(other.personalEntryKind, personalEntryKind) ||
+                other.personalEntryKind == personalEntryKind) &&
+            (identical(
+                  other.startMinutesFromMidnight,
+                  startMinutesFromMidnight,
+                ) ||
+                other.startMinutesFromMidnight == startMinutesFromMidnight) &&
+            (identical(other.endMinutesFromMidnight, endMinutesFromMidnight) ||
+                other.endMinutesFromMidnight == endMinutesFromMidnight) &&
+            (identical(other.personalNotes, personalNotes) ||
+                other.personalNotes == personalNotes) &&
+            (identical(other.personalCreatedAtMs, personalCreatedAtMs) ||
+                other.personalCreatedAtMs == personalCreatedAtMs) &&
+            (identical(other.personalUpdatedAtMs, personalUpdatedAtMs) ||
+                other.personalUpdatedAtMs == personalUpdatedAtMs));
   }
 
   @override
@@ -57,11 +84,19 @@ mixin _$Schedule {
     dutyGroupName,
     configName,
     isAllDay,
+    isUserDefined,
+    personalEntryId,
+    personalEntryKind,
+    startMinutesFromMidnight,
+    endMinutesFromMidnight,
+    personalNotes,
+    personalCreatedAtMs,
+    personalUpdatedAtMs,
   );
 
   @override
   String toString() {
-    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay)';
+    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay, isUserDefined: $isUserDefined, personalEntryId: $personalEntryId, personalEntryKind: $personalEntryKind, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, personalNotes: $personalNotes, personalCreatedAtMs: $personalCreatedAtMs, personalUpdatedAtMs: $personalUpdatedAtMs)';
   }
 }
 
@@ -78,6 +113,14 @@ abstract mixin class $ScheduleCopyWith<$Res> {
     String dutyGroupName,
     String configName,
     bool isAllDay,
+    bool isUserDefined,
+    String? personalEntryId,
+    PersonalCalendarEntryKind? personalEntryKind,
+    int? startMinutesFromMidnight,
+    int? endMinutesFromMidnight,
+    String? personalNotes,
+    int? personalCreatedAtMs,
+    int? personalUpdatedAtMs,
   });
 }
 
@@ -100,6 +143,14 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? dutyGroupName = null,
     Object? configName = null,
     Object? isAllDay = null,
+    Object? isUserDefined = null,
+    Object? personalEntryId = freezed,
+    Object? personalEntryKind = freezed,
+    Object? startMinutesFromMidnight = freezed,
+    Object? endMinutesFromMidnight = freezed,
+    Object? personalNotes = freezed,
+    Object? personalCreatedAtMs = freezed,
+    Object? personalUpdatedAtMs = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -131,6 +182,38 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
             ? _self.isAllDay
             : isAllDay // ignore: cast_nullable_to_non_nullable
                   as bool,
+        isUserDefined: null == isUserDefined
+            ? _self.isUserDefined
+            : isUserDefined // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        personalEntryId: freezed == personalEntryId
+            ? _self.personalEntryId
+            : personalEntryId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        personalEntryKind: freezed == personalEntryKind
+            ? _self.personalEntryKind
+            : personalEntryKind // ignore: cast_nullable_to_non_nullable
+                  as PersonalCalendarEntryKind?,
+        startMinutesFromMidnight: freezed == startMinutesFromMidnight
+            ? _self.startMinutesFromMidnight
+            : startMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        endMinutesFromMidnight: freezed == endMinutesFromMidnight
+            ? _self.endMinutesFromMidnight
+            : endMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        personalNotes: freezed == personalNotes
+            ? _self.personalNotes
+            : personalNotes // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        personalCreatedAtMs: freezed == personalCreatedAtMs
+            ? _self.personalCreatedAtMs
+            : personalCreatedAtMs // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        personalUpdatedAtMs: freezed == personalUpdatedAtMs
+            ? _self.personalUpdatedAtMs
+            : personalUpdatedAtMs // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }
@@ -237,6 +320,14 @@ extension SchedulePatterns on Schedule {
       String dutyGroupName,
       String configName,
       bool isAllDay,
+      bool isUserDefined,
+      String? personalEntryId,
+      PersonalCalendarEntryKind? personalEntryKind,
+      int? startMinutesFromMidnight,
+      int? endMinutesFromMidnight,
+      String? personalNotes,
+      int? personalCreatedAtMs,
+      int? personalUpdatedAtMs,
     )?
     $default, {
     required TResult orElse(),
@@ -252,6 +343,14 @@ extension SchedulePatterns on Schedule {
           _that.dutyGroupName,
           _that.configName,
           _that.isAllDay,
+          _that.isUserDefined,
+          _that.personalEntryId,
+          _that.personalEntryKind,
+          _that.startMinutesFromMidnight,
+          _that.endMinutesFromMidnight,
+          _that.personalNotes,
+          _that.personalCreatedAtMs,
+          _that.personalUpdatedAtMs,
         );
       case _:
         return orElse();
@@ -281,6 +380,14 @@ extension SchedulePatterns on Schedule {
       String dutyGroupName,
       String configName,
       bool isAllDay,
+      bool isUserDefined,
+      String? personalEntryId,
+      PersonalCalendarEntryKind? personalEntryKind,
+      int? startMinutesFromMidnight,
+      int? endMinutesFromMidnight,
+      String? personalNotes,
+      int? personalCreatedAtMs,
+      int? personalUpdatedAtMs,
     )
     $default,
   ) {
@@ -295,6 +402,14 @@ extension SchedulePatterns on Schedule {
           _that.dutyGroupName,
           _that.configName,
           _that.isAllDay,
+          _that.isUserDefined,
+          _that.personalEntryId,
+          _that.personalEntryKind,
+          _that.startMinutesFromMidnight,
+          _that.endMinutesFromMidnight,
+          _that.personalNotes,
+          _that.personalCreatedAtMs,
+          _that.personalUpdatedAtMs,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -323,6 +438,14 @@ extension SchedulePatterns on Schedule {
       String dutyGroupName,
       String configName,
       bool isAllDay,
+      bool isUserDefined,
+      String? personalEntryId,
+      PersonalCalendarEntryKind? personalEntryKind,
+      int? startMinutesFromMidnight,
+      int? endMinutesFromMidnight,
+      String? personalNotes,
+      int? personalCreatedAtMs,
+      int? personalUpdatedAtMs,
     )?
     $default,
   ) {
@@ -337,6 +460,14 @@ extension SchedulePatterns on Schedule {
           _that.dutyGroupName,
           _that.configName,
           _that.isAllDay,
+          _that.isUserDefined,
+          _that.personalEntryId,
+          _that.personalEntryKind,
+          _that.startMinutesFromMidnight,
+          _that.endMinutesFromMidnight,
+          _that.personalNotes,
+          _that.personalCreatedAtMs,
+          _that.personalUpdatedAtMs,
         );
       case _:
         return null;
@@ -355,6 +486,14 @@ class _Schedule extends Schedule {
     required this.dutyGroupName,
     required this.configName,
     this.isAllDay = false,
+    this.isUserDefined = false,
+    this.personalEntryId,
+    this.personalEntryKind,
+    this.startMinutesFromMidnight,
+    this.endMinutesFromMidnight,
+    this.personalNotes,
+    this.personalCreatedAtMs,
+    this.personalUpdatedAtMs,
   }) : super._();
 
   @override
@@ -372,6 +511,23 @@ class _Schedule extends Schedule {
   @override
   @JsonKey()
   final bool isAllDay;
+  @override
+  @JsonKey()
+  final bool isUserDefined;
+  @override
+  final String? personalEntryId;
+  @override
+  final PersonalCalendarEntryKind? personalEntryKind;
+  @override
+  final int? startMinutesFromMidnight;
+  @override
+  final int? endMinutesFromMidnight;
+  @override
+  final String? personalNotes;
+  @override
+  final int? personalCreatedAtMs;
+  @override
+  final int? personalUpdatedAtMs;
 
   /// Create a copy of Schedule
   /// with the given fields replaced by the non-null parameter values.
@@ -397,7 +553,26 @@ class _Schedule extends Schedule {
             (identical(other.configName, configName) ||
                 other.configName == configName) &&
             (identical(other.isAllDay, isAllDay) ||
-                other.isAllDay == isAllDay));
+                other.isAllDay == isAllDay) &&
+            (identical(other.isUserDefined, isUserDefined) ||
+                other.isUserDefined == isUserDefined) &&
+            (identical(other.personalEntryId, personalEntryId) ||
+                other.personalEntryId == personalEntryId) &&
+            (identical(other.personalEntryKind, personalEntryKind) ||
+                other.personalEntryKind == personalEntryKind) &&
+            (identical(
+                  other.startMinutesFromMidnight,
+                  startMinutesFromMidnight,
+                ) ||
+                other.startMinutesFromMidnight == startMinutesFromMidnight) &&
+            (identical(other.endMinutesFromMidnight, endMinutesFromMidnight) ||
+                other.endMinutesFromMidnight == endMinutesFromMidnight) &&
+            (identical(other.personalNotes, personalNotes) ||
+                other.personalNotes == personalNotes) &&
+            (identical(other.personalCreatedAtMs, personalCreatedAtMs) ||
+                other.personalCreatedAtMs == personalCreatedAtMs) &&
+            (identical(other.personalUpdatedAtMs, personalUpdatedAtMs) ||
+                other.personalUpdatedAtMs == personalUpdatedAtMs));
   }
 
   @override
@@ -410,11 +585,19 @@ class _Schedule extends Schedule {
     dutyGroupName,
     configName,
     isAllDay,
+    isUserDefined,
+    personalEntryId,
+    personalEntryKind,
+    startMinutesFromMidnight,
+    endMinutesFromMidnight,
+    personalNotes,
+    personalCreatedAtMs,
+    personalUpdatedAtMs,
   );
 
   @override
   String toString() {
-    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay)';
+    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay, isUserDefined: $isUserDefined, personalEntryId: $personalEntryId, personalEntryKind: $personalEntryKind, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, personalNotes: $personalNotes, personalCreatedAtMs: $personalCreatedAtMs, personalUpdatedAtMs: $personalUpdatedAtMs)';
   }
 }
 
@@ -433,6 +616,14 @@ abstract mixin class _$ScheduleCopyWith<$Res>
     String dutyGroupName,
     String configName,
     bool isAllDay,
+    bool isUserDefined,
+    String? personalEntryId,
+    PersonalCalendarEntryKind? personalEntryKind,
+    int? startMinutesFromMidnight,
+    int? endMinutesFromMidnight,
+    String? personalNotes,
+    int? personalCreatedAtMs,
+    int? personalUpdatedAtMs,
   });
 }
 
@@ -455,6 +646,14 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? dutyGroupName = null,
     Object? configName = null,
     Object? isAllDay = null,
+    Object? isUserDefined = null,
+    Object? personalEntryId = freezed,
+    Object? personalEntryKind = freezed,
+    Object? startMinutesFromMidnight = freezed,
+    Object? endMinutesFromMidnight = freezed,
+    Object? personalNotes = freezed,
+    Object? personalCreatedAtMs = freezed,
+    Object? personalUpdatedAtMs = freezed,
   }) {
     return _then(
       _Schedule(
@@ -486,6 +685,38 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
             ? _self.isAllDay
             : isAllDay // ignore: cast_nullable_to_non_nullable
                   as bool,
+        isUserDefined: null == isUserDefined
+            ? _self.isUserDefined
+            : isUserDefined // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        personalEntryId: freezed == personalEntryId
+            ? _self.personalEntryId
+            : personalEntryId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        personalEntryKind: freezed == personalEntryKind
+            ? _self.personalEntryKind
+            : personalEntryKind // ignore: cast_nullable_to_non_nullable
+                  as PersonalCalendarEntryKind?,
+        startMinutesFromMidnight: freezed == startMinutesFromMidnight
+            ? _self.startMinutesFromMidnight
+            : startMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        endMinutesFromMidnight: freezed == endMinutesFromMidnight
+            ? _self.endMinutesFromMidnight
+            : endMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        personalNotes: freezed == personalNotes
+            ? _self.personalNotes
+            : personalNotes // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        personalCreatedAtMs: freezed == personalCreatedAtMs
+            ? _self.personalCreatedAtMs
+            : personalCreatedAtMs // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        personalUpdatedAtMs: freezed == personalUpdatedAtMs
+            ? _self.personalUpdatedAtMs
+            : personalUpdatedAtMs // ignore: cast_nullable_to_non_nullable
+                  as int?,
       ),
     );
   }

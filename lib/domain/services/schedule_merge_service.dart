@@ -97,13 +97,20 @@ class ScheduleMergeService {
   }) {
     if (schedules.isEmpty) return [];
 
+    final List<Schedule> userDefined = schedules
+        .where((Schedule s) => s.isUserDefined)
+        .toList(growable: false);
+    final List<Schedule> officialOnly = schedules
+        .where((Schedule s) => !s.isUserDefined)
+        .toList(growable: false);
+
     // Sort schedules by date ascending (only if not already sorted)
     List<Schedule> sortedSchedules;
-    if (_isAlreadySorted(schedules)) {
-      sortedSchedules = schedules;
+    if (_isAlreadySorted(officialOnly)) {
+      sortedSchedules = officialOnly;
     } else {
-      sortedSchedules = List<Schedule>.from(schedules)
-        ..sort((a, b) => a.date.compareTo(b.date));
+      sortedSchedules = List<Schedule>.from(officialOnly)
+        ..sort((Schedule a, Schedule b) => a.date.compareTo(b.date));
     }
 
     final DateTime cutoffDate = DateTime(
@@ -149,7 +156,10 @@ class ScheduleMergeService {
 
     // Return only the kept schedules, preserving original order as much as possible
     final sortedIndices = keepIndices.toList()..sort();
-    return sortedIndices.map((i) => sortedSchedules[i]).toList();
+    final List<Schedule> cleanedOfficial = sortedIndices
+        .map((int i) => sortedSchedules[i])
+        .toList();
+    return <Schedule>[...userDefined, ...cleanedOfficial];
   }
 
   /// Returns the first index where schedule.date >= target

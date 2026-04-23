@@ -284,6 +284,13 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _updateScheduleDataStateOnly();
   }
 
+  /// Pulls the latest merged schedules from [scheduleDataProvider] into this
+  /// coordinator (e.g. after personal calendar entries are refreshed in the
+  /// data layer without going through load/ensure helpers).
+  Future<void> syncScheduleDataFromProvider() async {
+    await _updateScheduleDataStateOnly();
+  }
+
   Future<void> setSelectedDutyGroup(String? dutyGroup) async {
     // Update state immediately for instant UI feedback
     final current = state.value;
@@ -501,6 +508,12 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     state = AsyncData(updatedState);
   }
 
+  /// Personal rows come only from [scheduleDataProvider]; dropping them here before
+  /// merge avoids [ScheduleMergeService.upsertByKey] keeping deleted user entries.
+  List<Schedule> _officialSchedulesOnly(List<Schedule> schedules) {
+    return schedules.where((Schedule s) => !s.isUserDefined).toList();
+  }
+
   /// Optimized method to update only schedule data state
   Future<void> _updateScheduleDataStateOnly() async {
     final currentState = state.value;
@@ -511,10 +524,11 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
     final scheduleDataState = await ref.read(scheduleDataProvider.future);
 
-    // Merge incoming schedules with existing ones to preserve partner data (offloaded)
+    // Merge incoming schedules with existing official ones to preserve partner
+    // data (offloaded). User-defined rows are taken only from incoming.
     final List<Schedule> mergedSchedules =
         await ScheduleGenerationIsolate.mergeUpsertByKey(
-          existing: currentState.schedules,
+          existing: _officialSchedulesOnly(currentState.schedules),
           incoming: scheduleDataState.schedules,
         );
 
@@ -546,8 +560,11 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     final scheduleDataState = await ref.read(scheduleDataProvider.future);
 
     // Merge schedules to avoid losing dynamically loaded months when
-    // scheduleDataProvider reinitializes with a smaller initial range
-    final List<Schedule> existing = currentState.schedules;
+    // scheduleDataProvider reinitializes with a smaller initial range.
+    // User-defined rows must come only from incoming (same as [_updateScheduleDataStateOnly]).
+    final List<Schedule> existing = _officialSchedulesOnly(
+      currentState.schedules,
+    );
     final List<Schedule> incoming = scheduleDataState.schedules;
     final List<Schedule> mergedSchedules =
         await ScheduleGenerationIsolate.deduplicateSchedules(
@@ -605,10 +622,11 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         );
     if (!ref.mounted) return;
 
-    // Merge existing coordinator schedules with latest scheduleData to avoid losing
-    // previously loaded months due to scheduleData re-inits.
-    final List<Schedule> existing =
-        state.value?.schedules ?? const <Schedule>[];
+    // Merge existing coordinator official schedules with latest scheduleData to avoid losing
+    // previously loaded months due to scheduleData re-inits. Personal rows: incoming only.
+    final List<Schedule> existing = _officialSchedulesOnly(
+      state.value?.schedules ?? const <Schedule>[],
+    );
     final List<Schedule> incoming = scheduleDataState.schedules;
     final List<Schedule> mergedSchedules =
         await ScheduleGenerationIsolate.deduplicateSchedules(

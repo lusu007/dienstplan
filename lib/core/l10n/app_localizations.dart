@@ -1151,6 +1151,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shows school holidays and public holidays'**
   String get holidayTypesInfo;
+
+  /// Tooltip for adding a personal calendar entry
+  ///
+  /// In en, this message translates to:
+  /// **'Add personal appointment or duty'**
+  String get addPersonalEntryTooltip;
+
+  /// Hint for quick-add appointment field; {date} is a short calendar date
+  ///
+  /// In en, this message translates to:
+  /// **'Add appt. on {date}'**
+  String personalEntryQuickTitleHint(String date);
+
+  /// Accessibility label for quick-add appointment field
+  ///
+  /// In en, this message translates to:
+  /// **'Add appointment on {date}. Type a title, then Done.'**
+  String personalEntryQuickTitleSemanticLabel(String date);
+
+  /// Title for new personal calendar entry sheet
+  ///
+  /// In en, this message translates to:
+  /// **'New entry'**
+  String get personalEntrySheetTitleNew;
+
+  /// Title for editing a personal calendar entry
+  ///
+  /// In en, this message translates to:
+  /// **'Edit entry'**
+  String get personalEntrySheetTitleEdit;
+
+  /// Label for appointment kind
+  ///
+  /// In en, this message translates to:
+  /// **'Appointment'**
+  String get personalEntryKindAppointment;
+
+  /// Label for personal duty kind
+  ///
+  /// In en, this message translates to:
+  /// **'Own duty'**
+  String get personalEntryKindDuty;
+
+  /// Label for personal entry date picker
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get personalEntryDateLabel;
+
+  /// Label for personal entry title field
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get personalEntryTitleLabel;
+
+  /// Label for optional notes
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get personalEntryNotesLabel;
+
+  /// Label for all-day toggle
+  ///
+  /// In en, this message translates to:
+  /// **'All day'**
+  String get personalEntryAllDayLabel;
+
+  /// Label for start time
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get personalEntryStartTime;
+
+  /// Label for end time
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get personalEntryEndTime;
+
+  /// Snackbar after saving personal entry
+  ///
+  /// In en, this message translates to:
+  /// **'Entry saved'**
+  String get personalEntrySaved;
+
+  /// Snackbar after deleting personal entry
+  ///
+  /// In en, this message translates to:
+  /// **'Entry deleted'**
+  String get personalEntryDeleted;
+
+  /// Validation: empty title
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a title.'**
+  String get personalEntryValidationTitle;
+
+  /// Validation: missing times for timed entry
+  ///
+  /// In en, this message translates to:
+  /// **'Please pick start and end time.'**
+  String get personalEntryValidationTimes;
+
+  /// Validation: time out of range
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid time of day.'**
+  String get personalEntryValidationTimeRange;
+
+  /// Validation: end before start
+  ///
+  /// In en, this message translates to:
+  /// **'End time must be after start time.'**
+  String get personalEntryValidationEndAfterStart;
 }
 
 class _AppLocalizationsDelegate

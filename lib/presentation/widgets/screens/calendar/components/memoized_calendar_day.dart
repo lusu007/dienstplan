@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
@@ -156,6 +157,7 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       day: day,
       dutyAbbreviation: dutyData.myDuty,
       partnerDutyAbbreviation: dutyData.partnerDuty,
+      personalCalendarTitles: dutyData.personalCalendarTitles,
       partnerAccentColorValue: partnerAccentColor,
       myAccentColorValue: myAccentColor,
       holidayAccentColorValue: holidayAccentColor,
@@ -180,25 +182,37 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 class DutyData {
   final String myDuty;
   final String partnerDuty;
+  final List<String> personalCalendarTitles;
 
-  const DutyData({required this.myDuty, required this.partnerDuty});
+  const DutyData({
+    required this.myDuty,
+    required this.partnerDuty,
+    required this.personalCalendarTitles,
+  });
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is DutyData &&
         other.myDuty == myDuty &&
-        other.partnerDuty == partnerDuty;
+        other.partnerDuty == partnerDuty &&
+        listEquals(other.personalCalendarTitles, personalCalendarTitles);
   }
 
   @override
-  int get hashCode => Object.hash(myDuty, partnerDuty);
+  int get hashCode =>
+      Object.hash(myDuty, partnerDuty, Object.hashAll(personalCalendarTitles));
 }
 
 /// Memoized duty calculator with caching
 class _MemoizedDutyCalculator {
   static final Map<String, DutyData> _cache = {};
   static const int _maxCacheSize = 200;
+
+  /// Bump when [DutyData] shape changes so hot reload / stale isolates cannot
+  /// return cached entries incompatible with current getters.
+  static const int _kDutyDataCacheSchema = 2;
+  static int _appliedDutyDataCacheSchema = 0;
 
   static DutyData calculateDutyData({
     required DateTime day,
@@ -208,6 +222,11 @@ class _MemoizedDutyCalculator {
     required String? partnerConfigName,
     required String? partnerGroup,
   }) {
+    if (_appliedDutyDataCacheSchema != _kDutyDataCacheSchema) {
+      _cache.clear();
+      _appliedDutyDataCacheSchema = _kDutyDataCacheSchema;
+    }
+
     final cacheKey = _createCacheKey(
       day: day,
       activeConfigName: activeConfigName,
@@ -235,7 +254,16 @@ class _MemoizedDutyCalculator {
       partnerGroup: partnerGroup,
     );
 
-    final dutyData = DutyData(myDuty: myDuty, partnerDuty: partnerDuty);
+    final List<String> personalTitles = _personalEntryTitlesOnDay(
+      day: day,
+      schedules: schedules,
+    );
+
+    final dutyData = DutyData(
+      myDuty: myDuty,
+      partnerDuty: partnerDuty,
+      personalCalendarTitles: personalTitles,
+    );
 
     _cache[cacheKey] = dutyData;
 
@@ -270,7 +298,12 @@ class _MemoizedDutyCalculator {
       return scheduleDate.year == day.year && scheduleDate.month == day.month;
     }).toList();
 
-    final contentHash = relevantSchedules.fold<int>(0, (hash, schedule) {
+    // Create a content-based hash that includes key schedule properties
+    // This ensures cache invalidation when schedule content changes
+    final int contentHash = relevantSchedules.fold<int>(0, (
+      int hash,
+      Schedule schedule,
+    ) {
       return hash ^
           Object.hash(
             schedule.date.day,
@@ -278,6 +311,8 @@ class _MemoizedDutyCalculator {
             schedule.dutyGroupName,
             schedule.configName,
             schedule.service,
+            schedule.isUserDefined,
+            schedule.personalEntryId,
           );
     });
 
@@ -289,6 +324,42 @@ class _MemoizedDutyCalculator {
     for (final key in keysToRemove) {
       _cache.remove(key);
     }
+  }
+
+  static List<String> _personalEntryTitlesOnDay({
+    required DateTime day,
+    required List<Schedule> schedules,
+  }) {
+    final DateTime dayDate = DateTime(day.year, day.month, day.day);
+    final List<Schedule> personal = <Schedule>[];
+    for (final Schedule schedule in schedules) {
+      if (!schedule.isUserDefined) {
+        continue;
+      }
+      final DateTime scheduleDate = DateTime(
+        schedule.date.year,
+        schedule.date.month,
+        schedule.date.day,
+      );
+      if (scheduleDate.isAtSameMomentAs(dayDate)) {
+        personal.add(schedule);
+      }
+    }
+    personal.sort((Schedule a, Schedule b) {
+      final int as = a.startMinutesFromMidnight ?? -1;
+      final int bs = b.startMinutesFromMidnight ?? -1;
+      final int byTime = as.compareTo(bs);
+      if (byTime != 0) {
+        return byTime;
+      }
+      return a.service.compareTo(b.service);
+    });
+    return personal
+        .map((Schedule s) {
+          final String t = s.service.trim();
+          return t.isEmpty ? '—' : t;
+        })
+        .toList(growable: false);
   }
 
   static String _getDutyAbbreviationForDate({

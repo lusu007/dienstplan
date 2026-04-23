@@ -6,14 +6,17 @@ import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/ensure_month_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
 import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
+import 'package:dienstplan/domain/use_cases/list_personal_calendar_entries_use_case.dart';
 import 'package:dienstplan/domain/policies/date_range_policy.dart';
 import 'package:dienstplan/domain/services/schedule_merge_service.dart';
+import 'package:dienstplan/domain/services/personal_entry_schedule_mapper.dart';
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -31,6 +34,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
   SaveSettingsUseCase? _saveSettingsUseCase;
   DateRangePolicy? _dateRangePolicy;
   ScheduleMergeService? _scheduleMergeService;
+  ListPersonalCalendarEntriesUseCase? _listPersonalCalendarEntriesUseCase;
 
   static ScheduleDataUiState? _cachedState;
   static DateTime? _lastCacheTime;
@@ -53,6 +57,9 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
     _scheduleMergeService ??= ref.read(scheduleMergeServiceProvider);
+    _listPersonalCalendarEntriesUseCase ??= await ref.read(
+      listPersonalCalendarEntriesUseCaseProvider.future,
+    );
 
     // Return cached state if available and still valid, otherwise initialize
     if (_cachedState != null && _isCacheValid()) {
@@ -87,13 +94,11 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
       final preferredDutyGroup = settings?.myDutyGroup;
       final selectedDutyGroup = settings?.selectedDutyGroup;
 
+      final DateTime now = DateTime.now();
+      final DateRange initialRange = _dateRangePolicy!.computeInitialRange(now);
+
       List<Schedule> schedules = [];
       if (activeConfigName != null) {
-        final DateTime now = DateTime.now();
-        final DateRange initialRange = _dateRangePolicy!.computeInitialRange(
-          now,
-        );
-
         AppLogger.d(
           'ScheduleDataNotifier: Initial load range: ${initialRange.start} to ${initialRange.end}',
         );
@@ -155,6 +160,12 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         }
       }
 
+      schedules = await _attachPersonalSchedules(
+        officialSchedules: schedules,
+        rangeStart: initialRange.start,
+        rangeEnd: initialRange.end,
+      );
+
       final initialState = ScheduleDataUiState(
         isLoading: false,
         error: null,
@@ -171,6 +182,99 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
       return ScheduleDataUiState.initial().copyWith(
         error: 'Failed to initialize schedule data',
       );
+    }
+  }
+
+  List<Schedule> _onlyOfficialSchedules(List<Schedule> schedules) {
+    return schedules.where((Schedule s) => !s.isUserDefined).toList();
+  }
+
+  DateRange _personalLoadRangeCovering(DateTime a, DateTime b) {
+    final DateTime firstMonth = a.isBefore(b)
+        ? DateTime(a.year, a.month, 1)
+        : DateTime(b.year, b.month, 1);
+    final DateTime lastMonth = a.isAfter(b)
+        ? DateTime(a.year, a.month, 1)
+        : DateTime(b.year, b.month, 1);
+    final DateRange r1 = _dateRangePolicy!.computeFocusedRange(firstMonth);
+    final DateRange r2 = _dateRangePolicy!.computeFocusedRange(lastMonth);
+    final DateTime start = r1.start.isBefore(r2.start) ? r1.start : r2.start;
+    final DateTime end = r1.end.isAfter(r2.end) ? r1.end : r2.end;
+    return DateRange(start: start, end: end);
+  }
+
+  Future<List<Schedule>> _loadPersonalSchedulesMapped(
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    _listPersonalCalendarEntriesUseCase ??= await ref.read(
+      listPersonalCalendarEntriesUseCaseProvider.future,
+    );
+    final Result<List<PersonalCalendarEntry>> result =
+        await _listPersonalCalendarEntriesUseCase!.executeBetween(
+          startDate: startDate,
+          endDate: endDate,
+        );
+    if (result.isFailure) {
+      AppLogger.w(
+        'ScheduleDataNotifier: Failed to load personal calendar entries '
+        '(reason=${result.failure.technicalMessage})',
+      );
+      return const <Schedule>[];
+    }
+    return result.value
+        .map(PersonalEntryScheduleMapper.toSchedule)
+        .toList(growable: false);
+  }
+
+  Future<List<Schedule>> _attachPersonalSchedules({
+    required List<Schedule> officialSchedules,
+    required DateTime rangeStart,
+    required DateTime rangeEnd,
+  }) async {
+    final DateRange wide = _personalLoadRangeCovering(rangeStart, rangeEnd);
+    final List<Schedule> personal = await _loadPersonalSchedulesMapped(
+      wide.start,
+      wide.end,
+    );
+    return <Schedule>[...personal, ...officialSchedules];
+  }
+
+  /// Reloads personal rows from SQLite and merges them with the current official schedules.
+  Future<void> refreshPersonalCalendarEntries() async {
+    final ScheduleDataUiState baseline =
+        state.value ?? _cachedState ?? await future;
+    final List<Schedule> official = _onlyOfficialSchedules(baseline.schedules);
+    DateTime rangeStart;
+    DateTime rangeEnd;
+    if (official.isEmpty) {
+      final DateRange r = _dateRangePolicy!.computeInitialRange(DateTime.now());
+      rangeStart = r.start;
+      rangeEnd = r.end;
+    } else {
+      DateTime minD = official.first.date;
+      DateTime maxD = official.first.date;
+      for (final Schedule s in official) {
+        if (s.date.isBefore(minD)) {
+          minD = s.date;
+        }
+        if (s.date.isAfter(maxD)) {
+          maxD = s.date;
+        }
+      }
+      rangeStart = minD;
+      rangeEnd = maxD;
+    }
+    final List<Schedule> merged = await _attachPersonalSchedules(
+      officialSchedules: official,
+      rangeStart: rangeStart,
+      rangeEnd: rangeEnd,
+    );
+    final ScheduleDataUiState updated = baseline.copyWith(schedules: merged);
+    _cachedState = updated;
+    _lastCacheTime = DateTime.now();
+    if (ref.mounted) {
+      state = AsyncData(updated);
     }
   }
 
@@ -245,9 +349,17 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         'ScheduleDataNotifier: Using cached data for range ${startDate.toIso8601String()} to ${endDate.toIso8601String()}',
       );
       final baseline = state.value ?? _cachedState ?? await future;
-      final mergedSchedules = _scheduleMergeService!.upsertByKey(
-        existing: baseline.schedules,
+      final List<Schedule> baselineOfficial = _onlyOfficialSchedules(
+        baseline.schedules,
+      );
+      final List<Schedule> mergedOfficial = _scheduleMergeService!.upsertByKey(
+        existing: baselineOfficial,
         incoming: cachedSchedules,
+      );
+      final List<Schedule> mergedSchedules = await _attachPersonalSchedules(
+        officialSchedules: mergedOfficial,
+        rangeStart: startDate,
+        rangeEnd: endDate,
       );
 
       final updated = baseline.copyWith(
@@ -315,8 +427,16 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
         );
 
         // Use upsert merge to avoid dropping existing items when loading deltas
-        final List<Schedule> mergedSchedules = _scheduleMergeService!
-            .upsertByKey(existing: baseline.schedules, incoming: newSchedules);
+        final List<Schedule> baselineOfficial = _onlyOfficialSchedules(
+          baseline.schedules,
+        );
+        final List<Schedule> mergedOfficial = _scheduleMergeService!
+            .upsertByKey(existing: baselineOfficial, incoming: newSchedules);
+        final List<Schedule> mergedSchedules = await _attachPersonalSchedules(
+          officialSchedules: mergedOfficial,
+          rangeStart: startDate,
+          rangeEnd: endDate,
+        );
 
         final ScheduleDataUiState updated = baseline.copyWith(
           schedules: mergedSchedules,
