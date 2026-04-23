@@ -108,20 +108,21 @@ class DutyScheduleList extends ConsumerWidget {
   }
 
   List<Schedule> _getFilteredSchedules() {
-    final List<Schedule> userRows =
-        schedules.where((Schedule s) => s.isUserDefined).toList();
+    final List<Schedule> userRows = schedules
+        .where((Schedule s) => s.isUserDefined)
+        .toList();
     final List<Schedule> officialAll = schedules
         .where((Schedule s) => !s.isUserDefined)
         .toList();
-    final List<Schedule> officialFiltered = officialAll
-        .where((Schedule schedule) {
-          final bool isActiveConfig =
-              activeConfigName == null ||
-              activeConfigName!.isEmpty ||
-              schedule.configName == activeConfigName;
-          return isActiveConfig;
-        })
-        .toList();
+    final List<Schedule> officialFiltered = officialAll.where((
+      Schedule schedule,
+    ) {
+      final bool isActiveConfig =
+          activeConfigName == null ||
+          activeConfigName!.isEmpty ||
+          schedule.configName == activeConfigName;
+      return isActiveConfig;
+    }).toList();
     final bool showAllGroups =
         selectedDutyGroup == null || selectedDutyGroup!.isEmpty;
     if (showAllGroups) {
@@ -130,8 +131,9 @@ class DutyScheduleList extends ConsumerWidget {
     final List<Schedule> byGroup = officialFiltered
         .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
         .toList();
-    final List<Schedule> officialPart =
-        byGroup.isEmpty ? officialFiltered : byGroup;
+    final List<Schedule> officialPart = byGroup.isEmpty
+        ? officialFiltered
+        : byGroup;
     final List<Schedule> userPart = userRows
         .where((Schedule s) => s.dutyGroupName == selectedDutyGroup)
         .toList();
@@ -139,10 +141,12 @@ class DutyScheduleList extends ConsumerWidget {
   }
 
   List<Schedule> _sortSchedules(List<Schedule> input) {
-    final List<Schedule> users =
-        input.where((Schedule s) => s.isUserDefined).toList();
-    final List<Schedule> official =
-        input.where((Schedule s) => !s.isUserDefined).toList();
+    final List<Schedule> users = input
+        .where((Schedule s) => s.isUserDefined)
+        .toList();
+    final List<Schedule> official = input
+        .where((Schedule s) => !s.isUserDefined)
+        .toList();
     users.sort((Schedule a, Schedule b) {
       final int as = a.startMinutesFromMidnight ?? -1;
       final int bs = b.startMinutesFromMidnight ?? -1;
@@ -263,7 +267,8 @@ class DutyScheduleList extends ConsumerWidget {
         final Color primaryColor = Theme.of(context).colorScheme.primary;
         final Color outlineColor = Theme.of(context).colorScheme.outlineVariant;
         final bool isPersonal = schedule.isUserDefined;
-        final bool isOwn = isPersonal ||
+        final bool isOwn =
+            isPersonal ||
             (myDutyGroupName != null &&
                 myDutyGroupName.isNotEmpty &&
                 schedule.dutyGroupName == myDutyGroupName);
@@ -363,9 +368,9 @@ class DutyScheduleList extends ConsumerWidget {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
                                           ),
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,

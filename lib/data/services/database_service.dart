@@ -845,9 +845,7 @@ class DatabaseService {
   Future<void> _migrateToVersion16(DatabaseExecutor db) async {
     try {
       assert(() {
-        AppLogger.i(
-          'Migrating to version 16: personal_calendar_entries table',
-        );
+        AppLogger.i('Migrating to version 16: personal_calendar_entries table');
         return true;
       }());
       final List<Map<String, Object?>> tables = await db.rawQuery(

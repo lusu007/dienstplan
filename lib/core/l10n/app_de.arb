@@ -772,6 +772,24 @@
   "@addPersonalEntryTooltip": {
     "description": "Tooltip for adding a personal calendar entry"
   },
+  "personalEntryQuickTitleHint": "Termin am {date} hinzuf.",
+  "@personalEntryQuickTitleHint": {
+    "description": "Hint for quick-add appointment field; {date} is a short calendar date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "personalEntryQuickTitleSemanticLabel": "Termin am {date} hinzufügen. Titel tippen, dann Fertig.",
+  "@personalEntryQuickTitleSemanticLabel": {
+    "description": "Accessibility label for quick-add appointment field",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "personalEntrySheetTitleNew": "Neuer Eintrag",
   "@personalEntrySheetTitleNew": {
     "description": "Title for new personal calendar entry sheet"

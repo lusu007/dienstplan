@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart' as tc;
@@ -12,7 +14,8 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_
 /// [onDaySelected] is fired after the coordinator has been updated so the
 /// parent can trigger UI reactions (e.g. opening the schedules dialog).
 class CalendarTable extends ConsumerWidget {
-  static const double _minRowHeight = 78.0;
+  /// Lower bound when there is enough vertical space (comfortable cells).
+  static const double _preferredFloorRowHeight = 32.0;
   static const double _maxRowHeight = 140.0;
 
   final GlobalKey calendarKey;
@@ -94,13 +97,20 @@ class CalendarTable extends ConsumerWidget {
   }
 
   double _resolveRowHeight(double availableHeight, int weekRows) {
-    if (availableHeight.isFinite && availableHeight > 0 && weekRows > 0) {
-      final double rawRowHeight =
-          (availableHeight - CalendarConfig.kDaysOfWeekRowHeight) / weekRows;
-      if (rawRowHeight > 0) {
-        return rawRowHeight.clamp(_minRowHeight, _maxRowHeight);
-      }
+    if (!availableHeight.isFinite || availableHeight <= 0 || weekRows <= 0) {
+      return _preferredFloorRowHeight;
     }
-    return _minRowHeight;
+    final double rawRowHeight =
+        (availableHeight - CalendarConfig.kDaysOfWeekRowHeight) / weekRows;
+    if (rawRowHeight <= 0) {
+      return _preferredFloorRowHeight;
+    }
+    // Never force rows taller than fits (e.g. keyboard shrinks height). Older
+    // logic used a high minimum (78) which caused RenderFlex overflow.
+    final double clamped = rawRowHeight.clamp(
+      _preferredFloorRowHeight,
+      _maxRowHeight,
+    );
+    return math.min(clamped, rawRowHeight);
   }
 }

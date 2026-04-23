@@ -52,9 +52,8 @@ void main() {
   group('SavePersonalCalendarEntryUseCase', () {
     test('rejects empty title', () async {
       final _FakeRepo repo = _FakeRepo();
-      final SavePersonalCalendarEntryUseCase uc = SavePersonalCalendarEntryUseCase(
-        repo,
-      );
+      final SavePersonalCalendarEntryUseCase uc =
+          SavePersonalCalendarEntryUseCase(repo);
       final Result<void> r = await uc.execute(
         _base(isAllDay: true, title: '   '),
       );
@@ -64,9 +63,8 @@ void main() {
 
     test('rejects timed entry without times', () async {
       final _FakeRepo repo = _FakeRepo();
-      final SavePersonalCalendarEntryUseCase uc = SavePersonalCalendarEntryUseCase(
-        repo,
-      );
+      final SavePersonalCalendarEntryUseCase uc =
+          SavePersonalCalendarEntryUseCase(repo);
       final Result<void> r = await uc.execute(
         _base(isAllDay: false, start: null, end: 100),
       );
@@ -75,9 +73,8 @@ void main() {
 
     test('rejects end before start', () async {
       final _FakeRepo repo = _FakeRepo();
-      final SavePersonalCalendarEntryUseCase uc = SavePersonalCalendarEntryUseCase(
-        repo,
-      );
+      final SavePersonalCalendarEntryUseCase uc =
+          SavePersonalCalendarEntryUseCase(repo);
       final Result<void> r = await uc.execute(
         _base(isAllDay: false, start: 600, end: 500),
       );
@@ -86,9 +83,8 @@ void main() {
 
     test('persists valid timed entry', () async {
       final _FakeRepo repo = _FakeRepo();
-      final SavePersonalCalendarEntryUseCase uc = SavePersonalCalendarEntryUseCase(
-        repo,
-      );
+      final SavePersonalCalendarEntryUseCase uc =
+          SavePersonalCalendarEntryUseCase(repo);
       final Result<void> r = await uc.execute(
         _base(isAllDay: false, start: 480, end: 540),
       );

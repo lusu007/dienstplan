@@ -9,10 +9,8 @@ class PersonalCalendarRepositoryImpl implements PersonalCalendarRepository {
   final PersonalCalendarEntriesDao _dao;
   final ExceptionMapper _exceptionMapper;
 
-  PersonalCalendarRepositoryImpl(
-    this._dao, {
-    ExceptionMapper? exceptionMapper,
-  }) : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
+  PersonalCalendarRepositoryImpl(this._dao, {ExceptionMapper? exceptionMapper})
+    : _exceptionMapper = exceptionMapper ?? const ExceptionMapper();
 
   @override
   Future<Result<List<PersonalCalendarEntry>>> listBetween({

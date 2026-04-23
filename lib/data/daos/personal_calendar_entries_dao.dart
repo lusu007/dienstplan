@@ -38,23 +38,19 @@ class PersonalCalendarEntriesDao {
     try {
       final Database db = await _databaseService.database;
       final String ymd = ScheduleKeyHelper.formatDateYmd(entry.date);
-      await db.insert(
-        'personal_calendar_entries',
-        <String, Object?>{
-          'id': entry.id,
-          'kind': entry.kind.toStorage(),
-          'title': entry.title,
-          'notes': entry.notes,
-          'date_ymd': ymd,
-          'is_all_day': entry.isAllDay ? 1 : 0,
-          'start_minutes': entry.startMinutesFromMidnight,
-          'end_minutes': entry.endMinutesFromMidnight,
-          'duty_group_name': entry.dutyGroupName,
-          'created_at': entry.createdAtMs,
-          'updated_at': entry.updatedAtMs,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await db.insert('personal_calendar_entries', <String, Object?>{
+        'id': entry.id,
+        'kind': entry.kind.toStorage(),
+        'title': entry.title,
+        'notes': entry.notes,
+        'date_ymd': ymd,
+        'is_all_day': entry.isAllDay ? 1 : 0,
+        'start_minutes': entry.startMinutesFromMidnight,
+        'end_minutes': entry.endMinutesFromMidnight,
+        'duty_group_name': entry.dutyGroupName,
+        'created_at': entry.createdAtMs,
+        'updated_at': entry.updatedAtMs,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
     } catch (e, stackTrace) {
       AppLogger.e(
         'PersonalCalendarEntriesDao: upsert failed (id=${entry.id})',

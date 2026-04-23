@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -52,6 +53,9 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
               child: Column(
                 children: [
                   const CalendarHeader(),
+                  const SizedBox(
+                    height: CalendarConfig.kCalendarMonthPickerToGridSpacing,
+                  ),
                   Expanded(
                     child: CalendarTable(
                       calendarKey: _calendarKey,

@@ -12,6 +12,7 @@ import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/services/personal_entry_schedule_mapper.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
 /// Bottom sheet to create or edit a personal calendar entry (appointment / own duty).
@@ -19,12 +20,14 @@ class PersonalCalendarEntrySheet extends ConsumerStatefulWidget {
   final DateTime day;
   final Schedule? existingSchedule;
   final String dutyGroupNameForNew;
+  final String? initialTitle;
 
   const PersonalCalendarEntrySheet({
     super.key,
     required this.day,
     required this.existingSchedule,
     required this.dutyGroupNameForNew,
+    this.initialTitle,
   });
 
   @override
@@ -53,10 +56,14 @@ class _PersonalCalendarEntrySheetState
         widget.existingSchedule!,
       );
     } else {
+      final String? quickTitle = widget.initialTitle?.trim();
+      final String title = (quickTitle != null && quickTitle.isNotEmpty)
+          ? quickTitle
+          : '';
       _draft = PersonalCalendarEntry(
         id: _newId(),
         kind: PersonalCalendarEntryKind.appointment,
-        title: '',
+        title: title,
         notes: null,
         date: d,
         isAllDay: true,
@@ -102,6 +109,35 @@ class _PersonalCalendarEntrySheetState
     ).format(local);
   }
 
+  InputDecoration _glassFieldDecoration(
+    BuildContext context, {
+    required String labelText,
+  }) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color fill = colorScheme.onSurface.withValues(
+      alpha: isDark ? 0.08 : 0.07,
+    );
+    final Color border = colorScheme.onSurface.withValues(
+      alpha: isDark ? 0.22 : 0.18,
+    );
+    final OutlineInputBorder outline = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: border),
+    );
+    return InputDecoration(
+      labelText: labelText,
+      filled: true,
+      fillColor: fill,
+      border: outline,
+      enabledBorder: outline,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: colorScheme.primary, width: 2),
+      ),
+    );
+  }
+
   Future<void> _pickDate() async {
     final DateTime initial = DateTime(
       _draft.date.year,
@@ -135,7 +171,8 @@ class _PersonalCalendarEntrySheetState
   }
 
   Future<void> _pickTime({required bool isStart}) async {
-    final TimeOfDay initial = _minutesToTimeOfDay(
+    final TimeOfDay initial =
+        _minutesToTimeOfDay(
           isStart
               ? _draft.startMinutesFromMidnight
               : _draft.endMinutesFromMidnight,
@@ -182,7 +219,9 @@ class _PersonalCalendarEntrySheetState
       ).showSnackBar(SnackBar(content: Text(message)));
       return;
     }
-    await ref.read(scheduleDataProvider.notifier).refreshPersonalCalendarEntries();
+    await ref
+        .read(scheduleDataProvider.notifier)
+        .refreshPersonalCalendarEntries();
     if (mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(
@@ -211,7 +250,9 @@ class _PersonalCalendarEntrySheetState
       ).showSnackBar(SnackBar(content: Text(message)));
       return;
     }
-    await ref.read(scheduleDataProvider.notifier).refreshPersonalCalendarEntries();
+    await ref
+        .read(scheduleDataProvider.notifier)
+        .refreshPersonalCalendarEntries();
     if (mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(
@@ -223,125 +264,181 @@ class _PersonalCalendarEntrySheetState
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TimeOfDay? startT = _minutesToTimeOfDay(
       _draft.startMinutesFromMidnight,
     );
     final TimeOfDay? endT = _minutesToTimeOfDay(_draft.endMinutesFromMidnight);
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 16,
-        bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              widget.existingSchedule != null
-                  ? l10n.personalEntrySheetTitleEdit
-                  : l10n.personalEntrySheetTitleNew,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            SegmentedButton<PersonalCalendarEntryKind>(
-              segments: <ButtonSegment<PersonalCalendarEntryKind>>[
-                ButtonSegment<PersonalCalendarEntryKind>(
-                  value: PersonalCalendarEntryKind.appointment,
-                  label: Text(l10n.personalEntryKindAppointment),
+    final String sheetTitle = widget.existingSchedule != null
+        ? l10n.personalEntrySheetTitleEdit
+        : l10n.personalEntrySheetTitleNew;
+    final double keyboardBottom = MediaQuery.viewInsetsOf(context).bottom;
+
+    return GlassBottomSheet(
+      title: sheetTitle,
+      shrinkToContent: true,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, 16 + keyboardBottom),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SegmentedButton<PersonalCalendarEntryKind>(
+                segments: <ButtonSegment<PersonalCalendarEntryKind>>[
+                  ButtonSegment<PersonalCalendarEntryKind>(
+                    value: PersonalCalendarEntryKind.appointment,
+                    label: Text(l10n.personalEntryKindAppointment),
+                  ),
+                  ButtonSegment<PersonalCalendarEntryKind>(
+                    value: PersonalCalendarEntryKind.personalDuty,
+                    label: Text(l10n.personalEntryKindDuty),
+                  ),
+                ],
+                selected: <PersonalCalendarEntryKind>{_draft.kind},
+                style: ButtonStyle(
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: WidgetStateProperty.resolveWith((
+                    Set<WidgetState> states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return colorScheme.primary.withValues(alpha: 0.42);
+                    }
+                    return colorScheme.onSurface.withValues(alpha: 0.1);
+                  }),
+                  foregroundColor: WidgetStateProperty.resolveWith((
+                    Set<WidgetState> states,
+                  ) {
+                    if (states.contains(WidgetState.selected)) {
+                      return colorScheme.onPrimary;
+                    }
+                    return colorScheme.onSurface;
+                  }),
                 ),
-                ButtonSegment<PersonalCalendarEntryKind>(
-                  value: PersonalCalendarEntryKind.personalDuty,
-                  label: Text(l10n.personalEntryKindDuty),
+                onSelectionChanged: (Set<PersonalCalendarEntryKind> next) {
+                  setState(() {
+                    _draft = _draft.copyWith(kind: next.first);
+                  });
+                },
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                tileColor: Colors.transparent,
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  l10n.personalEntryDateLabel,
+                  style: TextStyle(color: colorScheme.onSurface),
+                ),
+                subtitle: Text(
+                  _formatEntryDate(context),
+                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                ),
+                trailing: Icon(
+                  Icons.calendar_today_outlined,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                onTap: _pickDate,
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _titleController,
+                decoration: _glassFieldDecoration(
+                  context,
+                  labelText: l10n.personalEntryTitleLabel,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _notesController,
+                decoration: _glassFieldDecoration(
+                  context,
+                  labelText: l10n.personalEntryNotesLabel,
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 4),
+              SwitchListTile(
+                tileColor: Colors.transparent,
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  l10n.personalEntryAllDayLabel,
+                  style: TextStyle(color: colorScheme.onSurface),
+                ),
+                value: _draft.isAllDay,
+                onChanged: (bool v) {
+                  setState(() {
+                    _draft = _draft.copyWith(
+                      isAllDay: v,
+                      startMinutesFromMidnight: v
+                          ? null
+                          : _draft.startMinutesFromMidnight,
+                      endMinutesFromMidnight: v
+                          ? null
+                          : _draft.endMinutesFromMidnight,
+                    );
+                  });
+                },
+              ),
+              if (!_draft.isAllDay) ...<Widget>[
+                ListTile(
+                  tileColor: Colors.transparent,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    l10n.personalEntryStartTime,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
+                  subtitle: Text(
+                    startT?.format(context) ?? '—',
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
+                  ),
+                  trailing: Icon(
+                    Icons.schedule,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  onTap: () => _pickTime(isStart: true),
+                ),
+                ListTile(
+                  tileColor: Colors.transparent,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    l10n.personalEntryEndTime,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
+                  subtitle: Text(
+                    endT?.format(context) ?? '—',
+                    style: TextStyle(color: colorScheme.onSurfaceVariant),
+                  ),
+                  trailing: Icon(
+                    Icons.schedule,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  onTap: () => _pickTime(isStart: false),
                 ),
               ],
-              selected: <PersonalCalendarEntryKind>{_draft.kind},
-              onSelectionChanged: (Set<PersonalCalendarEntryKind> next) {
-                setState(() {
-                  _draft = _draft.copyWith(kind: next.first);
-                });
-              },
-            ),
-            const SizedBox(height: 12),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.personalEntryDateLabel),
-              subtitle: Text(_formatEntryDate(context)),
-              trailing: const Icon(Icons.calendar_today_outlined),
-              onTap: _pickDate,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: l10n.personalEntryTitleLabel,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _notesController,
-              decoration: InputDecoration(
-                labelText: l10n.personalEntryNotesLabel,
-                border: const OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 8),
-            SwitchListTile(
-              title: Text(l10n.personalEntryAllDayLabel),
-              value: _draft.isAllDay,
-              onChanged: (bool v) {
-                setState(() {
-                  _draft = _draft.copyWith(
-                    isAllDay: v,
-                    startMinutesFromMidnight: v ? null : _draft.startMinutesFromMidnight,
-                    endMinutesFromMidnight: v ? null : _draft.endMinutesFromMidnight,
-                  );
-                });
-              },
-            ),
-            if (!_draft.isAllDay) ...<Widget>[
-              ListTile(
-                title: Text(l10n.personalEntryStartTime),
-                subtitle: Text(
-                  startT?.format(context) ?? '—',
-                ),
-                trailing: const Icon(Icons.schedule),
-                onTap: () => _pickTime(isStart: true),
-              ),
-              ListTile(
-                title: Text(l10n.personalEntryEndTime),
-                subtitle: Text(endT?.format(context) ?? '—'),
-                trailing: const Icon(Icons.schedule),
-                onTap: () => _pickTime(isStart: false),
+              const SizedBox(height: 16),
+              Row(
+                children: <Widget>[
+                  if (widget.existingSchedule != null)
+                    TextButton(
+                      onPressed: _delete,
+                      style: TextButton.styleFrom(
+                        foregroundColor: colorScheme.error,
+                      ),
+                      child: Text(l10n.delete),
+                    ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(l10n.cancel),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(onPressed: _save, child: Text(l10n.save)),
+                ],
               ),
             ],
-            const SizedBox(height: 16),
-            Row(
-              children: <Widget>[
-                if (widget.existingSchedule != null)
-                  TextButton(
-                    onPressed: _delete,
-                    child: Text(l10n.delete),
-                  ),
-                const Spacer(),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(l10n.cancel),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: _save,
-                  child: Text(l10n.save),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -351,6 +448,7 @@ void showPersonalCalendarEntrySheet({
   required WidgetRef ref,
   required DateTime day,
   Schedule? existingSchedule,
+  String? initialTitle,
 }) {
   final String dutyGroup =
       ref.read(settingsProvider).value?.myDutyGroup?.trim().isNotEmpty == true
@@ -359,10 +457,14 @@ void showPersonalCalendarEntrySheet({
   showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withValues(alpha: 0.35),
+    clipBehavior: Clip.antiAlias,
     builder: (BuildContext ctx) => PersonalCalendarEntrySheet(
       day: day,
       existingSchedule: existingSchedule,
       dutyGroupNameForNew: dutyGroup,
+      initialTitle: initialTitle,
     ),
   );
 }

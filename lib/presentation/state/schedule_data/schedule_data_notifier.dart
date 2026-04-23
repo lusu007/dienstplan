@@ -431,10 +431,7 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
           baseline.schedules,
         );
         final List<Schedule> mergedOfficial = _scheduleMergeService!
-            .upsertByKey(
-              existing: baselineOfficial,
-              incoming: newSchedules,
-            );
+            .upsertByKey(existing: baselineOfficial, incoming: newSchedules);
         final List<Schedule> mergedSchedules = await _attachPersonalSchedules(
           officialSchedules: mergedOfficial,
           rangeStart: startDate,

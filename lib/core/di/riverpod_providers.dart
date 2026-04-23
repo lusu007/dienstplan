@@ -352,8 +352,9 @@ Future<GetSchedulesUseCase> getSchedulesUseCase(Ref ref) async {
 }
 
 @Riverpod(keepAlive: true)
-Future<ListPersonalCalendarEntriesUseCase>
-listPersonalCalendarEntriesUseCase(Ref ref) async {
+Future<ListPersonalCalendarEntriesUseCase> listPersonalCalendarEntriesUseCase(
+  Ref ref,
+) async {
   final PersonalCalendarRepository repo = await ref.watch(
     personalCalendarRepositoryProvider.future,
   );
@@ -371,8 +372,9 @@ Future<SavePersonalCalendarEntryUseCase> savePersonalCalendarEntryUseCase(
 }
 
 @Riverpod(keepAlive: true)
-Future<DeletePersonalCalendarEntryUseCase>
-deletePersonalCalendarEntryUseCase(Ref ref) async {
+Future<DeletePersonalCalendarEntryUseCase> deletePersonalCalendarEntryUseCase(
+  Ref ref,
+) async {
   final PersonalCalendarRepository repo = await ref.watch(
     personalCalendarRepositoryProvider.future,
   );

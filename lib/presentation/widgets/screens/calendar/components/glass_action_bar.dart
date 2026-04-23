@@ -1,35 +1,77 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/core/routing/app_router.dart';
-import 'package:dienstplan/domain/entities/duty_group.dart';
-import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 
 /// Floating, glass-morphic action bar pinned above the bottom safe area.
 ///
-/// Hosts the three main actions of the calendar screen:
-/// 1. Duty group filter chip (active group or "All")
-/// 2. Partner duty group toggle
+/// Hosts the main actions of the calendar screen:
+/// 1. Quick-add appointment title field (submit opens the personal entry sheet)
+/// 2. Add button (opens the personal entry sheet for the selected day)
 /// 3. Jump to today
-class GlassActionBar extends ConsumerWidget {
+class GlassActionBar extends ConsumerStatefulWidget {
   const GlassActionBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GlassActionBar> createState() => _GlassActionBarState();
+}
+
+class _GlassActionBarState extends ConsumerState<GlassActionBar> {
+  late final TextEditingController _quickTitleController;
+  late final FocusNode _quickTitleFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _quickTitleController = TextEditingController();
+    _quickTitleFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _quickTitleController.dispose();
+    _quickTitleFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _showPersonalEntrySheet({String? initialTitle}) {
+    final BuildContext ctx = context;
+    final DateTime day =
+        ref.read(scheduleCoordinatorProvider).value?.selectedDay ??
+        DateTime.now();
+    showPersonalCalendarEntrySheet(
+      context: ctx,
+      ref: ref,
+      day: day,
+      existingSchedule: null,
+      initialTitle: initialTitle,
+    );
+  }
+
+  void _onQuickTitleSubmitted(String value) {
+    final String trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+    _showPersonalEntrySheet(initialTitle: trimmed);
+    _quickTitleController.clear();
+    _quickTitleFocusNode.unfocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
-    final String? selectedDutyGroup = state?.selectedDutyGroup;
-    final String? partnerDutyGroup = state?.partnerDutyGroup;
-    final String? partnerConfigName = state?.partnerConfigName;
-    final bool partnerConfigured =
-        (partnerConfigName?.isNotEmpty ?? false) &&
-        (partnerDutyGroup?.isNotEmpty ?? false);
-    final bool partnerVisible = ref.watch(calendarPartnerVisibilityProvider);
-    final List<DutyGroup> activeGroups =
-        state?.activeConfig?.dutyGroups ?? const <DutyGroup>[];
+    final DateTime quickEntryDay = state?.selectedDay ?? DateTime.now();
+    final DateTime dayOnly = DateTime(
+      quickEntryDay.year,
+      quickEntryDay.month,
+      quickEntryDay.day,
+    );
+    final String dateLabel = _formatQuickHintDate(context, dayOnly);
 
     return SafeArea(
       top: false,
@@ -40,27 +82,25 @@ class GlassActionBar extends ConsumerWidget {
           child: Row(
             children: [
               Expanded(
-                child: _FilterChipAction(
-                  selectedDutyGroup: selectedDutyGroup,
-                  availableGroups: activeGroups,
-                  onSelected: (String? group) async {
-                    await ref
-                        .read(scheduleCoordinatorProvider.notifier)
-                        .setSelectedDutyGroup(group);
-                  },
+                child: _QuickPersonalEntryField(
+                  controller: _quickTitleController,
+                  focusNode: _quickTitleFocusNode,
+                  hintText: l10n.personalEntryQuickTitleHint(dateLabel),
+                  semanticLabel: l10n.personalEntryQuickTitleSemanticLabel(
+                    dateLabel,
+                  ),
+                  onSubmitted: _onQuickTitleSubmitted,
                 ),
               ),
               const SizedBox(width: 8),
-              _PartnerToggleAction(
-                partnerConfigured: partnerConfigured,
-                partnerVisible: partnerVisible,
-                tooltip: l10n.partnerDutyGroup,
-                onToggleVisibility: () {
-                  ref.read(calendarPartnerVisibilityProvider.notifier).toggle();
+              _AddPersonalEntryAction(
+                tooltip: l10n.addPersonalEntryTooltip,
+                onPressed: () {
+                  _quickTitleFocusNode.unfocus();
+                  _showPersonalEntrySheet();
                 },
-                onConfigure: () => context.router.push(const SettingsRoute()),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 8),
               _TodayAction(
                 tooltip: l10n.today,
                 onPressed: () {
@@ -73,189 +113,124 @@ class GlassActionBar extends ConsumerWidget {
       ),
     );
   }
+
+  /// Compact date for the action-bar hint (keeps string short).
+  static String _formatQuickHintDate(BuildContext context, DateTime day) {
+    final Locale locale = Localizations.localeOf(context);
+    final String loc = locale.toString();
+    if (locale.languageCode == 'de') {
+      return DateFormat('d.M.', loc).format(day);
+    }
+    return DateFormat.Md(loc).format(day);
+  }
 }
 
-class _FilterChipAction extends StatelessWidget {
-  final String? selectedDutyGroup;
-  final List<DutyGroup> availableGroups;
-  final ValueChanged<String?> onSelected;
+class _QuickPersonalEntryField extends StatelessWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final String hintText;
+  final String semanticLabel;
+  final ValueChanged<String> onSubmitted;
 
-  const _FilterChipAction({
-    required this.selectedDutyGroup,
-    required this.availableGroups,
-    required this.onSelected,
+  const _QuickPersonalEntryField({
+    required this.controller,
+    required this.focusNode,
+    required this.hintText,
+    required this.semanticLabel,
+    required this.onSubmitted,
   });
+
+  static const TextStyle _textStyle = TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w600,
+    fontSize: 13,
+  );
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context);
-    final bool isFiltering =
-        selectedDutyGroup != null && selectedDutyGroup!.isNotEmpty;
-    final String label = isFiltering ? selectedDutyGroup! : l10n.all;
-    final bool canFilter = availableGroups.isNotEmpty;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: canFilter ? () => _openPicker(context, l10n) : null,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: isFiltering ? 0.35 : 0.15),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.35),
-              width: 1,
-            ),
+    return Semantics(
+      label: semanticLabel,
+      textField: true,
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        style: _textStyle,
+        cursorColor: Colors.white,
+        textInputAction: TextInputAction.done,
+        onSubmitted: onSubmitted,
+        decoration: InputDecoration(
+          isDense: true,
+          hintText: hintText,
+          hintStyle: _textStyle.copyWith(
+            color: Colors.white.withValues(alpha: 0.55),
+            fontWeight: FontWeight.w500,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.filter_list_rounded,
-                size: 18,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  '${l10n.filteredBy}: $label',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
+          filled: true,
+          fillColor: Colors.white.withValues(alpha: 0.15),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.65)),
           ),
         ),
       ),
     );
   }
-
-  Future<void> _openPicker(BuildContext context, AppLocalizations l10n) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (BuildContext sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    l10n.filteredBy,
-                    style: Theme.of(sheetContext).textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.clear_all_rounded),
-                title: Text(l10n.all),
-                selected:
-                    selectedDutyGroup == null || selectedDutyGroup!.isEmpty,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  onSelected(null);
-                },
-              ),
-              const Divider(height: 1),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: availableGroups.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final DutyGroup group = availableGroups[index];
-                    final bool isSelected = group.name == selectedDutyGroup;
-                    return ListTile(
-                      leading: const Icon(Icons.group_outlined),
-                      title: Text(group.name),
-                      selected: isSelected,
-                      trailing: isSelected
-                          ? const Icon(Icons.check_rounded)
-                          : null,
-                      onTap: () {
-                        Navigator.of(sheetContext).pop();
-                        onSelected(group.name);
-                      },
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
 
-class _PartnerToggleAction extends StatelessWidget {
-  final bool partnerConfigured;
-  final bool partnerVisible;
+class _AddPersonalEntryAction extends StatelessWidget {
   final String tooltip;
-  final VoidCallback onToggleVisibility;
-  final VoidCallback onConfigure;
+  final VoidCallback onPressed;
 
-  const _PartnerToggleAction({
-    required this.partnerConfigured,
-    required this.partnerVisible,
+  const _AddPersonalEntryAction({
     required this.tooltip,
-    required this.onToggleVisibility,
-    required this.onConfigure,
+    required this.onPressed,
   });
-
-  bool get _isVisuallyActive => partnerConfigured && partnerVisible;
 
   @override
   Widget build(BuildContext context) {
-    final Color foreground = Colors.white.withValues(
-      alpha: _isVisuallyActive ? 1.0 : 0.55,
-    );
-    final Color background = _isVisuallyActive
-        ? Colors.white.withValues(alpha: 0.3)
-        : Colors.white.withValues(alpha: 0.0);
-
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(22),
-          onTap: _handleTap,
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 1,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(22),
+            onTap: onPressed,
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+              child: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 24,
               ),
             ),
-            child: Icon(Icons.group_rounded, color: foreground, size: 22),
           ),
         ),
       ),
     );
-  }
-
-  void _handleTap() {
-    if (!partnerConfigured) {
-      onConfigure();
-      return;
-    }
-    onToggleVisibility();
   }
 }
 

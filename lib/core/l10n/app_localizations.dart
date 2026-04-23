@@ -1158,6 +1158,18 @@ abstract class AppLocalizations {
   /// **'Add personal appointment or duty'**
   String get addPersonalEntryTooltip;
 
+  /// Hint for quick-add appointment field; {date} is a short calendar date
+  ///
+  /// In en, this message translates to:
+  /// **'Add appt. on {date}'**
+  String personalEntryQuickTitleHint(String date);
+
+  /// Accessibility label for quick-add appointment field
+  ///
+  /// In en, this message translates to:
+  /// **'Add appointment on {date}. Type a title, then Done.'**
+  String personalEntryQuickTitleSemanticLabel(String date);
+
   /// Title for new personal calendar entry sheet
   ///
   /// In en, this message translates to:

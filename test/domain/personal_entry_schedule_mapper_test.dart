@@ -53,7 +53,8 @@ void main() {
         personalCreatedAtMs: 1,
         personalUpdatedAtMs: 2,
       );
-      final PersonalCalendarEntry e = PersonalEntryScheduleMapper.entryFromSchedule(s);
+      final PersonalCalendarEntry e =
+          PersonalEntryScheduleMapper.entryFromSchedule(s);
       expect(e.id, 'x');
       expect(e.title, 'Dienst');
       expect(e.kind, PersonalCalendarEntryKind.personalDuty);

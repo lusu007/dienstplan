@@ -242,7 +242,10 @@ class _MemoizedDutyCalculator {
       partnerGroup: partnerGroup,
     );
 
-    final bool hasPersonal = _hasPersonalEntryOnDay(day: day, schedules: schedules);
+    final bool hasPersonal = _hasPersonalEntryOnDay(
+      day: day,
+      schedules: schedules,
+    );
 
     final dutyData = DutyData(
       myDuty: myDuty,

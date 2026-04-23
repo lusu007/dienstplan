@@ -596,6 +596,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addPersonalEntryTooltip => 'Eigenen Termin oder Dienst eintragen';
 
   @override
+  String personalEntryQuickTitleHint(String date) {
+    return 'Termin am $date hinzuf.';
+  }
+
+  @override
+  String personalEntryQuickTitleSemanticLabel(String date) {
+    return 'Termin am $date hinzufügen. Titel tippen, dann Fertig.';
+  }
+
+  @override
   String get personalEntrySheetTitleNew => 'Neuer Eintrag';
 
   @override

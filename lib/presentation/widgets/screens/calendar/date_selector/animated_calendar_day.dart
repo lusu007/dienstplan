@@ -50,12 +50,21 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   static const double _chipPlaceholderBottomMargin = 4.0;
   static const double _holidayIndicatorHeight = 2.0;
   static const double _holidayIndicatorAlpha = 0.7;
+  static const double _stripeHeight = 3.5;
+  static const double _stripePersonalHeight = 2.0;
+  static const double _compactStripeTopPadding = 0.5;
+  static const double _compactStripeBottomMargin = 1.0;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final effectiveWidth = widget.width ?? CalendarConfig.kCalendarDayWidth;
-    final effectiveHeight = widget.height ?? CalendarConfig.kCalendarDayHeight;
+    final ThemeData theme = Theme.of(context);
+    final double effectiveWidth =
+        widget.width ?? CalendarConfig.kCalendarDayWidth;
+    final double effectiveHeight =
+        widget.height ?? CalendarConfig.kCalendarDayHeight;
+    final bool useCompactDutyStripes =
+        effectiveHeight <=
+        CalendarConfig.kCalendarDayCompactDutyStripesMaxHeight;
 
     return InkWell(
       onTap: widget.onTap,
@@ -68,20 +77,20 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _buildDayNumber(theme),
+            _buildDayNumber(theme, useCompactDutyStripes),
             _buildHolidayIndicator(),
-            _buildPrimaryColumn(theme),
-            _buildPartnerChip(theme),
+            _buildPrimaryColumn(theme, useCompactDutyStripes),
+            _buildPartnerChip(theme, useCompactDutyStripes),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDayNumber(ThemeData theme) {
+  Widget _buildDayNumber(ThemeData theme, bool compact) {
     return Padding(
-      padding: const EdgeInsets.only(top: 2.0),
-      child: Text('${widget.day.day}', style: _getDayTextStyle(theme)),
+      padding: EdgeInsets.only(top: compact ? 1.0 : 2.0),
+      child: Text('${widget.day.day}', style: _getDayTextStyle(theme, compact)),
     );
   }
 
@@ -105,9 +114,14 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  Widget _buildPrimaryColumn(ThemeData theme) {
+  Widget _buildPrimaryColumn(ThemeData theme, bool compact) {
     final bool hasPrimary = widget.dutyAbbreviation?.isNotEmpty ?? false;
     final bool hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+
+    if (compact) {
+      return _buildPrimaryColumnCompact(theme, hasPrimary, hasPartner);
+    }
+
     final List<Widget> children = <Widget>[];
     if (hasPrimary) {
       children.add(
@@ -146,22 +160,125 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     if (children.isEmpty) {
       return const SizedBox.shrink();
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
   }
 
-  Widget _buildPartnerChip(ThemeData theme) {
-    final hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+  Widget _buildPrimaryColumnCompact(
+    ThemeData theme,
+    bool hasPrimary,
+    bool hasPartner,
+  ) {
+    final List<Widget> children = <Widget>[];
+    if (hasPrimary) {
+      children.add(
+        _buildDutyStripe(
+          decoration: _stripeDecorationDuty(theme),
+          margin: EdgeInsets.only(
+            bottom: widget.hasPersonalCalendarEntry
+                ? 0
+                : _compactStripeBottomMargin,
+          ),
+        ),
+      );
+      if (widget.hasPersonalCalendarEntry) {
+        children.add(
+          _buildDutyStripe(
+            decoration: _personalAddonStripeDecoration(theme),
+            height: _stripePersonalHeight,
+            margin: const EdgeInsets.only(bottom: _compactStripeBottomMargin),
+          ),
+        );
+      }
+    } else if (!hasPartner && widget.hasPersonalCalendarEntry) {
+      children.add(
+        _buildDutyStripe(
+          decoration: _stripeDecorationDuty(theme),
+          margin: const EdgeInsets.only(bottom: _compactStripeBottomMargin),
+        ),
+      );
+    }
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Column(mainAxisSize: MainAxisSize.min, children: children);
+  }
 
-    if (!hasPartner) return const SizedBox.shrink();
-
+  Widget _buildPartnerChip(ThemeData theme, bool compact) {
+    final bool hasPartner = widget.partnerDutyAbbreviation?.isNotEmpty ?? false;
+    if (!hasPartner) {
+      return const SizedBox.shrink();
+    }
+    if (compact) {
+      return _buildDutyStripe(
+        decoration: _stripeDecorationPartner(theme),
+        margin: EdgeInsets.zero,
+      );
+    }
     return _buildChip(
       text: widget.partnerDutyAbbreviation!,
       decoration: _getPartnerBadgeDecoration(theme),
       textStyle: _getPartnerBadgeTextStyle(theme),
     );
+  }
+
+  Widget _buildDutyStripe({
+    required BoxDecoration decoration,
+    EdgeInsets? margin,
+    double height = _stripeHeight,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: _compactStripeTopPadding),
+      child: Container(
+        margin: margin,
+        height: height,
+        width: double.infinity,
+        decoration: decoration,
+      ),
+    );
+  }
+
+  /// On selected days, letter chips use a white fill with colored text; stripes
+  /// use solid accent colors so my vs partner stay distinguishable.
+  BoxDecoration _stripeDecorationDuty(ThemeData theme) {
+    if (widget.dayType == CalendarDayType.selected) {
+      final Color c = Color(
+        widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
+      );
+      return BoxDecoration(color: c, borderRadius: BorderRadius.circular(3));
+    }
+    return _getDutyBadgeDecoration(theme);
+  }
+
+  BoxDecoration _stripeDecorationPartner(ThemeData theme) {
+    if (widget.dayType == CalendarDayType.selected) {
+      final Color c = Color(
+        widget.partnerAccentColorValue ??
+            AccentColorDefaults.partnerAccentColorValue,
+      );
+      return BoxDecoration(color: c, borderRadius: BorderRadius.circular(3));
+    }
+    return _getPartnerBadgeDecoration(theme);
+  }
+
+  BoxDecoration _personalAddonStripeDecoration(ThemeData theme) {
+    switch (widget.dayType) {
+      case CalendarDayType.selected:
+        return BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(2),
+        );
+      case CalendarDayType.outside:
+        return BoxDecoration(
+          color: theme.colorScheme.outline.withValues(alpha: 0.45),
+          borderRadius: BorderRadius.circular(2),
+        );
+      case CalendarDayType.default_:
+      case CalendarDayType.today:
+        return BoxDecoration(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.38),
+          borderRadius: BorderRadius.circular(2),
+        );
+    }
   }
 
   Widget _buildChip({
@@ -198,24 +315,25 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  TextStyle _getDayTextStyle(ThemeData theme) {
+  TextStyle _getDayTextStyle(ThemeData theme, bool compact) {
+    final double fontSize = compact ? 13 : 16;
     switch (widget.dayType) {
       case CalendarDayType.default_:
-        return const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+        return TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500);
       case CalendarDayType.outside:
         return TextStyle(
-          fontSize: 16,
+          fontSize: fontSize,
           fontWeight: FontWeight.w500,
           color: theme.colorScheme.onSurfaceVariant,
         );
       case CalendarDayType.selected:
-        return const TextStyle(
-          fontSize: 16,
+        return TextStyle(
+          fontSize: fontSize,
           fontWeight: FontWeight.w500,
           color: Colors.white,
         );
       case CalendarDayType.today:
-        return const TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+        return TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500);
     }
   }
 

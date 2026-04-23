@@ -591,6 +591,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addPersonalEntryTooltip => 'Add personal appointment or duty';
 
   @override
+  String personalEntryQuickTitleHint(String date) {
+    return 'Add appt. on $date';
+  }
+
+  @override
+  String personalEntryQuickTitleSemanticLabel(String date) {
+    return 'Add appointment on $date. Type a title, then Done.';
+  }
+
+  @override
   String get personalEntrySheetTitleNew => 'New entry';
 
   @override
