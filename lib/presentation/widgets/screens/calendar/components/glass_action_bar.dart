@@ -82,6 +82,9 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
+    final _GlassActionBarPalette palette = _GlassActionBarPalette.fromTheme(
+      Theme.of(context),
+    );
     final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
     final DateTime quickEntryDay = state?.selectedDay ?? DateTime.now();
     final DateTime dayOnly = DateTime(
@@ -104,6 +107,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
                   controller: _quickTitleController,
                   focusNode: _quickTitleFocusNode,
                   onTap: _onQuickFieldTap,
+                  palette: palette,
                   hintText: l10n.personalEntryQuickTitleHint(dateLabel),
                   semanticLabel: l10n.personalEntryQuickTitleSemanticLabel(
                     dateLabel,
@@ -113,6 +117,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
               ),
               const SizedBox(width: 8),
               _AddPersonalEntryAction(
+                palette: palette,
                 tooltip: l10n.addPersonalEntryTooltip,
                 onPressed: () {
                   _quickTitleFocusNode.unfocus();
@@ -121,6 +126,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
               ),
               const SizedBox(width: 8),
               _TodayAction(
+                palette: palette,
                 tooltip: l10n.today,
                 onPressed: () {
                   ref.read(scheduleCoordinatorProvider.notifier).goToToday();
@@ -148,6 +154,7 @@ class _QuickPersonalEntryField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final VoidCallback onTap;
+  final _GlassActionBarPalette palette;
   final String hintText;
   final String semanticLabel;
   final ValueChanged<String> onSubmitted;
@@ -156,16 +163,11 @@ class _QuickPersonalEntryField extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     required this.onTap,
+    required this.palette,
     required this.hintText,
     required this.semanticLabel,
     required this.onSubmitted,
   });
-
-  static const TextStyle _textStyle = TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w600,
-    fontSize: 13,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -179,34 +181,39 @@ class _QuickPersonalEntryField extends StatelessWidget {
         onTapOutside: (PointerDownEvent event) {
           focusNode.unfocus();
         },
-        style: _textStyle,
-        cursorColor: Colors.white,
+        style: TextStyle(
+          color: palette.fieldTextColor,
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+        ),
+        cursorColor: palette.fieldCursorColor,
         textInputAction: TextInputAction.done,
         onSubmitted: onSubmitted,
         decoration: InputDecoration(
           isDense: true,
           hintText: hintText,
-          hintStyle: _textStyle.copyWith(
-            color: Colors.white.withValues(alpha: 0.55),
+          hintStyle: TextStyle(
+            color: palette.fieldHintColor,
             fontWeight: FontWeight.w500,
+            fontSize: 13,
           ),
           filled: true,
-          fillColor: Colors.white.withValues(alpha: 0.15),
+          fillColor: palette.fieldFillColor,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 10,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
+            borderSide: BorderSide(color: palette.fieldBorderColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.35)),
+            borderSide: BorderSide(color: palette.fieldBorderColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.65)),
+            borderSide: BorderSide(color: palette.fieldFocusedBorderColor),
           ),
         ),
       ),
@@ -215,10 +222,12 @@ class _QuickPersonalEntryField extends StatelessWidget {
 }
 
 class _AddPersonalEntryAction extends StatelessWidget {
+  final _GlassActionBarPalette palette;
   final String tooltip;
   final VoidCallback onPressed;
 
   const _AddPersonalEntryAction({
+    required this.palette,
     required this.tooltip,
     required this.onPressed,
   });
@@ -239,16 +248,16 @@ class _AddPersonalEntryAction extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: palette.addActionFillColor,
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.3),
+                  color: palette.addActionBorderColor,
                   width: 1,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.add_rounded,
-                color: Colors.white,
+                color: palette.addActionIconColor,
                 size: 24,
               ),
             ),
@@ -260,39 +269,109 @@ class _AddPersonalEntryAction extends StatelessWidget {
 }
 
 class _TodayAction extends StatelessWidget {
+  final _GlassActionBarPalette palette;
   final String tooltip;
   final VoidCallback onPressed;
 
-  const _TodayAction({required this.tooltip, required this.onPressed});
+  const _TodayAction({
+    required this.palette,
+    required this.tooltip,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(22),
-          onTap: onPressed,
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 1,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(22),
+            onTap: onPressed,
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: palette.todayActionFillColor,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(
+                  color: palette.todayActionBorderColor,
+                  width: 1,
+                ),
               ),
-            ),
-            child: const Icon(
-              Icons.today_rounded,
-              color: Colors.white,
-              size: 22,
+              child: Icon(
+                Icons.today_rounded,
+                color: palette.todayActionIconColor,
+                size: 22,
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _GlassActionBarPalette {
+  final Color fieldTextColor;
+  final Color fieldHintColor;
+  final Color fieldCursorColor;
+  final Color fieldFillColor;
+  final Color fieldBorderColor;
+  final Color fieldFocusedBorderColor;
+  final Color addActionFillColor;
+  final Color addActionBorderColor;
+  final Color addActionIconColor;
+  final Color todayActionFillColor;
+  final Color todayActionBorderColor;
+  final Color todayActionIconColor;
+
+  const _GlassActionBarPalette({
+    required this.fieldTextColor,
+    required this.fieldHintColor,
+    required this.fieldCursorColor,
+    required this.fieldFillColor,
+    required this.fieldBorderColor,
+    required this.fieldFocusedBorderColor,
+    required this.addActionFillColor,
+    required this.addActionBorderColor,
+    required this.addActionIconColor,
+    required this.todayActionFillColor,
+    required this.todayActionBorderColor,
+    required this.todayActionIconColor,
+  });
+
+  factory _GlassActionBarPalette.fromTheme(ThemeData themeData) {
+    final ColorScheme colorScheme = themeData.colorScheme;
+    final bool isDark = themeData.brightness == Brightness.dark;
+    return _GlassActionBarPalette(
+      fieldTextColor: colorScheme.onSurface.withValues(alpha: 0.94),
+      fieldHintColor: colorScheme.onSurface.withValues(
+        alpha: isDark ? 0.60 : 0.52,
+      ),
+      fieldCursorColor: colorScheme.onSurface.withValues(alpha: 0.96),
+      fieldFillColor: Colors.white.withValues(alpha: isDark ? 0.10 : 0.20),
+      fieldBorderColor: Colors.white.withValues(alpha: isDark ? 0.22 : 0.40),
+      fieldFocusedBorderColor: colorScheme.primary.withValues(
+        alpha: isDark ? 0.78 : 0.62,
+      ),
+      addActionFillColor: colorScheme.primary.withValues(
+        alpha: isDark ? 0.24 : 0.20,
+      ),
+      addActionBorderColor: colorScheme.primary.withValues(
+        alpha: isDark ? 0.70 : 0.62,
+      ),
+      addActionIconColor: colorScheme.onSurface.withValues(alpha: 0.96),
+      todayActionFillColor: Colors.white.withValues(
+        alpha: isDark ? 0.10 : 0.22,
+      ),
+      todayActionBorderColor: Colors.white.withValues(
+        alpha: isDark ? 0.22 : 0.42,
+      ),
+      todayActionIconColor: colorScheme.onSurface.withValues(alpha: 0.92),
     );
   }
 }

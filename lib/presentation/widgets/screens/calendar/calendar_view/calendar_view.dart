@@ -12,13 +12,13 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/c
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/day_schedules_list_panel.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_header.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/glass_action_bar.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedules_dialog.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedules_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/table_calendar.dart';
 
 /// Calendar screen body.
 ///
 /// Renders [CalendarHeader], the month calendar, and the floating glass
-/// action bar. Tapping a day opens the glass schedules dialog. A vertical
+/// action bar. Tapping a day opens the glass schedules bottom sheet. A vertical
 /// upward swipe on the month grid switches to a height-limited table
 /// (compact stripes) and an inline day list below; swipe down on the
 /// compact month table restores the default layout.
@@ -157,7 +157,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     if (_isSplitLayout) {
       return;
     }
-    await SchedulesDialog.show(context, day);
+    await SchedulesBottomSheet.show(context, day);
   }
 }
 
