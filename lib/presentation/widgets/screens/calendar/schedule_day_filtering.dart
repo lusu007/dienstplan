@@ -5,7 +5,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 
 /// Reduces the coordinator schedule list to a single [day] in local calendar
 /// time (Y-M-D, UTC-normalized) so [DutyScheduleList] can run its grouping
-/// logic. Matches the dialog behaviour.
+/// logic. Matches the schedules sheet behaviour.
 List<Schedule> filterSchedulesForSingleDay(
   List<Schedule>? allSchedules,
   DateTime day,
@@ -27,7 +27,7 @@ List<Schedule> filterSchedulesForSingleDay(
 }
 
 /// If the coordinator has no rows for the active config yet, request the day
-/// once (same side-effect as [SchedulesDialog]). Use only from build, via
+/// once (same side-effect as the schedules sheet). Use only from build, via
 /// post-frame, so it does not run every frame when empty.
 void schedulePostFrameEnsureDayIfEmpty({
   required WidgetRef ref,

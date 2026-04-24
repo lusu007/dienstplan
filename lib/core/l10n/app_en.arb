@@ -113,6 +113,14 @@
   "@licenses": {
     "description": "Title for licenses page"
   },
+  "licensesEmptyState": "No licenses available.",
+  "@licensesEmptyState": {
+    "description": "Message shown when no licenses are available"
+  },
+  "licensesLoadError": "Unable to load licenses right now.",
+  "@licensesLoadError": {
+    "description": "Message shown when loading licenses fails"
+  },
   "version": "Version",
   "@version": {
     "description": "Version label"

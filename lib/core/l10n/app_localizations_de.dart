@@ -94,6 +94,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get licenses => 'Lizenzen';
 
   @override
+  String get licensesEmptyState => 'Keine Lizenzen verfügbar.';
+
+  @override
+  String get licensesLoadError =>
+      'Lizenzen konnten gerade nicht geladen werden.';
+
+  @override
   String get version => 'Version';
 
   @override

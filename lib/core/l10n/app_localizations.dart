@@ -260,6 +260,18 @@ abstract class AppLocalizations {
   /// **'Licenses'**
   String get licenses;
 
+  /// Message shown when no licenses are available
+  ///
+  /// In en, this message translates to:
+  /// **'No licenses available.'**
+  String get licensesEmptyState;
+
+  /// Message shown when loading licenses fails
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load licenses right now.'**
+  String get licensesLoadError;
+
   /// Version label
   ///
   /// In en, this message translates to:

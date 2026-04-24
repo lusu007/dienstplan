@@ -9,7 +9,7 @@ import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_day_filtering.dart';
 
-/// In-layout day list: same data as [SchedulesDialog], glass look with
+/// In-layout day list: same data as the calendar schedules bottom sheet, glass
 /// compact typography to match the split calendar.
 class DaySchedulesListPanel extends ConsumerWidget {
   const DaySchedulesListPanel({super.key});
@@ -103,15 +103,17 @@ class _CompactDayHeader extends ConsumerWidget {
                     color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1.2,
+                    height: 1.0,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 0),
                 Text(
                   monthYear,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: colorScheme.onSurface,
                     fontWeight: FontWeight.w600,
+                    height: 1.0,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
