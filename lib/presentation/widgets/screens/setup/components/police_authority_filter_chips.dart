@@ -26,6 +26,8 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final List<String> authorities = availableAuthorities.toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -62,18 +64,21 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
           ],
         ),
         const SizedBox(height: kGlassChipWrapSpacing),
-        Wrap(
-          spacing: kGlassChipWrapSpacing,
-          runSpacing: kGlassChipWrapRunSpacing,
-          children: [
-            ...availableAuthorities.map(
-              (authority) => _buildFilterChip(
-                context,
-                authority,
-                selectedAuthorities.contains(authority),
-              ),
-            ),
-          ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              for (int i = 0; i < authorities.length; i++) ...<Widget>[
+                if (i > 0) const SizedBox(width: kGlassChipWrapSpacing),
+                _buildFilterChip(
+                  context,
+                  authorities[i],
+                  selectedAuthorities.contains(authorities[i]),
+                ),
+              ],
+            ],
+          ),
         ),
       ],
     );

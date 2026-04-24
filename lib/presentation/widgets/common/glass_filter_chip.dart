@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_chip_tokens.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 
 class GlassFilterChip extends StatelessWidget {
   final String label;
@@ -12,86 +14,60 @@ class GlassFilterChip extends StatelessWidget {
     required this.label,
     required this.isSelected,
     required this.onTap,
-    this.showCheckmark = true,
+    this.showCheckmark = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final Color background = isSelected
-        ? colorScheme.primary.withValues(
-            alpha: isDark
-                ? kGlassChipSelectedTintAlphaDark
-                : kGlassChipSelectedTintAlphaLight,
-          )
-        : Colors.white.withValues(
-            alpha: isDark
-                ? kGlassChipUnselectedTintAlphaDark
-                : kGlassChipUnselectedTintAlphaLight,
-          );
-    final Color borderColor = isSelected
-        ? colorScheme.primary.withValues(alpha: kGlassChipSelectedBorderAlpha)
-        : Colors.white.withValues(
-            alpha: isDark
-                ? kGlassChipUnselectedBorderAlphaDark
-                : kGlassChipUnselectedBorderAlphaLight,
-          );
-    final Color selectedContentColor = _resolveReadableForeground(
-      background: background,
-      preferred: colorScheme.onPrimary.withValues(
-        alpha: kGlassChipSelectedContentFallbackAlpha,
-      ),
-    );
+    final double tintOpacity = isSelected
+        ? (isDark ? glassTintAlphaActiveDark : glassTintAlphaActiveLight)
+        : (isDark ? glassTintAlphaDark : glassTintAlphaLight);
+    final double borderOpacity = isSelected
+        ? glassBorderAlphaActive
+        : (isDark ? glassBorderAlphaDark : glassBorderAlphaLight);
     final Color textColor = isSelected
-        ? selectedContentColor
-        : colorScheme.primary;
-    final Color splashColor = colorScheme.primary.withValues(
-      alpha: isDark ? 0.18 : 0.12,
-    );
-    final Color hoverColor = colorScheme.primary.withValues(
-      alpha: isDark ? 0.12 : 0.08,
-    );
-    return Material(
-      color: Colors.transparent,
-      shape: StadiumBorder(
-        side: BorderSide(color: borderColor, width: kGlassChipBorderWidth),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const StadiumBorder(),
-        splashColor: splashColor,
-        highlightColor: Colors.transparent,
-        hoverColor: hoverColor,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 140),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(
-            horizontal: kGlassChipHorizontalPadding,
-            vertical: kGlassChipVerticalPadding,
-          ),
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(kGlassChipRadius),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (showCheckmark && isSelected) ...[
-                Icon(Icons.check_rounded, size: 14, color: textColor),
-                const SizedBox(width: 4),
-              ],
-              Text(
-                label,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontSize: 12,
-                  height: 1.0,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: textColor,
-                ),
+        ? colorScheme.primary
+        : colorScheme.onSurface;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: kGlassFilterChipHeight),
+      child: GlassContainer(
+        borderRadius: glassSurfaceRadiusPill,
+        blurSigma: glassSurfaceBlurDefault,
+        tintOpacity: tintOpacity,
+        borderOpacity: borderOpacity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: kGlassFilterChipHorizontalPadding,
+          vertical: kGlassFilterChipVerticalPadding,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(glassSurfaceRadiusPill),
+            child: Align(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (showCheckmark && isSelected) ...<Widget>[
+                    Icon(Icons.check_rounded, size: 14, color: textColor),
+                    const SizedBox(width: 4),
+                  ],
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      letterSpacing: 0.3,
+                      height: 1.0,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
