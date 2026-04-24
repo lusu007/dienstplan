@@ -7,6 +7,11 @@ const double kGlassChipVerticalPadding = 6;
 const double kGlassChipWrapSpacing = glassSpacingSm;
 const double kGlassChipWrapRunSpacing = 6;
 
+/// Compact glass pill for filter chips (slightly narrower than setup language button 38×14×8).
+const double kGlassFilterChipHeight = 34;
+const double kGlassFilterChipHorizontalPadding = 12;
+const double kGlassFilterChipVerticalPadding = 6;
+
 const double kGlassIconChipSize = 36;
 const double kGlassIconChipRadius = glassSurfaceRadiusMd;
 const double kGlassIconChipIconSize = 20;

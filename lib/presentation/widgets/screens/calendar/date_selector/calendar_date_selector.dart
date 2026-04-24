@@ -5,6 +5,7 @@ import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_year_picker_layout.dart';
 import 'package:intl/intl.dart';
 
 class CalendarDateSelector extends ConsumerStatefulWidget {
@@ -66,7 +67,11 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     _selectedYear = widget.currentDate.year;
     _selectedMonth = widget.currentDate.month;
     _displayedYear = _selectedYear;
-    _yearBlockStart = _selectedYear - (_selectedYear % 12);
+    _yearBlockStart = calendarYearBlockStartForYear(
+      minYear: _minYear,
+      maxYear: _maxYear,
+      year: _selectedYear,
+    );
     // Use the selected day if provided, otherwise use the current date day
     _originalSelectedDay = widget.selectedDay?.day ?? widget.currentDate.day;
   }
@@ -88,15 +93,6 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     _monthPageController?.dispose();
     _yearPageController?.dispose();
     super.dispose();
-  }
-
-  int _calculateYearBlockStart(int year) {
-    final int yearOffsetFromMin = (year - _minYear).clamp(
-      0,
-      _maxYear - _minYear,
-    );
-    final int blockOffset = (yearOffsetFromMin ~/ 12) * 12;
-    return _minYear + blockOffset;
   }
 
   /// Total height of the 4×3 picker grid (matches [SliverGridDelegate] + grid padding in [_buildMonthGrid] / [_buildYearGrid]).
@@ -125,15 +121,27 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     setState(() {
       _selectedYear = clampedYear; // Initialize selected year
       _displayedYear = clampedYear;
-      _yearBlockStart = _calculateYearBlockStart(clampedYear);
+      _yearBlockStart = calendarYearBlockStartForYear(
+        minYear: _minYear,
+        maxYear: _maxYear,
+        year: clampedYear,
+      );
       _isYearView = false;
       _needsMonthPageSync = false;
       _isMonthPageSyncScheduled = false;
     });
 
     // Initialize page controllers to correct positions
-    final monthPageIndex = clampedYear - _minYear;
-    final yearPageIndex = ((clampedYear - _minYear) / 12).floor();
+    final monthPageIndex = calendarMonthPickerPageIndex(
+      minYear: _minYear,
+      maxYear: _maxYear,
+      year: clampedYear,
+    );
+    final yearPageIndex = calendarYearPickerPageIndex(
+      minYear: _minYear,
+      maxYear: _maxYear,
+      year: clampedYear,
+    );
 
     // Initialize page controllers
     _monthPageController?.dispose();
@@ -172,9 +180,10 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
       return;
     }
     _needsMonthPageSync = false;
-    final int targetPage = (_selectedYear - _minYear).clamp(
-      0,
-      _maxYear - _minYear,
+    final int targetPage = calendarMonthPickerPageIndex(
+      minYear: _minYear,
+      maxYear: _maxYear,
+      year: _selectedYear,
     );
     final int currentPage =
         monthPageController.page?.round() ?? monthPageController.initialPage;
@@ -236,15 +245,20 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                                           onPageChanged: (pageIndex) {
                                             setState(() {
                                               _yearBlockStart =
-                                                  _calculateYearBlockStart(
-                                                    _minYear + (pageIndex * 12),
+                                                  calendarYearBlockStartForYear(
+                                                    minYear: _minYear,
+                                                    maxYear: _maxYear,
+                                                    year:
+                                                        _minYear +
+                                                        (pageIndex * 12),
                                                   );
                                             });
                                             setModalState(() {});
                                           },
-                                          itemCount:
-                                              ((_maxYear - _minYear + 1) / 12)
-                                                  .ceil(),
+                                          itemCount: calendarYearGridPageCount(
+                                            minYear: _minYear,
+                                            maxYear: _maxYear,
+                                          ),
                                           itemBuilder: (context, index) {
                                             return _buildYearGrid(
                                               setModalState,
@@ -335,7 +349,11 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
         setState(() {
           _isYearView = true;
           _displayedYear = _selectedYear;
-          _yearBlockStart = _calculateYearBlockStart(_selectedYear);
+          _yearBlockStart = calendarYearBlockStartForYear(
+            minYear: _minYear,
+            maxYear: _maxYear,
+            year: _selectedYear,
+          );
         });
         setModalState(() {});
       },
