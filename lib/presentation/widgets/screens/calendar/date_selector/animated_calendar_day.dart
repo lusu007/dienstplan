@@ -44,13 +44,29 @@ class AnimatedCalendarDay extends StatefulWidget {
 }
 
 class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
+  /// Matches outer [Container] margin; gap between adjacent cells is 2× this value.
+  static const double _kCellOuterMargin = 2.0;
+  /// Extra horizontal bleed beyond [_kCellOuterMargin] to remove subpixel seams
+  /// between adjacent holiday stripes.
+  static const double _kHolidayStripeExtraHorizontalBleed = 1.0;
   static const double _chipPadding = 1.0;
   static const double _chipHorizontalPadding = 3.0;
   static const double _chipVerticalPadding = 1.0;
   static const double _chipHeight = 12.0;
   static const double _chipBottomMargin = 2.0;
   static const double _chipPlaceholderBottomMargin = 4.0;
+  /// Gap under empty primary slot when partner follows; between real chip (0)
+  /// and [_chipPlaceholderBottomMargin] for vertical balance vs. text chips.
+  static const double _kPlaceholderBottomWhenPartnerBelow = 2.5;
   static const double _holidayIndicatorHeight = 2.0;
+  /// Vertical space under the day number; kept when there is no holiday so DG
+  /// / partner rows stay aligned with holiday days.
+  static const double _kHolidayIndicatorTopInset = 0.5;
+  static const double _kHolidayIndicatorBottomInset = 1.0;
+  static const double _kHolidayIndicatorSlotHeight =
+      _kHolidayIndicatorTopInset +
+      _holidayIndicatorHeight +
+      _kHolidayIndicatorBottomInset;
   static const double _holidayIndicatorAlpha = 0.7;
   static const double _stripeHeight = 3.5;
   static const double _stripePersonalHeight = 2.0;
@@ -74,15 +90,19 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
       onTap: widget.onTap,
       borderRadius: BorderRadius.circular(cellRadius),
       child: Container(
-        margin: const EdgeInsets.all(2),
+        margin: const EdgeInsets.all(_kCellOuterMargin),
         width: effectiveWidth,
         height: effectiveHeight,
-        decoration: _getContainerDecoration(theme, cellRadius),
+        decoration: _getContainerBackgroundDecoration(theme, cellRadius),
+        foregroundDecoration: _getContainerForegroundDecoration(
+          theme,
+          cellRadius,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             _buildDayNumber(theme, compactCell),
-            _buildHolidayIndicator(),
+            _buildHolidayIndicator(theme),
             _buildPrimaryColumn(theme, compactCell),
             _buildPartnerChip(theme, compactCell),
             _buildPersonalCalendarSection(theme, compactCell),
@@ -99,24 +119,53 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  Widget _buildHolidayIndicator() {
+  Widget _buildHolidayIndicator(ThemeData theme) {
     if (!widget.hasSchoolHoliday) {
-      return const SizedBox.shrink();
+      return const SizedBox(height: _kHolidayIndicatorSlotHeight);
     }
 
     final int colorValue =
         widget.holidayAccentColorValue ??
         AccentColorDefaults.holidayAccentColorValue;
+    final Color stripeColor = _holidayIndicatorOpaqueColor(theme, colorValue);
 
-    return Container(
-      margin: const EdgeInsets.only(top: 0.5, bottom: 1.0),
-      height: _holidayIndicatorHeight,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Color(colorValue).withValues(alpha: _holidayIndicatorAlpha),
-        borderRadius: BorderRadius.circular(1),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return SizedBox(
+          width: constraints.maxWidth,
+          height: _kHolidayIndicatorSlotHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: <Widget>[
+              Positioned(
+                left: -(_kCellOuterMargin + _kHolidayStripeExtraHorizontalBleed),
+                right:
+                    -(_kCellOuterMargin + _kHolidayStripeExtraHorizontalBleed),
+                top: _kHolidayIndicatorTopInset,
+                height: _holidayIndicatorHeight,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: stripeColor,
+                    borderRadius: BorderRadius.circular(1),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  /// Opaque paint matching one semi-transparent accent layer. Uses the same
+  /// [ColorScheme.surface] plate for every day so horizontal bleed overlaps
+  /// match at selected/today boundaries (per-cell plates would differ and
+  /// stack visibly).
+  Color _holidayIndicatorOpaqueColor(ThemeData theme, int colorValue) {
+    final Color foreground = Color(colorValue).withValues(
+      alpha: _holidayIndicatorAlpha,
+    );
+    return Color.alphaBlend(foreground, theme.colorScheme.surface);
   }
 
   Widget _buildPrimaryColumn(ThemeData theme, bool compactCell) {
@@ -126,7 +175,20 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
     if (compactCell) {
       if (!hasPrimary) {
-        return const SizedBox.shrink();
+        if (!hasPartner) {
+          return const SizedBox.shrink();
+        }
+        final bool moreBelow = hasPartner || hasPersonal;
+        return _buildDutyStripe(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(3),
+          ),
+          margin: EdgeInsets.only(
+            bottom: moreBelow ? 0 : _compactStripeBottomMargin,
+          ),
+          height: _stripeHeight,
+        );
       }
       final bool moreBelow = hasPartner || hasPersonal;
       return _buildDutyStripe(
@@ -151,7 +213,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         ),
       );
     } else if (hasPartner) {
-      children.add(_buildPlaceholder());
+      children.add(_buildPlaceholder(hasPartnerBelow: true));
     }
     if (children.isEmpty) {
       return const SizedBox.shrink();
@@ -254,18 +316,30 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     ).copyWith(borderRadius: BorderRadius.circular(2));
   }
 
-  /// Compact duty row; fill matches duty badge.
+  /// Compact duty row; fill matches duty badge. Selected omits border so the
+  /// thin stripe keeps full height (inset border would shrink the fill).
   BoxDecoration _stripeDecorationDuty(ThemeData theme) {
-    return _getDutyBadgeDecoration(
-      theme,
-    ).copyWith(borderRadius: BorderRadius.circular(3));
+    final BorderRadius radius = BorderRadius.circular(3);
+    if (widget.dayType == CalendarDayType.selected) {
+      final Color myAccentColor = Color(
+        widget.myAccentColorValue ?? AccentColorDefaults.myAccentColorValue,
+      );
+      return BoxDecoration(color: myAccentColor, borderRadius: radius);
+    }
+    return _getDutyBadgeDecoration(theme).copyWith(borderRadius: radius);
   }
 
-  /// Compact partner row; fill matches partner badge.
+  /// Compact partner row; fill matches partner badge (no border when selected).
   BoxDecoration _stripeDecorationPartner(ThemeData theme) {
-    return _getPartnerBadgeDecoration(
-      theme,
-    ).copyWith(borderRadius: BorderRadius.circular(3));
+    final BorderRadius radius = BorderRadius.circular(3);
+    if (widget.dayType == CalendarDayType.selected) {
+      final Color partnerColor = Color(
+        widget.partnerAccentColorValue ??
+            AccentColorDefaults.partnerAccentColorValue,
+      );
+      return BoxDecoration(color: partnerColor, borderRadius: radius);
+    }
+    return _getPartnerBadgeDecoration(theme).copyWith(borderRadius: radius);
   }
 
   Widget _buildDutyStripe({
@@ -334,6 +408,28 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     required TextStyle textStyle,
     EdgeInsets? margin,
   }) {
+    final ThemeData theme = Theme.of(context);
+    final BoxDecoration effectiveDecoration;
+    final BoxDecoration? foregroundDecoration;
+    if (widget.dayType == CalendarDayType.selected) {
+      effectiveDecoration = BoxDecoration(
+        color: decoration.color,
+        borderRadius: decoration.borderRadius,
+      );
+      foregroundDecoration = BoxDecoration(
+        borderRadius: decoration.borderRadius,
+        border: Border.all(
+          color: calendarDayBadgeSelectedBorderColor(
+            theme.colorScheme,
+            theme.brightness,
+          ),
+          width: 1,
+        ),
+      );
+    } else {
+      effectiveDecoration = decoration;
+      foregroundDecoration = null;
+    }
     return Padding(
       padding: const EdgeInsets.only(top: _chipPadding),
       child: Container(
@@ -342,7 +438,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           horizontal: _chipHorizontalPadding,
           vertical: _chipVerticalPadding,
         ),
-        decoration: decoration,
+        decoration: effectiveDecoration,
+        foregroundDecoration: foregroundDecoration,
         width: double.infinity,
         child: Text(
           text,
@@ -356,11 +453,16 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  Widget _buildPlaceholder() {
+  /// Empty primary slot when partner exists (non-compact).
+  Widget _buildPlaceholder({required bool hasPartnerBelow}) {
     return Padding(
       padding: const EdgeInsets.only(top: _chipPadding),
       child: Container(
-        margin: const EdgeInsets.only(bottom: _chipPlaceholderBottomMargin),
+        margin: EdgeInsets.only(
+          bottom: hasPartnerBelow
+              ? _kPlaceholderBottomWhenPartnerBelow
+              : _chipPlaceholderBottomMargin,
+        ),
         padding: const EdgeInsets.symmetric(
           horizontal: _chipHorizontalPadding,
           vertical: _chipVerticalPadding,
@@ -399,7 +501,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     }
   }
 
-  BoxDecoration _getContainerDecoration(ThemeData theme, double cellRadius) {
+  BoxDecoration _getContainerBackgroundDecoration(
+    ThemeData theme,
+    double cellRadius,
+  ) {
     switch (widget.dayType) {
       case CalendarDayType.default_:
       case CalendarDayType.outside:
@@ -408,13 +513,36 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           borderRadius: BorderRadius.circular(cellRadius),
         );
       case CalendarDayType.selected:
-        return calendarDaySelectedCellDecoration(
+        return calendarDaySelectedCellFillDecoration(
           colorScheme: theme.colorScheme,
           brightness: theme.brightness,
           borderRadius: cellRadius,
         );
       case CalendarDayType.today:
-        return calendarDayTodayCellDecoration(
+        return calendarDayTodayCellFillDecoration(
+          colorScheme: theme.colorScheme,
+          brightness: theme.brightness,
+          borderRadius: cellRadius,
+        );
+    }
+  }
+
+  BoxDecoration? _getContainerForegroundDecoration(
+    ThemeData theme,
+    double cellRadius,
+  ) {
+    switch (widget.dayType) {
+      case CalendarDayType.default_:
+      case CalendarDayType.outside:
+        return null;
+      case CalendarDayType.selected:
+        return calendarDaySelectedCellBorderDecoration(
+          colorScheme: theme.colorScheme,
+          brightness: theme.brightness,
+          borderRadius: cellRadius,
+        );
+      case CalendarDayType.today:
+        return calendarDayTodayCellBorderDecoration(
           colorScheme: theme.colorScheme,
           brightness: theme.brightness,
           borderRadius: cellRadius,

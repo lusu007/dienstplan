@@ -7,8 +7,9 @@ double calendarDayCellBorderRadius({required bool compact}) {
   return compact ? 8.0 : glassSurfaceRadiusSm;
 }
 
-/// Today (not necessarily selected): primary tint + soft border like glass surfaces.
-BoxDecoration calendarDayTodayCellDecoration({
+/// Today cell fill only (no border). Border goes on [Container.foregroundDecoration]
+/// so content is not inset and aligns with non-bordered cells (e.g. holiday stripe).
+BoxDecoration calendarDayTodayCellFillDecoration({
   required ColorScheme colorScheme,
   required Brightness brightness,
   required double borderRadius,
@@ -17,11 +18,23 @@ BoxDecoration calendarDayTodayCellDecoration({
   final double tint = isDark
       ? glassTintAlphaDark + 0.08
       : glassTintAlphaLight;
+  return BoxDecoration(
+    color: colorScheme.primary.withValues(alpha: tint),
+    borderRadius: BorderRadius.circular(borderRadius),
+  );
+}
+
+/// Today cell border for [Container.foregroundDecoration] (pairs with fill decoration).
+BoxDecoration calendarDayTodayCellBorderDecoration({
+  required ColorScheme colorScheme,
+  required Brightness brightness,
+  required double borderRadius,
+}) {
+  final bool isDark = brightness == Brightness.dark;
   final double borderAlpha = isDark
       ? glassBorderAlphaDark * 0.6
       : glassBorderAlphaLight;
   return BoxDecoration(
-    color: colorScheme.primary.withValues(alpha: tint),
     borderRadius: BorderRadius.circular(borderRadius),
     border: Border.all(
       color: Colors.white.withValues(alpha: borderAlpha),
@@ -30,8 +43,8 @@ BoxDecoration calendarDayTodayCellDecoration({
   );
 }
 
-/// Selected day: stronger primary emphasis + active border token.
-BoxDecoration calendarDaySelectedCellDecoration({
+/// Selected cell fill only (no border). Border on [Container.foregroundDecoration].
+BoxDecoration calendarDaySelectedCellFillDecoration({
   required ColorScheme colorScheme,
   required Brightness brightness,
   required double borderRadius,
@@ -42,6 +55,17 @@ BoxDecoration calendarDaySelectedCellDecoration({
       : glassTintAlphaActiveLight + 0.16;
   return BoxDecoration(
     color: colorScheme.primary.withValues(alpha: fillAlpha.clamp(0.0, 1.0)),
+    borderRadius: BorderRadius.circular(borderRadius),
+  );
+}
+
+/// Selected cell border for [Container.foregroundDecoration].
+BoxDecoration calendarDaySelectedCellBorderDecoration({
+  required ColorScheme colorScheme,
+  required Brightness brightness,
+  required double borderRadius,
+}) {
+  return BoxDecoration(
     borderRadius: BorderRadius.circular(borderRadius),
     border: Border.all(
       color: colorScheme.primary.withValues(alpha: glassBorderAlphaActive),
@@ -88,13 +112,15 @@ Color calendarDayPersonalEntryTextColorSelected(
       : colorScheme.onSurface;
 }
 
+/// Outline on duty/partner badges when the day cell is selected. High contrast
+/// vs. the cell border (also primary-tinted) and vs. saturated accent fills.
 Color calendarDayBadgeSelectedBorderColor(
   ColorScheme colorScheme,
   Brightness brightness,
 ) {
   return brightness == Brightness.light
-      ? colorScheme.primary.withValues(alpha: 0.55)
-      : colorScheme.onPrimary.withValues(alpha: 0.55);
+      ? Colors.white.withValues(alpha: 0.92)
+      : colorScheme.onSurface.withValues(alpha: 0.88);
 }
 
 /// Circular markers for [TableCalendar] when default decorations show through.
