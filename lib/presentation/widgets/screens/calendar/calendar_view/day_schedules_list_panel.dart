@@ -47,7 +47,7 @@ class DaySchedulesListPanel extends ConsumerWidget {
               isLoading: isLoadingSelectedDay,
               selectedDay: day,
               visualStyle: DutyListVisualStyle.glassCompact,
-              topPadding: glassSpacingMd,
+              topPadding: glassSpacingXl,
               bottomPadding: glassSpacingLg,
             ),
           ),

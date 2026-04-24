@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
-import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/constants/calendar_day_surface_tokens.dart';
 
 class AnimatedCalendarDay extends StatefulWidget {
   final DateTime day;
@@ -68,15 +68,16 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     final bool compactCell =
         effectiveHeight <=
         CalendarConfig.kCalendarDayCompactDutyStripesMaxHeight;
+    final double cellRadius = calendarDayCellBorderRadius(compact: compactCell);
 
     return InkWell(
       onTap: widget.onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(cellRadius),
       child: Container(
         margin: const EdgeInsets.all(2),
         width: effectiveWidth,
         height: effectiveHeight,
-        decoration: _getContainerDecoration(theme),
+        decoration: _getContainerDecoration(theme, cellRadius),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -286,9 +287,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   BoxDecoration _personalEntryDecoration(ThemeData theme) {
     switch (widget.dayType) {
       case CalendarDayType.selected:
-        return BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.36),
-          borderRadius: BorderRadius.circular(4),
+        return calendarDayPersonalEntryDecorationSelected(
+          colorScheme: theme.colorScheme,
+          brightness: theme.brightness,
+          borderRadius: 4,
         );
       case CalendarDayType.outside:
         return BoxDecoration(
@@ -306,7 +308,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   TextStyle _personalEntryTextStyle(ThemeData theme, double fontSize) {
     final Color color = switch (widget.dayType) {
-      CalendarDayType.selected => Colors.white,
+      CalendarDayType.selected => calendarDayPersonalEntryTextColorSelected(
+        theme.colorScheme,
+        theme.brightness,
+      ),
       CalendarDayType.outside => theme.colorScheme.onSurfaceVariant,
       CalendarDayType.default_ => theme.colorScheme.onSurface.withValues(
         alpha: 0.85,
@@ -379,31 +384,40 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
       case CalendarDayType.selected:
         return TextStyle(
           fontSize: fontSize,
-          fontWeight: FontWeight.w500,
-          color: Colors.white,
+          fontWeight: FontWeight.w600,
+          color: calendarDaySelectedDayNumberColor(
+            theme.colorScheme,
+            theme.brightness,
+          ),
         );
       case CalendarDayType.today:
-        return TextStyle(fontSize: fontSize, fontWeight: FontWeight.w500);
+        return TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.w600,
+          color: calendarDayTodayDayNumberColor(theme.colorScheme),
+        );
     }
   }
 
-  BoxDecoration _getContainerDecoration(ThemeData theme) {
+  BoxDecoration _getContainerDecoration(ThemeData theme, double cellRadius) {
     switch (widget.dayType) {
       case CalendarDayType.default_:
       case CalendarDayType.outside:
         return BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(cellRadius),
         );
       case CalendarDayType.selected:
-        return BoxDecoration(
-          color: theme.colorScheme.primary,
-          borderRadius: BorderRadius.circular(8),
+        return calendarDaySelectedCellDecoration(
+          colorScheme: theme.colorScheme,
+          brightness: theme.brightness,
+          borderRadius: cellRadius,
         );
       case CalendarDayType.today:
-        return BoxDecoration(
-          color: theme.colorScheme.primary.withAlpha(kAlphaToday),
-          borderRadius: BorderRadius.circular(8),
+        return calendarDayTodayCellDecoration(
+          colorScheme: theme.colorScheme,
+          brightness: theme.brightness,
+          borderRadius: cellRadius,
         );
     }
   }
@@ -443,7 +457,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
           color: accentColor,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
-            color: Colors.white.withValues(alpha: 0.4),
+            color: calendarDayBadgeSelectedBorderColor(
+              theme.colorScheme,
+              theme.brightness,
+            ),
             width: 1,
           ),
         );

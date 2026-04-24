@@ -805,7 +805,7 @@
       }
     }
   },
-  "personalEntrySheetTitleNew": "New entry",
+  "personalEntrySheetTitleNew": "New calendar entry",
   "@personalEntrySheetTitleNew": {
     "description": "Title for new personal calendar entry sheet"
   },
@@ -829,7 +829,7 @@
   "@personalEntryTitleLabel": {
     "description": "Label for personal entry title field"
   },
-  "personalEntryNotesLabel": "Notes (optional)",
+  "personalEntryNotesLabel": "Notes",
   "@personalEntryNotesLabel": {
     "description": "Label for optional notes"
   },

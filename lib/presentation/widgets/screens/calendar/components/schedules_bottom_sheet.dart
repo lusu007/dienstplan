@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -150,8 +151,8 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
                 isLoading: isLoadingSelectedDay,
                 selectedDay: currentDay,
                 visualStyle: DutyListVisualStyle.glassCompact,
-                topPadding: 8,
-                bottomPadding: 16,
+                topPadding: glassSpacingXl,
+                bottomPadding: glassSpacingLg,
               ),
             ),
           ),

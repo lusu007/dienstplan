@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/constants/personal_calendar_constants.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/errors/failure_presenter.dart';
@@ -14,6 +15,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:intl/intl.dart';
 
 /// Bottom sheet to create or edit a personal calendar entry (appointment / own duty).
@@ -291,42 +293,48 @@ class _PersonalCalendarEntrySheetState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SegmentedButton<PersonalCalendarEntryKind>(
-                segments: <ButtonSegment<PersonalCalendarEntryKind>>[
-                  ButtonSegment<PersonalCalendarEntryKind>(
-                    value: PersonalCalendarEntryKind.appointment,
-                    label: Text(l10n.personalEntryKindAppointment),
+              TextField(
+                controller: _titleController,
+                decoration: _glassFieldDecoration(
+                  context,
+                  labelText: l10n.personalEntryTitleLabel,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: GlassFilterChip(
+                      label: l10n.personalEntryKindAppointment,
+                      isSelected:
+                          _draft.kind == PersonalCalendarEntryKind.appointment,
+                      expandWidth: true,
+                      onTap: () {
+                        setState(() {
+                          _draft = _draft.copyWith(
+                            kind: PersonalCalendarEntryKind.appointment,
+                          );
+                        });
+                      },
+                    ),
                   ),
-                  ButtonSegment<PersonalCalendarEntryKind>(
-                    value: PersonalCalendarEntryKind.personalDuty,
-                    label: Text(l10n.personalEntryKindDuty),
+                  const SizedBox(width: glassSpacingSm),
+                  Expanded(
+                    child: GlassFilterChip(
+                      label: l10n.personalEntryKindDuty,
+                      isSelected:
+                          _draft.kind == PersonalCalendarEntryKind.personalDuty,
+                      expandWidth: true,
+                      onTap: () {
+                        setState(() {
+                          _draft = _draft.copyWith(
+                            kind: PersonalCalendarEntryKind.personalDuty,
+                          );
+                        });
+                      },
+                    ),
                   ),
                 ],
-                selected: <PersonalCalendarEntryKind>{_draft.kind},
-                style: ButtonStyle(
-                  visualDensity: VisualDensity.compact,
-                  backgroundColor: WidgetStateProperty.resolveWith((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.selected)) {
-                      return colorScheme.primary;
-                    }
-                    return colorScheme.onSurface.withValues(alpha: 0.1);
-                  }),
-                  foregroundColor: WidgetStateProperty.resolveWith((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.selected)) {
-                      return colorScheme.onPrimary;
-                    }
-                    return colorScheme.onSurface;
-                  }),
-                ),
-                onSelectionChanged: (Set<PersonalCalendarEntryKind> next) {
-                  setState(() {
-                    _draft = _draft.copyWith(kind: next.first);
-                  });
-                },
               ),
               const SizedBox(height: 12),
               ListTile(
@@ -345,23 +353,6 @@ class _PersonalCalendarEntrySheetState
                   color: colorScheme.onSurfaceVariant,
                 ),
                 onTap: _pickDate,
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _titleController,
-                decoration: _glassFieldDecoration(
-                  context,
-                  labelText: l10n.personalEntryTitleLabel,
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _notesController,
-                decoration: _glassFieldDecoration(
-                  context,
-                  labelText: l10n.personalEntryNotesLabel,
-                ),
-                maxLines: 2,
               ),
               const SizedBox(height: 4),
               SwitchListTile(
@@ -422,6 +413,15 @@ class _PersonalCalendarEntrySheetState
                   onTap: () => _pickTime(isStart: false),
                 ),
               ],
+              const SizedBox(height: 12),
+              TextField(
+                controller: _notesController,
+                decoration: _glassFieldDecoration(
+                  context,
+                  labelText: l10n.personalEntryNotesLabel,
+                ),
+                maxLines: 2,
+              ),
               const SizedBox(height: 16),
               Row(
                 children: <Widget>[

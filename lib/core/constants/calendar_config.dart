@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:dienstplan/core/constants/calendar_day_surface_tokens.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
 class CalendarConfig {
   static CalendarStyle createCalendarStyle(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme scheme = theme.colorScheme;
+    final Brightness brightness = theme.brightness;
     return CalendarStyle(
-      selectedDecoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        shape: BoxShape.circle,
+      selectedDecoration: calendarTableFallbackSelectedDecoration(
+        colorScheme: scheme,
+        brightness: brightness,
       ),
-      todayDecoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withAlpha(kAlphaToday),
-        shape: BoxShape.circle,
+      todayDecoration: calendarTableFallbackTodayDecoration(
+        colorScheme: scheme,
+        brightness: brightness,
       ),
     );
   }

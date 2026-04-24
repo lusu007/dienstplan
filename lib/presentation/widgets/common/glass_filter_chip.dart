@@ -9,12 +9,16 @@ class GlassFilterChip extends StatelessWidget {
   final VoidCallback onTap;
   final bool showCheckmark;
 
+  /// When true, the glass pill expands to the parent's max width (e.g. inside [Expanded]).
+  final bool expandWidth;
+
   const GlassFilterChip({
     super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
     this.showCheckmark = false,
+    this.expandWidth = false,
   });
 
   @override
@@ -30,6 +34,34 @@ class GlassFilterChip extends StatelessWidget {
     final Color textColor = isSelected
         ? colorScheme.primary
         : colorScheme.onSurface;
+    final Widget labelRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        if (showCheckmark && isSelected) ...<Widget>[
+          Icon(Icons.check_rounded, size: 14, color: textColor),
+          const SizedBox(width: 4),
+        ],
+        Text(
+          label,
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            letterSpacing: 0.3,
+            height: 1.0,
+          ),
+        ),
+      ],
+    );
+    final Widget tapChild = expandWidth
+        ? SizedBox(
+            width: double.infinity,
+            child: Align(
+              alignment: Alignment.center,
+              child: labelRow,
+            ),
+          )
+        : Align(alignment: Alignment.center, child: labelRow);
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: kGlassFilterChipHeight),
       child: GlassContainer(
@@ -46,28 +78,7 @@ class GlassFilterChip extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(glassSurfaceRadiusPill),
-            child: Align(
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (showCheckmark && isSelected) ...<Widget>[
-                    Icon(Icons.check_rounded, size: 14, color: textColor),
-                    const SizedBox(width: 4),
-                  ],
-                  Text(
-                    label,
-                    style: TextStyle(
-                      color: textColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14,
-                      letterSpacing: 0.3,
-                      height: 1.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: tapChild,
           ),
         ),
       ),
