@@ -30,6 +30,7 @@ class DutyTypesDao {
             'label': dt.label,
             'all_day': dt.isAllDay ? 1 : 0,
             'icon': dt.icon,
+            'abbreviation': dt.abbr,
             'created_at': now,
             'updated_at': now,
           }, conflictAlgorithm: ConflictAlgorithm.replace);

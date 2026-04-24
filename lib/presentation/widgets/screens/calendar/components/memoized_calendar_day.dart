@@ -5,6 +5,9 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/a
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/utils/duty_type_display.dart';
+import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
+import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
@@ -135,6 +138,28 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       preferredGroup: preferredGroup,
       myDutyGroup: myDutyGroup,
     );
+
+    final Map<String, DutyType>? activeDutyTypes = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.activeConfig?.dutyTypes,
+      ),
+    );
+    final List<DutyScheduleConfig> configs = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (state) => state.value?.configs ?? const <DutyScheduleConfig>[],
+      ),
+    );
+    Map<String, DutyType>? partnerDutyTypes;
+    final String? partnerName = effectivePartnerConfigName;
+    if (partnerName != null && partnerName.isNotEmpty) {
+      for (final DutyScheduleConfig c in configs) {
+        if (c.name == partnerName) {
+          partnerDutyTypes = c.dutyTypes;
+          break;
+        }
+      }
+    }
+
     final dutyData = _MemoizedDutyCalculator.calculateDutyData(
       day: day,
       schedules: schedules,
@@ -142,6 +167,8 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
       preferredGroup: effectiveMyGroup,
       partnerConfigName: effectivePartnerConfigName,
       partnerGroup: effectivePartnerGroup,
+      activeDutyTypes: activeDutyTypes,
+      partnerDutyTypes: partnerDutyTypes,
     );
 
     final isSelected = _isSelected(selectedDay);
@@ -202,9 +229,11 @@ class _MemoizedDutyCalculator {
   static final Map<String, DutyData> _cache = {};
   static const int _maxCacheSize = 200;
 
-  /// Bump when [DutyData] shape changes so hot reload / stale isolates cannot
-  /// return cached entries incompatible with current getters.
-  static const int _kDutyDataCacheSchema = 2;
+  /// Increment to clear the in-memory cache when cached results could be stale:
+  /// [DutyData] shape/equality changes, cache key inputs or structure changes,
+  /// or changes to how duty labels are resolved (e.g. abbreviation rules), so
+  /// hot reload or mixed code versions cannot return incompatible entries.
+  static const int _kDutyDataCacheSchema = 3;
   static int _appliedDutyDataCacheSchema = 0;
 
   static DutyData calculateDutyData({
@@ -214,11 +243,20 @@ class _MemoizedDutyCalculator {
     required String? preferredGroup,
     required String? partnerConfigName,
     required String? partnerGroup,
+    required Map<String, DutyType>? activeDutyTypes,
+    required Map<String, DutyType>? partnerDutyTypes,
   }) {
     if (_appliedDutyDataCacheSchema != _kDutyDataCacheSchema) {
       _cache.clear();
       _appliedDutyDataCacheSchema = _kDutyDataCacheSchema;
     }
+
+    final int activeAbbrSig = hashDutyTypesAbbreviationSignature(
+      activeDutyTypes,
+    );
+    final int partnerAbbrSig = hashDutyTypesAbbreviationSignature(
+      partnerDutyTypes,
+    );
 
     final cacheKey = _createCacheKey(
       day: day,
@@ -227,6 +265,8 @@ class _MemoizedDutyCalculator {
       partnerConfigName: partnerConfigName,
       partnerGroup: partnerGroup,
       schedulesHash: _getSchedulesHash(schedules, day),
+      activeAbbreviationSignature: activeAbbrSig,
+      partnerAbbreviationSignature: partnerAbbrSig,
     );
 
     if (_cache.containsKey(cacheKey)) {
@@ -238,6 +278,7 @@ class _MemoizedDutyCalculator {
       schedules: schedules,
       activeConfigName: activeConfigName,
       preferredGroup: preferredGroup,
+      dutyTypes: activeDutyTypes,
     );
 
     final partnerDuty = _getPartnerDutyAbbreviationForDate(
@@ -245,6 +286,7 @@ class _MemoizedDutyCalculator {
       schedules: schedules,
       partnerConfigName: partnerConfigName,
       partnerGroup: partnerGroup,
+      dutyTypes: partnerDutyTypes,
     );
 
     final List<String> personalTitles = _personalEntryTitlesOnDay(
@@ -274,13 +316,17 @@ class _MemoizedDutyCalculator {
     required String? partnerConfigName,
     required String? partnerGroup,
     required int schedulesHash,
+    required int activeAbbreviationSignature,
+    required int partnerAbbreviationSignature,
   }) {
     return '${day.year}-${day.month}-${day.day}_'
         '${activeConfigName ?? 'null'}_'
         '${preferredGroup ?? 'null'}_'
         '${partnerConfigName ?? 'null'}_'
         '${partnerGroup ?? 'null'}_'
-        '$schedulesHash';
+        '${schedulesHash}_'
+        '${activeAbbreviationSignature}_'
+        '$partnerAbbreviationSignature';
   }
 
   static int _getSchedulesHash(List<Schedule> schedules, DateTime day) {
@@ -360,6 +406,7 @@ class _MemoizedDutyCalculator {
     required List<Schedule> schedules,
     required String? activeConfigName,
     required String? preferredGroup,
+    required Map<String, DutyType>? dutyTypes,
   }) {
     try {
       if (activeConfigName == null || activeConfigName.isEmpty) {
@@ -398,7 +445,10 @@ class _MemoizedDutyCalculator {
           preferredSchedule = null;
         }
         if (preferredSchedule != null) {
-          return preferredSchedule.dutyTypeId;
+          return resolveDutyTypeAbbreviation(
+            preferredSchedule.dutyTypeId,
+            dutyTypes,
+          );
         }
 
         try {
@@ -429,6 +479,7 @@ class _MemoizedDutyCalculator {
     required List<Schedule> schedules,
     required String? partnerConfigName,
     required String? partnerGroup,
+    required Map<String, DutyType>? dutyTypes,
   }) {
     try {
       if (partnerConfigName == null || partnerConfigName.isEmpty) {
@@ -456,7 +507,7 @@ class _MemoizedDutyCalculator {
                 s.dutyTypeId.isNotEmpty &&
                 s.dutyTypeId != '-',
           );
-          return matched.dutyTypeId;
+          return resolveDutyTypeAbbreviation(matched.dutyTypeId, dutyTypes);
         } catch (_) {
           try {
             final Schedule off = schedulesForDay.firstWhere(

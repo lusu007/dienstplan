@@ -98,6 +98,7 @@ class DatabaseService {
         label TEXT NOT NULL,
         all_day INTEGER NOT NULL DEFAULT 0,
         icon TEXT,
+        abbreviation TEXT,
         config_name TEXT NOT NULL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL,
@@ -325,6 +326,9 @@ class DatabaseService {
       }
       if (oldVersion < 17) {
         await _migrateToVersion17(txn);
+      }
+      if (oldVersion < 18) {
+        await _migrateToVersion18(txn);
       }
 
       // Create any missing indexes after all migrations are complete
@@ -940,6 +944,36 @@ class DatabaseService {
       }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 17', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion18(DatabaseExecutor db) async {
+    try {
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 18: Add duty_types.abbreviation for compact UI',
+        );
+        return true;
+      }());
+      final List<Map<String, Object?>> columns = await db.rawQuery(
+        'PRAGMA table_info(duty_types)',
+      );
+      final bool hasAbbreviation = columns.any(
+        (Map<String, Object?> column) => column['name'] == 'abbreviation',
+      );
+      if (!hasAbbreviation) {
+        await db.execute('ALTER TABLE duty_types ADD COLUMN abbreviation TEXT');
+      }
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 18: duty_types.abbreviation added',
+        );
+        return true;
+      }());
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 18', e, stackTrace);
+      rethrow;
     }
   }
 

@@ -135,8 +135,12 @@ class ScheduleRepositoryImpl implements domain_repo.ScheduleRepository {
       final dataDutyTypesMap = await _dutyTypesDao.loadForConfig(configName);
       final dutyTypes = dataDutyTypesMap.values
           .map(
-            (dt) =>
-                DutyType(label: dt.label, isAllDay: dt.isAllDay, icon: dt.icon),
+            (dt) => DutyType(
+              label: dt.label,
+              isAllDay: dt.isAllDay,
+              icon: dt.icon,
+              abbr: dt.abbr,
+            ),
           )
           .toList();
       AppLogger.d(
