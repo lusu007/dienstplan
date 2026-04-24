@@ -8,6 +8,7 @@ abstract class DutyType with _$DutyType {
     required String label,
     @Default(false) bool isAllDay,
     String? icon,
+    String? abbr,
   }) = _DutyType;
 
   const DutyType._();

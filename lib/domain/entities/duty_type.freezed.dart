@@ -16,6 +16,7 @@ mixin _$DutyType {
   String get label;
   bool get isAllDay;
   String? get icon;
+  String? get abbr;
 
   /// Create a copy of DutyType
   /// with the given fields replaced by the non-null parameter values.
@@ -32,15 +33,16 @@ mixin _$DutyType {
             (identical(other.label, label) || other.label == label) &&
             (identical(other.isAllDay, isAllDay) ||
                 other.isAllDay == isAllDay) &&
-            (identical(other.icon, icon) || other.icon == icon));
+            (identical(other.icon, icon) || other.icon == icon) &&
+            (identical(other.abbr, abbr) || other.abbr == abbr));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, label, isAllDay, icon);
+  int get hashCode => Object.hash(runtimeType, label, isAllDay, icon, abbr);
 
   @override
   String toString() {
-    return 'DutyType(label: $label, isAllDay: $isAllDay, icon: $icon)';
+    return 'DutyType(label: $label, isAllDay: $isAllDay, icon: $icon, abbr: $abbr)';
   }
 }
 
@@ -49,7 +51,7 @@ abstract mixin class $DutyTypeCopyWith<$Res> {
   factory $DutyTypeCopyWith(DutyType value, $Res Function(DutyType) _then) =
       _$DutyTypeCopyWithImpl;
   @useResult
-  $Res call({String label, bool isAllDay, String? icon});
+  $Res call({String label, bool isAllDay, String? icon, String? abbr});
 }
 
 /// @nodoc
@@ -67,6 +69,7 @@ class _$DutyTypeCopyWithImpl<$Res> implements $DutyTypeCopyWith<$Res> {
     Object? label = null,
     Object? isAllDay = null,
     Object? icon = freezed,
+    Object? abbr = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -81,6 +84,10 @@ class _$DutyTypeCopyWithImpl<$Res> implements $DutyTypeCopyWith<$Res> {
         icon: freezed == icon
             ? _self.icon
             : icon // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        abbr: freezed == abbr
+            ? _self.abbr
+            : abbr // ignore: cast_nullable_to_non_nullable
                   as String?,
       ),
     );
@@ -180,13 +187,14 @@ extension DutyTypePatterns on DutyType {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String label, bool isAllDay, String? icon)? $default, {
+    TResult Function(String label, bool isAllDay, String? icon, String? abbr)?
+    $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _DutyType() when $default != null:
-        return $default(_that.label, _that.isAllDay, _that.icon);
+        return $default(_that.label, _that.isAllDay, _that.icon, _that.abbr);
       case _:
         return orElse();
     }
@@ -207,12 +215,13 @@ extension DutyTypePatterns on DutyType {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String label, bool isAllDay, String? icon) $default,
+    TResult Function(String label, bool isAllDay, String? icon, String? abbr)
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DutyType():
-        return $default(_that.label, _that.isAllDay, _that.icon);
+        return $default(_that.label, _that.isAllDay, _that.icon, _that.abbr);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -232,12 +241,13 @@ extension DutyTypePatterns on DutyType {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String label, bool isAllDay, String? icon)? $default,
+    TResult? Function(String label, bool isAllDay, String? icon, String? abbr)?
+    $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DutyType() when $default != null:
-        return $default(_that.label, _that.isAllDay, _that.icon);
+        return $default(_that.label, _that.isAllDay, _that.icon, _that.abbr);
       case _:
         return null;
     }
@@ -247,8 +257,12 @@ extension DutyTypePatterns on DutyType {
 /// @nodoc
 
 class _DutyType extends DutyType {
-  const _DutyType({required this.label, this.isAllDay = false, this.icon})
-    : super._();
+  const _DutyType({
+    required this.label,
+    this.isAllDay = false,
+    this.icon,
+    this.abbr,
+  }) : super._();
 
   @override
   final String label;
@@ -257,6 +271,8 @@ class _DutyType extends DutyType {
   final bool isAllDay;
   @override
   final String? icon;
+  @override
+  final String? abbr;
 
   /// Create a copy of DutyType
   /// with the given fields replaced by the non-null parameter values.
@@ -274,15 +290,16 @@ class _DutyType extends DutyType {
             (identical(other.label, label) || other.label == label) &&
             (identical(other.isAllDay, isAllDay) ||
                 other.isAllDay == isAllDay) &&
-            (identical(other.icon, icon) || other.icon == icon));
+            (identical(other.icon, icon) || other.icon == icon) &&
+            (identical(other.abbr, abbr) || other.abbr == abbr));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, label, isAllDay, icon);
+  int get hashCode => Object.hash(runtimeType, label, isAllDay, icon, abbr);
 
   @override
   String toString() {
-    return 'DutyType(label: $label, isAllDay: $isAllDay, icon: $icon)';
+    return 'DutyType(label: $label, isAllDay: $isAllDay, icon: $icon, abbr: $abbr)';
   }
 }
 
@@ -293,7 +310,7 @@ abstract mixin class _$DutyTypeCopyWith<$Res>
       __$DutyTypeCopyWithImpl;
   @override
   @useResult
-  $Res call({String label, bool isAllDay, String? icon});
+  $Res call({String label, bool isAllDay, String? icon, String? abbr});
 }
 
 /// @nodoc
@@ -311,6 +328,7 @@ class __$DutyTypeCopyWithImpl<$Res> implements _$DutyTypeCopyWith<$Res> {
     Object? label = null,
     Object? isAllDay = null,
     Object? icon = freezed,
+    Object? abbr = freezed,
   }) {
     return _then(
       _DutyType(
@@ -325,6 +343,10 @@ class __$DutyTypeCopyWithImpl<$Res> implements _$DutyTypeCopyWith<$Res> {
         icon: freezed == icon
             ? _self.icon
             : icon // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        abbr: freezed == abbr
+            ? _self.abbr
+            : abbr // ignore: cast_nullable_to_non_nullable
                   as String?,
       ),
     );

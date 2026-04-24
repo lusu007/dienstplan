@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "meta": {
     "name": "2-Schichtplan 5-Tage",
     "description": "Zwei-Schicht Wochenplan mit Früh- und Spätdienst, Montag bis Freitag",
@@ -20,10 +20,12 @@
   "duty_types": {
     "F": {
       "label": "Frühdienst",
+      "abbr": "Früh",
       "icon": "wb_sunny"
     },
     "S": {
       "label": "Spätdienst",
+      "abbr": "Spät",
       "icon": "schedule"
     },
     "-": {

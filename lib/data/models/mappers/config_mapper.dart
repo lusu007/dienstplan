@@ -65,6 +65,7 @@ domain_duty.DutyType toDomainDutyType(data_duty.DutyType input) {
     label: input.label,
     isAllDay: input.isAllDay,
     icon: input.icon,
+    abbr: input.abbr,
   );
 }
 
@@ -73,6 +74,7 @@ data_duty.DutyType toDataDutyType(domain_duty.DutyType input) {
     label: input.label,
     isAllDay: input.isAllDay,
     icon: input.icon,
+    abbr: input.abbr,
   );
 }
 

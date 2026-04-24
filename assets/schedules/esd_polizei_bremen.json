@@ -1,5 +1,5 @@
 {
-  "version": "1.4",
+  "version": "1.5",
   "meta": {
     "name": "Einsatz- und Streifendienst",
     "description": "5-wöchiger Rotationsplan für den Einsatz- und Streifendienst der Polizei Bremen",
@@ -20,14 +20,17 @@
   "duty_types": {
     "F": {
       "label": "Frühdienst",
+      "abbr": "Früh",
       "icon": "wb_sunny"
     },
     "S": {
       "label": "Spätdienst",
+      "abbr": "Spät",
       "icon": "schedule"
     },
     "N": {
       "label": "Nachtdienst",
+      "abbr": "Nacht",
       "icon": "bedtime"
     },
     "ZD": {
