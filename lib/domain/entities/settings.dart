@@ -20,6 +20,7 @@ abstract class Settings with _$Settings {
     // School holidays feature
     String? schoolHolidayStateCode,
     bool? showSchoolHolidays,
+    bool? showOtherDutyGroupsInCompactList,
     DateTime? lastSchoolHolidayRefresh,
     int? holidayAccentColorValue,
   }) = _Settings;
@@ -41,5 +42,6 @@ abstract class Settings with _$Settings {
     holidayAccentColorValue: holidayAccentColorValue,
     schoolHolidayStateCode: null,
     showSchoolHolidays: null,
+    showOtherDutyGroupsInCompactList: false,
   );
 }

@@ -53,6 +53,14 @@ class SettingsDao {
         // Don't rethrow - let the app continue without saving this setting
         return;
       }
+      if (e.toString().contains('show_other_duty_groups_in_compact_list') &&
+          e.toString().contains('no column named')) {
+        AppLogger.w(
+          'SettingsDao: show_other_duty_groups_in_compact_list column missing - this should be fixed by migration',
+        );
+        // Don't rethrow - let the app continue without saving this setting
+        return;
+      }
 
       rethrow;
     }

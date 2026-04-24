@@ -20,6 +20,7 @@ abstract class SettingsUiState with _$SettingsUiState {
     int? myAccentColorValue,
     // Holiday accent color UI value
     int? holidayAccentColorValue,
+    bool? showOtherDutyGroupsInCompactList,
   }) = _SettingsUiState;
 
   const SettingsUiState._();
@@ -27,5 +28,6 @@ abstract class SettingsUiState with _$SettingsUiState {
   factory SettingsUiState.initial() => const SettingsUiState(
     isLoading: false,
     themePreference: ThemePreference.system,
+    showOtherDutyGroupsInCompactList: false,
   );
 }

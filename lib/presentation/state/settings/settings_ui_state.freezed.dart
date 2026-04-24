@@ -24,6 +24,7 @@ mixin _$SettingsUiState {
   int? get partnerAccentColorValue; // My accent color UI value
   int? get myAccentColorValue; // Holiday accent color UI value
   int? get holidayAccentColorValue;
+  bool? get showOtherDutyGroupsInCompactList;
 
   /// Create a copy of SettingsUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -66,7 +67,13 @@ mixin _$SettingsUiState {
                   other.holidayAccentColorValue,
                   holidayAccentColorValue,
                 ) ||
-                other.holidayAccentColorValue == holidayAccentColorValue));
+                other.holidayAccentColorValue == holidayAccentColorValue) &&
+            (identical(
+                  other.showOtherDutyGroupsInCompactList,
+                  showOtherDutyGroupsInCompactList,
+                ) ||
+                other.showOtherDutyGroupsInCompactList ==
+                    showOtherDutyGroupsInCompactList));
   }
 
   @override
@@ -83,11 +90,12 @@ mixin _$SettingsUiState {
     partnerAccentColorValue,
     myAccentColorValue,
     holidayAccentColorValue,
+    showOtherDutyGroupsInCompactList,
   );
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList)';
   }
 }
 
@@ -110,6 +118,7 @@ abstract mixin class $SettingsUiStateCopyWith<$Res> {
     int? partnerAccentColorValue,
     int? myAccentColorValue,
     int? holidayAccentColorValue,
+    bool? showOtherDutyGroupsInCompactList,
   });
 }
 
@@ -137,6 +146,7 @@ class _$SettingsUiStateCopyWithImpl<$Res>
     Object? partnerAccentColorValue = freezed,
     Object? myAccentColorValue = freezed,
     Object? holidayAccentColorValue = freezed,
+    Object? showOtherDutyGroupsInCompactList = freezed,
   }) {
     return _then(
       _self.copyWith(
@@ -184,6 +194,11 @@ class _$SettingsUiStateCopyWithImpl<$Res>
             ? _self.holidayAccentColorValue
             : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
                   as int?,
+        showOtherDutyGroupsInCompactList:
+            freezed == showOtherDutyGroupsInCompactList
+            ? _self.showOtherDutyGroupsInCompactList
+            : showOtherDutyGroupsInCompactList // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }
@@ -294,6 +309,7 @@ extension SettingsUiStatePatterns on SettingsUiState {
       int? partnerAccentColorValue,
       int? myAccentColorValue,
       int? holidayAccentColorValue,
+      bool? showOtherDutyGroupsInCompactList,
     )?
     $default, {
     required TResult orElse(),
@@ -313,6 +329,7 @@ extension SettingsUiStatePatterns on SettingsUiState {
           _that.partnerAccentColorValue,
           _that.myAccentColorValue,
           _that.holidayAccentColorValue,
+          _that.showOtherDutyGroupsInCompactList,
         );
       case _:
         return orElse();
@@ -346,6 +363,7 @@ extension SettingsUiStatePatterns on SettingsUiState {
       int? partnerAccentColorValue,
       int? myAccentColorValue,
       int? holidayAccentColorValue,
+      bool? showOtherDutyGroupsInCompactList,
     )
     $default,
   ) {
@@ -364,6 +382,7 @@ extension SettingsUiStatePatterns on SettingsUiState {
           _that.partnerAccentColorValue,
           _that.myAccentColorValue,
           _that.holidayAccentColorValue,
+          _that.showOtherDutyGroupsInCompactList,
         );
       case _:
         throw StateError('Unexpected subclass');
@@ -396,6 +415,7 @@ extension SettingsUiStatePatterns on SettingsUiState {
       int? partnerAccentColorValue,
       int? myAccentColorValue,
       int? holidayAccentColorValue,
+      bool? showOtherDutyGroupsInCompactList,
     )?
     $default,
   ) {
@@ -414,6 +434,7 @@ extension SettingsUiStatePatterns on SettingsUiState {
           _that.partnerAccentColorValue,
           _that.myAccentColorValue,
           _that.holidayAccentColorValue,
+          _that.showOtherDutyGroupsInCompactList,
         );
       case _:
         return null;
@@ -436,6 +457,7 @@ class _SettingsUiState extends SettingsUiState {
     this.partnerAccentColorValue,
     this.myAccentColorValue,
     this.holidayAccentColorValue,
+    this.showOtherDutyGroupsInCompactList,
   }) : super._();
 
   @override
@@ -463,6 +485,8 @@ class _SettingsUiState extends SettingsUiState {
   // Holiday accent color UI value
   @override
   final int? holidayAccentColorValue;
+  @override
+  final bool? showOtherDutyGroupsInCompactList;
 
   /// Create a copy of SettingsUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -503,7 +527,13 @@ class _SettingsUiState extends SettingsUiState {
                   other.holidayAccentColorValue,
                   holidayAccentColorValue,
                 ) ||
-                other.holidayAccentColorValue == holidayAccentColorValue));
+                other.holidayAccentColorValue == holidayAccentColorValue) &&
+            (identical(
+                  other.showOtherDutyGroupsInCompactList,
+                  showOtherDutyGroupsInCompactList,
+                ) ||
+                other.showOtherDutyGroupsInCompactList ==
+                    showOtherDutyGroupsInCompactList));
   }
 
   @override
@@ -520,11 +550,12 @@ class _SettingsUiState extends SettingsUiState {
     partnerAccentColorValue,
     myAccentColorValue,
     holidayAccentColorValue,
+    showOtherDutyGroupsInCompactList,
   );
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList)';
   }
 }
 
@@ -549,6 +580,7 @@ abstract mixin class _$SettingsUiStateCopyWith<$Res>
     int? partnerAccentColorValue,
     int? myAccentColorValue,
     int? holidayAccentColorValue,
+    bool? showOtherDutyGroupsInCompactList,
   });
 }
 
@@ -576,6 +608,7 @@ class __$SettingsUiStateCopyWithImpl<$Res>
     Object? partnerAccentColorValue = freezed,
     Object? myAccentColorValue = freezed,
     Object? holidayAccentColorValue = freezed,
+    Object? showOtherDutyGroupsInCompactList = freezed,
   }) {
     return _then(
       _SettingsUiState(
@@ -623,6 +656,11 @@ class __$SettingsUiStateCopyWithImpl<$Res>
             ? _self.holidayAccentColorValue
             : holidayAccentColorValue // ignore: cast_nullable_to_non_nullable
                   as int?,
+        showOtherDutyGroupsInCompactList:
+            freezed == showOtherDutyGroupsInCompactList
+            ? _self.showOtherDutyGroupsInCompactList
+            : showOtherDutyGroupsInCompactList // ignore: cast_nullable_to_non_nullable
+                  as bool?,
       ),
     );
   }

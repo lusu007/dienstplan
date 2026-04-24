@@ -63,7 +63,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-      child: const Scaffold(extendBody: true, body: CalendarView()),
+      child: const Scaffold(
+        extendBody: true,
+        resizeToAvoidBottomInset: false,
+        body: CalendarView(),
+      ),
     );
   }
 }

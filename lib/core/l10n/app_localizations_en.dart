@@ -648,4 +648,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get personalEntryValidationEndAfterStart =>
       'End time must be after start time.';
+
+  @override
+  String get compactListShowOtherDutyGroupsTooltip => 'Show other duty groups';
+
+  @override
+  String get compactListHideOtherDutyGroupsTooltip => 'Hide other duty groups';
 }

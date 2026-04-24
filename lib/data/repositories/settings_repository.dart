@@ -75,6 +75,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       myAccentColorValue: s.myAccentColorValue,
       schoolHolidayStateCode: s.schoolHolidayStateCode,
       showSchoolHolidays: s.showSchoolHolidays,
+      showOtherDutyGroupsInCompactList: s.showOtherDutyGroupsInCompactList,
       lastSchoolHolidayRefresh: s.lastSchoolHolidayRefresh,
       holidayAccentColorValue: s.holidayAccentColorValue,
     );
@@ -92,6 +93,7 @@ class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
       myAccentColorValue: s.myAccentColorValue,
       schoolHolidayStateCode: s.schoolHolidayStateCode,
       showSchoolHolidays: s.showSchoolHolidays,
+      showOtherDutyGroupsInCompactList: s.showOtherDutyGroupsInCompactList,
       lastSchoolHolidayRefresh: s.lastSchoolHolidayRefresh,
       holidayAccentColorValue: s.holidayAccentColorValue,
     );

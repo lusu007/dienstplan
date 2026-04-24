@@ -10,7 +10,9 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/vacat
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
+import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/duty_group_fallback.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 
@@ -24,6 +26,64 @@ import 'package:dienstplan/core/constants/ui_constants.dart';
 /// [glassCompact]: same translucent glass as [glass], with compact type and
 /// padding for the split/calendar day list.
 enum DutyListVisualStyle { card, glass, compact, glassCompact }
+
+List<Schedule> filterDutySchedulesForDisplay({
+  required List<Schedule> schedules,
+  required DutyListVisualStyle visualStyle,
+  required String? activeConfigName,
+  required String? myDutyGroupName,
+  required String? partnerConfigName,
+  required String? partnerDutyGroupName,
+  required bool isPartnerVisible,
+  required bool showOtherDutyGroupsInCompactList,
+}) {
+  final bool isCompactLayout =
+      visualStyle == DutyListVisualStyle.compact ||
+      visualStyle == DutyListVisualStyle.glassCompact;
+  final bool hasActiveConfig =
+      activeConfigName != null && activeConfigName.isNotEmpty;
+  final bool hasMyDutyGroup =
+      myDutyGroupName != null && myDutyGroupName.isNotEmpty;
+  final bool hasPartnerConfig =
+      partnerConfigName != null && partnerConfigName.isNotEmpty;
+  final bool hasPartnerDutyGroup =
+      partnerDutyGroupName != null && partnerDutyGroupName.isNotEmpty;
+
+  return schedules
+      .where((Schedule schedule) {
+        if (schedule.isUserDefined) {
+          return true;
+        }
+
+        if (!isCompactLayout) {
+          return !hasActiveConfig || schedule.configName == activeConfigName;
+        }
+
+        if (showOtherDutyGroupsInCompactList) {
+          final bool isFromActiveConfig =
+              hasActiveConfig && schedule.configName == activeConfigName;
+          final bool isFromVisiblePartnerConfig =
+              isPartnerVisible &&
+              hasPartnerConfig &&
+              schedule.configName == partnerConfigName;
+          return isFromActiveConfig || isFromVisiblePartnerConfig;
+        }
+
+        final bool isOwnOfficial =
+            hasActiveConfig &&
+            hasMyDutyGroup &&
+            schedule.configName == activeConfigName &&
+            schedule.dutyGroupName == myDutyGroupName;
+        final bool isPartnerOfficial =
+            isPartnerVisible &&
+            hasPartnerConfig &&
+            hasPartnerDutyGroup &&
+            schedule.configName == partnerConfigName &&
+            schedule.dutyGroupName == partnerDutyGroupName;
+        return isOwnOfficial || isPartnerOfficial;
+      })
+      .toList(growable: false);
+}
 
 class _DutyListItemMetrics {
   const _DutyListItemMetrics._({
@@ -121,7 +181,7 @@ class DutyScheduleList extends ConsumerWidget {
     final String? partnerConfigName = scheduleState?.partnerConfigName;
     final int? partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
     final String? partnerDutyGroupName = scheduleState?.partnerDutyGroup;
-    final String? myDutyGroupName = scheduleState?.preferredDutyGroup;
+    final String? preferredMyDutyGroupName = scheduleState?.preferredDutyGroup;
     final int? myAccentColorValue = scheduleState?.myAccentColorValue;
     final Map<String, DutyType>? dutyTypesMap =
         scheduleState?.activeConfig?.dutyTypes ?? dutyTypes;
@@ -130,6 +190,13 @@ class DutyScheduleList extends ConsumerWidget {
       schoolHolidaysProvider.select((s) => s.value),
     );
     final settingsState = ref.watch(settingsProvider.select((s) => s.value));
+    final bool isPartnerVisible = ref.watch(calendarPartnerVisibilityProvider);
+    final bool showOtherDutyGroupsInCompactList =
+        settingsState?.showOtherDutyGroupsInCompactList ?? false;
+    final String? myDutyGroupName = computeEffectiveMyGroup(
+      preferredGroup: preferredMyDutyGroupName,
+      myDutyGroup: settingsState?.myDutyGroup,
+    );
     final int? holidayAccentColorValue = settingsState?.holidayAccentColorValue;
 
     final List<SchoolHoliday>? holidaysForSelectedDay =
@@ -141,7 +208,13 @@ class DutyScheduleList extends ConsumerWidget {
       return _buildSkeletonLoader(context);
     }
 
-    final List<Schedule> filteredSchedules = _getFilteredSchedules();
+    final List<Schedule> filteredSchedules = _getFilteredSchedules(
+      myDutyGroupName: myDutyGroupName,
+      partnerConfigName: partnerConfigName,
+      partnerDutyGroupName: partnerDutyGroupName,
+      isPartnerVisible: isPartnerVisible,
+      showOtherDutyGroupsInCompactList: showOtherDutyGroupsInCompactList,
+    );
     final List<Schedule> sortedSchedules = _sortSchedules(filteredSchedules);
 
     final bool hasHolidays =
@@ -167,23 +240,23 @@ class DutyScheduleList extends ConsumerWidget {
     );
   }
 
-  List<Schedule> _getFilteredSchedules() {
-    final List<Schedule> userRows = schedules
-        .where((Schedule s) => s.isUserDefined)
-        .toList();
-    final List<Schedule> officialAll = schedules
-        .where((Schedule s) => !s.isUserDefined)
-        .toList();
-    final List<Schedule> officialFiltered = officialAll.where((
-      Schedule schedule,
-    ) {
-      final bool isActiveConfig =
-          activeConfigName == null ||
-          activeConfigName!.isEmpty ||
-          schedule.configName == activeConfigName;
-      return isActiveConfig;
-    }).toList();
-    return <Schedule>[...userRows, ...officialFiltered];
+  List<Schedule> _getFilteredSchedules({
+    required String? myDutyGroupName,
+    required String? partnerConfigName,
+    required String? partnerDutyGroupName,
+    required bool isPartnerVisible,
+    required bool showOtherDutyGroupsInCompactList,
+  }) {
+    return filterDutySchedulesForDisplay(
+      schedules: schedules,
+      visualStyle: visualStyle,
+      activeConfigName: activeConfigName,
+      myDutyGroupName: myDutyGroupName,
+      partnerConfigName: partnerConfigName,
+      partnerDutyGroupName: partnerDutyGroupName,
+      isPartnerVisible: isPartnerVisible,
+      showOtherDutyGroupsInCompactList: showOtherDutyGroupsInCompactList,
+    );
   }
 
   List<Schedule> _sortSchedules(List<Schedule> input) {

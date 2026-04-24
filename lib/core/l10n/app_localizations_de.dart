@@ -653,4 +653,12 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get personalEntryValidationEndAfterStart =>
       'Ende muss nach dem Beginn liegen.';
+
+  @override
+  String get compactListShowOtherDutyGroupsTooltip =>
+      'Andere Dienstgruppen anzeigen';
+
+  @override
+  String get compactListHideOtherDutyGroupsTooltip =>
+      'Andere Dienstgruppen ausblenden';
 }

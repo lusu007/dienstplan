@@ -54,6 +54,8 @@ class SettingsNotifier extends _$SettingsNotifier {
         partnerAccentColorValue: settings?.partnerAccentColorValue,
         myAccentColorValue: settings?.myAccentColorValue,
         holidayAccentColorValue: settings?.holidayAccentColorValue,
+        showOtherDutyGroupsInCompactList:
+            settings?.showOtherDutyGroupsInCompactList ?? false,
       );
     } catch (_) {
       return SettingsUiState.initial().copyWith(
@@ -198,5 +200,19 @@ class SettingsNotifier extends _$SettingsNotifier {
       ref.invalidate(scheduleDataProvider);
       ref.invalidate(scheduleCoordinatorProvider);
     }
+  }
+
+  Future<void> setShowOtherDutyGroupsInCompactList(bool value) async {
+    final SettingsUiState current = state.value ?? SettingsUiState.initial();
+    state = AsyncData(
+      current.copyWith(showOtherDutyGroupsInCompactList: value),
+    );
+    await _upsertPersisted(
+      (Settings? c) => c != null
+          ? c.copyWith(showOtherDutyGroupsInCompactList: value)
+          : Settings.withDefaults().copyWith(
+              showOtherDutyGroupsInCompactList: value,
+            ),
+    );
   }
 }
