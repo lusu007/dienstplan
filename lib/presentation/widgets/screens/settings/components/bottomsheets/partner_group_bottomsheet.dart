@@ -18,7 +18,6 @@ class PartnerGroupBottomsheet {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.selectPartnerDutyScheduleFirst),
-          behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 3),
         ),
       );

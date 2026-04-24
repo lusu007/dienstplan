@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
@@ -101,16 +102,22 @@ class _GlassBackButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(
+          glassSurfaceRadiusMd + glassSpacingXs,
+        ),
         onTap: () => _handleBack(context),
         child: Container(
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.28),
-            borderRadius: BorderRadius.circular(20),
+            color: Colors.white.withValues(
+              alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight,
+            ),
+            borderRadius: BorderRadius.circular(glassSurfaceRadiusMd + 2),
             border: Border.all(
-              color: Colors.white.withValues(alpha: isDark ? 0.18 : 0.45),
+              color: Colors.white.withValues(
+                alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
+              ),
               width: 1,
             ),
           ),

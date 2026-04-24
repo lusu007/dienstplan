@@ -68,4 +68,21 @@ class PersonalCalendarRepositoryImpl implements PersonalCalendarRepository {
       );
     }
   }
+
+  @override
+  Future<Result<void>> deleteAll() async {
+    try {
+      await _dao.deleteAll();
+      return Result.success<void>(null);
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'PersonalCalendarRepositoryImpl: deleteAll failed',
+        e,
+        stackTrace,
+      );
+      return Result.createFailure<void>(
+        _exceptionMapper.mapToFailure(e, stackTrace),
+      );
+    }
+  }
 }

@@ -6,9 +6,13 @@ import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
+import 'package:dienstplan/core/errors/failure_presenter.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
 class ResetBottomsheet {
+  static const FailurePresenter _failurePresenter = FailurePresenter();
+
   static void show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
@@ -62,12 +66,32 @@ class ResetBottomsheet {
                       context,
                       listen: false,
                     );
+                    final personalCalendarRepository = await container.read(
+                      personalCalendarRepositoryProvider.future,
+                    );
                     final configService = await container.read(
                       scheduleConfigServiceProvider.future,
                     );
+                    final deletePersonalEntriesResult =
+                        await personalCalendarRepository.deleteAll();
+                    if (deletePersonalEntriesResult.isFailure) {
+                      if (context.mounted) {
+                        final String message = _failurePresenter.present(
+                          deletePersonalEntriesResult.failure,
+                          l10n,
+                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(message)));
+                      }
+                      return;
+                    }
 
                     await configService.resetSetup();
                     await container.read(settingsProvider.notifier).reset();
+                    await container
+                        .read(scheduleDataProvider.notifier)
+                        .refreshPersonalCalendarEntries();
 
                     // Invalidate school holidays provider to clear cached data
                     container.invalidate(schoolHolidaysProvider);
@@ -75,18 +99,7 @@ class ResetBottomsheet {
                     if (context.mounted) {
                       Navigator.of(context, rootNavigator: true).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surface,
-                          content: Text(
-                            l10n.resetDataSuccess,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                        ),
+                        SnackBar(content: Text(l10n.resetDataSuccess)),
                       );
                       context.router.replaceAll([const SetupRoute()]);
                     }

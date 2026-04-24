@@ -245,12 +245,9 @@ class ScheduleSection extends StatelessWidget {
     BuildContext context,
     AppLocalizations l10n,
   ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.selectMyDutyScheduleFirst),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.selectMyDutyScheduleFirst)));
   }
 
   void _showPartnerDutyScheduleRequiredMessage(
@@ -258,10 +255,7 @@ class ScheduleSection extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.selectPartnerDutyScheduleFirst),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(l10n.selectPartnerDutyScheduleFirst)),
     );
   }
 }

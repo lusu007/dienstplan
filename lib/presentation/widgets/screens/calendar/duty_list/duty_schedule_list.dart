@@ -12,6 +12,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/duty_group_fallback.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
@@ -174,6 +175,21 @@ class DutyScheduleList extends ConsumerWidget {
   bool get _isCompactLayout =>
       visualStyle == DutyListVisualStyle.compact ||
       visualStyle == DutyListVisualStyle.glassCompact;
+
+  double _resolveCardTintAlpha({
+    required bool isOwn,
+    required bool isPartner,
+    required bool isDark,
+    required bool isCompact,
+  }) {
+    if (!isOwn && !isPartner) {
+      return 0.0;
+    }
+    if (isDark) {
+      return isCompact ? 0.16 : 0.14;
+    }
+    return isCompact ? 0.12 : 0.1;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -392,111 +408,144 @@ class DutyScheduleList extends ConsumerWidget {
         final Color borderColor = baseColor;
         final Color badgeColor = baseColor;
         final bool isDark = Theme.of(context).brightness == Brightness.dark;
+        final double tintAlpha = _resolveCardTintAlpha(
+          isOwn: isOwn,
+          isPartner: isPartner,
+          isDark: isDark,
+          isCompact: _isCompactLayout,
+        );
 
-        return Container(
+        final VoidCallback? onTap = schedule.isUserDefined
+            ? () {
+                showPersonalCalendarEntrySheet(
+                  context: context,
+                  ref: ref,
+                  day: schedule.date,
+                  existingSchedule: schedule,
+                );
+              }
+            : null;
+        final double glassContentMinHeight =
+            (m.minHeight - m.contentPadding.vertical).clamp(
+              0.0,
+              double.infinity,
+            );
+        return KeyedSubtree(
           key: ValueKey<String>(
             '${schedule.date}-${schedule.configName}-${schedule.dutyGroupName}-${schedule.dutyTypeId}-${schedule.service}',
           ),
-          margin: const EdgeInsets.only(bottom: 8),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: schedule.isUserDefined
-                  ? () {
-                      showPersonalCalendarEntrySheet(
-                        context: context,
-                        ref: ref,
-                        day: schedule.date,
-                        existingSchedule: schedule,
-                      );
-                    }
-                  : null,
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                constraints: BoxConstraints(minHeight: m.minHeight),
-                padding: m.contentPadding,
-                decoration: _buildDutyItemDecoration(
-                  context: context,
-                  isDark: isDark,
+          child: _isGlass
+              ? GlassCard(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  borderRadius: _isCompactLayout ? 16 : 18,
+                  padding: m.contentPadding,
+                  onTap: onTap,
+                  tintColor: baseColor,
+                  tintAlpha: tintAlpha,
                   borderColor: borderColor,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(m.badgeIconPadding),
-                      decoration: _buildIconBadgeDecoration(
-                        badgeColor: badgeColor,
-                        isDark: isDark,
-                        cardIconRadius: m.badgeIconRadius,
-                      ),
-                      child: Icon(
-                        DutyItemUiBuilder.iconForSchedule(
-                          schedule,
-                          dutyTypesMap,
-                        ),
-                        color: _resolveIconColor(
-                          context: context,
-                          badgeColor: badgeColor,
-                          isDark: isDark,
-                        ),
-                        size: m.iconSize,
-                      ),
+                  borderAlpha: 0.55,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: glassContentMinHeight,
                     ),
-                    SizedBox(width: m.gapAfterBadge),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  schedule.service,
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(
-                                        fontSize: m.titleSize,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface,
-                                      ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                if (schedule.isUserDefined &&
-                                    _personalNotesLine(schedule) != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      _personalNotesLine(schedule)!,
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(m.badgeIconPadding),
+                          decoration: _buildIconBadgeDecoration(
+                            badgeColor: badgeColor,
+                            isDark: isDark,
+                            cardIconRadius: m.badgeIconRadius,
+                          ),
+                          child: Icon(
+                            DutyItemUiBuilder.iconForSchedule(
+                              schedule,
+                              dutyTypesMap,
+                            ),
+                            color: _resolveIconColor(
+                              context: context,
+                              badgeColor: badgeColor,
+                              isDark: isDark,
+                            ),
+                            size: m.iconSize,
+                          ),
+                        ),
+                        SizedBox(width: m.gapAfterBadge),
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      schedule.service,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodySmall
+                                          .titleMedium
                                           ?.copyWith(
-                                            fontSize: m.notesSize > 0
-                                                ? m.notesSize
-                                                : null,
+                                            fontSize: m.titleSize,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    if (schedule.isUserDefined &&
+                                        _personalNotesLine(schedule) != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          _personalNotesLine(schedule)!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                fontSize: m.notesSize > 0
+                                                    ? m.notesSize
+                                                    : null,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                              ),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              if (personalTimeLabel != null &&
+                                  personalTimeLabel.isNotEmpty) ...<Widget>[
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Text(
+                                      personalTimeLabel,
+                                      textAlign: TextAlign.end,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontSize: m.secondarySize,
+                                            fontWeight: FontWeight.w400,
                                             color: Theme.of(
                                               context,
                                             ).colorScheme.onSurfaceVariant,
                                           ),
-                                      maxLines: 3,
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                              ],
-                            ),
-                          ),
-                          if (personalTimeLabel != null &&
-                              personalTimeLabel.isNotEmpty) ...<Widget>[
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: Text(
-                                  personalTimeLabel,
-                                  textAlign: TextAlign.end,
+                                ),
+                              ] else ...<Widget>[
+                                const SizedBox(width: 8),
+                                Text(
+                                  schedule.dutyGroupName,
                                   style: Theme.of(context).textTheme.bodyMedium
                                       ?.copyWith(
                                         fontSize: m.secondarySize,
@@ -505,34 +554,158 @@ class DutyScheduleList extends ConsumerWidget {
                                           context,
                                         ).colorScheme.onSurfaceVariant,
                                       ),
-                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onTap,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        constraints: BoxConstraints(minHeight: m.minHeight),
+                        padding: m.contentPadding,
+                        decoration: _buildDutyItemDecoration(
+                          context: context,
+                          isDark: isDark,
+                          borderColor: borderColor,
+                          tintColor: baseColor,
+                          tintAlpha: tintAlpha,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(m.badgeIconPadding),
+                              decoration: _buildIconBadgeDecoration(
+                                badgeColor: badgeColor,
+                                isDark: isDark,
+                                cardIconRadius: m.badgeIconRadius,
+                              ),
+                              child: Icon(
+                                DutyItemUiBuilder.iconForSchedule(
+                                  schedule,
+                                  dutyTypesMap,
+                                ),
+                                color: _resolveIconColor(
+                                  context: context,
+                                  badgeColor: badgeColor,
+                                  isDark: isDark,
+                                ),
+                                size: m.iconSize,
                               ),
                             ),
-                          ] else ...<Widget>[
-                            const SizedBox(width: 8),
-                            Text(
-                              schedule.dutyGroupName,
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    fontSize: m.secondarySize,
-                                    fontWeight: FontWeight.w400,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
+                            SizedBox(width: m.gapAfterBadge),
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          schedule.service,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium
+                                              ?.copyWith(
+                                                fontSize: m.titleSize,
+                                                fontWeight: FontWeight.bold,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurface,
+                                              ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        if (schedule.isUserDefined &&
+                                            _personalNotesLine(schedule) !=
+                                                null)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            child: Text(
+                                              _personalNotesLine(schedule)!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall
+                                                  ?.copyWith(
+                                                    fontSize: m.notesSize > 0
+                                                        ? m.notesSize
+                                                        : null,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurfaceVariant,
+                                                  ),
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
-                              overflow: TextOverflow.ellipsis,
+                                  if (personalTimeLabel != null &&
+                                      personalTimeLabel.isNotEmpty) ...<Widget>[
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: Text(
+                                          personalTimeLabel,
+                                          textAlign: TextAlign.end,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: m.secondarySize,
+                                                fontWeight: FontWeight.w400,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                              ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ] else ...<Widget>[
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      schedule.dutyGroupName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontSize: m.secondarySize,
+                                            fontWeight: FontWeight.w400,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ),
                           ],
-                        ],
+                        ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         );
       },
     );
@@ -542,19 +715,22 @@ class DutyScheduleList extends ConsumerWidget {
     required BuildContext context,
     required bool isDark,
     required Color borderColor,
+    required Color tintColor,
+    required double tintAlpha,
   }) {
+    final Color roleTint = tintColor.withValues(alpha: tintAlpha);
     if (!_isGlass) {
       return BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Color.alphaBlend(roleTint, Theme.of(context).cardColor),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1),
       );
     }
-    final Color baseBackground = Colors.white.withValues(
+    final Color neutralBackground = Colors.white.withValues(
       alpha: isDark ? 0.06 : 0.28,
     );
     return BoxDecoration(
-      color: baseBackground,
+      color: Color.alphaBlend(roleTint, neutralBackground),
       borderRadius: BorderRadius.circular(18),
       border: Border.all(color: borderColor.withValues(alpha: 0.55), width: 1),
       boxShadow: const [],

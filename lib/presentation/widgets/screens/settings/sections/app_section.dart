@@ -39,7 +39,7 @@ class AppSection extends ConsumerWidget {
           icon: Icons.color_lens_outlined,
           title: l10n.themeMode,
           subtitle: _themeSubtitle(l10n, effectivePref),
-          trailing: _buildThemeIndicator(effectivePref),
+          trailing: _buildThemeIndicator(context, effectivePref),
           onTap: () => ThemeModeBottomsheet.show(context, ref),
         ),
         NavigationCard(
@@ -63,14 +63,15 @@ class AppSection extends ConsumerWidget {
     }
   }
 
-  Widget _buildThemeIndicator(ThemePreference pref) {
+  Widget _buildThemeIndicator(BuildContext context, ThemePreference pref) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     switch (pref) {
       case ThemePreference.light:
-        return const Icon(Icons.wb_sunny_outlined, color: Colors.amber);
+        return Icon(Icons.wb_sunny_outlined, color: colorScheme.secondary);
       case ThemePreference.dark:
-        return const Icon(Icons.nightlight_round, color: Colors.indigo);
+        return Icon(Icons.nightlight_round, color: colorScheme.primary);
       case ThemePreference.system:
-        return const Icon(Icons.brightness_auto, color: Colors.grey);
+        return Icon(Icons.brightness_auto, color: colorScheme.onSurfaceVariant);
     }
   }
 }

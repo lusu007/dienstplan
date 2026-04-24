@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
@@ -35,12 +36,19 @@ class GlassBottomSheet extends StatelessWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     if (shrinkToContent) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        padding: const EdgeInsets.fromLTRB(
+          glassSpacingSm,
+          0,
+          glassSpacingSm,
+          glassSpacingSm,
+        ),
         child: ConstrainedBox(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.92),
           child: SingleChildScrollView(
             child: GlassDialogSurface(
-              borderRadius: const BorderRadius.all(Radius.circular(28)),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
+              ),
               child: Material(
                 color: Colors.transparent,
                 child: Column(
@@ -57,7 +65,7 @@ class GlassBottomSheet extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: children,
                             ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: glassSpacingMd),
                   ],
                 ),
               ),
@@ -69,11 +77,18 @@ class GlassBottomSheet extends StatelessWidget {
     final double heightFactor = heightPercentage ?? 0.8;
     final double height = screenHeight * heightFactor;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+      padding: const EdgeInsets.fromLTRB(
+        glassSpacingSm,
+        0,
+        glassSpacingSm,
+        glassSpacingSm,
+      ),
       child: SizedBox(
         height: height,
         child: GlassDialogSurface(
-          borderRadius: const BorderRadius.all(Radius.circular(28)),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
+          ),
           child: Material(
             color: Colors.transparent,
             child: Column(
@@ -89,17 +104,13 @@ class GlassBottomSheet extends StatelessWidget {
                     // themselves on the actual scrollable element to avoid
                     // fading fixed headers at the top.
                     child: children.length == 1
-                        ? ScrollFadeMask(
-                            topFadeFraction: 0.05,
-                            bottomFadeFraction: 0.06,
-                            child: children.first,
-                          )
+                        ? ScrollFadeMask(child: children.first)
                         : Column(
                             mainAxisSize: MainAxisSize.min,
                             children: children,
                           ),
                   ),
-                const SizedBox(height: 12),
+                const SizedBox(height: glassSpacingMd),
               ],
             ),
           ),
@@ -117,7 +128,7 @@ class GlassBottomSheet extends StatelessWidget {
           height: 4,
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: isDark ? 0.35 : 0.55),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(glassSpacingXs / 2),
           ),
         ),
       ),
@@ -131,7 +142,12 @@ class GlassBottomSheet extends StatelessWidget {
     return Align(
       alignment: AlignmentDirectional.centerStart,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        padding: const EdgeInsets.fromLTRB(
+          glassSpacingLg,
+          glassSpacingLg,
+          glassSpacingLg,
+          glassSpacingSm,
+        ),
         child: Text(
           title!,
           textAlign: TextAlign.start,

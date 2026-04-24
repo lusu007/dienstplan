@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 /// being cut off at a hard edge.
 ///
 /// [topFadeFraction] and [bottomFadeFraction] are expressed as fractions of
-/// the child's rendered height (e.g. `0.04` means the first / last 4 percent
+/// the child's rendered height (e.g. `0.05` means the first / last 5 percent
 /// of the area fade to fully transparent). Set either to `0` to disable the
 /// fade on that edge.
 class ScrollFadeMask extends StatelessWidget {
@@ -18,8 +18,8 @@ class ScrollFadeMask extends StatelessWidget {
   const ScrollFadeMask({
     super.key,
     required this.child,
-    this.topFadeFraction = 0.04,
-    this.bottomFadeFraction = 0.04,
+    this.topFadeFraction = 0.05,
+    this.bottomFadeFraction = 0.06,
   });
 
   @override

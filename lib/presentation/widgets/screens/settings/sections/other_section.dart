@@ -69,16 +69,7 @@ class OtherSection extends ConsumerWidget {
     } catch (e, stackTrace) {
       AppLogger.e('OtherSection: Error sharing app', e, stackTrace);
       if (!context.mounted) return;
-      messenger.showSnackBar(
-        SnackBar(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          content: Text(
-            l10n.shareAppError,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(l10n.shareAppError)));
     }
   }
 

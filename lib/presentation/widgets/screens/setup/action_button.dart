@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 
 /// Primary/secondary action button used at the bottom of the setup flow.
 ///
@@ -31,7 +32,6 @@ class ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color accent = mainColor ?? colorScheme.primary;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final String effectiveLoadingText = loadingText ?? text;
     final bool tapEnabled = onPressed != null && !isLoading;
     final bool visuallyDimmed = onPressed == null && !isLoading;
@@ -48,8 +48,12 @@ class ActionButton extends StatelessWidget {
         child: GlassContainer(
           borderRadius: 16,
           blurSigma: 20,
-          tintOpacity: isDark ? 0.34 : 0.30,
-          borderOpacity: isDark ? 0.30 : 0.42,
+          tintOpacity: Theme.of(context).brightness == Brightness.dark
+              ? 0.34
+              : 0.30,
+          borderOpacity: Theme.of(context).brightness == Brightness.dark
+              ? 0.30
+              : 0.42,
           padding: EdgeInsets.zero,
           child: Material(
             color: Colors.transparent,
@@ -81,44 +85,28 @@ class ActionButton extends StatelessWidget {
     }
 
     final Color foreground = colorScheme.onSurface;
-    final Widget body = SizedBox(
-      width: double.infinity,
+    final Widget body = GlassButtonSurface(
+      onTap: onPressed,
+      enabled: tapEnabled,
+      borderRadius: 16,
       height: height,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: tapEnabled ? onPressed : null,
-          child: Container(
-            height: height,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.28),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Color.alphaBlend(
-                  accent.withValues(alpha: 0.35),
-                  Colors.white.withValues(alpha: isDark ? 0.18 : 0.45),
-                ),
-                width: 1,
-              ),
-            ),
-            child: DefaultTextStyle.merge(
-              style: TextStyle(
-                color: foreground,
-                fontSize: fontSize,
-                fontWeight: FontWeight.w600,
-              ),
-              child: _buildButtonContent(
-                effectiveLoadingText,
-                indicatorColor: accent,
-              ),
-            ),
+      fullWidth: true,
+      opacity: frameOpacity,
+      child: Center(
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            color: foreground,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+          ),
+          child: _buildButtonContent(
+            effectiveLoadingText,
+            indicatorColor: accent,
           ),
         ),
       ),
     );
-    return Opacity(opacity: frameOpacity, child: body);
+    return body;
   }
 
   Widget _buildButtonContent(

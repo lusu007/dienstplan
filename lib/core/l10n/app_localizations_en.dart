@@ -173,6 +173,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorClearingActiveConfig => 'Error clearing active config';
 
   @override
+  String get errorSettingActiveConfig => 'Error setting active config';
+
+  @override
   String get about => 'About';
 
   @override

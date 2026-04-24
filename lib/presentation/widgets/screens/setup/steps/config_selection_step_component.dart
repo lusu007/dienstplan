@@ -61,8 +61,6 @@ class ConfigSelectionStepComponent extends StatelessWidget {
         // Scrollable content section
         Expanded(
           child: ScrollFadeMask(
-            topFadeFraction: 0.05,
-            bottomFadeFraction: 0.06,
             child: _buildScrollableContent(
               isLoading: state.isLoading,
               loadingError: loadingError,

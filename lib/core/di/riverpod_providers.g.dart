@@ -521,7 +521,7 @@ final class AppThemeProvider
   }
 }
 
-String _$appThemeHash() => r'454b3d0b42eea01c9b9904767ed1fa1cb1f72736';
+String _$appThemeHash() => r'32bad8c955db567b9b4dbe43a582f096d7cdf08b';
 
 @ProviderFor(appDarkTheme)
 final appDarkThemeProvider = AppDarkThemeProvider._();
@@ -562,7 +562,7 @@ final class AppDarkThemeProvider
   }
 }
 
-String _$appDarkThemeHash() => r'33cb551912c40fc143ef06166fe3bd3e0526bbb0';
+String _$appDarkThemeHash() => r'4c7f053c9105ec7b14949c2c6e7286006bdf7bd5';
 
 @ProviderFor(sentryService)
 final sentryServiceProvider = SentryServiceProvider._();

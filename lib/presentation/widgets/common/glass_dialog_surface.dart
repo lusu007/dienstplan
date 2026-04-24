@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
 
 /// Frosted-glass surface used as the root container of glass-morphism dialogs.
 ///
@@ -14,7 +16,9 @@ class GlassDialogSurface extends StatelessWidget {
   const GlassDialogSurface({
     super.key,
     required this.child,
-    this.borderRadius = const BorderRadius.all(Radius.circular(32)),
+    this.borderRadius = const BorderRadius.all(
+      Radius.circular(glassSurfaceRadiusXl),
+    ),
   });
 
   @override
@@ -48,8 +52,8 @@ class GlassDialogSurface extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.22),
-            blurRadius: 32,
-            offset: const Offset(0, 16),
+            blurRadius: glassShadowBlurLg,
+            offset: const Offset(0, glassShadowOffsetYMd),
           ),
         ],
       ),
@@ -69,7 +73,10 @@ class GlassDialogSurface extends StatelessWidget {
               child: AmbientBlob(color: partnerAccent, diameter: 220),
             ),
             BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
+              filter: ImageFilter.blur(
+                sigmaX: glassSurfaceBlurDialog,
+                sigmaY: glassSurfaceBlurDialog,
+              ),
               child: Container(
                 decoration: BoxDecoration(color: tintColor),
                 child: Padding(
@@ -142,32 +149,6 @@ class SoftGradientDivider extends StatelessWidget {
             Colors.white.withValues(alpha: isDark ? 0.12 : 0.28),
             Colors.transparent,
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Soft radial colour blob used behind the glass surface blur to create a
-/// subtle ambient hue shift.
-class AmbientBlob extends StatelessWidget {
-  final Color color;
-  final double diameter;
-
-  const AmbientBlob({super.key, required this.color, required this.diameter});
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: diameter,
-        height: diameter,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, color.withValues(alpha: 0.0)],
-            stops: const [0.0, 1.0],
-          ),
         ),
       ),
     );
