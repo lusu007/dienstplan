@@ -50,86 +50,87 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
     });
 
     final double imeBottom = MediaQuery.viewInsetsOf(context).bottom;
-    final double contentBottomPadding = imeBottom > 0
-        ? 0.0
-        : kGlassBarReservedHeight;
-    final double monthToGridSpacing = math.max(
-      0.0,
-      CalendarConfig.kCalendarMonthPickerToGridSpacing -
-          (imeBottom > 0 ? 2.0 : 0.0),
-    );
+    const double monthToGridSpacing =
+        CalendarConfig.kCalendarMonthPickerToGridSpacing;
 
     return CalendarBackdrop(
       child: Stack(
         children: [
           Positioned.fill(
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: contentBottomPadding),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  child: Column(
-                    children: <Widget>[
-                      const CalendarHeader(),
-                      SizedBox(height: monthToGridSpacing),
-                      if (_isSplitLayout)
-                        Expanded(
-                          child: LayoutBuilder(
-                            builder: (BuildContext context, BoxConstraints c) {
-                              final double calendarHeight =
-                                  _computeSplitLayoutCalendarHeight(
-                                    c.maxHeight,
-                                  );
-                              return Column(
-                                children: <Widget>[
-                                  CalendarSplitPointerListener(
-                                    isSplitLayout: true,
-                                    onSwipeDownInSplit: _exitSplitLayout,
-                                    child: SizedBox(
-                                      height: calendarHeight,
-                                      width: double.infinity,
-                                      child: CalendarTable(
-                                        calendarKey: _calendarKey,
-                                        onPageChanged: (_) {},
-                                        onDaySelected: _handleDaySelected,
-                                      ),
-                                    ),
-                                  ),
-                                  const Expanded(
-                                    child: DaySchedulesListPanel(),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        )
-                      else
-                        Expanded(
-                          child: CalendarSplitPointerListener(
-                            isSplitLayout: false,
-                            onSwipeUpInFull: _enterSplitLayout,
-                            child: CalendarTable(
-                              calendarKey: _calendarKey,
-                              onPageChanged: (_) {},
-                              onDaySelected: _handleDaySelected,
+            child: MediaQuery.removeViewInsets(
+              context: context,
+              removeBottom: true,
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: kGlassBarReservedHeight,
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                    child: Column(
+                      children: <Widget>[
+                        const CalendarHeader(),
+                        const SizedBox(height: monthToGridSpacing),
+                        if (_isSplitLayout)
+                          Expanded(
+                            child: LayoutBuilder(
+                              builder:
+                                  (BuildContext context, BoxConstraints c) {
+                                    final double calendarHeight =
+                                        _computeSplitLayoutCalendarHeight(
+                                          c.maxHeight,
+                                        );
+                                    return Column(
+                                      children: <Widget>[
+                                        CalendarSplitPointerListener(
+                                          isSplitLayout: true,
+                                          onSwipeDownInSplit: _exitSplitLayout,
+                                          child: SizedBox(
+                                            height: calendarHeight,
+                                            width: double.infinity,
+                                            child: CalendarTable(
+                                              calendarKey: _calendarKey,
+                                              onPageChanged: (_) {},
+                                              onDaySelected: _handleDaySelected,
+                                            ),
+                                          ),
+                                        ),
+                                        const Expanded(
+                                          child: DaySchedulesListPanel(),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                            ),
+                          )
+                        else
+                          Expanded(
+                            child: CalendarSplitPointerListener(
+                              isSplitLayout: false,
+                              onSwipeUpInFull: _enterSplitLayout,
+                              child: CalendarTable(
+                                calendarKey: _calendarKey,
+                                onPageChanged: (_) {},
+                                onDaySelected: _handleDaySelected,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             left: 0,
             right: 0,
-            bottom: 0,
-            child: GlassActionBar(),
+            bottom: imeBottom,
+            child: const GlassActionBar(),
           ),
         ],
       ),

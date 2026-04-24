@@ -856,5 +856,13 @@
   "personalEntryValidationEndAfterStart": "End time must be after start time.",
   "@personalEntryValidationEndAfterStart": {
     "description": "Validation: end before start"
+  },
+  "compactListShowOtherDutyGroupsTooltip": "Show other duty groups",
+  "@compactListShowOtherDutyGroupsTooltip": {
+    "description": "Tooltip for compact schedule list header toggle to show other duty groups"
+  },
+  "compactListHideOtherDutyGroupsTooltip": "Hide other duty groups",
+  "@compactListHideOtherDutyGroupsTooltip": {
+    "description": "Tooltip for compact schedule list header toggle to hide other duty groups"
   }
 }

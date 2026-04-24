@@ -13,6 +13,7 @@ class Settings {
   // School holidays
   final String? schoolHolidayStateCode;
   final bool? showSchoolHolidays;
+  final bool? showOtherDutyGroupsInCompactList;
   final DateTime? lastSchoolHolidayRefresh;
   final int? holidayAccentColorValue;
 
@@ -27,6 +28,7 @@ class Settings {
     this.myAccentColorValue,
     this.schoolHolidayStateCode,
     this.showSchoolHolidays,
+    this.showOtherDutyGroupsInCompactList,
     this.lastSchoolHolidayRefresh,
     this.holidayAccentColorValue,
   });
@@ -43,6 +45,9 @@ class Settings {
       myAccentColorValue: _safeIntCast(map['my_accent_color']),
       schoolHolidayStateCode: _safeStringCast(map['school_holiday_state_code']),
       showSchoolHolidays: _safeBoolCast(map['show_school_holidays']),
+      showOtherDutyGroupsInCompactList: _safeBoolCast(
+        map['show_other_duty_groups_in_compact_list'],
+      ),
       lastSchoolHolidayRefresh: _safeDateTimeCast(
         map['last_school_holiday_refresh'],
       ),
@@ -65,6 +70,9 @@ class Settings {
         'school_holiday_state_code': schoolHolidayStateCode,
       if (showSchoolHolidays != null)
         'show_school_holidays': showSchoolHolidays == true ? 1 : 0,
+      if (showOtherDutyGroupsInCompactList != null)
+        'show_other_duty_groups_in_compact_list':
+            showOtherDutyGroupsInCompactList == true ? 1 : 0,
       if (lastSchoolHolidayRefresh != null)
         'last_school_holiday_refresh': lastSchoolHolidayRefresh!
             .toIso8601String(),
@@ -84,6 +92,7 @@ class Settings {
     int? myAccentColorValue,
     String? schoolHolidayStateCode,
     bool? showSchoolHolidays,
+    bool? showOtherDutyGroupsInCompactList,
     DateTime? lastSchoolHolidayRefresh,
     int? holidayAccentColorValue,
   }) {
@@ -100,6 +109,9 @@ class Settings {
       schoolHolidayStateCode:
           schoolHolidayStateCode ?? this.schoolHolidayStateCode,
       showSchoolHolidays: showSchoolHolidays ?? this.showSchoolHolidays,
+      showOtherDutyGroupsInCompactList:
+          showOtherDutyGroupsInCompactList ??
+          this.showOtherDutyGroupsInCompactList,
       lastSchoolHolidayRefresh:
           lastSchoolHolidayRefresh ?? this.lastSchoolHolidayRefresh,
       holidayAccentColorValue:
@@ -109,7 +121,7 @@ class Settings {
 
   @override
   String toString() {
-    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themeMode: ${themeMode?.name}, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 
   @override
@@ -126,6 +138,8 @@ class Settings {
         other.myAccentColorValue == myAccentColorValue &&
         other.schoolHolidayStateCode == schoolHolidayStateCode &&
         other.showSchoolHolidays == showSchoolHolidays &&
+        other.showOtherDutyGroupsInCompactList ==
+            showOtherDutyGroupsInCompactList &&
         other.holidayAccentColorValue == holidayAccentColorValue;
   }
 
@@ -141,6 +155,7 @@ class Settings {
         myAccentColorValue.hashCode ^
         schoolHolidayStateCode.hashCode ^
         showSchoolHolidays.hashCode ^
+        showOtherDutyGroupsInCompactList.hashCode ^
         holidayAccentColorValue.hashCode;
   }
 

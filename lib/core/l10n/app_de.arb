@@ -853,5 +853,13 @@
   "personalEntryValidationEndAfterStart": "Ende muss nach dem Beginn liegen.",
   "@personalEntryValidationEndAfterStart": {
     "description": "Validation: end before start"
+  },
+  "compactListShowOtherDutyGroupsTooltip": "Andere Dienstgruppen anzeigen",
+  "@compactListShowOtherDutyGroupsTooltip": {
+    "description": "Tooltip for compact schedule list header toggle to show other duty groups"
+  },
+  "compactListHideOtherDutyGroupsTooltip": "Andere Dienstgruppen ausblenden",
+  "@compactListHideOtherDutyGroupsTooltip": {
+    "description": "Tooltip for compact schedule list header toggle to hide other duty groups"
   }
 }

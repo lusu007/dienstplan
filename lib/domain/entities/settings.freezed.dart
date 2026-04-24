@@ -23,6 +23,7 @@ mixin _$Settings {
   int? get myAccentColorValue; // School holidays feature
   String? get schoolHolidayStateCode;
   bool? get showSchoolHolidays;
+  bool? get showOtherDutyGroupsInCompactList;
   DateTime? get lastSchoolHolidayRefresh;
   int? get holidayAccentColorValue;
 
@@ -62,6 +63,12 @@ mixin _$Settings {
             (identical(other.showSchoolHolidays, showSchoolHolidays) ||
                 other.showSchoolHolidays == showSchoolHolidays) &&
             (identical(
+                  other.showOtherDutyGroupsInCompactList,
+                  showOtherDutyGroupsInCompactList,
+                ) ||
+                other.showOtherDutyGroupsInCompactList ==
+                    showOtherDutyGroupsInCompactList) &&
+            (identical(
                   other.lastSchoolHolidayRefresh,
                   lastSchoolHolidayRefresh,
                 ) ||
@@ -86,13 +93,14 @@ mixin _$Settings {
     myAccentColorValue,
     schoolHolidayStateCode,
     showSchoolHolidays,
+    showOtherDutyGroupsInCompactList,
     lastSchoolHolidayRefresh,
     holidayAccentColorValue,
   );
 
   @override
   String toString() {
-    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -112,6 +120,7 @@ abstract mixin class $SettingsCopyWith<$Res> {
     int? myAccentColorValue,
     String? schoolHolidayStateCode,
     bool? showSchoolHolidays,
+    bool? showOtherDutyGroupsInCompactList,
     DateTime? lastSchoolHolidayRefresh,
     int? holidayAccentColorValue,
   });
@@ -139,6 +148,7 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
     Object? myAccentColorValue = freezed,
     Object? schoolHolidayStateCode = freezed,
     Object? showSchoolHolidays = freezed,
+    Object? showOtherDutyGroupsInCompactList = freezed,
     Object? lastSchoolHolidayRefresh = freezed,
     Object? holidayAccentColorValue = freezed,
   }) {
@@ -183,6 +193,11 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
         showSchoolHolidays: freezed == showSchoolHolidays
             ? _self.showSchoolHolidays
             : showSchoolHolidays // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        showOtherDutyGroupsInCompactList:
+            freezed == showOtherDutyGroupsInCompactList
+            ? _self.showOtherDutyGroupsInCompactList
+            : showOtherDutyGroupsInCompactList // ignore: cast_nullable_to_non_nullable
                   as bool?,
         lastSchoolHolidayRefresh: freezed == lastSchoolHolidayRefresh
             ? _self.lastSchoolHolidayRefresh
@@ -301,6 +316,7 @@ extension SettingsPatterns on Settings {
       int? myAccentColorValue,
       String? schoolHolidayStateCode,
       bool? showSchoolHolidays,
+      bool? showOtherDutyGroupsInCompactList,
       DateTime? lastSchoolHolidayRefresh,
       int? holidayAccentColorValue,
     )?
@@ -321,6 +337,7 @@ extension SettingsPatterns on Settings {
           _that.myAccentColorValue,
           _that.schoolHolidayStateCode,
           _that.showSchoolHolidays,
+          _that.showOtherDutyGroupsInCompactList,
           _that.lastSchoolHolidayRefresh,
           _that.holidayAccentColorValue,
         );
@@ -355,6 +372,7 @@ extension SettingsPatterns on Settings {
       int? myAccentColorValue,
       String? schoolHolidayStateCode,
       bool? showSchoolHolidays,
+      bool? showOtherDutyGroupsInCompactList,
       DateTime? lastSchoolHolidayRefresh,
       int? holidayAccentColorValue,
     )
@@ -374,6 +392,7 @@ extension SettingsPatterns on Settings {
           _that.myAccentColorValue,
           _that.schoolHolidayStateCode,
           _that.showSchoolHolidays,
+          _that.showOtherDutyGroupsInCompactList,
           _that.lastSchoolHolidayRefresh,
           _that.holidayAccentColorValue,
         );
@@ -407,6 +426,7 @@ extension SettingsPatterns on Settings {
       int? myAccentColorValue,
       String? schoolHolidayStateCode,
       bool? showSchoolHolidays,
+      bool? showOtherDutyGroupsInCompactList,
       DateTime? lastSchoolHolidayRefresh,
       int? holidayAccentColorValue,
     )?
@@ -426,6 +446,7 @@ extension SettingsPatterns on Settings {
           _that.myAccentColorValue,
           _that.schoolHolidayStateCode,
           _that.showSchoolHolidays,
+          _that.showOtherDutyGroupsInCompactList,
           _that.lastSchoolHolidayRefresh,
           _that.holidayAccentColorValue,
         );
@@ -449,6 +470,7 @@ class _Settings extends Settings {
     this.myAccentColorValue,
     this.schoolHolidayStateCode,
     this.showSchoolHolidays,
+    this.showOtherDutyGroupsInCompactList,
     this.lastSchoolHolidayRefresh,
     this.holidayAccentColorValue,
   }) : super._();
@@ -476,6 +498,8 @@ class _Settings extends Settings {
   final String? schoolHolidayStateCode;
   @override
   final bool? showSchoolHolidays;
+  @override
+  final bool? showOtherDutyGroupsInCompactList;
   @override
   final DateTime? lastSchoolHolidayRefresh;
   @override
@@ -518,6 +542,12 @@ class _Settings extends Settings {
             (identical(other.showSchoolHolidays, showSchoolHolidays) ||
                 other.showSchoolHolidays == showSchoolHolidays) &&
             (identical(
+                  other.showOtherDutyGroupsInCompactList,
+                  showOtherDutyGroupsInCompactList,
+                ) ||
+                other.showOtherDutyGroupsInCompactList ==
+                    showOtherDutyGroupsInCompactList) &&
+            (identical(
                   other.lastSchoolHolidayRefresh,
                   lastSchoolHolidayRefresh,
                 ) ||
@@ -542,13 +572,14 @@ class _Settings extends Settings {
     myAccentColorValue,
     schoolHolidayStateCode,
     showSchoolHolidays,
+    showOtherDutyGroupsInCompactList,
     lastSchoolHolidayRefresh,
     holidayAccentColorValue,
   );
 
   @override
   String toString() {
-    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
   }
 }
 
@@ -570,6 +601,7 @@ abstract mixin class _$SettingsCopyWith<$Res>
     int? myAccentColorValue,
     String? schoolHolidayStateCode,
     bool? showSchoolHolidays,
+    bool? showOtherDutyGroupsInCompactList,
     DateTime? lastSchoolHolidayRefresh,
     int? holidayAccentColorValue,
   });
@@ -597,6 +629,7 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
     Object? myAccentColorValue = freezed,
     Object? schoolHolidayStateCode = freezed,
     Object? showSchoolHolidays = freezed,
+    Object? showOtherDutyGroupsInCompactList = freezed,
     Object? lastSchoolHolidayRefresh = freezed,
     Object? holidayAccentColorValue = freezed,
   }) {
@@ -641,6 +674,11 @@ class __$SettingsCopyWithImpl<$Res> implements _$SettingsCopyWith<$Res> {
         showSchoolHolidays: freezed == showSchoolHolidays
             ? _self.showSchoolHolidays
             : showSchoolHolidays // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        showOtherDutyGroupsInCompactList:
+            freezed == showOtherDutyGroupsInCompactList
+            ? _self.showOtherDutyGroupsInCompactList
+            : showOtherDutyGroupsInCompactList // ignore: cast_nullable_to_non_nullable
                   as bool?,
         lastSchoolHolidayRefresh: freezed == lastSchoolHolidayRefresh
             ? _self.lastSchoolHolidayRefresh

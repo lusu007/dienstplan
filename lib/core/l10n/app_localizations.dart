@@ -1265,6 +1265,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'End time must be after start time.'**
   String get personalEntryValidationEndAfterStart;
+
+  /// Tooltip for compact schedule list header toggle to show other duty groups
+  ///
+  /// In en, this message translates to:
+  /// **'Show other duty groups'**
+  String get compactListShowOtherDutyGroupsTooltip;
+
+  /// Tooltip for compact schedule list header toggle to hide other duty groups
+  ///
+  /// In en, this message translates to:
+  /// **'Hide other duty groups'**
+  String get compactListHideOtherDutyGroupsTooltip;
 }
 
 class _AppLocalizationsDelegate

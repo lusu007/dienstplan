@@ -52,6 +52,8 @@ class DatabaseService {
         'PRAGMA temp_store=MEMORY',
       ); // Store temporary tables in memory
 
+      await _ensureSettingsSchema(db);
+
       assert(() {
         AppLogger.i('Database performance optimizations applied');
         return true;
@@ -59,6 +61,27 @@ class DatabaseService {
     } catch (e, stackTrace) {
       AppLogger.e('Error applying database optimizations', e, stackTrace);
       // Continue without optimizations rather than failing completely
+    }
+  }
+
+  Future<void> _ensureSettingsSchema(DatabaseExecutor db) async {
+    final List<Map<String, Object?>> columns = await db.rawQuery(
+      'PRAGMA table_info(settings)',
+    );
+    final bool hasShowOtherDutyGroupsInCompactList = columns.any(
+      (Map<String, Object?> column) =>
+          column['name'] == 'show_other_duty_groups_in_compact_list',
+    );
+    if (!hasShowOtherDutyGroupsInCompactList) {
+      await db.execute(
+        'ALTER TABLE settings ADD COLUMN show_other_duty_groups_in_compact_list INTEGER',
+      );
+      assert(() {
+        AppLogger.i(
+          'Database self-heal: added missing settings column show_other_duty_groups_in_compact_list',
+        );
+        return true;
+      }());
     }
   }
 
@@ -111,6 +134,7 @@ class DatabaseService {
         partner_accent_color INTEGER,
         my_accent_color INTEGER,
         show_school_holidays INTEGER,
+        show_other_duty_groups_in_compact_list INTEGER,
         school_holiday_state_code TEXT,
         last_school_holiday_refresh TEXT,
         holiday_accent_color INTEGER,
@@ -298,6 +322,9 @@ class DatabaseService {
       }
       if (oldVersion < 16) {
         await _migrateToVersion16(txn);
+      }
+      if (oldVersion < 17) {
+        await _migrateToVersion17(txn);
       }
 
       // Create any missing indexes after all migrations are complete
@@ -804,6 +831,7 @@ class DatabaseService {
           partner_accent_color INTEGER,
           my_accent_color INTEGER,
           show_school_holidays INTEGER,
+          show_other_duty_groups_in_compact_list INTEGER,
           school_holiday_state_code TEXT,
           last_school_holiday_refresh TEXT,
           holiday_accent_color INTEGER,
@@ -817,13 +845,13 @@ class DatabaseService {
           id, language, selected_duty_group, my_duty_group, active_config_name,
           theme_mode, partner_config_name, partner_duty_group, partner_accent_color,
           my_accent_color, show_school_holidays, school_holiday_state_code,
-          last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
+          show_other_duty_groups_in_compact_list, last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
         )
         SELECT
           id, language, selected_duty_group, my_duty_group, active_config_name,
           theme_mode, partner_config_name, partner_duty_group, partner_accent_color,
           my_accent_color, show_school_holidays, school_holiday_state_code,
-          last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
+          NULL, last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
         FROM settings
       ''');
 
@@ -881,6 +909,37 @@ class DatabaseService {
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 16', e, stackTrace);
       rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion17(DatabaseExecutor db) async {
+    try {
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 17: Add compact list duty group toggle setting',
+        );
+        return true;
+      }());
+      final List<Map<String, Object?>> columns = await db.rawQuery(
+        'PRAGMA table_info(settings)',
+      );
+      final bool hasColumn = columns.any(
+        (Map<String, Object?> column) =>
+            column['name'] == 'show_other_duty_groups_in_compact_list',
+      );
+      if (!hasColumn) {
+        await db.execute(
+          'ALTER TABLE settings ADD COLUMN show_other_duty_groups_in_compact_list INTEGER',
+        );
+      }
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 17: compact list duty group toggle setting added',
+        );
+        return true;
+      }());
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 17', e, stackTrace);
     }
   }
 
