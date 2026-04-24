@@ -77,7 +77,18 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
   }
 
   Future<void> _updateCurrentDayByDelta(int dayDelta) async {
-    final DateTime nextDay = _resolvedCurrentDay.add(Duration(days: dayDelta));
+    final DateTime currentDay = _resolvedCurrentDay;
+    final DateTime nextDay = currentDay.isUtc
+        ? DateTime.utc(
+            currentDay.year,
+            currentDay.month,
+            currentDay.day + dayDelta,
+          )
+        : DateTime(
+            currentDay.year,
+            currentDay.month,
+            currentDay.day + dayDelta,
+          );
     if (!mounted) {
       return;
     }
