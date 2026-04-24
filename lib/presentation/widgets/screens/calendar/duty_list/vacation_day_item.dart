@@ -3,6 +3,7 @@ import 'package:dienstplan/domain/entities/school_holiday.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 
 /// A widget that displays a vacation day item in the schedule list.
@@ -50,7 +51,89 @@ class VacationDayItem extends StatelessWidget {
     final double chipHPad = compact ? 4.0 : 6.0;
     final double chipVPad = compact ? 2.0 : 3.0;
     final double chipFont = compact ? 8.0 : 9.0;
+    final double glassContentHeight = (rowHeight - padding.vertical).clamp(
+      0.0,
+      double.infinity,
+    );
 
+    if (_isGlass) {
+      return GlassCard(
+        margin: const EdgeInsets.only(bottom: 8),
+        borderRadius: compact ? 14 : 16,
+        padding: padding,
+        onTap: onTap,
+        child: SizedBox(
+          height: glassContentHeight,
+          child: Row(
+            children: [
+              Container(
+                width: iconBox,
+                height: iconBox,
+                decoration: _buildBadgeDecoration(
+                  isDark: isDark,
+                  holidayColor: holidayColor,
+                  compact: compact,
+                ),
+                child: Icon(
+                  Icons.beach_access,
+                  color: _resolveIconColor(theme, isDark, holidayColor),
+                  size: iconSize,
+                ),
+              ),
+              SizedBox(width: gap),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      holiday.name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: titleSize,
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    if (holiday.description != null &&
+                        holiday.description!.isNotEmpty)
+                      Text(
+                        holiday.description!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: descSize,
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: chipHPad,
+                  vertical: chipVPad,
+                ),
+                decoration: _buildBadgeDecoration(
+                  isDark: isDark,
+                  holidayColor: holidayColor,
+                  compact: compact,
+                ),
+                child: Text(
+                  _getHolidayTypeText(context, holiday.type),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontSize: chipFont,
+                    fontWeight: FontWeight.w500,
+                    color: _resolveIconColor(theme, isDark, holidayColor),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Material(

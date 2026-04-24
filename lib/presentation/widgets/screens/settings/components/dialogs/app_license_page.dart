@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 
 class AppLicensePage extends StatefulWidget {
@@ -74,7 +75,6 @@ class _AppLicensePageState extends State<AppLicensePage> {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return GlassScreenScaffold(
       title: l10n.licenses,
       child: FutureBuilder<Map<String, List<String>>>(
@@ -146,50 +146,43 @@ class _AppLicensePageState extends State<AppLicensePage> {
                   }
                   final MapEntry<String, List<String>> entry =
                       licenseEntries[index - 2];
-                  return Container(
+                  return GlassCard(
                     margin: const EdgeInsets.only(bottom: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(
-                        alpha: isDark ? 0.06 : 0.22,
-                      ),
+                    borderRadius: 16,
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: Colors.white.withValues(
-                          alpha: isDark ? 0.14 : 0.38,
+                      child: Theme(
+                        data: Theme.of(
+                          context,
+                        ).copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          shape: const Border(),
+                          collapsedShape: const Border(),
+                          title: Text(
+                            entry.key,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          children: entry.value
+                              .map((String text) {
+                                return Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    16,
+                                    0,
+                                    16,
+                                    16,
+                                  ),
+                                  child: SelectableText(
+                                    text,
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                  ),
+                                );
+                              })
+                              .toList(growable: false),
                         ),
-                      ),
-                    ),
-                    child: Theme(
-                      data: Theme.of(
-                        context,
-                      ).copyWith(dividerColor: Colors.transparent),
-                      child: ExpansionTile(
-                        shape: const Border(),
-                        collapsedShape: const Border(),
-                        title: Text(
-                          entry.key,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        children: entry.value
-                            .map((String text) {
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  0,
-                                  16,
-                                  16,
-                                ),
-                                child: SelectableText(
-                                  text,
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                ),
-                              );
-                            })
-                            .toList(growable: false),
                       ),
                     ),
                   );
@@ -217,16 +210,9 @@ class _LicenseAppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
+    return GlassCard(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: isDark ? 0.06 : 0.22),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: isDark ? 0.14 : 0.38),
-        ),
-      ),
+      borderRadius: 16,
       child: Row(
         children: <Widget>[
           if (appIconPath != null)

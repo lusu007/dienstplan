@@ -170,6 +170,10 @@
   "@errorClearingActiveConfig": {
     "description": "Fehlermeldung beim Löschen des aktiven Dienstplans"
   },
+  "errorSettingActiveConfig": "Fehler beim Setzen des aktiven Dienstplans",
+  "@errorSettingActiveConfig": {
+    "description": "Fehlermeldung beim Setzen des aktiven Dienstplans"
+  },
   "accentColor": "Partner Akzentfarbe",
   "@accentColor": {
     "description": "Titel für Akzentfarbe"

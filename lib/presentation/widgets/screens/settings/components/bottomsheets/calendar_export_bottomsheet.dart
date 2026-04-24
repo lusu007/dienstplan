@@ -227,10 +227,7 @@ class _CalendarExportBottomsheetState
 
     if (_startDate.isAfter(_endDate)) {
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportCalendarInvalidRange),
-          behavior: SnackBarBehavior.floating,
-        ),
+        SnackBar(content: Text(l10n.exportCalendarInvalidRange)),
       );
       return null;
     }
@@ -266,7 +263,6 @@ class _CalendarExportBottomsheetState
         messenger.showSnackBar(
           SnackBar(
             content: Text(_resolveFailureMessage(exportResult.failure, l10n)),
-            behavior: SnackBarBehavior.floating,
           ),
         );
         return null;
@@ -280,10 +276,7 @@ class _CalendarExportBottomsheetState
       if (writeResult.isFailure) {
         if (!mounted) return null;
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(l10n.exportCalendarError),
-            behavior: SnackBarBehavior.floating,
-          ),
+          SnackBar(content: Text(l10n.exportCalendarError)),
         );
         return null;
       }
@@ -298,12 +291,7 @@ class _CalendarExportBottomsheetState
         stackTrace,
       );
       if (!mounted) return null;
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportCalendarError),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(l10n.exportCalendarError)));
       return null;
     }
   }
@@ -324,18 +312,12 @@ class _CalendarExportBottomsheetState
       if (!mounted) return;
       if (result.isFailure) {
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(l10n.exportCalendarError),
-            behavior: SnackBarBehavior.floating,
-          ),
+          SnackBar(content: Text(l10n.exportCalendarError)),
         );
         return;
       }
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportCalendarShareSuccess),
-          behavior: SnackBarBehavior.floating,
-        ),
+        SnackBar(content: Text(l10n.exportCalendarShareSuccess)),
       );
     } finally {
       if (mounted) setState(() => _isActionBusy = false);
@@ -358,18 +340,12 @@ class _CalendarExportBottomsheetState
       if (!mounted) return;
       if (result.isFailure) {
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(_resolveFailureMessage(result.failure, l10n)),
-            behavior: SnackBarBehavior.floating,
-          ),
+          SnackBar(content: Text(_resolveFailureMessage(result.failure, l10n))),
         );
         return;
       }
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportCalendarSaveSuccess),
-          behavior: SnackBarBehavior.floating,
-        ),
+        SnackBar(content: Text(l10n.exportCalendarSaveSuccess)),
       );
     } finally {
       if (mounted) setState(() => _isActionBusy = false);
@@ -391,18 +367,12 @@ class _CalendarExportBottomsheetState
       if (!mounted) return;
       if (result.isFailure) {
         messenger.showSnackBar(
-          SnackBar(
-            content: Text(_resolveFailureMessage(result.failure, l10n)),
-            behavior: SnackBarBehavior.floating,
-          ),
+          SnackBar(content: Text(_resolveFailureMessage(result.failure, l10n))),
         );
         return;
       }
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(l10n.exportCalendarOpenSuccess),
-          behavior: SnackBarBehavior.floating,
-        ),
+        SnackBar(content: Text(l10n.exportCalendarOpenSuccess)),
       );
     } finally {
       if (mounted) setState(() => _isActionBusy = false);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/core/constants/glass_chip_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 
 class PoliceAuthorityFilterChips extends StatelessWidget {
   final Set<String> availableAuthorities;
@@ -18,7 +19,8 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     if (availableAuthorities.isEmpty) {
       return const SizedBox.shrink();
@@ -39,26 +41,30 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
             TextButton(
               onPressed: selectedAuthorities.isNotEmpty ? onClearAll : null,
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kGlassChipWrapSpacing,
+                  vertical: 4,
+                ),
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
                 l10n.clearAll,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontSize: 12,
+                  fontWeight: FontWeight.w600,
                   color: selectedAuthorities.isNotEmpty
-                      ? AppColors.primary
-                      : AppColors.primary.withValues(alpha: 0.3),
+                      ? colorScheme.primary
+                      : colorScheme.primary.withValues(alpha: 0.3),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: kGlassChipWrapSpacing),
         Wrap(
-          spacing: 8,
-          runSpacing: 6,
+          spacing: kGlassChipWrapSpacing,
+          runSpacing: kGlassChipWrapRunSpacing,
           children: [
             ...availableAuthorities.map(
               (authority) => _buildFilterChip(
@@ -78,28 +84,10 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
     String authority,
     bool isSelected,
   ) {
-    return FilterChip(
-      label: Text(
-        authority,
-        style: TextStyle(
-          fontSize: 12,
-          height: 1.0,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          color: isSelected ? Colors.white : AppColors.primary,
-        ),
-      ),
-      selected: isSelected,
-      onSelected: (_) => onAuthorityToggled(authority),
-      backgroundColor: Colors.transparent,
-      selectedColor: AppColors.primary,
-      checkmarkColor: Colors.white,
-      side: const BorderSide(color: AppColors.primary, width: 1.5),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+    return GlassFilterChip(
+      label: authority,
+      isSelected: isSelected,
+      onTap: () => onAuthorityToggled(authority),
     );
   }
 }

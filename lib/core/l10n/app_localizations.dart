@@ -416,6 +416,12 @@ abstract class AppLocalizations {
   /// **'Error clearing active config'**
   String get errorClearingActiveConfig;
 
+  /// Error message when setting active config fails
+  ///
+  /// In en, this message translates to:
+  /// **'Error setting active config'**
+  String get errorSettingActiveConfig;
+
   /// Title for the about dialog
   ///
   /// In en, this message translates to:

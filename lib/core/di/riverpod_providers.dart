@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/domain/entities/settings.dart' as domain;
 import 'package:dienstplan/core/constants/app_colors.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 
 // Services
 import 'package:dienstplan/data/services/database_service.dart';
@@ -207,10 +208,21 @@ ThemeData appTheme(Ref ref) {
       iconTheme: IconThemeData(color: Colors.white),
     ),
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: lightScheme.surface,
+      backgroundColor: Colors.white.withValues(alpha: 0.38),
       contentTextStyle: TextStyle(color: lightScheme.onSurface),
+      actionTextColor: lightScheme.primary,
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      elevation: 0,
+      insetPadding: const EdgeInsets.fromLTRB(
+        glassSpacingMd,
+        0,
+        glassSpacingMd,
+        glassSpacingMd,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.62)),
+      ),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: lightScheme.surface,
@@ -254,10 +266,21 @@ ThemeData appDarkTheme(Ref ref) {
       iconTheme: IconThemeData(color: Colors.white),
     ),
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: darkScheme.surface,
+      backgroundColor: Colors.white.withValues(alpha: 0.38),
       contentTextStyle: TextStyle(color: darkScheme.onSurface),
+      actionTextColor: darkScheme.primary,
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      elevation: 0,
+      insetPadding: const EdgeInsets.fromLTRB(
+        glassSpacingMd,
+        0,
+        glassSpacingMd,
+        glassSpacingMd,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.28)),
+      ),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: darkScheme.surface,

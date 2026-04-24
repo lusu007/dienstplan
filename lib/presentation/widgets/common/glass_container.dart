@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
 
 /// Reusable glass-morphism container using [BackdropFilter] with a blurred,
 /// semi-transparent tint derived from the current color scheme.
@@ -15,8 +17,8 @@ class GlassContainer extends StatelessWidget {
   const GlassContainer({
     super.key,
     required this.child,
-    this.borderRadius = 24.0,
-    this.blurSigma = 20.0,
+    this.borderRadius = glassSurfaceRadiusLg,
+    this.blurSigma = glassSurfaceBlurDefault,
     this.tintOpacity = 0.22,
     this.borderOpacity = 0.25,
     this.padding,
@@ -46,9 +48,11 @@ class GlassContainer extends StatelessWidget {
             border: Border.all(color: borderColor, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
-                blurRadius: 18,
-                offset: const Offset(0, 6),
+                color: Colors.black.withValues(
+                  alpha: isDark ? glassShadowAlphaDark : glassShadowAlphaLight,
+                ),
+                blurRadius: glassShadowBlurMd,
+                offset: const Offset(0, glassShadowOffsetYSm),
               ),
             ],
           ),
@@ -114,7 +118,7 @@ class CalendarBackdrop extends StatelessWidget {
               Positioned(
                 top: -80,
                 right: -100,
-                child: _AuroraBlob(
+                child: AmbientBlob(
                   color: primary.withValues(alpha: isDark ? 0.42 : 0.32),
                   diameter: 320,
                 ),
@@ -122,7 +126,7 @@ class CalendarBackdrop extends StatelessWidget {
               Positioned(
                 bottom: 40,
                 left: -120,
-                child: _AuroraBlob(
+                child: AmbientBlob(
                   color: primary.withValues(alpha: isDark ? 0.28 : 0.20),
                   diameter: 280,
                 ),
@@ -130,7 +134,7 @@ class CalendarBackdrop extends StatelessWidget {
               Positioned(
                 top: height * 0.42,
                 left: width * 0.35,
-                child: _AuroraBlob(
+                child: AmbientBlob(
                   color: primary.withValues(alpha: isDark ? 0.16 : 0.10),
                   diameter: 420,
                 ),
@@ -139,30 +143,6 @@ class CalendarBackdrop extends StatelessWidget {
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class _AuroraBlob extends StatelessWidget {
-  final Color color;
-  final double diameter;
-
-  const _AuroraBlob({required this.color, required this.diameter});
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: diameter,
-        height: diameter,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [color, color.withValues(alpha: 0.0)],
-            stops: const [0.0, 1.0],
-          ),
-        ),
       ),
     );
   }

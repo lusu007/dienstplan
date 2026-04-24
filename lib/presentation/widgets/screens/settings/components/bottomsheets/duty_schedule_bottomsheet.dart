@@ -97,16 +97,7 @@ class DutyScheduleBottomsheet {
                   // Show error in parent context since dialog is closed
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Theme.of(context).colorScheme.surface,
-                        content: Text(
-                          'Error setting active config: ${e.toString()}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                        behavior: SnackBarBehavior.floating,
-                      ),
+                      SnackBar(content: Text(l10n.errorSettingActiveConfig)),
                     );
                   }
                 }
@@ -127,16 +118,7 @@ class DutyScheduleBottomsheet {
                   );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Theme.of(context).colorScheme.surface,
-                        content: Text(
-                          l10n.errorClearingActiveConfig,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                        behavior: SnackBarBehavior.floating,
-                      ),
+                      SnackBar(content: Text(l10n.errorClearingActiveConfig)),
                     );
                   }
                 }

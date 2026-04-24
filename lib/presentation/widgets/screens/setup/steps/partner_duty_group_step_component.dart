@@ -36,8 +36,6 @@ class PartnerDutyGroupStepComponent extends StatelessWidget {
         ),
         Expanded(
           child: ScrollFadeMask(
-            topFadeFraction: 0.05,
-            bottomFadeFraction: 0.06,
             child: SingleChildScrollView(
               controller: scrollController,
               padding: const EdgeInsets.only(top: 12, bottom: 32),

@@ -176,6 +176,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fehler beim Löschen des aktiven Dienstplans';
 
   @override
+  String get errorSettingActiveConfig =>
+      'Fehler beim Setzen des aktiven Dienstplans';
+
+  @override
   String get about => 'Über';
 
   @override

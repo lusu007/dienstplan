@@ -7,6 +7,7 @@ import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_month_title.dart';
 
 /// Custom header used in place of the default [AppBar].
@@ -126,44 +127,26 @@ class _GlassPartnerToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color foreground = colorScheme.onSurface;
     final Color iconColor = !partnerConfigured || _isVisuallyActive
         ? foreground
         : foreground.withValues(alpha: 0.55);
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(22),
-          onTap: () {
-            if (!partnerConfigured) {
-              onConfigure();
-              return;
-            }
-            onToggleVisibility();
-          },
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: _isVisuallyActive
-                  ? colorScheme.primary.withValues(alpha: isDark ? 0.35 : 0.22)
-                  : Colors.white.withValues(alpha: isDark ? 0.08 : 0.28),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: _isVisuallyActive
-                    ? colorScheme.primary.withValues(alpha: 0.55)
-                    : Colors.white.withValues(alpha: isDark ? 0.18 : 0.45),
-                width: 1,
-              ),
-            ),
-            child: Icon(Icons.group_rounded, color: iconColor, size: 22),
-          ),
-        ),
-      ),
+    return GlassIconToggleChip(
+      tooltip: tooltip,
+      isSelected: _isVisuallyActive,
+      isEnabled: true,
+      selectedIcon: Icons.group_rounded,
+      unselectedIcon: Icons.group_rounded,
+      selectedIconColor: colorScheme.onPrimary,
+      unselectedIconColor: iconColor,
+      onTap: () {
+        if (!partnerConfigured) {
+          onConfigure();
+          return;
+        }
+        onToggleVisibility();
+      },
     );
   }
 }
@@ -176,30 +159,13 @@ class _GlassSettingsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color foreground = Theme.of(context).colorScheme.onSurface;
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(22),
-          onTap: onPressed,
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.28),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: isDark ? 0.18 : 0.45),
-                width: 1,
-              ),
-            ),
-            child: Icon(Icons.settings_rounded, color: foreground, size: 22),
-          ),
-        ),
-      ),
+    return GlassIconToggleChip(
+      tooltip: tooltip,
+      isSelected: false,
+      selectedIcon: Icons.settings_rounded,
+      unselectedIcon: Icons.settings_rounded,
+      unselectedIconColor: Theme.of(context).colorScheme.onSurface,
+      onTap: onPressed,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 
 /// Glass-morphism card surface used across the settings screen and its
 /// sub-screens.
@@ -14,16 +15,26 @@ class GlassCard extends StatelessWidget {
   final bool isActive;
   final bool enabled;
   final VoidCallback? onTap;
+  final Color? tintColor;
+  final double? tintAlpha;
+  final Color? borderColor;
+  final double? borderAlpha;
+  final double borderWidth;
 
   const GlassCard({
     super.key,
     required this.child,
     this.padding,
     this.margin,
-    this.borderRadius = 18,
+    this.borderRadius = glassSurfaceRadiusMd,
     this.isActive = false,
     this.enabled = true,
     this.onTap,
+    this.tintColor,
+    this.tintAlpha,
+    this.borderColor,
+    this.borderAlpha,
+    this.borderWidth = 1,
   });
 
   @override
@@ -33,35 +44,52 @@ class GlassCard extends StatelessWidget {
     final double enabledMul = enabled ? 1.0 : 0.55;
 
     final Color baseBackground = Colors.white.withValues(
-      alpha: (isDark ? 0.06 : 0.28) * enabledMul,
+      alpha:
+          (isDark ? glassTintAlphaDark * 0.75 : glassTintAlphaLight) *
+          enabledMul,
     );
     final Color activeBackground = colorScheme.primary.withValues(
       alpha: (isDark ? 0.22 : 0.18) * enabledMul,
     );
+    final Color tintedBackground = tintColor != null
+        ? Color.alphaBlend(
+            tintColor!.withValues(alpha: (tintAlpha ?? 0.0) * enabledMul),
+            baseBackground,
+          )
+        : baseBackground;
     final Color baseBorder = Colors.white.withValues(
-      alpha: (isDark ? 0.14 : 0.45) * enabledMul,
+      alpha:
+          (isDark ? glassBorderAlphaDark * 0.78 : glassBorderAlphaLight) *
+          enabledMul,
     );
     final Color activeBorder = colorScheme.primary.withValues(
       alpha: 0.85 * enabledMul,
     );
+    final Color roleBorder = borderColor != null
+        ? borderColor!.withValues(alpha: (borderAlpha ?? 1.0) * enabledMul)
+        : baseBorder;
 
     final Widget card = Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: isActive ? activeBackground : baseBackground,
+        color: isActive ? activeBackground : tintedBackground,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: isActive ? activeBorder : baseBorder,
-          width: isActive ? 1.5 : 1,
+          color: isActive ? activeBorder : roleBorder,
+          width: isActive ? 1.5 : borderWidth,
         ),
         boxShadow: isActive
             ? [
                 BoxShadow(
                   color: colorScheme.primary.withValues(
-                    alpha: (isDark ? 0.32 : 0.25) * enabledMul,
+                    alpha:
+                        (isDark
+                            ? glassShadowAlphaActiveDark
+                            : glassShadowAlphaActiveLight) *
+                        enabledMul,
                   ),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
+                  blurRadius: glassShadowBlurSm,
+                  offset: const Offset(0, glassShadowOffsetYSm),
                 ),
               ]
             : const [],

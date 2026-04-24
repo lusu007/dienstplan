@@ -100,6 +100,7 @@ class _ConfigSelectionBottomsheetState
   }
 
   Widget _buildConfigTitle(DutyScheduleConfig config) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     if (config.meta.policeAuthority != null &&
         config.meta.policeAuthority!.isNotEmpty) {
       return Column(
@@ -107,10 +108,10 @@ class _ConfigSelectionBottomsheetState
         children: [
           Text(
             config.meta.policeAuthority!,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 2),
@@ -156,14 +157,12 @@ class _ConfigSelectionBottomsheetState
               ? Center(
                   child: Text(
                     l10n.noDutySchedules,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 )
               : ScrollFadeMask(
-                  topFadeFraction: 0.05,
-                  bottomFadeFraction: 0.06,
                   child: ListView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                     itemCount:

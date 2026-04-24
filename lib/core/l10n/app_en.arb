@@ -217,6 +217,10 @@
   "@errorClearingActiveConfig": {
     "description": "Error message when clearing active config fails"
   },
+  "errorSettingActiveConfig": "Error setting active config",
+  "@errorSettingActiveConfig": {
+    "description": "Error message when setting active config fails"
+  },
   "about": "About",
   "@about": {
     "description": "Title for the about dialog"

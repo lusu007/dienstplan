@@ -10,4 +10,6 @@ abstract class PersonalCalendarRepository {
   Future<Result<void>> upsert(PersonalCalendarEntry entry);
 
   Future<Result<void>> deleteById(String id);
+
+  Future<Result<void>> deleteAll();
 }

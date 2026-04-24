@@ -79,6 +79,20 @@ class PersonalCalendarEntriesDao {
     }
   }
 
+  Future<void> deleteAll() async {
+    try {
+      final Database db = await _databaseService.database;
+      await db.delete('personal_calendar_entries');
+    } catch (e, stackTrace) {
+      AppLogger.e(
+        'PersonalCalendarEntriesDao: deleteAll failed',
+        e,
+        stackTrace,
+      );
+      rethrow;
+    }
+  }
+
   PersonalCalendarEntry _rowToEntry(Map<String, Object?> m) {
     final String ymd = m['date_ymd']! as String;
     final List<String> parts = ymd.split('-');

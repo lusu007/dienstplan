@@ -5,6 +5,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_day_filtering.dart';
@@ -36,8 +37,6 @@ class DaySchedulesListPanel extends ConsumerWidget {
         _CompactDayHeader(day: day),
         Expanded(
           child: ScrollFadeMask(
-            topFadeFraction: 0.03,
-            bottomFadeFraction: 0.06,
             child: DutyScheduleList(
               schedules: forDay,
               activeConfigName: state?.activeConfigName,
@@ -121,48 +120,18 @@ class _CompactDayHeader extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Tooltip(
-            message: showOtherDutyGroups
+          GlassIconToggleChip(
+            tooltip: showOtherDutyGroups
                 ? l10n.compactListHideOtherDutyGroupsTooltip
                 : l10n.compactListShowOtherDutyGroupsTooltip,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(18),
-                onTap: () {
-                  ref
-                      .read(settingsProvider.notifier)
-                      .setShowOtherDutyGroupsInCompactList(
-                        !showOtherDutyGroups,
-                      );
-                },
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: showOtherDutyGroups
-                        ? colorScheme.primary.withValues(alpha: 0.28)
-                        : Colors.white.withValues(alpha: 0.16),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: showOtherDutyGroups
-                          ? colorScheme.primary.withValues(alpha: 0.6)
-                          : Colors.white.withValues(alpha: 0.32),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    showOtherDutyGroups
-                        ? Icons.visibility_rounded
-                        : Icons.visibility_off_rounded,
-                    size: 20,
-                    color: showOtherDutyGroups
-                        ? Colors.white
-                        : colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ),
+            isSelected: showOtherDutyGroups,
+            selectedIcon: Icons.visibility_rounded,
+            unselectedIcon: Icons.visibility_off_rounded,
+            onTap: () {
+              ref
+                  .read(settingsProvider.notifier)
+                  .setShowOtherDutyGroupsInCompactList(!showOtherDutyGroups);
+            },
           ),
         ],
       ),

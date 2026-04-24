@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 
 /// Glass-styled back button used inside the setup flow.
 ///
@@ -22,39 +23,20 @@ class SetupBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color foreground = Theme.of(context).colorScheme.onSurface;
     final bool enabled = onPressed != null;
     final double opacity = enabled ? 1.0 : 0.45;
-
-    return SizedBox(
-      width: size,
+    return GlassButtonSurface(
+      onTap: onPressed,
+      enabled: enabled,
+      borderRadius: 16,
       height: size,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(
-                alpha: (isDark ? 0.08 : 0.28) * opacity,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withValues(
-                  alpha: (isDark ? 0.18 : 0.45) * opacity,
-                ),
-                width: 1,
-              ),
-            ),
-            child: Icon(
-              Icons.arrow_back_rounded,
-              size: 24,
-              color: foreground.withValues(alpha: opacity),
-            ),
-          ),
-        ),
+      width: size,
+      opacity: opacity,
+      child: Icon(
+        Icons.arrow_back_rounded,
+        size: 24,
+        color: foreground.withValues(alpha: opacity),
       ),
     );
   }

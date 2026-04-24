@@ -4,6 +4,7 @@ import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 
 class DutyItemUiBuilder {
   static Widget buildDutyItem({
@@ -15,90 +16,58 @@ class DutyItemUiBuilder {
     required Color mainColor,
     required VoidCallback? onTap,
   }) {
-    return Container(
+    const EdgeInsets contentPadding = EdgeInsets.symmetric(
+      horizontal: 20,
+      vertical: 16,
+    );
+    final double glassContentHeight = (72 - contentPadding.vertical).toDouble();
+    return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            height: 72,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? mainColor.withAlpha(kAlphaCardSelected)
-                  : Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: isSelected
-                    ? mainColor
-                    : Theme.of(context).colorScheme.outlineVariant,
-                width: isSelected ? 2.5 : 1,
+      padding: contentPadding,
+      borderRadius: 16,
+      isActive: isSelected,
+      onTap: onTap,
+      child: SizedBox(
+        height: glassContentHeight,
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: mainColor.withAlpha(kAlphaBadge),
+                borderRadius: BorderRadius.circular(8),
               ),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: mainColor.withAlpha(kAlphaShadowStrong),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ]
-                  : [
-                      BoxShadow(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.shadow.withAlpha(kAlphaShadowWeak),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+              child: Icon(icon, color: mainColor, size: 24),
             ),
-            child: Row(
-              children: [
-                // Icon on the left
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: mainColor.withAlpha(kAlphaBadge),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: mainColor, size: 24),
-                ),
-                const SizedBox(width: 16),
-
-                // Service type and duty group text in the center
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          serviceName,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      serviceName,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        schedule.dutyGroupName,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Text(
+                    schedule.dutyGroupName,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -13,6 +13,11 @@ class _FakeRepo implements PersonalCalendarRepository {
   }
 
   @override
+  Future<Result<void>> deleteAll() async {
+    return Result.success<void>(null);
+  }
+
+  @override
   Future<Result<List<PersonalCalendarEntry>>> listBetween({
     required DateTime startDate,
     required DateTime endDate,
