@@ -617,7 +617,7 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get personalEntrySheetTitleNew => 'Neuer Eintrag';
+  String get personalEntrySheetTitleNew => 'Neuer Termin';
 
   @override
   String get personalEntrySheetTitleEdit => 'Eintrag bearbeiten';
@@ -635,7 +635,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get personalEntryTitleLabel => 'Titel';
 
   @override
-  String get personalEntryNotesLabel => 'Notizen (optional)';
+  String get personalEntryNotesLabel => 'Notizen';
 
   @override
   String get personalEntryAllDayLabel => 'Ganztägig';

@@ -1191,7 +1191,7 @@ abstract class AppLocalizations {
   /// Title for new personal calendar entry sheet
   ///
   /// In en, this message translates to:
-  /// **'New entry'**
+  /// **'New calendar entry'**
   String get personalEntrySheetTitleNew;
 
   /// Title for editing a personal calendar entry
@@ -1227,7 +1227,7 @@ abstract class AppLocalizations {
   /// Label for optional notes
   ///
   /// In en, this message translates to:
-  /// **'Notes (optional)'**
+  /// **'Notes'**
   String get personalEntryNotesLabel;
 
   /// Label for all-day toggle
