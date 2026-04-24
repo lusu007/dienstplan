@@ -91,9 +91,12 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   }
 
   int _calculateYearBlockStart(int year) {
-    // Ensure year block starts at the configured minimum year or later.
-    final baseBlockStart = year - (year % 12);
-    return baseBlockStart < _minYear ? _minYear : baseBlockStart;
+    final int yearOffsetFromMin = (year - _minYear).clamp(
+      0,
+      _maxYear - _minYear,
+    );
+    final int blockOffset = (yearOffsetFromMin ~/ 12) * 12;
+    return _minYear + blockOffset;
   }
 
   /// Total height of the 4×3 picker grid (matches [SliverGridDelegate] + grid padding in [_buildMonthGrid] / [_buildYearGrid]).
@@ -240,9 +243,8 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                                             setModalState(() {});
                                           },
                                           itemCount:
-                                              ((_maxYear - _minYear) / 12)
-                                                  .ceil() +
-                                              1,
+                                              ((_maxYear - _minYear + 1) / 12)
+                                                  .ceil(),
                                           itemBuilder: (context, index) {
                                             return _buildYearGrid(
                                               setModalState,
