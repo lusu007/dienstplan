@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
+import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
@@ -39,6 +40,10 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   late int _yearBlockStart;
   int _pageControllerKey = 0;
   late int _originalSelectedDay; // Store the originally selected day
+  bool _needsMonthPageSync = false;
+  bool _isMonthPageSyncScheduled = false;
+  int get _minYear => CalendarConfig.firstDay.year;
+  int get _maxYear => CalendarConfig.lastDay.year;
 
   @override
   void initState() {
@@ -86,9 +91,9 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   }
 
   int _calculateYearBlockStart(int year) {
-    // Ensure year block starts at 2018 or later
+    // Ensure year block starts at the configured minimum year or later.
     final baseBlockStart = year - (year % 12);
-    return baseBlockStart < 2018 ? 2018 : baseBlockStart;
+    return baseBlockStart < _minYear ? _minYear : baseBlockStart;
   }
 
   /// Total height of the 4×3 picker grid (matches [SliverGridDelegate] + grid padding in [_buildMonthGrid] / [_buildYearGrid]).
@@ -112,18 +117,20 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   void _showDateSwitcher() {
     // Reset to current year when opening the modal, but respect year limits
     final currentYear = widget.currentDate.year;
-    final clampedYear = currentYear.clamp(2018, 2100);
+    final clampedYear = currentYear.clamp(_minYear, _maxYear);
 
     setState(() {
       _selectedYear = clampedYear; // Initialize selected year
       _displayedYear = clampedYear;
       _yearBlockStart = _calculateYearBlockStart(clampedYear);
       _isYearView = false;
+      _needsMonthPageSync = false;
+      _isMonthPageSyncScheduled = false;
     });
 
     // Initialize page controllers to correct positions
-    final monthPageIndex = clampedYear - 2018;
-    final yearPageIndex = ((clampedYear - 2018) / 12).floor();
+    final monthPageIndex = clampedYear - _minYear;
+    final yearPageIndex = ((clampedYear - _minYear) / 12).floor();
 
     // Initialize page controllers
     _monthPageController?.dispose();
@@ -150,10 +157,42 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
       _yearPageController?.dispose();
       _monthPageController = null;
       _yearPageController = null;
+      _needsMonthPageSync = false;
+      _isMonthPageSyncScheduled = false;
     });
   }
 
+  void _syncMonthPageToSelectedYear() {
+    final PageController? monthPageController = _monthPageController;
+    if (monthPageController == null || !monthPageController.hasClients) {
+      _needsMonthPageSync = true;
+      return;
+    }
+    _needsMonthPageSync = false;
+    final int targetPage = (_selectedYear - _minYear).clamp(
+      0,
+      _maxYear - _minYear,
+    );
+    final int currentPage =
+        monthPageController.page?.round() ?? monthPageController.initialPage;
+    if (currentPage == targetPage) {
+      return;
+    }
+    monthPageController.jumpToPage(targetPage);
+  }
+
   Widget _buildDateSwitcherModal(StateSetter setModalState) {
+    if (!_isYearView && _needsMonthPageSync && !_isMonthPageSyncScheduled) {
+      _isMonthPageSyncScheduled = true;
+      _needsMonthPageSync = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _isMonthPageSyncScheduled = false;
+        if (!mounted || _isYearView) {
+          return;
+        }
+        _syncMonthPageToSelectedYear();
+      });
+    }
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -195,13 +234,15 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                                             setState(() {
                                               _yearBlockStart =
                                                   _calculateYearBlockStart(
-                                                    2018 + (pageIndex * 12),
+                                                    _minYear + (pageIndex * 12),
                                                   );
                                             });
                                             setModalState(() {});
                                           },
                                           itemCount:
-                                              ((2100 - 2018) / 12).ceil() + 1,
+                                              ((_maxYear - _minYear) / 12)
+                                                  .ceil() +
+                                              1,
                                           itemBuilder: (context, index) {
                                             return _buildYearGrid(
                                               setModalState,
@@ -220,16 +261,17 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                                           physics:
                                               const ClampingScrollPhysics(),
                                           onPageChanged: (pageIndex) {
-                                            final newYear = 2018 + pageIndex;
+                                            final newYear =
+                                                _minYear + pageIndex;
                                             setState(() {
                                               _displayedYear = newYear;
                                               _selectedYear = newYear;
                                             });
                                             setModalState(() {});
                                           },
-                                          itemCount: 2100 - 2018 + 1,
+                                          itemCount: _maxYear - _minYear + 1,
                                           itemBuilder: (context, index) {
-                                            final int year = 2018 + index;
+                                            final int year = _minYear + index;
                                             return _buildMonthGrid(
                                               key: ValueKey(year),
                                               displayedYear: year,
@@ -271,7 +313,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     final String yearText = _displayedYear.toString();
     return _buildPickerHeader(
       label: yearText,
-      onLeft: _displayedYear > 2018 && _monthPageController != null
+      onLeft: _displayedYear > _minYear && _monthPageController != null
           ? () {
               _monthPageController!.previousPage(
                 duration: kAnimDefault,
@@ -279,7 +321,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
               );
             }
           : null,
-      onRight: _displayedYear < 2100 && _monthPageController != null
+      onRight: _displayedYear < _maxYear && _monthPageController != null
           ? () {
               _monthPageController!.nextPage(
                 duration: kAnimDefault,
@@ -302,7 +344,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     final String label = '$_yearBlockStart – ${_yearBlockStart + 11}';
     return _buildPickerHeader(
       label: label,
-      onLeft: _yearBlockStart > 2018 && _yearPageController != null
+      onLeft: _yearBlockStart > _minYear && _yearPageController != null
           ? () {
               _yearPageController!.previousPage(
                 duration: kAnimDefault,
@@ -310,7 +352,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
               );
             }
           : null,
-      onRight: _yearBlockStart + 11 < 2100 && _yearPageController != null
+      onRight: _yearBlockStart + 11 < _maxYear && _yearPageController != null
           ? () {
               _yearPageController!.nextPage(
                 duration: kAnimDefault,
@@ -323,6 +365,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
           _isYearView = false;
           _displayedYear = _selectedYear;
         });
+        _syncMonthPageToSelectedYear();
         setModalState(() {});
       },
     );
@@ -423,7 +466,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
         final int year = years[index];
         final bool isCurrentYear = year == now.year;
         final bool isFocusedYear = year == widget.currentDate.year;
-        final bool isValidYear = year >= 2018 && year <= 2100;
+        final bool isValidYear = year >= _minYear && year <= _maxYear;
 
         return GlassPickerTile(
           label: year.toString(),
@@ -437,6 +480,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                     _selectedYear = year;
                     _isYearView = false;
                   });
+                  _syncMonthPageToSelectedYear();
                   setModalState(() {});
                 }
               : null,

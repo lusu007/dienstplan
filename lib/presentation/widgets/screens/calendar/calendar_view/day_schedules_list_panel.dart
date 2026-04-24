@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -46,8 +47,8 @@ class DaySchedulesListPanel extends ConsumerWidget {
               isLoading: isLoadingSelectedDay,
               selectedDay: day,
               visualStyle: DutyListVisualStyle.glassCompact,
-              topPadding: 4,
-              bottomPadding: 16,
+              topPadding: glassSpacingMd,
+              bottomPadding: glassSpacingLg,
             ),
           ),
         ),
