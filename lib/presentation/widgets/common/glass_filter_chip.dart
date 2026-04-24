@@ -9,7 +9,9 @@ class GlassFilterChip extends StatelessWidget {
   final VoidCallback onTap;
   final bool showCheckmark;
 
-  /// When true, the glass pill expands to the parent's max width (e.g. inside [Expanded]).
+  /// When true, the glass pill expands to the parent's max width (e.g. inside
+  /// [Expanded]). If horizontal constraints are unbounded (e.g. bare [Row]
+  /// child), expansion is skipped and the label stays intrinsic-width centered.
   final bool expandWidth;
 
   const GlassFilterChip({
@@ -53,15 +55,17 @@ class GlassFilterChip extends StatelessWidget {
         ),
       ],
     );
-    final Widget tapChild = expandWidth
-        ? SizedBox(
+    final Widget tapChild = LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        if (expandWidth && constraints.hasBoundedWidth) {
+          return SizedBox(
             width: double.infinity,
-            child: Align(
-              alignment: Alignment.center,
-              child: labelRow,
-            ),
-          )
-        : Align(alignment: Alignment.center, child: labelRow);
+            child: Align(alignment: Alignment.center, child: labelRow),
+          );
+        }
+        return Align(alignment: Alignment.center, child: labelRow);
+      },
+    );
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: kGlassFilterChipHeight),
       child: GlassContainer(

@@ -15,9 +15,7 @@ BoxDecoration calendarDayTodayCellFillDecoration({
   required double borderRadius,
 }) {
   final bool isDark = brightness == Brightness.dark;
-  final double tint = isDark
-      ? glassTintAlphaDark + 0.08
-      : glassTintAlphaLight;
+  final double tint = isDark ? glassTintAlphaDark + 0.08 : glassTintAlphaLight;
   return BoxDecoration(
     color: colorScheme.primary.withValues(alpha: tint),
     borderRadius: BorderRadius.circular(borderRadius),
@@ -147,9 +145,7 @@ BoxDecoration calendarTableFallbackTodayDecoration({
   required Brightness brightness,
 }) {
   final bool isDark = brightness == Brightness.dark;
-  final double tint = isDark
-      ? glassTintAlphaDark + 0.08
-      : glassTintAlphaLight;
+  final double tint = isDark ? glassTintAlphaDark + 0.08 : glassTintAlphaLight;
   final double borderAlpha = isDark
       ? glassBorderAlphaDark * 0.6
       : glassBorderAlphaLight;

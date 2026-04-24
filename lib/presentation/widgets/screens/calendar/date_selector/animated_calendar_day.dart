@@ -46,6 +46,7 @@ class AnimatedCalendarDay extends StatefulWidget {
 class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   /// Matches outer [Container] margin; gap between adjacent cells is 2× this value.
   static const double _kCellOuterMargin = 2.0;
+
   /// Extra horizontal bleed beyond [_kCellOuterMargin] to remove subpixel seams
   /// between adjacent holiday stripes.
   static const double _kHolidayStripeExtraHorizontalBleed = 1.0;
@@ -55,10 +56,12 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   static const double _chipHeight = 12.0;
   static const double _chipBottomMargin = 2.0;
   static const double _chipPlaceholderBottomMargin = 4.0;
+
   /// Gap under empty primary slot when partner follows; between real chip (0)
   /// and [_chipPlaceholderBottomMargin] for vertical balance vs. text chips.
   static const double _kPlaceholderBottomWhenPartnerBelow = 2.5;
   static const double _holidayIndicatorHeight = 2.0;
+
   /// Vertical space under the day number; kept when there is no holiday so DG
   /// / partner rows stay aligned with holiday days.
   static const double _kHolidayIndicatorTopInset = 0.5;
@@ -138,7 +141,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
             clipBehavior: Clip.none,
             children: <Widget>[
               Positioned(
-                left: -(_kCellOuterMargin + _kHolidayStripeExtraHorizontalBleed),
+                left:
+                    -(_kCellOuterMargin + _kHolidayStripeExtraHorizontalBleed),
                 right:
                     -(_kCellOuterMargin + _kHolidayStripeExtraHorizontalBleed),
                 top: _kHolidayIndicatorTopInset,
@@ -162,9 +166,9 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   /// match at selected/today boundaries (per-cell plates would differ and
   /// stack visibly).
   Color _holidayIndicatorOpaqueColor(ThemeData theme, int colorValue) {
-    final Color foreground = Color(colorValue).withValues(
-      alpha: _holidayIndicatorAlpha,
-    );
+    final Color foreground = Color(
+      colorValue,
+    ).withValues(alpha: _holidayIndicatorAlpha);
     return Color.alphaBlend(foreground, theme.colorScheme.surface);
   }
 
@@ -178,15 +182,12 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         if (!hasPartner) {
           return const SizedBox.shrink();
         }
-        final bool moreBelow = hasPartner || hasPersonal;
         return _buildDutyStripe(
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(3),
           ),
-          margin: EdgeInsets.only(
-            bottom: moreBelow ? 0 : _compactStripeBottomMargin,
-          ),
+          margin: EdgeInsets.zero,
           height: _stripeHeight,
         );
       }

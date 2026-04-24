@@ -74,7 +74,7 @@ Avoid:
 Month grid cells are **not** wrapped in `GlassContainer` (no `BackdropFilter` per day — performance). They use **glass-adjacent** styling from [calendar_day_surface_tokens.dart](../../lib/core/constants/calendar_day_surface_tokens.dart): `ColorScheme.primary` tint and border alphas from [glass_tokens.dart](../../lib/core/constants/glass_tokens.dart), aligned with [foundations.md](./foundations.md).
 
 - **Today**: lighter primary tint + soft border (same token family as glass surfaces).
-- **Selected**: stronger active tint + `glassBorderAlphaActive` border; day number uses `onPrimary` where appropriate.
+- **Selected**: stronger active tint + `glassBorderAlphaActive` border; day number follows [`calendarDaySelectedDayNumberColor`](../../lib/core/constants/calendar_day_surface_tokens.dart) (`ColorScheme.primary` in light mode, `onSurface` in dark mode).
 - **TableCalendar fallback** (`CalendarStyle` circles) uses the same fill/border recipe so underlays stay consistent with [AnimatedCalendarDay](../../lib/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart).
 
 ## Module Alignment Notes

@@ -36,9 +36,6 @@ class NotificationService {
             action: action,
             backgroundColor: backgroundColor,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
           ),
         );
         AppLogger.i('NotificationService: SnackBar displayed: $message');
@@ -92,9 +89,6 @@ class NotificationService {
             action: pending.action,
             backgroundColor: pending.backgroundColor,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
           ),
         );
         AppLogger.i(
@@ -125,12 +119,7 @@ class NotificationService {
       newVersion,
     );
 
-    showSnackBar(
-      message: message,
-      duration: const Duration(seconds: 6),
-      backgroundColor: Colors.blue.shade100,
-      textColor: Colors.blue.shade900,
-    );
+    showSnackBar(message: message, duration: const Duration(seconds: 6));
   }
 
   /// Show a notification about multiple schedule updates
@@ -141,12 +130,7 @@ class NotificationService {
     final configList = configNames.join(', ');
     final message = l10n.multipleScheduleUpdatesNotification(configList);
 
-    showSnackBar(
-      message: message,
-      duration: const Duration(seconds: 8),
-      backgroundColor: Colors.orange.shade100,
-      textColor: Colors.orange.shade900,
-    );
+    showSnackBar(message: message, duration: const Duration(seconds: 8));
   }
 }
 
