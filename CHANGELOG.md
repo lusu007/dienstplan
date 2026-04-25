@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.16.0](https://github.com/lusu007/dienstplan/compare/v0.15.2...v0.16.0) (2026-04-25)
+
+
+### Features
+
+* add appointment button in schedules bottom sheet ([#394](https://github.com/lusu007/dienstplan/issues/394)) ([2cb9e20](https://github.com/lusu007/dienstplan/commit/2cb9e2097dcf82665054b363ed08af4fa0bc0bf2))
+* add compact duty group visibility toggle ([#383](https://github.com/lusu007/dienstplan/issues/383)) ([bf0ec90](https://github.com/lusu007/dienstplan/commit/bf0ec90dbffe44de619519ad5614433e85d59169))
+* app redesign ([#378](https://github.com/lusu007/dienstplan/issues/378)) ([37e51f8](https://github.com/lusu007/dienstplan/commit/37e51f8243dfec7774585f766640982cababb288))
+* consolidate glass design system ([#386](https://github.com/lusu007/dienstplan/issues/386)) ([eb80d86](https://github.com/lusu007/dienstplan/commit/eb80d86a46096f66d21f7aaa0acb8be314a48021))
+* custom appointments ([#381](https://github.com/lusu007/dienstplan/issues/381)) ([83c1cef](https://github.com/lusu007/dienstplan/commit/83c1cefbda03ed3a768dcda6eac17f58a9577e8f))
+* improve filter chips ([#389](https://github.com/lusu007/dienstplan/issues/389)) ([8e2f20a](https://github.com/lusu007/dienstplan/commit/8e2f20a5f08ae728bbd027d38edb3405e18562da))
+* improve glass UI consistency ([#392](https://github.com/lusu007/dienstplan/issues/392)) ([f1c3aa2](https://github.com/lusu007/dienstplan/commit/f1c3aa24aa96f896a36aa306ec04c6ad1bef146d))
+* improve glass UI consistency ([#392](https://github.com/lusu007/dienstplan/issues/392)) ([#393](https://github.com/lusu007/dienstplan/issues/393)) ([3a36d36](https://github.com/lusu007/dienstplan/commit/3a36d36b84c04f216ab74f7786fb7e0a6c8cdd2a))
+* introduce compact view ([#382](https://github.com/lusu007/dienstplan/issues/382)) ([4674516](https://github.com/lusu007/dienstplan/commit/467451674e5f8a3a33ac2e83e9348a1db7e779c2))
+* streamline design ([#384](https://github.com/lusu007/dienstplan/issues/384)) ([9bf4cd6](https://github.com/lusu007/dienstplan/commit/9bf4cd61fabb6d8aebdf6ef8a37383276b8e3242))
+* update duty type names ([#391](https://github.com/lusu007/dienstplan/issues/391)) ([ffce4e1](https://github.com/lusu007/dienstplan/commit/ffce4e1a67a55361e310a4ca58b40ac5f0ce4265))
+
+
+### Bug Fixes
+
+* little design improv ([#390](https://github.com/lusu007/dienstplan/issues/390)) ([ca84e17](https://github.com/lusu007/dienstplan/commit/ca84e179aa849e57955787dec6cdbdac47b07f98))
+* preserve calendar date when swiping schedule sheet ([#385](https://github.com/lusu007/dienstplan/issues/385)) ([19b54b2](https://github.com/lusu007/dienstplan/commit/19b54b2f72bbb6e2ada48a171abb52ef27589703))
+* sync month picker after year selection ([#387](https://github.com/lusu007/dienstplan/issues/387)) ([e13e1c4](https://github.com/lusu007/dienstplan/commit/e13e1c462da757afea5e31573e18518bf163eb59))
+* year month picker offest ([#388](https://github.com/lusu007/dienstplan/issues/388)) ([790d91b](https://github.com/lusu007/dienstplan/commit/790d91b32c3ac643e55d154dd0d07834c985d637))
+
 ## [0.15.2](https://github.com/lusu007/dienstplan/compare/v0.15.1...v0.15.2) (2026-04-11)
 
 
