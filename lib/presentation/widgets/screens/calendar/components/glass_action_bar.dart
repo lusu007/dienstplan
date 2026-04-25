@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
@@ -97,9 +98,17 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        padding: const EdgeInsets.fromLTRB(
+          glassSpacingLg,
+          0,
+          glassSpacingLg,
+          glassSpacingMd,
+        ),
         child: GlassContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: glassSpacingMd,
+            vertical: glassSpacingSm,
+          ),
           child: Row(
             children: [
               Expanded(
@@ -115,7 +124,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
                   onSubmitted: _onQuickTitleSubmitted,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: glassSpacingSm),
               _AddPersonalEntryAction(
                 palette: palette,
                 tooltip: l10n.addPersonalEntryTooltip,
@@ -124,7 +133,7 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
                   _showPersonalEntrySheet();
                 },
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: glassSpacingSm),
               _TodayAction(
                 palette: palette,
                 tooltip: l10n.today,
@@ -171,6 +180,15 @@ class _QuickPersonalEntryField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle? baseStyle = Theme.of(context).textTheme.bodyMedium;
+    final TextStyle textStyle = (baseStyle ?? const TextStyle()).copyWith(
+      color: palette.fieldTextColor,
+      fontWeight: FontWeight.w600,
+    );
+    final TextStyle hintStyle = (baseStyle ?? const TextStyle()).copyWith(
+      color: palette.fieldHintColor,
+      fontWeight: FontWeight.w500,
+    );
     return Semantics(
       label: semanticLabel,
       textField: true,
@@ -181,38 +199,30 @@ class _QuickPersonalEntryField extends StatelessWidget {
         onTapOutside: (PointerDownEvent event) {
           focusNode.unfocus();
         },
-        style: TextStyle(
-          color: palette.fieldTextColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
-        ),
+        style: textStyle,
         cursorColor: palette.fieldCursorColor,
         textInputAction: TextInputAction.done,
         onSubmitted: onSubmitted,
         decoration: InputDecoration(
           isDense: true,
           hintText: hintText,
-          hintStyle: TextStyle(
-            color: palette.fieldHintColor,
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-          ),
+          hintStyle: hintStyle,
           filled: true,
           fillColor: palette.fieldFillColor,
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 10,
+            horizontal: glassSpacingMd,
+            vertical: glassSpacingMd - 2,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
             borderSide: BorderSide(color: palette.fieldBorderColor),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
             borderSide: BorderSide(color: palette.fieldBorderColor),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
             borderSide: BorderSide(color: palette.fieldFocusedBorderColor),
           ),
         ),
@@ -242,14 +252,14 @@ class _AddPersonalEntryAction extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(_kActionButtonRadius),
             onTap: onPressed,
             child: Container(
-              width: 44,
-              height: 44,
+              width: _kActionButtonSize,
+              height: _kActionButtonSize,
               decoration: BoxDecoration(
                 color: palette.addActionFillColor,
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(_kActionButtonRadius),
                 border: Border.all(
                   color: palette.addActionBorderColor,
                   width: 1,
@@ -267,6 +277,9 @@ class _AddPersonalEntryAction extends StatelessWidget {
     );
   }
 }
+
+const double _kActionButtonSize = 44;
+const double _kActionButtonRadius = _kActionButtonSize / 2;
 
 class _TodayAction extends StatelessWidget {
   final _GlassActionBarPalette palette;
@@ -289,14 +302,14 @@ class _TodayAction extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(_kActionButtonRadius),
             onTap: onPressed,
             child: Container(
-              width: 44,
-              height: 44,
+              width: _kActionButtonSize,
+              height: _kActionButtonSize,
               decoration: BoxDecoration(
                 color: palette.todayActionFillColor,
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(_kActionButtonRadius),
                 border: Border.all(
                   color: palette.todayActionBorderColor,
                   width: 1,
@@ -353,8 +366,12 @@ class _GlassActionBarPalette {
         alpha: isDark ? 0.60 : 0.52,
       ),
       fieldCursorColor: colorScheme.onSurface.withValues(alpha: 0.96),
-      fieldFillColor: Colors.white.withValues(alpha: isDark ? 0.10 : 0.20),
-      fieldBorderColor: Colors.white.withValues(alpha: isDark ? 0.22 : 0.40),
+      fieldFillColor: Colors.white.withValues(
+        alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight - 0.08,
+      ),
+      fieldBorderColor: Colors.white.withValues(
+        alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight - 0.05,
+      ),
       fieldFocusedBorderColor: colorScheme.primary.withValues(
         alpha: isDark ? 0.78 : 0.62,
       ),
@@ -366,10 +383,10 @@ class _GlassActionBarPalette {
       ),
       addActionIconColor: colorScheme.onSurface.withValues(alpha: 0.96),
       todayActionFillColor: Colors.white.withValues(
-        alpha: isDark ? 0.10 : 0.22,
+        alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight - 0.06,
       ),
       todayActionBorderColor: Colors.white.withValues(
-        alpha: isDark ? 0.22 : 0.42,
+        alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight - 0.03,
       ),
       todayActionIconColor: colorScheme.onSurface.withValues(alpha: 0.92),
     );

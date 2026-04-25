@@ -128,7 +128,7 @@ abstract class AppLocalizations {
   /// **'English'**
   String get english;
 
-  /// Title for duty schedule
+  /// Deprecated alias for myDutySchedule; kept for backwards compatibility. Use myDutySchedule for new code.
   ///
   /// In en, this message translates to:
   /// **'My Duty Schedule'**
@@ -677,7 +677,7 @@ abstract class AppLocalizations {
   /// Button label for starting calendar export
   ///
   /// In en, this message translates to:
-  /// **'Continue'**
+  /// **'Export'**
   String get exportCalendarButton;
 
   /// Action: share ICS file
@@ -1218,6 +1218,18 @@ abstract class AppLocalizations {
   /// **'Date'**
   String get personalEntryDateLabel;
 
+  /// Label for personal entry time range picker
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get personalEntryTimeLabel;
+
+  /// Tooltip / accessibility label for the delete icon in the personal entry sheet header
+  ///
+  /// In en, this message translates to:
+  /// **'Delete entry'**
+  String get personalEntryDeleteTooltip;
+
   /// Label for personal entry title field
   ///
   /// In en, this message translates to:
@@ -1295,6 +1307,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide other duty groups'**
   String get compactListHideOtherDutyGroupsTooltip;
+
+  /// Recovery action label for error states
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// Title for the setup-load failure screen
+  ///
+  /// In en, this message translates to:
+  /// **'Setup couldn\'t be loaded'**
+  String get setupFailedTitle;
+
+  /// Message shown when the language service fails to initialize during setup
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the language settings.'**
+  String get languageLoadFailed;
+
+  /// Title for the confirmation dialog before deleting a personal calendar entry
+  ///
+  /// In en, this message translates to:
+  /// **'Delete entry?'**
+  String get deletePersonalEntryConfirmationTitle;
+
+  /// Body for the personal entry delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'This entry will be removed from your calendar. This cannot be undone.'**
+  String get deletePersonalEntryConfirmationMessage;
+
+  /// Empty state title in the setup config selection step when filters return no results
+  ///
+  /// In en, this message translates to:
+  /// **'No duty schedules match your filter'**
+  String get configSelectionEmptyTitle;
+
+  /// Empty state body in the setup config selection step
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust the police authority filter or clear it to see more schedules.'**
+  String get configSelectionEmptyMessage;
+
+  /// Empty state message when a config has no duty groups
+  ///
+  /// In en, this message translates to:
+  /// **'This duty schedule does not provide any duty groups.'**
+  String get dutyGroupSelectionEmptyMessage;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
@@ -56,22 +57,27 @@ class _GlassScreenHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color foreground = Theme.of(context).colorScheme.onSurface;
+    final TextStyle? baseStyle = Theme.of(context).textTheme.titleLarge;
     return SizedBox(
       height: GlassScreenScaffold.kHeaderHeight,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+        padding: const EdgeInsets.fromLTRB(
+          glassSpacingMd,
+          glassSpacingXs,
+          glassSpacingMd,
+          glassSpacingXs,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const _GlassBackButton(),
-            const SizedBox(width: 12),
+            const SizedBox(width: glassSpacingMd),
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
+                style: (baseStyle ?? const TextStyle()).copyWith(
                   color: foreground,
                   fontWeight: FontWeight.w700,
-                  fontSize: 20,
                   letterSpacing: 0.2,
                   height: 1.0,
                 ),
@@ -79,10 +85,10 @@ class _GlassScreenHeader extends StatelessWidget {
               ),
             ),
             if (actions != null) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: glassSpacingSm),
               ...actions!.expand((Widget a) sync* {
                 yield a;
-                yield const SizedBox(width: 4);
+                yield const SizedBox(width: glassSpacingXs);
               }),
             ],
           ],
@@ -99,29 +105,34 @@ class _GlassBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color foreground = Theme.of(context).colorScheme.onSurface;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(
-          glassSurfaceRadiusMd + glassSpacingXs,
-        ),
-        onTap: () => _handleBack(context),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(
-              alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight,
-            ),
-            borderRadius: BorderRadius.circular(glassSurfaceRadiusMd + 2),
-            border: Border.all(
-              color: Colors.white.withValues(
-                alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
-              ),
-              width: 1,
-            ),
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.back,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(
+            glassSurfaceRadiusMd + glassSpacingXs,
           ),
-          child: Icon(Icons.arrow_back_rounded, color: foreground, size: 22),
+          onTap: () => _handleBack(context),
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(
+                alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight,
+              ),
+              borderRadius: BorderRadius.circular(glassSurfaceRadiusMd + 2),
+              border: Border.all(
+                color: Colors.white.withValues(
+                  alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
+                ),
+                width: 1,
+              ),
+            ),
+            child: Icon(Icons.arrow_back_rounded, color: foreground, size: 22),
+          ),
         ),
       ),
     );

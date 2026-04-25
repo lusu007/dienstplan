@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/config_selection_bottomsheet.dart';
 
 class DutyScheduleBottomsheet {
@@ -16,6 +18,8 @@ class DutyScheduleBottomsheet {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
+      clipBehavior: Clip.antiAlias,
       builder: (dialogContext) => Consumer(
         builder: (context, ref, _) {
           final asyncState = ref.watch(scheduleCoordinatorProvider);
@@ -23,49 +27,26 @@ class DutyScheduleBottomsheet {
           final configs = state?.configs ?? const [];
 
           if (configs.isEmpty) {
-            final screenHeight = MediaQuery.of(context).size.height;
-            final height = heightPercentage != null
-                ? screenHeight * heightPercentage
-                : screenHeight * 0.3;
-            return Container(
-              height: height,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
+            return GlassBottomSheet(
+              title: l10n.myDutySchedule,
+              shrinkToContent: true,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    glassSpacingXl,
+                    glassSpacingMd,
+                    glassSpacingXl,
+                    glassSpacingXl,
+                  ),
+                  child: Text(
+                    l10n.noDutySchedules,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      l10n.myDutySchedule,
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        l10n.noDutySchedules,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              ],
             );
           }
 

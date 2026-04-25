@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 
 class ColorSelectionCard extends StatelessWidget {
@@ -19,11 +20,11 @@ class ColorSelectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return GlassCard(
-      borderRadius: 14,
+      borderRadius: glassSurfaceRadiusSm - 2,
       isActive: isSelected,
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(glassSpacingXs + 2),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,20 +37,19 @@ class ColorSelectionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: color.withValues(alpha: 0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
+                    color: color.withValues(alpha: glassBorderAlphaActive),
+                    blurRadius: glassShadowBlurSm,
+                    offset: const Offset(0, glassShadowOffsetYSm),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: glassSpacingXs),
             Text(
               colorName,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? scheme.primary : scheme.onSurface,
-                fontSize: 14,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

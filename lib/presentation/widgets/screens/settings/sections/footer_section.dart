@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -18,50 +19,42 @@ class _SettingsFooterState extends State<SettingsFooter> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextStyle? footerStyle = Theme.of(
+      context,
+    ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant);
     return GestureDetector(
       onTap: _handleFooterTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            AppInfo.appLegalese,
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+      behavior: HitTestBehavior.opaque,
+      child: Semantics(
+        label: AppInfo.appLegalese,
+        child: ExcludeSemantics(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(AppInfo.appLegalese, style: footerStyle),
+              const SizedBox(height: glassSpacingXs),
+              FutureBuilder<String>(
+                future: AppInfo.fullVersion,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(snapshot.data!, style: footerStyle);
+                  }
+                  return Container(
+                    width: 80,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: colorScheme.outlineVariant,
+                      borderRadius: BorderRadius.circular(glassSpacingXs + 2),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: glassSpacingSm),
+              Text(l10n.weLoveOss, style: footerStyle),
+            ],
           ),
-          const SizedBox(height: 4),
-          FutureBuilder<String>(
-            future: AppInfo.fullVersion,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  snapshot.data!,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                );
-              }
-              return Container(
-                width: 80,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.weLoveOss,
-            style: TextStyle(
-              fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

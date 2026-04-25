@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/config_filter_utils.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/police_authority_filter_chips.dart';
@@ -101,6 +100,7 @@ class _ConfigSelectionBottomsheetState
 
   Widget _buildConfigTitle(DutyScheduleConfig config) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextStyle? authorityBase = Theme.of(context).textTheme.labelSmall;
     if (config.meta.policeAuthority != null &&
         config.meta.policeAuthority!.isNotEmpty) {
       return Column(
@@ -108,8 +108,7 @@ class _ConfigSelectionBottomsheetState
         children: [
           Text(
             config.meta.policeAuthority!,
-            style: TextStyle(
-              fontSize: 12,
+            style: (authorityBase ?? const TextStyle()).copyWith(
               fontWeight: FontWeight.w500,
               color: colorScheme.onSurfaceVariant,
             ),
@@ -196,7 +195,7 @@ class _ConfigSelectionBottomsheetState
                             isAlreadySelected ? null : config,
                           );
                         },
-                        mainColor: AppColors.primary,
+                        mainColor: Theme.of(context).colorScheme.primary,
                         useDialogStyle: true,
                       );
                     },

@@ -26,6 +26,8 @@ class SchedulesBottomSheet extends ConsumerStatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
+      clipBehavior: Clip.antiAlias,
       builder: (BuildContext context) {
         return SchedulesBottomSheet(day: day);
       },
@@ -248,7 +250,12 @@ class _SheetHeader extends ConsumerWidget {
       ),
     );
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+      padding: const EdgeInsets.fromLTRB(
+        glassSpacingXl - 4,
+        glassSpacingMd,
+        glassSpacingXl - 4,
+        glassSpacingMd,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -260,7 +267,7 @@ class _SheetHeader extends ConsumerWidget {
               height: 1.0,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: glassSpacingMd),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,10 +297,10 @@ class _SheetHeader extends ConsumerWidget {
             ),
           ),
           if (isToday) ...<Widget>[
-            const SizedBox(width: 8),
+            const SizedBox(width: glassSpacingSm),
             _TodayPill(label: l10n.today),
           ],
-          const SizedBox(width: 8),
+          const SizedBox(width: glassSpacingSm),
           GlassIconToggleChip(
             tooltip: showOtherDutyGroups
                 ? l10n.compactListHideOtherDutyGroupsTooltip
@@ -329,19 +336,24 @@ class _TodayPill extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: glassSpacingMd,
+        vertical: 6,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.primary.withValues(alpha: isDark ? 0.38 : 0.3),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(glassSurfaceRadiusPill),
         border: Border.all(
-          color: Colors.white.withValues(alpha: isDark ? 0.22 : 0.45),
+          color: Colors.white.withValues(
+            alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
+          ),
           width: 1,
         ),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: Colors.white,
+          color: colorScheme.onPrimary,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.4,
         ),

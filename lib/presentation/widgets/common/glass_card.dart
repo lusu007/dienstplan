@@ -41,15 +41,21 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final double enabledMul = enabled ? 1.0 : 0.55;
+    final double enabledMul = enabled ? 1.0 : glassCardDisabledMultiplier;
 
     final Color baseBackground = Colors.white.withValues(
       alpha:
-          (isDark ? glassTintAlphaDark * 0.75 : glassTintAlphaLight) *
+          (isDark
+              ? glassTintAlphaDark * glassCardBaseTintAlphaDarkMultiplier
+              : glassTintAlphaLight) *
           enabledMul,
     );
     final Color activeBackground = colorScheme.primary.withValues(
-      alpha: (isDark ? 0.22 : 0.18) * enabledMul,
+      alpha:
+          (isDark
+              ? glassCardActiveTintAlphaDark
+              : glassCardActiveTintAlphaLight) *
+          enabledMul,
     );
     final Color tintedBackground = tintColor != null
         ? Color.alphaBlend(
@@ -59,11 +65,13 @@ class GlassCard extends StatelessWidget {
         : baseBackground;
     final Color baseBorder = Colors.white.withValues(
       alpha:
-          (isDark ? glassBorderAlphaDark * 0.78 : glassBorderAlphaLight) *
+          (isDark
+              ? glassBorderAlphaDark * glassCardBaseBorderAlphaDarkMultiplier
+              : glassBorderAlphaLight) *
           enabledMul,
     );
     final Color activeBorder = colorScheme.primary.withValues(
-      alpha: 0.85 * enabledMul,
+      alpha: glassCardActiveBorderAlpha * enabledMul,
     );
     final Color roleBorder = borderColor != null
         ? borderColor!.withValues(alpha: (borderAlpha ?? 1.0) * enabledMul)
@@ -76,7 +84,7 @@ class GlassCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
           color: isActive ? activeBorder : roleBorder,
-          width: isActive ? 1.5 : borderWidth,
+          width: isActive ? glassCardActiveBorderWidth : borderWidth,
         ),
         boxShadow: isActive
             ? [

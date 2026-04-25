@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 
 /// Filled, primary-tinted icon badge used inside glass settings cards.
 ///
@@ -40,24 +41,46 @@ class GlassIconBadge extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  tint.withValues(alpha: (isDark ? 0.85 : 0.95) * opacity),
-                  tint.withValues(alpha: (isDark ? 0.55 : 0.70) * opacity),
+                  tint.withValues(
+                    alpha:
+                        (isDark
+                            ? glassIconBadgeGradientTopAlphaDark
+                            : glassIconBadgeGradientTopAlphaLight) *
+                        opacity,
+                  ),
+                  tint.withValues(
+                    alpha:
+                        (isDark
+                            ? glassIconBadgeGradientBottomAlphaDark
+                            : glassIconBadgeGradientBottomAlphaLight) *
+                        opacity,
+                  ),
                 ],
               )
             : null,
         borderRadius: BorderRadius.circular(size * 0.28),
         border: Border.all(
           color: isGlossy
-              ? Colors.white.withValues(alpha: (isDark ? 0.20 : 0.35) * opacity)
+              ? Colors.white.withValues(
+                  alpha:
+                      (isDark
+                          ? glassIconBadgeBorderAlphaDark
+                          : glassIconBadgeBorderAlphaLight) *
+                      opacity,
+                )
               : Colors.transparent,
           width: isGlossy ? 1 : 0,
         ),
         boxShadow: enabled && isGlossy
             ? [
                 BoxShadow(
-                  color: tint.withValues(alpha: isDark ? 0.35 : 0.25),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+                  color: tint.withValues(
+                    alpha: isDark
+                        ? glassIconBadgeShadowAlphaDark
+                        : glassIconBadgeShadowAlphaLight,
+                  ),
+                  blurRadius: glassIconBadgeShadowBlur,
+                  offset: const Offset(0, glassIconBadgeShadowOffsetY),
                 ),
               ]
             : const [],

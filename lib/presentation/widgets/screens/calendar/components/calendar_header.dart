@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -60,9 +61,9 @@ class CalendarHeader extends ConsumerWidget {
             height: kTitleRowHeight,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                16,
+                glassSpacingLg,
                 CalendarConfig.kCalendarTitleRowVerticalPadding,
-                12,
+                glassSpacingMd,
                 CalendarConfig.kCalendarTitleRowVerticalPadding,
               ),
               child: Row(
@@ -70,13 +71,15 @@ class CalendarHeader extends ConsumerWidget {
                 children: [
                   Text(
                     AppInfo.appName,
-                    style: TextStyle(
-                      color: foreground,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                      letterSpacing: 0.2,
-                      height: 1.0,
-                    ),
+                    style:
+                        (Theme.of(context).textTheme.titleLarge ??
+                                const TextStyle())
+                            .copyWith(
+                              color: foreground,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.2,
+                              height: 1.0,
+                            ),
                   ),
                   const Spacer(),
                   _GlassPartnerToggleButton(
@@ -91,7 +94,7 @@ class CalendarHeader extends ConsumerWidget {
                     onConfigure: () =>
                         context.router.push(const SettingsRoute()),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: glassSpacingSm),
                   _GlassSettingsButton(
                     tooltip: l10n.settings,
                     onPressed: () => context.router.push(const SettingsRoute()),

@@ -315,7 +315,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add configured school holidays to the export';
 
   @override
-  String get exportCalendarButton => 'Continue';
+  String get exportCalendarButton => 'Export';
 
   @override
   String get exportCalendarActionShare => 'Share';
@@ -625,6 +625,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personalEntryDateLabel => 'Date';
 
   @override
+  String get personalEntryTimeLabel => 'Time';
+
+  @override
+  String get personalEntryDeleteTooltip => 'Delete entry';
+
+  @override
   String get personalEntryTitleLabel => 'Title';
 
   @override
@@ -663,4 +669,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get compactListHideOtherDutyGroupsTooltip => 'Hide other duty groups';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
+  String get setupFailedTitle => 'Setup couldn\'t be loaded';
+
+  @override
+  String get languageLoadFailed => 'Couldn\'t load the language settings.';
+
+  @override
+  String get deletePersonalEntryConfirmationTitle => 'Delete entry?';
+
+  @override
+  String get deletePersonalEntryConfirmationMessage =>
+      'This entry will be removed from your calendar. This cannot be undone.';
+
+  @override
+  String get configSelectionEmptyTitle => 'No duty schedules match your filter';
+
+  @override
+  String get configSelectionEmptyMessage =>
+      'Adjust the police authority filter or clear it to see more schedules.';
+
+  @override
+  String get dutyGroupSelectionEmptyMessage =>
+      'This duty schedule does not provide any duty groups.';
 }

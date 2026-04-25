@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 
 class DutyGroupSelectionBottomsheet extends StatelessWidget {
@@ -83,13 +82,14 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
       return Center(
         child: Text(
           l10n.noDutyGroup,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       );
     }
 
+    final Color primary = Theme.of(context).colorScheme.primary;
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
       itemCount: dutyGroups.length + (showNoGroupOption ? 1 : 0),
@@ -103,7 +103,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
               Navigator.of(context).pop();
               onDutyGroupSelected(null);
             },
-            mainColor: AppColors.primary,
+            mainColor: primary,
             useDialogStyle: true,
           );
         }
@@ -117,7 +117,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
             Navigator.of(context).pop();
             onDutyGroupSelected(isAlreadySelected ? null : group);
           },
-          mainColor: AppColors.primary,
+          mainColor: primary,
           useDialogStyle: true,
         );
       },

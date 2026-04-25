@@ -386,7 +386,7 @@
   "@exportCalendarIncludeHolidaysDescription": {
     "description": "Beschreibung für das Einschließen von Ferien"
   },
-  "exportCalendarButton": "Weiter",
+  "exportCalendarButton": "Exportieren",
   "@exportCalendarButton": {
     "description": "Beschriftung für den Start des Kalenderexports"
   },
@@ -822,6 +822,14 @@
   "@personalEntryDateLabel": {
     "description": "Label for personal entry date picker"
   },
+  "personalEntryTimeLabel": "Zeit",
+  "@personalEntryTimeLabel": {
+    "description": "Label for personal entry time range picker"
+  },
+  "personalEntryDeleteTooltip": "Eintrag löschen",
+  "@personalEntryDeleteTooltip": {
+    "description": "Tooltip / accessibility label for the delete icon in the personal entry sheet header"
+  },
   "personalEntryTitleLabel": "Titel",
   "@personalEntryTitleLabel": {
     "description": "Label for personal entry title field"
@@ -873,5 +881,37 @@
   "compactListHideOtherDutyGroupsTooltip": "Andere Dienstgruppen ausblenden",
   "@compactListHideOtherDutyGroupsTooltip": {
     "description": "Tooltip for compact schedule list header toggle to hide other duty groups"
+  },
+  "tryAgain": "Erneut versuchen",
+  "@tryAgain": {
+    "description": "Recovery action label for error states"
+  },
+  "setupFailedTitle": "Einrichtung konnte nicht geladen werden",
+  "@setupFailedTitle": {
+    "description": "Title for the setup-load failure screen"
+  },
+  "languageLoadFailed": "Spracheinstellungen konnten nicht geladen werden.",
+  "@languageLoadFailed": {
+    "description": "Message shown when the language service fails to initialize during setup"
+  },
+  "deletePersonalEntryConfirmationTitle": "Eintrag löschen?",
+  "@deletePersonalEntryConfirmationTitle": {
+    "description": "Title for the confirmation dialog before deleting a personal calendar entry"
+  },
+  "deletePersonalEntryConfirmationMessage": "Der Eintrag wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+  "@deletePersonalEntryConfirmationMessage": {
+    "description": "Body for the personal entry delete confirmation dialog"
+  },
+  "configSelectionEmptyTitle": "Keine Dienstpläne passen zum Filter",
+  "@configSelectionEmptyTitle": {
+    "description": "Empty state title in the setup config selection step when filters return no results"
+  },
+  "configSelectionEmptyMessage": "Passe den Behördenfilter an oder setze ihn zurück, um mehr Dienstpläne zu sehen.",
+  "@configSelectionEmptyMessage": {
+    "description": "Empty state body in the setup config selection step"
+  },
+  "dutyGroupSelectionEmptyMessage": "Dieser Dienstplan stellt keine Dienstgruppen bereit.",
+  "@dutyGroupSelectionEmptyMessage": {
+    "description": "Empty state message when a config has no duty groups"
   }
 }

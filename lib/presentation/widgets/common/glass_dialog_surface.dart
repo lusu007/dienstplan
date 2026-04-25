@@ -25,20 +25,29 @@ class GlassDialogSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color tintColor = isDark
-        ? colorScheme.surface.withValues(alpha: 0.5)
-        : colorScheme.surface.withValues(alpha: 0.38);
-    final Color outerBorderColor = isDark
-        ? Colors.white.withValues(alpha: 0.14)
-        : Colors.white.withValues(alpha: 0.5);
-    final Color innerBorderColor = isDark
-        ? Colors.white.withValues(alpha: 0.06)
-        : Colors.white.withValues(alpha: 0.28);
-    final Color partnerAccent = const Color(
-      AccentColorDefaults.partnerAccentColorValue,
-    ).withValues(alpha: isDark ? 0.34 : 0.28);
+    final Color tintColor = colorScheme.surface.withValues(
+      alpha: isDark ? glassDialogTintAlphaDark : glassDialogTintAlphaLight,
+    );
+    final Color outerBorderColor = Colors.white.withValues(
+      alpha: isDark
+          ? glassDialogOuterBorderAlphaDark
+          : glassDialogOuterBorderAlphaLight,
+    );
+    final Color innerBorderColor = Colors.white.withValues(
+      alpha: isDark
+          ? glassDialogInnerBorderAlphaDark
+          : glassDialogInnerBorderAlphaLight,
+    );
+    final Color partnerAccent =
+        const Color(AccentColorDefaults.partnerAccentColorValue).withValues(
+          alpha: isDark
+              ? glassBackdropBlobMediumAlphaDark + 0.06
+              : glassBackdropBlobMediumAlphaLight + 0.08,
+        );
     final Color primaryAccent = colorScheme.primary.withValues(
-      alpha: isDark ? 0.42 : 0.32,
+      alpha: isDark
+          ? glassBackdropBlobLargeAlphaDark
+          : glassBackdropBlobLargeAlphaLight,
     );
     final BorderRadius innerBorderRadius = _shrinkBorderRadius(
       borderRadius,
@@ -51,7 +60,11 @@ class GlassDialogSurface extends StatelessWidget {
         borderRadius: borderRadius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.22),
+            color: Colors.black.withValues(
+              alpha: isDark
+                  ? glassShadowAlphaDialogDark
+                  : glassShadowAlphaDialogLight,
+            ),
             blurRadius: glassShadowBlurLg,
             offset: const Offset(0, glassShadowOffsetYMd),
           ),
@@ -139,14 +152,16 @@ class SoftGradientDivider extends StatelessWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 1,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: glassSpacingLg),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
             Colors.transparent,
-            Colors.white.withValues(alpha: isDark ? 0.12 : 0.28),
+            Colors.white.withValues(
+              alpha: isDark ? glassDividerAlphaDark : glassDividerAlphaLight,
+            ),
             Colors.transparent,
           ],
         ),

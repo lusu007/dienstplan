@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/domain/entities/school_holiday.dart';
@@ -722,17 +723,20 @@ class DutyScheduleList extends ConsumerWidget {
     if (!_isGlass) {
       return BoxDecoration(
         color: Color.alphaBlend(roleTint, Theme.of(context).cardColor),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
         border: Border.all(color: borderColor, width: 1),
       );
     }
     final Color neutralBackground = Colors.white.withValues(
-      alpha: isDark ? 0.06 : 0.28,
+      alpha: isDark ? glassTintAlphaDark * 0.75 : glassTintAlphaLight,
     );
     return BoxDecoration(
       color: Color.alphaBlend(roleTint, neutralBackground),
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: borderColor.withValues(alpha: 0.55), width: 1),
+      borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
+      border: Border.all(
+        color: borderColor.withValues(alpha: glassBorderAlphaActive),
+        width: 1,
+      ),
       boxShadow: const [],
     );
   }
@@ -749,9 +753,14 @@ class DutyScheduleList extends ConsumerWidget {
       );
     }
     return BoxDecoration(
-      color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.35),
+      color: Colors.white.withValues(
+        alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight + 0.07,
+      ),
       borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: badgeColor.withValues(alpha: 0.55), width: 1),
+      border: Border.all(
+        color: badgeColor.withValues(alpha: glassBorderAlphaActive),
+        width: 1,
+      ),
     );
   }
 
@@ -763,7 +772,7 @@ class DutyScheduleList extends ConsumerWidget {
     if (!_isGlass) {
       return isDark ? Theme.of(context).colorScheme.onSurface : badgeColor;
     }
-    return isDark ? Colors.white : badgeColor;
+    return isDark ? Theme.of(context).colorScheme.onSurface : badgeColor;
   }
 
   /// Time range or all-day label for the right column (personal entries only).
@@ -849,18 +858,17 @@ class DutyScheduleList extends ConsumerWidget {
     required bool isGlass,
     required bool compact,
   }) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color barColor = isGlass
         ? Colors.white.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark
-                ? 0.12
-                : 0.32,
+            alpha: isDark
+                ? glassTintAlphaDark + 0.04
+                : glassTintAlphaLight + 0.04,
           )
         : Theme.of(context).colorScheme.outlineVariant;
     final Color subBarColor = isGlass
         ? Colors.white.withValues(
-            alpha: Theme.of(context).brightness == Brightness.dark
-                ? 0.08
-                : 0.22,
+            alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight - 0.06,
           )
         : Theme.of(context).colorScheme.surfaceContainerHighest;
     final double iconBox = compact ? 32.0 : 40.0;
@@ -960,14 +968,18 @@ class _PulsingGlassSkeletonState extends State<_PulsingGlassSkeleton>
               padding: EdgeInsets.all(widget.compact ? 12.0 : 16.0),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(
-                  alpha: widget.isDark ? 0.06 : 0.18,
+                  alpha: widget.isDark
+                      ? glassTintAlphaDark * 0.75
+                      : glassTintAlphaLight - 0.10,
                 ),
                 borderRadius: BorderRadius.circular(
-                  widget.compact ? 16.0 : 18.0,
+                  widget.compact ? glassSurfaceRadiusSm : glassSurfaceRadiusMd,
                 ),
                 border: Border.all(
                   color: Colors.white.withValues(
-                    alpha: widget.isDark ? 0.12 : 0.35,
+                    alpha: widget.isDark
+                        ? glassBorderAlphaDark * 0.66
+                        : glassBorderAlphaLight - 0.10,
                   ),
                 ),
               ),

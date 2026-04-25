@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
@@ -684,24 +685,27 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
         barrierLabel: MaterialLocalizations.of(
           context,
         ).modalBarrierDismissLabel,
-        barrierColor: Colors.black.withValues(alpha: 0.35),
+        barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
         transitionDuration: const Duration(milliseconds: 220),
         pageBuilder: (BuildContext dialogContext, _, _) {
           final Size screenSize = MediaQuery.sizeOf(dialogContext);
+          final ColorScheme dialogScheme = Theme.of(dialogContext).colorScheme;
           return Center(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(glassSpacingLg),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: screenSize.width * 0.92,
                   maxHeight: screenSize.height * 0.82,
                 ),
                 child: GlassDialogSurface(
-                  borderRadius: const BorderRadius.all(Radius.circular(24)),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(glassSurfaceRadiusLg),
+                  ),
                   child: Material(
                     color: Colors.transparent,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(glassSpacingLg),
                       child: Column(
                         children: [
                           Row(
@@ -712,9 +716,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                                   style: Theme.of(context).textTheme.titleMedium
                                       ?.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface,
+                                        color: dialogScheme.onSurface,
                                       ),
                                 ),
                               ),
@@ -725,19 +727,19 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: glassSpacingLg),
                           Expanded(
                             child: Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(glassSpacingMd),
                               decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.58),
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.outline,
+                                color: dialogScheme.surface.withValues(
+                                  alpha: 0.58,
                                 ),
-                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: dialogScheme.outline),
+                                borderRadius: BorderRadius.circular(
+                                  glassSurfaceRadiusSm - 4,
+                                ),
                               ),
                               child: SingleChildScrollView(
                                 child: SelectableText(
@@ -745,15 +747,13 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                                   style: Theme.of(context).textTheme.bodySmall
                                       ?.copyWith(
                                         fontFamily: 'monospace',
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface,
+                                        color: dialogScheme.onSurface,
                                       ),
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: glassSpacingLg),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -762,7 +762,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                                 icon: const Icon(Icons.copy),
                                 label: const Text('Copy'),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: glassSpacingSm),
                               ElevatedButton(
                                 onPressed: () =>
                                     Navigator.of(dialogContext).pop(),

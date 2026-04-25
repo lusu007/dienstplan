@@ -121,6 +121,26 @@ Color calendarDayBadgeSelectedBorderColor(
       : colorScheme.onSurface.withValues(alpha: 0.88);
 }
 
+/// Foreground color for the duty abbreviation rendered inside the colored
+/// badge. The badge background can be any user-chosen accent, so we pick a
+/// readable foreground by relative luminance.
+Color calendarDayBadgeForegroundColor(Color badgeBackground) {
+  return badgeBackground.computeLuminance() < 0.55
+      ? Colors.white
+      : Colors.black87;
+}
+
+/// Fill for the badge of an "outside-of-month" day. Uses scheme-driven
+/// neutral so the badge stays readable in both themes without `Colors.grey`.
+Color calendarDayBadgeOutsideFillColor(
+  ColorScheme colorScheme,
+  Brightness brightness,
+) {
+  return brightness == Brightness.dark
+      ? colorScheme.onSurfaceVariant.withValues(alpha: 0.55)
+      : colorScheme.outlineVariant.withValues(alpha: 0.7);
+}
+
 /// Circular markers for [TableCalendar] when default decorations show through.
 BoxDecoration calendarTableFallbackSelectedDecoration({
   required ColorScheme colorScheme,

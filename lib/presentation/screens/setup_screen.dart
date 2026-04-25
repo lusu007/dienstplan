@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
@@ -240,8 +241,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
 
               return languageAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, _) =>
-                    const Center(child: CircularProgressIndicator()),
+                error: (e, _) => _buildLanguageErrorState(context),
                 data: (languageService) => SafeArea(
                   bottom: false,
                   child: ListenableBuilder(
@@ -269,26 +269,32 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     required LanguageService languageService,
   }) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+      padding: const EdgeInsets.fromLTRB(
+        glassSpacingXl - 4,
+        glassSpacingXs,
+        glassSpacingXl - 4,
+        glassSpacingXl - 4,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildHeader(state: state, languageService: languageService),
-          const SizedBox(height: 12),
+          const SizedBox(height: glassSpacingMd),
           StepIndicator(
             currentStep: state.currentStep,
             totalSteps: state.selectedPartnerConfig != null ? 5 : 4,
             activeColor: scheme.primary,
-            inactiveColor: Colors.white.withValues(alpha: isDark ? 0.15 : 0.38),
+            inactiveColor: scheme.outlineVariant.withValues(alpha: 0.7),
             halfSteps: state.selectedPartnerConfig != null ? [3, 4] : null,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: glassSpacingXl - 4),
           Expanded(child: _buildCurrentStepContent(state)),
-          const SizedBox(height: 16),
+          const SizedBox(height: glassSpacingLg),
           _buildStepButtons(state),
-          SizedBox(height: MediaQuery.of(context).padding.bottom + 4),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom + glassSpacingXs,
+          ),
         ],
       ),
     );
@@ -299,15 +305,15 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     required LanguageService languageService,
   }) {
     final Color foreground = Theme.of(context).colorScheme.onSurface;
+    final TextStyle? titleStyle = Theme.of(context).textTheme.titleLarge;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           AppInfo.appName,
-          style: TextStyle(
+          style: (titleStyle ?? const TextStyle()).copyWith(
             color: foreground,
             fontWeight: FontWeight.w700,
-            fontSize: 20,
             letterSpacing: 0.2,
             height: 1.0,
           ),
@@ -323,9 +329,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   }
 
   Widget _buildErrorState(BuildContext context, Object error) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    AppLogger.e('SetupScreen: Setup load failed', error);
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(glassSpacingXl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -335,18 +343,51 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               size: 48,
               color: Theme.of(context).colorScheme.error,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: glassSpacingLg),
             Text(
-              'Setup Error: ${error.toString()}',
+              l10n.setupFailedTitle,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: glassSpacingLg),
+            ActionButton(
+              text: l10n.tryAgain,
+              onPressed: () => ref.read(setupProvider.notifier).retryLoading(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageErrorState(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(glassSpacingXl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: glassSpacingLg),
+            Text(
+              l10n.languageLoadFailed,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: glassSpacingLg),
             ActionButton(
-              text: 'Retry',
-              onPressed: () => ref.read(setupProvider.notifier).retryLoading(),
+              text: l10n.tryAgain,
+              onPressed: () => ref.invalidate(languageServiceProvider),
             ),
           ],
         ),

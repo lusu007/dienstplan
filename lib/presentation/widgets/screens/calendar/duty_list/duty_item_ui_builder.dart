@@ -46,8 +46,7 @@ class DutyItemUiBuilder {
                   Expanded(
                     child: Text(
                       serviceName,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontSize: 18,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -58,7 +57,6 @@ class DutyItemUiBuilder {
                   Text(
                     schedule.dutyGroupName,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
                       fontWeight: FontWeight.w400,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),

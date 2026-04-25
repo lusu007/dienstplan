@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 
 /// Glass-morphism replacement for [AlertDialog].
@@ -31,7 +32,7 @@ class GlassAppDialog extends StatelessWidget {
       context: context,
       barrierDismissible: barrierDismissible,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withValues(alpha: 0.35),
+      barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
       transitionDuration: const Duration(milliseconds: 260),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         final Animation<double> curved = CurvedAnimation(
@@ -45,7 +46,10 @@ class GlassAppDialog extends StatelessWidget {
               opacity: curved,
               child: IgnorePointer(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                  filter: ImageFilter.blur(
+                    sigmaX: glassSurfaceBlurSubtle,
+                    sigmaY: glassSurfaceBlurSubtle,
+                  ),
                   child: const SizedBox.expand(),
                 ),
               ),
@@ -80,10 +84,10 @@ class GlassAppDialog extends StatelessWidget {
       alignment: Alignment.center,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          24,
-          media.padding.top + 32,
-          24,
-          media.padding.bottom + 32,
+          glassSpacingXl,
+          media.padding.top + glassSpacingXxl,
+          glassSpacingXl,
+          media.padding.bottom + glassSpacingXxl,
         ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 480),
@@ -91,7 +95,12 @@ class GlassAppDialog extends StatelessWidget {
             child: Material(
               color: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 22, 24, 18),
+                padding: const EdgeInsets.fromLTRB(
+                  glassSpacingXl,
+                  glassSpacingXl - 2,
+                  glassSpacingXl,
+                  glassSpacingLg + 2,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -103,7 +112,7 @@ class GlassAppDialog extends StatelessWidget {
                         color: colorScheme.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: glassSpacingMd + 2),
                     DefaultTextStyle.merge(
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
@@ -111,10 +120,12 @@ class GlassAppDialog extends StatelessWidget {
                       child: content,
                     ),
                     if (actions != null && actions!.isNotEmpty) ...[
-                      const SizedBox(height: 20),
+                      const SizedBox(height: glassSpacingLg + glassSpacingXs),
                       ...actions!.map(
                         (Widget action) => Padding(
-                          padding: const EdgeInsets.only(top: 6),
+                          padding: const EdgeInsets.only(
+                            top: glassSpacingXs + 2,
+                          ),
                           child: action,
                         ),
                       ),
