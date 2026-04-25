@@ -13,6 +13,7 @@ import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_day_filtering.dart';
 
@@ -302,6 +303,21 @@ class _SheetHeader extends ConsumerWidget {
           ],
           const SizedBox(width: glassSpacingSm),
           GlassIconToggleChip(
+            tooltip: l10n.addPersonalEntryTooltip,
+            isSelected: false,
+            selectedIcon: Icons.add_rounded,
+            unselectedIcon: Icons.add_rounded,
+            onTap: () {
+              showPersonalCalendarEntrySheet(
+                context: context,
+                ref: ref,
+                day: day,
+                existingSchedule: null,
+              );
+            },
+          ),
+          const SizedBox(width: glassSpacingSm),
+          GlassIconToggleChip(
             tooltip: showOtherDutyGroups
                 ? l10n.compactListHideOtherDutyGroupsTooltip
                 : l10n.compactListShowOtherDutyGroupsTooltip,
@@ -353,7 +369,9 @@ class _TodayPill extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: colorScheme.onPrimary,
+          // Translucent primary fill: onPrimary stays in the blue family in dark
+          // mode and clashes with the pill; onSurface stays neutral and readable.
+          color: isDark ? colorScheme.onSurface : colorScheme.onPrimary,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.4,
         ),
