@@ -8,6 +8,7 @@ import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_schedule_list.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_day_filtering.dart';
 
@@ -119,6 +120,21 @@ class _CompactDayHeader extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          const SizedBox(width: 8),
+          GlassIconToggleChip(
+            tooltip: l10n.addPersonalEntryTooltip,
+            isSelected: false,
+            selectedIcon: Icons.add_rounded,
+            unselectedIcon: Icons.add_rounded,
+            onTap: () {
+              showPersonalCalendarEntrySheet(
+                context: context,
+                ref: ref,
+                day: day,
+                existingSchedule: null,
+              );
+            },
           ),
           const SizedBox(width: 8),
           GlassIconToggleChip(

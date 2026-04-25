@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
@@ -46,7 +47,7 @@ class AppSection extends ConsumerWidget {
           icon: Icons.delete_forever_outlined,
           title: l10n.resetData,
           onTap: () => ResetBottomsheet.show(context),
-          iconColor: Theme.of(context).colorScheme.error,
+          iconColor: AppColors.destructiveIconBadgeTint,
         ),
       ],
     );

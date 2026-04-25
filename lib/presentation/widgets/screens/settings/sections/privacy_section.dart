@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -48,7 +49,7 @@ class PrivacySection extends ConsumerWidget {
               icon: Icons.error_outline_rounded,
               title: l10n.errorLoading,
               subtitle: l10n.tryAgain,
-              iconColor: Theme.of(context).colorScheme.error,
+              iconColor: AppColors.destructiveIconBadgeTint,
               onTap: () => ref.invalidate(sentryStateProvider),
             ),
             const SizedBox(height: glassSpacingXs),
