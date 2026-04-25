@@ -9,6 +9,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CalendarExportBottomsheet extends ConsumerStatefulWidget {
@@ -619,7 +620,12 @@ class _ToggleCard extends StatelessWidget {
       enabled: enabled,
       child: SwitchListTile(
         value: value,
-        onChanged: enabled ? onChanged : null,
+        onChanged: enabled
+            ? (bool nextValue) {
+                HapticFeedback.selectionClick();
+                onChanged(nextValue);
+              }
+            : null,
         title: Text(title),
         subtitle: Text(subtitle),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
 
@@ -73,7 +74,12 @@ class ToggleCard extends StatelessWidget {
             const SizedBox(width: 8),
             Switch(
               value: value,
-              onChanged: enabled ? onChanged : null,
+              onChanged: enabled && onChanged != null
+                  ? (bool nextValue) {
+                      HapticFeedback.selectionClick();
+                      onChanged!(nextValue);
+                    }
+                  : null,
               activeThumbColor: scheme.primary,
             ),
           ],

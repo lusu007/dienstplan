@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/constants/glass_chip_tokens.dart';
@@ -22,10 +23,16 @@ import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:intl/intl.dart';
 
-const double _kTimeWheelHeight = 140;
 const double _kTimeWheelItemExtent = 36;
-const double _kTimeWheelDiameterRatio = 1.45;
+const double _kTimeWheelHeight = _kTimeWheelItemExtent * 3;
+const double _kTimeWheelDiameterRatio = 1000;
+const double _kTimeWheelPerspective = 0.0001;
 const double _kSaveButtonHeight = 48;
+const int _kMinuteStep = 5;
+const int _kMinuteOptionCount = 60 ~/ _kMinuteStep;
+const int _kMaxSelectableMinutes = 23 * 60 + (60 - _kMinuteStep);
+const int _kDefaultStartMinutes = 16 * 60;
+const int _kDefaultEndMinutes = 17 * 60;
 
 /// Bottom sheet to create or edit a personal calendar entry (appointment / own duty).
 class PersonalCalendarEntrySheet extends ConsumerStatefulWidget {
@@ -50,8 +57,6 @@ class PersonalCalendarEntrySheet extends ConsumerStatefulWidget {
 class _PersonalCalendarEntrySheetState
     extends ConsumerState<PersonalCalendarEntrySheet> {
   static const FailurePresenter _failurePresenter = FailurePresenter();
-  static const int _defaultStartMinutes = 16 * 60;
-  static const int _defaultEndMinutes = 17 * 60;
   late PersonalCalendarEntry _draft;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
@@ -103,7 +108,7 @@ class _PersonalCalendarEntrySheetState
       initialItem: initialMinutes ~/ 60,
     );
     _minuteWheelController = FixedExtentScrollController(
-      initialItem: initialMinutes % 60,
+      initialItem: _minuteToWheelIndex(initialMinutes % 60),
     );
   }
 
@@ -151,20 +156,43 @@ class _PersonalCalendarEntrySheetState
   }
 
   PersonalCalendarEntry _ensureTimeRange(PersonalCalendarEntry entry) {
-    final int start = entry.startMinutesFromMidnight ?? _defaultStartMinutes;
-    final int end = entry.endMinutesFromMidnight ?? _defaultEndMinutes;
+    final int start = _normalizeMinutesToStep(
+      entry.startMinutesFromMidnight ?? _kDefaultStartMinutes,
+    );
+    final int end = _normalizeMinutesToStep(
+      entry.endMinutesFromMidnight ?? _kDefaultEndMinutes,
+    );
     final int safeEnd = end <= start ? start + 60 : end;
     return entry.copyWith(
       startMinutesFromMidnight: start,
-      endMinutesFromMidnight: safeEnd.clamp(0, 23 * 60 + 59),
+      endMinutesFromMidnight: _normalizeMinutesToStep(safeEnd),
     );
   }
 
   int _selectedMinutesForActiveField() {
     if (_activeTimeField == _TimeField.start) {
-      return _draft.startMinutesFromMidnight ?? _defaultStartMinutes;
+      return _draft.startMinutesFromMidnight ?? _kDefaultStartMinutes;
     }
-    return _draft.endMinutesFromMidnight ?? _defaultEndMinutes;
+    return _draft.endMinutesFromMidnight ?? _kDefaultEndMinutes;
+  }
+
+  int _normalizeMinutesToStep(int minutesFromMidnight) {
+    final int clampedMinutes = minutesFromMidnight.clamp(
+      0,
+      _kMaxSelectableMinutes,
+    );
+    final int roundedMinutes =
+        ((clampedMinutes / _kMinuteStep).round() * _kMinuteStep);
+    return roundedMinutes.clamp(0, _kMaxSelectableMinutes);
+  }
+
+  int _minuteToWheelIndex(int minute) {
+    return _normalizeMinutesToStep(minute) ~/ _kMinuteStep;
+  }
+
+  int _wheelIndexToMinute(int index) {
+    final int safeIndex = index.clamp(0, _kMinuteOptionCount - 1);
+    return safeIndex * _kMinuteStep;
   }
 
   void _syncTimeWheelControllers() {
@@ -174,7 +202,7 @@ class _PersonalCalendarEntrySheetState
     }
     final int minutes = _selectedMinutesForActiveField();
     final int hour = minutes ~/ 60;
-    final int minute = minutes % 60;
+    final int minute = _minuteToWheelIndex(minutes % 60);
     _hourWheelController.jumpToItem(hour);
     _minuteWheelController.jumpToItem(minute);
   }
@@ -194,28 +222,34 @@ class _PersonalCalendarEntrySheetState
     });
   }
 
-  void _applyWheelTime({int? hour, int? minute}) {
+  bool _applyWheelTime({int? hour, int? minute}) {
     final int baseMinutes = _selectedMinutesForActiveField();
     final int nextHour = hour ?? (baseMinutes ~/ 60);
-    final int nextMinute = minute ?? (baseMinutes % 60);
-    final int nextTotal = nextHour * 60 + nextMinute;
+    final int nextMinute = minute ?? _normalizeMinutesToStep(baseMinutes % 60);
+    final int nextTotal = _normalizeMinutesToStep(nextHour * 60 + nextMinute);
+    final int startMinutes =
+        _draft.startMinutesFromMidnight ?? _kDefaultStartMinutes;
+    final int endMinutes = _draft.endMinutesFromMidnight ?? _kDefaultEndMinutes;
+    final bool isStartAfterOrAtEnd =
+        _activeTimeField == _TimeField.start && nextTotal >= endMinutes;
+    final bool isEndBeforeOrAtStart =
+        _activeTimeField == _TimeField.end && nextTotal <= startMinutes;
+    if (isStartAfterOrAtEnd || isEndBeforeOrAtStart) {
+      _syncTimeWheelControllers();
+      return false;
+    }
     setState(() {
       if (_activeTimeField == _TimeField.start) {
-        final int end = _draft.endMinutesFromMidnight ?? _defaultEndMinutes;
-        final int adjustedEnd = end <= nextTotal ? nextTotal + 60 : end;
-        _draft = _draft.copyWith(
-          startMinutesFromMidnight: nextTotal,
-          endMinutesFromMidnight: adjustedEnd.clamp(0, 23 * 60 + 59),
-        );
+        _draft = _draft.copyWith(startMinutesFromMidnight: nextTotal);
       } else {
-        final int start =
-            _draft.startMinutesFromMidnight ?? _defaultStartMinutes;
-        final int adjustedEnd = nextTotal <= start ? start + 60 : nextTotal;
-        _draft = _draft.copyWith(
-          endMinutesFromMidnight: adjustedEnd.clamp(0, 23 * 60 + 59),
-        );
+        _draft = _draft.copyWith(endMinutesFromMidnight: nextTotal);
       }
     });
+    return true;
+  }
+
+  void _triggerSelectionHapticFeedback() {
+    HapticFeedback.selectionClick();
   }
 
   void _toggleDatePicker() {
@@ -253,7 +287,10 @@ class _PersonalCalendarEntrySheetState
   Future<void> _save() async {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final int nowMs = DateTime.now().millisecondsSinceEpoch;
-    final PersonalCalendarEntry toSave = _draft.copyWith(
+    final PersonalCalendarEntry normalizedDraft = _draft.isAllDay
+        ? _draft
+        : _ensureTimeRange(_draft);
+    final PersonalCalendarEntry toSave = normalizedDraft.copyWith(
       title: _titleController.text,
       notes: _notesController.text.trim().isEmpty
           ? null
@@ -355,6 +392,10 @@ class _PersonalCalendarEntrySheetState
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final ColorScheme kindChipColorScheme = isDark
+        ? colorScheme
+        : colorScheme.copyWith(onSurface: colorScheme.onSurfaceVariant);
     final String sheetTitle = widget.existingSchedule != null
         ? l10n.personalEntrySheetTitleEdit
         : l10n.personalEntrySheetTitleNew;
@@ -381,7 +422,7 @@ class _PersonalCalendarEntrySheetState
         children: <Widget>[
           _PersonalEntrySheetHeader(
             title: sheetTitle,
-            deleteTooltip: l10n.personalEntryDeleteTooltip,
+            deleteTooltip: l10n.delete,
             onDelete: isEditing ? _delete : null,
           ),
           Padding(
@@ -400,50 +441,59 @@ class _PersonalCalendarEntrySheetState
                   enabled: true,
                 ),
                 const SizedBox(height: glassSpacingXs),
-                TextField(
-                  controller: _titleController,
-                  decoration: _glassFieldDecoration(
-                    context,
-                    hintText: l10n.personalEntryTitleLabel,
+                Semantics(
+                  textField: true,
+                  label: l10n.personalEntryTitleLabel,
+                  child: TextField(
+                    controller: _titleController,
+                    decoration: _glassFieldDecoration(
+                      context,
+                      hintText: l10n.personalEntryTitleLabel,
+                    ),
                   ),
                 ),
                 const SizedBox(height: glassSpacingLg),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: GlassFilterChip(
-                        label: l10n.personalEntryKindAppointment,
-                        isSelected:
-                            _draft.kind ==
-                            PersonalCalendarEntryKind.appointment,
-                        expandWidth: true,
-                        onTap: () {
-                          setState(() {
-                            _draft = _draft.copyWith(
-                              kind: PersonalCalendarEntryKind.appointment,
-                            );
-                          });
-                        },
+                Theme(
+                  data: Theme.of(
+                    context,
+                  ).copyWith(colorScheme: kindChipColorScheme),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: GlassFilterChip(
+                          label: l10n.personalEntryKindAppointment,
+                          isSelected:
+                              _draft.kind ==
+                              PersonalCalendarEntryKind.appointment,
+                          expandWidth: true,
+                          onTap: () {
+                            setState(() {
+                              _draft = _draft.copyWith(
+                                kind: PersonalCalendarEntryKind.appointment,
+                              );
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: glassSpacingSm),
-                    Expanded(
-                      child: GlassFilterChip(
-                        label: l10n.personalEntryKindDuty,
-                        isSelected:
-                            _draft.kind ==
-                            PersonalCalendarEntryKind.personalDuty,
-                        expandWidth: true,
-                        onTap: () {
-                          setState(() {
-                            _draft = _draft.copyWith(
-                              kind: PersonalCalendarEntryKind.personalDuty,
-                            );
-                          });
-                        },
+                      const SizedBox(width: glassSpacingSm),
+                      Expanded(
+                        child: GlassFilterChip(
+                          label: l10n.personalEntryKindDuty,
+                          isSelected:
+                              _draft.kind ==
+                              PersonalCalendarEntryKind.personalDuty,
+                          expandWidth: true,
+                          onTap: () {
+                            setState(() {
+                              _draft = _draft.copyWith(
+                                kind: PersonalCalendarEntryKind.personalDuty,
+                              );
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: glassSpacingMd),
                 SwitchListTile(
@@ -457,15 +507,23 @@ class _PersonalCalendarEntrySheetState
                   ),
                   value: _draft.isAllDay,
                   onChanged: (bool v) {
+                    _triggerSelectionHapticFeedback();
                     setState(() {
-                      _draft = _draft.copyWith(
-                        isAllDay: v,
-                        startMinutesFromMidnight: v
-                            ? null
-                            : _draft.startMinutesFromMidnight,
-                        endMinutesFromMidnight: v
-                            ? null
-                            : _draft.endMinutesFromMidnight,
+                      if (v) {
+                        _draft = _draft.copyWith(
+                          isAllDay: true,
+                          startMinutesFromMidnight: null,
+                          endMinutesFromMidnight: null,
+                        );
+                        return;
+                      }
+                      _draft = _ensureTimeRange(
+                        _draft.copyWith(
+                          isAllDay: false,
+                          startMinutesFromMidnight:
+                              _draft.startMinutesFromMidnight,
+                          endMinutesFromMidnight: _draft.endMinutesFromMidnight,
+                        ),
                       );
                     });
                   },
@@ -479,7 +537,7 @@ class _PersonalCalendarEntrySheetState
                   hourWheelController: _hourWheelController,
                   minuteWheelController: _minuteWheelController,
                   dateLabel: l10n.personalEntryDateLabel,
-                  timeLabel: l10n.personalEntryTimeLabel,
+                  timeLabel: l10n.personalEntryStartTime,
                   onToggleDatePicker: _toggleDatePicker,
                   onToggleTimePicker: _toggleTimePicker,
                   onDateChanged: (DateTime value) {
@@ -492,9 +550,19 @@ class _PersonalCalendarEntrySheetState
                   onSelectStartTime: () =>
                       _setActiveTimeField(_TimeField.start),
                   onSelectEndTime: () => _setActiveTimeField(_TimeField.end),
-                  onHourChanged: (int hour) => _applyWheelTime(hour: hour),
-                  onMinuteChanged: (int minute) =>
-                      _applyWheelTime(minute: minute),
+                  onHourChanged: (int hour) {
+                    final bool isApplied = _applyWheelTime(hour: hour);
+                    if (isApplied) {
+                      _triggerSelectionHapticFeedback();
+                    }
+                  },
+                  onMinuteChanged: (int minuteIndex) {
+                    final int minute = _wheelIndexToMinute(minuteIndex);
+                    final bool isApplied = _applyWheelTime(minute: minute);
+                    if (isApplied) {
+                      _triggerSelectionHapticFeedback();
+                    }
+                  },
                 ),
                 const SizedBox(height: glassSpacingMd),
                 _SectionEyebrow(
@@ -502,13 +570,17 @@ class _PersonalCalendarEntrySheetState
                   enabled: true,
                 ),
                 const SizedBox(height: glassSpacingXs),
-                TextField(
-                  controller: _notesController,
-                  decoration: _glassFieldDecoration(
-                    context,
-                    hintText: l10n.personalEntryNotesLabel,
+                Semantics(
+                  textField: true,
+                  label: l10n.personalEntryNotesLabel,
+                  child: TextField(
+                    controller: _notesController,
+                    decoration: _glassFieldDecoration(
+                      context,
+                      hintText: l10n.personalEntryNotesLabel,
+                    ),
+                    maxLines: 2,
                   ),
-                  maxLines: 2,
                 ),
                 const SizedBox(height: glassSpacingLg),
                 GlassButtonSurface(
@@ -521,6 +593,7 @@ class _PersonalCalendarEntrySheetState
                     l10n.save,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -687,9 +760,12 @@ class _InlineDateTimeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final TimeOfDay startTime = _toTime(
       draft.startMinutesFromMidnight,
-      16 * 60,
+      _kDefaultStartMinutes,
     );
-    final TimeOfDay endTime = _toTime(draft.endMinutesFromMidnight, 17 * 60);
+    final TimeOfDay endTime = _toTime(
+      draft.endMinutesFromMidnight,
+      _kDefaultEndMinutes,
+    );
     final DateTime firstDate = DateTime(
       CalendarConfig.firstDay.year,
       CalendarConfig.firstDay.month,
@@ -920,9 +996,10 @@ class _InlineTimeWheel extends StatelessWidget {
           Expanded(
             child: _WheelColumn(
               controller: minuteController,
-              itemCount: 60,
+              itemCount: _kMinuteOptionCount,
               onSelectedItemChanged: onMinuteChanged,
-              itemBuilder: (int index) => index.toString().padLeft(2, '0'),
+              itemBuilder: (int index) =>
+                  (index * _kMinuteStep).toString().padLeft(2, '0'),
             ),
           ),
         ],
@@ -951,6 +1028,7 @@ class _WheelColumn extends StatelessWidget {
       controller: controller,
       itemExtent: _kTimeWheelItemExtent,
       diameterRatio: _kTimeWheelDiameterRatio,
+      perspective: _kTimeWheelPerspective,
       physics: const FixedExtentScrollPhysics(),
       onSelectedItemChanged: onSelectedItemChanged,
       childDelegate: ListWheelChildBuilderDelegate(
@@ -963,7 +1041,7 @@ class _WheelColumn extends StatelessWidget {
             child: Text(
               itemBuilder(index),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: colorScheme.onSurface,
+                color: colorScheme.onSurface.withValues(alpha: 1.0),
                 fontWeight: FontWeight.w600,
               ),
             ),
