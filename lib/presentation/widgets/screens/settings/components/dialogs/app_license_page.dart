@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
@@ -101,7 +102,7 @@ class _AppLicensePageState extends State<AppLicensePage> {
                 }
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(glassSpacingXl - 4),
                     child: Text(
                       l10n.licensesLoadError,
                       textAlign: TextAlign.center,
@@ -119,7 +120,7 @@ class _AppLicensePageState extends State<AppLicensePage> {
               if (licensesByPackage.isEmpty) {
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(glassSpacingXl - 4),
                     child: Text(
                       l10n.licensesEmptyState,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -130,7 +131,12 @@ class _AppLicensePageState extends State<AppLicensePage> {
                 );
               }
               return ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+                padding: const EdgeInsets.fromLTRB(
+                  glassSpacingXl - 4,
+                  glassSpacingXl - 4,
+                  glassSpacingXl - 4,
+                  glassSpacingXxl,
+                ),
                 itemCount: licenseEntries.length + 2,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
@@ -142,15 +148,14 @@ class _AppLicensePageState extends State<AppLicensePage> {
                     );
                   }
                   if (index == 1) {
-                    return const SizedBox(height: 16);
+                    return const SizedBox(height: glassSpacingLg);
                   }
                   final MapEntry<String, List<String>> entry =
                       licenseEntries[index - 2];
                   return GlassCard(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    borderRadius: 16,
+                    margin: const EdgeInsets.only(bottom: glassSpacingMd - 2),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
                       child: Theme(
                         data: Theme.of(
                           context,
@@ -167,10 +172,10 @@ class _AppLicensePageState extends State<AppLicensePage> {
                               .map((String text) {
                                 return Padding(
                                   padding: const EdgeInsets.fromLTRB(
-                                    16,
+                                    glassSpacingLg,
                                     0,
-                                    16,
-                                    16,
+                                    glassSpacingLg,
+                                    glassSpacingLg,
                                   ),
                                   child: SelectableText(
                                     text,
@@ -211,13 +216,12 @@ class _LicenseAppHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return GlassCard(
-      padding: const EdgeInsets.all(16),
-      borderRadius: 16,
+      padding: const EdgeInsets.all(glassSpacingLg),
       child: Row(
         children: <Widget>[
           if (appIconPath != null)
             Padding(
-              padding: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.only(right: glassSpacingMd),
               child: Image.asset(appIconPath!, width: 44, height: 44),
             ),
           Expanded(

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -27,20 +28,25 @@ class SettingsScreen extends ConsumerWidget {
     return GlassScreenScaffold(
       title: l10n.settings,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+        padding: const EdgeInsets.fromLTRB(
+          glassSpacingXl - 4,
+          glassSpacingXl - 4,
+          glassSpacingXl - 4,
+          glassSpacingXxl,
+        ),
         children: const [
           _SettingsScheduleBlock(),
-          SizedBox(height: 8),
+          SizedBox(height: glassSpacingSm),
           AppSection(),
-          SizedBox(height: 8),
+          SizedBox(height: glassSpacingSm),
           SchoolHolidaysSection(),
-          SizedBox(height: 8),
+          SizedBox(height: glassSpacingSm),
           PrivacySection(),
-          SizedBox(height: 8),
+          SizedBox(height: glassSpacingSm),
           OtherSection(),
-          SizedBox(height: 24),
+          SizedBox(height: glassSpacingXl),
           SettingsFooter(),
-          SizedBox(height: 24),
+          SizedBox(height: glassSpacingXl),
         ],
       ),
     );
@@ -75,9 +81,9 @@ class _SettingsScheduleBlock extends ConsumerWidget {
               );
         final String message = presenter.present(failure, l10n);
         return GlassCard(
-          margin: const EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: glassSpacingSm),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(glassSpacingXl - 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -86,12 +92,21 @@ class _SettingsScheduleBlock extends ConsumerWidget {
                   size: 36,
                   color: Theme.of(context).colorScheme.error,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: glassSpacingMd),
                 Text(
                   message,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: glassSpacingLg),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () =>
+                        ref.invalidate(scheduleCoordinatorProvider),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text(l10n.tryAgain),
                   ),
                 ),
               ],

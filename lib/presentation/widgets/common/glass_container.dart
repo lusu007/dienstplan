@@ -1,6 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
+import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
 
 /// Reusable glass-morphism container using [BackdropFilter] with a blurred,
@@ -19,8 +22,8 @@ class GlassContainer extends StatelessWidget {
     required this.child,
     this.borderRadius = glassSurfaceRadiusLg,
     this.blurSigma = glassSurfaceBlurDefault,
-    this.tintOpacity = 0.22,
-    this.borderOpacity = 0.25,
+    this.tintOpacity = glassSurfaceSubtleTintAlphaLight,
+    this.borderOpacity = glassSurfaceSubtleBorderAlphaLight,
     this.padding,
     this.margin,
   });
@@ -29,12 +32,19 @@ class GlassContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    // Dark mode receives a slightly stronger tint and softer border to keep the
+    // surface readable on dark backdrops. The +0.08 / *0.6 ratios are kept to
+    // preserve the historical look while sourcing the base values from tokens.
     final Color tintColor = isDark
         ? colorScheme.primary.withValues(alpha: tintOpacity + 0.08)
         : colorScheme.primary.withValues(alpha: tintOpacity);
+    // Light Mode: a faintly primary-tinted edge reads better on the bright
+    // aurora than a pure white border that would otherwise vanish.
     final Color borderColor = isDark
         ? Colors.white.withValues(alpha: borderOpacity * 0.6)
-        : Colors.white.withValues(alpha: borderOpacity);
+        : colorScheme.primary.withValues(
+            alpha: borderOpacity * glassSurfaceSubtleBorderPrimaryFactorLight,
+          );
 
     final Widget content = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
@@ -71,39 +81,58 @@ class GlassContainer extends StatelessWidget {
 /// Ambient "aurora" background used beneath the glass layers so the blur is
 /// actually visible over the scaffold.
 ///
-/// Renders a top-to-bottom tinted gradient as base layer and three statically
-/// positioned primary-tint blobs on top. The blobs use radial gradients with
-/// transparent edges so they dissolve softly into the base gradient.
-class CalendarBackdrop extends StatelessWidget {
+/// Renders a top-to-bottom tinted gradient as base layer and five statically
+/// positioned blobs on top. Three blobs follow the theme primary, the
+/// remaining two are driven by the user's accent color settings:
+/// - one blob uses `myAccentColorValue` (the primary duty group accent),
+/// - one blob uses `partnerAccentColorValue` (the partner duty group accent).
+/// Both fall back to `colorScheme.primary` while settings load or when null.
+class CalendarBackdrop extends ConsumerWidget {
   final Widget child;
 
   const CalendarBackdrop({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    // Accent values live on `partnerProvider` because `PartnerNotifier` is the
+    // sole writer for `setMyAccentColor` / `setPartnerAccentColor`. Watching
+    // `settingsProvider` here would miss live updates because it is only
+    // refreshed on cold load. See `partner_notifier.dart`.
+    final int? myAccentValue = ref.watch(
+      partnerProvider.select(
+        (AsyncValue<PartnerUiState> s) => s.value?.myAccentColorValue,
+      ),
+    );
+    final int? partnerAccentValue = ref.watch(
+      partnerProvider.select(
+        (AsyncValue<PartnerUiState> s) => s.value?.partnerAccentColorValue,
+      ),
+    );
+    final Color myAccent = myAccentValue != null
+        ? Color(myAccentValue)
+        : colorScheme.primary;
+    final Color partnerAccent = partnerAccentValue != null
+        ? Color(partnerAccentValue)
+        : colorScheme.primary;
 
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: isDark
-              ? [
-                  colorScheme.surface,
-                  Color.alphaBlend(
-                    colorScheme.primary.withValues(alpha: 0.14),
-                    colorScheme.surface,
-                  ),
-                ]
-              : [
-                  colorScheme.surface,
-                  Color.alphaBlend(
-                    colorScheme.primary.withValues(alpha: 0.08),
-                    colorScheme.surface,
-                  ),
-                ],
+          colors: [
+            colorScheme.surface,
+            Color.alphaBlend(
+              colorScheme.primary.withValues(
+                alpha: isDark
+                    ? glassBackdropGradientTopAlphaDark
+                    : glassBackdropGradientTopAlphaLight,
+              ),
+              colorScheme.surface,
+            ),
+          ],
         ),
       ),
       child: LayoutBuilder(
@@ -119,23 +148,59 @@ class CalendarBackdrop extends StatelessWidget {
                 top: -80,
                 right: -100,
                 child: AmbientBlob(
-                  color: primary.withValues(alpha: isDark ? 0.42 : 0.32),
+                  color: primary.withValues(
+                    alpha: isDark
+                        ? glassBackdropBlobLargeAlphaDark
+                        : glassBackdropBlobLargeAlphaLight,
+                  ),
                   diameter: 320,
+                ),
+              ),
+              Positioned(
+                top: 120,
+                left: -60,
+                child: AmbientBlob(
+                  color: myAccent.withValues(
+                    alpha: isDark
+                        ? glassBackdropBlobAccentAlphaDark
+                        : glassBackdropBlobAccentAlphaLight,
+                  ),
+                  diameter: 240,
                 ),
               ),
               Positioned(
                 bottom: 40,
                 left: -120,
                 child: AmbientBlob(
-                  color: primary.withValues(alpha: isDark ? 0.28 : 0.20),
+                  color: primary.withValues(
+                    alpha: isDark
+                        ? glassBackdropBlobMediumAlphaDark
+                        : glassBackdropBlobMediumAlphaLight,
+                  ),
                   diameter: 280,
+                ),
+              ),
+              Positioned(
+                bottom: -60,
+                right: -60,
+                child: AmbientBlob(
+                  color: partnerAccent.withValues(
+                    alpha: isDark
+                        ? glassBackdropBlobWarmAlphaDark
+                        : glassBackdropBlobWarmAlphaLight,
+                  ),
+                  diameter: 200,
                 ),
               ),
               Positioned(
                 top: height * 0.42,
                 left: width * 0.35,
                 child: AmbientBlob(
-                  color: primary.withValues(alpha: isDark ? 0.16 : 0.10),
+                  color: primary.withValues(
+                    alpha: isDark
+                        ? glassBackdropBlobSoftAlphaDark
+                        : glassBackdropBlobSoftAlphaLight,
+                  ),
                   diameter: 420,
                 ),
               ),

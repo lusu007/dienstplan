@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
@@ -31,6 +32,7 @@ class LanguageSelectorButton extends StatelessWidget {
             ? l10n.german
             : l10n.english;
 
+        final TextStyle? labelBase = Theme.of(context).textTheme.labelLarge;
         return GlassButtonSurface(
           onTap: () {
             const List<Locale> locales = <Locale>[Locale('de'), Locale('en')];
@@ -42,16 +44,18 @@ class LanguageSelectorButton extends StatelessWidget {
             onLanguageChanged?.call();
           },
           enabled: !disabled,
-          borderRadius: 999,
+          borderRadius: glassSurfaceRadiusPill,
           height: 38,
           opacity: opacity,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: glassSpacingLg - 2,
+            vertical: glassSpacingSm,
+          ),
           child: Text(
             label,
-            style: TextStyle(
+            style: (labelBase ?? const TextStyle()).copyWith(
               color: foreground.withValues(alpha: opacity),
               fontWeight: FontWeight.w700,
-              fontSize: 14,
               letterSpacing: 0.3,
             ),
           ),

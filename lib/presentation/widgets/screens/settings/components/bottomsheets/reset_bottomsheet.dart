@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
@@ -15,6 +16,7 @@ class ResetBottomsheet {
 
   static void show(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     GenericBottomsheet.show<void>(
       context: context,
@@ -22,7 +24,12 @@ class ResetBottomsheet {
       shrinkToContent: true,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+          padding: const EdgeInsets.fromLTRB(
+            glassSpacingLg,
+            glassSpacingXl - 4,
+            glassSpacingLg,
+            glassSpacingXl - 4,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -30,36 +37,36 @@ class ResetBottomsheet {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.1),
+                  color: colorScheme.errorContainer,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.warning_rounded,
-                  color: Colors.red,
+                  color: colorScheme.onErrorContainer,
                   size: 32,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: glassSpacingLg),
               Text(
                 l10n.resetDataConfirmation,
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: glassSpacingXl),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
+                    backgroundColor: colorScheme.error,
+                    foregroundColor: colorScheme.onError,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
+                      horizontal: glassSpacingMd,
+                      vertical: glassSpacingMd,
                     ),
-                    textStyle: const TextStyle(fontSize: 14),
+                    textStyle: Theme.of(context).textTheme.labelLarge,
                   ),
                   onPressed: () async {
                     final container = ProviderScope.containerOf(

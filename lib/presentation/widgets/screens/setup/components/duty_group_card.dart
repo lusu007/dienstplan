@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 
 class DutyGroupCard extends StatelessWidget {
   final String dutyGroupName;
@@ -21,7 +20,7 @@ class DutyGroupCard extends StatelessWidget {
       leadingIcon: Icons.group,
       isSelected: isSelected,
       onTap: onTap,
-      mainColor: AppColors.primary,
+      mainColor: Theme.of(context).colorScheme.primary,
     );
   }
 }

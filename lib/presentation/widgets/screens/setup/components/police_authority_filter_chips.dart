@@ -53,7 +53,6 @@ class PoliceAuthorityFilterChips extends StatelessWidget {
               child: Text(
                 l10n.clearAll,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: selectedAuthorities.isNotEmpty
                       ? colorScheme.primary

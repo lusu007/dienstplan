@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/state/setup/setup_ui_state.dart';
@@ -62,6 +63,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
         Expanded(
           child: ScrollFadeMask(
             child: _buildScrollableContent(
+              context: context,
               isLoading: state.isLoading,
               loadingError: loadingError,
               loadingErrorStackTrace: loadingErrorStackTrace,
@@ -78,6 +80,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
   }
 
   Widget _buildScrollableContent({
+    required BuildContext context,
     required bool isLoading,
     required Object? loadingError,
     required StackTrace? loadingErrorStackTrace,
@@ -109,6 +112,10 @@ class PartnerConfigStepComponent extends StatelessWidget {
       );
     }
 
+    if (filteredConfigs.isEmpty) {
+      return _buildEmptyState(context);
+    }
+
     return ListView.builder(
       controller: scrollController,
       padding: const EdgeInsets.only(top: 12, bottom: 32),
@@ -125,6 +132,54 @@ class PartnerConfigStepComponent extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        glassSpacingLg,
+        glassSpacingXl,
+        glassSpacingLg,
+        glassSpacingXl,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.filter_alt_off_outlined,
+            size: 40,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: glassSpacingMd),
+          Text(
+            l10n.configSelectionEmptyTitle,
+            textAlign: TextAlign.center,
+            style: textTheme.titleMedium?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: glassSpacingSm),
+          Text(
+            l10n.configSelectionEmptyMessage,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          if (state.selectedPoliceAuthorities.isNotEmpty) ...[
+            const SizedBox(height: glassSpacingLg),
+            TextButton(
+              onPressed: onClearAllFilters,
+              child: Text(l10n.clearAll),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

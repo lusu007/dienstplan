@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/utils/icon_mapper.dart';
 
 class ConfigCard extends StatelessWidget {
@@ -35,7 +34,7 @@ class ConfigCard extends StatelessWidget {
       leadingIcon: icon,
       isSelected: isSelected,
       onTap: onTap,
-      mainColor: AppColors.primary,
+      mainColor: Theme.of(context).colorScheme.primary,
     );
   }
 
@@ -43,6 +42,7 @@ class ConfigCard extends StatelessWidget {
     return Builder(
       builder: (BuildContext context) {
         final ColorScheme scheme = Theme.of(context).colorScheme;
+        final TextStyle? authorityBase = Theme.of(context).textTheme.labelSmall;
         if (config.meta.policeAuthority != null &&
             config.meta.policeAuthority!.isNotEmpty) {
           return Column(
@@ -50,8 +50,7 @@ class ConfigCard extends StatelessWidget {
             children: [
               Text(
                 config.meta.policeAuthority!,
-                style: TextStyle(
-                  fontSize: 12,
+                style: (authorityBase ?? const TextStyle()).copyWith(
                   fontWeight: FontWeight.w500,
                   color: scheme.onSurfaceVariant,
                   letterSpacing: 0.4,

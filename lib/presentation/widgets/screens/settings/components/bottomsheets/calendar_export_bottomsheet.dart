@@ -1,4 +1,3 @@
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -156,7 +155,7 @@ class _CalendarExportBottomsheetState
             children: [
               _CalendarExportActionButtonGroup(
                 enabled: !_isActionBusy,
-                mainColor: AppColors.primary,
+                mainColor: Theme.of(context).colorScheme.primary,
                 segments: [
                   _CalendarExportActionSegment(
                     icon: Icons.ios_share_outlined,

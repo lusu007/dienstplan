@@ -63,7 +63,7 @@ class ErrorDisplay extends ConsumerWidget {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: onRetry,
-                child: Text(retryButtonText ?? l10n.continueButton),
+                child: Text(retryButtonText ?? l10n.tryAgain),
               ),
             ],
           ],
@@ -110,12 +110,14 @@ class CenteredErrorDisplay extends StatelessWidget {
   final Object error;
   final StackTrace? stackTrace;
   final VoidCallback? onRetry;
+  final String? retryButtonText;
 
   const CenteredErrorDisplay({
     super.key,
     required this.error,
     this.stackTrace,
     this.onRetry,
+    this.retryButtonText,
   });
 
   @override
@@ -127,6 +129,7 @@ class CenteredErrorDisplay extends StatelessWidget {
           error: error,
           stackTrace: stackTrace,
           onRetry: onRetry,
+          retryButtonText: retryButtonText,
         ),
       ),
     );

@@ -22,7 +22,7 @@
   },
   "dutySchedule": "My Duty Schedule",
   "@dutySchedule": {
-    "description": "Title for duty schedule"
+    "description": "Deprecated alias for myDutySchedule; kept for backwards compatibility. Use myDutySchedule for new code."
   },
   "myDutySchedule": "My Duty Schedule",
   "@myDutySchedule": {
@@ -389,7 +389,7 @@
   "@exportCalendarIncludeHolidaysDescription": {
     "description": "Description for including holidays in export"
   },
-  "exportCalendarButton": "Continue",
+  "exportCalendarButton": "Export",
   "@exportCalendarButton": {
     "description": "Button label for starting calendar export"
   },
@@ -825,6 +825,14 @@
   "@personalEntryDateLabel": {
     "description": "Label for personal entry date picker"
   },
+  "personalEntryTimeLabel": "Time",
+  "@personalEntryTimeLabel": {
+    "description": "Label for personal entry time range picker"
+  },
+  "personalEntryDeleteTooltip": "Delete entry",
+  "@personalEntryDeleteTooltip": {
+    "description": "Tooltip / accessibility label for the delete icon in the personal entry sheet header"
+  },
   "personalEntryTitleLabel": "Title",
   "@personalEntryTitleLabel": {
     "description": "Label for personal entry title field"
@@ -876,5 +884,37 @@
   "compactListHideOtherDutyGroupsTooltip": "Hide other duty groups",
   "@compactListHideOtherDutyGroupsTooltip": {
     "description": "Tooltip for compact schedule list header toggle to hide other duty groups"
+  },
+  "tryAgain": "Try again",
+  "@tryAgain": {
+    "description": "Recovery action label for error states"
+  },
+  "setupFailedTitle": "Setup couldn't be loaded",
+  "@setupFailedTitle": {
+    "description": "Title for the setup-load failure screen"
+  },
+  "languageLoadFailed": "Couldn't load the language settings.",
+  "@languageLoadFailed": {
+    "description": "Message shown when the language service fails to initialize during setup"
+  },
+  "deletePersonalEntryConfirmationTitle": "Delete entry?",
+  "@deletePersonalEntryConfirmationTitle": {
+    "description": "Title for the confirmation dialog before deleting a personal calendar entry"
+  },
+  "deletePersonalEntryConfirmationMessage": "This entry will be removed from your calendar. This cannot be undone.",
+  "@deletePersonalEntryConfirmationMessage": {
+    "description": "Body for the personal entry delete confirmation dialog"
+  },
+  "configSelectionEmptyTitle": "No duty schedules match your filter",
+  "@configSelectionEmptyTitle": {
+    "description": "Empty state title in the setup config selection step when filters return no results"
+  },
+  "configSelectionEmptyMessage": "Adjust the police authority filter or clear it to see more schedules.",
+  "@configSelectionEmptyMessage": {
+    "description": "Empty state body in the setup config selection step"
+  },
+  "dutyGroupSelectionEmptyMessage": "This duty schedule does not provide any duty groups.",
+  "@dutyGroupSelectionEmptyMessage": {
+    "description": "Empty state message when a config has no duty groups"
   }
 }

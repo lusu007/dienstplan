@@ -36,23 +36,21 @@ class GlassFilterChip extends StatelessWidget {
     final Color textColor = isSelected
         ? colorScheme.primary
         : colorScheme.onSurface;
+    final TextStyle? labelBaseStyle = Theme.of(context).textTheme.labelLarge;
+    final TextStyle labelStyle = (labelBaseStyle ?? const TextStyle()).copyWith(
+      color: textColor,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.3,
+      height: 1.0,
+    );
     final Widget labelRow = Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         if (showCheckmark && isSelected) ...<Widget>[
           Icon(Icons.check_rounded, size: 14, color: textColor),
-          const SizedBox(width: 4),
+          const SizedBox(width: glassSpacingXs),
         ],
-        Text(
-          label,
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
-            letterSpacing: 0.3,
-            height: 1.0,
-          ),
-        ),
+        Text(label, style: labelStyle),
       ],
     );
     final Widget tapChild = LayoutBuilder(

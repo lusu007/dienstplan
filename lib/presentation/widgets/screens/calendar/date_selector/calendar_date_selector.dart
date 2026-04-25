@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
@@ -155,7 +156,8 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withValues(alpha: 0.35),
+      barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
+      clipBehavior: Clip.antiAlias,
       builder: (modalContext) => StatefulBuilder(
         builder: (modalContext, setModalState) {
           return _buildDateSwitcherModal(setModalState);
@@ -209,7 +211,12 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
       animation: _animationController,
       builder: (context, child) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+          padding: const EdgeInsets.fromLTRB(
+            glassSpacingMd,
+            0,
+            glassSpacingMd,
+            glassSpacingMd,
+          ),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final double layoutWidth = constraints.maxWidth;
@@ -221,7 +228,9 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                 child: SlideTransition(
                   position: _slideAnimation,
                   child: GlassDialogSurface(
-                    borderRadius: const BorderRadius.all(Radius.circular(28)),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(glassSurfaceRadiusXl),
+                    ),
                     child: Material(
                       color: Colors.transparent,
                       child: Column(
@@ -298,7 +307,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                                           child: CircularProgressIndicator(),
                                         )),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: glassSpacingMd),
                         ],
                       ),
                     ),
@@ -315,12 +324,17 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   Widget _buildDragHandle() {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      margin: const EdgeInsets.only(top: 10, bottom: 14),
-      width: 44,
-      height: 4,
+      margin: const EdgeInsets.only(
+        top: glassDragHandleTopGap,
+        bottom: glassSpacingMd + 2,
+      ),
+      width: glassDragHandleWidth,
+      height: glassDragHandleHeight,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: isDark ? 0.35 : 0.55),
-        borderRadius: BorderRadius.circular(2),
+        color: Colors.white.withValues(
+          alpha: isDark ? glassDragHandleAlphaDark : glassDragHandleAlphaLight,
+        ),
+        borderRadius: BorderRadius.circular(glassSpacingXs / 2),
       ),
     );
   }

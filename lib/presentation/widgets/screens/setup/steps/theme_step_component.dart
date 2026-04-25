@@ -5,7 +5,6 @@ import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/setup_step_wrapper.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/step_header.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 
 class ThemeStepComponent extends ConsumerWidget {
   final ThemePreference selectedTheme;
@@ -19,7 +18,12 @@ class ThemeStepComponent extends ConsumerWidget {
     required this.scrollController,
   });
 
-  Widget _buildThemeCard(IconData icon, String title, ThemePreference pref) {
+  Widget _buildThemeCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    ThemePreference pref,
+  ) {
     final bool isSelected = selectedTheme == pref;
     return SelectionCard(
       title: title,
@@ -29,7 +33,7 @@ class ThemeStepComponent extends ConsumerWidget {
         final newTheme = selectedTheme == pref ? ThemePreference.system : pref;
         onThemeChanged(newTheme);
       },
-      mainColor: AppColors.primary,
+      mainColor: Theme.of(context).colorScheme.primary,
     );
   }
 
@@ -48,16 +52,19 @@ class ThemeStepComponent extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           _buildThemeCard(
+            context,
             Icons.wb_sunny_outlined,
             l10n.themeModeLight,
             ThemePreference.light,
           ),
           _buildThemeCard(
+            context,
             Icons.nightlight_round,
             l10n.themeModeDark,
             ThemePreference.dark,
           ),
           _buildThemeCard(
+            context,
             Icons.brightness_auto,
             l10n.themeModeSystem,
             ThemePreference.system,

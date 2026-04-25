@@ -576,9 +576,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         );
       case CalendarDayType.outside:
         return BoxDecoration(
-          color: theme.brightness == Brightness.dark
-              ? Colors.grey.shade400.withValues(alpha: 0.8)
-              : theme.colorScheme.outlineVariant.withValues(alpha: 0.7),
+          color: calendarDayBadgeOutsideFillColor(
+            theme.colorScheme,
+            theme.brightness,
+          ),
           borderRadius: BorderRadius.circular(4),
         );
       case CalendarDayType.selected:
@@ -612,22 +613,14 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   }
 
   TextStyle _getBadgeTextStyle(ThemeData theme, Color accentColor) {
-    switch (widget.dayType) {
-      case CalendarDayType.default_:
-      case CalendarDayType.outside:
-      case CalendarDayType.today:
-        return const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        );
-      case CalendarDayType.selected:
-        return const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        );
-    }
+    final TextStyle? base = theme.textTheme.labelSmall;
+    final Color foreground = calendarDayBadgeForegroundColor(accentColor);
+    return (base ?? const TextStyle()).copyWith(
+      fontSize: 10,
+      fontWeight: FontWeight.bold,
+      color: foreground,
+      height: 1.0,
+    );
   }
 }
 

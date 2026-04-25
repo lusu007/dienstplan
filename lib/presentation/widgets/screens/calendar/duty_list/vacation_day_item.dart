@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/school_holiday.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
@@ -230,13 +231,15 @@ class VacationDayItem extends StatelessWidget {
     if (!_isGlass) {
       return BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(glassSurfaceRadiusSm - 4),
         border: Border.all(color: holidayColor, width: 1.5),
       );
     }
     return BoxDecoration(
-      color: Colors.white.withValues(alpha: isDark ? 0.06 : 0.28),
-      borderRadius: BorderRadius.circular(14),
+      color: Colors.white.withValues(
+        alpha: isDark ? glassTintAlphaDark * 0.75 : glassTintAlphaLight,
+      ),
+      borderRadius: BorderRadius.circular(glassSurfaceRadiusSm - 2),
       border: Border.all(color: holidayColor.withValues(alpha: 0.6), width: 1),
     );
   }
@@ -253,9 +256,14 @@ class VacationDayItem extends StatelessWidget {
       );
     }
     return BoxDecoration(
-      color: Colors.white.withValues(alpha: isDark ? 0.08 : 0.35),
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: holidayColor.withValues(alpha: 0.55), width: 1),
+      color: Colors.white.withValues(
+        alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight + 0.07,
+      ),
+      borderRadius: BorderRadius.circular(glassSpacingSm),
+      border: Border.all(
+        color: holidayColor.withValues(alpha: glassBorderAlphaActive),
+        width: 1,
+      ),
     );
   }
 
@@ -263,7 +271,7 @@ class VacationDayItem extends StatelessWidget {
     if (!_isGlass) {
       return isDark ? theme.colorScheme.onSurface : holidayColor;
     }
-    return isDark ? Colors.white : holidayColor;
+    return isDark ? theme.colorScheme.onSurface : holidayColor;
   }
 
   String _getHolidayTypeText(BuildContext context, HolidayType? type) {

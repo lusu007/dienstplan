@@ -34,12 +34,12 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   void _setOrientationBasedOnScreenSize() {
-    final MediaQueryData? mediaQuery = MediaQuery.maybeOf(context);
-    final double screenWidth = mediaQuery?.size.width ?? 0.0;
+    final view = WidgetsBinding.instance.platformDispatcher.views.first;
+    final double screenWidth = view.physicalSize.width / view.devicePixelRatio;
 
     // Use 600dp as the breakpoint between phones and tablets/foldables
     // This follows Material Design guidelines for responsive layouts
-    if (mediaQuery == null || screenWidth < 600) {
+    if (screenWidth < 600) {
       // Phones or unknown: Lock to portrait only
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     } else {
@@ -54,15 +54,13 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   void _configureSystemUI() {
-    // Configure system UI overlay style to handle navigation bar properly
-    // Note: Status bar icon brightness will be handled dynamically by the theme
+    // System bar colors are transparent so the glass backdrop shines through.
+    // Icon brightness is updated dynamically in `build` based on the resolved
+    // theme mode so it stays readable in both light and dark.
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        // Status bar configuration
         statusBarColor: Colors.transparent,
-        // Navigation bar configuration
         systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
         systemNavigationBarDividerColor: Colors.transparent,
       ),
     );
@@ -71,6 +69,29 @@ class _MyAppState extends ConsumerState<MyApp> {
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+  }
+
+  void _applySystemUiBrightnessFor(ThemeMode mode) {
+    final Brightness platformBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final bool isDarkUi = switch (mode) {
+      ThemeMode.dark => true,
+      ThemeMode.light => false,
+      ThemeMode.system => platformBrightness == Brightness.dark,
+    };
+    final Brightness iconBrightness = isDarkUi
+        ? Brightness.light
+        : Brightness.dark;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: iconBrightness,
+        statusBarBrightness: isDarkUi ? Brightness.dark : Brightness.light,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarIconBrightness: iconBrightness,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
     );
   }
 
@@ -118,6 +139,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     final ThemeMode mode = uiThemePref != null
         ? deriveFromPref(uiThemePref)
         : ThemeMode.light;
+    _applySystemUiBrightnessFor(mode);
 
     final Locale locale = localeAsync.maybeWhen(
       data: (l) => l,

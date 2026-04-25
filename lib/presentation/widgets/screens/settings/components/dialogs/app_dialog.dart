@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
 
@@ -15,6 +16,7 @@ class AppDialog {
   }) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final Color accent = mainColor ?? Theme.of(context).colorScheme.primary;
+    final TextStyle? labelBase = Theme.of(context).textTheme.labelLarge;
 
     final List<Widget> mergedActions = <Widget>[
       if (actions != null) ...actions,
@@ -24,11 +26,14 @@ class AppDialog {
           child: TextButton(
             onPressed: () => Navigator.of(context).pop(),
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: glassSpacingMd),
             ),
             child: Text(
               l10n.close,
-              style: TextStyle(color: accent, fontWeight: FontWeight.w600),
+              style: (labelBase ?? const TextStyle()).copyWith(
+                color: accent,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

@@ -22,9 +22,9 @@ class StepIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveActiveColor =
-        activeColor ?? Theme.of(context).colorScheme.primary;
-    final effectiveInactiveColor = inactiveColor ?? Colors.grey.shade300;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final effectiveActiveColor = activeColor ?? colorScheme.primary;
+    final effectiveInactiveColor = inactiveColor ?? colorScheme.outlineVariant;
 
     final widgets = <Widget>[];
 

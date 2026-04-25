@@ -319,7 +319,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fügt konfigurierte Schulferien zum Export hinzu';
 
   @override
-  String get exportCalendarButton => 'Weiter';
+  String get exportCalendarButton => 'Exportieren';
 
   @override
   String get exportCalendarActionShare => 'Teilen';
@@ -632,6 +632,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get personalEntryDateLabel => 'Datum';
 
   @override
+  String get personalEntryTimeLabel => 'Zeit';
+
+  @override
+  String get personalEntryDeleteTooltip => 'Eintrag löschen';
+
+  @override
   String get personalEntryTitleLabel => 'Titel';
 
   @override
@@ -672,4 +678,32 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get compactListHideOtherDutyGroupsTooltip =>
       'Andere Dienstgruppen ausblenden';
+
+  @override
+  String get tryAgain => 'Erneut versuchen';
+
+  @override
+  String get setupFailedTitle => 'Einrichtung konnte nicht geladen werden';
+
+  @override
+  String get languageLoadFailed =>
+      'Spracheinstellungen konnten nicht geladen werden.';
+
+  @override
+  String get deletePersonalEntryConfirmationTitle => 'Eintrag löschen?';
+
+  @override
+  String get deletePersonalEntryConfirmationMessage =>
+      'Der Eintrag wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get configSelectionEmptyTitle => 'Keine Dienstpläne passen zum Filter';
+
+  @override
+  String get configSelectionEmptyMessage =>
+      'Passe den Behördenfilter an oder setze ihn zurück, um mehr Dienstpläne zu sehen.';
+
+  @override
+  String get dutyGroupSelectionEmptyMessage =>
+      'Dieser Dienstplan stellt keine Dienstgruppen bereit.';
 }
