@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/domain/entities/german_state.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
@@ -65,6 +66,7 @@ class SchoolHolidaysSection extends ConsumerWidget {
               trailing: Switch(
                 value: isEnabled,
                 onChanged: (value) {
+                  HapticFeedback.selectionClick();
                   ref
                       .read(schoolHolidaysProvider.notifier)
                       .toggleEnabled(value);
