@@ -4,33 +4,9 @@
   "@settings": {
     "description": "Title for the settings screen"
   },
-  "language": "Sprache",
-  "@language": {
-    "description": "Label for language selection"
-  },
-  "selectLanguage": "Sprache auswählen",
-  "@selectLanguage": {
-    "description": "Title for language selection screen"
-  },
-  "german": "Deutsch",
-  "@german": {
-    "description": "German language option"
-  },
-  "english": "Englisch",
-  "@english": {
-    "description": "English language option"
-  },
-  "dutySchedule": "Mein Dienstplan",
-  "@dutySchedule": {
-    "description": "Title for duty schedule"
-  },
   "myDutySchedule": "Mein Dienstplan",
   "@myDutySchedule": {
     "description": "Title for duty schedule in settings"
-  },
-  "selectDutySchedule": "Dienstplan auswählen",
-  "@selectDutySchedule": {
-    "description": "Title for duty schedule selection screen"
   },
   "save": "Speichern",
   "@save": {
@@ -92,19 +68,6 @@
   "@reset": {
     "description": "Reset button text"
   },
-  "services": "Dienste",
-  "@services": {
-    "description": "Title for services screen"
-  },
-  "servicesOnDate": "am {date}",
-  "@servicesOnDate": {
-    "description": "Services on specific date",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "noServicesForDay": "Keine Dienste für diesen Tag",
   "@noServicesForDay": {
     "description": "Message shown when no services are available for a day"
@@ -129,20 +92,15 @@
   "@disclaimer": {
     "description": "Title for disclaimer option"
   },
-  "@previousPeriod": {
-    "description": "Tooltip for the previous period navigation button"
-  },
-  "previousPeriod": "Vorheriger Zeitraum",
-  "@nextPeriod": {
-    "description": "Tooltip for the next period navigation button"
-  },
-  "nextPeriod": "Nächster Zeitraum",
   "@today": {
     "description": "Tooltip for the today button"
   },
   "today": "Heute",
   "partnerDutyGroup": "Partner Dienstgruppe",
   "partnerDutySchedule": "Partner Dienstplan",
+  "@partnerDutySchedule": {
+    "description": "Abschnittstitel für Partner-Dienstplan-Einstellungen"
+  },
   "@partnerDutyGroup": {
     "description": "Titel für Partner Dienstgruppe Einstellung"
   },
@@ -153,10 +111,6 @@
   "noDutySchedule": "Kein Dienstplan ausgewählt",
   "@noDutySchedule": {
     "description": "Option um keinen Dienstplan zu wählen"
-  },
-  "selectPartnerDutyGroup": "Partner Dienstgruppe auswählen",
-  "@selectPartnerDutyGroup": {
-    "description": "Titel zum Auswählen der Partner Dienstgruppe"
   },
   "selectPartnerDutyScheduleFirst": "Bitte wähle zuerst einen Partner Dienstplan aus",
   "@selectPartnerDutyScheduleFirst": {
@@ -250,10 +204,6 @@
   "@disclaimerLong": {
     "description": "Full disclaimer text for the disclaimer popup"
   },
-  "selectDutyGroup": "Zu welcher Dienstgruppe gehörst du?",
-  "@selectDutyGroup": {
-    "description": "Title for duty group selection step"
-  },
   "selectDutyGroupMessage": "Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.",
   "@selectDutyGroupMessage": {
     "description": "Message for duty group selection step"
@@ -281,10 +231,6 @@
   "noDutyGroup": "Keine Dienstgruppe",
   "@noDutyGroup": {
     "description": "Text for no duty group option in selection dialogs"
-  },
-  "noMyDutyGroupDescription": "Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt",
-  "@noMyDutyGroupDescription": {
-    "description": "Description for no my duty group option"
   },
   "schedule": "Dienstplan",
   "@schedule": {
@@ -342,10 +288,6 @@
   "@privacy": {
     "description": "Title for privacy settings section"
   },
-  "filteredBy": "Gefiltert nach",
-  "@filteredBy": {
-    "description": "Label for filter status text"
-  },
   "all": "Alle",
   "@all": {
     "description": "Label for showing all items (no filter)"
@@ -377,18 +319,6 @@
   "exportCalendarPartnerSummaryPrefix": "Partner",
   "@exportCalendarPartnerSummaryPrefix": {
     "description": "Kurzes Präfix vor Partner-Terminen im ICS-Export (vor dem Doppelpunkt)"
-  },
-  "exportCalendarIncludeHolidays": "Ferien einschließen",
-  "@exportCalendarIncludeHolidays": {
-    "description": "Beschriftung für das Einschließen von Ferien"
-  },
-  "exportCalendarIncludeHolidaysDescription": "Fügt konfigurierte Schulferien zum Export hinzu",
-  "@exportCalendarIncludeHolidaysDescription": {
-    "description": "Beschreibung für das Einschließen von Ferien"
-  },
-  "exportCalendarButton": "Exportieren",
-  "@exportCalendarButton": {
-    "description": "Beschriftung für den Start des Kalenderexports"
   },
   "exportCalendarActionShare": "Teilen",
   "@exportCalendarActionShare": {
@@ -425,10 +355,6 @@
   "exportCalendarActionRowOpen": "In Kalender",
   "@exportCalendarActionRowOpen": {
     "description": "Kurzbeschriftung Kalender öffnen in der Export-Aktionszeile"
-  },
-  "exportCalendarBackButton": "Zurück zur Konfiguration",
-  "@exportCalendarBackButton": {
-    "description": "Button um zur Export-Konfiguration zurückzukehren"
   },
   "exportCalendarShareSuccess": "Kalenderdatei geteilt",
   "@exportCalendarShareSuccess": {
@@ -474,10 +400,6 @@
   "@exportCalendarPartnerUnavailable": {
     "description": "Meldung, wenn der Partnerexport nicht verfügbar ist"
   },
-  "exportCalendarHolidayUnavailable": "Konfiguriere Schulferien, um diese Option zu aktivieren.",
-  "@exportCalendarHolidayUnavailable": {
-    "description": "Meldung, wenn der Ferienexport nicht verfügbar ist"
-  },
   "exportCalendarEmpty": "Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.",
   "@exportCalendarEmpty": {
     "description": "Meldung, wenn keine Kalendereinträge für den Export verfügbar sind"
@@ -485,16 +407,6 @@
   "exportCalendarError": "Kalenderexport fehlgeschlagen.",
   "@exportCalendarError": {
     "description": "Meldung, wenn der Kalenderexport fehlschlägt"
-  },
-  "exportCalendarSuccess": "{entryCount} Kalendereinträge exportiert",
-  "@exportCalendarSuccess": {
-    "description": "Meldung, wenn der Kalenderexport erfolgreich ist",
-    "placeholders": {
-      "entryCount": {
-        "type": "int",
-        "example": "42"
-      }
-    }
   },
   "shareApp": "App weiterempfehlen",
   "@shareApp": {
@@ -550,18 +462,6 @@
   "@genericNotFoundError": {
     "description": "Allgemeine Nicht-gefunden-Fehlermeldung"
   },
-  "genericConflictError": "Ein Konflikt ist aufgetreten",
-  "@genericConflictError": {
-    "description": "Allgemeine Konflikt-Fehlermeldung"
-  },
-  "genericUnauthorizedError": "Du bist nicht autorisiert",
-  "@genericUnauthorizedError": {
-    "description": "Allgemeine Nicht autorisiert-Fehlermeldung"
-  },
-  "genericForbiddenError": "Zugriff verweigert",
-  "@genericForbiddenError": {
-    "description": "Allgemeine Verboten-Fehlermeldung"
-  },
   "genericNetworkError": "Netzwerkfehler. Bitte überprüfe deine Verbindung.",
   "@genericNetworkError": {
     "description": "Allgemeine Netzwerk-Fehlermeldung"
@@ -577,10 +477,6 @@
   "genericSerializationError": "Fehler bei der Datenverarbeitung",
   "@genericSerializationError": {
     "description": "Allgemeine Serialisierungs-Fehlermeldung"
-  },
-  "genericCancellationError": "Der Vorgang wurde abgebrochen",
-  "@genericCancellationError": {
-    "description": "Allgemeine Abbruch-Fehlermeldung"
   },
   "genericUnknownError": "Ein unbekannter Fehler ist aufgetreten",
   "@genericUnknownError": {
@@ -609,22 +505,6 @@
   "skipPartnerSetup": "Überspringen",
   "@skipPartnerSetup": {
     "description": "Skip button for optional partner setup"
-  },
-  "selectPartnerConfig": "Partner Dienstplan auswählen",
-  "@selectPartnerConfig": {
-    "description": "Title for partner config selection"
-  },
-  "selectPartnerConfigMessage": "Wähle den Dienstplan deines Partners aus.",
-  "@selectPartnerConfigMessage": {
-    "description": "Message for partner config selection"
-  },
-  "noPartnerConfig": "Kein Partner Dienstplan",
-  "@noPartnerConfig": {
-    "description": "Option to not set a partner config"
-  },
-  "noPartnerConfigDescription": "Es wird kein Partner Dienstplan angezeigt",
-  "@noPartnerConfigDescription": {
-    "description": "Description for no partner config option"
   },
   "selectPartnerDutyGroupMessage": "Wähle die Dienstgruppe deines Partners aus.",
   "@selectPartnerDutyGroupMessage": {
@@ -776,10 +656,6 @@
   "@movableHoliday": {
     "description": "Label for movable holidays"
   },
-  "holidayTypesInfo": "Zeigt Schulferien und gesetzliche Feiertage an",
-  "@holidayTypesInfo": {
-    "description": "Information about what types of holidays are displayed"
-  },
   "addPersonalEntryTooltip": "Eigenen Termin oder Dienst eintragen",
   "@addPersonalEntryTooltip": {
     "description": "Tooltip for adding a personal calendar entry"
@@ -822,14 +698,6 @@
   "@personalEntryDateLabel": {
     "description": "Label for personal entry date picker"
   },
-  "personalEntryTimeLabel": "Zeit",
-  "@personalEntryTimeLabel": {
-    "description": "Label for personal entry time range picker"
-  },
-  "personalEntryDeleteTooltip": "Eintrag löschen",
-  "@personalEntryDeleteTooltip": {
-    "description": "Tooltip / accessibility label for the delete icon in the personal entry sheet header"
-  },
   "personalEntryTitleLabel": "Titel",
   "@personalEntryTitleLabel": {
     "description": "Label for personal entry title field"
@@ -845,10 +713,6 @@
   "personalEntryStartTime": "Beginn",
   "@personalEntryStartTime": {
     "description": "Label for start time"
-  },
-  "personalEntryEndTime": "Ende",
-  "@personalEntryEndTime": {
-    "description": "Label for end time"
   },
   "personalEntrySaved": "Eintrag gespeichert",
   "@personalEntrySaved": {
@@ -889,10 +753,6 @@
   "setupFailedTitle": "Einrichtung konnte nicht geladen werden",
   "@setupFailedTitle": {
     "description": "Title for the setup-load failure screen"
-  },
-  "languageLoadFailed": "Spracheinstellungen konnten nicht geladen werden.",
-  "@languageLoadFailed": {
-    "description": "Message shown when the language service fails to initialize during setup"
   },
   "deletePersonalEntryConfirmationTitle": "Eintrag löschen?",
   "@deletePersonalEntryConfirmationTitle": {

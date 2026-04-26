@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
-import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/data/services/language_service.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/step_indicator.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
-import 'package:dienstplan/presentation/widgets/screens/setup/language_selector_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/setup_back_button.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 // Step components
@@ -221,7 +218,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   @override
   Widget build(BuildContext context) {
     final setupAsync = ref.watch(setupProvider);
-    final languageAsync = ref.watch(languageServiceProvider);
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -239,22 +235,9 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                 });
               }
 
-              return languageAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => _buildLanguageErrorState(context),
-                data: (languageService) => SafeArea(
-                  bottom: false,
-                  child: ListenableBuilder(
-                    listenable: languageService,
-                    builder: (context, child) {
-                      return _buildSetupLayout(
-                        context: context,
-                        state: setupState,
-                        languageService: languageService,
-                      );
-                    },
-                  ),
-                ),
+              return SafeArea(
+                bottom: false,
+                child: _buildSetupLayout(context: context, state: setupState),
               );
             },
           ),
@@ -266,7 +249,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   Widget _buildSetupLayout({
     required BuildContext context,
     required SetupUiState state,
-    required LanguageService languageService,
   }) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return Padding(
@@ -279,7 +261,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildHeader(state: state, languageService: languageService),
+          _buildHeader(),
           const SizedBox(height: glassSpacingMd),
           StepIndicator(
             currentStep: state.currentStep,
@@ -300,10 +282,7 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     );
   }
 
-  Widget _buildHeader({
-    required SetupUiState state,
-    required LanguageService languageService,
-  }) {
+  Widget _buildHeader() {
     final Color foreground = Theme.of(context).colorScheme.onSurface;
     final TextStyle? titleStyle = Theme.of(context).textTheme.titleLarge;
     return Row(
@@ -317,12 +296,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             letterSpacing: 0.2,
             height: 1.0,
           ),
-        ),
-        const Spacer(),
-        LanguageSelectorButton(
-          languageService: languageService,
-          disabled: state.isGeneratingSchedules,
-          onLanguageChanged: null,
         ),
       ],
     );
@@ -355,39 +328,6 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             ActionButton(
               text: l10n.tryAgain,
               onPressed: () => ref.read(setupProvider.notifier).retryLoading(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLanguageErrorState(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(glassSpacingXl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.error_outline_rounded,
-              size: 48,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(height: glassSpacingLg),
-            Text(
-              l10n.languageLoadFailed,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: glassSpacingLg),
-            ActionButton(
-              text: l10n.tryAgain,
-              onPressed: () => ref.invalidate(languageServiceProvider),
             ),
           ],
         ),

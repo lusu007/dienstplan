@@ -4,9 +4,7 @@ import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
-import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/language_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/theme_mode_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/reset_bottomsheet.dart';
 import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
@@ -17,7 +15,6 @@ class AppSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final languageService = ref.watch(languageServiceProvider).value;
     final settingsState = ref.watch(settingsProvider);
 
     // Use settings preference directly, fallback to light mode
@@ -27,15 +24,6 @@ class AppSection extends ConsumerWidget {
     return SettingsSection(
       title: l10n.app,
       cards: [
-        NavigationCard(
-          icon: Icons.language_outlined,
-          title: l10n.language,
-          subtitle:
-              (languageService?.currentLocale.languageCode ?? 'de') == 'de'
-              ? l10n.german
-              : l10n.english,
-          onTap: () => LanguageBottomsheet.show(context),
-        ),
         NavigationCard(
           icon: Icons.color_lens_outlined,
           title: l10n.themeMode,

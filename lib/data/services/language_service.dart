@@ -10,26 +10,21 @@ class LanguageService extends ChangeNotifier {
 
   Locale get currentLocale => _currentLocale;
 
-  List<Locale> get supportedLocales => const [Locale('de'), Locale('en')];
+  List<Locale> get supportedLocales => const <Locale>[Locale('de')];
 
   Future<void> initialize() async {
     _prefs = await SharedPreferences.getInstance();
-    final savedLanguage = _prefs.getString(_languageKey);
-    if (savedLanguage != null) {
-      _currentLocale = Locale(savedLanguage);
-      notifyListeners();
+    final String? savedLanguage = _prefs.getString(_languageKey);
+    if (savedLanguage == null) {
+      return;
     }
-  }
-
-  Future<void> setLanguage(String languageCode) async {
-    _currentLocale = Locale(languageCode);
-    await _prefs.setString(_languageKey, languageCode);
-    notifyListeners();
-  }
-
-  Future<void> setLocale(Locale locale) async {
-    _currentLocale = locale;
-    await _prefs.setString(_languageKey, locale.languageCode);
+    if (savedLanguage != kDefaultLanguageCode) {
+      _currentLocale = const Locale(kDefaultLanguageCode);
+      await _prefs.setString(_languageKey, kDefaultLanguageCode);
+      notifyListeners();
+      return;
+    }
+    _currentLocale = Locale(savedLanguage);
     notifyListeners();
   }
 

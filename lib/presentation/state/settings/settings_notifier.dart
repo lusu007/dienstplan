@@ -93,16 +93,6 @@ class SettingsNotifier extends _$SettingsNotifier {
     }
   }
 
-  Future<void> setLanguage(String language) async {
-    final current = state.value ?? SettingsUiState.initial();
-    state = AsyncData(current.copyWith(language: language));
-    await _upsertPersisted(
-      (Settings? c) => c != null
-          ? c.copyWith(language: language)
-          : Settings.withDefaults(language: language),
-    );
-  }
-
   Future<void> setThemePreference(ThemePreference preference) async {
     final current = state.value ?? SettingsUiState.initial();
     state = AsyncData(current.copyWith(themePreference: preference));

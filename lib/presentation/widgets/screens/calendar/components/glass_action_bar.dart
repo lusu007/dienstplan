@@ -150,12 +150,8 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
 
   /// Compact date for the action-bar hint (keeps string short).
   static String _formatQuickHintDate(BuildContext context, DateTime day) {
-    final Locale locale = Localizations.localeOf(context);
-    final String loc = locale.toString();
-    if (locale.languageCode == 'de') {
-      return DateFormat('d.M.', loc).format(day);
-    }
-    return DateFormat.Md(loc).format(day);
+    final String loc = Localizations.localeOf(context).toString();
+    return DateFormat('d.M.', loc).format(day);
   }
 }
 

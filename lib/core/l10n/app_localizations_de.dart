@@ -12,25 +12,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings => 'Einstellungen';
 
   @override
-  String get language => 'Sprache';
-
-  @override
-  String get selectLanguage => 'Sprache auswählen';
-
-  @override
-  String get german => 'Deutsch';
-
-  @override
-  String get english => 'Englisch';
-
-  @override
-  String get dutySchedule => 'Mein Dienstplan';
-
-  @override
   String get myDutySchedule => 'Mein Dienstplan';
-
-  @override
-  String get selectDutySchedule => 'Dienstplan auswählen';
 
   @override
   String get save => 'Speichern';
@@ -80,14 +62,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get reset => 'Zurücksetzen';
 
   @override
-  String get services => 'Dienste';
-
-  @override
-  String servicesOnDate(String date) {
-    return 'am $date';
-  }
-
-  @override
   String get noServicesForDay => 'Keine Dienste für diesen Tag';
 
   @override
@@ -104,10 +78,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get version => 'Version';
 
   @override
-  String get previousPeriod => 'Vorheriger Zeitraum';
-
-  @override
-  String get nextPeriod => 'Nächster Zeitraum';
+  String get disclaimer => 'Haftungsausschluss';
 
   @override
   String get today => 'Heute';
@@ -120,6 +91,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noPartnerGroup => 'Keine Partner-Dienstgruppe ausgewählt';
+
+  @override
+  String get noDutySchedule => 'Kein Dienstplan ausgewählt';
+
+  @override
+  String get selectPartnerDutyScheduleFirst =>
+      'Bitte wähle zuerst einen Partner Dienstplan aus';
+
+  @override
+  String get selectMyDutyScheduleFirst =>
+      'Bitte wähle zuerst einen Dienstplan aus';
+
+  @override
+  String get errorClearingActiveConfig =>
+      'Fehler beim Löschen des aktiven Dienstplans';
+
+  @override
+  String get errorSettingActiveConfig =>
+      'Fehler beim Setzen des aktiven Dienstplans';
 
   @override
   String get accentColor => 'Partner Akzentfarbe';
@@ -158,28 +148,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get holidayAccentColor => 'Ferien-Akzentfarbe';
 
   @override
-  String get noDutySchedule => 'Kein Dienstplan ausgewählt';
-
-  @override
-  String get selectPartnerDutyGroup => 'Partner Dienstgruppe auswählen';
-
-  @override
-  String get selectPartnerDutyScheduleFirst =>
-      'Bitte wähle zuerst einen Partner Dienstplan aus';
-
-  @override
-  String get selectMyDutyScheduleFirst =>
-      'Bitte wähle zuerst einen Dienstplan aus';
-
-  @override
-  String get errorClearingActiveConfig =>
-      'Fehler beim Löschen des aktiven Dienstplans';
-
-  @override
-  String get errorSettingActiveConfig =>
-      'Fehler beim Setzen des aktiven Dienstplans';
-
-  @override
   String get about => 'Über';
 
   @override
@@ -205,9 +173,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Anwendung ist kein offizielles Produkt einer Behörde oder Regierungseinrichtung. Die Dienstplan App wurde unabhängig entwickelt und steht in keiner offiziellen Verbindung zur Polizei oder anderen staatlichen Stellen.\n\nDie in dieser Anwendung verwendeten Daten stammen aus öffentlich zugänglichen Informationsmaterialien der Polizeigewerkschaften GdP (Gewerkschaft der Polizei) und DPolG (Deutsche Polizeigewerkschaft). Es wurden ausschließlich öffentlich verfügbare Informationen verwendet. Keine behördeninternen oder vertraulichen Daten wurden unbefugt veröffentlicht oder verarbeitet.\n\nDiese Anwendung dient ausschließlich der privaten Nutzung und erhebt keinen Anspruch auf Vollständigkeit oder Richtigkeit der bereitgestellten Informationen.';
 
   @override
-  String get selectDutyGroup => 'Zu welcher Dienstgruppe gehörst du?';
-
-  @override
   String get selectDutyGroupMessage =>
       'Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.';
 
@@ -229,10 +194,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get noDutyGroup => 'Keine Dienstgruppe';
-
-  @override
-  String get noMyDutyGroupDescription =>
-      'Es werden keine Dienstgruppen-Abkürzungen im Kalender angezeigt';
 
   @override
   String get schedule => 'Dienstplan';
@@ -263,9 +224,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
-  String get disclaimer => 'Haftungsausschluss';
-
-  @override
   String get sentryAnalytics => 'Analysen & Fehlerberichte';
 
   @override
@@ -281,9 +239,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacy => 'Datenschutz';
-
-  @override
-  String get filteredBy => 'Gefiltert nach';
 
   @override
   String get all => 'Alle';
@@ -310,16 +265,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportCalendarPartnerSummaryPrefix => 'Partner';
-
-  @override
-  String get exportCalendarIncludeHolidays => 'Ferien einschließen';
-
-  @override
-  String get exportCalendarIncludeHolidaysDescription =>
-      'Fügt konfigurierte Schulferien zum Export hinzu';
-
-  @override
-  String get exportCalendarButton => 'Exportieren';
 
   @override
   String get exportCalendarActionShare => 'Teilen';
@@ -349,9 +294,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportCalendarActionRowOpen => 'In Kalender';
-
-  @override
-  String get exportCalendarBackButton => 'Zurück zur Konfiguration';
 
   @override
   String get exportCalendarShareSuccess => 'Kalenderdatei geteilt';
@@ -392,20 +334,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Konfiguriere einen Partnerdienstplan und eine Dienstgruppe, um diese Option zu aktivieren.';
 
   @override
-  String get exportCalendarHolidayUnavailable =>
-      'Konfiguriere Schulferien, um diese Option zu aktivieren.';
-
-  @override
   String get exportCalendarEmpty =>
       'Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.';
 
   @override
   String get exportCalendarError => 'Kalenderexport fehlgeschlagen.';
-
-  @override
-  String exportCalendarSuccess(int entryCount) {
-    return '$entryCount Kalendereinträge exportiert';
-  }
 
   @override
   String get shareApp => 'App weiterempfehlen';
@@ -445,15 +378,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das angeforderte Element wurde nicht gefunden';
 
   @override
-  String get genericConflictError => 'Ein Konflikt ist aufgetreten';
-
-  @override
-  String get genericUnauthorizedError => 'Du bist nicht autorisiert';
-
-  @override
-  String get genericForbiddenError => 'Zugriff verweigert';
-
-  @override
   String get genericNetworkError =>
       'Netzwerkfehler. Bitte überprüfe deine Verbindung.';
 
@@ -465,9 +389,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get genericSerializationError => 'Fehler bei der Datenverarbeitung';
-
-  @override
-  String get genericCancellationError => 'Der Vorgang wurde abgebrochen';
 
   @override
   String get genericUnknownError => 'Ein unbekannter Fehler ist aufgetreten';
@@ -490,20 +411,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get skipPartnerSetup => 'Überspringen';
-
-  @override
-  String get selectPartnerConfig => 'Partner Dienstplan auswählen';
-
-  @override
-  String get selectPartnerConfigMessage =>
-      'Wähle den Dienstplan deines Partners aus.';
-
-  @override
-  String get noPartnerConfig => 'Kein Partner Dienstplan';
-
-  @override
-  String get noPartnerConfigDescription =>
-      'Es wird kein Partner Dienstplan angezeigt';
 
   @override
   String get selectPartnerDutyGroupMessage =>
@@ -600,10 +507,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get movableHoliday => 'Beweglich';
 
   @override
-  String get holidayTypesInfo =>
-      'Zeigt Schulferien und gesetzliche Feiertage an';
-
-  @override
   String get addPersonalEntryTooltip => 'Eigenen Termin oder Dienst eintragen';
 
   @override
@@ -632,12 +535,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get personalEntryDateLabel => 'Datum';
 
   @override
-  String get personalEntryTimeLabel => 'Zeit';
-
-  @override
-  String get personalEntryDeleteTooltip => 'Eintrag löschen';
-
-  @override
   String get personalEntryTitleLabel => 'Titel';
 
   @override
@@ -648,9 +545,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get personalEntryStartTime => 'Beginn';
-
-  @override
-  String get personalEntryEndTime => 'Ende';
 
   @override
   String get personalEntrySaved => 'Eintrag gespeichert';
@@ -684,10 +578,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get setupFailedTitle => 'Einrichtung konnte nicht geladen werden';
-
-  @override
-  String get languageLoadFailed =>
-      'Spracheinstellungen konnten nicht geladen werden.';
 
   @override
   String get deletePersonalEntryConfirmationTitle => 'Eintrag löschen?';
