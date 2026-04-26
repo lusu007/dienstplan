@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/dialogs/app_dialog.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/dialogs/app_license_page.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
@@ -133,12 +133,12 @@ class AboutScreen extends StatelessWidget {
         NavigationCard(
           icon: Icons.warning_outlined,
           title: l10n.disclaimer,
-          onTap: () => _showDisclaimerDialog(context),
+          onTap: () => context.router.push(const DisclaimerRoute()),
         ),
         NavigationCard(
           icon: Icons.privacy_tip_outlined,
           title: l10n.privacyPolicy,
-          onTap: () => _openPrivacyPolicy(),
+          onTap: () => context.router.push(const PrivacyPolicyRoute()),
         ),
         NavigationCard(
           icon: Icons.description_outlined,
@@ -149,30 +149,12 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  void _showDisclaimerDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    AppDialog.show(
-      context: context,
-      title: l10n.disclaimer,
-      content: SingleChildScrollView(child: Text(l10n.disclaimerLong)),
-      showCloseButton: true,
-    );
-  }
-
   Future<void> _openMehrSchulferien() async {
     final Uri mehrSchulferienUri = Uri.parse(
       'https://www.mehr-schulferien.de/',
     );
     if (await canLaunchUrl(mehrSchulferienUri)) {
       await launchUrl(mehrSchulferienUri, mode: LaunchMode.externalApplication);
-    }
-  }
-
-  Future<void> _openPrivacyPolicy() async {
-    final Uri privacyPolicyUri = Uri.parse(AppInfo.privacyPolicyUrl);
-    if (await canLaunchUrl(privacyPolicyUri)) {
-      await launchUrl(privacyPolicyUri, mode: LaunchMode.externalApplication);
     }
   }
 

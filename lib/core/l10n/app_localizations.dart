@@ -496,6 +496,12 @@ abstract class AppLocalizations {
   /// **'Datenschutzerklärung'**
   String get privacyPolicy;
 
+  /// Shown when the bundled privacy policy asset fails to load
+  ///
+  /// In de, this message translates to:
+  /// **'Die Datenschutzerklärung konnte nicht geladen werden.'**
+  String get privacyPolicyLoadError;
+
   /// Title for Sentry analytics and error reporting setting
   ///
   /// In de, this message translates to:

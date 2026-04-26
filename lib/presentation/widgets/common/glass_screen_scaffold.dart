@@ -18,11 +18,15 @@ class GlassScreenScaffold extends StatelessWidget {
   final Widget child;
   final List<Widget>? actions;
 
+  /// When false, skips [ScrollFadeMask] (use for platform views like WebView).
+  final bool fadeScrollEdges;
+
   const GlassScreenScaffold({
     super.key,
     required this.title,
     required this.child,
     this.actions,
+    this.fadeScrollEdges = true,
   });
 
   @override
@@ -38,7 +42,9 @@ class GlassScreenScaffold extends StatelessWidget {
             child: Column(
               children: [
                 _GlassScreenHeader(title: title, actions: actions),
-                Expanded(child: ScrollFadeMask(child: child)),
+                Expanded(
+                  child: fadeScrollEdges ? ScrollFadeMask(child: child) : child,
+                ),
               ],
             ),
           ),
