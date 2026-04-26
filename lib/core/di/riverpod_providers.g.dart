@@ -411,6 +411,45 @@ final class LanguageServiceProvider
 
 String _$languageServiceHash() => r'7a5e6d1f64f2dcbbed73ac955594882881122816';
 
+@ProviderFor(whatsNewService)
+final whatsNewServiceProvider = WhatsNewServiceProvider._();
+
+final class WhatsNewServiceProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<WhatsNewService>,
+          WhatsNewService,
+          FutureOr<WhatsNewService>
+        >
+    with $FutureModifier<WhatsNewService>, $FutureProvider<WhatsNewService> {
+  WhatsNewServiceProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'whatsNewServiceProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$whatsNewServiceHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<WhatsNewService> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<WhatsNewService> create(Ref ref) {
+    return whatsNewService(ref);
+  }
+}
+
+String _$whatsNewServiceHash() => r'2ef193a10aa7e6a063070d03021f4a52effc0692';
+
 @ProviderFor(currentLocale)
 final currentLocaleProvider = CurrentLocaleProvider._();
 
@@ -521,7 +560,7 @@ final class AppThemeProvider
   }
 }
 
-String _$appThemeHash() => r'32bad8c955db567b9b4dbe43a582f096d7cdf08b';
+String _$appThemeHash() => r'796f40e6af9d0ea6c9054183ec060ac3ef1b07dc';
 
 @ProviderFor(appDarkTheme)
 final appDarkThemeProvider = AppDarkThemeProvider._();
@@ -562,7 +601,7 @@ final class AppDarkThemeProvider
   }
 }
 
-String _$appDarkThemeHash() => r'4c7f053c9105ec7b14949c2c6e7286006bdf7bd5';
+String _$appDarkThemeHash() => r'7acd3fc10bbf243fa900bb5c04d7eab72192e455';
 
 @ProviderFor(sentryService)
 final sentryServiceProvider = SentryServiceProvider._();

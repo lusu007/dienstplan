@@ -9,6 +9,7 @@ import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/presentation/widgets/common/error_display.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/safe_area_wrapper.dart';
+import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
 
 @RoutePage(name: 'AppInitializerRoute')
 class AppInitializerWidget extends ConsumerStatefulWidget {
@@ -31,7 +32,9 @@ class _AppInitializerWidgetState extends ConsumerState<AppInitializerWidget> {
             (state.activeConfigName != null &&
             state.activeConfigName!.isNotEmpty);
         AppLogger.i('Setup completed: $isSetupCompleted');
-        return isSetupCompleted ? const CalendarScreen() : const SetupScreen();
+        return isSetupCompleted
+            ? const WhatsNewHost(child: CalendarScreen())
+            : const SetupScreen();
       },
       loading: () {
         return const SetupScreen();

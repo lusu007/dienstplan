@@ -15,6 +15,7 @@ import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/data/services/share_service.dart';
 import 'package:dienstplan/data/services/notification_service.dart';
 import 'package:dienstplan/data/services/calendar_export_service.dart';
+import 'package:dienstplan/data/services/whats_new_service.dart';
 
 // DAOs
 import 'package:dienstplan/data/daos/schedules_dao.dart';
@@ -148,6 +149,12 @@ Future<LanguageService> languageService(Ref ref) async {
   return service;
 }
 
+@Riverpod(keepAlive: true)
+Future<WhatsNewService> whatsNewService(Ref ref) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return WhatsNewService(prefs);
+}
+
 // UI/Locale/Theme providers
 @riverpod
 Stream<Locale> currentLocale(Ref ref) async* {
@@ -207,6 +214,14 @@ ThemeData appTheme(Ref ref) {
       ),
       iconTheme: IconThemeData(color: Colors.white),
     ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: lightScheme.primary,
+        foregroundColor: AppColors.white,
+        disabledBackgroundColor: lightScheme.onSurface.withValues(alpha: 0.12),
+        disabledForegroundColor: lightScheme.onSurface.withValues(alpha: 0.38),
+      ),
+    ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: Colors.white.withValues(alpha: 0.38),
       contentTextStyle: TextStyle(color: lightScheme.onSurface),
@@ -264,6 +279,14 @@ ThemeData appDarkTheme(Ref ref) {
         fontSize: 20,
       ),
       iconTheme: IconThemeData(color: Colors.white),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: darkScheme.primary,
+        foregroundColor: AppColors.white,
+        disabledBackgroundColor: darkScheme.onSurface.withValues(alpha: 0.12),
+        disabledForegroundColor: darkScheme.onSurface.withValues(alpha: 0.38),
+      ),
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: Colors.white.withValues(alpha: 0.38),

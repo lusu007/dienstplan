@@ -21,6 +21,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_form_expand_tile.dart';
 import 'package:intl/intl.dart';
 
 const double _kTimeWheelItemExtent = 36;
@@ -436,7 +437,7 @@ class _PersonalCalendarEntrySheetState
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                _SectionEyebrow(
+                GlassFormSectionEyebrow(
                   text: l10n.personalEntryTitleLabel,
                   enabled: true,
                 ),
@@ -565,7 +566,7 @@ class _PersonalCalendarEntrySheetState
                   },
                 ),
                 const SizedBox(height: glassSpacingMd),
-                _SectionEyebrow(
+                GlassFormSectionEyebrow(
                   text: l10n.personalEntryNotesLabel,
                   enabled: true,
                 ),
@@ -780,18 +781,18 @@ class _InlineDateTimeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _SectionEyebrow(text: dateLabel, enabled: true),
+        GlassFormSectionEyebrow(text: dateLabel, enabled: true),
         const SizedBox(height: glassSpacingXs),
-        _InlineExpandTile(
+        GlassInlineExpandTile(
           icon: Icons.calendar_today_rounded,
           label: _formatDate(context, draft.date),
           isExpanded: isDatePickerExpanded,
           onTap: onToggleDatePicker,
         ),
         const SizedBox(height: glassSpacingMd),
-        _SectionEyebrow(text: timeLabel, enabled: isTimeEnabled),
+        GlassFormSectionEyebrow(text: timeLabel, enabled: isTimeEnabled),
         const SizedBox(height: glassSpacingXs),
-        _InlineExpandTile(
+        GlassInlineExpandTile(
           icon: Icons.schedule_rounded,
           label:
               '${_formatTime(context, startTime)} - ${_formatTime(context, endTime)}',
@@ -841,84 +842,6 @@ class _InlineDateTimeSection extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _SectionEyebrow extends StatelessWidget {
-  final String text;
-  final bool enabled;
-
-  const _SectionEyebrow({required this.text, required this.enabled});
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Text(
-      text,
-      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-        color: colorScheme.onSurfaceVariant.withValues(
-          alpha: enabled ? 1.0 : 0.5,
-        ),
-        fontWeight: FontWeight.w600,
-        letterSpacing: 1.2,
-      ),
-    );
-  }
-}
-
-class _InlineExpandTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isExpanded;
-  final bool enabled;
-  final VoidCallback onTap;
-
-  const _InlineExpandTile({
-    required this.icon,
-    required this.label,
-    required this.isExpanded,
-    this.enabled = true,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final Color foreground = colorScheme.onSurface.withValues(
-      alpha: enabled ? 1.0 : 0.5,
-    );
-    final Color trailing = colorScheme.onSurfaceVariant.withValues(
-      alpha: enabled ? 1.0 : 0.5,
-    );
-    return GlassCard(
-      onTap: onTap,
-      enabled: enabled,
-      padding: const EdgeInsets.symmetric(
-        horizontal: glassSpacingMd,
-        vertical: glassSpacingMd,
-      ),
-      child: Row(
-        children: <Widget>[
-          Icon(icon, size: 20, color: trailing),
-          const SizedBox(width: glassSpacingMd),
-          Expanded(
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          Icon(
-            enabled && isExpanded
-                ? Icons.keyboard_arrow_up_rounded
-                : Icons.keyboard_arrow_down_rounded,
-            color: trailing,
-          ),
-        ],
-      ),
     );
   }
 }

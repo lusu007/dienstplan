@@ -13,6 +13,7 @@ import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
+import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -82,6 +83,16 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                     _buildInfoRow(
                       'Full Version',
                       '${_packageInfo?.version ?? 'N/A'}+${_packageInfo?.buildNumber ?? 'N/A'}',
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          showWhatsNewDialog(context);
+                        },
+                        child: const Text('Preview what\'s new dialog'),
+                      ),
                     ),
                   ]),
                   const SizedBox(height: 24),
