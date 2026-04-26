@@ -7,6 +7,7 @@ import 'package:dienstplan/core/config/sentry_config.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/calendar/calendar_split_layout_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
@@ -30,6 +31,9 @@ class AppInitializer {
     // Warm critical services
     await container.read(sentryServiceProvider.future);
     await container.read(languageServiceProvider.future);
+    await container
+        .read(calendarSplitLayoutProvider.notifier)
+        .hydrateFromPrefs();
     // Pre-warm settings to avoid theme flash on startup
     await container.read(settingsProvider.future);
     // Conditionally pre-warm school holidays using domain settings
