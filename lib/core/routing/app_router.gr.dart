@@ -75,6 +75,38 @@ class DebugRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [DisclaimerScreen]
+class DisclaimerRoute extends PageRouteInfo<void> {
+  const DisclaimerRoute({List<PageRouteInfo>? children})
+    : super(DisclaimerRoute.name, initialChildren: children);
+
+  static const String name = 'DisclaimerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const DisclaimerScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [PrivacyPolicyScreen]
+class PrivacyPolicyRoute extends PageRouteInfo<void> {
+  const PrivacyPolicyRoute({List<PageRouteInfo>? children})
+    : super(PrivacyPolicyRoute.name, initialChildren: children);
+
+  static const String name = 'PrivacyPolicyRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PrivacyPolicyScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})

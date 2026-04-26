@@ -3,6 +3,8 @@ import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
 import 'package:dienstplan/presentation/screens/calendar_screen.dart';
 import 'package:dienstplan/presentation/screens/settings_screen.dart';
 import 'package:dienstplan/presentation/screens/about_screen.dart';
+import 'package:dienstplan/presentation/screens/privacy_policy_screen.dart';
+import 'package:dienstplan/presentation/screens/disclaimer_screen.dart';
 import 'package:dienstplan/presentation/screens/debug_screen.dart';
 import 'package:dienstplan/presentation/screens/setup_screen.dart';
 
@@ -18,6 +20,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CalendarRoute.page, path: '/calendar'),
     AutoRoute(page: SettingsRoute.page, path: '/settings'),
     AutoRoute(page: AboutRoute.page, path: '/about'),
+    AutoRoute(page: PrivacyPolicyRoute.page, path: '/privacy'),
+    AutoRoute(page: DisclaimerRoute.page, path: '/disclaimer'),
     AutoRoute(page: DebugRoute.page, path: '/debug'),
     AutoRoute(page: SetupRoute.page, path: '/setup'),
   ];

@@ -58,6 +58,7 @@ dependencies:
   dart_flutter_version: ^1.0.36
   file_saver: ^0.3.1
   open_file: ^3.5.11
+  flutter_markdown: ^0.7.7+1
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,7 @@ flutter:
   assets:
     - assets/schedules/
     - assets/images/
+    - assets/legal/datenschutz.md
 
   generate: true
 

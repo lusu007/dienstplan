@@ -225,6 +225,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacyPolicy => 'Datenschutzerklärung';
 
   @override
+  String get privacyPolicyLoadError =>
+      'Die Datenschutzerklärung konnte nicht geladen werden.';
+
+  @override
   String get sentryAnalytics => 'Analysen & Fehlerberichte';
 
   @override
