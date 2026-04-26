@@ -7,6 +7,7 @@ import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dar
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/theme_mode_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/reset_bottomsheet.dart';
+import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
 import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
 
 class AppSection extends ConsumerWidget {
@@ -30,6 +31,12 @@ class AppSection extends ConsumerWidget {
           subtitle: _themeSubtitle(l10n, effectivePref),
           trailing: _buildThemeIndicator(context, effectivePref),
           onTap: () => ThemeModeBottomsheet.show(context, ref),
+        ),
+        NavigationCard(
+          icon: Icons.new_releases_outlined,
+          title: l10n.settingsWhatsNewShowAgain,
+          subtitle: l10n.settingsWhatsNewShowAgainSubtitle,
+          onTap: () => showWhatsNewDialog(context),
         ),
         NavigationCard(
           icon: Icons.delete_forever_outlined,

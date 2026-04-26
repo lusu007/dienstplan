@@ -56,7 +56,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Möchtest du wirklich die App zurücksetzen? Dies kann nicht rückgängig gemacht werden.';
 
   @override
-  String get resetDataSuccess => 'App wurde erfolgreich zurückgesetzt';
+  String get resetDataSuccess =>
+      'Zurücksetzen hat geklappt. Du kannst die App neu einrichten.';
 
   @override
   String get reset => 'Zurücksetzen';
@@ -72,7 +73,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licensesLoadError =>
-      'Lizenzen konnten gerade nicht geladen werden.';
+      'Lizenzen konnten gerade nicht geladen werden. Bitte versuch es später noch einmal.';
 
   @override
   String get version => 'Version';
@@ -235,7 +236,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get sentryReplayDescription =>
-      'Nutzereingaben aufzeichnen, um bei der Fehlerbehebung zu helfen (nur wenn Analysen aktiviert sind)';
+      'Du erlaubst uns, Eingaben aufzuzeichnen, damit wir Fehler besser finden (nur wenn Analysen an sind)';
 
   @override
   String get privacy => 'Datenschutz';
@@ -261,7 +262,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportCalendarIncludePartnerDescription =>
-      'Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu';
+      'Deine konfigurierte Partner-Dienstgruppe wird mit in die Datei aufgenommen';
 
   @override
   String get exportCalendarPartnerSummaryPrefix => 'Partner';
@@ -312,7 +313,8 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine passende App zum Öffnen dieser Datei gefunden.';
 
   @override
-  String get exportCalendarOpenFailed => 'Datei konnte nicht geöffnet werden.';
+  String get exportCalendarOpenFailed =>
+      'Die Datei ließ sich nicht öffnen. Bitte versuch es noch einmal.';
 
   @override
   String get exportCalendarSubject => 'Dienstplan Kalenderexport';
@@ -323,7 +325,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportCalendarInvalidRange =>
-      'Das Startdatum muss vor oder auf dem Enddatum liegen.';
+      'Wähle ein Startdatum, das nicht nach dem Enddatum liegt.';
 
   @override
   String get exportCalendarNoActiveSchedule =>
@@ -335,16 +337,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exportCalendarEmpty =>
-      'Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.';
+      'In diesem Zeitraum gibt es keine Einträge zum Exportieren. Probier einen anderen Zeitraum.';
 
   @override
-  String get exportCalendarError => 'Kalenderexport fehlgeschlagen.';
+  String get exportCalendarError =>
+      'Kalenderexport hat nicht geklappt. Bitte versuch es noch einmal.';
 
   @override
   String get shareApp => 'App weiterempfehlen';
 
   @override
-  String get shareAppDescription => 'Empfehle die App Kollegen';
+  String get shareAppDescription =>
+      'Empfehle die App deinen Kolleginnen und Kollegen';
 
   @override
   String shareAppMessage(String appStoreUrl, String playStoreUrl) {
@@ -355,7 +359,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shareAppSubject => 'Dienstplan App Empfehlung';
 
   @override
-  String get shareAppError => 'Fehler beim Teilen der App';
+  String get shareAppError =>
+      'Teilen hat nicht geklappt. Bitte versuch es noch einmal.';
 
   @override
   String get shareAppImageMessage =>
@@ -371,27 +376,31 @@ class AppLocalizationsDe extends AppLocalizations {
   String get contactDescription => 'Kontaktiere uns';
 
   @override
-  String get genericValidationError => 'Ungültige Eingabe';
+  String get genericValidationError =>
+      'Das passt so nicht – bitte prüf deine Eingabe.';
 
   @override
-  String get genericNotFoundError =>
-      'Das angeforderte Element wurde nicht gefunden';
+  String get genericNotFoundError => 'Das haben wir nicht gefunden.';
 
   @override
   String get genericNetworkError =>
       'Netzwerkfehler. Bitte überprüfe deine Verbindung.';
 
   @override
-  String get genericTimeoutError => 'Der Vorgang hat zu lange gedauert';
+  String get genericTimeoutError =>
+      'Das dauert zu lange. Bitte versuch es noch einmal.';
 
   @override
-  String get genericStorageError => 'Speicherfehler ist aufgetreten';
+  String get genericStorageError =>
+      'Beim Speichern ist ein Fehler aufgetreten. Bitte versuch es noch einmal.';
 
   @override
-  String get genericSerializationError => 'Fehler bei der Datenverarbeitung';
+  String get genericSerializationError =>
+      'Die Daten konnten nicht verarbeitet werden. Bitte versuch es noch einmal.';
 
   @override
-  String get genericUnknownError => 'Ein unbekannter Fehler ist aufgetreten';
+  String get genericUnknownError =>
+      'Etwas ist schiefgelaufen. Bitte versuch es noch einmal.';
 
   @override
   String get contribute => 'Beitragen';
@@ -446,7 +455,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loading => 'Lädt...';
 
   @override
-  String get errorLoading => 'Fehler beim Laden';
+  String get errorLoading =>
+      'Laden klappt gerade nicht. Bitte versuch es noch einmal.';
 
   @override
   String get enabled => 'Aktiviert';
@@ -494,7 +504,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String noHolidayDataForYear(int year) {
-    return 'Keine Feriendaten für das Jahr $year verfügbar';
+    return 'Für $year haben wir keine Feriendaten.';
   }
 
   @override
@@ -556,14 +566,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get personalEntryValidationTitle => 'Bitte gib einen Titel ein.';
 
   @override
-  String get personalEntryValidationTimes => 'Bitte Start- und Endzeit wählen.';
+  String get personalEntryValidationTimes => 'Bitte wähle Start- und Endzeit.';
 
   @override
-  String get personalEntryValidationTimeRange => 'Ungültige Uhrzeit.';
+  String get personalEntryValidationTimeRange =>
+      'Diese Uhrzeit geht nicht – probier eine andere.';
 
   @override
   String get personalEntryValidationEndAfterStart =>
-      'Ende muss nach dem Beginn liegen.';
+      'Die Endzeit muss nach dem Beginn liegen.';
 
   @override
   String get compactListShowOtherDutyGroupsTooltip =>
@@ -577,7 +588,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tryAgain => 'Erneut versuchen';
 
   @override
-  String get setupFailedTitle => 'Einrichtung konnte nicht geladen werden';
+  String get setupFailedTitle =>
+      'Die Einrichtung lässt sich gerade nicht laden';
 
   @override
   String get deletePersonalEntryConfirmationTitle => 'Eintrag löschen?';
@@ -591,9 +603,26 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get configSelectionEmptyMessage =>
-      'Passe den Behördenfilter an oder setze ihn zurück, um mehr Dienstpläne zu sehen.';
+      'Passe den Behördenfilter an oder setz ihn zurück – dann siehst du mehr Dienstpläne.';
 
   @override
   String get dutyGroupSelectionEmptyMessage =>
-      'Dieser Dienstplan stellt keine Dienstgruppen bereit.';
+      'Für diesen Dienstplan gibt es leider keine Dienstgruppen zum Auswählen.';
+
+  @override
+  String get whatsNewTitle => 'Das ist neu für dich';
+
+  @override
+  String get whatsNewBody =>
+      'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.';
+
+  @override
+  String get whatsNewGotIt => 'Alles klar';
+
+  @override
+  String get settingsWhatsNewShowAgain => 'Was ist neu für dich?';
+
+  @override
+  String get settingsWhatsNewShowAgainSubtitle =>
+      'Sieh dir die Hinweise zum Update noch einmal an';
 }

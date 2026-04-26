@@ -60,7 +60,7 @@
   "@resetDataConfirmation": {
     "description": "Confirmation message for reset app action"
   },
-  "resetDataSuccess": "App wurde erfolgreich zurückgesetzt",
+  "resetDataSuccess": "Zurücksetzen hat geklappt. Du kannst die App neu einrichten.",
   "@resetDataSuccess": {
     "description": "Success message after reset app action"
   },
@@ -80,7 +80,7 @@
   "@licensesEmptyState": {
     "description": "Message shown when no licenses are available"
   },
-  "licensesLoadError": "Lizenzen konnten gerade nicht geladen werden.",
+  "licensesLoadError": "Lizenzen konnten gerade nicht geladen werden. Bitte versuch es später noch einmal.",
   "@licensesLoadError": {
     "description": "Message shown when loading licenses fails"
   },
@@ -280,7 +280,7 @@
   "@sentryReplay": {
     "description": "Title for Sentry session replay setting"
   },
-  "sentryReplayDescription": "Nutzereingaben aufzeichnen, um bei der Fehlerbehebung zu helfen (nur wenn Analysen aktiviert sind)",
+  "sentryReplayDescription": "Du erlaubst uns, Eingaben aufzuzeichnen, damit wir Fehler besser finden (nur wenn Analysen an sind)",
   "@sentryReplayDescription": {
     "description": "Description for Sentry session replay setting"
   },
@@ -312,7 +312,7 @@
   "@exportCalendarIncludePartner": {
     "description": "Beschriftung für das Einschließen des Partnerdienstplans"
   },
-  "exportCalendarIncludePartnerDescription": "Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu",
+  "exportCalendarIncludePartnerDescription": "Deine konfigurierte Partner-Dienstgruppe wird mit in die Datei aufgenommen",
   "@exportCalendarIncludePartnerDescription": {
     "description": "Beschreibung für das Einschließen des Partnerdienstplans"
   },
@@ -376,7 +376,7 @@
   "@exportCalendarOpenNoApp": {
     "description": "Kein Handler für ICS-Dateien"
   },
-  "exportCalendarOpenFailed": "Datei konnte nicht geöffnet werden.",
+  "exportCalendarOpenFailed": "Die Datei ließ sich nicht öffnen. Bitte versuch es noch einmal.",
   "@exportCalendarOpenFailed": {
     "description": "Generischer Fehler beim Öffnen der ICS-Datei"
   },
@@ -388,7 +388,7 @@
   "@exportCalendarShareText": {
     "description": "Freigabetext für den Kalenderexport"
   },
-  "exportCalendarInvalidRange": "Das Startdatum muss vor oder auf dem Enddatum liegen.",
+  "exportCalendarInvalidRange": "Wähle ein Startdatum, das nicht nach dem Enddatum liegt.",
   "@exportCalendarInvalidRange": {
     "description": "Validierungsmeldung für einen ungültigen Exportzeitraum"
   },
@@ -400,11 +400,11 @@
   "@exportCalendarPartnerUnavailable": {
     "description": "Meldung, wenn der Partnerexport nicht verfügbar ist"
   },
-  "exportCalendarEmpty": "Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.",
+  "exportCalendarEmpty": "In diesem Zeitraum gibt es keine Einträge zum Exportieren. Probier einen anderen Zeitraum.",
   "@exportCalendarEmpty": {
     "description": "Meldung, wenn keine Kalendereinträge für den Export verfügbar sind"
   },
-  "exportCalendarError": "Kalenderexport fehlgeschlagen.",
+  "exportCalendarError": "Kalenderexport hat nicht geklappt. Bitte versuch es noch einmal.",
   "@exportCalendarError": {
     "description": "Meldung, wenn der Kalenderexport fehlschlägt"
   },
@@ -412,7 +412,7 @@
   "@shareApp": {
     "description": "Title for share app option"
   },
-  "shareAppDescription": "Empfehle die App Kollegen",
+  "shareAppDescription": "Empfehle die App deinen Kolleginnen und Kollegen",
   "@shareAppDescription": {
     "description": "Description for share app option"
   },
@@ -434,7 +434,7 @@
   "@shareAppSubject": {
     "description": "Subject for share app email"
   },
-  "shareAppError": "Fehler beim Teilen der App",
+  "shareAppError": "Teilen hat nicht geklappt. Bitte versuch es noch einmal.",
   "@shareAppError": {
     "description": "Error message when sharing app fails"
   },
@@ -454,11 +454,11 @@
   "@contactDescription": {
     "description": "Description for contact option"
   },
-  "genericValidationError": "Ungültige Eingabe",
+  "genericValidationError": "Das passt so nicht – bitte prüf deine Eingabe.",
   "@genericValidationError": {
     "description": "Allgemeine Validierungsfehlermeldung"
   },
-  "genericNotFoundError": "Das angeforderte Element wurde nicht gefunden",
+  "genericNotFoundError": "Das haben wir nicht gefunden.",
   "@genericNotFoundError": {
     "description": "Allgemeine Nicht-gefunden-Fehlermeldung"
   },
@@ -466,19 +466,19 @@
   "@genericNetworkError": {
     "description": "Allgemeine Netzwerk-Fehlermeldung"
   },
-  "genericTimeoutError": "Der Vorgang hat zu lange gedauert",
+  "genericTimeoutError": "Das dauert zu lange. Bitte versuch es noch einmal.",
   "@genericTimeoutError": {
     "description": "Allgemeine Timeout-Fehlermeldung"
   },
-  "genericStorageError": "Speicherfehler ist aufgetreten",
+  "genericStorageError": "Beim Speichern ist ein Fehler aufgetreten. Bitte versuch es noch einmal.",
   "@genericStorageError": {
     "description": "Allgemeine Speicher-Fehlermeldung"
   },
-  "genericSerializationError": "Fehler bei der Datenverarbeitung",
+  "genericSerializationError": "Die Daten konnten nicht verarbeitet werden. Bitte versuch es noch einmal.",
   "@genericSerializationError": {
     "description": "Allgemeine Serialisierungs-Fehlermeldung"
   },
-  "genericUnknownError": "Ein unbekannter Fehler ist aufgetreten",
+  "genericUnknownError": "Etwas ist schiefgelaufen. Bitte versuch es noch einmal.",
   "@genericUnknownError": {
     "description": "Allgemeine unbekannte Fehlermeldung"
   },
@@ -558,7 +558,7 @@
   "@loading": {
     "description": "Loading text"
   },
-  "errorLoading": "Fehler beim Laden",
+  "errorLoading": "Laden klappt gerade nicht. Bitte versuch es noch einmal.",
   "@errorLoading": {
     "description": "Error message when loading fails"
   },
@@ -634,7 +634,7 @@
   "@selectFederalState": {
     "description": "Title for federal state selection dialog"
   },
-  "noHolidayDataForYear": "Keine Feriendaten für das Jahr {year} verfügbar",
+  "noHolidayDataForYear": "Für {year} haben wir keine Feriendaten.",
   "@noHolidayDataForYear": {
     "description": "Message shown when no holiday data is available for a specific year",
     "placeholders": {
@@ -726,15 +726,15 @@
   "@personalEntryValidationTitle": {
     "description": "Validation: empty title"
   },
-  "personalEntryValidationTimes": "Bitte Start- und Endzeit wählen.",
+  "personalEntryValidationTimes": "Bitte wähle Start- und Endzeit.",
   "@personalEntryValidationTimes": {
     "description": "Validation: missing times for timed entry"
   },
-  "personalEntryValidationTimeRange": "Ungültige Uhrzeit.",
+  "personalEntryValidationTimeRange": "Diese Uhrzeit geht nicht – probier eine andere.",
   "@personalEntryValidationTimeRange": {
     "description": "Validation: time out of range"
   },
-  "personalEntryValidationEndAfterStart": "Ende muss nach dem Beginn liegen.",
+  "personalEntryValidationEndAfterStart": "Die Endzeit muss nach dem Beginn liegen.",
   "@personalEntryValidationEndAfterStart": {
     "description": "Validation: end before start"
   },
@@ -750,7 +750,7 @@
   "@tryAgain": {
     "description": "Recovery action label for error states"
   },
-  "setupFailedTitle": "Einrichtung konnte nicht geladen werden",
+  "setupFailedTitle": "Die Einrichtung lässt sich gerade nicht laden",
   "@setupFailedTitle": {
     "description": "Title for the setup-load failure screen"
   },
@@ -766,12 +766,32 @@
   "@configSelectionEmptyTitle": {
     "description": "Empty state title in the setup config selection step when filters return no results"
   },
-  "configSelectionEmptyMessage": "Passe den Behördenfilter an oder setze ihn zurück, um mehr Dienstpläne zu sehen.",
+  "configSelectionEmptyMessage": "Passe den Behördenfilter an oder setz ihn zurück – dann siehst du mehr Dienstpläne.",
   "@configSelectionEmptyMessage": {
     "description": "Empty state body in the setup config selection step"
   },
-  "dutyGroupSelectionEmptyMessage": "Dieser Dienstplan stellt keine Dienstgruppen bereit.",
+  "dutyGroupSelectionEmptyMessage": "Für diesen Dienstplan gibt es leider keine Dienstgruppen zum Auswählen.",
   "@dutyGroupSelectionEmptyMessage": {
     "description": "Empty state message when a config has no duty groups"
+  },
+  "whatsNewTitle": "Das ist neu für dich",
+  "@whatsNewTitle": {
+    "description": "Title for the post-update what's new dialog"
+  },
+  "whatsNewBody": "Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.",
+  "@whatsNewBody": {
+    "description": "Release highlights for the what's new dialog; update each release"
+  },
+  "whatsNewGotIt": "Alles klar",
+  "@whatsNewGotIt": {
+    "description": "Primary button to dismiss the what's new dialog"
+  },
+  "settingsWhatsNewShowAgain": "Was ist neu für dich?",
+  "@settingsWhatsNewShowAgain": {
+    "description": "Settings General: title to reopen the what's new dialog"
+  },
+  "settingsWhatsNewShowAgainSubtitle": "Sieh dir die Hinweise zum Update noch einmal an",
+  "@settingsWhatsNewShowAgainSubtitle": {
+    "description": "Subtitle for the settings what's new entry"
   }
 }

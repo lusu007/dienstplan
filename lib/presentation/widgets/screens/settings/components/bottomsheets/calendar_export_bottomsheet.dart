@@ -1,3 +1,5 @@
+import 'package:dienstplan/core/constants/calendar_config.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/logger.dart';
@@ -6,11 +8,12 @@ import 'package:dienstplan/domain/entities/calendar_export_options.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_form_expand_tile.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class CalendarExportBottomsheet extends ConsumerStatefulWidget {
   static const double _defaultHeightPercentage = 0.76;
@@ -46,6 +49,8 @@ class _CalendarExportBottomsheetState
   late DateTime _endDate;
   bool _includePartnerSchedule = false;
   bool _isActionBusy = false;
+  bool _startDateExpanded = false;
+  bool _endDateExpanded = false;
   CalendarExportPreparedResult? _cachedPrepared;
   _CalendarExportCacheKey? _cacheKey;
 
@@ -93,37 +98,97 @@ class _CalendarExportBottomsheetState
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 20),
-                _DateCard(
-                  title: l10n.exportCalendarStartDate,
-                  value: _formatDate(context, _startDate),
-                  icon: Icons.date_range_outlined,
-                  onTap: () => _pickDate(
-                    initialDate: _startDate,
-                    firstDate: DateTime(2020, 1, 1),
-                    lastDate: DateTime(2100, 12, 31),
-                    onSelected: (value) => setState(() {
-                      _startDate = value;
-                      _invalidatePreparedCache();
-                    }),
-                  ),
+                const SizedBox(height: glassSpacingLg),
+                GlassFormSectionEyebrow(
+                  text: l10n.exportCalendarStartDate,
+                  enabled: true,
                 ),
-                const SizedBox(height: 12),
-                _DateCard(
-                  title: l10n.exportCalendarEndDate,
-                  value: _formatDate(context, _endDate),
+                const SizedBox(height: glassSpacingXs),
+                GlassInlineExpandTile(
+                  icon: Icons.calendar_today_rounded,
+                  label: _formatDate(context, _startDate),
+                  isExpanded: _startDateExpanded,
+                  onTap: () => setState(() {
+                    _startDateExpanded = !_startDateExpanded;
+                    if (_startDateExpanded) {
+                      _endDateExpanded = false;
+                    }
+                  }),
+                ),
+                if (_startDateExpanded) ...<Widget>[
+                  const SizedBox(height: glassSpacingSm),
+                  CalendarDatePicker(
+                    initialDate: DateTime(
+                      _startDate.year,
+                      _startDate.month,
+                      _startDate.day,
+                    ),
+                    firstDate: DateTime(
+                      CalendarConfig.firstDay.year,
+                      CalendarConfig.firstDay.month,
+                      CalendarConfig.firstDay.day,
+                    ),
+                    lastDate: DateTime(
+                      CalendarConfig.lastDay.year,
+                      CalendarConfig.lastDay.month,
+                      CalendarConfig.lastDay.day,
+                    ),
+                    onDateChanged: (DateTime value) {
+                      setState(() {
+                        _startDate = DateTime(
+                          value.year,
+                          value.month,
+                          value.day,
+                        );
+                        _invalidatePreparedCache();
+                      });
+                    },
+                  ),
+                ],
+                const SizedBox(height: glassSpacingMd),
+                GlassFormSectionEyebrow(
+                  text: l10n.exportCalendarEndDate,
+                  enabled: true,
+                ),
+                const SizedBox(height: glassSpacingXs),
+                GlassInlineExpandTile(
                   icon: Icons.event_outlined,
-                  onTap: () => _pickDate(
-                    initialDate: _endDate,
-                    firstDate: DateTime(2020, 1, 1),
-                    lastDate: DateTime(2100, 12, 31),
-                    onSelected: (value) => setState(() {
-                      _endDate = value;
-                      _invalidatePreparedCache();
-                    }),
-                  ),
+                  label: _formatDate(context, _endDate),
+                  isExpanded: _endDateExpanded,
+                  onTap: () => setState(() {
+                    _endDateExpanded = !_endDateExpanded;
+                    if (_endDateExpanded) {
+                      _startDateExpanded = false;
+                    }
+                  }),
                 ),
-                const SizedBox(height: 20),
+                if (_endDateExpanded) ...<Widget>[
+                  const SizedBox(height: glassSpacingSm),
+                  CalendarDatePicker(
+                    initialDate: DateTime(
+                      _endDate.year,
+                      _endDate.month,
+                      _endDate.day,
+                    ),
+                    firstDate: DateTime(
+                      CalendarConfig.firstDay.year,
+                      CalendarConfig.firstDay.month,
+                      CalendarConfig.firstDay.day,
+                    ),
+                    lastDate: DateTime(
+                      CalendarConfig.lastDay.year,
+                      CalendarConfig.lastDay.month,
+                      CalendarConfig.lastDay.day,
+                    ),
+                    onDateChanged: (DateTime value) {
+                      setState(() {
+                        _endDate = DateTime(value.year, value.month, value.day);
+                        _invalidatePreparedCache();
+                      });
+                    },
+                  ),
+                ],
+                const SizedBox(height: glassSpacingLg),
                 _ToggleCard(
                   title: l10n.exportCalendarIncludePartner,
                   subtitle: hasPartnerSchedule
@@ -188,25 +253,10 @@ class _CalendarExportBottomsheetState
     );
   }
 
-  Future<void> _pickDate({
-    required DateTime initialDate,
-    required DateTime firstDate,
-    required DateTime lastDate,
-    required ValueChanged<DateTime> onSelected,
-  }) async {
-    final selected = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-    );
-    if (selected != null) {
-      onSelected(DateTime(selected.year, selected.month, selected.day));
-    }
-  }
-
   String _formatDate(BuildContext context, DateTime value) {
-    return MaterialLocalizations.of(context).formatMediumDate(value);
+    return DateFormat.yMMMd(
+      Localizations.localeOf(context).toString(),
+    ).format(DateTime(value.year, value.month, value.day));
   }
 
   void _invalidatePreparedCache() {
@@ -537,61 +587,6 @@ class _CalendarExportActionButtonGroup extends StatelessWidget {
                 ),
               ),
             ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _DateCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _DateCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassCard(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            GlassIconBadge(icon: icon),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
           ],
         ),
       ),

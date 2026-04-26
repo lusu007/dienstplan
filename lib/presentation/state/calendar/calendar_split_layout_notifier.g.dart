@@ -42,7 +42,7 @@ final class CalendarSplitLayoutProvider
 }
 
 String _$calendarSplitLayoutHash() =>
-    r'5364e6db96e99d9e9e239e0d013fa757e7a7c578';
+    r'd2a0aa81d07efa1c429ce10fc75ce127645d7705';
 
 abstract class _$CalendarSplitLayout extends $Notifier<bool> {
   bool build();

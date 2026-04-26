@@ -5,7 +5,11 @@ import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
+import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
+import 'package:dienstplan/presentation/state/config/config_notifier.dart';
+import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
@@ -97,9 +101,15 @@ class ResetBottomsheet {
 
                     await configService.resetSetup();
                     await container.read(settingsProvider.notifier).reset();
-                    await container
+                    container
                         .read(scheduleDataProvider.notifier)
-                        .refreshPersonalCalendarEntries();
+                        .invalidateCache();
+                    SettingsCache.clearCache();
+                    container.invalidate(getSettingsUseCaseProvider);
+                    container.invalidate(scheduleDataProvider);
+                    container.invalidate(scheduleCoordinatorProvider);
+                    container.invalidate(configProvider);
+                    container.invalidate(partnerProvider);
 
                     // Invalidate school holidays provider to clear cached data
                     container.invalidate(schoolHolidaysProvider);

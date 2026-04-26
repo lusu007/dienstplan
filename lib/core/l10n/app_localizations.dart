@@ -187,7 +187,7 @@ abstract class AppLocalizations {
   /// Success message after reset app action
   ///
   /// In de, this message translates to:
-  /// **'App wurde erfolgreich zurückgesetzt'**
+  /// **'Zurücksetzen hat geklappt. Du kannst die App neu einrichten.'**
   String get resetDataSuccess;
 
   /// Reset button text
@@ -217,7 +217,7 @@ abstract class AppLocalizations {
   /// Message shown when loading licenses fails
   ///
   /// In de, this message translates to:
-  /// **'Lizenzen konnten gerade nicht geladen werden.'**
+  /// **'Lizenzen konnten gerade nicht geladen werden. Bitte versuch es später noch einmal.'**
   String get licensesLoadError;
 
   /// Version label
@@ -517,7 +517,7 @@ abstract class AppLocalizations {
   /// Description for Sentry session replay setting
   ///
   /// In de, this message translates to:
-  /// **'Nutzereingaben aufzeichnen, um bei der Fehlerbehebung zu helfen (nur wenn Analysen aktiviert sind)'**
+  /// **'Du erlaubst uns, Eingaben aufzuzeichnen, damit wir Fehler besser finden (nur wenn Analysen an sind)'**
   String get sentryReplayDescription;
 
   /// Title for privacy settings section
@@ -565,7 +565,7 @@ abstract class AppLocalizations {
   /// Beschreibung für das Einschließen des Partnerdienstplans
   ///
   /// In de, this message translates to:
-  /// **'Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu'**
+  /// **'Deine konfigurierte Partner-Dienstgruppe wird mit in die Datei aufgenommen'**
   String get exportCalendarIncludePartnerDescription;
 
   /// Kurzes Präfix vor Partner-Terminen im ICS-Export (vor dem Doppelpunkt)
@@ -661,7 +661,7 @@ abstract class AppLocalizations {
   /// Generischer Fehler beim Öffnen der ICS-Datei
   ///
   /// In de, this message translates to:
-  /// **'Datei konnte nicht geöffnet werden.'**
+  /// **'Die Datei ließ sich nicht öffnen. Bitte versuch es noch einmal.'**
   String get exportCalendarOpenFailed;
 
   /// Betreff für den geteilten Kalenderexport
@@ -679,7 +679,7 @@ abstract class AppLocalizations {
   /// Validierungsmeldung für einen ungültigen Exportzeitraum
   ///
   /// In de, this message translates to:
-  /// **'Das Startdatum muss vor oder auf dem Enddatum liegen.'**
+  /// **'Wähle ein Startdatum, das nicht nach dem Enddatum liegt.'**
   String get exportCalendarInvalidRange;
 
   /// Validierungsmeldung, wenn kein aktiver Dienstplan konfiguriert ist
@@ -697,13 +697,13 @@ abstract class AppLocalizations {
   /// Meldung, wenn keine Kalendereinträge für den Export verfügbar sind
   ///
   /// In de, this message translates to:
-  /// **'Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.'**
+  /// **'In diesem Zeitraum gibt es keine Einträge zum Exportieren. Probier einen anderen Zeitraum.'**
   String get exportCalendarEmpty;
 
   /// Meldung, wenn der Kalenderexport fehlschlägt
   ///
   /// In de, this message translates to:
-  /// **'Kalenderexport fehlgeschlagen.'**
+  /// **'Kalenderexport hat nicht geklappt. Bitte versuch es noch einmal.'**
   String get exportCalendarError;
 
   /// Title for share app option
@@ -715,7 +715,7 @@ abstract class AppLocalizations {
   /// Description for share app option
   ///
   /// In de, this message translates to:
-  /// **'Empfehle die App Kollegen'**
+  /// **'Empfehle die App deinen Kolleginnen und Kollegen'**
   String get shareAppDescription;
 
   /// Message template for sharing the app
@@ -733,7 +733,7 @@ abstract class AppLocalizations {
   /// Error message when sharing app fails
   ///
   /// In de, this message translates to:
-  /// **'Fehler beim Teilen der App'**
+  /// **'Teilen hat nicht geklappt. Bitte versuch es noch einmal.'**
   String get shareAppError;
 
   /// Message for the share image (without links)
@@ -763,13 +763,13 @@ abstract class AppLocalizations {
   /// Allgemeine Validierungsfehlermeldung
   ///
   /// In de, this message translates to:
-  /// **'Ungültige Eingabe'**
+  /// **'Das passt so nicht – bitte prüf deine Eingabe.'**
   String get genericValidationError;
 
   /// Allgemeine Nicht-gefunden-Fehlermeldung
   ///
   /// In de, this message translates to:
-  /// **'Das angeforderte Element wurde nicht gefunden'**
+  /// **'Das haben wir nicht gefunden.'**
   String get genericNotFoundError;
 
   /// Allgemeine Netzwerk-Fehlermeldung
@@ -781,25 +781,25 @@ abstract class AppLocalizations {
   /// Allgemeine Timeout-Fehlermeldung
   ///
   /// In de, this message translates to:
-  /// **'Der Vorgang hat zu lange gedauert'**
+  /// **'Das dauert zu lange. Bitte versuch es noch einmal.'**
   String get genericTimeoutError;
 
   /// Allgemeine Speicher-Fehlermeldung
   ///
   /// In de, this message translates to:
-  /// **'Speicherfehler ist aufgetreten'**
+  /// **'Beim Speichern ist ein Fehler aufgetreten. Bitte versuch es noch einmal.'**
   String get genericStorageError;
 
   /// Allgemeine Serialisierungs-Fehlermeldung
   ///
   /// In de, this message translates to:
-  /// **'Fehler bei der Datenverarbeitung'**
+  /// **'Die Daten konnten nicht verarbeitet werden. Bitte versuch es noch einmal.'**
   String get genericSerializationError;
 
   /// Allgemeine unbekannte Fehlermeldung
   ///
   /// In de, this message translates to:
-  /// **'Ein unbekannter Fehler ist aufgetreten'**
+  /// **'Etwas ist schiefgelaufen. Bitte versuch es noch einmal.'**
   String get genericUnknownError;
 
   /// Title for contribute option
@@ -893,7 +893,7 @@ abstract class AppLocalizations {
   /// Error message when loading fails
   ///
   /// In de, this message translates to:
-  /// **'Fehler beim Laden'**
+  /// **'Laden klappt gerade nicht. Bitte versuch es noch einmal.'**
   String get errorLoading;
 
   /// Enabled status text
@@ -971,7 +971,7 @@ abstract class AppLocalizations {
   /// Message shown when no holiday data is available for a specific year
   ///
   /// In de, this message translates to:
-  /// **'Keine Feriendaten für das Jahr {year} verfügbar'**
+  /// **'Für {year} haben wir keine Feriendaten.'**
   String noHolidayDataForYear(int year);
 
   /// Label for vacation/regular holidays
@@ -1085,19 +1085,19 @@ abstract class AppLocalizations {
   /// Validation: missing times for timed entry
   ///
   /// In de, this message translates to:
-  /// **'Bitte Start- und Endzeit wählen.'**
+  /// **'Bitte wähle Start- und Endzeit.'**
   String get personalEntryValidationTimes;
 
   /// Validation: time out of range
   ///
   /// In de, this message translates to:
-  /// **'Ungültige Uhrzeit.'**
+  /// **'Diese Uhrzeit geht nicht – probier eine andere.'**
   String get personalEntryValidationTimeRange;
 
   /// Validation: end before start
   ///
   /// In de, this message translates to:
-  /// **'Ende muss nach dem Beginn liegen.'**
+  /// **'Die Endzeit muss nach dem Beginn liegen.'**
   String get personalEntryValidationEndAfterStart;
 
   /// Tooltip for compact schedule list header toggle to show other duty groups
@@ -1121,7 +1121,7 @@ abstract class AppLocalizations {
   /// Title for the setup-load failure screen
   ///
   /// In de, this message translates to:
-  /// **'Einrichtung konnte nicht geladen werden'**
+  /// **'Die Einrichtung lässt sich gerade nicht laden'**
   String get setupFailedTitle;
 
   /// Title for the confirmation dialog before deleting a personal calendar entry
@@ -1145,14 +1145,44 @@ abstract class AppLocalizations {
   /// Empty state body in the setup config selection step
   ///
   /// In de, this message translates to:
-  /// **'Passe den Behördenfilter an oder setze ihn zurück, um mehr Dienstpläne zu sehen.'**
+  /// **'Passe den Behördenfilter an oder setz ihn zurück – dann siehst du mehr Dienstpläne.'**
   String get configSelectionEmptyMessage;
 
   /// Empty state message when a config has no duty groups
   ///
   /// In de, this message translates to:
-  /// **'Dieser Dienstplan stellt keine Dienstgruppen bereit.'**
+  /// **'Für diesen Dienstplan gibt es leider keine Dienstgruppen zum Auswählen.'**
   String get dutyGroupSelectionEmptyMessage;
+
+  /// Title for the post-update what's new dialog
+  ///
+  /// In de, this message translates to:
+  /// **'Das ist neu für dich'**
+  String get whatsNewTitle;
+
+  /// Release highlights for the what's new dialog; update each release
+  ///
+  /// In de, this message translates to:
+  /// **'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.'**
+  String get whatsNewBody;
+
+  /// Primary button to dismiss the what's new dialog
+  ///
+  /// In de, this message translates to:
+  /// **'Alles klar'**
+  String get whatsNewGotIt;
+
+  /// Settings General: title to reopen the what's new dialog
+  ///
+  /// In de, this message translates to:
+  /// **'Was ist neu für dich?'**
+  String get settingsWhatsNewShowAgain;
+
+  /// Subtitle for the settings what's new entry
+  ///
+  /// In de, this message translates to:
+  /// **'Sieh dir die Hinweise zum Update noch einmal an'**
+  String get settingsWhatsNewShowAgainSubtitle;
 }
 
 class _AppLocalizationsDelegate
