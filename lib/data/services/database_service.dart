@@ -330,6 +330,9 @@ class DatabaseService {
       if (oldVersion < 18) {
         await _migrateToVersion18(txn);
       }
+      if (oldVersion < 19) {
+        await _migrateToVersion19(txn);
+      }
 
       // Create any missing indexes after all migrations are complete
       await _createOptimizedIndexes(txn);
@@ -973,6 +976,29 @@ class DatabaseService {
       }());
     } catch (e, stackTrace) {
       AppLogger.e('Error during migration to version 18', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> _migrateToVersion19(DatabaseExecutor db) async {
+    try {
+      assert(() {
+        AppLogger.i(
+          'Migrating to version 19: Coerce settings language from en to de',
+        );
+        return true;
+      }());
+      await db.execute(
+        "UPDATE settings SET language = 'de' WHERE language = 'en'",
+      );
+      assert(() {
+        AppLogger.i(
+          'Successfully migrated to version 19: settings language coerced to de',
+        );
+        return true;
+      }());
+    } catch (e, stackTrace) {
+      AppLogger.e('Error during migration to version 19', e, stackTrace);
       rethrow;
     }
   }

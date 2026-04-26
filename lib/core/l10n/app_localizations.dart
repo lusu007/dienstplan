@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_de.dart';
-import 'app_localizations_en.dart';
 
 // ignore_for_file: type=lint
 
@@ -93,1267 +92,1066 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('de'),
-    Locale('en'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('de')];
 
   /// Title for the settings screen
   ///
-  /// In en, this message translates to:
-  /// **'Settings'**
+  /// In de, this message translates to:
+  /// **'Einstellungen'**
   String get settings;
-
-  /// Label for language selection
-  ///
-  /// In en, this message translates to:
-  /// **'Language'**
-  String get language;
-
-  /// Title for language selection screen
-  ///
-  /// In en, this message translates to:
-  /// **'Select Language'**
-  String get selectLanguage;
-
-  /// German language option
-  ///
-  /// In en, this message translates to:
-  /// **'German'**
-  String get german;
-
-  /// English language option
-  ///
-  /// In en, this message translates to:
-  /// **'English'**
-  String get english;
-
-  /// Deprecated alias for myDutySchedule; kept for backwards compatibility. Use myDutySchedule for new code.
-  ///
-  /// In en, this message translates to:
-  /// **'My Duty Schedule'**
-  String get dutySchedule;
 
   /// Title for duty schedule in settings
   ///
-  /// In en, this message translates to:
-  /// **'My Duty Schedule'**
+  /// In de, this message translates to:
+  /// **'Mein Dienstplan'**
   String get myDutySchedule;
-
-  /// Title for duty schedule selection screen
-  ///
-  /// In en, this message translates to:
-  /// **'Select Duty Schedule'**
-  String get selectDutySchedule;
 
   /// Save button text
   ///
-  /// In en, this message translates to:
-  /// **'Save'**
+  /// In de, this message translates to:
+  /// **'Speichern'**
   String get save;
 
   /// Cancel button text
   ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
   String get cancel;
 
   /// Close button text
   ///
-  /// In en, this message translates to:
-  /// **'Close'**
+  /// In de, this message translates to:
+  /// **'Schließen'**
   String get close;
 
   /// Delete button text
   ///
-  /// In en, this message translates to:
-  /// **'Delete'**
+  /// In de, this message translates to:
+  /// **'Löschen'**
   String get delete;
 
   /// Add button text
   ///
-  /// In en, this message translates to:
-  /// **'Add'**
+  /// In de, this message translates to:
+  /// **'Hinzufügen'**
   String get add;
 
   /// Error message title
   ///
-  /// In en, this message translates to:
-  /// **'Error'**
+  /// In de, this message translates to:
+  /// **'Fehler'**
   String get error;
 
   /// Success message title
   ///
-  /// In en, this message translates to:
-  /// **'Success'**
+  /// In de, this message translates to:
+  /// **'Erfolg'**
   String get success;
 
   /// Message shown when no duty schedules are available
   ///
-  /// In en, this message translates to:
-  /// **'No duty schedules available'**
+  /// In de, this message translates to:
+  /// **'Keine Dienstpläne verfügbar'**
   String get noDutySchedules;
 
   /// Continue button text
   ///
-  /// In en, this message translates to:
-  /// **'Continue'**
+  /// In de, this message translates to:
+  /// **'Weiter'**
   String get continueButton;
 
   /// Welcome message title
   ///
-  /// In en, this message translates to:
-  /// **'Hello! 👋'**
+  /// In de, this message translates to:
+  /// **'Hallo! 👋'**
   String get welcome;
 
   /// Welcome message text
   ///
-  /// In en, this message translates to:
-  /// **'Let\'s set up your duty schedule. Therefore choose your duty schedule.'**
+  /// In de, this message translates to:
+  /// **'Lass uns deinen Dienstplan einrichten. Wähle dafür deinen Dienstplan aus.'**
   String get welcomeMessage;
 
   /// Reset app button text
   ///
-  /// In en, this message translates to:
-  /// **'Reset App'**
+  /// In de, this message translates to:
+  /// **'App zurücksetzen'**
   String get resetData;
 
   /// Confirmation message for reset app action
   ///
-  /// In en, this message translates to:
-  /// **'Are you sure you want to reset the app? This cannot be undone.'**
+  /// In de, this message translates to:
+  /// **'Möchtest du wirklich die App zurücksetzen? Dies kann nicht rückgängig gemacht werden.'**
   String get resetDataConfirmation;
 
   /// Success message after reset app action
   ///
-  /// In en, this message translates to:
-  /// **'App has been reset successfully'**
+  /// In de, this message translates to:
+  /// **'App wurde erfolgreich zurückgesetzt'**
   String get resetDataSuccess;
 
   /// Reset button text
   ///
-  /// In en, this message translates to:
-  /// **'Reset'**
+  /// In de, this message translates to:
+  /// **'Zurücksetzen'**
   String get reset;
-
-  /// Title for services screen
-  ///
-  /// In en, this message translates to:
-  /// **'Services'**
-  String get services;
-
-  /// Services on specific date
-  ///
-  /// In en, this message translates to:
-  /// **'on {date}'**
-  String servicesOnDate(String date);
 
   /// Message shown when no services are available for a day
   ///
-  /// In en, this message translates to:
-  /// **'No services for this day'**
+  /// In de, this message translates to:
+  /// **'Keine Dienste für diesen Tag'**
   String get noServicesForDay;
 
   /// Title for licenses page
   ///
-  /// In en, this message translates to:
-  /// **'Licenses'**
+  /// In de, this message translates to:
+  /// **'Lizenzen'**
   String get licenses;
 
   /// Message shown when no licenses are available
   ///
-  /// In en, this message translates to:
-  /// **'No licenses available.'**
+  /// In de, this message translates to:
+  /// **'Keine Lizenzen verfügbar.'**
   String get licensesEmptyState;
 
   /// Message shown when loading licenses fails
   ///
-  /// In en, this message translates to:
-  /// **'Unable to load licenses right now.'**
+  /// In de, this message translates to:
+  /// **'Lizenzen konnten gerade nicht geladen werden.'**
   String get licensesLoadError;
 
   /// Version label
   ///
-  /// In en, this message translates to:
+  /// In de, this message translates to:
   /// **'Version'**
   String get version;
 
-  /// Tooltip for the previous period navigation button
+  /// Title for disclaimer option
   ///
-  /// In en, this message translates to:
-  /// **'Previous period'**
-  String get previousPeriod;
-
-  /// Tooltip for the next period navigation button
-  ///
-  /// In en, this message translates to:
-  /// **'Next period'**
-  String get nextPeriod;
+  /// In de, this message translates to:
+  /// **'Haftungsausschluss'**
+  String get disclaimer;
 
   /// Tooltip for the today button
   ///
-  /// In en, this message translates to:
-  /// **'Today'**
+  /// In de, this message translates to:
+  /// **'Heute'**
   String get today;
 
-  /// Title for partner duty group setting
+  /// Titel für Partner Dienstgruppe Einstellung
   ///
-  /// In en, this message translates to:
-  /// **'Partner Duty Group'**
+  /// In de, this message translates to:
+  /// **'Partner Dienstgruppe'**
   String get partnerDutyGroup;
 
-  /// Section title for partner duty schedule settings
+  /// Abschnittstitel für Partner-Dienstplan-Einstellungen
   ///
-  /// In en, this message translates to:
-  /// **'Partner Duty Schedule'**
+  /// In de, this message translates to:
+  /// **'Partner Dienstplan'**
   String get partnerDutySchedule;
 
-  /// Shown when no partner group is selected
+  /// Angezeigt, wenn keine Partner Dienstgruppe gewählt ist
   ///
-  /// In en, this message translates to:
-  /// **'No partner duty group selected'**
+  /// In de, this message translates to:
+  /// **'Keine Partner-Dienstgruppe ausgewählt'**
   String get noPartnerGroup;
 
-  /// Generic accent color title
+  /// Option um keinen Dienstplan zu wählen
   ///
-  /// In en, this message translates to:
-  /// **'Partner Accent Color'**
+  /// In de, this message translates to:
+  /// **'Kein Dienstplan ausgewählt'**
+  String get noDutySchedule;
+
+  /// Nachricht, die angezeigt wird, wenn kein Partner Dienstplan ausgewählt ist
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte wähle zuerst einen Partner Dienstplan aus'**
+  String get selectPartnerDutyScheduleFirst;
+
+  /// Nachricht, die angezeigt wird, wenn kein Dienstplan ausgewählt ist
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte wähle zuerst einen Dienstplan aus'**
+  String get selectMyDutyScheduleFirst;
+
+  /// Fehlermeldung beim Löschen des aktiven Dienstplans
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Löschen des aktiven Dienstplans'**
+  String get errorClearingActiveConfig;
+
+  /// Fehlermeldung beim Setzen des aktiven Dienstplans
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler beim Setzen des aktiven Dienstplans'**
+  String get errorSettingActiveConfig;
+
+  /// Titel für Akzentfarbe
+  ///
+  /// In de, this message translates to:
+  /// **'Partner Akzentfarbe'**
   String get accentColor;
 
-  /// Title for my accent color
+  /// Titel für meine Akzentfarbe
   ///
-  /// In en, this message translates to:
-  /// **'My Accent Color'**
+  /// In de, this message translates to:
+  /// **'Meine Akzentfarbe'**
   String get myAccentColor;
 
-  /// Blue accent color
+  /// Akzentfarbe Blau
   ///
-  /// In en, this message translates to:
-  /// **'Blue'**
+  /// In de, this message translates to:
+  /// **'Blau'**
   String get accentPrimaryBlue;
 
-  /// Orange accent color
+  /// Akzentfarbe Orange
   ///
-  /// In en, this message translates to:
+  /// In de, this message translates to:
   /// **'Orange'**
   String get accentWarmOrange;
 
-  /// Pink color name
+  /// Farbname Pink
   ///
-  /// In en, this message translates to:
+  /// In de, this message translates to:
   /// **'Pink'**
   String get accentPink;
 
-  /// Purple accent color
+  /// Akzentfarbe Lila
   ///
-  /// In en, this message translates to:
-  /// **'Purple'**
+  /// In de, this message translates to:
+  /// **'Lila'**
   String get accentViolet;
 
-  /// Green accent color
+  /// Akzentfarbe Grün
   ///
-  /// In en, this message translates to:
-  /// **'Green'**
+  /// In de, this message translates to:
+  /// **'Grün'**
   String get accentFreshGreen;
 
-  /// Teal accent color
+  /// Akzentfarbe Türkis
   ///
-  /// In en, this message translates to:
-  /// **'Teal'**
+  /// In de, this message translates to:
+  /// **'Türkis'**
   String get accentTurquoiseGreen;
 
-  /// Yellow accent color
+  /// Akzentfarbe Gelb
   ///
-  /// In en, this message translates to:
-  /// **'Yellow'**
+  /// In de, this message translates to:
+  /// **'Gelb'**
   String get accentSunnyYellow;
 
-  /// Red color name
+  /// Farbname Rot
   ///
-  /// In en, this message translates to:
-  /// **'Red'**
+  /// In de, this message translates to:
+  /// **'Rot'**
   String get accentRed;
 
-  /// Gray accent color
+  /// Akzentfarbe Grau
   ///
-  /// In en, this message translates to:
-  /// **'Gray'**
+  /// In de, this message translates to:
+  /// **'Grau'**
   String get accentLightGrey;
 
-  /// Title for holiday accent color setting
+  /// Titel für die Ferien-Akzentfarbe-Einstellung
   ///
-  /// In en, this message translates to:
-  /// **'Holiday Accent Color'**
+  /// In de, this message translates to:
+  /// **'Ferien-Akzentfarbe'**
   String get holidayAccentColor;
-
-  /// Option to select no duty schedule
-  ///
-  /// In en, this message translates to:
-  /// **'No duty schedule'**
-  String get noDutySchedule;
-
-  /// Title for selecting partner duty group
-  ///
-  /// In en, this message translates to:
-  /// **'Select Partner Duty Group'**
-  String get selectPartnerDutyGroup;
-
-  /// Message shown when no partner duty schedule is selected
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a partner duty schedule first'**
-  String get selectPartnerDutyScheduleFirst;
-
-  /// Message shown when no duty schedule is selected
-  ///
-  /// In en, this message translates to:
-  /// **'Please select a duty schedule first'**
-  String get selectMyDutyScheduleFirst;
-
-  /// Error message when clearing active config fails
-  ///
-  /// In en, this message translates to:
-  /// **'Error clearing active config'**
-  String get errorClearingActiveConfig;
-
-  /// Error message when setting active config fails
-  ///
-  /// In en, this message translates to:
-  /// **'Error setting active config'**
-  String get errorSettingActiveConfig;
 
   /// Title for the about dialog
   ///
-  /// In en, this message translates to:
-  /// **'About'**
+  /// In de, this message translates to:
+  /// **'Über'**
   String get about;
 
   /// Description text shown in the about dialog
   ///
-  /// In en, this message translates to:
-  /// **'Dienstplan is a simple and efficient app for managing police duty schedules. It provides an overview of your shifts, supports offline access, and offers a duty group view optimized for police officers.'**
+  /// In de, this message translates to:
+  /// **'Dienstplan ist eine einfache und effiziente App zur Verwaltung von Polizei-Dienstplänen. Sie bietet dir einen Überblick über deine Schichten, unterstützt Offline-Zugriff und bietet eine Dienstgruppen-Ansicht, die für Polizeibeamte optimiert ist.'**
   String get aboutDescription;
 
   /// Disclaimer text shown in the about dialog
   ///
-  /// In en, this message translates to:
-  /// **'This app is not an official product of any authority or government agency. Dienstplan App is an unofficial tool developed independently and is not affiliated with the police or any government entity.'**
+  /// In de, this message translates to:
+  /// **'Diese App ist kein offizielles Produkt einer Behörde oder staatlichen Einrichtung. Die Dienstplan App ist ein inoffizielles Hilfsmittel, das unabhängig entwickelt wurde und steht in keinerlei Verbindung zur Polizei oder anderen staatlichen Stellen.'**
   String get aboutDisclaimer;
 
   /// Title for the credits section
   ///
-  /// In en, this message translates to:
-  /// **'Credits'**
+  /// In de, this message translates to:
+  /// **'Danksagungen'**
   String get credits;
 
   /// Credits text for Mehr-Schulferien.de
   ///
-  /// In en, this message translates to:
-  /// **'School holiday and public holiday data is provided by Mehr-Schulferien.de. Thank you for the free API and great work!'**
+  /// In de, this message translates to:
+  /// **'Schulferien- und Feiertagsdaten werden von Mehr-Schulferien.de bereitgestellt. Vielen Dank für die kostenlose API und die großartige Arbeit!'**
   String get mehrSchulferienCredits;
 
   /// Link text to visit mehr-schulferien.de
   ///
-  /// In en, this message translates to:
-  /// **'Visit Mehr-Schulferien.de'**
+  /// In de, this message translates to:
+  /// **'Mehr-Schulferien.de besuchen'**
   String get visitMehrSchulferien;
 
   /// Full disclaimer text for the disclaimer popup
   ///
-  /// In en, this message translates to:
-  /// **'This application is not an official product of any government authority or agency. The Dienstplan App has been developed independently and is not officially affiliated with the police or any government entity.\n\nThe data used in this application originates from publicly accessible information materials of the police unions GdP (Gewerkschaft der Polizei) and DPolG (Deutsche Polizeigewerkschaft). Only publicly available information has been utilized. No internal or confidential agency data has been published or processed without authorization.\n\nThis application is intended for private use only and makes no claim to the completeness or accuracy of the information provided.'**
+  /// In de, this message translates to:
+  /// **'Diese Anwendung ist kein offizielles Produkt einer Behörde oder Regierungseinrichtung. Die Dienstplan App wurde unabhängig entwickelt und steht in keiner offiziellen Verbindung zur Polizei oder anderen staatlichen Stellen.\n\nDie in dieser Anwendung verwendeten Daten stammen aus öffentlich zugänglichen Informationsmaterialien der Polizeigewerkschaften GdP (Gewerkschaft der Polizei) und DPolG (Deutsche Polizeigewerkschaft). Es wurden ausschließlich öffentlich verfügbare Informationen verwendet. Keine behördeninternen oder vertraulichen Daten wurden unbefugt veröffentlicht oder verarbeitet.\n\nDiese Anwendung dient ausschließlich der privaten Nutzung und erhebt keinen Anspruch auf Vollständigkeit oder Richtigkeit der bereitgestellten Informationen.'**
   String get disclaimerLong;
-
-  /// Title for duty group selection step
-  ///
-  /// In en, this message translates to:
-  /// **'Which duty group are you in?'**
-  String get selectDutyGroup;
 
   /// Message for duty group selection step
   ///
-  /// In en, this message translates to:
-  /// **'Select your duty group so we can show you the right information.'**
+  /// In de, this message translates to:
+  /// **'Wähle deine Dienstgruppe aus, damit wir dir die richtigen Informationen anzeigen können.'**
   String get selectDutyGroupMessage;
 
   /// Message when user already has a duty group set
   ///
-  /// In en, this message translates to:
-  /// **'You can change or keep your duty group here.'**
+  /// In de, this message translates to:
+  /// **'Du kannst deine Dienstgruppe hier ändern oder beibehalten.'**
   String get myDutyGroupMessage;
 
   /// Back button text
   ///
-  /// In en, this message translates to:
-  /// **'Back'**
+  /// In de, this message translates to:
+  /// **'Zurück'**
   String get back;
 
   /// Label for my duty group setting
   ///
-  /// In en, this message translates to:
-  /// **'My Duty Group'**
+  /// In de, this message translates to:
+  /// **'Meine Dienstgruppe'**
   String get myDutyGroup;
 
   /// Title for my duty group selection dialog
   ///
-  /// In en, this message translates to:
-  /// **'Select My Duty Group'**
+  /// In de, this message translates to:
+  /// **'Meine Dienstgruppe auswählen'**
   String get selectMyDutyGroup;
 
   /// Text shown when no my duty group is selected
   ///
-  /// In en, this message translates to:
-  /// **'No duty group selected'**
+  /// In de, this message translates to:
+  /// **'Keine Dienstgruppe ausgewählt'**
   String get noMyDutyGroup;
 
   /// Text for no duty group option in selection dialogs
   ///
-  /// In en, this message translates to:
-  /// **'No duty group'**
+  /// In de, this message translates to:
+  /// **'Keine Dienstgruppe'**
   String get noDutyGroup;
-
-  /// Description for no my duty group option
-  ///
-  /// In en, this message translates to:
-  /// **'No duty group abbreviations will be shown on the calendar'**
-  String get noMyDutyGroupDescription;
 
   /// Title for schedule settings section
   ///
-  /// In en, this message translates to:
-  /// **'Schedule'**
+  /// In de, this message translates to:
+  /// **'Dienstplan'**
   String get schedule;
 
   /// Title for general app settings section
   ///
-  /// In en, this message translates to:
-  /// **'General'**
+  /// In de, this message translates to:
+  /// **'Allgemein'**
   String get app;
 
   /// Label for theme mode selector
   ///
-  /// In en, this message translates to:
-  /// **'Theme'**
+  /// In de, this message translates to:
+  /// **'Design'**
   String get themeMode;
 
   /// Light theme option
   ///
-  /// In en, this message translates to:
-  /// **'Light'**
+  /// In de, this message translates to:
+  /// **'Hell'**
   String get themeModeLight;
 
   /// Dark theme option
   ///
-  /// In en, this message translates to:
-  /// **'Dark'**
+  /// In de, this message translates to:
+  /// **'Dunkel'**
   String get themeModeDark;
 
   /// System theme option
   ///
-  /// In en, this message translates to:
+  /// In de, this message translates to:
   /// **'System'**
   String get themeModeSystem;
 
-  /// Description text for theme selection step
+  /// Beschreibungstext für den Design-Auswahlschritt
   ///
-  /// In en, this message translates to:
-  /// **'Choose how the app should look. You can change this at any time in Settings.'**
+  /// In de, this message translates to:
+  /// **'Wähle, wie die App aussehen soll. Du kannst das jederzeit in den Einstellungen ändern.'**
   String get themeModeDescription;
 
   /// Title for legal section
   ///
-  /// In en, this message translates to:
-  /// **'Legal'**
+  /// In de, this message translates to:
+  /// **'Rechtliches'**
   String get legal;
 
   /// Title for privacy policy option
   ///
-  /// In en, this message translates to:
-  /// **'Privacy Policy'**
+  /// In de, this message translates to:
+  /// **'Datenschutzerklärung'**
   String get privacyPolicy;
-
-  /// Title for disclaimer option
-  ///
-  /// In en, this message translates to:
-  /// **'Disclaimer'**
-  String get disclaimer;
 
   /// Title for Sentry analytics and error reporting setting
   ///
-  /// In en, this message translates to:
-  /// **'Analytics & Error Reporting'**
+  /// In de, this message translates to:
+  /// **'Analysen & Fehlerberichte'**
   String get sentryAnalytics;
 
   /// Description for Sentry analytics setting
   ///
-  /// In en, this message translates to:
-  /// **'Help improve the app by sending anonymous usage data and error reports'**
+  /// In de, this message translates to:
+  /// **'Hilf bei der Verbesserung der App durch das Senden anonymisierter Nutzungsdaten und Fehlerberichte'**
   String get sentryAnalyticsDescription;
 
   /// Title for Sentry session replay setting
   ///
-  /// In en, this message translates to:
-  /// **'Session Replay'**
+  /// In de, this message translates to:
+  /// **'Sitzungsaufzeichnung'**
   String get sentryReplay;
 
   /// Description for Sentry session replay setting
   ///
-  /// In en, this message translates to:
-  /// **'Record user interactions to help debug issues (only when analytics is enabled)'**
+  /// In de, this message translates to:
+  /// **'Nutzereingaben aufzeichnen, um bei der Fehlerbehebung zu helfen (nur wenn Analysen aktiviert sind)'**
   String get sentryReplayDescription;
 
   /// Title for privacy settings section
   ///
-  /// In en, this message translates to:
-  /// **'Privacy'**
+  /// In de, this message translates to:
+  /// **'Datenschutz'**
   String get privacy;
-
-  /// Label for filter status text
-  ///
-  /// In en, this message translates to:
-  /// **'Filtered by'**
-  String get filteredBy;
 
   /// Label for showing all items (no filter)
   ///
-  /// In en, this message translates to:
-  /// **'All'**
+  /// In de, this message translates to:
+  /// **'Alle'**
   String get all;
 
-  /// Title for calendar export option
+  /// Titel für die Kalenderexport-Option
   ///
-  /// In en, this message translates to:
-  /// **'Export Calendar'**
+  /// In de, this message translates to:
+  /// **'Kalender exportieren'**
   String get exportCalendar;
 
-  /// Description for calendar export option
+  /// Beschreibung für die Kalenderexport-Option
   ///
-  /// In en, this message translates to:
-  /// **'Export duty entries as an .ics calendar file'**
+  /// In de, this message translates to:
+  /// **'Exportiere Diensteinträge als .ics-Kalenderdatei'**
   String get exportCalendarDescription;
 
-  /// Label for export start date
+  /// Beschriftung für das Export-Startdatum
   ///
-  /// In en, this message translates to:
-  /// **'Start date'**
+  /// In de, this message translates to:
+  /// **'Startdatum'**
   String get exportCalendarStartDate;
 
-  /// Label for export end date
+  /// Beschriftung für das Export-Enddatum
   ///
-  /// In en, this message translates to:
-  /// **'End date'**
+  /// In de, this message translates to:
+  /// **'Enddatum'**
   String get exportCalendarEndDate;
 
-  /// Label for including partner schedule in export
+  /// Beschriftung für das Einschließen des Partnerdienstplans
   ///
-  /// In en, this message translates to:
-  /// **'Include partner schedule'**
+  /// In de, this message translates to:
+  /// **'Partnerdienstplan einschließen'**
   String get exportCalendarIncludePartner;
 
-  /// Description for including partner schedule in export
+  /// Beschreibung für das Einschließen des Partnerdienstplans
   ///
-  /// In en, this message translates to:
-  /// **'Add the configured partner duty group to the export'**
+  /// In de, this message translates to:
+  /// **'Fügt die konfigurierte Partnerdienstgruppe zum Export hinzu'**
   String get exportCalendarIncludePartnerDescription;
 
-  /// Short label prepended to partner calendar event titles in ICS export (before colon)
+  /// Kurzes Präfix vor Partner-Terminen im ICS-Export (vor dem Doppelpunkt)
   ///
-  /// In en, this message translates to:
+  /// In de, this message translates to:
   /// **'Partner'**
   String get exportCalendarPartnerSummaryPrefix;
 
-  /// Label for including holidays in export
+  /// Aktion: ICS-Datei teilen
   ///
-  /// In en, this message translates to:
-  /// **'Include holidays'**
-  String get exportCalendarIncludeHolidays;
-
-  /// Description for including holidays in export
-  ///
-  /// In en, this message translates to:
-  /// **'Add configured school holidays to the export'**
-  String get exportCalendarIncludeHolidaysDescription;
-
-  /// Button label for starting calendar export
-  ///
-  /// In en, this message translates to:
-  /// **'Export'**
-  String get exportCalendarButton;
-
-  /// Action: share ICS file
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
+  /// In de, this message translates to:
+  /// **'Teilen'**
   String get exportCalendarActionShare;
 
-  /// Subtitle for share action
+  /// Untertitel für die Teilen-Aktion
   ///
-  /// In en, this message translates to:
-  /// **'Send via other apps'**
+  /// In de, this message translates to:
+  /// **'Über andere Apps versenden'**
   String get exportCalendarActionShareSubtitle;
 
-  /// Action: save ICS file
+  /// Aktion: ICS-Datei speichern
   ///
-  /// In en, this message translates to:
-  /// **'Save to device'**
+  /// In de, this message translates to:
+  /// **'Auf dem Gerät speichern'**
   String get exportCalendarActionSave;
 
-  /// Subtitle for save action
+  /// Untertitel für die Speichern-Aktion
   ///
-  /// In en, this message translates to:
-  /// **'Save to Downloads or a chosen folder'**
+  /// In de, this message translates to:
+  /// **'In Downloads oder gewähltem Ordner sichern'**
   String get exportCalendarActionSaveSubtitle;
 
-  /// Action: open ICS in external app
+  /// Aktion: ICS mit externer App öffnen
   ///
-  /// In en, this message translates to:
-  /// **'Open with calendar app'**
+  /// In de, this message translates to:
+  /// **'Mit Kalender-App öffnen'**
   String get exportCalendarActionOpen;
 
-  /// Subtitle for open action
+  /// Untertitel für die Öffnen-Aktion
   ///
-  /// In en, this message translates to:
-  /// **'Import directly into your calendar app'**
+  /// In de, this message translates to:
+  /// **'Direkt in die Kalender-App importieren'**
   String get exportCalendarActionOpenSubtitle;
 
-  /// Short label for share in the export action button row (avoids overflow)
+  /// Kurzbeschriftung Teilen in der Export-Aktionszeile (Overflow vermeiden)
   ///
-  /// In en, this message translates to:
-  /// **'Share'**
+  /// In de, this message translates to:
+  /// **'Teilen'**
   String get exportCalendarActionRowShare;
 
-  /// Short label for save in the export action button row
+  /// Kurzbeschriftung Speichern in der Export-Aktionszeile
   ///
-  /// In en, this message translates to:
-  /// **'Save'**
+  /// In de, this message translates to:
+  /// **'Speichern'**
   String get exportCalendarActionRowSave;
 
-  /// Short label for open-in-calendar in the export action button row
+  /// Kurzbeschriftung Kalender öffnen in der Export-Aktionszeile
   ///
-  /// In en, this message translates to:
-  /// **'Open'**
+  /// In de, this message translates to:
+  /// **'In Kalender'**
   String get exportCalendarActionRowOpen;
 
-  /// Button to return to export configuration
+  /// Erfolg nach Teilen
   ///
-  /// In en, this message translates to:
-  /// **'Back to configuration'**
-  String get exportCalendarBackButton;
-
-  /// Success after share
-  ///
-  /// In en, this message translates to:
-  /// **'Calendar file shared'**
+  /// In de, this message translates to:
+  /// **'Kalenderdatei geteilt'**
   String get exportCalendarShareSuccess;
 
-  /// Success after save
+  /// Erfolg nach Speichern
   ///
-  /// In en, this message translates to:
-  /// **'Calendar file saved'**
+  /// In de, this message translates to:
+  /// **'Kalenderdatei gespeichert'**
   String get exportCalendarSaveSuccess;
 
-  /// Success after open
+  /// Erfolg nach Öffnen mit externer App
   ///
-  /// In en, this message translates to:
-  /// **'Calendar file opened'**
+  /// In de, this message translates to:
+  /// **'Kalenderdatei geöffnet'**
   String get exportCalendarOpenSuccess;
 
-  /// User dismissed save dialog
+  /// Nutzer hat den Speichern-Dialog abgebrochen
   ///
-  /// In en, this message translates to:
-  /// **'Save cancelled.'**
+  /// In de, this message translates to:
+  /// **'Speichern abgebrochen.'**
   String get exportCalendarSaveCancelled;
 
-  /// No handler for ICS
+  /// Kein Handler für ICS-Dateien
   ///
-  /// In en, this message translates to:
-  /// **'No app found to open this file.'**
+  /// In de, this message translates to:
+  /// **'Keine passende App zum Öffnen dieser Datei gefunden.'**
   String get exportCalendarOpenNoApp;
 
-  /// Generic error when opening ICS
+  /// Generischer Fehler beim Öffnen der ICS-Datei
   ///
-  /// In en, this message translates to:
-  /// **'Could not open the file.'**
+  /// In de, this message translates to:
+  /// **'Datei konnte nicht geöffnet werden.'**
   String get exportCalendarOpenFailed;
 
-  /// Subject for shared calendar export
+  /// Betreff für den geteilten Kalenderexport
   ///
-  /// In en, this message translates to:
-  /// **'Duty schedule calendar export'**
+  /// In de, this message translates to:
+  /// **'Dienstplan Kalenderexport'**
   String get exportCalendarSubject;
 
-  /// Share text for calendar export
+  /// Freigabetext für den Kalenderexport
   ///
-  /// In en, this message translates to:
-  /// **'Import this file into your calendar app.'**
+  /// In de, this message translates to:
+  /// **'Importiere diese Datei in deine Kalender-App.'**
   String get exportCalendarShareText;
 
-  /// Validation message for invalid export range
+  /// Validierungsmeldung für einen ungültigen Exportzeitraum
   ///
-  /// In en, this message translates to:
-  /// **'The start date must be before or equal to the end date.'**
+  /// In de, this message translates to:
+  /// **'Das Startdatum muss vor oder auf dem Enddatum liegen.'**
   String get exportCalendarInvalidRange;
 
-  /// Validation message when no active schedule is configured
+  /// Validierungsmeldung, wenn kein aktiver Dienstplan konfiguriert ist
   ///
-  /// In en, this message translates to:
-  /// **'Select your duty schedule before exporting.'**
+  /// In de, this message translates to:
+  /// **'Wähle zuerst deinen Dienstplan aus, bevor du exportierst.'**
   String get exportCalendarNoActiveSchedule;
 
-  /// Message when partner export is unavailable
+  /// Meldung, wenn der Partnerexport nicht verfügbar ist
   ///
-  /// In en, this message translates to:
-  /// **'Configure a partner schedule and duty group to enable this option.'**
+  /// In de, this message translates to:
+  /// **'Konfiguriere einen Partnerdienstplan und eine Dienstgruppe, um diese Option zu aktivieren.'**
   String get exportCalendarPartnerUnavailable;
 
-  /// Message when holiday export is unavailable
+  /// Meldung, wenn keine Kalendereinträge für den Export verfügbar sind
   ///
-  /// In en, this message translates to:
-  /// **'Configure school holidays to enable this option.'**
-  String get exportCalendarHolidayUnavailable;
-
-  /// Message when no calendar entries are available for export
-  ///
-  /// In en, this message translates to:
-  /// **'No calendar entries were found for the selected range.'**
+  /// In de, this message translates to:
+  /// **'Für den ausgewählten Zeitraum wurden keine Kalendereinträge gefunden.'**
   String get exportCalendarEmpty;
 
-  /// Message when calendar export fails
+  /// Meldung, wenn der Kalenderexport fehlschlägt
   ///
-  /// In en, this message translates to:
-  /// **'Calendar export failed.'**
+  /// In de, this message translates to:
+  /// **'Kalenderexport fehlgeschlagen.'**
   String get exportCalendarError;
-
-  /// Message when calendar export succeeds
-  ///
-  /// In en, this message translates to:
-  /// **'{entryCount} calendar entries exported'**
-  String exportCalendarSuccess(int entryCount);
 
   /// Title for share app option
   ///
-  /// In en, this message translates to:
-  /// **'Share App'**
+  /// In de, this message translates to:
+  /// **'App weiterempfehlen'**
   String get shareApp;
 
   /// Description for share app option
   ///
-  /// In en, this message translates to:
-  /// **'Recommend the app to colleagues'**
+  /// In de, this message translates to:
+  /// **'Empfehle die App Kollegen'**
   String get shareAppDescription;
 
   /// Message template for sharing the app
   ///
-  /// In en, this message translates to:
-  /// **'Hey! 👋\n\nI found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHope you like it! 🚔'**
+  /// In de, this message translates to:
+  /// **'Hey! 👋\n\nIch habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nApp Store: {appStoreUrl}\nPlay Store: {playStoreUrl}\n\nHoffe, sie gefällt dir! 🚔'**
   String shareAppMessage(String appStoreUrl, String playStoreUrl);
 
   /// Subject for share app email
   ///
-  /// In en, this message translates to:
-  /// **'Duty Schedule App Recommendation'**
+  /// In de, this message translates to:
+  /// **'Dienstplan App Empfehlung'**
   String get shareAppSubject;
 
   /// Error message when sharing app fails
   ///
-  /// In en, this message translates to:
-  /// **'Error sharing app'**
+  /// In de, this message translates to:
+  /// **'Fehler beim Teilen der App'**
   String get shareAppError;
 
   /// Message for the share image (without links)
   ///
-  /// In en, this message translates to:
-  /// **'I found this great Duty Schedule App that makes viewing duty schedules super easy for police officers. You should check it out! 📱\n\nHope you like it! 🚔'**
+  /// In de, this message translates to:
+  /// **'Ich habe diese tolle Dienstplan App gefunden, die das Anzeigen von Dienstplänen für Polizeibeamte super einfach macht. Du solltest sie dir mal anschauen! 📱\n\nHoffe, sie gefällt dir! 🚔'**
   String get shareAppImageMessage;
 
   /// Title for other settings section
   ///
-  /// In en, this message translates to:
-  /// **'Other'**
+  /// In de, this message translates to:
+  /// **'Weiteres'**
   String get other;
 
   /// Title for contact option
   ///
-  /// In en, this message translates to:
-  /// **'Contact'**
+  /// In de, this message translates to:
+  /// **'Kontakt'**
   String get contact;
 
   /// Description for contact option
   ///
-  /// In en, this message translates to:
-  /// **'Get in touch with us'**
+  /// In de, this message translates to:
+  /// **'Kontaktiere uns'**
   String get contactDescription;
 
-  /// Generic validation error message
+  /// Allgemeine Validierungsfehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'Invalid input'**
+  /// In de, this message translates to:
+  /// **'Ungültige Eingabe'**
   String get genericValidationError;
 
-  /// Generic not found error message
+  /// Allgemeine Nicht-gefunden-Fehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'Requested item was not found'**
+  /// In de, this message translates to:
+  /// **'Das angeforderte Element wurde nicht gefunden'**
   String get genericNotFoundError;
 
-  /// Generic conflict error message
+  /// Allgemeine Netzwerk-Fehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'Conflict occurred'**
-  String get genericConflictError;
-
-  /// Generic unauthorized error message
-  ///
-  /// In en, this message translates to:
-  /// **'You are not authorized'**
-  String get genericUnauthorizedError;
-
-  /// Generic forbidden error message
-  ///
-  /// In en, this message translates to:
-  /// **'Access is forbidden'**
-  String get genericForbiddenError;
-
-  /// Generic network error message
-  ///
-  /// In en, this message translates to:
-  /// **'Network error. Please check your connection.'**
+  /// In de, this message translates to:
+  /// **'Netzwerkfehler. Bitte überprüfe deine Verbindung.'**
   String get genericNetworkError;
 
-  /// Generic timeout error message
+  /// Allgemeine Timeout-Fehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'The operation timed out'**
+  /// In de, this message translates to:
+  /// **'Der Vorgang hat zu lange gedauert'**
   String get genericTimeoutError;
 
-  /// Generic storage error message
+  /// Allgemeine Speicher-Fehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'Storage error occurred'**
+  /// In de, this message translates to:
+  /// **'Speicherfehler ist aufgetreten'**
   String get genericStorageError;
 
-  /// Generic serialization error message
+  /// Allgemeine Serialisierungs-Fehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'Data processing error'**
+  /// In de, this message translates to:
+  /// **'Fehler bei der Datenverarbeitung'**
   String get genericSerializationError;
 
-  /// Generic cancellation error message
+  /// Allgemeine unbekannte Fehlermeldung
   ///
-  /// In en, this message translates to:
-  /// **'The operation was cancelled'**
-  String get genericCancellationError;
-
-  /// Generic unknown error message
-  ///
-  /// In en, this message translates to:
-  /// **'An unknown error occurred'**
+  /// In de, this message translates to:
+  /// **'Ein unbekannter Fehler ist aufgetreten'**
   String get genericUnknownError;
 
   /// Title for contribute option
   ///
-  /// In en, this message translates to:
-  /// **'Contribute'**
+  /// In de, this message translates to:
+  /// **'Beitragen'**
   String get contribute;
 
   /// Description for contribute option
   ///
-  /// In en, this message translates to:
-  /// **'Help with app development'**
+  /// In de, this message translates to:
+  /// **'Hilf bei der Entwicklung der App'**
   String get contributeDescription;
 
   /// Message about loving open source software
   ///
-  /// In en, this message translates to:
-  /// **'We ❤️ Open Source'**
+  /// In de, this message translates to:
+  /// **'Wir ❤️ Open Source'**
   String get weLoveOss;
 
   /// Title for partner setup step
   ///
-  /// In en, this message translates to:
-  /// **'Partner Duty Schedule'**
+  /// In de, this message translates to:
+  /// **'Partner Dienstplan'**
   String get partnerSetupTitle;
 
   /// Description for partner setup step
   ///
-  /// In en, this message translates to:
-  /// **'Optional: Set up your partner\'s duty schedule to also display their duties.'**
+  /// In de, this message translates to:
+  /// **'Optional: Richte den Dienstplan deines Partners ein, um auch dessen Dienste anzuzeigen.'**
   String get partnerSetupDescription;
 
   /// Skip button for optional partner setup
   ///
-  /// In en, this message translates to:
-  /// **'Skip'**
+  /// In de, this message translates to:
+  /// **'Überspringen'**
   String get skipPartnerSetup;
-
-  /// Title for partner config selection
-  ///
-  /// In en, this message translates to:
-  /// **'Select Partner Duty Schedule'**
-  String get selectPartnerConfig;
-
-  /// Message for partner config selection
-  ///
-  /// In en, this message translates to:
-  /// **'Select your partner\'s duty schedule.'**
-  String get selectPartnerConfigMessage;
-
-  /// Option to not set a partner config
-  ///
-  /// In en, this message translates to:
-  /// **'No Partner Duty Schedule'**
-  String get noPartnerConfig;
-
-  /// Description for no partner config option
-  ///
-  /// In en, this message translates to:
-  /// **'No partner duty schedule will be displayed'**
-  String get noPartnerConfigDescription;
 
   /// Message for partner duty group selection
   ///
-  /// In en, this message translates to:
-  /// **'Select your partner\'s duty group.'**
+  /// In de, this message translates to:
+  /// **'Wähle die Dienstgruppe deines Partners aus.'**
   String get selectPartnerDutyGroupMessage;
 
-  /// Notification message for single schedule update
+  /// Benachrichtigungsnachricht für einzelne Dienstplan-Aktualisierung
   ///
-  /// In en, this message translates to:
-  /// **'Duty schedule \"{configName}\" has been updated (Version {oldVersion} → {newVersion}). All services will be regenerated.'**
+  /// In de, this message translates to:
+  /// **'Dienstplan \"{configName}\" wurde aktualisiert (Version {oldVersion} → {newVersion}). Alle Dienste werden neu generiert.'**
   String scheduleUpdateNotification(
     String configName,
     String oldVersion,
     String newVersion,
   );
 
-  /// Notification message for multiple schedule updates
+  /// Benachrichtigungsnachricht für mehrere Dienstplan-Aktualisierungen
   ///
-  /// In en, this message translates to:
-  /// **'Multiple duty schedules have been updated: {configNames}. All services will be regenerated.'**
+  /// In de, this message translates to:
+  /// **'Mehrere Dienstpläne wurden aktualisiert: {configNames}. Alle Dienste werden neu generiert.'**
   String multipleScheduleUpdatesNotification(String configNames);
 
   /// Label for police authority filter section
   ///
-  /// In en, this message translates to:
-  /// **'Filter by Authority'**
+  /// In de, this message translates to:
+  /// **'Nach Behörde filtern'**
   String get filterByPoliceAuthority;
 
   /// Button text to clear all filters
   ///
-  /// In en, this message translates to:
-  /// **'Clear All'**
+  /// In de, this message translates to:
+  /// **'Alle löschen'**
   String get clearAll;
 
   /// Title for school holidays and public holidays section
   ///
-  /// In en, this message translates to:
-  /// **'Holidays & Public Holidays'**
+  /// In de, this message translates to:
+  /// **'Ferien & Feiertage'**
   String get schoolHolidays;
 
   /// Label for showing school holidays and public holidays toggle
   ///
-  /// In en, this message translates to:
-  /// **'Show Holidays & Public Holidays'**
+  /// In de, this message translates to:
+  /// **'Ferien & Feiertage anzeigen'**
   String get showSchoolHolidays;
 
   /// Loading text
   ///
-  /// In en, this message translates to:
-  /// **'Loading...'**
+  /// In de, this message translates to:
+  /// **'Lädt...'**
   String get loading;
 
   /// Error message when loading fails
   ///
-  /// In en, this message translates to:
-  /// **'Error loading'**
+  /// In de, this message translates to:
+  /// **'Fehler beim Laden'**
   String get errorLoading;
 
   /// Enabled status text
   ///
-  /// In en, this message translates to:
-  /// **'Enabled'**
+  /// In de, this message translates to:
+  /// **'Aktiviert'**
   String get enabled;
 
   /// Disabled status text
   ///
-  /// In en, this message translates to:
-  /// **'Disabled'**
+  /// In de, this message translates to:
+  /// **'Deaktiviert'**
   String get disabled;
 
   /// Label for federal state selection
   ///
-  /// In en, this message translates to:
-  /// **'Federal State'**
+  /// In de, this message translates to:
+  /// **'Bundesland'**
   String get federalState;
 
   /// Text when no federal state is selected
   ///
-  /// In en, this message translates to:
-  /// **'No federal state selected'**
+  /// In de, this message translates to:
+  /// **'Kein Bundesland ausgewählt'**
   String get noFederalStateSelected;
 
   /// Label for refreshing holiday data
   ///
-  /// In en, this message translates to:
-  /// **'Refresh Holiday Data'**
+  /// In de, this message translates to:
+  /// **'Feriendaten aktualisieren'**
   String get refreshHolidayData;
 
   /// Last updated time text
   ///
-  /// In en, this message translates to:
-  /// **'Last updated: {time}'**
+  /// In de, this message translates to:
+  /// **'Zuletzt aktualisiert: {time}'**
   String lastUpdated(String time);
 
   /// Text when data has not been updated yet
   ///
-  /// In en, this message translates to:
-  /// **'Not updated yet'**
+  /// In de, this message translates to:
+  /// **'Noch nicht aktualisiert'**
   String get notUpdatedYet;
 
   /// Text for very recent time
   ///
-  /// In en, this message translates to:
-  /// **'Just now'**
+  /// In de, this message translates to:
+  /// **'Gerade eben'**
   String get justNow;
 
   /// Text for minutes ago
   ///
-  /// In en, this message translates to:
-  /// **'{minutes} minutes ago'**
+  /// In de, this message translates to:
+  /// **'Vor {minutes} Minuten'**
   String minutesAgo(int minutes);
 
   /// Text for hours ago
   ///
-  /// In en, this message translates to:
-  /// **'{hours} hours ago'**
+  /// In de, this message translates to:
+  /// **'Vor {hours} Stunden'**
   String hoursAgo(int hours);
 
   /// Text for days ago
   ///
-  /// In en, this message translates to:
-  /// **'{days} days ago'**
+  /// In de, this message translates to:
+  /// **'Vor {days} Tagen'**
   String daysAgo(int days);
 
   /// Title for federal state selection dialog
   ///
-  /// In en, this message translates to:
-  /// **'Select Federal State'**
+  /// In de, this message translates to:
+  /// **'Bundesland auswählen'**
   String get selectFederalState;
 
   /// Message shown when no holiday data is available for a specific year
   ///
-  /// In en, this message translates to:
-  /// **'No holiday data available for year {year}'**
+  /// In de, this message translates to:
+  /// **'Keine Feriendaten für das Jahr {year} verfügbar'**
   String noHolidayDataForYear(int year);
 
   /// Label for vacation/regular holidays
   ///
-  /// In en, this message translates to:
-  /// **'Vacation'**
+  /// In de, this message translates to:
+  /// **'Ferien'**
   String get vacation;
 
   /// Label for public holidays
   ///
-  /// In en, this message translates to:
-  /// **'Public Holiday'**
+  /// In de, this message translates to:
+  /// **'Feiertag'**
   String get publicHoliday;
 
   /// Label for movable holidays
   ///
-  /// In en, this message translates to:
-  /// **'Movable'**
+  /// In de, this message translates to:
+  /// **'Beweglich'**
   String get movableHoliday;
-
-  /// Information about what types of holidays are displayed
-  ///
-  /// In en, this message translates to:
-  /// **'Shows school holidays and public holidays'**
-  String get holidayTypesInfo;
 
   /// Tooltip for adding a personal calendar entry
   ///
-  /// In en, this message translates to:
-  /// **'Add personal appointment or duty'**
+  /// In de, this message translates to:
+  /// **'Eigenen Termin oder Dienst eintragen'**
   String get addPersonalEntryTooltip;
 
   /// Hint for quick-add appointment field; {date} is a short calendar date
   ///
-  /// In en, this message translates to:
-  /// **'Add appt. on {date}'**
+  /// In de, this message translates to:
+  /// **'Termin am {date} hinzuf.'**
   String personalEntryQuickTitleHint(String date);
 
   /// Accessibility label for quick-add appointment field
   ///
-  /// In en, this message translates to:
-  /// **'Add appointment on {date}. Type a title, then Done.'**
+  /// In de, this message translates to:
+  /// **'Termin am {date} hinzufügen. Titel tippen, dann Fertig.'**
   String personalEntryQuickTitleSemanticLabel(String date);
 
   /// Title for new personal calendar entry sheet
   ///
-  /// In en, this message translates to:
-  /// **'New calendar entry'**
+  /// In de, this message translates to:
+  /// **'Neuer Termin'**
   String get personalEntrySheetTitleNew;
 
   /// Title for editing a personal calendar entry
   ///
-  /// In en, this message translates to:
-  /// **'Edit entry'**
+  /// In de, this message translates to:
+  /// **'Eintrag bearbeiten'**
   String get personalEntrySheetTitleEdit;
 
   /// Label for appointment kind
   ///
-  /// In en, this message translates to:
-  /// **'Appointment'**
+  /// In de, this message translates to:
+  /// **'Termin'**
   String get personalEntryKindAppointment;
 
   /// Label for personal duty kind
   ///
-  /// In en, this message translates to:
-  /// **'Own duty'**
+  /// In de, this message translates to:
+  /// **'Eigener Dienst'**
   String get personalEntryKindDuty;
 
   /// Label for personal entry date picker
   ///
-  /// In en, this message translates to:
-  /// **'Date'**
+  /// In de, this message translates to:
+  /// **'Datum'**
   String get personalEntryDateLabel;
-
-  /// Label for personal entry time range picker
-  ///
-  /// In en, this message translates to:
-  /// **'Time'**
-  String get personalEntryTimeLabel;
-
-  /// Tooltip / accessibility label for the delete icon in the personal entry sheet header
-  ///
-  /// In en, this message translates to:
-  /// **'Delete entry'**
-  String get personalEntryDeleteTooltip;
 
   /// Label for personal entry title field
   ///
-  /// In en, this message translates to:
-  /// **'Title'**
+  /// In de, this message translates to:
+  /// **'Titel'**
   String get personalEntryTitleLabel;
 
   /// Label for optional notes
   ///
-  /// In en, this message translates to:
-  /// **'Notes'**
+  /// In de, this message translates to:
+  /// **'Notizen'**
   String get personalEntryNotesLabel;
 
   /// Label for all-day toggle
   ///
-  /// In en, this message translates to:
-  /// **'All day'**
+  /// In de, this message translates to:
+  /// **'Ganztägig'**
   String get personalEntryAllDayLabel;
 
   /// Label for start time
   ///
-  /// In en, this message translates to:
-  /// **'Start'**
+  /// In de, this message translates to:
+  /// **'Beginn'**
   String get personalEntryStartTime;
-
-  /// Label for end time
-  ///
-  /// In en, this message translates to:
-  /// **'End'**
-  String get personalEntryEndTime;
 
   /// Snackbar after saving personal entry
   ///
-  /// In en, this message translates to:
-  /// **'Entry saved'**
+  /// In de, this message translates to:
+  /// **'Eintrag gespeichert'**
   String get personalEntrySaved;
 
   /// Snackbar after deleting personal entry
   ///
-  /// In en, this message translates to:
-  /// **'Entry deleted'**
+  /// In de, this message translates to:
+  /// **'Eintrag gelöscht'**
   String get personalEntryDeleted;
 
   /// Validation: empty title
   ///
-  /// In en, this message translates to:
-  /// **'Please enter a title.'**
+  /// In de, this message translates to:
+  /// **'Bitte gib einen Titel ein.'**
   String get personalEntryValidationTitle;
 
   /// Validation: missing times for timed entry
   ///
-  /// In en, this message translates to:
-  /// **'Please pick start and end time.'**
+  /// In de, this message translates to:
+  /// **'Bitte Start- und Endzeit wählen.'**
   String get personalEntryValidationTimes;
 
   /// Validation: time out of range
   ///
-  /// In en, this message translates to:
-  /// **'Invalid time of day.'**
+  /// In de, this message translates to:
+  /// **'Ungültige Uhrzeit.'**
   String get personalEntryValidationTimeRange;
 
   /// Validation: end before start
   ///
-  /// In en, this message translates to:
-  /// **'End time must be after start time.'**
+  /// In de, this message translates to:
+  /// **'Ende muss nach dem Beginn liegen.'**
   String get personalEntryValidationEndAfterStart;
 
   /// Tooltip for compact schedule list header toggle to show other duty groups
   ///
-  /// In en, this message translates to:
-  /// **'Show other duty groups'**
+  /// In de, this message translates to:
+  /// **'Andere Dienstgruppen anzeigen'**
   String get compactListShowOtherDutyGroupsTooltip;
 
   /// Tooltip for compact schedule list header toggle to hide other duty groups
   ///
-  /// In en, this message translates to:
-  /// **'Hide other duty groups'**
+  /// In de, this message translates to:
+  /// **'Andere Dienstgruppen ausblenden'**
   String get compactListHideOtherDutyGroupsTooltip;
 
   /// Recovery action label for error states
   ///
-  /// In en, this message translates to:
-  /// **'Try again'**
+  /// In de, this message translates to:
+  /// **'Erneut versuchen'**
   String get tryAgain;
 
   /// Title for the setup-load failure screen
   ///
-  /// In en, this message translates to:
-  /// **'Setup couldn\'t be loaded'**
+  /// In de, this message translates to:
+  /// **'Einrichtung konnte nicht geladen werden'**
   String get setupFailedTitle;
-
-  /// Message shown when the language service fails to initialize during setup
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t load the language settings.'**
-  String get languageLoadFailed;
 
   /// Title for the confirmation dialog before deleting a personal calendar entry
   ///
-  /// In en, this message translates to:
-  /// **'Delete entry?'**
+  /// In de, this message translates to:
+  /// **'Eintrag löschen?'**
   String get deletePersonalEntryConfirmationTitle;
 
   /// Body for the personal entry delete confirmation dialog
   ///
-  /// In en, this message translates to:
-  /// **'This entry will be removed from your calendar. This cannot be undone.'**
+  /// In de, this message translates to:
+  /// **'Der Eintrag wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.'**
   String get deletePersonalEntryConfirmationMessage;
 
   /// Empty state title in the setup config selection step when filters return no results
   ///
-  /// In en, this message translates to:
-  /// **'No duty schedules match your filter'**
+  /// In de, this message translates to:
+  /// **'Keine Dienstpläne passen zum Filter'**
   String get configSelectionEmptyTitle;
 
   /// Empty state body in the setup config selection step
   ///
-  /// In en, this message translates to:
-  /// **'Adjust the police authority filter or clear it to see more schedules.'**
+  /// In de, this message translates to:
+  /// **'Passe den Behördenfilter an oder setze ihn zurück, um mehr Dienstpläne zu sehen.'**
   String get configSelectionEmptyMessage;
 
   /// Empty state message when a config has no duty groups
   ///
-  /// In en, this message translates to:
-  /// **'This duty schedule does not provide any duty groups.'**
+  /// In de, this message translates to:
+  /// **'Dieser Dienstplan stellt keine Dienstgruppen bereit.'**
   String get dutyGroupSelectionEmptyMessage;
 }
 
@@ -1368,7 +1166,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'en'].contains(locale.languageCode);
+      <String>['de'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1379,8 +1177,6 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'de':
       return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
   }
 
   throw FlutterError(
