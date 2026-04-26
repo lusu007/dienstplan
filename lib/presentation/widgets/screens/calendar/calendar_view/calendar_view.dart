@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
+import 'package:dienstplan/presentation/state/calendar/calendar_split_layout_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
@@ -31,11 +32,11 @@ class CalendarView extends ConsumerStatefulWidget {
 
 class _CalendarViewState extends ConsumerState<CalendarView> {
   final GlobalKey _calendarKey = GlobalKey();
-  bool _isSplitLayout = false;
 
   @override
   Widget build(BuildContext context) {
     ref.watch(calendarProvider);
+    final bool isSplitLayout = ref.watch(calendarSplitLayoutProvider);
     ref.listen(scheduleCoordinatorProvider, (previous, next) {
       final DateTime? previousFocused = previous?.value?.focusedDay;
       final DateTime? currentFocused = next.value?.focusedDay;
@@ -75,7 +76,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                       children: <Widget>[
                         const CalendarHeader(),
                         const SizedBox(height: monthToGridSpacing),
-                        if (_isSplitLayout)
+                        if (isSplitLayout)
                           Expanded(
                             child: LayoutBuilder(
                               builder:
@@ -138,15 +139,11 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   }
 
   void _enterSplitLayout() {
-    setState(() {
-      _isSplitLayout = true;
-    });
+    ref.read(calendarSplitLayoutProvider.notifier).setSplitLayout(true);
   }
 
   void _exitSplitLayout() {
-    setState(() {
-      _isSplitLayout = false;
-    });
+    ref.read(calendarSplitLayoutProvider.notifier).setSplitLayout(false);
   }
 
   Future<void> _handleDaySelected(DateTime day) async {
@@ -154,7 +151,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
       return;
     }
     FocusManager.instance.primaryFocus?.unfocus();
-    if (_isSplitLayout) {
+    if (ref.read(calendarSplitLayoutProvider)) {
       return;
     }
     await SchedulesBottomSheet.show(context, day);
