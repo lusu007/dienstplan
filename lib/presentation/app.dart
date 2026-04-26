@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
+import 'package:dienstplan/core/routing/root_navigator.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
@@ -23,7 +25,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    _appRouter = AppRouter();
+    _appRouter = AppRouter(navigatorKey: rootNavigatorKey);
     _configureSystemUI();
 
     // Process any pending notifications once the UI is ready
@@ -173,7 +175,10 @@ class _MyAppState extends ConsumerState<MyApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: locale,
       routerDelegate: _appRouter.delegate(
-        navigatorObservers: () => <NavigatorObserver>[AutoRouteObserver()],
+        navigatorObservers: () => <NavigatorObserver>[
+          AutoRouteObserver(),
+          SentryNavigatorObserver(enableAutoTransactions: false),
+        ],
       ),
       routeInformationParser: _appRouter.defaultRouteParser(),
       scaffoldMessengerKey: NotificationService.scaffoldMessengerKey,

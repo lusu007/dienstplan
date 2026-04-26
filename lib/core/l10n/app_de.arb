@@ -454,9 +454,25 @@
   "@contact": {
     "description": "Title for contact option"
   },
-  "contactDescription": "Kontaktiere uns",
+  "contactDescription": "Feedback",
   "@contactDescription": {
     "description": "Description for contact option"
+  },
+  "contactDisabledFeedbackTitle": "Feedback senden",
+  "@contactDisabledFeedbackTitle": {
+    "description": "Title for dialog shown when analytics are disabled and user wants to send feedback"
+  },
+  "contactDisabledFeedbackDescription": "Sentry ist ausgeschaltet. Ohne diese Funktion können wir dein Feedback nicht empfangen.",
+  "@contactDisabledFeedbackDescription": {
+    "description": "Description in contact dialog when analytics are disabled"
+  },
+  "contactDisabledFeedbackEnable": "Analysen aktivieren",
+  "@contactDisabledFeedbackEnable": {
+    "description": "Primary action in disabled-feedback dialog"
+  },
+  "contactDisabledFeedbackCancel": "Abbrechen",
+  "@contactDisabledFeedbackCancel": {
+    "description": "Cancel action in disabled-feedback dialog"
   },
   "genericValidationError": "Das passt so nicht – bitte prüf deine Eingabe.",
   "@genericValidationError": {

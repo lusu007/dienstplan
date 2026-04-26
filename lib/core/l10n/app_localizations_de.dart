@@ -377,7 +377,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get contact => 'Kontakt';
 
   @override
-  String get contactDescription => 'Kontaktiere uns';
+  String get contactDescription => 'Feedback';
+
+  @override
+  String get contactDisabledFeedbackTitle => 'Feedback senden';
+
+  @override
+  String get contactDisabledFeedbackDescription =>
+      'Sentry ist ausgeschaltet. Ohne diese Funktion können wir dein Feedback nicht empfangen.';
+
+  @override
+  String get contactDisabledFeedbackEnable => 'Analysen aktivieren';
+
+  @override
+  String get contactDisabledFeedbackCancel => 'Abbrechen';
 
   @override
   String get genericValidationError =>

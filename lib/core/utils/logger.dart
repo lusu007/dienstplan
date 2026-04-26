@@ -4,20 +4,14 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/constants/logger_constants.dart';
+import 'package:dienstplan/data/services/sentry_service.dart';
 
 class AppLogger {
   static const String _logDirName = 'logs';
   static Directory? _logDir;
   static File? _currentLogFile;
   static const int _maxLogFiles = kMaxLogFiles;
-  static ProviderContainer? _providerContainer;
-
-  static void setProviderContainer(ProviderContainer container) {
-    _providerContainer = container;
-  }
 
   static Future<void> initialize() async {
     try {
@@ -94,31 +88,27 @@ class AppLogger {
         mode: FileMode.append,
       );
 
-      // Send to Sentry if available, enabled, and SDK initialized
+      // Send to Sentry when uploads are allowed and the SDK is ready
       try {
-        // Check if Sentry service is available and enabled via injected container
-        final sentryService = _providerContainer
-            ?.read(sentryServiceProvider)
-            .value;
-
-        if (sentryService != null &&
-            sentryService.isEnabled &&
-            Sentry.isEnabled) {
-          final sentryLevel = _mapToSentryLevel(level);
+        if (SentryService.uploadsAllowed && Sentry.isEnabled) {
           if (error != null) {
-            Sentry.logger.error(
-              message,
-              attributes: {
-                'local_level': SentryAttribute.string(level),
-                'timestamp': SentryAttribute.string(timestamp),
+            await Sentry.captureException(
+              error,
+              stackTrace: stackTrace,
+              withScope: (Scope scope) {
+                scope.setTag('logger_level', level);
+                scope.setContexts('app_logger', <String, String>{
+                  'message': message,
+                });
               },
             );
           } else {
+            final SentryLogLevel sentryLevel = _mapToSentryLevel(level);
             switch (sentryLevel) {
               case SentryLogLevel.debug:
                 Sentry.logger.debug(
                   message,
-                  attributes: {
+                  attributes: <String, SentryAttribute>{
                     'local_level': SentryAttribute.string(level),
                     'timestamp': SentryAttribute.string(timestamp),
                   },
@@ -127,7 +117,7 @@ class AppLogger {
               case SentryLogLevel.info:
                 Sentry.logger.info(
                   message,
-                  attributes: {
+                  attributes: <String, SentryAttribute>{
                     'local_level': SentryAttribute.string(level),
                     'timestamp': SentryAttribute.string(timestamp),
                   },
@@ -136,7 +126,7 @@ class AppLogger {
               case SentryLogLevel.warn:
                 Sentry.logger.warn(
                   message,
-                  attributes: {
+                  attributes: <String, SentryAttribute>{
                     'local_level': SentryAttribute.string(level),
                     'timestamp': SentryAttribute.string(timestamp),
                   },
@@ -145,7 +135,7 @@ class AppLogger {
               case SentryLogLevel.error:
                 Sentry.logger.error(
                   message,
-                  attributes: {
+                  attributes: <String, SentryAttribute>{
                     'local_level': SentryAttribute.string(level),
                     'timestamp': SentryAttribute.string(timestamp),
                   },
@@ -154,7 +144,7 @@ class AppLogger {
               case SentryLogLevel.fatal:
                 Sentry.logger.fatal(
                   message,
-                  attributes: {
+                  attributes: <String, SentryAttribute>{
                     'local_level': SentryAttribute.string(level),
                     'timestamp': SentryAttribute.string(timestamp),
                   },
@@ -163,7 +153,7 @@ class AppLogger {
               default:
                 Sentry.logger.info(
                   message,
-                  attributes: {
+                  attributes: <String, SentryAttribute>{
                     'local_level': SentryAttribute.string(level),
                     'timestamp': SentryAttribute.string(timestamp),
                   },

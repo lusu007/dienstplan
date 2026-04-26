@@ -28,7 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  sentry_flutter: ^9.16.0
+  sentry_flutter: ^9.19.0
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -49,24 +49,24 @@ dependencies:
   shared_preferences: ^2.5.5
   path_provider: ^2.1.5
   logger: ^2.7.0
-  package_info_plus: ^10.0.0
+  package_info_plus: ^10.1.0
   url_launcher: ^6.3.2
-  share_plus: ^13.0.0
+  share_plus: ^13.1.0
   # HTTP Client
   dio: ^5.9.2
   json_annotation: ^4.11.0
-  dart_flutter_version: ^1.0.36
+  dart_flutter_version: ^1.0.37
   file_saver: ^0.3.1
   open_file: ^3.5.11
-  flutter_markdown: ^0.7.7+1
+  flutter_markdown_plus: ^1.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  sentry_dart_plugin: ^3.2.1
+  sentry_dart_plugin: ^3.3.0
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
-  build_runner: ^2.13.1
+  build_runner: ^2.14.1
   riverpod_generator: ^4.0.3
   freezed: ^3.2.5
   # 10.5.x pulls dart_style/analyzer paths incompatible with riverpod_generator 4.0.3.
