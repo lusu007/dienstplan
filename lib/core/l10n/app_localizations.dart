@@ -1193,7 +1193,7 @@ abstract class AppLocalizations {
   /// Release highlights for the what's new dialog; update each release
   ///
   /// In de, this message translates to:
-  /// **'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.'**
+  /// **'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.'**
   String get whatsNewBody;
 
   /// Primary button to dismiss the what's new dialog
