@@ -54,6 +54,8 @@ Die App verwendet Drittanbieterdienste zur Stabilitätsanalyse und Verbesserung 
 
 Bei der Nutzung von Sentry können technische Informationen (z. B. IP-Adresse, Geräteinformationen, Zeitpunkt des Fehlers) an Server in den USA übermittelt werden. Wir haben mit Sentry einen Auftragsverarbeitungsvertrag (Data Processing Agreement, DPA) abgeschlossen und achten auf geeignete Garantien gemäß Art. 44 ff. DSGVO (z. B. EU-Standardvertragsklauseln).
 
+Wenn du in den Einstellungen **Kontakt** nutzt und die Funktion **Analysen & Fehlerberichte** eingeschaltet ist, kannst du über **Sentry User Feedback** freiwillig eine Nachricht, optional Name und E-Mail sowie einen Screenshot an uns senden. Diese Angaben werden ebenfalls über Sentry verarbeitet. Ist die Analysefunktion deaktiviert, zeigen wir dir einen Hinweis, dass Feedback aktuell nicht übertragen werden kann.
+
 ## 8. Ihre Rechte
 
 Sie haben das Recht auf:

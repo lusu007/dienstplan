@@ -9,6 +9,8 @@ import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/core/errors/exception_mapper.dart';
+import 'package:dienstplan/core/telemetry/sentry_telemetry.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class GenerateSchedulesUseCase {
   final ScheduleRepository _scheduleRepository;
@@ -26,11 +28,39 @@ class GenerateSchedulesUseCase {
     required DateTime startDate,
     required DateTime endDate,
   }) async {
+    final int dayCount = startDate.isAfter(endDate)
+        ? 0
+        : utcCalendarInclusiveDayCount(startDate, endDate);
+    return SentryTelemetry.traceOperation<Result<List<Schedule>>>(
+      name: 'schedule.generate',
+      operation: 'schedule.generate',
+      data: <String, dynamic>{'dayCount': dayCount},
+      run: (_) async {
+        return _execute(
+          configName: configName,
+          startDate: startDate,
+          endDate: endDate,
+          dayCount: dayCount,
+        );
+      },
+    );
+  }
+
+  Future<Result<List<Schedule>>> _execute({
+    required String configName,
+    required DateTime startDate,
+    required DateTime endDate,
+    required int dayCount,
+  }) async {
     try {
       AppLogger.d(
         'GenerateSchedulesUseCase: Generating schedules for config: $configName from $startDate to $endDate',
       );
       if (startDate.isAfter(endDate)) {
+        await _recordGenerationFailed(
+          reason: 'invalid_date_range',
+          dayCount: dayCount,
+        );
         return Result.createFailure<List<Schedule>>(
           const ValidationFailure(
             technicalMessage: 'Start date cannot be after end date',
@@ -40,6 +70,10 @@ class GenerateSchedulesUseCase {
       final Result<List<DutyScheduleConfig>> configsResult =
           await _configRepository.getConfigs();
       if (configsResult.isFailure) {
+        await _recordGenerationFailed(
+          reason: 'config_load_failed',
+          dayCount: dayCount,
+        );
         return Result.createFailure<List<Schedule>>(configsResult.failure);
       }
       final List<DutyScheduleConfig> configs = configsResult.value;
@@ -51,6 +85,10 @@ class GenerateSchedulesUseCase {
         }
       }
       if (matched == null) {
+        await _recordGenerationFailed(
+          reason: 'config_not_found',
+          dayCount: dayCount,
+        );
         return Result.createFailure<List<Schedule>>(
           ValidationFailure(
             technicalMessage: 'Configuration not found: $configName',
@@ -65,17 +103,16 @@ class GenerateSchedulesUseCase {
             configName: configName,
           );
       if (existingResult.isFailure) {
+        await _recordGenerationFailed(
+          reason: 'existing_schedule_load_failed',
+          dayCount: dayCount,
+        );
         return Result.createFailure<List<Schedule>>(existingResult.failure);
       }
       final List<Schedule> existingSchedules = existingResult.value;
       final int expectedSchedulesPerDay =
           config.expectedSchedulesPerCalendarDay;
-      final int inclusiveCalendarDays = utcCalendarInclusiveDayCount(
-        startDate,
-        endDate,
-      );
-      final int expectedTotalSchedules =
-          inclusiveCalendarDays * expectedSchedulesPerDay;
+      final int expectedTotalSchedules = dayCount * expectedSchedulesPerDay;
       const double coverageThreshold = kCoverageThreshold;
       if (existingSchedules.length >=
           expectedTotalSchedules * coverageThreshold) {
@@ -91,6 +128,11 @@ class GenerateSchedulesUseCase {
           AppLogger.d(
             'GenerateSchedulesUseCase: All schedules already exist, returning existing schedules',
           );
+          await _recordGenerationCompleted(
+            dayCount: dayCount,
+            scheduleCount: existingSchedules.length,
+            cacheHit: true,
+          );
           return Result.success<List<Schedule>>(existingSchedules);
         }
         AppLogger.d(
@@ -99,12 +141,21 @@ class GenerateSchedulesUseCase {
         final Result<List<Schedule>> missingResult =
             await _generateForMissingDates(missingDates, config);
         if (missingResult.isFailure) {
+          await _recordGenerationFailed(
+            reason: 'missing_schedule_generation_failed',
+            dayCount: dayCount,
+          );
           return missingResult;
         }
         final List<Schedule> allSchedules = <Schedule>[
           ...existingSchedules,
           ...missingResult.value,
         ];
+        await _recordGenerationCompleted(
+          dayCount: dayCount,
+          scheduleCount: allSchedules.length,
+          cacheHit: false,
+        );
         return Result.success<List<Schedule>>(allSchedules);
       }
       final List<Schedule> schedules =
@@ -117,13 +168,27 @@ class GenerateSchedulesUseCase {
         schedules,
       );
       if (saveResult.isFailure) {
+        await _recordGenerationFailed(
+          reason: 'schedule_save_failed',
+          dayCount: dayCount,
+        );
         return Result.createFailure<List<Schedule>>(saveResult.failure);
       }
       AppLogger.d(
         'GenerateSchedulesUseCase: Generated and saved ${schedules.length} schedules',
       );
+      await _recordGenerationCompleted(
+        dayCount: dayCount,
+        scheduleCount: schedules.length,
+        cacheHit: false,
+      );
       return Result.success<List<Schedule>>(schedules);
     } catch (e, stackTrace) {
+      await _recordGenerationFailed(
+        reason: 'unexpected_error',
+        dayCount: dayCount,
+        errorType: e.runtimeType.toString(),
+      );
       AppLogger.e(
         'GenerateSchedulesUseCase: Error generating schedules',
         e,
@@ -132,6 +197,42 @@ class GenerateSchedulesUseCase {
       final Failure failure = _exceptionMapper.mapToFailure(e, stackTrace);
       return Result.createFailure<List<Schedule>>(failure);
     }
+  }
+
+  Future<void> _recordGenerationCompleted({
+    required int dayCount,
+    required int scheduleCount,
+    required bool cacheHit,
+  }) {
+    return SentryTelemetry.recordBreadcrumb(
+      category: 'schedule.generate',
+      message: 'Schedule generation completed',
+      data: <String, dynamic>{
+        'dayCount': dayCount,
+        'scheduleCount': scheduleCount,
+        'cacheHit': cacheHit,
+      },
+    );
+  }
+
+  Future<void> _recordGenerationFailed({
+    required String reason,
+    required int dayCount,
+    String? errorType,
+  }) {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'reason': reason,
+      'dayCount': dayCount,
+    };
+    if (errorType != null) {
+      data['errorType'] = errorType;
+    }
+    return SentryTelemetry.recordBreadcrumb(
+      category: 'schedule.generate',
+      message: 'Schedule generation failed',
+      data: data,
+      level: SentryLevel.warning,
+    );
   }
 
   List<DateTime> _findMissingDates(

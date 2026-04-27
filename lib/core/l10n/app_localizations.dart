@@ -763,8 +763,32 @@ abstract class AppLocalizations {
   /// Description for contact option
   ///
   /// In de, this message translates to:
-  /// **'Kontaktiere uns'**
+  /// **'Feedback'**
   String get contactDescription;
+
+  /// Title for dialog shown when analytics are disabled and user wants to send feedback
+  ///
+  /// In de, this message translates to:
+  /// **'Feedback senden'**
+  String get contactDisabledFeedbackTitle;
+
+  /// Description in contact dialog when analytics are disabled
+  ///
+  /// In de, this message translates to:
+  /// **'Sentry ist ausgeschaltet. Ohne diese Funktion können wir dein Feedback nicht empfangen.'**
+  String get contactDisabledFeedbackDescription;
+
+  /// Primary action in disabled-feedback dialog
+  ///
+  /// In de, this message translates to:
+  /// **'Analysen aktivieren'**
+  String get contactDisabledFeedbackEnable;
+
+  /// Cancel action in disabled-feedback dialog
+  ///
+  /// In de, this message translates to:
+  /// **'Abbrechen'**
+  String get contactDisabledFeedbackCancel;
 
   /// Allgemeine Validierungsfehlermeldung
   ///

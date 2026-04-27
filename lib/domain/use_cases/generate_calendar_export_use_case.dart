@@ -1,4 +1,5 @@
 import 'package:dienstplan/core/errors/exception_mapper.dart';
+import 'package:dienstplan/core/telemetry/sentry_telemetry.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/domain/entities/calendar_export_entry.dart';
 import 'package:dienstplan/domain/entities/calendar_export_options.dart';
@@ -8,6 +9,7 @@ import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/failures/result.dart';
 import 'package:dienstplan/domain/use_cases/generate_schedules_use_case.dart';
 import 'package:dienstplan/domain/use_cases/get_settings_use_case.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class GenerateCalendarExportUseCase {
   final GenerateSchedulesUseCase _generateSchedulesUseCase;
@@ -25,8 +27,35 @@ class GenerateCalendarExportUseCase {
   ) async {
     final startDate = options.normalizedStartDate;
     final endDate = options.normalizedEndDate;
+    final int dayCount = startDate.isAfter(endDate)
+        ? 0
+        : endDate.difference(startDate).inDays + 1;
 
+    return SentryTelemetry.traceOperation<Result<CalendarExportPayload>>(
+      name: 'calendar.export',
+      operation: 'calendar.export',
+      data: <String, dynamic>{
+        'dayCount': dayCount,
+        'includePartner': options.includePartnerSchedule,
+      },
+      run: (_) async {
+        return _execute(options, startDate, endDate, dayCount);
+      },
+    );
+  }
+
+  Future<Result<CalendarExportPayload>> _execute(
+    CalendarExportOptions options,
+    DateTime startDate,
+    DateTime endDate,
+    int dayCount,
+  ) async {
     if (startDate.isAfter(endDate)) {
+      await _recordExportFailed(
+        reason: 'invalid_date_range',
+        dayCount: dayCount,
+        includePartner: options.includePartnerSchedule,
+      );
       return Result.createFailure<CalendarExportPayload>(
         const ValidationFailure(
           technicalMessage:
@@ -39,6 +68,11 @@ class GenerateCalendarExportUseCase {
     try {
       final settingsResult = await _getSettingsUseCase.execute();
       if (settingsResult.isFailure) {
+        await _recordExportFailed(
+          reason: 'settings_load_failed',
+          dayCount: dayCount,
+          includePartner: options.includePartnerSchedule,
+        );
         return Result.createFailure<CalendarExportPayload>(
           settingsResult.failure,
         );
@@ -47,6 +81,11 @@ class GenerateCalendarExportUseCase {
       final settings = settingsResult.valueIfSuccess;
       final activeConfigName = settings?.activeConfigName;
       if (activeConfigName == null || activeConfigName.isEmpty) {
+        await _recordExportFailed(
+          reason: 'missing_active_schedule',
+          dayCount: dayCount,
+          includePartner: options.includePartnerSchedule,
+        );
         return Result.createFailure<CalendarExportPayload>(
           const ValidationFailure(
             technicalMessage:
@@ -64,6 +103,11 @@ class GenerateCalendarExportUseCase {
         endDate: endDate,
       );
       if (activeResult.isFailure) {
+        await _recordExportFailed(
+          reason: 'active_schedule_generation_failed',
+          dayCount: dayCount,
+          includePartner: options.includePartnerSchedule,
+        );
         return Result.createFailure<CalendarExportPayload>(
           activeResult.failure,
         );
@@ -84,6 +128,11 @@ class GenerateCalendarExportUseCase {
             partnerConfigName.isEmpty ||
             partnerDutyGroup == null ||
             partnerDutyGroup.isEmpty) {
+          await _recordExportFailed(
+            reason: 'partner_schedule_unavailable',
+            dayCount: dayCount,
+            includePartner: options.includePartnerSchedule,
+          );
           return Result.createFailure<CalendarExportPayload>(
             const ValidationFailure(
               technicalMessage:
@@ -99,6 +148,11 @@ class GenerateCalendarExportUseCase {
           endDate: endDate,
         );
         if (partnerResult.isFailure) {
+          await _recordExportFailed(
+            reason: 'partner_schedule_generation_failed',
+            dayCount: dayCount,
+            includePartner: options.includePartnerSchedule,
+          );
           return Result.createFailure<CalendarExportPayload>(
             partnerResult.failure,
           );
@@ -123,6 +177,11 @@ class GenerateCalendarExportUseCase {
         });
 
       if (entries.isEmpty) {
+        await _recordExportFailed(
+          reason: 'no_entries_available',
+          dayCount: dayCount,
+          includePartner: options.includePartnerSchedule,
+        );
         return Result.createFailure<CalendarExportPayload>(
           const ValidationFailure(
             technicalMessage:
@@ -134,6 +193,15 @@ class GenerateCalendarExportUseCase {
 
       AppLogger.i(
         'Calendar export prepared successfully (startDate=${startDate.toIso8601String()}, endDate=${endDate.toIso8601String()}, includePartner=${options.includePartnerSchedule}, entryCount=${entries.length})',
+      );
+      await SentryTelemetry.recordBreadcrumb(
+        category: 'calendar.export',
+        message: 'Calendar export prepared',
+        data: <String, dynamic>{
+          'dayCount': dayCount,
+          'includePartner': options.includePartnerSchedule,
+          'entryCount': entries.length,
+        },
       );
 
       return Result.success<CalendarExportPayload>(
@@ -149,10 +217,38 @@ class GenerateCalendarExportUseCase {
         error,
         stackTrace,
       );
+      await _recordExportFailed(
+        reason: 'unexpected_error',
+        dayCount: dayCount,
+        includePartner: options.includePartnerSchedule,
+        errorType: error.runtimeType.toString(),
+      );
       return Result.createFailure<CalendarExportPayload>(
         _exceptionMapper.mapToFailure(error, stackTrace),
       );
     }
+  }
+
+  Future<void> _recordExportFailed({
+    required String reason,
+    required int dayCount,
+    required bool includePartner,
+    String? errorType,
+  }) {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'reason': reason,
+      'dayCount': dayCount,
+      'includePartner': includePartner,
+    };
+    if (errorType != null) {
+      data['errorType'] = errorType;
+    }
+    return SentryTelemetry.recordBreadcrumb(
+      category: 'calendar.export',
+      message: 'Calendar export failed',
+      data: data,
+      level: SentryLevel.warning,
+    );
   }
 
   List<CalendarExportEntry> _mapScheduleEntries({

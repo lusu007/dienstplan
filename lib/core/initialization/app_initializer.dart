@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:dienstplan/core/telemetry/sentry_telemetry.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/core/config/sentry_config.dart';
@@ -26,8 +28,6 @@ class AppInitializer {
 
     // Create ProviderContainer to pre-warm services during bootstrap
     final container = ProviderContainer();
-    // Attach container to logger so logging can access providers without new containers
-    AppLogger.setProviderContainer(container);
     // Warm critical services
     await container.read(sentryServiceProvider.future);
     await container.read(languageServiceProvider.future);
@@ -53,39 +53,97 @@ class AppInitializer {
     // Initialize heavy tasks after first frame to avoid jank
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       try {
-        AppLogger.i('Initializing schedule generation isolate');
-        await ScheduleGenerationIsolate.initialize();
-        AppLogger.i('Schedule generation isolate initialized');
-        // Warm up database lazily
-        await container.read(databaseServiceProvider.future);
-        // Start schedule coordinator so calendar/settings get data without waiting for a tap.
-        unawaited(() async {
-          try {
-            await container.read(scheduleCoordinatorProvider.future);
-          } catch (e, st) {
-            AppLogger.e(
-              'Pre-warm scheduleCoordinatorProvider failed (non-fatal)',
-              e,
-              st,
+        await SentryTelemetry.traceOperation<void>(
+          name: 'app.post_frame_initialization',
+          operation: 'app.init',
+          data: const <String, dynamic>{'phase': 'post_frame'},
+          run: (_) async {
+            await ScheduleGenerationIsolate.initialize();
+            AppLogger.i(
+              'Schedule generation isolate initialized (phase=post_frame)',
             );
-          }
-        }());
+            await SentryTelemetry.recordBreadcrumb(
+              category: 'app.lifecycle',
+              message: 'Schedule generation isolate initialized',
+              data: const <String, dynamic>{'phase': 'post_frame'},
+            );
+            // Warm up database lazily
+            await container.read(databaseServiceProvider.future);
+            await SentryTelemetry.recordBreadcrumb(
+              category: 'app.lifecycle',
+              message: 'Database pre-warm completed',
+              data: const <String, dynamic>{'phase': 'post_frame'},
+            );
+            // Start schedule coordinator so calendar/settings get data without waiting for a tap.
+            unawaited(() async {
+              try {
+                await SentryTelemetry.traceOperation<void>(
+                  name: 'app.schedule_coordinator_prewarm',
+                  operation: 'app.init',
+                  data: const <String, dynamic>{'phase': 'post_frame'},
+                  run: (_) async {
+                    await container.read(scheduleCoordinatorProvider.future);
+                  },
+                );
+                await SentryTelemetry.recordBreadcrumb(
+                  category: 'app.lifecycle',
+                  message: 'Schedule coordinator pre-warm completed',
+                  data: const <String, dynamic>{'phase': 'post_frame'},
+                );
+              } catch (e, st) {
+                await SentryTelemetry.recordBreadcrumb(
+                  category: 'app.lifecycle',
+                  message: 'Schedule coordinator pre-warm failed',
+                  data: <String, dynamic>{
+                    'errorType': e.runtimeType.toString(),
+                  },
+                  level: SentryLevel.warning,
+                );
+                AppLogger.e(
+                  'Schedule coordinator pre-warm failed '
+                  '(phase=post_frame, errorType=${e.runtimeType})',
+                  e,
+                  st,
+                );
+              }
+            }());
+          },
+        );
+        await SentryTelemetry.recordBreadcrumb(
+          category: 'app.lifecycle',
+          message: 'Post-frame initialization completed',
+          data: const <String, dynamic>{'phase': 'post_frame'},
+        );
       } catch (e, stackTrace) {
-        AppLogger.e('Error during post-frame initialization', e, stackTrace);
+        await SentryTelemetry.recordBreadcrumb(
+          category: 'app.lifecycle',
+          message: 'Post-frame initialization failed',
+          data: <String, dynamic>{'errorType': e.runtimeType.toString()},
+          level: SentryLevel.error,
+        );
+        AppLogger.e(
+          'Post-frame initialization failed '
+          '(phase=post_frame, errorType=${e.runtimeType})',
+          e,
+          stackTrace,
+        );
       }
     });
 
     return container;
   }
 
-  static Future<void> initializeSentry(SentryService sentryService) async {
+  static Future<void> initializeSentry(
+    SentryService sentryService,
+    PackageInfo packageInfo,
+  ) async {
     if (_sentryInitialized) {
       return;
     }
     await SentryFlutter.init((SentryFlutterOptions options) {
-      options.dsn = SentryConfig.dsn;
-      SentryConfig.configureOptions(options, sentryService);
+      SentryConfig.configureOptions(options, sentryService, packageInfo);
     });
     _sentryInitialized = true;
+    await sentryService.syncSdkDynamicOptionsAfterInit();
   }
 }

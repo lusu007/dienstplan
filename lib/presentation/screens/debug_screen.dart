@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/core/telemetry/sentry_telemetry.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/data/services/sentry_service.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
@@ -14,6 +16,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
@@ -21,10 +24,24 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:dart_flutter_version/dart_flutter_version.dart';
 import 'package:intl/intl.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+typedef DebugPackageInfoLoader = Future<PackageInfo> Function();
+typedef DebugScheduleFilesLoader = Future<List<File>> Function();
+typedef DebugSentryTestSender = Future<SentryId> Function();
 
 @RoutePage()
 class DebugScreen extends ConsumerStatefulWidget {
-  const DebugScreen({super.key});
+  final DebugPackageInfoLoader? loadPackageInfo;
+  final DebugScheduleFilesLoader? loadScheduleFiles;
+  final DebugSentryTestSender? sendTestSentry;
+
+  const DebugScreen({
+    super.key,
+    this.loadPackageInfo,
+    this.loadScheduleFiles,
+    this.sendTestSentry,
+  });
 
   @override
   ConsumerState<DebugScreen> createState() => _DebugScreenState();
@@ -33,6 +50,7 @@ class DebugScreen extends ConsumerStatefulWidget {
 class _DebugScreenState extends ConsumerState<DebugScreen> {
   PackageInfo? _packageInfo;
   bool _isLoading = true;
+  bool _isSendingSentryTest = false;
   List<File> _scheduleFiles = [];
 
   @override
@@ -43,7 +61,9 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   Future<void> _loadData() async {
     try {
-      final packageInfo = await PackageInfo.fromPlatform();
+      final packageInfoLoader =
+          widget.loadPackageInfo ?? PackageInfo.fromPlatform;
+      final packageInfo = await packageInfoLoader();
       await _loadScheduleFiles();
 
       setState(() {
@@ -139,6 +159,30 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                   _buildSection('Services Status', [
                     _buildInfoRow('Sentry Enabled', _getSentryStatus()),
                     _buildInfoRow('Database Status', _getDatabaseStatus()),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        key: const ValueKey('debug_send_sentry_test'),
+                        onPressed: _isSendingSentryTest
+                            ? null
+                            : _sendSentryTestEvent,
+                        icon: _isSendingSentryTest
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.bug_report_outlined),
+                        label: Text(
+                          _isSendingSentryTest
+                              ? 'Sending Sentry test...'
+                              : 'Send Sentry test event',
+                        ),
+                      ),
+                    ),
                   ]),
                   const SizedBox(height: 24),
                   _buildSchoolHolidaysSection(),
@@ -204,6 +248,92 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   String _getSentryStatus() {
     return 'Not Available';
+  }
+
+  Future<void> _sendSentryTestEvent() async {
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    setState(() => _isSendingSentryTest = true);
+
+    try {
+      final DebugSentryTestSender? injectedSender = widget.sendTestSentry;
+      if (injectedSender == null) {
+        final SentryService sentryService = await ref.read(
+          sentryServiceProvider.future,
+        );
+        if (!sentryService.isEnabled ||
+            !SentryService.uploadsAllowed ||
+            !Sentry.isEnabled) {
+          await AppLogger.w(
+            'Sentry test event skipped '
+            '(screen=debug, reason=sentry_disabled)',
+          );
+          if (!mounted) {
+            return;
+          }
+          messenger.showSnackBar(
+            const SnackBar(content: Text('Sentry is disabled')),
+          );
+          return;
+        }
+      }
+
+      final SentryId sentryId = await (injectedSender ?? _captureSentryTest)();
+      if (!mounted) {
+        return;
+      }
+
+      if (sentryId == const SentryId.empty()) {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Sentry test event was not sent')),
+        );
+        unawaited(
+          AppLogger.e(
+            'Sentry test event failed (screen=debug, reason=sentry_empty_id)',
+          ),
+        );
+        return;
+      }
+
+      messenger.showSnackBar(
+        SnackBar(content: Text('Sentry test event sent ($sentryId)')),
+      );
+      unawaited(
+        AppLogger.i(
+          'Sentry test event sent successfully '
+          '(screen=debug, eventId=$sentryId)',
+        ),
+      );
+    } catch (e, stackTrace) {
+      await AppLogger.e(
+        'Sentry test event failed '
+        '(screen=debug, errorType=${e.runtimeType})',
+        e,
+        stackTrace,
+      );
+      if (!mounted) {
+        return;
+      }
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Sentry test event failed')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSendingSentryTest = false);
+      }
+    }
+  }
+
+  Future<SentryId> _captureSentryTest() async {
+    final String buildType = _getBuildType();
+    await SentryTelemetry.recordBreadcrumb(
+      category: 'debug.sentry',
+      message: 'Sentry test event requested',
+      data: <String, dynamic>{'screen': 'debug', 'buildType': buildType},
+    );
+    return Sentry.captureMessage(
+      'Sentry test event submitted (screen=debug, buildType=$buildType)',
+      level: SentryLevel.info,
+    );
   }
 
   String _getDatabaseStatus() {
@@ -584,6 +714,12 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
   Future<void> _loadScheduleFiles() async {
     try {
+      final DebugScheduleFilesLoader? loader = widget.loadScheduleFiles;
+      if (loader != null) {
+        _scheduleFiles = await loader();
+        return;
+      }
+
       final appDir = await getApplicationDocumentsDirectory();
       final configsDir = Directory('${appDir.path}/configs');
 

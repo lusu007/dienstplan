@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dienstplan/core/config/contact_feedback_copy.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/core/utils/app_info.dart';
+import 'package:dienstplan/data/services/contact_feedback_service.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:auto_route/auto_route.dart';
@@ -26,9 +27,9 @@ class OtherSection extends ConsumerWidget {
         ),
         NavigationCard(
           icon: Icons.email_outlined,
-          title: l10n.contact,
-          subtitle: l10n.contactDescription,
-          onTap: () => _openContact(context),
+          title: ContactFeedbackCopy.title,
+          onTap: () =>
+              ContactFeedbackService.openContact(context: context, ref: ref),
         ),
         NavigationCard(
           icon: Icons.favorite_outline,
@@ -44,20 +45,6 @@ class OtherSection extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  Future<void> _openContact(BuildContext context) async {
-    try {
-      final Uri emailLaunchUri = Uri(
-        scheme: 'mailto',
-        path: AppInfo.contactEmail,
-      );
-      if (await canLaunchUrl(emailLaunchUri)) {
-        await launchUrl(emailLaunchUri);
-      }
-    } catch (e, stackTrace) {
-      AppLogger.e('OtherSection: Error opening contact email', e, stackTrace);
-    }
   }
 
   Future<void> _shareApp(BuildContext context, WidgetRef ref) async {
