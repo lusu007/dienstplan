@@ -19,6 +19,8 @@ import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+import 'package:dienstplan/presentation/state/calendar/calendar_notifier.dart';
+import 'package:dienstplan/presentation/state/calendar/calendar_ui_state.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_cache_manager.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_loading_queue.dart';
 
@@ -239,13 +241,8 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
     final ScheduleDataUiState baseline =
         state.value ?? _cachedState ?? await future;
     final List<Schedule> official = _onlyOfficialSchedules(baseline.schedules);
-    DateTime rangeStart;
-    DateTime rangeEnd;
-    if (official.isEmpty) {
-      final DateRange r = _dateRangePolicy!.computeInitialRange(DateTime.now());
-      rangeStart = r.start;
-      rangeEnd = r.end;
-    } else {
+    final List<DateRange> candidateRanges = <DateRange>[];
+    if (official.isNotEmpty) {
       DateTime minD = official.first.date;
       DateTime maxD = official.first.date;
       for (final Schedule s in official) {
@@ -256,14 +253,40 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
           maxD = s.date;
         }
       }
-      rangeStart = minD;
-      rangeEnd = maxD;
+      candidateRanges.add(_personalLoadRangeCovering(minD, maxD));
     }
-    final List<Schedule> merged = await _attachPersonalSchedules(
-      officialSchedules: official,
-      rangeStart: rangeStart,
-      rangeEnd: rangeEnd,
+    try {
+      final CalendarUiState calendarState = await ref.read(
+        calendarProvider.future,
+      );
+      final DateTime? focusedDay = calendarState.focusedDay;
+      final DateTime? selectedDay = calendarState.selectedDay;
+      if (focusedDay != null) {
+        candidateRanges.add(_dateRangePolicy!.computeFocusedRange(focusedDay));
+      }
+      if (selectedDay != null) {
+        candidateRanges.add(
+          _dateRangePolicy!.computeSelectedRange(selectedDay),
+        );
+      }
+    } catch (_) {
+      // Best-effort: fallback is handled below.
+    }
+    if (candidateRanges.isEmpty) {
+      final DateRange fallbackRange = _dateRangePolicy!.computeInitialRange(
+        DateTime.now(),
+      );
+      candidateRanges.add(fallbackRange);
+    }
+    DateRange mergedRange = candidateRanges.first;
+    for (int i = 1; i < candidateRanges.length; i++) {
+      mergedRange = DateRange.union(mergedRange, candidateRanges[i]);
+    }
+    final List<Schedule> personal = await _loadPersonalSchedulesMapped(
+      mergedRange.start,
+      mergedRange.end,
     );
+    final List<Schedule> merged = <Schedule>[...personal, ...official];
     final ScheduleDataUiState updated = baseline.copyWith(schedules: merged);
     _cachedState = updated;
     _lastCacheTime = DateTime.now();
