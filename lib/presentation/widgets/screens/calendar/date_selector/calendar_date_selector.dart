@@ -228,6 +228,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
                 child: SlideTransition(
                   position: _slideAnimation,
                   child: GlassDialogSurface(
+                    backdropBlurSigma: glassSurfaceBlurBottomSheet,
                     borderRadius: const BorderRadius.all(
                       Radius.circular(glassSurfaceRadiusXl),
                     ),

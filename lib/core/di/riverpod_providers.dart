@@ -244,10 +244,13 @@ ThemeData appTheme(Ref ref) {
       surfaceTintColor: lightScheme.surfaceTint,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
-    bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: lightScheme.surface,
-      surfaceTintColor: lightScheme.surfaceTint,
-      shape: const RoundedRectangleBorder(
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      modalElevation: 0,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     ),
@@ -310,10 +313,13 @@ ThemeData appDarkTheme(Ref ref) {
       surfaceTintColor: darkScheme.surfaceTint,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
-    bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: darkScheme.surface,
-      surfaceTintColor: darkScheme.surfaceTint,
-      shape: const RoundedRectangleBorder(
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      modalElevation: 0,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     ),

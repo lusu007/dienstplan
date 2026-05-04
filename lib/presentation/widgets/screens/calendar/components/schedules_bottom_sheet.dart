@@ -54,6 +54,8 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
   DateTime? _currentDay;
   bool _isDayUpdateInFlight = false;
   int _pendingDayDelta = 0;
+  final EnsureSelectedDayPostFrame _ensureSelectedDay =
+      EnsureSelectedDayPostFrame();
 
   DateTime get _resolvedCurrentDay => _currentDay ?? widget.day;
 
@@ -123,7 +125,7 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
     final bool hasSchedulesForDay = schedulesForDay.isNotEmpty;
     final bool isLoadingSelectedDay =
         (state?.isLoading ?? false) && !hasSchedulesForDay;
-    schedulePostFrameEnsureDayIfEmpty(
+    _ensureSelectedDay.scheduleIfEmpty(
       ref: ref,
       context: context,
       day: currentDay,
@@ -135,27 +137,31 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
       showHandleBar: true,
       heightPercentage: 0.72,
       children: <Widget>[
-        _SheetHeader(day: currentDay, l10n: l10n),
+        RepaintBoundary(
+          child: _SheetHeader(day: currentDay, l10n: l10n),
+        ),
         Expanded(
-          child: _HorizontalDaySwipeListener(
-            onSwipeLeft: () {
-              unawaited(_queueDayDeltaUpdate(1));
-            },
-            onSwipeRight: () {
-              unawaited(_queueDayDeltaUpdate(-1));
-            },
-            child: ScrollFadeMask(
-              child: DutyScheduleList(
-                schedules: schedulesForDay,
-                activeConfigName: state?.activeConfigName,
-                dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
-                dutyTypes: state?.activeConfig?.dutyTypes,
-                shouldAnimate: false,
-                isLoading: isLoadingSelectedDay,
-                selectedDay: currentDay,
-                visualStyle: DutyListVisualStyle.glassCompact,
-                topPadding: glassSpacingXl,
-                bottomPadding: glassSpacingLg,
+          child: RepaintBoundary(
+            child: _HorizontalDaySwipeListener(
+              onSwipeLeft: () {
+                unawaited(_queueDayDeltaUpdate(1));
+              },
+              onSwipeRight: () {
+                unawaited(_queueDayDeltaUpdate(-1));
+              },
+              child: ScrollFadeMask(
+                child: DutyScheduleList(
+                  schedules: schedulesForDay,
+                  activeConfigName: state?.activeConfigName,
+                  dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
+                  dutyTypes: state?.activeConfig?.dutyTypes,
+                  shouldAnimate: false,
+                  isLoading: isLoadingSelectedDay,
+                  selectedDay: currentDay,
+                  visualStyle: DutyListVisualStyle.glassCompact,
+                  topPadding: glassSpacingXl,
+                  bottomPadding: glassSpacingLg,
+                ),
               ),
             ),
           ),

@@ -13,12 +13,17 @@ class GlassDialogSurface extends StatelessWidget {
   final Widget child;
   final BorderRadiusGeometry borderRadius;
 
+  /// When null, uses [glassSurfaceBlurDialog]. Bottom sheets pass a lower sigma
+  /// via [GlassBottomSheet] to ease compositing during route animation.
+  final double? backdropBlurSigma;
+
   const GlassDialogSurface({
     super.key,
     required this.child,
     this.borderRadius = const BorderRadius.all(
       Radius.circular(glassSurfaceRadiusXl),
     ),
+    this.backdropBlurSigma,
   });
 
   @override
@@ -54,6 +59,7 @@ class GlassDialogSurface extends StatelessWidget {
       context,
       by: 1,
     );
+    final double blurSigma = backdropBlurSigma ?? glassSurfaceBlurDialog;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -86,10 +92,7 @@ class GlassDialogSurface extends StatelessWidget {
               child: AmbientBlob(color: partnerAccent, diameter: 220),
             ),
             BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: glassSurfaceBlurDialog,
-                sigmaY: glassSurfaceBlurDialog,
-              ),
+              filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
               child: Container(
                 decoration: BoxDecoration(color: tintColor),
                 child: Padding(
