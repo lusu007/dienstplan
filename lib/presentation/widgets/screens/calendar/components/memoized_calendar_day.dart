@@ -11,7 +11,19 @@ import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_schedule_lookup.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/duty_group_fallback.dart';
+
+final calendarDayScheduleLookupProvider = Provider<CalendarDayScheduleLookup>((
+  ref,
+) {
+  final List<Schedule> schedules = ref.watch(
+    scheduleCoordinatorProvider.select(
+      (state) => state.value?.schedules ?? const <Schedule>[],
+    ),
+  );
+  return CalendarDayScheduleLookup(schedules);
+});
 
 /// Optimized calendar day widget with memoization and selective provider watching
 class MemoizedCalendarDay extends ConsumerWidget {
@@ -61,10 +73,8 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final schedules = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.schedules ?? const <Schedule>[],
-      ),
+    final CalendarDayScheduleLookup scheduleLookup = ref.watch(
+      calendarDayScheduleLookupProvider,
     );
 
     final activeConfig = ref.watch(
@@ -162,7 +172,7 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
 
     final dutyData = _MemoizedDutyCalculator.calculateDutyData(
       day: day,
-      schedules: schedules,
+      scheduleLookup: scheduleLookup,
       activeConfigName: activeConfig,
       preferredGroup: effectiveMyGroup,
       partnerConfigName: effectivePartnerConfigName,
@@ -238,7 +248,7 @@ class _MemoizedDutyCalculator {
 
   static DutyData calculateDutyData({
     required DateTime day,
-    required List<Schedule> schedules,
+    required CalendarDayScheduleLookup scheduleLookup,
     required String? activeConfigName,
     required String? preferredGroup,
     required String? partnerConfigName,
@@ -264,7 +274,7 @@ class _MemoizedDutyCalculator {
       preferredGroup: preferredGroup,
       partnerConfigName: partnerConfigName,
       partnerGroup: partnerGroup,
-      schedulesHash: _getSchedulesHash(schedules, day),
+      schedulesHash: scheduleLookup.signatureForMonth(day),
       activeAbbreviationSignature: activeAbbrSig,
       partnerAbbreviationSignature: partnerAbbrSig,
     );
@@ -275,7 +285,7 @@ class _MemoizedDutyCalculator {
 
     final myDuty = _getDutyAbbreviationForDate(
       day: day,
-      schedules: schedules,
+      scheduleLookup: scheduleLookup,
       activeConfigName: activeConfigName,
       preferredGroup: preferredGroup,
       dutyTypes: activeDutyTypes,
@@ -283,7 +293,7 @@ class _MemoizedDutyCalculator {
 
     final partnerDuty = _getPartnerDutyAbbreviationForDate(
       day: day,
-      schedules: schedules,
+      scheduleLookup: scheduleLookup,
       partnerConfigName: partnerConfigName,
       partnerGroup: partnerGroup,
       dutyTypes: partnerDutyTypes,
@@ -291,7 +301,7 @@ class _MemoizedDutyCalculator {
 
     final List<String> personalTitles = _personalEntryTitlesOnDay(
       day: day,
-      schedules: schedules,
+      scheduleLookup: scheduleLookup,
     );
 
     final dutyData = DutyData(
@@ -329,35 +339,6 @@ class _MemoizedDutyCalculator {
         '$partnerAbbreviationSignature';
   }
 
-  static int _getSchedulesHash(List<Schedule> schedules, DateTime day) {
-    final int monthMarker = day.year * 100 + day.month;
-
-    final relevantSchedules = schedules.where((schedule) {
-      final scheduleDate = schedule.date;
-      return scheduleDate.year == day.year && scheduleDate.month == day.month;
-    }).toList();
-
-    // Create a content-based hash that includes key schedule properties
-    // This ensures cache invalidation when schedule content changes
-    final int contentHash = relevantSchedules.fold<int>(0, (
-      int hash,
-      Schedule schedule,
-    ) {
-      return hash ^
-          Object.hash(
-            schedule.date.day,
-            schedule.dutyTypeId,
-            schedule.dutyGroupName,
-            schedule.configName,
-            schedule.service,
-            schedule.isUserDefined,
-            schedule.personalEntryId,
-          );
-    });
-
-    return Object.hash(monthMarker, schedules.length, contentHash);
-  }
-
   static void _cleanCache() {
     final keysToRemove = _cache.keys.take(_cache.length ~/ 2).toList();
     for (final key in keysToRemove) {
@@ -367,33 +348,10 @@ class _MemoizedDutyCalculator {
 
   static List<String> _personalEntryTitlesOnDay({
     required DateTime day,
-    required List<Schedule> schedules,
+    required CalendarDayScheduleLookup scheduleLookup,
   }) {
-    final DateTime dayDate = DateTime(day.year, day.month, day.day);
-    final List<Schedule> personal = <Schedule>[];
-    for (final Schedule schedule in schedules) {
-      if (!schedule.isUserDefined) {
-        continue;
-      }
-      final DateTime scheduleDate = DateTime(
-        schedule.date.year,
-        schedule.date.month,
-        schedule.date.day,
-      );
-      if (scheduleDate.isAtSameMomentAs(dayDate)) {
-        personal.add(schedule);
-      }
-    }
-    personal.sort((Schedule a, Schedule b) {
-      final int as = a.startMinutesFromMidnight ?? -1;
-      final int bs = b.startMinutesFromMidnight ?? -1;
-      final int byTime = as.compareTo(bs);
-      if (byTime != 0) {
-        return byTime;
-      }
-      return a.service.compareTo(b.service);
-    });
-    return personal
+    return scheduleLookup
+        .personalSchedulesForDay(day)
         .map((Schedule s) {
           final String t = s.service.trim();
           return t.isEmpty ? '—' : t;
@@ -403,7 +361,7 @@ class _MemoizedDutyCalculator {
 
   static String _getDutyAbbreviationForDate({
     required DateTime day,
-    required List<Schedule> schedules,
+    required CalendarDayScheduleLookup scheduleLookup,
     required String? activeConfigName,
     required String? preferredGroup,
     required Map<String, DutyType>? dutyTypes,
@@ -413,37 +371,16 @@ class _MemoizedDutyCalculator {
         return '';
       }
 
-      final schedulesForDay = schedules.where((schedule) {
-        final scheduleDate = DateTime(
-          schedule.date.year,
-          schedule.date.month,
-          schedule.date.day,
-        );
-        final dayDate = DateTime(day.year, day.month, day.day);
-        final isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
-        final isActiveConfig = schedule.configName == activeConfigName;
-
-        return isSameDay && isActiveConfig;
-      }).toList();
-
-      if (schedulesForDay.isEmpty) {
-        return '';
-      }
-
       final preferredGroupName = preferredGroup;
 
       if (preferredGroupName != null && preferredGroupName.isNotEmpty) {
-        Schedule? preferredSchedule;
-        try {
-          preferredSchedule = schedulesForDay.firstWhere(
-            (s) =>
-                s.dutyGroupName == preferredGroupName &&
-                s.dutyTypeId.isNotEmpty &&
-                s.dutyTypeId != '-',
-          );
-        } catch (_) {
-          preferredSchedule = null;
-        }
+        final Schedule? preferredSchedule = scheduleLookup
+            .firstOfficialSchedule(
+              day: day,
+              configName: activeConfigName,
+              dutyGroupName: preferredGroupName,
+              requireDutyType: true,
+            );
         if (preferredSchedule != null) {
           return resolveDutyTypeAbbreviation(
             preferredSchedule.dutyTypeId,
@@ -451,16 +388,16 @@ class _MemoizedDutyCalculator {
           );
         }
 
-        try {
-          final preferredGroupSchedule = schedulesForDay.firstWhere(
-            (s) => s.dutyGroupName == preferredGroupName,
-          );
-          if (preferredGroupSchedule.dutyTypeId == '-' ||
-              preferredGroupSchedule.dutyTypeId.isEmpty) {
-            return '';
-          }
-        } catch (_) {
-          // No schedule for preferred group
+        final Schedule? preferredGroupSchedule = scheduleLookup
+            .firstOfficialSchedule(
+              day: day,
+              configName: activeConfigName,
+              dutyGroupName: preferredGroupName,
+            );
+        if (preferredGroupSchedule == null ||
+            preferredGroupSchedule.dutyTypeId == '-' ||
+            preferredGroupSchedule.dutyTypeId.isEmpty) {
+          return '';
         }
       }
 
@@ -476,7 +413,7 @@ class _MemoizedDutyCalculator {
 
   static String _getPartnerDutyAbbreviationForDate({
     required DateTime day,
-    required List<Schedule> schedules,
+    required CalendarDayScheduleLookup scheduleLookup,
     required String? partnerConfigName,
     required String? partnerGroup,
     required Map<String, DutyType>? dutyTypes,
@@ -485,38 +422,24 @@ class _MemoizedDutyCalculator {
       if (partnerConfigName == null || partnerConfigName.isEmpty) {
         return '';
       }
-      final DateTime dayDate = DateTime(day.year, day.month, day.day);
-      final List<Schedule> schedulesForDay = schedules.where((schedule) {
-        final scheduleDate = DateTime(
-          schedule.date.year,
-          schedule.date.month,
-          schedule.date.day,
-        );
-        final bool isSameDay = scheduleDate.isAtSameMomentAs(dayDate);
-        final bool isPartnerConfig = schedule.configName == partnerConfigName;
-        return isSameDay && isPartnerConfig;
-      }).toList();
-      if (schedulesForDay.isEmpty) {
-        return '';
-      }
       if (partnerGroup != null && partnerGroup.isNotEmpty) {
-        try {
-          final Schedule matched = schedulesForDay.firstWhere(
-            (s) =>
-                s.dutyGroupName == partnerGroup &&
-                s.dutyTypeId.isNotEmpty &&
-                s.dutyTypeId != '-',
-          );
+        final Schedule? matched = scheduleLookup.firstOfficialSchedule(
+          day: day,
+          configName: partnerConfigName,
+          dutyGroupName: partnerGroup,
+          requireDutyType: true,
+        );
+        if (matched != null) {
           return resolveDutyTypeAbbreviation(matched.dutyTypeId, dutyTypes);
-        } catch (_) {
-          try {
-            final Schedule off = schedulesForDay.firstWhere(
-              (s) => s.dutyGroupName == partnerGroup,
-            );
-            if (off.dutyTypeId == '-' || off.dutyTypeId.isEmpty) {
-              return '';
-            }
-          } catch (_) {}
+        }
+
+        final Schedule? off = scheduleLookup.firstOfficialSchedule(
+          day: day,
+          configName: partnerConfigName,
+          dutyGroupName: partnerGroup,
+        );
+        if (off == null || off.dutyTypeId == '-' || off.dutyTypeId.isEmpty) {
+          return '';
         }
       }
       return '';

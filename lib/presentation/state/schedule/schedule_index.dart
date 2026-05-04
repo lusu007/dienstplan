@@ -151,11 +151,7 @@ class ScheduleIndex {
   ) {
     final schedules = _sortedByConfig[configName];
     if (schedules == null || schedules.isEmpty) {
-      // If sorted schedules are missing, this is a logic error.
-      throw StateError(
-        'Sorted schedules for config "$configName" are missing. '
-        'Ensure _sortedByConfig is always populated for binary search.',
-      );
+      return false;
     }
 
     final List<Schedule> sortedSchedules = schedules;
@@ -293,6 +289,7 @@ class ScheduleIndex {
   void clear() {
     _coverageRanges.clear();
     _schedulesByConfig.clear();
+    _sortedByConfig.clear();
   }
 
   /// Gets debug information about the index.

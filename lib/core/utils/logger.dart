@@ -12,6 +12,17 @@ class AppLogger {
   static Directory? _logDir;
   static File? _currentLogFile;
   static const int _maxLogFiles = kMaxLogFiles;
+  static bool _diagnosticPersistenceEnabled = false;
+
+  static bool get _isRelease => const bool.fromEnvironment('dart.vm.product');
+  static bool get _isProfile => const bool.fromEnvironment('dart.vm.profile');
+
+  static bool _isDiagnosticLevel(String level) => level == 'D' || level == 'I';
+  static bool _isErrorLevel(String level) => level == 'E' || level == 'W';
+
+  static void setDiagnosticPersistenceEnabled(bool enabled) {
+    _diagnosticPersistenceEnabled = enabled;
+  }
 
   static Future<void> initialize() async {
     try {
@@ -61,17 +72,16 @@ class AppLogger {
     StackTrace? stackTrace,
   ]) async {
     try {
-      if (_currentLogFile == null) {
-        await initialize();
-      }
-
       final timestamp = DateTime.now().toIso8601String();
       final logMessage = '[$level] TIME: $timestamp $message';
+      final bool isDiagnosticLevel = _isDiagnosticLevel(level);
+      final bool shouldPersist =
+          !isDiagnosticLevel || _diagnosticPersistenceEnabled;
+      final bool shouldSendToSentry =
+          !isDiagnosticLevel || _diagnosticPersistenceEnabled;
 
-      // Reduce console noise in release/profile: print only warnings+errors
-      const bool isRelease = bool.fromEnvironment('dart.vm.product');
-      final bool isErrorLevel = level == 'E' || level == 'W';
-      if (!isRelease || isErrorLevel) {
+      // Reduce console noise in release/profile: print only warnings+errors.
+      if ((!_isRelease && !_isProfile) || _isErrorLevel(level)) {
         if (error != null) {
           print('$logMessage ERROR: $error');
           if (stackTrace != null) {
@@ -82,15 +92,26 @@ class AppLogger {
         }
       }
 
-      // Write to local log file
-      await _currentLogFile!.writeAsString(
-        '$logMessage\n',
-        mode: FileMode.append,
-      );
+      if (!shouldPersist && !shouldSendToSentry) {
+        return;
+      }
+
+      if (shouldPersist) {
+        if (_currentLogFile == null) {
+          await initialize();
+        }
+
+        await _currentLogFile!.writeAsString(
+          '$logMessage\n',
+          mode: FileMode.append,
+        );
+      }
 
       // Send to Sentry when uploads are allowed and the SDK is ready
       try {
-        if (SentryService.uploadsAllowed && Sentry.isEnabled) {
+        if (shouldSendToSentry &&
+            SentryService.uploadsAllowed &&
+            Sentry.isEnabled) {
           if (error != null) {
             await Sentry.captureException(
               error,
