@@ -26,23 +26,39 @@ List<Schedule> filterSchedulesForSingleDay(
       .toList(growable: false);
 }
 
-/// If the coordinator has no rows for the active config yet, request the day
-/// once (same side-effect as the schedules sheet). Use only from build, via
-/// post-frame, so it does not run every frame when empty.
-void schedulePostFrameEnsureDayIfEmpty({
-  required WidgetRef ref,
-  required BuildContext context,
-  required DateTime day,
-  required bool hasSchedulesForDay,
-  required bool isLoadingSelectedDay,
-  required String? activeConfigName,
-}) {
-  if (hasSchedulesForDay || isLoadingSelectedDay || activeConfigName == null) {
-    return;
-  }
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (context.mounted) {
-      ref.read(scheduleCoordinatorProvider.notifier).setSelectedDay(day);
+/// Coalesces post-frame [ScheduleCoordinatorNotifier.setSelectedDay] calls when
+/// the day list is empty so multiple builds in one frame do not enqueue
+/// redundant callbacks.
+class EnsureSelectedDayPostFrame {
+  bool _callbackScheduled = false;
+  DateTime? _pendingDay;
+
+  /// If the coordinator has no rows for the active config yet, request the day
+  /// once (same side-effect as the schedules sheet). Call from [State.build];
+  /// the actual update runs after the frame.
+  void scheduleIfEmpty({
+    required WidgetRef ref,
+    required BuildContext context,
+    required DateTime day,
+    required bool hasSchedulesForDay,
+    required bool isLoadingSelectedDay,
+    required String? activeConfigName,
+  }) {
+    if (hasSchedulesForDay || isLoadingSelectedDay || activeConfigName == null) {
+      return;
     }
-  });
+    _pendingDay = day;
+    if (_callbackScheduled) {
+      return;
+    }
+    _callbackScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _callbackScheduled = false;
+      final DateTime? targetDay = _pendingDay;
+      if (targetDay == null || !context.mounted) {
+        return;
+      }
+      ref.read(scheduleCoordinatorProvider.notifier).setSelectedDay(targetDay);
+    });
+  }
 }

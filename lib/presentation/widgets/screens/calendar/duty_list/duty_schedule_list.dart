@@ -10,6 +10,7 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/duty_
 import 'package:dienstplan/presentation/widgets/screens/calendar/duty_list/vacation_day_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
@@ -194,14 +195,38 @@ class DutyScheduleList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scheduleState = ref.watch(scheduleCoordinatorProvider).value;
-    final String? partnerConfigName = scheduleState?.partnerConfigName;
-    final int? partnerAccentColorValue = scheduleState?.partnerAccentColorValue;
-    final String? partnerDutyGroupName = scheduleState?.partnerDutyGroup;
-    final String? preferredMyDutyGroupName = scheduleState?.preferredDutyGroup;
-    final int? myAccentColorValue = scheduleState?.myAccentColorValue;
+    final String? partnerConfigName = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (AsyncValue<ScheduleUiState> s) => s.value?.partnerConfigName,
+      ),
+    );
+    final int? partnerAccentColorValue = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (AsyncValue<ScheduleUiState> s) => s.value?.partnerAccentColorValue,
+      ),
+    );
+    final String? partnerDutyGroupName = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (AsyncValue<ScheduleUiState> s) => s.value?.partnerDutyGroup,
+      ),
+    );
+    final String? preferredMyDutyGroupName = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (AsyncValue<ScheduleUiState> s) => s.value?.preferredDutyGroup,
+      ),
+    );
+    final int? myAccentColorValue = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (AsyncValue<ScheduleUiState> s) => s.value?.myAccentColorValue,
+      ),
+    );
+    final Map<String, DutyType>? coordinatorDutyTypes = ref.watch(
+      scheduleCoordinatorProvider.select(
+        (AsyncValue<ScheduleUiState> s) => s.value?.activeConfig?.dutyTypes,
+      ),
+    );
     final Map<String, DutyType>? dutyTypesMap =
-        scheduleState?.activeConfig?.dutyTypes ?? dutyTypes;
+        coordinatorDutyTypes ?? dutyTypes;
 
     final holidaysState = ref.watch(
       schoolHolidaysProvider.select((s) => s.value),

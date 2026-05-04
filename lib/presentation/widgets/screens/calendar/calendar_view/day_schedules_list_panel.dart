@@ -14,18 +14,26 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/schedule_day_fi
 
 /// In-layout day list: same data as the calendar schedules bottom sheet, glass
 /// compact typography to match the split calendar.
-class DaySchedulesListPanel extends ConsumerWidget {
+class DaySchedulesListPanel extends ConsumerStatefulWidget {
   const DaySchedulesListPanel({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DaySchedulesListPanel> createState() =>
+      _DaySchedulesListPanelState();
+}
+
+class _DaySchedulesListPanelState extends ConsumerState<DaySchedulesListPanel> {
+  final EnsureSelectedDayPostFrame _ensureSelectedDay = EnsureSelectedDayPostFrame();
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
     final DateTime day = state?.selectedDay ?? DateTime.now();
     final forDay = filterSchedulesForSingleDay(state?.schedules, day);
     final bool hasForDay = forDay.isNotEmpty;
     final bool isLoadingSelectedDay = (state?.isLoading ?? false) && !hasForDay;
 
-    schedulePostFrameEnsureDayIfEmpty(
+    _ensureSelectedDay.scheduleIfEmpty(
       ref: ref,
       context: context,
       day: day,

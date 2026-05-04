@@ -22,6 +22,7 @@ class GlassBottomSheet extends StatelessWidget {
   /// to ~92% of the screen) and scrolls if necessary. When false, uses
   /// [heightPercentage] or 80% of the screen, as before.
   final bool shrinkToContent;
+  final double backdropBlurSigma;
 
   const GlassBottomSheet({
     super.key,
@@ -30,6 +31,7 @@ class GlassBottomSheet extends StatelessWidget {
     this.heightPercentage,
     this.showHandleBar = true,
     this.shrinkToContent = false,
+    this.backdropBlurSigma = glassSurfaceBlurBottomSheet,
   });
 
   @override
@@ -51,6 +53,7 @@ class GlassBottomSheet extends StatelessWidget {
           child: ScrollConfiguration(
             behavior: sheetScrollBehavior,
             child: GlassDialogSurface(
+              backdropBlurSigma: backdropBlurSigma,
               borderRadius: const BorderRadius.all(
                 Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
               ),
@@ -104,6 +107,7 @@ class GlassBottomSheet extends StatelessWidget {
         child: ScrollConfiguration(
           behavior: sheetScrollBehavior,
           child: GlassDialogSurface(
+            backdropBlurSigma: backdropBlurSigma,
             borderRadius: const BorderRadius.all(
               Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
             ),

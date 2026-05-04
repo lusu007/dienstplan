@@ -54,6 +54,7 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
   DateTime? _currentDay;
   bool _isDayUpdateInFlight = false;
   int _pendingDayDelta = 0;
+  final EnsureSelectedDayPostFrame _ensureSelectedDay = EnsureSelectedDayPostFrame();
 
   DateTime get _resolvedCurrentDay => _currentDay ?? widget.day;
 
@@ -123,7 +124,7 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
     final bool hasSchedulesForDay = schedulesForDay.isNotEmpty;
     final bool isLoadingSelectedDay =
         (state?.isLoading ?? false) && !hasSchedulesForDay;
-    schedulePostFrameEnsureDayIfEmpty(
+    _ensureSelectedDay.scheduleIfEmpty(
       ref: ref,
       context: context,
       day: currentDay,
