@@ -53,13 +53,10 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   static const double _chipPadding = 1.0;
   static const double _chipHorizontalPadding = 3.0;
   static const double _chipVerticalPadding = 1.0;
-  static const double _chipHeight = 12.0;
-  static const double _chipBottomMargin = 2.0;
-  static const double _chipPlaceholderBottomMargin = 4.0;
 
-  /// Gap under empty primary slot when partner follows; between real chip (0)
-  /// and [_chipPlaceholderBottomMargin] for vertical balance vs. text chips.
-  static const double _kPlaceholderBottomWhenPartnerBelow = 2.5;
+  /// Empty primary slot height: same line box as badge text (fontSize 10, height 1.0).
+  static const double _chipHeight = 10.0;
+  static const double _chipBottomMargin = 2.0;
   static const double _holidayIndicatorHeight = 2.0;
 
   /// Vertical space under the day number; kept when there is no holiday so DG
@@ -214,7 +211,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         ),
       );
     } else if (hasPartner) {
-      children.add(_buildPlaceholder(hasPartnerBelow: true));
+      children.add(_buildPlaceholder());
     }
     if (children.isEmpty) {
       return const SizedBox.shrink();
@@ -454,16 +451,13 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
     );
   }
 
-  /// Empty primary slot when partner exists (non-compact).
-  Widget _buildPlaceholder({required bool hasPartnerBelow}) {
+  /// Empty primary slot when partner exists (non-compact). Matches primary
+  /// [_buildChip] margin when a partner row follows (bottom: 0).
+  Widget _buildPlaceholder() {
     return Padding(
       padding: const EdgeInsets.only(top: _chipPadding),
       child: Container(
-        margin: EdgeInsets.only(
-          bottom: hasPartnerBelow
-              ? _kPlaceholderBottomWhenPartnerBelow
-              : _chipPlaceholderBottomMargin,
-        ),
+        margin: EdgeInsets.zero,
         padding: const EdgeInsets.symmetric(
           horizontal: _chipHorizontalPadding,
           vertical: _chipVerticalPadding,
