@@ -44,7 +44,9 @@ class EnsureSelectedDayPostFrame {
     required bool isLoadingSelectedDay,
     required String? activeConfigName,
   }) {
-    if (hasSchedulesForDay || isLoadingSelectedDay || activeConfigName == null) {
+    if (hasSchedulesForDay ||
+        isLoadingSelectedDay ||
+        activeConfigName == null) {
       return;
     }
     _pendingDay = day;

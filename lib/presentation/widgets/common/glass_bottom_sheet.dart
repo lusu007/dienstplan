@@ -39,7 +39,6 @@ class GlassBottomSheet extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final ScrollBehavior sheetScrollBehavior = _BottomSheetScrollBehavior();
     if (shrinkToContent) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -50,43 +49,40 @@ class GlassBottomSheet extends StatelessWidget {
         ),
         child: ConstrainedBox(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.92),
-          child: ScrollConfiguration(
-            behavior: sheetScrollBehavior,
-            child: GlassDialogSurface(
-              backdropBlurSigma: backdropBlurSigma,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (showHandleBar) _buildDragHandleBar(isDark: isDark),
-                    if (title != null && title!.isNotEmpty)
-                      _buildTitle(context: context, colorScheme: colorScheme),
-                    if (children.isNotEmpty)
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: ScrollFadeMask(
-                          // Sticky header above + subtle dissolve of scrolled
-                          // content beneath it.
-                          topFadeFraction: _kSheetTopFadeFraction,
-                          bottomFadeFraction: _kSheetBottomFadeFraction,
-                          child: SingleChildScrollView(
-                            child: children.length == 1
-                                ? children.first
-                                : Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: children,
-                                  ),
-                          ),
+          child: GlassDialogSurface(
+            backdropBlurSigma: backdropBlurSigma,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showHandleBar) _buildDragHandleBar(isDark: isDark),
+                  if (title != null && title!.isNotEmpty)
+                    _buildTitle(context: context, colorScheme: colorScheme),
+                  if (children.isNotEmpty)
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: ScrollFadeMask(
+                        // Sticky header above + subtle dissolve of scrolled
+                        // content beneath it.
+                        topFadeFraction: _kSheetTopFadeFraction,
+                        bottomFadeFraction: _kSheetBottomFadeFraction,
+                        child: SingleChildScrollView(
+                          child: children.length == 1
+                              ? children.first
+                              : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: children,
+                                ),
                         ),
                       ),
-                    const SizedBox(height: glassSpacingMd),
-                  ],
-                ),
+                    ),
+                  const SizedBox(height: glassSpacingMd),
+                ],
               ),
             ),
           ),
@@ -104,41 +100,38 @@ class GlassBottomSheet extends StatelessWidget {
       ),
       child: SizedBox(
         height: height,
-        child: ScrollConfiguration(
-          behavior: sheetScrollBehavior,
-          child: GlassDialogSurface(
-            backdropBlurSigma: backdropBlurSigma,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: Column(
-                children: [
-                  if (showHandleBar) _buildDragHandleBar(isDark: isDark),
-                  if (title != null && title!.isNotEmpty)
-                    _buildTitle(context: context, colorScheme: colorScheme),
-                  if (children.isNotEmpty)
-                    Expanded(
-                      // Only auto-fade single-child sheets (the common case:
-                      // a single ListView/GridView/ScrollView). Multi-child
-                      // sheets (e.g. filter + list) must apply ScrollFadeMask
-                      // themselves on the actual scrollable element to avoid
-                      // fading fixed headers at the top.
-                      child: children.length == 1
-                          ? ScrollFadeMask(
-                              topFadeFraction: _kSheetTopFadeFraction,
-                              bottomFadeFraction: _kSheetBottomFadeFraction,
-                              child: children.first,
-                            )
-                          : Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: children,
-                            ),
-                    ),
-                  const SizedBox(height: glassSpacingMd),
-                ],
-              ),
+        child: GlassDialogSurface(
+          backdropBlurSigma: backdropBlurSigma,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              children: [
+                if (showHandleBar) _buildDragHandleBar(isDark: isDark),
+                if (title != null && title!.isNotEmpty)
+                  _buildTitle(context: context, colorScheme: colorScheme),
+                if (children.isNotEmpty)
+                  Expanded(
+                    // Only auto-fade single-child sheets (the common case:
+                    // a single ListView/GridView/ScrollView). Multi-child
+                    // sheets (e.g. filter + list) must apply ScrollFadeMask
+                    // themselves on the actual scrollable element to avoid
+                    // fading fixed headers at the top.
+                    child: children.length == 1
+                        ? ScrollFadeMask(
+                            topFadeFraction: _kSheetTopFadeFraction,
+                            bottomFadeFraction: _kSheetBottomFadeFraction,
+                            child: children.first,
+                          )
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: children,
+                          ),
+                  ),
+                const SizedBox(height: glassSpacingMd),
+              ],
             ),
           ),
         ),
@@ -189,16 +182,5 @@ class GlassBottomSheet extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _BottomSheetScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Widget buildOverscrollIndicator(
-    BuildContext context,
-    Widget child,
-    ScrollableDetails details,
-  ) {
-    return child;
   }
 }

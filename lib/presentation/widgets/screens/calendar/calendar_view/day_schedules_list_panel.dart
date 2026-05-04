@@ -23,7 +23,8 @@ class DaySchedulesListPanel extends ConsumerStatefulWidget {
 }
 
 class _DaySchedulesListPanelState extends ConsumerState<DaySchedulesListPanel> {
-  final EnsureSelectedDayPostFrame _ensureSelectedDay = EnsureSelectedDayPostFrame();
+  final EnsureSelectedDayPostFrame _ensureSelectedDay =
+      EnsureSelectedDayPostFrame();
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +45,22 @@ class _DaySchedulesListPanelState extends ConsumerState<DaySchedulesListPanel> {
 
     return Column(
       children: <Widget>[
-        _CompactDayHeader(day: day),
+        RepaintBoundary(child: _CompactDayHeader(day: day)),
         Expanded(
-          child: ScrollFadeMask(
-            child: DutyScheduleList(
-              schedules: forDay,
-              activeConfigName: state?.activeConfigName,
-              dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
-              dutyTypes: state?.activeConfig?.dutyTypes,
-              shouldAnimate: false,
-              isLoading: isLoadingSelectedDay,
-              selectedDay: day,
-              visualStyle: DutyListVisualStyle.glassCompact,
-              topPadding: glassSpacingXl,
-              bottomPadding: glassSpacingLg,
+          child: RepaintBoundary(
+            child: ScrollFadeMask(
+              child: DutyScheduleList(
+                schedules: forDay,
+                activeConfigName: state?.activeConfigName,
+                dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
+                dutyTypes: state?.activeConfig?.dutyTypes,
+                shouldAnimate: false,
+                isLoading: isLoadingSelectedDay,
+                selectedDay: day,
+                visualStyle: DutyListVisualStyle.glassCompact,
+                topPadding: glassSpacingXl,
+                bottomPadding: glassSpacingLg,
+              ),
             ),
           ),
         ),

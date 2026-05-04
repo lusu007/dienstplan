@@ -12,6 +12,7 @@ import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
 class GlassDialogSurface extends StatelessWidget {
   final Widget child;
   final BorderRadiusGeometry borderRadius;
+
   /// When null, uses [glassSurfaceBlurDialog]. Bottom sheets pass a lower sigma
   /// via [GlassBottomSheet] to ease compositing during route animation.
   final double? backdropBlurSigma;
@@ -91,10 +92,7 @@ class GlassDialogSurface extends StatelessWidget {
               child: AmbientBlob(color: partnerAccent, diameter: 220),
             ),
             BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: blurSigma,
-                sigmaY: blurSigma,
-              ),
+              filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
               child: Container(
                 decoration: BoxDecoration(color: tintColor),
                 child: Padding(

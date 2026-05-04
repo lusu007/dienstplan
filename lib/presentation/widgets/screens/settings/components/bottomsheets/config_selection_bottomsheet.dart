@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/utils/config_filter_utils.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
@@ -12,7 +13,7 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
   final String title;
   final List<DutyScheduleConfig> configs;
   final String? selectedConfigName;
-  final Function(DutyScheduleConfig?) onConfigSelected;
+  final Future<void> Function(DutyScheduleConfig?) onConfigSelected;
   final bool showNoConfigOption;
   final String? noConfigTitle;
   final double? heightPercentage;
@@ -33,26 +34,26 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
     required String title,
     required List<DutyScheduleConfig> configs,
     required String? selectedConfigName,
-    required Function(DutyScheduleConfig?) onConfigSelected,
+    required Future<void> Function(DutyScheduleConfig?) onConfigSelected,
     bool showNoConfigOption = false,
     String? noConfigTitle,
     double? heightPercentage,
   }) {
-    return GenericBottomsheet.show(
+    return showModalBottomSheet<void>(
       context: context,
-      title: title,
-      heightPercentage: heightPercentage,
-      children: [
-        ConfigSelectionBottomsheet(
-          title: title,
-          configs: configs,
-          selectedConfigName: selectedConfigName,
-          onConfigSelected: onConfigSelected,
-          showNoConfigOption: showNoConfigOption,
-          noConfigTitle: noConfigTitle,
-          heightPercentage: heightPercentage,
-        ),
-      ],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
+      clipBehavior: Clip.antiAlias,
+      builder: (BuildContext dialogContext) => ConfigSelectionBottomsheet(
+        title: title,
+        configs: configs,
+        selectedConfigName: selectedConfigName,
+        onConfigSelected: onConfigSelected,
+        showNoConfigOption: showNoConfigOption,
+        noConfigTitle: noConfigTitle,
+        heightPercentage: heightPercentage,
+      ),
     );
   }
 
@@ -69,7 +70,7 @@ class _ConfigSelectionBottomsheetState
   @override
   void initState() {
     super.initState();
-    _selectedAuthorities = {};
+    _selectedAuthorities = <String>{};
     _filteredConfigs = widget.configs;
   }
 
@@ -105,7 +106,7 @@ class _ConfigSelectionBottomsheetState
         config.meta.policeAuthority!.isNotEmpty) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Text(
             config.meta.policeAuthority!,
             style: (authorityBase ?? const TextStyle()).copyWith(
@@ -125,84 +126,85 @@ class _ConfigSelectionBottomsheetState
     return config.meta.description.isNotEmpty ? config.meta.description : null;
   }
 
+  /// Two children so [GlassBottomSheet] uses the multi-child path (no outer
+  /// [ScrollFadeMask]); only the list uses a fade mask — matches calendar sheet.
+  List<Widget> _glassChildren(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context);
+    final Set<String> availableAuthorities =
+        ConfigFilterUtils.extractAvailableAuthorities(widget.configs);
+
+    return <Widget>[
+      if (availableAuthorities.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: PoliceAuthorityFilterChips(
+            availableAuthorities: availableAuthorities,
+            selectedAuthorities: _selectedAuthorities,
+            onAuthorityToggled: _toggleAuthorityFilter,
+            onClearAll: _clearAllFilters,
+          ),
+        )
+      else
+        const SizedBox.shrink(),
+      Expanded(
+        child: _filteredConfigs.isEmpty
+            ? Center(
+                child: Text(
+                  l10n.noDutySchedules,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              )
+            : ScrollFadeMask(
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                  itemCount:
+                      _filteredConfigs.length +
+                      (widget.showNoConfigOption ? 1 : 0),
+                  itemBuilder: (BuildContext context, int index) {
+                    if (widget.showNoConfigOption &&
+                        index == _filteredConfigs.length) {
+                      return SelectionCard(
+                        title: widget.noConfigTitle ?? l10n.noDutySchedule,
+                        isSelected: (widget.selectedConfigName ?? '').isEmpty,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          widget.onConfigSelected(null);
+                        },
+                        useDialogStyle: true,
+                      );
+                    }
+
+                    final DutyScheduleConfig config = _filteredConfigs[index];
+                    final bool isAlreadySelected =
+                        widget.selectedConfigName == config.name;
+                    return SelectionCard(
+                      title: _buildConfigTitle(config),
+                      subtitle: _buildConfigSubtitle(config),
+                      isSelected: isAlreadySelected,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        widget.onConfigSelected(
+                          isAlreadySelected ? null : config,
+                        );
+                      },
+                      mainColor: Theme.of(context).colorScheme.primary,
+                      useDialogStyle: true,
+                    );
+                  },
+                ),
+              ),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final availableAuthorities = ConfigFilterUtils.extractAvailableAuthorities(
-      widget.configs,
-    );
-
     return GenericBottomsheet(
       title: widget.title,
       heightPercentage: widget.heightPercentage,
-      children: [
-        // Filter chips section
-        if (availableAuthorities.isNotEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: PoliceAuthorityFilterChips(
-              availableAuthorities: availableAuthorities,
-              selectedAuthorities: _selectedAuthorities,
-              onAuthorityToggled: _toggleAuthorityFilter,
-              onClearAll: _clearAllFilters,
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
-
-        // Config list
-        Expanded(
-          child: _filteredConfigs.isEmpty
-              ? Center(
-                  child: Text(
-                    l10n.noDutySchedules,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                )
-              : ScrollFadeMask(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                    itemCount:
-                        _filteredConfigs.length +
-                        (widget.showNoConfigOption ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      // Show "No Config" option at the end if enabled
-                      if (widget.showNoConfigOption &&
-                          index == _filteredConfigs.length) {
-                        return SelectionCard(
-                          title: widget.noConfigTitle ?? l10n.noDutySchedule,
-                          isSelected: (widget.selectedConfigName ?? '').isEmpty,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            widget.onConfigSelected(null);
-                          },
-                          useDialogStyle: true,
-                        );
-                      }
-
-                      final config = _filteredConfigs[index];
-                      final bool isAlreadySelected =
-                          widget.selectedConfigName == config.name;
-                      return SelectionCard(
-                        title: _buildConfigTitle(config),
-                        subtitle: _buildConfigSubtitle(config),
-                        isSelected: isAlreadySelected,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          widget.onConfigSelected(
-                            isAlreadySelected ? null : config,
-                          );
-                        },
-                        mainColor: Theme.of(context).colorScheme.primary,
-                        useDialogStyle: true,
-                      );
-                    },
-                  ),
-                ),
-        ),
-      ],
+      children: _glassChildren(context),
     );
   }
 }

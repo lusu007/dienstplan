@@ -11,6 +11,7 @@ const double glassSurfaceRadiusPill = 999;
 const double glassSurfaceBlurDefault = 20;
 const double glassSurfaceBlurDialog = 28;
 const double glassSurfaceBlurSubtle = 18;
+
 /// Lower than [glassSurfaceBlurDialog] — full-height bottom sheets animate over
 /// the calendar; a lighter blur reduces GPU cost during the modal transition.
 const double glassSurfaceBlurBottomSheet = 16;
