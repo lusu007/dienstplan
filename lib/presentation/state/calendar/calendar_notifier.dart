@@ -47,6 +47,31 @@ class CalendarNotifier extends _$CalendarNotifier {
     state = AsyncData(current.copyWith(selectedDay: day));
   }
 
+  Future<void> selectFocusedDay({
+    required DateTime selectedDay,
+    required DateTime focusedDay,
+  }) async {
+    final current = state.value ?? CalendarUiState.initial();
+    final DateTime? prevSelected = current.selectedDay;
+    final DateTime? prevFocused = current.focusedDay;
+    final bool selectedUnchanged =
+        prevSelected != null &&
+        prevSelected.year == selectedDay.year &&
+        prevSelected.month == selectedDay.month &&
+        prevSelected.day == selectedDay.day;
+    final bool focusedUnchanged =
+        prevFocused != null &&
+        prevFocused.year == focusedDay.year &&
+        prevFocused.month == focusedDay.month &&
+        prevFocused.day == focusedDay.day;
+    if (selectedUnchanged && focusedUnchanged) {
+      return;
+    }
+    state = AsyncData(
+      current.copyWith(selectedDay: selectedDay, focusedDay: focusedDay),
+    );
+  }
+
   Future<void> goToToday() async {
     final now = DateTime.now();
     final current = state.value ?? CalendarUiState.initial();

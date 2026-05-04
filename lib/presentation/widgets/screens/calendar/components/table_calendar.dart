@@ -18,13 +18,11 @@ class CalendarTable extends ConsumerWidget {
   static const double _preferredFloorRowHeight = 32.0;
   static const double _maxRowHeight = 140.0;
 
-  final GlobalKey calendarKey;
   final ValueChanged<DateTime> onPageChanged;
   final ValueChanged<DateTime> onDaySelected;
 
   const CalendarTable({
     super.key,
-    required this.calendarKey,
     required this.onPageChanged,
     required this.onDaySelected,
   });
@@ -44,12 +42,12 @@ class CalendarTable extends ConsumerWidget {
         final double rowHeight = _resolveRowHeight(available, weekRows);
         final double cellHeight = rowHeight - 4.0; // account for 2px margins
 
-        final String stableCalendarKey =
-            'cal_${focusedDay.year}_${focusedDay.month}_'
-            '${state?.activeConfigName ?? ''}_'
-            '${Localizations.localeOf(context).languageCode}_'
-            'n${state?.schedules.length ?? 0}_'
-            'rh${rowHeight.toStringAsFixed(1)}';
+        final String stableCalendarKey = _calendarTableKey(
+          focusedDay: focusedDay,
+          activeConfigName: state?.activeConfigName,
+          localeLanguageCode: Localizations.localeOf(context).languageCode,
+          rowHeight: rowHeight,
+        );
 
         return RepaintBoundary(
           child: tc.TableCalendar(
@@ -69,13 +67,10 @@ class CalendarTable extends ConsumerWidget {
             onDaySelected: (selectedDay, focusedDay) async {
               await ref
                   .read(scheduleCoordinatorProvider.notifier)
-                  .setSelectedDay(selectedDay);
-              ref
-                  .read(scheduleCoordinatorProvider.notifier)
-                  .setFocusedDay(focusedDay);
-              await ref
-                  .read(scheduleCoordinatorProvider.notifier)
-                  .ensureActiveDay(selectedDay);
+                  .selectFocusedDay(
+                    selectedDay: selectedDay,
+                    focusedDay: focusedDay,
+                  );
               onDaySelected(selectedDay);
             },
             onPageChanged: (focusedDay) {
@@ -113,4 +108,31 @@ class CalendarTable extends ConsumerWidget {
     );
     return math.min(clamped, rawRowHeight);
   }
+}
+
+@visibleForTesting
+String calendarTableKeyForTesting({
+  required DateTime focusedDay,
+  required String? activeConfigName,
+  required String localeLanguageCode,
+  required double rowHeight,
+}) {
+  return _calendarTableKey(
+    focusedDay: focusedDay,
+    activeConfigName: activeConfigName,
+    localeLanguageCode: localeLanguageCode,
+    rowHeight: rowHeight,
+  );
+}
+
+String _calendarTableKey({
+  required DateTime focusedDay,
+  required String? activeConfigName,
+  required String localeLanguageCode,
+  required double rowHeight,
+}) {
+  return 'cal_${focusedDay.year}_${focusedDay.month}_'
+      '${activeConfigName ?? ''}_'
+      '${localeLanguageCode}_'
+      'rh${rowHeight.toStringAsFixed(1)}';
 }

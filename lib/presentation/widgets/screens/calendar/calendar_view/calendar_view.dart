@@ -31,8 +31,6 @@ class CalendarView extends ConsumerStatefulWidget {
 }
 
 class _CalendarViewState extends ConsumerState<CalendarView> {
-  final GlobalKey _calendarKey = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
     ref.watch(calendarProvider);
@@ -94,7 +92,6 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                                             height: calendarHeight,
                                             width: double.infinity,
                                             child: CalendarTable(
-                                              calendarKey: _calendarKey,
                                               onPageChanged: (_) {},
                                               onDaySelected: _handleDaySelected,
                                             ),
@@ -114,7 +111,6 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                               isSplitLayout: false,
                               onSwipeUpInFull: _enterSplitLayout,
                               child: CalendarTable(
-                                calendarKey: _calendarKey,
                                 onPageChanged: (_) {},
                                 onDaySelected: _handleDaySelected,
                               ),

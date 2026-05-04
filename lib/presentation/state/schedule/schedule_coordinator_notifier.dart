@@ -132,6 +132,31 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
     await _updateCalendarStateOnly();
   }
 
+  Future<void> selectFocusedDay({
+    required DateTime selectedDay,
+    required DateTime focusedDay,
+  }) async {
+    final DateTime? currentFocused =
+        state.value?.focusedDay ?? ref.read(calendarProvider).value?.focusedDay;
+    final bool monthUnchanged =
+        currentFocused != null &&
+        currentFocused.year == focusedDay.year &&
+        currentFocused.month == focusedDay.month;
+
+    await ref
+        .read(calendarProvider.notifier)
+        .selectFocusedDay(selectedDay: selectedDay, focusedDay: focusedDay);
+    await _updateCalendarStateOnly();
+
+    if (monthUnchanged) {
+      return;
+    }
+
+    await _ensureOwnDataForFocusedRange();
+    unawaited(_ensurePartnerDataForFocusedRange());
+    unawaited(_triggerDynamicLoadingForFocusedDay(focusedDay));
+  }
+
   Future<void> goToToday() async {
     await ref.read(calendarProvider.notifier).goToToday();
     unawaited(_refreshState());
