@@ -19,7 +19,7 @@ class AppDialog {
     final TextStyle? labelBase = Theme.of(context).textTheme.labelLarge;
 
     final List<Widget> mergedActions = <Widget>[
-      if (actions != null) ...actions,
+      ...?actions,
       if (showCloseButton)
         SizedBox(
           width: double.infinity,
