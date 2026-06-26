@@ -5,6 +5,7 @@ import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_backdrop_blur_scope.dart';
 
 /// Reusable glass-morphism container using [BackdropFilter] with a blurred,
 /// semi-transparent tint derived from the current color scheme.
@@ -45,11 +46,15 @@ class GlassContainer extends StatelessWidget {
         : colorScheme.primary.withValues(
             alpha: borderOpacity * glassSurfaceSubtleBorderPrimaryFactorLight,
           );
+    final bool isBackdropBlurEnabled = GlassBackdropBlurScope.enabledOf(
+      context,
+    );
 
     final Widget content = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        enabled: isBackdropBlurEnabled,
         child: Container(
           padding: padding,
           decoration: BoxDecoration(

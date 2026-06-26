@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.scelus.dienstplan">
     <!-- Internet permission for initial data download -->
     <uses-permission
@@ -9,7 +10,8 @@
         android:maxSdkVersion="32"/>
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
+        android:maxSdkVersion="32"
+        tools:replace="android:maxSdkVersion"/>
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
