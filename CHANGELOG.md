@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.17.0](https://github.com/lusu007/dienstplan/compare/v0.16.0...v0.17.0) (2026-06-26)
+
+
+### Features
+
+* sentry android tombstone collection ([#402](https://github.com/lusu007/dienstplan/issues/402)) ([a9b56ac](https://github.com/lusu007/dienstplan/commit/a9b56ac8364584928c4bea342eaba88f64aeae66))
+
+
+### Bug Fixes
+
+* add missing contact feature to update notice ([#400](https://github.com/lusu007/dienstplan/issues/400)) ([ee5de4f](https://github.com/lusu007/dienstplan/commit/ee5de4fbcbe5b15ade19209cd5314732d6283a83))
+* align partner chip height ([#405](https://github.com/lusu007/dienstplan/issues/405)) ([70e427f](https://github.com/lusu007/dienstplan/commit/70e427faba4228765c2645a3ca80bea9c7243315))
+* **calendar:** load personal entries for focused and selected future-year ranges after save ([#403](https://github.com/lusu007/dienstplan/issues/403)) ([17c41a7](https://github.com/lusu007/dienstplan/commit/17c41a7465630fddf665caa314d29f29fd864446))
+* improve bottom sheet performance ([#404](https://github.com/lusu007/dienstplan/issues/404)) ([446bec1](https://github.com/lusu007/dienstplan/commit/446bec14a98db0b5de10575815bccbd4574cbd85))
+* improve calendar performance and cache correctness ([#406](https://github.com/lusu007/dienstplan/issues/406)) ([01307b7](https://github.com/lusu007/dienstplan/commit/01307b781c5af63ebf701fb8976b08f600cec4be))
+* improve dark filter chip contrast ([#414](https://github.com/lusu007/dienstplan/issues/414)) ([0a3b56a](https://github.com/lusu007/dienstplan/commit/0a3b56a618dfebd76a86634ba40d17d2119d3045))
+* reduce bottom sheet blur overhead ([#413](https://github.com/lusu007/dienstplan/issues/413)) ([c343898](https://github.com/lusu007/dienstplan/commit/c343898c0a9f0ac6310a0605c34776b74be3ca8f))
+
 ## [0.16.0](https://github.com/lusu007/dienstplan/compare/v0.15.2...v0.16.0) (2026-04-27)
 
 
