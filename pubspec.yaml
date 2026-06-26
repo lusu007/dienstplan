@@ -57,7 +57,7 @@ dependencies:
   json_annotation: ^4.11.0
   dart_flutter_version: ^1.0.37
   file_saver: ^0.4.0
-  open_file: ^3.5.11
+  open_file: ^4.0.0
   flutter_markdown_plus: ^1.0.3
 
 dev_dependencies:
