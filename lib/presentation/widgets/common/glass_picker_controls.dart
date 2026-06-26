@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_picker_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_backdrop_blur_scope.dart';
 
 class GlassPickerPillTrigger extends StatelessWidget {
   final String label;
@@ -18,6 +19,9 @@ class GlassPickerPillTrigger extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color foreground = Theme.of(context).colorScheme.onSurface;
+    final bool isBackdropBlurEnabled = GlassBackdropBlurScope.enabledOf(
+      context,
+    );
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -30,6 +34,7 @@ class GlassPickerPillTrigger extends StatelessWidget {
               sigmaX: kGlassPickerTriggerBlur,
               sigmaY: kGlassPickerTriggerBlur,
             ),
+            enabled: isBackdropBlurEnabled,
             child: Container(
               padding: const EdgeInsets.fromLTRB(
                 kGlassPickerTriggerPaddingHorizontal,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_backdrop_blur_scope.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
@@ -54,35 +55,38 @@ class GlassBottomSheet extends StatelessWidget {
             borderRadius: const BorderRadius.all(
               Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (showHandleBar) _buildDragHandleBar(isDark: isDark),
-                  if (title != null && title!.isNotEmpty)
-                    _buildTitle(context: context, colorScheme: colorScheme),
-                  if (children.isNotEmpty)
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: ScrollFadeMask(
-                        // Sticky header above + subtle dissolve of scrolled
-                        // content beneath it.
-                        topFadeFraction: _kSheetTopFadeFraction,
-                        bottomFadeFraction: _kSheetBottomFadeFraction,
-                        child: SingleChildScrollView(
-                          child: children.length == 1
-                              ? children.first
-                              : Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: children,
-                                ),
+            child: GlassBackdropBlurScope(
+              enabled: false,
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (showHandleBar) _buildDragHandleBar(isDark: isDark),
+                    if (title != null && title!.isNotEmpty)
+                      _buildTitle(context: context, colorScheme: colorScheme),
+                    if (children.isNotEmpty)
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: ScrollFadeMask(
+                          // Sticky header above + subtle dissolve of scrolled
+                          // content beneath it.
+                          topFadeFraction: _kSheetTopFadeFraction,
+                          bottomFadeFraction: _kSheetBottomFadeFraction,
+                          child: SingleChildScrollView(
+                            child: children.length == 1
+                                ? children.first
+                                : Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: children,
+                                  ),
+                          ),
                         ),
                       ),
-                    ),
-                  const SizedBox(height: glassSpacingMd),
-                ],
+                    const SizedBox(height: glassSpacingMd),
+                  ],
+                ),
               ),
             ),
           ),
@@ -105,33 +109,36 @@ class GlassBottomSheet extends StatelessWidget {
           borderRadius: const BorderRadius.all(
             Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
           ),
-          child: Material(
-            color: Colors.transparent,
-            child: Column(
-              children: [
-                if (showHandleBar) _buildDragHandleBar(isDark: isDark),
-                if (title != null && title!.isNotEmpty)
-                  _buildTitle(context: context, colorScheme: colorScheme),
-                if (children.isNotEmpty)
-                  Expanded(
-                    // Only auto-fade single-child sheets (the common case:
-                    // a single ListView/GridView/ScrollView). Multi-child
-                    // sheets (e.g. filter + list) must apply ScrollFadeMask
-                    // themselves on the actual scrollable element to avoid
-                    // fading fixed headers at the top.
-                    child: children.length == 1
-                        ? ScrollFadeMask(
-                            topFadeFraction: _kSheetTopFadeFraction,
-                            bottomFadeFraction: _kSheetBottomFadeFraction,
-                            child: children.first,
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: children,
-                          ),
-                  ),
-                const SizedBox(height: glassSpacingMd),
-              ],
+          child: GlassBackdropBlurScope(
+            enabled: false,
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                children: [
+                  if (showHandleBar) _buildDragHandleBar(isDark: isDark),
+                  if (title != null && title!.isNotEmpty)
+                    _buildTitle(context: context, colorScheme: colorScheme),
+                  if (children.isNotEmpty)
+                    Expanded(
+                      // Only auto-fade single-child sheets (the common case:
+                      // a single ListView/GridView/ScrollView). Multi-child
+                      // sheets (e.g. filter + list) must apply ScrollFadeMask
+                      // themselves on the actual scrollable element to avoid
+                      // fading fixed headers at the top.
+                      child: children.length == 1
+                          ? ScrollFadeMask(
+                              topFadeFraction: _kSheetTopFadeFraction,
+                              bottomFadeFraction: _kSheetBottomFadeFraction,
+                              child: children.first,
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: children,
+                            ),
+                    ),
+                  const SizedBox(height: glassSpacingMd),
+                ],
+              ),
             ),
           ),
         ),
