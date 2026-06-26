@@ -33,9 +33,11 @@ class GlassFilterChip extends StatelessWidget {
     final double borderOpacity = isSelected
         ? glassBorderAlphaActive
         : (isDark ? glassBorderAlphaDark : glassBorderAlphaLight);
-    final Color textColor = isSelected
-        ? colorScheme.primary
-        : colorScheme.onSurface;
+    final Color textColor = _resolveFilterChipTextColor(
+      colorScheme: colorScheme,
+      isDark: isDark,
+      isSelected: isSelected,
+    );
     final TextStyle? labelBaseStyle = Theme.of(context).textTheme.labelLarge;
     final TextStyle labelStyle = (labelBaseStyle ?? const TextStyle()).copyWith(
       color: textColor,
@@ -175,6 +177,23 @@ class GlassIconToggleChip extends StatelessWidget {
     }
     return Tooltip(message: tooltip!, child: chip);
   }
+}
+
+Color _resolveFilterChipTextColor({
+  required ColorScheme colorScheme,
+  required bool isDark,
+  required bool isSelected,
+}) {
+  if (!isSelected) {
+    return colorScheme.onSurface;
+  }
+  if (!isDark) {
+    return colorScheme.primary;
+  }
+  return _resolveReadableForeground(
+    background: colorScheme.primary,
+    preferred: colorScheme.onSurface,
+  );
 }
 
 Color _resolveReadableForeground({
