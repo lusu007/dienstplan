@@ -14,16 +14,21 @@ class ScrollFadeMask extends StatelessWidget {
   final Widget child;
   final double topFadeFraction;
   final double bottomFadeFraction;
+  final bool enabled;
 
   const ScrollFadeMask({
     super.key,
     required this.child,
     this.topFadeFraction = 0.05,
     this.bottomFadeFraction = 0.06,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (!enabled) {
+      return child;
+    }
     return ShaderMask(
       blendMode: BlendMode.dstIn,
       shaderCallback: (Rect rect) {

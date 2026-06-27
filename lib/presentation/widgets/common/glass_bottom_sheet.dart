@@ -13,7 +13,7 @@ const double _kSheetBottomFadeFraction = 0.025;
 /// drag-handle and an optional title. The body is laid out in the same way
 /// as the previous surface-coloured sheet, so existing sheet contents keep
 /// working unchanged.
-class GlassBottomSheet extends StatelessWidget {
+class GlassBottomSheet extends StatefulWidget {
   final String? title;
   final List<Widget> children;
   final double? heightPercentage;
@@ -24,6 +24,7 @@ class GlassBottomSheet extends StatelessWidget {
   /// [heightPercentage] or 80% of the screen, as before.
   final bool shrinkToContent;
   final double backdropBlurSigma;
+  final bool deferExpensiveEffects;
 
   const GlassBottomSheet({
     super.key,
@@ -33,14 +34,93 @@ class GlassBottomSheet extends StatelessWidget {
     this.showHandleBar = true,
     this.shrinkToContent = false,
     this.backdropBlurSigma = glassSurfaceBlurBottomSheet,
+    this.deferExpensiveEffects = true,
   });
+
+  @override
+  State<GlassBottomSheet> createState() => _GlassBottomSheetState();
+}
+
+class _GlassBottomSheetState extends State<GlassBottomSheet> {
+  Animation<double>? _routeAnimation;
+  bool _isRouteSettled = false;
+
+  bool get _shouldTrackRoutePhase {
+    return widget.deferExpensiveEffects;
+  }
+
+  bool get _isSettled {
+    return !_shouldTrackRoutePhase || _isRouteSettled;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bindRouteAnimation(ModalRoute.of(context)?.animation);
+  }
+
+  @override
+  void didUpdateWidget(covariant GlassBottomSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncSettledState();
+  }
+
+  @override
+  void dispose() {
+    _routeAnimation?.removeStatusListener(_handleRouteAnimationStatus);
+    super.dispose();
+  }
+
+  void _bindRouteAnimation(Animation<double>? animation) {
+    if (_routeAnimation == animation) {
+      _syncSettledState();
+      return;
+    }
+    _routeAnimation?.removeStatusListener(_handleRouteAnimationStatus);
+    _routeAnimation = animation;
+    _routeAnimation?.addStatusListener(_handleRouteAnimationStatus);
+    _syncSettledState();
+  }
+
+  void _handleRouteAnimationStatus(AnimationStatus status) {
+    _setRouteSettled(status == AnimationStatus.completed);
+  }
+
+  void _syncSettledState() {
+    if (!_shouldTrackRoutePhase) {
+      _setRouteSettled(true);
+      return;
+    }
+    final Animation<double>? animation = _routeAnimation;
+    if (animation == null) {
+      _setRouteSettled(true);
+      return;
+    }
+    _setRouteSettled(animation.status == AnimationStatus.completed);
+  }
+
+  void _setRouteSettled(bool value) {
+    if (_isRouteSettled == value) {
+      return;
+    }
+    if (!mounted) {
+      _isRouteSettled = value;
+      return;
+    }
+    setState(() {
+      _isRouteSettled = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    if (shrinkToContent) {
+    final bool expensiveEffectsEnabled =
+        !widget.deferExpensiveEffects || _isSettled;
+
+    if (widget.shrinkToContent) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(
           glassSpacingSm,
@@ -51,7 +131,7 @@ class GlassBottomSheet extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.92),
           child: GlassDialogSurface(
-            backdropBlurSigma: backdropBlurSigma,
+            backdropBlurSigma: widget.backdropBlurSigma,
             borderRadius: const BorderRadius.all(
               Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
             ),
@@ -63,10 +143,11 @@ class GlassBottomSheet extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (showHandleBar) _buildDragHandleBar(isDark: isDark),
-                    if (title != null && title!.isNotEmpty)
+                    if (widget.showHandleBar)
+                      _buildDragHandleBar(isDark: isDark),
+                    if (widget.title != null && widget.title!.isNotEmpty)
                       _buildTitle(context: context, colorScheme: colorScheme),
-                    if (children.isNotEmpty)
+                    if (widget.children.isNotEmpty)
                       Flexible(
                         fit: FlexFit.loose,
                         child: ScrollFadeMask(
@@ -74,12 +155,13 @@ class GlassBottomSheet extends StatelessWidget {
                           // content beneath it.
                           topFadeFraction: _kSheetTopFadeFraction,
                           bottomFadeFraction: _kSheetBottomFadeFraction,
+                          enabled: expensiveEffectsEnabled,
                           child: SingleChildScrollView(
-                            child: children.length == 1
-                                ? children.first
+                            child: widget.children.length == 1
+                                ? widget.children.first
                                 : Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: children,
+                                    children: widget.children,
                                   ),
                           ),
                         ),
@@ -93,7 +175,7 @@ class GlassBottomSheet extends StatelessWidget {
         ),
       );
     }
-    final double heightFactor = heightPercentage ?? 0.8;
+    final double heightFactor = widget.heightPercentage ?? 0.8;
     final double height = screenHeight * heightFactor;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -105,7 +187,7 @@ class GlassBottomSheet extends StatelessWidget {
       child: SizedBox(
         height: height,
         child: GlassDialogSurface(
-          backdropBlurSigma: backdropBlurSigma,
+          backdropBlurSigma: widget.backdropBlurSigma,
           borderRadius: const BorderRadius.all(
             Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
           ),
@@ -115,25 +197,26 @@ class GlassBottomSheet extends StatelessWidget {
               color: Colors.transparent,
               child: Column(
                 children: [
-                  if (showHandleBar) _buildDragHandleBar(isDark: isDark),
-                  if (title != null && title!.isNotEmpty)
+                  if (widget.showHandleBar) _buildDragHandleBar(isDark: isDark),
+                  if (widget.title != null && widget.title!.isNotEmpty)
                     _buildTitle(context: context, colorScheme: colorScheme),
-                  if (children.isNotEmpty)
+                  if (widget.children.isNotEmpty)
                     Expanded(
                       // Only auto-fade single-child sheets (the common case:
                       // a single ListView/GridView/ScrollView). Multi-child
                       // sheets (e.g. filter + list) must apply ScrollFadeMask
                       // themselves on the actual scrollable element to avoid
                       // fading fixed headers at the top.
-                      child: children.length == 1
+                      child: widget.children.length == 1
                           ? ScrollFadeMask(
                               topFadeFraction: _kSheetTopFadeFraction,
                               bottomFadeFraction: _kSheetBottomFadeFraction,
-                              child: children.first,
+                              enabled: expensiveEffectsEnabled,
+                              child: widget.children.first,
                             )
                           : Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: children,
+                              children: widget.children,
                             ),
                     ),
                   const SizedBox(height: glassSpacingMd),
@@ -180,7 +263,7 @@ class GlassBottomSheet extends StatelessWidget {
           glassSpacingSm,
         ),
         child: Text(
-          title!,
+          widget.title!,
           textAlign: TextAlign.start,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w700,

@@ -170,7 +170,7 @@ class GlassPickerTile extends StatelessWidget {
     } else if (isFocused) {
       background = primary.withValues(alpha: isDark ? 0.45 : 0.38);
       borderColor = Colors.white.withValues(alpha: isDark ? 0.28 : 0.55);
-      textColor = colorScheme.onPrimary;
+      textColor = isDark ? colorScheme.onSurface : colorScheme.onPrimary;
       fontWeight = FontWeight.w700;
       boxShadow = <BoxShadow>[
         BoxShadow(
