@@ -12,6 +12,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart
 Future<void> showWhatsNewDialog(BuildContext context) async {
   final AppLocalizations l10n = AppLocalizations.of(context);
   final ColorScheme colorScheme = Theme.of(context).colorScheme;
+  final bool isDark = Theme.of(context).brightness == Brightness.dark;
   await GlassAppDialog.show<void>(
     context: context,
     barrierDismissible: true,
@@ -24,6 +25,10 @@ Future<void> showWhatsNewDialog(BuildContext context) async {
         borderRadius: glassSurfaceRadiusSm,
         height: 48,
         fullWidth: true,
+        tintOpacity: isDark
+            ? glassTintAlphaActiveDark
+            : glassTintAlphaActiveLight,
+        borderOpacity: glassBorderAlphaActive,
         child: Center(
           child: Text(
             l10n.whatsNewGotIt,

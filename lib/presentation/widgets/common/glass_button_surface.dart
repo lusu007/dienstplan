@@ -13,6 +13,8 @@ class GlassButtonSurface extends StatelessWidget {
   final double? width;
   final double opacity;
   final AlignmentGeometry alignment;
+  final double? tintOpacity;
+  final double? borderOpacity;
 
   const GlassButtonSurface({
     super.key,
@@ -26,6 +28,8 @@ class GlassButtonSurface extends StatelessWidget {
     this.width,
     this.opacity = 1.0,
     this.alignment = Alignment.center,
+    this.tintOpacity,
+    this.borderOpacity,
   });
 
   @override
@@ -34,8 +38,11 @@ class GlassButtonSurface extends StatelessWidget {
     final Widget content = GlassContainer(
       borderRadius: borderRadius,
       blurSigma: glassSurfaceBlurDefault,
-      tintOpacity: isDark ? glassTintAlphaDark : glassTintAlphaLight,
-      borderOpacity: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
+      tintOpacity:
+          tintOpacity ?? (isDark ? glassTintAlphaDark : glassTintAlphaLight),
+      borderOpacity:
+          borderOpacity ??
+          (isDark ? glassBorderAlphaDark : glassBorderAlphaLight),
       padding: padding,
       child: Material(
         color: Colors.transparent,
