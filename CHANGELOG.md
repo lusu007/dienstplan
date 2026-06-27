@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.17.1](https://github.com/lusu007/dienstplan/compare/v0.17.0...v0.17.1) (2026-06-27)
+
+
+### Bug Fixes
+
+* improve glass sheet performance and contrast ([#416](https://github.com/lusu007/dienstplan/issues/416)) ([7beaa86](https://github.com/lusu007/dienstplan/commit/7beaa86df5cea90147c2ae7766e0f2c8a6f554e7))
+* update android gradle toolchain ([#418](https://github.com/lusu007/dienstplan/issues/418)) ([7a898e3](https://github.com/lusu007/dienstplan/commit/7a898e310b970fc4c54f96c19b3d0cc4b8413eef))
+
 ## [0.17.0](https://github.com/lusu007/dienstplan/compare/v0.16.0...v0.17.0) (2026-06-26)
 
 
