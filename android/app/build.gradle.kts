@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -29,11 +28,14 @@ android {
     }
 
     kotlin {
-        jvmToolchain(21)
+        jvmToolchain(25)
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+        }
     }
 
-    sourceSets {
-        getByName("main").java.srcDirs("src/main/kotlin")
+    buildFeatures {
+        resValues = true
     }
 
     defaultConfig {
