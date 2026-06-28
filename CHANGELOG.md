@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.3](https://github.com/lusu007/dienstplan/compare/v0.17.2...v0.17.3) (2026-06-28)
+
+
+### Bug Fixes
+
+* scope ios release signing ([#421](https://github.com/lusu007/dienstplan/issues/421)) ([dbe63e9](https://github.com/lusu007/dienstplan/commit/dbe63e9f34d2c4411b6eb9ae3a5c668bceaea365))
+
 ## [0.17.2](https://github.com/lusu007/dienstplan/compare/v0.17.1...v0.17.2) (2026-06-28)
 
 
