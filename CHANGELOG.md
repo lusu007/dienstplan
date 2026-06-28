@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.2](https://github.com/lusu007/dienstplan/compare/v0.17.1...v0.17.2) (2026-06-28)
+
+
+### Bug Fixes
+
+* restore release build outputs ([#419](https://github.com/lusu007/dienstplan/issues/419)) ([e88308e](https://github.com/lusu007/dienstplan/commit/e88308ee73457ca828bb339036f340dd4a16e67a))
+
 ## [0.17.1](https://github.com/lusu007/dienstplan/compare/v0.17.0...v0.17.1) (2026-06-27)
 
 
