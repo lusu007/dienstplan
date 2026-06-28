@@ -84,12 +84,15 @@ jobs:
 
       - name: 🔧 Patch Podfile for CI signing
         run: |
-          # Füge Ruby-Code-Block zum Podfile hinzu, falls noch nicht vorhanden
+          if [ ! -f ios/Podfile ]; then
+            echo "No Podfile found; skipping CocoaPods signing patch."
+            exit 0
+          fi
+
           if ! grep -q "post_install do |installer|" ios/Podfile; then
             echo -e '\npost_install do |installer|\nend' >> ios/Podfile
           fi
       
-          # Füge die Signierungs-Settings für alle Pods ein
           sed -i '' '/post_install do |installer|/a\
             installer.pods_project.targets.each do |target|\
               target.build_configurations.each do |config|\
