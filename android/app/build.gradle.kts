@@ -84,25 +84,6 @@ android {
         }
     }
 
-    // Custom APK naming
-    applicationVariants.all {
-        outputs.all {
-            val versionName = defaultConfig.versionName
-            val versionCode = defaultConfig.versionCode
-            val buildType = buildType.name
-            val flavorName = flavorName
-            
-            if (buildType == "release") {
-                (this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl)?.outputFileName = 
-                    "dienstplan-${versionName}-${flavorName}-${versionCode}.apk"
-            } else {
-                (this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl)?.outputFileName = 
-                    "dienstplan-${versionName}-${flavorName}-${versionCode}-${buildType}.apk"
-            }
-        }
-    }
-
-    // Custom AAB naming
     bundle {
         language {
             enableSplit = false
@@ -112,21 +93,6 @@ android {
         }
         abi {
             enableSplit = true
-        }
-    }
-    
-    // Set custom AAB filename
-    applicationVariants.all {
-        if (buildType.name == "release") {
-            outputs.all {
-                if (name.contains("Bundle")) {
-                    val versionName = defaultConfig.versionName
-                    val versionCode = defaultConfig.versionCode
-                    val flavorName = flavorName
-                    (this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl)?.outputFileName = 
-                        "dienstplan-${versionName}-${flavorName}-${versionCode}.aab"
-                }
-            }
         }
     }
 }
