@@ -109,15 +109,68 @@ jobs:
           pod install
           cd ..
       
-      - name: 📝 Create CI signing config
+      - name: 📝 Patch Runner signing settings
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          PROFILE_NAME: ${{ secrets.PROFILE_NAME }}
         run: |
-          cat > ios/ci-signing.xcconfig <<EOF
-          CODE_SIGN_STYLE = Manual
-          DEVELOPMENT_TEAM = ${{ secrets.APPLE_TEAM_ID }}
-          PROVISIONING_PROFILE_SPECIFIER = ${{ secrets.PROFILE_NAME }}
-          CODE_SIGN_IDENTITY = Apple Distribution
-          OTHER_CODE_SIGN_FLAGS = --keychain build.keychain
-          EOF
+          python3 <<'PYTHON'
+          import os
+          import re
+          import sys
+
+          project_path = "ios/Runner.xcodeproj/project.pbxproj"
+          with open(project_path, encoding="utf-8") as project_file:
+              project = project_file.read()
+
+          release_config_pattern = re.compile(
+              r"(\t\t97C147071CF9000F007C117D /\* Release \*/ = \{\n"
+              r"\t\t\tisa = XCBuildConfiguration;\n"
+              r"\t\t\tbaseConfigurationReference = .*?\n"
+              r"\t\t\tbuildSettings = \{\n)"
+              r"(.*?)"
+              r"(\n\t\t\t\};\n\t\t\tname = Release;\n\t\t\};)",
+              re.DOTALL,
+          )
+
+          match = release_config_pattern.search(project)
+          if match is None:
+              sys.exit("Failed to find Runner Release build configuration")
+
+          def pbx_quote(value):
+              return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+          settings = {
+              "CODE_SIGN_STYLE": "Manual",
+              "DEVELOPMENT_TEAM": os.environ["APPLE_TEAM_ID"],
+              "PROVISIONING_PROFILE_SPECIFIER": pbx_quote(os.environ["PROFILE_NAME"]),
+              "CODE_SIGN_IDENTITY[sdk=iphoneos*]": pbx_quote("Apple Distribution"),
+              "OTHER_CODE_SIGN_FLAGS": pbx_quote("--keychain build.keychain"),
+          }
+
+          build_settings = match.group(2)
+          for key, value in settings.items():
+              pbx_key = pbx_quote(key) if "[" in key else key
+              line = f"\t\t\t\t{pbx_key} = {value};"
+              setting_pattern = re.compile(
+                  rf"^\t\t\t\t{re.escape(pbx_key)} = .*;$",
+                  re.MULTILINE,
+              )
+              if setting_pattern.search(build_settings):
+                  build_settings = setting_pattern.sub(line, build_settings)
+              else:
+                  build_settings = f"{build_settings}\n{line}"
+
+          project = (
+              project[: match.start()]
+              + match.group(1)
+              + build_settings
+              + match.group(3)
+              + project[match.end() :]
+          )
+          with open(project_path, "w", encoding="utf-8") as project_file:
+              project_file.write(project)
+          PYTHON
       
       - name: 🏗️ Archive iOS App
         run: |
@@ -127,7 +180,6 @@ jobs:
             -scheme Runner \
             -configuration Release \
             -archivePath ../build/Runner.xcarchive \
-            -xcconfig ci-signing.xcconfig \
             archive
 
       - name: 📝 Generate ExportOptions.plist
