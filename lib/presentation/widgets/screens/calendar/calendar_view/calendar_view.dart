@@ -94,6 +94,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                                             child: CalendarTable(
                                               onPageChanged: (_) {},
                                               onDaySelected: _handleDaySelected,
+                                              useCompactDutyStripes: true,
                                             ),
                                           ),
                                         ),
@@ -113,6 +114,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                               child: CalendarTable(
                                 onPageChanged: (_) {},
                                 onDaySelected: _handleDaySelected,
+                                useCompactDutyStripes: false,
                               ),
                             ),
                           ),

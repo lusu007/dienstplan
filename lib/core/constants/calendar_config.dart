@@ -62,12 +62,6 @@ class CalendarConfig {
   /// Negative spread keeps the penumbra tight so the header stays airy.
   static const double kCalendarHeaderShadowSpread = -3.0;
 
-  /// When the day cell is at most this tall, the calendar day uses the compact
-  /// stripe layout instead of text chips. IME / tight layouts can yield
-  /// ~90–100px cell height while still too short for a full chip stack, so this
-  /// is above the nominal [kCalendarDayHeight] to avoid [RenderFlex] overflow.
-  static const double kCalendarDayCompactDutyStripesMaxHeight = 100.0;
-
   /// Max height for the month table in split layout (day list below). Kept
   /// low enough that row height yields compact duty stripes like IME/keyboard
   /// shrink, not full chips.
