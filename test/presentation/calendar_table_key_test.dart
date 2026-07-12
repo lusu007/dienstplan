@@ -14,5 +14,16 @@ void main() {
         'cal_2026_5_main_de_rh72.0',
       );
     });
+
+    test('does not include selected day', () {
+      final String key = calendarTableKeyForTesting(
+        focusedDay: DateTime(2026, 5, 4),
+        activeConfigName: 'main',
+        localeLanguageCode: 'de',
+        rowHeight: 72.04,
+      );
+
+      expect(key, isNot(contains('2026-05-06')));
+    });
   });
 }

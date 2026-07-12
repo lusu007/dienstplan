@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart' as tc;
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_rendering_data.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/memoized_calendar_day.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
@@ -8,7 +9,11 @@ import 'package:dienstplan/core/constants/calendar_config.dart';
 ///
 /// Selection is handled exclusively by [tc.TableCalendar.onDaySelected].
 class CalendarDayBuilders {
-  static tc.CalendarBuilders create({double? cellHeight}) {
+  static tc.CalendarBuilders create({
+    double? cellHeight,
+    required CalendarDayRenderingData renderingData,
+    required bool useCompactDutyStripes,
+  }) {
     final double effectiveHeight =
         cellHeight ?? CalendarConfig.kCalendarDayHeight;
     return tc.CalendarBuilders(
@@ -20,6 +25,8 @@ class CalendarDayBuilders {
               dayType: CalendarDayType.default_,
               width: CalendarConfig.kCalendarDayWidth,
               height: effectiveHeight,
+              renderingData: renderingData,
+              useCompactDutyStripes: useCompactDutyStripes,
             );
           },
       outsideBuilder:
@@ -30,6 +37,8 @@ class CalendarDayBuilders {
               dayType: CalendarDayType.outside,
               width: CalendarConfig.kCalendarDayWidth,
               height: effectiveHeight,
+              renderingData: renderingData,
+              useCompactDutyStripes: useCompactDutyStripes,
             );
           },
       selectedBuilder:
@@ -40,6 +49,8 @@ class CalendarDayBuilders {
               dayType: CalendarDayType.selected,
               width: CalendarConfig.kCalendarDayWidth,
               height: effectiveHeight,
+              renderingData: renderingData,
+              useCompactDutyStripes: useCompactDutyStripes,
             );
           },
       todayBuilder: (BuildContext context, DateTime day, DateTime focusedDay) {
@@ -49,6 +60,8 @@ class CalendarDayBuilders {
           dayType: CalendarDayType.today,
           width: CalendarConfig.kCalendarDayWidth,
           height: effectiveHeight,
+          renderingData: renderingData,
+          useCompactDutyStripes: useCompactDutyStripes,
         );
       },
     );

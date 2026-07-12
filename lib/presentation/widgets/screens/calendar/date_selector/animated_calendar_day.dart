@@ -17,6 +17,7 @@ class AnimatedCalendarDay extends StatefulWidget {
   final double? width;
   final double? height;
   final bool isSelected;
+  final bool useCompactDutyStripes;
   final VoidCallback? onTap;
   final bool hasSchoolHoliday;
   final String? schoolHolidayName;
@@ -34,6 +35,7 @@ class AnimatedCalendarDay extends StatefulWidget {
     this.width,
     this.height,
     required this.isSelected,
+    this.useCompactDutyStripes = false,
     this.onTap,
     this.hasSchoolHoliday = false,
     this.schoolHolidayName,
@@ -81,9 +83,7 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
         widget.width ?? CalendarConfig.kCalendarDayWidth;
     final double effectiveHeight =
         widget.height ?? CalendarConfig.kCalendarDayHeight;
-    final bool compactCell =
-        effectiveHeight <=
-        CalendarConfig.kCalendarDayCompactDutyStripesMaxHeight;
+    final bool compactCell = widget.useCompactDutyStripes;
     final double cellRadius = calendarDayCellBorderRadius(compact: compactCell);
 
     return InkWell(

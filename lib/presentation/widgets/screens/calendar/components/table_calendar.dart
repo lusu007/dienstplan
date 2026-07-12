@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart' as tc;
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_day_builders.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_rendering_data.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/utils/calendar_layout_utils.dart';
 
@@ -20,17 +21,24 @@ class CalendarTable extends ConsumerWidget {
 
   final ValueChanged<DateTime> onPageChanged;
   final ValueChanged<DateTime> onDaySelected;
+  final bool useCompactDutyStripes;
 
   const CalendarTable({
     super.key,
     required this.onPageChanged,
     required this.onDaySelected,
+    required this.useCompactDutyStripes,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
-    final DateTime focusedDay = state?.focusedDay ?? DateTime.now();
+    final CalendarTableRenderingData tableData = ref.watch(
+      calendarTableRenderingDataProvider,
+    );
+    final CalendarDayRenderingData dayData = ref.watch(
+      calendarDayRenderingDataProvider,
+    );
+    final DateTime focusedDay = tableData.focusedDay;
     final int weekRows = getWeekRowsForMonth(
       focusedDay,
       starting: CalendarConfig.startingDayOfWeek,
@@ -44,7 +52,7 @@ class CalendarTable extends ConsumerWidget {
 
         final String stableCalendarKey = _calendarTableKey(
           focusedDay: focusedDay,
-          activeConfigName: state?.activeConfigName,
+          activeConfigName: tableData.activeConfigName,
           localeLanguageCode: Localizations.localeOf(context).languageCode,
           rowHeight: rowHeight,
         );
@@ -62,7 +70,7 @@ class CalendarTable extends ConsumerWidget {
             daysOfWeekHeight: CalendarConfig.kDaysOfWeekRowHeight,
             rowHeight: rowHeight,
             selectedDayPredicate: (day) {
-              return tc.isSameDay(state?.selectedDay, day);
+              return tc.isSameDay(tableData.selectedDay, day);
             },
             onDaySelected: (selectedDay, focusedDay) async {
               await ref
@@ -81,6 +89,8 @@ class CalendarTable extends ConsumerWidget {
             },
             calendarBuilders: CalendarDayBuilders.create(
               cellHeight: cellHeight,
+              renderingData: dayData,
+              useCompactDutyStripes: useCompactDutyStripes,
             ),
             calendarStyle: CalendarConfig.createCalendarStyle(context),
             headerStyle: CalendarConfig.createHeaderStyle(),

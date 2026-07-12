@@ -1,53 +1,42 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
-import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/utils/duty_type_display.dart';
-import 'package:dienstplan/domain/entities/duty_schedule_config.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
-import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
-import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_schedule_lookup.dart';
-import 'package:dienstplan/presentation/widgets/screens/calendar/components/duty_group_fallback.dart';
-
-final calendarDayScheduleLookupProvider = Provider<CalendarDayScheduleLookup>((
-  ref,
-) {
-  final List<Schedule> schedules = ref.watch(
-    scheduleCoordinatorProvider.select(
-      (state) => state.value?.schedules ?? const <Schedule>[],
-    ),
-  );
-  return CalendarDayScheduleLookup(schedules);
-});
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_rendering_data.dart';
 
 /// Optimized calendar day widget with memoization and selective provider watching
-class MemoizedCalendarDay extends ConsumerWidget {
+class MemoizedCalendarDay extends StatelessWidget {
   final DateTime day;
   final CalendarDayType dayType;
   final double? width;
   final double? height;
   final VoidCallback? onDaySelected;
+  final CalendarDayRenderingData renderingData;
+  final bool useCompactDutyStripes;
 
   const MemoizedCalendarDay({
     super.key,
     required this.day,
     required this.dayType,
+    required this.renderingData,
+    this.useCompactDutyStripes = false,
     this.width,
     this.height,
     this.onDaySelected,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return RepaintBoundary(
       child: _MemoizedCalendarDayContent(
         day: day,
         dayType: dayType,
+        renderingData: renderingData,
+        useCompactDutyStripes: useCompactDutyStripes,
         width: width,
         height: height,
         onDaySelected: onDaySelected,
@@ -56,9 +45,11 @@ class MemoizedCalendarDay extends ConsumerWidget {
   }
 }
 
-class _MemoizedCalendarDayContent extends ConsumerWidget {
+class _MemoizedCalendarDayContent extends StatelessWidget {
   final DateTime day;
   final CalendarDayType dayType;
+  final CalendarDayRenderingData renderingData;
+  final bool useCompactDutyStripes;
   final double? width;
   final double? height;
   final VoidCallback? onDaySelected;
@@ -66,76 +57,16 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
   const _MemoizedCalendarDayContent({
     required this.day,
     required this.dayType,
+    required this.renderingData,
+    required this.useCompactDutyStripes,
     this.width,
     this.height,
     this.onDaySelected,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final CalendarDayScheduleLookup scheduleLookup = ref.watch(
-      calendarDayScheduleLookupProvider,
-    );
-
-    final activeConfig = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.activeConfigName,
-      ),
-    );
-
-    final preferredGroup = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.preferredDutyGroup,
-      ),
-    );
-
-    final partnerConfigName = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.partnerConfigName,
-      ),
-    );
-
-    final partnerGroup = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.partnerDutyGroup,
-      ),
-    );
-
-    // View-only visibility override: hiding the partner in the calendar
-    // must not mutate the persisted partner configuration.
-    final bool partnerVisible = ref.watch(calendarPartnerVisibilityProvider);
-    final String? effectivePartnerConfigName = partnerVisible
-        ? partnerConfigName
-        : null;
-    final String? effectivePartnerGroup = partnerVisible ? partnerGroup : null;
-
-    final selectedDay = ref.watch(
-      scheduleCoordinatorProvider.select((state) => state.value?.selectedDay),
-    );
-
-    final partnerAccentColor = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.partnerAccentColorValue,
-      ),
-    );
-
-    final myAccentColor = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.myAccentColorValue,
-      ),
-    );
-
-    final holidayAccentColor = ref.watch(
-      settingsProvider.select((s) => s.value?.holidayAccentColorValue),
-    );
-
-    final myDutyGroup = ref.watch(
-      settingsProvider.select((s) => s.value?.myDutyGroup),
-    );
-
-    final holidaysAsyncValue = ref.watch(schoolHolidaysProvider);
-    final holidaysState = holidaysAsyncValue.whenData((data) => data).value;
-
+  Widget build(BuildContext context) {
+    final holidaysState = renderingData.holidaysState;
     final hasSchoolHoliday =
         holidaysState?.isEnabled == true &&
         holidaysState?.hasHolidayOnDate(day) == true;
@@ -144,67 +75,44 @@ class _MemoizedCalendarDayContent extends ConsumerWidget {
         : [];
     final schoolHolidayName = holidays.isNotEmpty ? holidays.first.name : null;
 
-    final String? effectiveMyGroup = computeEffectiveMyGroup(
-      preferredGroup: preferredGroup,
-      myDutyGroup: myDutyGroup,
-    );
+    final CalendarDayScheduleLookup? scheduleLookup =
+        renderingData.scheduleLookup;
+    final dutyData = scheduleLookup == null
+        ? const DutyData(
+            myDuty: '',
+            partnerDuty: '',
+            personalCalendarTitles: <String>[],
+          )
+        : _MemoizedDutyCalculator.calculateDutyData(
+            day: day,
+            scheduleLookup: scheduleLookup,
+            activeConfigName: renderingData.activeConfigName,
+            preferredGroup: renderingData.effectiveMyGroup,
+            partnerConfigName: renderingData.effectivePartnerConfigName,
+            partnerGroup: renderingData.effectivePartnerGroup,
+            activeDutyTypes: renderingData.activeDutyTypes,
+            partnerDutyTypes: renderingData.partnerDutyTypes,
+          );
 
-    final Map<String, DutyType>? activeDutyTypes = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.activeConfig?.dutyTypes,
-      ),
-    );
-    final List<DutyScheduleConfig> configs = ref.watch(
-      scheduleCoordinatorProvider.select(
-        (state) => state.value?.configs ?? const <DutyScheduleConfig>[],
-      ),
-    );
-    Map<String, DutyType>? partnerDutyTypes;
-    final String? partnerName = effectivePartnerConfigName;
-    if (partnerName != null && partnerName.isNotEmpty) {
-      for (final DutyScheduleConfig c in configs) {
-        if (c.name == partnerName) {
-          partnerDutyTypes = c.dutyTypes;
-          break;
-        }
-      }
-    }
-
-    final dutyData = _MemoizedDutyCalculator.calculateDutyData(
-      day: day,
-      scheduleLookup: scheduleLookup,
-      activeConfigName: activeConfig,
-      preferredGroup: effectiveMyGroup,
-      partnerConfigName: effectivePartnerConfigName,
-      partnerGroup: effectivePartnerGroup,
-      activeDutyTypes: activeDutyTypes,
-      partnerDutyTypes: partnerDutyTypes,
-    );
-
-    final isSelected = _isSelected(selectedDay);
+    final bool isSelected = dayType == CalendarDayType.selected;
 
     return AnimatedCalendarDay(
       day: day,
       dutyAbbreviation: dutyData.myDuty,
       partnerDutyAbbreviation: dutyData.partnerDuty,
       personalCalendarTitles: dutyData.personalCalendarTitles,
-      partnerAccentColorValue: partnerAccentColor,
-      myAccentColorValue: myAccentColor,
-      holidayAccentColorValue: holidayAccentColor,
+      partnerAccentColorValue: renderingData.partnerAccentColorValue,
+      myAccentColorValue: renderingData.myAccentColorValue,
+      holidayAccentColorValue: renderingData.holidayAccentColorValue,
       dayType: dayType,
       width: width ?? CalendarConfig.kCalendarDayWidth,
       height: height ?? CalendarConfig.kCalendarDayHeight,
       isSelected: isSelected,
+      useCompactDutyStripes: useCompactDutyStripes,
+      onTap: onDaySelected,
       hasSchoolHoliday: hasSchoolHoliday,
       schoolHolidayName: schoolHolidayName,
     );
-  }
-
-  bool _isSelected(DateTime? selectedDay) {
-    if (selectedDay == null) return false;
-    return day.year == selectedDay.year &&
-        day.month == selectedDay.month &&
-        day.day == selectedDay.day;
   }
 }
 
