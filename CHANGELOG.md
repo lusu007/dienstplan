@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.4](https://github.com/lusu007/dienstplan/compare/v0.17.3...v0.17.4) (2026-07-12)
+
+
+### Bug Fixes
+
+* keep calendar duty chips in full view ([#423](https://github.com/lusu007/dienstplan/issues/423)) ([8f4ab16](https://github.com/lusu007/dienstplan/commit/8f4ab16a8a6b55f11f26464e53c6e2c691a86c1b))
+
 ## [0.17.3](https://github.com/lusu007/dienstplan/compare/v0.17.2...v0.17.3) (2026-06-28)
 
 
