@@ -17,7 +17,9 @@ import 'package:dienstplan/presentation/widgets/screens/settings/components/bott
 class ScheduleSection extends StatelessWidget {
   final ScheduleUiState state;
 
-  const ScheduleSection({super.key, required this.state});
+  const ScheduleSection({super.key, required this.state, this.partner = false});
+
+  final bool partner;
 
   @override
   Widget build(BuildContext context) {
@@ -25,104 +27,118 @@ class ScheduleSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsSection(
-          title: l10n.myDutySchedule,
-          cards: [
-            NavigationCard(
-              icon: Icons.calendar_month_outlined,
-              title: l10n.myDutySchedule,
-              subtitle: _getDutyScheduleDisplayName(state, l10n),
-              onTap: () => DutyScheduleBottomsheet.show(
-                context,
-                heightPercentage: 0.8, // 80% for config selection with filters
+        if (!partner)
+          SettingsSection(
+            title: l10n.myDutySchedule,
+            cards: [
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.calendar_month_outlined,
+                title: l10n.myDutySchedule,
+                subtitle: _getDutyScheduleDisplayName(state, l10n),
+                onTap: () => DutyScheduleBottomsheet.show(
+                  context,
+                  heightPercentage:
+                      0.8, // 80% for config selection with filters
+                ),
               ),
-            ),
-            NavigationCard(
-              icon: Icons.favorite_outlined,
-              title: l10n.myDutyGroup,
-              subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
-              enabled: _isMyDutyGroupEnabled(state),
-              onTap: _isMyDutyGroupEnabled(state)
-                  ? () => MyDutyGroupBottomsheet.show(
-                      context,
-                      heightPercentage: 0.5, // 50% for simple group selection
-                    )
-                  : () => _showDutyScheduleRequiredMessage(context, l10n),
-            ),
-            NavigationCard(
-              icon: Icons.color_lens_outlined,
-              title: l10n.myAccentColor,
-              subtitle: _getMyAccentColorName(state, l10n),
-              trailing: _buildMyAccentColorChip(
-                context,
-                state.myAccentColorValue,
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.favorite_outlined,
+                title: l10n.myDutyGroup,
+                subtitle: _getPreferredDutyGroupDisplayName(state, l10n),
+                enabled: _isMyDutyGroupEnabled(state),
+                onTap: _isMyDutyGroupEnabled(state)
+                    ? () => MyDutyGroupBottomsheet.show(
+                        context,
+                        heightPercentage: 0.5, // 50% for simple group selection
+                      )
+                    : () => _showDutyScheduleRequiredMessage(context, l10n),
               ),
-              enabled: _isMyDutyGroupEnabled(state),
-              onTap: _isMyDutyGroupEnabled(state)
-                  ? () => MyAccentColorBottomsheet.show(
-                      context,
-                      heightPercentage: 0.6, // 60% for color selection
-                    )
-                  : () => _showDutyScheduleRequiredMessage(context, l10n),
-            ),
-            NavigationCard(
-              icon: Icons.ios_share_outlined,
-              title: l10n.exportCalendar,
-              subtitle: l10n.exportCalendarDescription,
-              enabled: _isMyDutyGroupEnabled(state),
-              onTap: _isMyDutyGroupEnabled(state)
-                  ? () => CalendarExportBottomsheet.show(context)
-                  : () => _showDutyScheduleRequiredMessage(context, l10n),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SettingsSection(
-          title: l10n.partnerDutySchedule,
-          cards: [
-            NavigationCard(
-              icon: Icons.calendar_month_outlined,
-              title: l10n.partnerDutySchedule,
-              subtitle: state.partnerConfigName?.isNotEmpty == true
-                  ? state.partnerConfigName!
-                  : l10n.noDutySchedule,
-              onTap: () => PartnerConfigBottomsheet.show(
-                context,
-                heightPercentage: 0.8, // 80% for config selection with filters
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.color_lens_outlined,
+                title: l10n.myAccentColor,
+                subtitle: _getMyAccentColorName(state, l10n),
+                trailing: _buildMyAccentColorChip(
+                  context,
+                  state.myAccentColorValue,
+                ),
+                enabled: _isMyDutyGroupEnabled(state),
+                onTap: _isMyDutyGroupEnabled(state)
+                    ? () => MyAccentColorBottomsheet.show(
+                        context,
+                        heightPercentage: 0.6, // 60% for color selection
+                      )
+                    : () => _showDutyScheduleRequiredMessage(context, l10n),
               ),
-            ),
-            NavigationCard(
-              icon: Icons.group_outlined,
-              title: l10n.partnerDutyGroup,
-              subtitle: _getPartnerGroupDisplayName(state, l10n),
-              enabled: _isPartnerDutyGroupEnabled(state),
-              onTap: _isPartnerDutyGroupEnabled(state)
-                  ? () => PartnerGroupBottomsheet.show(
-                      context,
-                      heightPercentage: 0.5, // 50% for simple group selection
-                    )
-                  : () =>
-                        _showPartnerDutyScheduleRequiredMessage(context, l10n),
-            ),
-            NavigationCard(
-              icon: Icons.color_lens_outlined,
-              title: l10n.accentColor,
-              subtitle: _getPartnerAccentColorName(state, l10n),
-              trailing: _buildAccentColorChip(
-                context,
-                state.partnerAccentColorValue,
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.ios_share_outlined,
+                title: l10n.exportCalendar,
+                subtitle: l10n.exportCalendarDescription,
+                enabled: _isMyDutyGroupEnabled(state),
+                onTap: _isMyDutyGroupEnabled(state)
+                    ? () => CalendarExportBottomsheet.show(context)
+                    : () => _showDutyScheduleRequiredMessage(context, l10n),
               ),
-              enabled: _isPartnerDutyGroupEnabled(state),
-              onTap: _isPartnerDutyGroupEnabled(state)
-                  ? () => PartnerColorBottomsheet.show(
-                      context,
-                      heightPercentage: 0.6, // 60% for color selection
-                    )
-                  : () =>
-                        _showPartnerDutyScheduleRequiredMessage(context, l10n),
-            ),
-          ],
-        ),
+            ],
+          ),
+        if (partner)
+          SettingsSection(
+            title: l10n.partnerDutySchedule,
+            cards: [
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.calendar_month_outlined,
+                title: l10n.partnerDutySchedule,
+                subtitle: state.partnerConfigName?.isNotEmpty == true
+                    ? state.partnerConfigName!
+                    : l10n.noDutySchedule,
+                onTap: () => PartnerConfigBottomsheet.show(
+                  context,
+                  heightPercentage:
+                      0.8, // 80% for config selection with filters
+                ),
+              ),
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.group_outlined,
+                title: l10n.partnerDutyGroup,
+                subtitle: _getPartnerGroupDisplayName(state, l10n),
+                enabled: _isPartnerDutyGroupEnabled(state),
+                onTap: _isPartnerDutyGroupEnabled(state)
+                    ? () => PartnerGroupBottomsheet.show(
+                        context,
+                        heightPercentage: 0.5, // 50% for simple group selection
+                      )
+                    : () => _showPartnerDutyScheduleRequiredMessage(
+                        context,
+                        l10n,
+                      ),
+              ),
+              NavigationCard(
+                modalTrigger: true,
+                icon: Icons.color_lens_outlined,
+                title: l10n.accentColor,
+                subtitle: _getPartnerAccentColorName(state, l10n),
+                trailing: _buildAccentColorChip(
+                  context,
+                  state.partnerAccentColorValue,
+                ),
+                enabled: _isPartnerDutyGroupEnabled(state),
+                onTap: _isPartnerDutyGroupEnabled(state)
+                    ? () => PartnerColorBottomsheet.show(
+                        context,
+                        heightPercentage: 0.6, // 60% for color selection
+                      )
+                    : () => _showPartnerDutyScheduleRequiredMessage(
+                        context,
+                        l10n,
+                      ),
+              ),
+            ],
+          ),
       ],
     );
   }

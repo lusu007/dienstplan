@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
@@ -6,9 +5,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart
 /// Glass-morphism replacement for [AlertDialog].
 ///
 /// Uses [GlassDialogSurface] as the modal body, fades + slides in from below
-/// with the same animation as the schedules dialog, and adds a subtle
-/// backdrop blur behind the barrier so the page content dissolves while the
-/// dialog is open.
+/// while delegating the glass material to the shared package adapter.
 class GlassAppDialog extends StatelessWidget {
   final String title;
   final Widget content;
@@ -40,34 +37,18 @@ class GlassAppDialog extends StatelessWidget {
           curve: Curves.easeOutCubic,
           reverseCurve: Curves.easeInCubic,
         );
-        return Stack(
-          children: [
-            FadeTransition(
-              opacity: curved,
-              child: IgnorePointer(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: glassSurfaceBlurSubtle,
-                    sigmaY: glassSurfaceBlurSubtle,
-                  ),
-                  child: const SizedBox.expand(),
-                ),
-              ),
+        return FadeTransition(
+          opacity: curved,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 0.04),
+              end: Offset.zero,
+            ).animate(curved),
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.97, end: 1.0).animate(curved),
+              child: child,
             ),
-            FadeTransition(
-              opacity: curved,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, 0.04),
-                  end: Offset.zero,
-                ).animate(curved),
-                child: ScaleTransition(
-                  scale: Tween<double>(begin: 0.97, end: 1.0).animate(curved),
-                  child: child,
-                ),
-              ),
-            ),
-          ],
+          ),
         );
       },
       pageBuilder: (context, animation, secondaryAnimation) {

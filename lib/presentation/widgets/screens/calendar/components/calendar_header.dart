@@ -10,6 +10,7 @@ import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibili
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_month_title.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/settings_category.dart';
 
 /// Custom header used in place of the default [AppBar].
 ///
@@ -91,8 +92,11 @@ class CalendarHeader extends ConsumerWidget {
                           .read(calendarPartnerVisibilityProvider.notifier)
                           .toggle();
                     },
-                    onConfigure: () =>
-                        context.router.push(const SettingsRoute()),
+                    onConfigure: () => context.router.push(
+                      SettingsCategoryRoute(
+                        category: SettingsCategory.partner.name,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: glassSpacingSm),
                   _GlassSettingsButton(

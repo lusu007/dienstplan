@@ -1,0 +1,2554 @@
+{
+  "baseline": [
+    {
+      "sample": "r0-entry-first",
+      "Frame": {
+        "n": 10,
+        "median": 2.49,
+        "p95": 19.37,
+        "max": 19.37,
+        "total": 51.33,
+        "over16": 1,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 10,
+        "median": 40.12,
+        "p95": 136.49,
+        "max": 136.49,
+        "total": 445.18,
+        "over16": 8,
+        "over8": 10,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 55,
+        "median": 0.01,
+        "p95": 0.76,
+        "max": 6.1,
+        "total": 15.64,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 10,
+        "median": 0.08,
+        "p95": 8.09,
+        "max": 8.09,
+        "total": 12.7,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 10,
+        "median": 0.96,
+        "p95": 4.53,
+        "max": 4.53,
+        "total": 14.04,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-entry-repeat",
+      "Frame": {
+        "n": 22,
+        "median": 2.55,
+        "p95": 11.32,
+        "max": 13.68,
+        "total": 83.94,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 22,
+        "median": 36.86,
+        "p95": 97.19,
+        "max": 100.31,
+        "total": 1070.52,
+        "over16": 20,
+        "over8": 22,
+        "over50": 8
+      },
+      "BUILD": {
+        "n": 31,
+        "median": 0.21,
+        "p95": 4.36,
+        "max": 5.19,
+        "total": 20.96,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 22,
+        "median": 0.04,
+        "p95": 1.75,
+        "max": 2.52,
+        "total": 8.23,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 22,
+        "median": 1.01,
+        "p95": 1.9,
+        "max": 2.81,
+        "total": 24.23,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-first",
+      "Frame": {
+        "n": 24,
+        "median": 1.41,
+        "p95": 3.65,
+        "max": 12.41,
+        "total": 48.85,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 24,
+        "median": 11.83,
+        "p95": 57.54,
+        "max": 120.28,
+        "total": 502.07,
+        "over16": 8,
+        "over8": 15,
+        "over50": 4
+      },
+      "BUILD": {
+        "n": 31,
+        "median": 0.02,
+        "p95": 0.59,
+        "max": 3.84,
+        "total": 6.76,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 24,
+        "median": 0.0,
+        "p95": 0.1,
+        "max": 4.08,
+        "total": 4.32,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 24,
+        "median": 0.73,
+        "p95": 1.64,
+        "max": 3.23,
+        "total": 22.23,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-repeat",
+      "Frame": {
+        "n": 33,
+        "median": 1.74,
+        "p95": 3.25,
+        "max": 8.25,
+        "total": 65.97,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 33,
+        "median": 10.69,
+        "p95": 30.12,
+        "max": 49.79,
+        "total": 476.17,
+        "over16": 10,
+        "over8": 19,
+        "over50": 0
+      },
+      "BUILD": {
+        "n": 37,
+        "median": 0.03,
+        "p95": 0.27,
+        "max": 3.3,
+        "total": 6.6,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 33,
+        "median": 0.0,
+        "p95": 0.18,
+        "max": 1.59,
+        "total": 1.93,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 33,
+        "median": 0.93,
+        "p95": 1.71,
+        "max": 2.16,
+        "total": 31.65,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-first",
+      "Frame": {
+        "n": 9,
+        "median": 2.6,
+        "p95": 12.83,
+        "max": 12.83,
+        "total": 41.51,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 39.6,
+        "p95": 100.68,
+        "max": 100.68,
+        "total": 471.2,
+        "over16": 8,
+        "over8": 8,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 53,
+        "median": 0.0,
+        "p95": 0.56,
+        "max": 6.29,
+        "total": 13.24,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.02,
+        "p95": 5.09,
+        "max": 5.09,
+        "total": 8.29,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.92,
+        "p95": 2.8,
+        "max": 2.8,
+        "total": 11.07,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.1,
+        "p95": 6.37,
+        "max": 6.37,
+        "total": 23.5,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 34.45,
+        "p95": 59.31,
+        "max": 59.31,
+        "total": 315.37,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.05,
+        "p95": 2.02,
+        "max": 2.02,
+        "total": 2.57,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.04,
+        "p95": 1.23,
+        "max": 1.23,
+        "total": 1.53,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.92,
+        "p95": 2.38,
+        "max": 2.38,
+        "total": 10.31,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-first",
+      "Frame": {
+        "n": 25,
+        "median": 1.33,
+        "p95": 3.01,
+        "max": 12.98,
+        "total": 48.06,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 25,
+        "median": 14.8,
+        "p95": 77.45,
+        "max": 104.71,
+        "total": 586.75,
+        "over16": 10,
+        "over8": 21,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 32,
+        "median": 0.03,
+        "p95": 0.59,
+        "max": 3.0,
+        "total": 6.01,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 25,
+        "median": 0.0,
+        "p95": 0.17,
+        "max": 3.15,
+        "total": 3.45,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 25,
+        "median": 0.68,
+        "p95": 1.74,
+        "max": 2.18,
+        "total": 19.86,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-repeat",
+      "Frame": {
+        "n": 32,
+        "median": 1.39,
+        "p95": 3.15,
+        "max": 9.72,
+        "total": 58.39,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 32,
+        "median": 12.52,
+        "p95": 47.46,
+        "max": 60.05,
+        "total": 481.74,
+        "over16": 7,
+        "over8": 19,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 36,
+        "median": 0.03,
+        "p95": 0.24,
+        "max": 3.37,
+        "total": 6.19,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 32,
+        "median": 0.0,
+        "p95": 0.17,
+        "max": 1.68,
+        "total": 1.96,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 32,
+        "median": 0.74,
+        "p95": 2.58,
+        "max": 3.03,
+        "total": 29.45,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-first",
+      "Frame": {
+        "n": 9,
+        "median": 2.35,
+        "p95": 12.62,
+        "max": 12.62,
+        "total": 39.59,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 53.2,
+        "p95": 75.68,
+        "max": 75.68,
+        "total": 427.48,
+        "over16": 8,
+        "over8": 8,
+        "over50": 6
+      },
+      "BUILD": {
+        "n": 53,
+        "median": 0.01,
+        "p95": 1.0,
+        "max": 6.25,
+        "total": 15.83,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.01,
+        "p95": 3.78,
+        "max": 3.78,
+        "total": 8.73,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.91,
+        "p95": 2.07,
+        "max": 2.07,
+        "total": 9.31,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.35,
+        "p95": 6.76,
+        "max": 6.76,
+        "total": 23.63,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 34.46,
+        "p95": 86.81,
+        "max": 86.81,
+        "total": 340.5,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.04,
+        "p95": 1.88,
+        "max": 1.88,
+        "total": 2.67,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.05,
+        "p95": 1.39,
+        "max": 1.39,
+        "total": 1.78,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 1.09,
+        "p95": 2.25,
+        "max": 2.25,
+        "total": 10.31,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-first",
+      "Frame": {
+        "n": 21,
+        "median": 1.6,
+        "p95": 3.68,
+        "max": 12.68,
+        "total": 45.58,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 21,
+        "median": 17.5,
+        "p95": 77.92,
+        "max": 114.95,
+        "total": 572.1,
+        "over16": 11,
+        "over8": 18,
+        "over50": 4
+      },
+      "BUILD": {
+        "n": 28,
+        "median": 0.06,
+        "p95": 0.9,
+        "max": 2.28,
+        "total": 5.62,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 21,
+        "median": 0.0,
+        "p95": 0.17,
+        "max": 4.52,
+        "total": 4.83,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 21,
+        "median": 0.7,
+        "p95": 2.77,
+        "max": 4.15,
+        "total": 21.15,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-repeat",
+      "Frame": {
+        "n": 33,
+        "median": 1.79,
+        "p95": 3.54,
+        "max": 9.16,
+        "total": 70.92,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 33,
+        "median": 9.1,
+        "p95": 36.9,
+        "max": 53.78,
+        "total": 459.86,
+        "over16": 8,
+        "over8": 18,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 37,
+        "median": 0.04,
+        "p95": 0.62,
+        "max": 2.82,
+        "total": 6.76,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 33,
+        "median": 0.0,
+        "p95": 0.14,
+        "max": 1.6,
+        "total": 1.88,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 33,
+        "median": 0.92,
+        "p95": 2.77,
+        "max": 2.8,
+        "total": 36.21,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    }
+  ],
+  "optimized": [
+    {
+      "sample": "r0-entry-first",
+      "Frame": {
+        "n": 9,
+        "median": 2.82,
+        "p95": 16.45,
+        "max": 16.45,
+        "total": 49.56,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 49.97,
+        "p95": 83.63,
+        "max": 83.63,
+        "total": 455.09,
+        "over16": 8,
+        "over8": 8,
+        "over50": 4
+      },
+      "BUILD": {
+        "n": 53,
+        "median": 0.01,
+        "p95": 0.76,
+        "max": 7.99,
+        "total": 16.53,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.14,
+        "p95": 6.27,
+        "max": 6.27,
+        "total": 11.96,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.99,
+        "p95": 2.75,
+        "max": 2.75,
+        "total": 10.08,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-entry-repeat",
+      "Frame": {
+        "n": 8,
+        "median": 2.62,
+        "p95": 3.32,
+        "max": 3.32,
+        "total": 20.6,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 36.27,
+        "p95": 86.94,
+        "max": 86.94,
+        "total": 322.52,
+        "over16": 7,
+        "over8": 8,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 9,
+        "median": 0.05,
+        "p95": 1.01,
+        "max": 1.01,
+        "total": 1.64,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.07,
+        "p95": 0.63,
+        "max": 0.63,
+        "total": 1.36,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 1.05,
+        "p95": 1.34,
+        "max": 1.34,
+        "total": 8.28,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-first",
+      "Frame": {
+        "n": 12,
+        "median": 1.37,
+        "p95": 3.78,
+        "max": 3.78,
+        "total": 20.34,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 12,
+        "median": 16.1,
+        "p95": 161.21,
+        "max": 161.21,
+        "total": 487.32,
+        "over16": 5,
+        "over8": 11,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 18,
+        "median": 0.05,
+        "p95": 1.42,
+        "max": 1.42,
+        "total": 4.2,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 12,
+        "median": 0.01,
+        "p95": 1.2,
+        "max": 1.2,
+        "total": 1.83,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 12,
+        "median": 0.52,
+        "p95": 1.1,
+        "max": 1.1,
+        "total": 5.8,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-repeat",
+      "Frame": {
+        "n": 11,
+        "median": 1.91,
+        "p95": 9.37,
+        "max": 9.37,
+        "total": 26.9,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 11,
+        "median": 22.34,
+        "p95": 65.35,
+        "max": 65.35,
+        "total": 301.25,
+        "over16": 7,
+        "over8": 10,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 14,
+        "median": 0.11,
+        "p95": 2.35,
+        "max": 2.35,
+        "total": 6.02,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 11,
+        "median": 0.01,
+        "p95": 2.03,
+        "max": 2.03,
+        "total": 2.76,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 11,
+        "median": 0.57,
+        "p95": 3.34,
+        "max": 3.34,
+        "total": 9.3,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-first",
+      "Frame": {
+        "n": 8,
+        "median": 2.58,
+        "p95": 13.58,
+        "max": 13.58,
+        "total": 42.6,
+        "over16": 0,
+        "over8": 3,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 59.95,
+        "p95": 65.74,
+        "max": 65.74,
+        "total": 422.26,
+        "over16": 7,
+        "over8": 8,
+        "over50": 6
+      },
+      "BUILD": {
+        "n": 52,
+        "median": 0.01,
+        "p95": 1.68,
+        "max": 5.47,
+        "total": 14.27,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.12,
+        "p95": 5.08,
+        "max": 5.08,
+        "total": 9.05,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 1.17,
+        "p95": 3.91,
+        "max": 3.91,
+        "total": 12.03,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-repeat",
+      "Frame": {
+        "n": 8,
+        "median": 2.34,
+        "p95": 4.99,
+        "max": 4.99,
+        "total": 20.92,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 35.12,
+        "p95": 99.52,
+        "max": 99.52,
+        "total": 331.48,
+        "over16": 7,
+        "over8": 8,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 9,
+        "median": 0.05,
+        "p95": 1.59,
+        "max": 1.59,
+        "total": 2.02,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.06,
+        "p95": 1.07,
+        "max": 1.07,
+        "total": 1.48,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 0.99,
+        "p95": 2.16,
+        "max": 2.16,
+        "total": 9.22,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-first",
+      "Frame": {
+        "n": 12,
+        "median": 1.27,
+        "p95": 5.8,
+        "max": 5.8,
+        "total": 22.93,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 12,
+        "median": 21.57,
+        "p95": 133.16,
+        "max": 133.16,
+        "total": 576.13,
+        "over16": 11,
+        "over8": 11,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 18,
+        "median": 0.04,
+        "p95": 1.75,
+        "max": 1.75,
+        "total": 4.67,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 12,
+        "median": 0.01,
+        "p95": 1.95,
+        "max": 1.95,
+        "total": 2.77,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 12,
+        "median": 0.45,
+        "p95": 1.93,
+        "max": 1.93,
+        "total": 7.68,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-repeat",
+      "Frame": {
+        "n": 11,
+        "median": 1.79,
+        "p95": 9.01,
+        "max": 9.01,
+        "total": 30.78,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 11,
+        "median": 29.05,
+        "p95": 62.62,
+        "max": 62.62,
+        "total": 352.03,
+        "over16": 10,
+        "over8": 10,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 14,
+        "median": 0.12,
+        "p95": 3.15,
+        "max": 3.15,
+        "total": 7.15,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 11,
+        "median": 0.01,
+        "p95": 1.7,
+        "max": 1.7,
+        "total": 2.94,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 11,
+        "median": 0.81,
+        "p95": 2.69,
+        "max": 2.69,
+        "total": 10.36,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-first",
+      "Frame": {
+        "n": 8,
+        "median": 2.47,
+        "p95": 12.08,
+        "max": 12.08,
+        "total": 36.17,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 42.06,
+        "p95": 95.12,
+        "max": 95.12,
+        "total": 367.53,
+        "over16": 7,
+        "over8": 7,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 52,
+        "median": 0.01,
+        "p95": 1.17,
+        "max": 5.05,
+        "total": 12.4,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.18,
+        "p95": 4.92,
+        "max": 4.92,
+        "total": 8.16,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 1.09,
+        "p95": 2.38,
+        "max": 2.38,
+        "total": 8.77,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.42,
+        "p95": 7.94,
+        "max": 7.94,
+        "total": 25.48,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 35.19,
+        "p95": 58.87,
+        "max": 58.87,
+        "total": 317.08,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.05,
+        "p95": 2.34,
+        "max": 2.34,
+        "total": 2.87,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.06,
+        "p95": 1.66,
+        "max": 1.66,
+        "total": 2.07,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 1.22,
+        "p95": 1.93,
+        "max": 1.93,
+        "total": 10.56,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-first",
+      "Frame": {
+        "n": 10,
+        "median": 1.25,
+        "p95": 12.63,
+        "max": 12.63,
+        "total": 26.1,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 10,
+        "median": 21.3,
+        "p95": 126.21,
+        "max": 126.21,
+        "total": 423.02,
+        "over16": 8,
+        "over8": 10,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 16,
+        "median": 0.09,
+        "p95": 3.57,
+        "max": 3.57,
+        "total": 6.34,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 10,
+        "median": 0.01,
+        "p95": 4.22,
+        "max": 4.22,
+        "total": 4.8,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 10,
+        "median": 0.48,
+        "p95": 3.5,
+        "max": 3.5,
+        "total": 7.34,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-repeat",
+      "Frame": {
+        "n": 13,
+        "median": 1.11,
+        "p95": 4.78,
+        "max": 4.78,
+        "total": 20.21,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 13,
+        "median": 27.5,
+        "p95": 68.66,
+        "max": 68.66,
+        "total": 376.14,
+        "over16": 11,
+        "over8": 12,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 16,
+        "median": 0.12,
+        "p95": 2.12,
+        "max": 2.12,
+        "total": 4.66,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 13,
+        "median": 0.01,
+        "p95": 0.6,
+        "max": 0.6,
+        "total": 1.3,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 13,
+        "median": 0.41,
+        "p95": 1.0,
+        "max": 1.0,
+        "total": 7.01,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    }
+  ],
+  "blur4": [
+    {
+      "sample": "r0-entry-first",
+      "Frame": {
+        "n": 9,
+        "median": 1.55,
+        "p95": 16.23,
+        "max": 16.23,
+        "total": 45.52,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 40.27,
+        "p95": 62.76,
+        "max": 62.76,
+        "total": 390.51,
+        "over16": 8,
+        "over8": 9,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 53,
+        "median": 0.01,
+        "p95": 0.73,
+        "max": 8.37,
+        "total": 16.38,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.01,
+        "p95": 6.56,
+        "max": 6.56,
+        "total": 10.16,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.5,
+        "p95": 4.01,
+        "max": 4.01,
+        "total": 11.51,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-entry-repeat",
+      "Frame": {
+        "n": 8,
+        "median": 2.28,
+        "p95": 6.35,
+        "max": 6.35,
+        "total": 21.98,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 34.45,
+        "p95": 72.25,
+        "max": 72.25,
+        "total": 296.12,
+        "over16": 7,
+        "over8": 8,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 9,
+        "median": 0.05,
+        "p95": 2.12,
+        "max": 2.12,
+        "total": 2.74,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.04,
+        "p95": 1.21,
+        "max": 1.21,
+        "total": 1.48,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 1.09,
+        "p95": 1.66,
+        "max": 1.66,
+        "total": 9.04,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-first",
+      "Frame": {
+        "n": 12,
+        "median": 1.19,
+        "p95": 9.68,
+        "max": 9.68,
+        "total": 22.4,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 12,
+        "median": 18.88,
+        "p95": 123.25,
+        "max": 123.25,
+        "total": 368.44,
+        "over16": 6,
+        "over8": 11,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 18,
+        "median": 0.15,
+        "p95": 2.79,
+        "max": 2.79,
+        "total": 5.21,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 12,
+        "median": 0.0,
+        "p95": 3.09,
+        "max": 3.09,
+        "total": 3.19,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 12,
+        "median": 0.36,
+        "p95": 2.56,
+        "max": 2.56,
+        "total": 6.42,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-repeat",
+      "Frame": {
+        "n": 19,
+        "median": 1.03,
+        "p95": 3.22,
+        "max": 3.22,
+        "total": 24.07,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 19,
+        "median": 18.21,
+        "p95": 44.6,
+        "max": 44.6,
+        "total": 307.13,
+        "over16": 11,
+        "over8": 13,
+        "over50": 0
+      },
+      "BUILD": {
+        "n": 22,
+        "median": 0.15,
+        "p95": 0.88,
+        "max": 1.02,
+        "total": 5.36,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 19,
+        "median": 0.0,
+        "p95": 0.53,
+        "max": 0.53,
+        "total": 0.59,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 19,
+        "median": 0.29,
+        "p95": 1.71,
+        "max": 1.71,
+        "total": 7.82,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-first",
+      "Frame": {
+        "n": 8,
+        "median": 4.49,
+        "p95": 14.13,
+        "max": 14.13,
+        "total": 50.31,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 60.58,
+        "p95": 83.98,
+        "max": 83.98,
+        "total": 436.06,
+        "over16": 7,
+        "over8": 7,
+        "over50": 5
+      },
+      "BUILD": {
+        "n": 52,
+        "median": 0.01,
+        "p95": 1.32,
+        "max": 6.87,
+        "total": 17.01,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.33,
+        "p95": 5.4,
+        "max": 5.4,
+        "total": 9.83,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 1.2,
+        "p95": 3.27,
+        "max": 3.27,
+        "total": 13.16,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-repeat",
+      "Frame": {
+        "n": 10,
+        "median": 2.02,
+        "p95": 3.66,
+        "max": 3.66,
+        "total": 22.56,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 10,
+        "median": 34.48,
+        "p95": 61.24,
+        "max": 61.24,
+        "total": 342.2,
+        "over16": 9,
+        "over8": 10,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 11,
+        "median": 0.06,
+        "p95": 0.9,
+        "max": 0.9,
+        "total": 1.91,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 10,
+        "median": 0.04,
+        "p95": 1.06,
+        "max": 1.06,
+        "total": 1.42,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 10,
+        "median": 0.84,
+        "p95": 2.36,
+        "max": 2.36,
+        "total": 9.64,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-first",
+      "Frame": {
+        "n": 11,
+        "median": 1.24,
+        "p95": 13.56,
+        "max": 13.56,
+        "total": 25.76,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 11,
+        "median": 15.96,
+        "p95": 120.01,
+        "max": 120.01,
+        "total": 357.33,
+        "over16": 5,
+        "over8": 9,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 17,
+        "median": 0.16,
+        "p95": 3.46,
+        "max": 3.46,
+        "total": 5.96,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 11,
+        "median": 0.0,
+        "p95": 4.22,
+        "max": 4.22,
+        "total": 4.42,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 11,
+        "median": 0.41,
+        "p95": 4.29,
+        "max": 4.29,
+        "total": 7.96,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-repeat",
+      "Frame": {
+        "n": 18,
+        "median": 0.88,
+        "p95": 7.94,
+        "max": 7.94,
+        "total": 24.8,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 18,
+        "median": 15.75,
+        "p95": 48.71,
+        "max": 48.71,
+        "total": 319.93,
+        "over16": 8,
+        "over8": 12,
+        "over50": 0
+      },
+      "BUILD": {
+        "n": 21,
+        "median": 0.14,
+        "p95": 0.18,
+        "max": 2.68,
+        "total": 5.25,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 18,
+        "median": 0.0,
+        "p95": 1.69,
+        "max": 1.69,
+        "total": 1.76,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 18,
+        "median": 0.26,
+        "p95": 2.43,
+        "max": 2.43,
+        "total": 6.85,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-first",
+      "Frame": {
+        "n": 11,
+        "median": 2.2,
+        "p95": 11.55,
+        "max": 11.55,
+        "total": 39.29,
+        "over16": 0,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 11,
+        "median": 34.7,
+        "p95": 75.69,
+        "max": 75.69,
+        "total": 415.55,
+        "over16": 10,
+        "over8": 10,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 55,
+        "median": 0.0,
+        "p95": 0.65,
+        "max": 5.17,
+        "total": 12.53,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 11,
+        "median": 0.02,
+        "p95": 4.27,
+        "max": 4.27,
+        "total": 7.21,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 11,
+        "median": 0.58,
+        "p95": 2.36,
+        "max": 2.36,
+        "total": 10.13,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.21,
+        "p95": 6.47,
+        "max": 6.47,
+        "total": 22.91,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 34.18,
+        "p95": 51.89,
+        "max": 51.89,
+        "total": 303.3,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.05,
+        "p95": 1.74,
+        "max": 1.74,
+        "total": 2.66,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.03,
+        "p95": 1.26,
+        "max": 1.26,
+        "total": 1.55,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 1.11,
+        "p95": 2.37,
+        "max": 2.37,
+        "total": 10.56,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-first",
+      "Frame": {
+        "n": 20,
+        "median": 0.93,
+        "p95": 2.69,
+        "max": 12.31,
+        "total": 32.12,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 20,
+        "median": 15.26,
+        "p95": 70.16,
+        "max": 94.48,
+        "total": 461.88,
+        "over16": 8,
+        "over8": 17,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 26,
+        "median": 0.11,
+        "p95": 0.74,
+        "max": 3.07,
+        "total": 6.47,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 20,
+        "median": 0.0,
+        "p95": 0.21,
+        "max": 4.1,
+        "total": 4.39,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 20,
+        "median": 0.29,
+        "p95": 0.67,
+        "max": 3.57,
+        "total": 8.57,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-repeat",
+      "Frame": {
+        "n": 19,
+        "median": 1.11,
+        "p95": 9.46,
+        "max": 9.46,
+        "total": 30.8,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 19,
+        "median": 14.45,
+        "p95": 45.88,
+        "max": 45.88,
+        "total": 302.73,
+        "over16": 6,
+        "over8": 14,
+        "over50": 0
+      },
+      "BUILD": {
+        "n": 22,
+        "median": 0.2,
+        "p95": 0.27,
+        "max": 3.1,
+        "total": 6.79,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 19,
+        "median": 0.0,
+        "p95": 1.76,
+        "max": 1.76,
+        "total": 1.85,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 19,
+        "median": 0.37,
+        "p95": 3.02,
+        "max": 3.02,
+        "total": 10.01,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    }
+  ],
+  "control": [
+    {
+      "sample": "r0-entry-first",
+      "Frame": {
+        "n": 9,
+        "median": 2.57,
+        "p95": 32.24,
+        "max": 32.24,
+        "total": 71.94,
+        "over16": 2,
+        "over8": 2,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 45.31,
+        "p95": 64.85,
+        "max": 64.85,
+        "total": 383.4,
+        "over16": 8,
+        "over8": 9,
+        "over50": 2
+      },
+      "BUILD": {
+        "n": 53,
+        "median": 0.01,
+        "p95": 1.6,
+        "max": 17.62,
+        "total": 27.23,
+        "over16": 1,
+        "over8": 1,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.02,
+        "p95": 10.13,
+        "max": 10.13,
+        "total": 18.28,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 1.5,
+        "p95": 5.74,
+        "max": 5.74,
+        "total": 18.77,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.27,
+        "p95": 4.75,
+        "max": 4.75,
+        "total": 23.86,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 34.57,
+        "p95": 82.6,
+        "max": 82.6,
+        "total": 326.56,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.08,
+        "p95": 1.33,
+        "max": 1.33,
+        "total": 2.25,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.06,
+        "p95": 0.82,
+        "max": 0.82,
+        "total": 1.24,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 1.3,
+        "p95": 1.8,
+        "max": 1.8,
+        "total": 10.52,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-first",
+      "Frame": {
+        "n": 31,
+        "median": 1.75,
+        "p95": 3.35,
+        "max": 10.52,
+        "total": 65.21,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 31,
+        "median": 13.57,
+        "p95": 47.63,
+        "max": 86.86,
+        "total": 507.29,
+        "over16": 6,
+        "over8": 18,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 38,
+        "median": 0.06,
+        "p95": 0.75,
+        "max": 2.92,
+        "total": 6.74,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 31,
+        "median": 0.0,
+        "p95": 0.13,
+        "max": 3.18,
+        "total": 3.52,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 31,
+        "median": 0.88,
+        "p95": 1.81,
+        "max": 2.81,
+        "total": 30.6,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r0-theme-repeat",
+      "Frame": {
+        "n": 31,
+        "median": 1.6,
+        "p95": 3.44,
+        "max": 7.97,
+        "total": 61.17,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 31,
+        "median": 12.23,
+        "p95": 47.64,
+        "max": 64.56,
+        "total": 493.86,
+        "over16": 10,
+        "over8": 19,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 35,
+        "median": 0.03,
+        "p95": 0.65,
+        "max": 2.91,
+        "total": 6.49,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 31,
+        "median": 0.0,
+        "p95": 0.14,
+        "max": 1.33,
+        "total": 1.6,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 31,
+        "median": 0.82,
+        "p95": 2.25,
+        "max": 2.44,
+        "total": 30.81,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-first",
+      "Frame": {
+        "n": 8,
+        "median": 3.91,
+        "p95": 18.35,
+        "max": 18.35,
+        "total": 54.83,
+        "over16": 1,
+        "over8": 3,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 8,
+        "median": 52.36,
+        "p95": 65.54,
+        "max": 65.54,
+        "total": 388.46,
+        "over16": 7,
+        "over8": 8,
+        "over50": 5
+      },
+      "BUILD": {
+        "n": 52,
+        "median": 0.01,
+        "p95": 0.72,
+        "max": 6.37,
+        "total": 16.38,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 8,
+        "median": 0.2,
+        "p95": 6.63,
+        "max": 6.63,
+        "total": 11.06,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 8,
+        "median": 1.28,
+        "p95": 3.88,
+        "max": 3.88,
+        "total": 12.19,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.0,
+        "p95": 5.17,
+        "max": 5.17,
+        "total": 24.7,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 35.59,
+        "p95": 78.15,
+        "max": 78.15,
+        "total": 339.33,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.06,
+        "p95": 1.44,
+        "max": 1.44,
+        "total": 2.28,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.06,
+        "p95": 0.95,
+        "max": 0.95,
+        "total": 1.4,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.99,
+        "p95": 2.98,
+        "max": 2.98,
+        "total": 11.57,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-first",
+      "Frame": {
+        "n": 26,
+        "median": 1.51,
+        "p95": 3.43,
+        "max": 13.52,
+        "total": 57.53,
+        "over16": 0,
+        "over8": 1,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 26,
+        "median": 12.96,
+        "p95": 71.49,
+        "max": 132.28,
+        "total": 507.01,
+        "over16": 6,
+        "over8": 16,
+        "over50": 2
+      },
+      "BUILD": {
+        "n": 33,
+        "median": 0.05,
+        "p95": 0.79,
+        "max": 3.5,
+        "total": 6.64,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 26,
+        "median": 0.0,
+        "p95": 0.12,
+        "max": 3.81,
+        "total": 4.12,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 26,
+        "median": 0.79,
+        "p95": 2.35,
+        "max": 3.1,
+        "total": 27.12,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r1-theme-repeat",
+      "Frame": {
+        "n": 33,
+        "median": 1.58,
+        "p95": 3.19,
+        "max": 4.61,
+        "total": 61.82,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 33,
+        "median": 10.39,
+        "p95": 27.21,
+        "max": 47.21,
+        "total": 441.44,
+        "over16": 9,
+        "over8": 17,
+        "over50": 0
+      },
+      "BUILD": {
+        "n": 37,
+        "median": 0.05,
+        "p95": 0.3,
+        "max": 1.96,
+        "total": 5.43,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 33,
+        "median": 0.0,
+        "p95": 0.14,
+        "max": 0.74,
+        "total": 1.04,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 33,
+        "median": 0.87,
+        "p95": 1.53,
+        "max": 1.57,
+        "total": 31.6,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-first",
+      "Frame": {
+        "n": 9,
+        "median": 3.45,
+        "p95": 17.39,
+        "max": 17.39,
+        "total": 54.61,
+        "over16": 1,
+        "over8": 3,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 42.72,
+        "p95": 65.61,
+        "max": 65.61,
+        "total": 360.44,
+        "over16": 8,
+        "over8": 8,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 53,
+        "median": 0.01,
+        "p95": 1.11,
+        "max": 5.0,
+        "total": 14.36,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.02,
+        "p95": 7.29,
+        "max": 7.29,
+        "total": 11.46,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 0.88,
+        "p95": 6.11,
+        "max": 6.11,
+        "total": 18.95,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-entry-repeat",
+      "Frame": {
+        "n": 9,
+        "median": 2.81,
+        "p95": 6.35,
+        "max": 6.35,
+        "total": 28.86,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 9,
+        "median": 34.63,
+        "p95": 69.11,
+        "max": 69.11,
+        "total": 326.13,
+        "over16": 8,
+        "over8": 9,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 10,
+        "median": 0.05,
+        "p95": 1.88,
+        "max": 1.88,
+        "total": 2.58,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 9,
+        "median": 0.05,
+        "p95": 1.08,
+        "max": 1.08,
+        "total": 1.52,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 9,
+        "median": 1.26,
+        "p95": 2.91,
+        "max": 2.91,
+        "total": 13.44,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-first",
+      "Frame": {
+        "n": 23,
+        "median": 1.6,
+        "p95": 2.94,
+        "max": 3.71,
+        "total": 39.68,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 23,
+        "median": 20.45,
+        "p95": 60.02,
+        "max": 89.7,
+        "total": 642.29,
+        "over16": 17,
+        "over8": 22,
+        "over50": 3
+      },
+      "BUILD": {
+        "n": 30,
+        "median": 0.06,
+        "p95": 0.52,
+        "max": 0.98,
+        "total": 3.58,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 23,
+        "median": 0.0,
+        "p95": 0.1,
+        "max": 1.21,
+        "total": 1.48,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 23,
+        "median": 0.72,
+        "p95": 1.55,
+        "max": 2.2,
+        "total": 19.58,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    },
+    {
+      "sample": "r2-theme-repeat",
+      "Frame": {
+        "n": 34,
+        "median": 1.67,
+        "p95": 3.59,
+        "max": 3.96,
+        "total": 63.44,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "GPURasterizer::Draw": {
+        "n": 34,
+        "median": 7.73,
+        "p95": 29.66,
+        "max": 57.68,
+        "total": 418.65,
+        "over16": 8,
+        "over8": 15,
+        "over50": 1
+      },
+      "BUILD": {
+        "n": 38,
+        "median": 0.03,
+        "p95": 0.87,
+        "max": 1.33,
+        "total": 5.53,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "LAYOUT": {
+        "n": 34,
+        "median": 0.0,
+        "p95": 0.15,
+        "max": 0.69,
+        "total": 0.97,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      },
+      "PAINT": {
+        "n": 34,
+        "median": 0.79,
+        "p95": 1.94,
+        "max": 2.25,
+        "total": 31.44,
+        "over16": 0,
+        "over8": 0,
+        "over50": 0
+      }
+    }
+  ]
+}

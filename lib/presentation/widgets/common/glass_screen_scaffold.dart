@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 import 'package:flutter/services.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -18,7 +19,9 @@ class GlassScreenScaffold extends StatelessWidget {
   final Widget child;
   final List<Widget>? actions;
 
-  /// When false, skips [ScrollFadeMask] (use for platform views like WebView).
+  /// Optional edge fade. Off by default: masking scrollable glass groups can
+  /// hide their contents on Android/Impeller (reproduced on the S22 Ultra).
+  /// Keep disabled for platform views as well.
   final bool fadeScrollEdges;
 
   const GlassScreenScaffold({
@@ -26,7 +29,7 @@ class GlassScreenScaffold extends StatelessWidget {
     required this.title,
     required this.child,
     this.actions,
-    this.fadeScrollEdges = true,
+    this.fadeScrollEdges = false,
   });
 
   @override
@@ -115,31 +118,15 @@ class _GlassBackButton extends StatelessWidget {
     return Semantics(
       button: true,
       label: l10n.back,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(
-            glassSurfaceRadiusMd + glassSpacingXs,
-          ),
-          onTap: () => _handleBack(context),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(
-                alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight,
-              ),
-              borderRadius: BorderRadius.circular(glassSurfaceRadiusMd + 2),
-              border: Border.all(
-                color: Colors.white.withValues(
-                  alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
-                ),
-                width: 1,
-              ),
-            ),
-            child: Icon(Icons.arrow_back_rounded, color: foreground, size: 22),
-          ),
-        ),
+      child: GlassButtonSurface(
+        onTap: () => _handleBack(context),
+        enabled: true,
+        width: 40,
+        height: 40,
+        borderRadius: glassSurfaceRadiusMd + 2,
+        tintOpacity: isDark ? glassTintAlphaDark : glassTintAlphaLight,
+        borderOpacity: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
+        child: Icon(Icons.arrow_back_rounded, color: foreground, size: 22),
       ),
     );
   }

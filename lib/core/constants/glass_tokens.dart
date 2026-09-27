@@ -14,7 +14,9 @@ const double glassSurfaceBlurSubtle = 18;
 
 /// Lower than [glassSurfaceBlurDialog] — full-height bottom sheets animate over
 /// the calendar; a lighter blur reduces GPU cost during the modal transition.
-const double glassSurfaceBlurBottomSheet = 8;
+// Device profiles favor a smaller blur kernel for moving sheet surfaces.
+// Keep the standard glass renderer and the slide transition unchanged.
+const double glassSurfaceBlurBottomSheet = 4;
 
 // Alpha (tint + border)
 const double glassTintAlphaLight = 0.28;

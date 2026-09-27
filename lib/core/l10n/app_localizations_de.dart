@@ -642,4 +642,26 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get settingsWhatsNewShowAgainSubtitle =>
       'Sieh dir die Hinweise zum Update noch einmal an';
+
+  @override
+  String get settingsAppearance => 'Darstellung';
+
+  @override
+  String get settingsAppAndPrivacy => 'App & Datenschutz';
+
+  @override
+  String get settingsScheduleSummary =>
+      'Dienstplan, Dienstgruppe, Farbe & Export';
+
+  @override
+  String get settingsPartnerSummary => 'Dienstplan, Dienstgruppe & Farbe';
+
+  @override
+  String get settingsAppearanceSummary => 'Hell, dunkel oder automatisch';
+
+  @override
+  String get settingsHolidaysSummary => 'Bundesland, Anzeige & Farbe';
+
+  @override
+  String get settingsAppSummary => 'Neuigkeiten, Datenschutz & Hilfe';
 }

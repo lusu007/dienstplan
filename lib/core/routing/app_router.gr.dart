@@ -60,18 +60,79 @@ class CalendarRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [DebugScreen]
-class DebugRoute extends PageRouteInfo<void> {
-  const DebugRoute({List<PageRouteInfo>? children})
-    : super(DebugRoute.name, initialChildren: children);
+class DebugRoute extends PageRouteInfo<DebugRouteArgs> {
+  DebugRoute({
+    Key? key,
+    DebugPackageInfoLoader? loadPackageInfo,
+    DebugScheduleFilesLoader? loadScheduleFiles,
+    DebugSentryTestSender? sendTestSentry,
+    List<PageRouteInfo>? children,
+  }) : super(
+         DebugRoute.name,
+         args: DebugRouteArgs(
+           key: key,
+           loadPackageInfo: loadPackageInfo,
+           loadScheduleFiles: loadScheduleFiles,
+           sendTestSentry: sendTestSentry,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'DebugRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const DebugScreen();
+      final args = data.argsAs<DebugRouteArgs>(
+        orElse: () => const DebugRouteArgs(),
+      );
+      return DebugScreen(
+        key: args.key,
+        loadPackageInfo: args.loadPackageInfo,
+        loadScheduleFiles: args.loadScheduleFiles,
+        sendTestSentry: args.sendTestSentry,
+      );
     },
   );
+}
+
+class DebugRouteArgs {
+  const DebugRouteArgs({
+    this.key,
+    this.loadPackageInfo,
+    this.loadScheduleFiles,
+    this.sendTestSentry,
+  });
+
+  final Key? key;
+
+  final DebugPackageInfoLoader? loadPackageInfo;
+
+  final DebugScheduleFilesLoader? loadScheduleFiles;
+
+  final DebugSentryTestSender? sendTestSentry;
+
+  @override
+  String toString() {
+    return 'DebugRouteArgs{key: $key, loadPackageInfo: $loadPackageInfo, loadScheduleFiles: $loadScheduleFiles, sendTestSentry: $sendTestSentry}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! DebugRouteArgs) return false;
+    return key == other.key &&
+        loadPackageInfo == other.loadPackageInfo &&
+        loadScheduleFiles == other.loadScheduleFiles &&
+        sendTestSentry == other.sendTestSentry;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      loadPackageInfo.hashCode ^
+      loadScheduleFiles.hashCode ^
+      sendTestSentry.hashCode;
 }
 
 /// generated route for
@@ -104,6 +165,59 @@ class PrivacyPolicyRoute extends PageRouteInfo<void> {
       return const PrivacyPolicyScreen();
     },
   );
+}
+
+/// generated route for
+/// [SettingsCategoryScreen]
+class SettingsCategoryRoute extends PageRouteInfo<SettingsCategoryRouteArgs> {
+  SettingsCategoryRoute({
+    Key? key,
+    required String category,
+    List<PageRouteInfo>? children,
+  }) : super(
+         SettingsCategoryRoute.name,
+         args: SettingsCategoryRouteArgs(key: key, category: category),
+         rawPathParams: {'category': category},
+         initialChildren: children,
+       );
+
+  static const String name = 'SettingsCategoryRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<SettingsCategoryRouteArgs>(
+        orElse: () => SettingsCategoryRouteArgs(
+          category: pathParams.getString('category'),
+        ),
+      );
+      return SettingsCategoryScreen(key: args.key, category: args.category);
+    },
+  );
+}
+
+class SettingsCategoryRouteArgs {
+  const SettingsCategoryRouteArgs({this.key, required this.category});
+
+  final Key? key;
+
+  final String category;
+
+  @override
+  String toString() {
+    return 'SettingsCategoryRouteArgs{key: $key, category: $category}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SettingsCategoryRouteArgs) return false;
+    return key == other.key && category == other.category;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ category.hashCode;
 }
 
 /// generated route for

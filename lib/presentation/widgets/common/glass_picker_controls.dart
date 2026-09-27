@@ -1,7 +1,7 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_picker_tokens.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_backdrop_blur_scope.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 
 class GlassPickerPillTrigger extends StatelessWidget {
   final String label;
@@ -19,68 +19,38 @@ class GlassPickerPillTrigger extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final bool isBackdropBlurEnabled = GlassBackdropBlurScope.enabledOf(
-      context,
-    );
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(kGlassPickerTriggerRadius),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(kGlassPickerTriggerRadius),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: kGlassPickerTriggerBlur,
-              sigmaY: kGlassPickerTriggerBlur,
-            ),
-            enabled: isBackdropBlurEnabled,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(
-                kGlassPickerTriggerPaddingHorizontal,
-                kGlassPickerTriggerPaddingVertical,
-                kGlassPickerTriggerTrailingPadding,
-                kGlassPickerTriggerPaddingVertical,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(
-                  alpha: isDark
-                      ? kGlassPickerSurfaceAlphaDark
-                      : kGlassPickerSurfaceAlphaLight,
-                ),
-                borderRadius: BorderRadius.circular(kGlassPickerTriggerRadius),
-                border: Border.all(
-                  color: Colors.white.withValues(
-                    alpha: isDark
-                        ? kGlassPickerSurfaceBorderAlphaDark
-                        : kGlassPickerSurfaceBorderAlphaLight,
-                  ),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: kGlassPickerTriggerLabelFontSize,
-                      fontWeight: FontWeight.w700,
-                      color: foreground,
-                      letterSpacing: 0.1,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Icon(
-                    icon,
-                    color: foreground,
-                    size: kGlassPickerTriggerIconSize,
-                  ),
-                ],
-              ),
+    return GlassButtonSurface(
+      onTap: onTap,
+      enabled: true,
+      height: null,
+      borderRadius: kGlassPickerTriggerRadius,
+      tintOpacity: isDark
+          ? kGlassPickerSurfaceAlphaDark
+          : kGlassPickerSurfaceAlphaLight,
+      borderOpacity: isDark
+          ? kGlassPickerSurfaceBorderAlphaDark
+          : kGlassPickerSurfaceBorderAlphaLight,
+      padding: const EdgeInsets.fromLTRB(
+        kGlassPickerTriggerPaddingHorizontal,
+        kGlassPickerTriggerPaddingVertical,
+        kGlassPickerTriggerTrailingPadding,
+        kGlassPickerTriggerPaddingVertical,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: kGlassPickerTriggerLabelFontSize,
+              fontWeight: FontWeight.w700,
+              color: foreground,
+              letterSpacing: 0.1,
             ),
           ),
-        ),
+          const SizedBox(width: 6),
+          Icon(icon, color: foreground, size: kGlassPickerTriggerIconSize),
+        ],
       ),
     );
   }
@@ -101,36 +71,22 @@ class GlassPickerIconButton extends StatelessWidget {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final Color foreground = Theme.of(context).colorScheme.onSurface;
     final bool isEnabled = onPressed != null;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(kGlassPickerIconButtonRadius),
-        child: Container(
-          width: kGlassPickerIconButtonSize,
-          height: kGlassPickerIconButtonSize,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(
-              alpha: isDark
-                  ? kGlassPickerSurfaceAlphaDark
-                  : kGlassPickerSurfaceAlphaLight,
-            ),
-            borderRadius: BorderRadius.circular(kGlassPickerIconButtonRadius),
-            border: Border.all(
-              color: Colors.white.withValues(
-                alpha: isDark
-                    ? kGlassPickerSurfaceBorderAlphaDark
-                    : kGlassPickerSurfaceBorderAlphaLight,
-              ),
-              width: 1,
-            ),
-          ),
-          child: Icon(
-            icon,
-            color: foreground.withValues(alpha: isEnabled ? 1.0 : 0.35),
-            size: kGlassPickerIconSize,
-          ),
-        ),
+    return GlassButtonSurface(
+      onTap: onPressed,
+      enabled: isEnabled,
+      width: kGlassPickerIconButtonSize,
+      height: kGlassPickerIconButtonSize,
+      borderRadius: kGlassPickerIconButtonRadius,
+      tintOpacity: isDark
+          ? kGlassPickerSurfaceAlphaDark
+          : kGlassPickerSurfaceAlphaLight,
+      borderOpacity: isDark
+          ? kGlassPickerSurfaceBorderAlphaDark
+          : kGlassPickerSurfaceBorderAlphaLight,
+      child: Icon(
+        icon,
+        color: foreground.withValues(alpha: isEnabled ? 1.0 : 0.35),
+        size: kGlassPickerIconSize,
       ),
     );
   }
@@ -161,7 +117,6 @@ class GlassPickerTile extends StatelessWidget {
     Color borderColor;
     Color textColor;
     FontWeight fontWeight;
-    List<BoxShadow> boxShadow = const <BoxShadow>[];
     if (!isEnabled) {
       background = Colors.white.withValues(alpha: isDark ? 0.02 : 0.08);
       borderColor = Colors.white.withValues(alpha: isDark ? 0.06 : 0.18);
@@ -172,13 +127,6 @@ class GlassPickerTile extends StatelessWidget {
       borderColor = Colors.white.withValues(alpha: isDark ? 0.28 : 0.55);
       textColor = isDark ? colorScheme.onSurface : colorScheme.onPrimary;
       fontWeight = FontWeight.w700;
-      boxShadow = <BoxShadow>[
-        BoxShadow(
-          color: primary.withValues(alpha: isDark ? 0.35 : 0.28),
-          blurRadius: kGlassPickerTileFocusedShadowBlur,
-          offset: const Offset(0, kGlassPickerTileFocusedShadowOffsetY),
-        ),
-      ];
     } else if (isCurrent) {
       background = primary.withValues(alpha: isDark ? 0.2 : 0.16);
       borderColor = primary.withValues(alpha: 0.55);
@@ -195,13 +143,11 @@ class GlassPickerTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(kGlassPickerTileRadius),
-        child: Container(
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(kGlassPickerTileRadius),
-            border: Border.all(color: borderColor, width: 1),
-            boxShadow: boxShadow,
-          ),
+        child: AppGlassSurface(
+          refractive: false,
+          tint: background,
+          borderRadius: kGlassPickerTileRadius,
+          borderColor: borderColor,
           child: Center(
             child: Text(
               label,

@@ -1,5 +1,7 @@
 # Glass Design Consistency Audit
 
+> Historical audit of the custom renderer. The September 2026 migration replaces its blur/rendering internals with `liquid_glass_widgets`; see [current integration](./style_guide/liquid_glass.md). Classifications below describe the pre-migration implementation and are not a performance measurement of the library.
+
 This audit checks consistency against the current glass design source of truth:
 - `lib/presentation/widgets/common/glass_container.dart`
 - `lib/presentation/widgets/common/glass_card.dart`

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 
 /// Glass-morphism card surface used across the settings screen and its
@@ -14,6 +15,9 @@ class GlassCard extends StatelessWidget {
   final double borderRadius;
   final bool isActive;
   final bool enabled;
+
+  /// The opening sheet provides feedback; avoid an ink animation underneath it.
+  final bool modalTrigger;
   final VoidCallback? onTap;
   final Color? tintColor;
   final double? tintAlpha;
@@ -29,6 +33,7 @@ class GlassCard extends StatelessWidget {
     this.borderRadius = glassSurfaceRadiusMd,
     this.isActive = false,
     this.enabled = true,
+    this.modalTrigger = false,
     this.onTap,
     this.tintColor,
     this.tintAlpha,
@@ -77,35 +82,24 @@ class GlassCard extends StatelessWidget {
         ? borderColor!.withValues(alpha: (borderAlpha ?? 1.0) * enabledMul)
         : baseBorder;
 
-    final Widget card = Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: isActive ? activeBackground : tintedBackground,
-        borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(
-          color: isActive ? activeBorder : roleBorder,
-          width: isActive ? glassCardActiveBorderWidth : borderWidth,
-        ),
-        boxShadow: isActive
-            ? [
-                BoxShadow(
-                  color: colorScheme.primary.withValues(
-                    alpha:
-                        (isDark
-                            ? glassShadowAlphaActiveDark
-                            : glassShadowAlphaActiveLight) *
-                        enabledMul,
-                  ),
-                  blurRadius: glassShadowBlurSm,
-                  offset: const Offset(0, glassShadowOffsetYSm),
-                ),
-              ]
-            : const [],
-      ),
-      child: child,
-    );
+    final bool grouped =
+        context.dependOnInheritedWidgetOfExactType<_GlassCardGroupScope>() !=
+        null;
+    final Widget card = grouped
+        ? Padding(padding: padding ?? EdgeInsets.zero, child: child)
+        : AppGlassSurface(
+            refractive: false,
+            padding: padding,
+            borderRadius: borderRadius,
+            tint: isActive ? activeBackground : tintedBackground,
+            borderColor: isActive ? activeBorder : roleBorder,
+            borderWidth: isActive ? glassCardActiveBorderWidth : borderWidth,
+            child: child,
+          );
 
-    final EdgeInsetsGeometry effectiveMargin = margin ?? EdgeInsets.zero;
+    final EdgeInsetsGeometry effectiveMargin = grouped
+        ? EdgeInsets.zero
+        : (margin ?? EdgeInsets.zero);
 
     if (onTap == null) {
       return Padding(padding: effectiveMargin, child: card);
@@ -117,14 +111,56 @@ class GlassCard extends StatelessWidget {
         color: Colors.transparent,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+          borderRadius: grouped
+              ? BorderRadius.zero
+              : BorderRadius.circular(borderRadius),
         ),
         child: InkWell(
           onTap: enabled ? onTap : null,
-          borderRadius: BorderRadius.circular(borderRadius),
+          splashFactory: modalTrigger ? NoSplash.splashFactory : null,
+          splashColor: modalTrigger ? Colors.transparent : null,
+          highlightColor: modalTrigger ? Colors.transparent : null,
+          borderRadius: grouped
+              ? BorderRadius.zero
+              : BorderRadius.circular(borderRadius),
           child: card,
         ),
       ),
     );
   }
+}
+
+/// A single material for related settings rows; each row keeps its own action.
+class GlassCardGroup extends StatelessWidget {
+  const GlassCardGroup({super.key, required this.children});
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => GlassCard(
+    child: _GlassCardGroupScope(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                indent: 16,
+                endIndent: 16,
+                color: Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withValues(alpha: 0.35),
+              ),
+            children[i],
+          ],
+        ],
+      ),
+    ),
+  );
+}
+
+class _GlassCardGroupScope extends InheritedWidget {
+  const _GlassCardGroupScope({required super.child});
+  @override
+  bool updateShouldNotify(_GlassCardGroupScope oldWidget) => false;
 }

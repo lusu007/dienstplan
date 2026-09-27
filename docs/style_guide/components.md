@@ -3,6 +3,8 @@
 ## Component Standards
 This document defines when and how to use shared glass components.
 
+The shared primitives below now delegate their surface rendering to `liquid_glass_widgets`. See [Liquid Glass integration](./liquid_glass.md) for current ownership and composition rules.
+
 ## Shared Primitives
 
 ### `GlassContainer`

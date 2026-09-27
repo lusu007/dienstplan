@@ -75,6 +75,7 @@ class SchoolHolidaysSection extends ConsumerWidget {
               onTap: null,
             ),
             NavigationCard(
+              modalTrigger: true,
               icon: Icons.location_on_outlined,
               title: l10n.federalState,
               subtitle: selectedState?.name ?? l10n.noFederalStateSelected,
@@ -109,6 +110,7 @@ class SchoolHolidaysSection extends ConsumerWidget {
                 onTap: null,
               ),
             NavigationCard(
+              modalTrigger: true,
               icon: Icons.color_lens_outlined,
               title: l10n.holidayAccentColor,
               subtitle: _getHolidayAccentColorName(settingsState, l10n),

@@ -1,7 +1,7 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,13 +38,28 @@ void main() {
 
     final Finder actionSurface = find.descendant(
       of: find.byType(GlassButtonSurface),
-      matching: find.byType(GlassContainer),
+      matching: find.byType(liquid.GlassButton),
     );
-    final GlassContainer container = tester.widget<GlassContainer>(
+    final liquid.GlassButton button = tester.widget<liquid.GlassButton>(
       actionSurface,
     );
 
-    expect(container.tintOpacity, greaterThan(glassTintAlphaDark));
-    expect(container.borderOpacity, greaterThan(glassBorderAlphaDark));
+    expect(button.settings!.glassColor.a, greaterThan(glassTintAlphaDark));
+    final outlines = tester
+        .widgetList<DecoratedBox>(
+          find.descendant(
+            of: find.byType(GlassButtonSurface),
+            matching: find.byType(DecoratedBox),
+          ),
+        )
+        .where(
+          (box) =>
+              box.position == DecorationPosition.foreground &&
+              box.decoration is ShapeDecoration,
+        );
+    expect(outlines, hasLength(1));
+    final outline =
+        (outlines.single.decoration as ShapeDecoration).shape as OutlinedBorder;
+    expect(outline.side.color.a, greaterThan(glassBorderAlphaDark));
   });
 }

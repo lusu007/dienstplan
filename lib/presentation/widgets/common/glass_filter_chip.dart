@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_chip_tokens.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 class GlassFilterChip extends StatelessWidget {
   final String label;
@@ -30,9 +32,6 @@ class GlassFilterChip extends StatelessWidget {
     final double tintOpacity = isSelected
         ? (isDark ? glassTintAlphaActiveDark : glassTintAlphaActiveLight)
         : (isDark ? glassTintAlphaDark : glassTintAlphaLight);
-    final double borderOpacity = isSelected
-        ? glassBorderAlphaActive
-        : (isDark ? glassBorderAlphaDark : glassBorderAlphaLight);
     final Color textColor = _resolveFilterChipTextColor(
       colorScheme: colorScheme,
       isDark: isDark,
@@ -45,47 +44,43 @@ class GlassFilterChip extends StatelessWidget {
       letterSpacing: 0.3,
       height: 1.0,
     );
-    final Widget labelRow = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        if (showCheckmark && isSelected) ...<Widget>[
-          Icon(Icons.check_rounded, size: 14, color: textColor),
-          const SizedBox(width: glassSpacingXs),
-        ],
-        Text(label, style: labelStyle),
-      ],
-    );
-    final Widget tapChild = LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        if (expandWidth && constraints.hasBoundedWidth) {
-          return SizedBox(
-            width: double.infinity,
-            child: Align(alignment: Alignment.center, child: labelRow),
-          );
-        }
-        return Align(alignment: Alignment.center, child: labelRow);
-      },
-    );
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: kGlassFilterChipHeight),
-      child: GlassContainer(
-        borderRadius: glassSurfaceRadiusPill,
-        blurSigma: glassSurfaceBlurDefault,
-        tintOpacity: tintOpacity,
-        borderOpacity: borderOpacity,
+    final Widget chip = Semantics(
+      selected: isSelected,
+      child: liquid.GlassChip(
+        label: label,
+        onTap: onTap,
+        selected: isSelected,
+        selectedColor: colorScheme.primary.withValues(alpha: tintOpacity),
+        icon: showCheckmark && isSelected
+            ? Icon(Icons.check_rounded, size: 14, color: textColor)
+            : null,
+        labelStyle: labelStyle,
+        settings: appGlassSettings(
+          context,
+          tint: colorScheme.primary.withValues(alpha: tintOpacity),
+        ),
+        useOwnLayer: true,
+        stretch: 0,
+        interactionScale: 1,
+        anchorStretch: false,
         padding: const EdgeInsets.symmetric(
           horizontal: kGlassFilterChipHorizontalPadding,
           vertical: kGlassFilterChipVerticalPadding,
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(glassSurfaceRadiusPill),
-            child: tapChild,
-          ),
-        ),
       ),
+    );
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: kGlassFilterChipHeight,
+            minWidth: expandWidth && constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : 0,
+          ),
+          child: chip,
+        );
+      },
     );
   }
 }
@@ -148,27 +143,20 @@ class GlassIconToggleChip extends StatelessWidget {
     final Color iconColor = isSelected
         ? defaultSelectedIconColor
         : (unselectedIconColor ?? defaultUnselectedIconColor);
-    final Widget chip = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isEnabled ? onTap : null,
-        borderRadius: BorderRadius.circular(kGlassIconChipRadius),
-        child: Container(
-          width: kGlassIconChipSize,
-          height: kGlassIconChipSize,
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(kGlassIconChipRadius),
-            border: Border.all(
-              color: borderColor,
-              width: kGlassChipBorderWidth,
-            ),
-          ),
-          child: Icon(
-            isSelected ? selectedIcon : unselectedIcon,
-            size: kGlassIconChipIconSize,
-            color: iconColor,
-          ),
+    final Widget chip = Semantics(
+      selected: isSelected,
+      child: GlassButtonSurface(
+        onTap: onTap,
+        enabled: isEnabled,
+        width: kGlassIconChipSize,
+        height: kGlassIconChipSize,
+        borderRadius: kGlassIconChipRadius,
+        tintColor: background,
+        borderColor: borderColor,
+        child: Icon(
+          isSelected ? selectedIcon : unselectedIcon,
+          size: kGlassIconChipIconSize,
+          color: iconColor,
         ),
       ),
     );

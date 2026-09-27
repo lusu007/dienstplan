@@ -813,5 +813,12 @@
   "settingsWhatsNewShowAgainSubtitle": "Sieh dir die Hinweise zum Update noch einmal an",
   "@settingsWhatsNewShowAgainSubtitle": {
     "description": "Subtitle for the settings what's new entry"
-  }
+  },
+  "settingsAppearance": "Darstellung",
+  "settingsAppAndPrivacy": "App & Datenschutz",
+  "settingsScheduleSummary": "Dienstplan, Dienstgruppe, Farbe & Export",
+  "settingsPartnerSummary": "Dienstplan, Dienstgruppe & Farbe",
+  "settingsAppearanceSummary": "Hell, dunkel oder automatisch",
+  "settingsHolidaysSummary": "Bundesland, Anzeige & Farbe",
+  "settingsAppSummary": "Neuigkeiten, Datenschutz & Hilfe"
 }

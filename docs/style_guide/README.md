@@ -3,6 +3,7 @@
 This directory is the source of truth for visual and UI copy consistency.
 
 ## Contents
+- [Liquid Glass integration](./liquid_glass.md) — current renderer and adapter architecture
 - [Foundations](./foundations.md)
 - [Components](./components.md)
 - [Patterns](./patterns.md)

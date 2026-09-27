@@ -30,6 +30,7 @@ class _SettingsFooterState extends State<SettingsFooter> {
         label: AppInfo.appLegalese,
         child: ExcludeSemantics(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(AppInfo.appLegalese, style: footerStyle),
@@ -68,7 +69,7 @@ class _SettingsFooterState extends State<SettingsFooter> {
     _lastTapTime = now;
     if (_footerTapCount >= 7) {
       _footerTapCount = 0;
-      if (mounted) context.router.push(const DebugRoute());
+      if (mounted) context.router.push(DebugRoute());
     }
   }
 }

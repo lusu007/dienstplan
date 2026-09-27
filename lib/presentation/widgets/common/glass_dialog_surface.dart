@@ -1,20 +1,11 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
-import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 
-/// Frosted-glass surface used as the root container of glass-morphism dialogs.
-///
-/// Stacks two coloured ambient blobs behind a strong [BackdropFilter] and
-/// layers a double border on top to emulate the edge of a glass pane. Used by
-/// the schedules dialog, the month/year picker and any future glass modal.
+/// Shared modal material, rendered by liquid_glass_widgets.
 class GlassDialogSurface extends StatelessWidget {
   final Widget child;
   final BorderRadiusGeometry borderRadius;
-
-  /// When null, uses [glassSurfaceBlurDialog]. Bottom sheets pass a lower sigma
-  /// via [GlassBottomSheet] to ease compositing during route animation.
   final double? backdropBlurSigma;
 
   const GlassDialogSurface({
@@ -28,119 +19,19 @@ class GlassDialogSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color tintColor = colorScheme.surface.withValues(
-      alpha: isDark ? glassDialogTintAlphaDark : glassDialogTintAlphaLight,
-    );
-    final Color outerBorderColor = Colors.white.withValues(
-      alpha: isDark
-          ? glassDialogOuterBorderAlphaDark
-          : glassDialogOuterBorderAlphaLight,
-    );
-    final Color innerBorderColor = Colors.white.withValues(
-      alpha: isDark
-          ? glassDialogInnerBorderAlphaDark
-          : glassDialogInnerBorderAlphaLight,
-    );
-    final Color partnerAccent =
-        const Color(AccentColorDefaults.partnerAccentColorValue).withValues(
-          alpha: isDark
-              ? glassBackdropBlobMediumAlphaDark + 0.06
-              : glassBackdropBlobMediumAlphaLight + 0.08,
-        );
-    final Color primaryAccent = colorScheme.primary.withValues(
-      alpha: isDark
-          ? glassBackdropBlobLargeAlphaDark
-          : glassBackdropBlobLargeAlphaLight,
-    );
-    final BorderRadius innerBorderRadius = _shrinkBorderRadius(
-      borderRadius,
-      context,
-      by: 1,
-    );
-    final double blurSigma = backdropBlurSigma ?? glassSurfaceBlurDialog;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(
-              alpha: isDark
-                  ? glassShadowAlphaDialogDark
-                  : glassShadowAlphaDialogLight,
-            ),
-            blurRadius: glassShadowBlurLg,
-            offset: const Offset(0, glassShadowOffsetYMd),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: Stack(
-          fit: StackFit.passthrough,
-          children: [
-            Positioned(
-              left: -80,
-              top: -120,
-              child: AmbientBlob(color: primaryAccent, diameter: 260),
-            ),
-            Positioned(
-              right: -60,
-              bottom: -80,
-              child: AmbientBlob(color: partnerAccent, diameter: 220),
-            ),
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-              child: Container(
-                decoration: BoxDecoration(color: tintColor),
-                child: Padding(
-                  padding: const EdgeInsets.all(1),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: innerBorderRadius,
-                      border: Border.all(color: innerBorderColor, width: 1),
-                    ),
-                    child: child,
-                  ),
-                ),
-              ),
-            ),
-            Positioned.fill(
-              child: IgnorePointer(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: borderRadius,
-                    border: Border.all(color: outerBorderColor, width: 1),
-                  ),
-                ),
-              ),
-            ),
-          ],
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final radius = borderRadius.resolve(Directionality.of(context));
+    return ClipRRect(
+      borderRadius: radius,
+      child: AppGlassSurface(
+        borderRadius: radius.topLeft.x,
+        blur: backdropBlurSigma ?? glassSurfaceBlurDialog,
+        tint: scheme.surface.withValues(
+          alpha: isDark ? glassDialogTintAlphaDark : glassDialogTintAlphaLight,
         ),
+        child: child,
       ),
-    );
-  }
-
-  BorderRadius _shrinkBorderRadius(
-    BorderRadiusGeometry geometry,
-    BuildContext context, {
-    required double by,
-  }) {
-    final BorderRadius resolved = geometry.resolve(Directionality.of(context));
-    Radius shrink(Radius radius) {
-      return Radius.elliptical(
-        (radius.x - by).clamp(0.0, double.infinity),
-        (radius.y - by).clamp(0.0, double.infinity),
-      );
-    }
-
-    return BorderRadius.only(
-      topLeft: shrink(resolved.topLeft),
-      topRight: shrink(resolved.topRight),
-      bottomLeft: shrink(resolved.bottomLeft),
-      bottomRight: shrink(resolved.bottomRight),
     );
   }
 }
