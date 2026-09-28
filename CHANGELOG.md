@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/lusu007/dienstplan/compare/v0.17.4...v0.18.0) (2026-09-28)
+
+
+### Features
+
+* standardize liquid glass UI and reorganize settings ([#431](https://github.com/lusu007/dienstplan/issues/431)) ([e96540c](https://github.com/lusu007/dienstplan/commit/e96540c4c7f5b18df29c6c07a11ae7aa04a8b027))
+
 ## [0.17.4](https://github.com/lusu007/dienstplan/compare/v0.17.3...v0.17.4) (2026-07-12)
 
 
