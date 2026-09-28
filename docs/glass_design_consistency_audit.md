@@ -1,5 +1,7 @@
 # Glass Design Consistency Audit
 
+> Historical audit from before the Liquid Glass migration. Component implementations and classifications below may be superseded. Use the [current style guide](style_guide/README.md), verified on 2026-09-28, for implementation decisions.
+
 This audit checks consistency against the current glass design source of truth:
 - `lib/presentation/widgets/common/glass_container.dart`
 - `lib/presentation/widgets/common/glass_card.dart`
