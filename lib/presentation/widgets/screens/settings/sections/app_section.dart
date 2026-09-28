@@ -4,11 +4,8 @@ import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
-import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/theme_mode_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/reset_bottomsheet.dart';
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
-import 'package:dienstplan/domain/entities/settings.dart' show ThemePreference;
 
 class AppSection extends ConsumerWidget {
   const AppSection({super.key});
@@ -16,22 +13,9 @@ class AppSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final settingsState = ref.watch(settingsProvider);
-
-    // Use settings preference directly, fallback to light mode
-    final ThemePreference effectivePref =
-        settingsState.value?.themePreference ?? ThemePreference.system;
-
     return SettingsSection(
       title: l10n.app,
       cards: [
-        NavigationCard(
-          icon: Icons.color_lens_outlined,
-          title: l10n.themeMode,
-          subtitle: _themeSubtitle(l10n, effectivePref),
-          trailing: _buildThemeIndicator(context, effectivePref),
-          onTap: () => ThemeModeBottomsheet.show(context, ref),
-        ),
         NavigationCard(
           icon: Icons.new_releases_outlined,
           title: l10n.settingsWhatsNewShowAgain,
@@ -39,6 +23,7 @@ class AppSection extends ConsumerWidget {
           onTap: () => showWhatsNewDialog(context),
         ),
         NavigationCard(
+          modalTrigger: true,
           icon: Icons.delete_forever_outlined,
           title: l10n.resetData,
           onTap: () => ResetBottomsheet.show(context),
@@ -46,28 +31,5 @@ class AppSection extends ConsumerWidget {
         ),
       ],
     );
-  }
-
-  String _themeSubtitle(AppLocalizations l10n, ThemePreference pref) {
-    switch (pref) {
-      case ThemePreference.light:
-        return l10n.themeModeLight;
-      case ThemePreference.dark:
-        return l10n.themeModeDark;
-      case ThemePreference.system:
-        return l10n.themeModeSystem;
-    }
-  }
-
-  Widget _buildThemeIndicator(BuildContext context, ThemePreference pref) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    switch (pref) {
-      case ThemePreference.light:
-        return Icon(Icons.wb_sunny_outlined, color: colorScheme.secondary);
-      case ThemePreference.dark:
-        return Icon(Icons.nightlight_round, color: colorScheme.primary);
-      case ThemePreference.system:
-        return Icon(Icons.brightness_auto, color: colorScheme.onSurfaceVariant);
-    }
   }
 }

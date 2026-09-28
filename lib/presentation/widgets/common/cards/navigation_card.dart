@@ -10,6 +10,7 @@ class NavigationCard extends StatelessWidget {
   final Color? iconColor;
   final Widget? trailing;
   final bool enabled;
+  final bool modalTrigger;
 
   const NavigationCard({
     super.key,
@@ -20,6 +21,7 @@ class NavigationCard extends StatelessWidget {
     this.iconColor,
     this.trailing,
     this.enabled = true,
+    this.modalTrigger = false,
   });
 
   @override
@@ -37,6 +39,7 @@ class NavigationCard extends StatelessWidget {
     return GlassCard(
       margin: const EdgeInsets.only(bottom: 8),
       enabled: enabled,
+      modalTrigger: modalTrigger,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

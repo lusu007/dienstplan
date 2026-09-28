@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 
 /// Primary/secondary action button used at the bottom of the setup flow.
 ///
-/// Primary uses [GlassContainer] so it matches the calendar glass action bar.
+/// Both variants use the shared package-backed button adapter.
 /// Secondary uses the same frosted pill language as [SetupBackButton].
 class ActionButton extends StatelessWidget {
   final String text;
@@ -42,42 +41,27 @@ class ActionButton extends StatelessWidget {
       // white and disappears on light glass. onSurface matches the surface
       // tone behind the blur and stays readable in both themes.
       final Color labelColor = colorScheme.onSurface;
-      final Widget body = SizedBox(
-        width: double.infinity,
+      final Widget body = GlassButtonSurface(
+        fullWidth: true,
         height: height,
-        child: GlassContainer(
-          borderRadius: 16,
-          blurSigma: 20,
-          tintOpacity: Theme.of(context).brightness == Brightness.dark
-              ? 0.34
-              : 0.30,
-          borderOpacity: Theme.of(context).brightness == Brightness.dark
-              ? 0.30
-              : 0.42,
-          padding: EdgeInsets.zero,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: tapEnabled ? onPressed : null,
-              child: SizedBox(
-                height: height,
-                width: double.infinity,
-                child: Center(
-                  child: DefaultTextStyle.merge(
-                    style: TextStyle(
-                      color: labelColor,
-                      fontSize: fontSize,
-                      fontWeight: FontWeight.w700,
-                    ),
-                    child: _buildButtonContent(
-                      effectiveLoadingText,
-                      indicatorColor: labelColor,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+        borderRadius: 16,
+        enabled: tapEnabled,
+        onTap: onPressed,
+        tintOpacity: Theme.of(context).brightness == Brightness.dark
+            ? 0.34
+            : 0.30,
+        borderOpacity: Theme.of(context).brightness == Brightness.dark
+            ? 0.30
+            : 0.42,
+        child: DefaultTextStyle.merge(
+          style: TextStyle(
+            color: labelColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w700,
+          ),
+          child: _buildButtonContent(
+            effectiveLoadingText,
+            indicatorColor: labelColor,
           ),
         ),
       );

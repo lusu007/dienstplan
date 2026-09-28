@@ -59,6 +59,7 @@ dependencies:
   file_saver: ^0.4.0
   open_file: ^4.0.0
   flutter_markdown_plus: ^1.0.3
+  liquid_glass_widgets: 1.7.2
 
 dev_dependencies:
   flutter_test:

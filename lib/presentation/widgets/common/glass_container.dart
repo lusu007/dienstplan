@@ -1,13 +1,12 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/ambient_blob.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_backdrop_blur_scope.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 
-/// Reusable glass-morphism container using [BackdropFilter] with a blurred,
+/// Reusable package-backed glass container with a blurred,
 /// semi-transparent tint derived from the current color scheme.
 class GlassContainer extends StatelessWidget {
   final Widget child;
@@ -33,47 +32,19 @@ class GlassContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    // Dark mode receives a slightly stronger tint and softer border to keep the
-    // surface readable on dark backdrops. The +0.08 / *0.6 ratios are kept to
-    // preserve the historical look while sourcing the base values from tokens.
-    final Color tintColor = isDark
-        ? colorScheme.primary.withValues(alpha: tintOpacity + 0.08)
-        : colorScheme.primary.withValues(alpha: tintOpacity);
-    // Light Mode: a faintly primary-tinted edge reads better on the bright
-    // aurora than a pure white border that would otherwise vanish.
-    final Color borderColor = isDark
-        ? Colors.white.withValues(alpha: borderOpacity * 0.6)
-        : colorScheme.primary.withValues(
-            alpha: borderOpacity * glassSurfaceSubtleBorderPrimaryFactorLight,
-          );
-    final bool isBackdropBlurEnabled = GlassBackdropBlurScope.enabledOf(
-      context,
-    );
-
-    final Widget content = ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-        enabled: isBackdropBlurEnabled,
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            color: tintColor,
-            borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(color: borderColor, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(
-                  alpha: isDark ? glassShadowAlphaDark : glassShadowAlphaLight,
-                ),
-                blurRadius: glassShadowBlurMd,
-                offset: const Offset(0, glassShadowOffsetYSm),
-              ),
-            ],
-          ),
-          child: child,
-        ),
+    final Widget content = AppGlassSurface(
+      borderRadius: borderRadius,
+      blur: blurSigma,
+      tint: colorScheme.primary.withValues(
+        alpha: isDark ? tintOpacity + 0.08 : tintOpacity,
       ),
+      borderColor: isDark
+          ? Colors.white.withValues(alpha: borderOpacity * 0.6)
+          : colorScheme.primary.withValues(
+              alpha: borderOpacity * glassSurfaceSubtleBorderPrimaryFactorLight,
+            ),
+      padding: padding,
+      child: child,
     );
 
     if (margin == null) {

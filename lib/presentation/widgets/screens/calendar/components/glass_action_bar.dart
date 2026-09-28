@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
 
 /// Floating, glass-morphic action bar pinned above the bottom safe area.
@@ -104,11 +105,11 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
           glassSpacingLg,
           glassSpacingMd,
         ),
-        child: GlassContainer(
-          padding: const EdgeInsets.symmetric(
-            horizontal: glassSpacingMd,
-            vertical: glassSpacingSm,
-          ),
+        child: AppGlassSurface(
+          borderRadius: 32,
+          tint: palette.barTint,
+          borderColor: palette.barBorder,
+          padding: const EdgeInsets.all(glassSpacingSm),
           child: Row(
             children: [
               Expanded(
@@ -203,22 +204,22 @@ class _QuickPersonalEntryField extends StatelessWidget {
           isDense: true,
           hintText: hintText,
           hintStyle: hintStyle,
-          filled: true,
-          fillColor: palette.fieldFillColor,
+          filled: false,
+          constraints: const BoxConstraints(minHeight: _kActionButtonSize),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: glassSpacingMd,
-            vertical: glassSpacingMd - 2,
+            vertical: glassSpacingMd,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
-            borderSide: BorderSide(color: palette.fieldBorderColor),
+            borderRadius: BorderRadius.circular(_kActionButtonRadius),
+            borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
-            borderSide: BorderSide(color: palette.fieldBorderColor),
+            borderRadius: BorderRadius.circular(_kActionButtonRadius),
+            borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
+            borderRadius: BorderRadius.circular(_kActionButtonRadius),
             borderSide: BorderSide(color: palette.fieldFocusedBorderColor),
           ),
         ),
@@ -245,28 +246,18 @@ class _AddPersonalEntryAction extends StatelessWidget {
       child: Semantics(
         button: true,
         label: tooltip,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(_kActionButtonRadius),
-            onTap: onPressed,
-            child: Container(
-              width: _kActionButtonSize,
-              height: _kActionButtonSize,
-              decoration: BoxDecoration(
-                color: palette.addActionFillColor,
-                borderRadius: BorderRadius.circular(_kActionButtonRadius),
-                border: Border.all(
-                  color: palette.addActionBorderColor,
-                  width: 1,
-                ),
-              ),
-              child: Icon(
-                Icons.add_rounded,
-                color: palette.addActionIconColor,
-                size: 24,
-              ),
-            ),
+        child: GlassButtonSurface(
+          onTap: onPressed,
+          enabled: true,
+          width: _kActionButtonSize,
+          height: _kActionButtonSize,
+          borderRadius: _kActionButtonRadius,
+          tintColor: palette.addActionFillColor,
+          borderColor: palette.addActionBorderColor,
+          child: Icon(
+            Icons.add_rounded,
+            color: palette.addActionIconColor,
+            size: 24,
           ),
         ),
       ),
@@ -274,7 +265,7 @@ class _AddPersonalEntryAction extends StatelessWidget {
   }
 }
 
-const double _kActionButtonSize = 44;
+const double _kActionButtonSize = 48;
 const double _kActionButtonRadius = _kActionButtonSize / 2;
 
 class _TodayAction extends StatelessWidget {
@@ -295,28 +286,18 @@ class _TodayAction extends StatelessWidget {
       child: Semantics(
         button: true,
         label: tooltip,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(_kActionButtonRadius),
-            onTap: onPressed,
-            child: Container(
-              width: _kActionButtonSize,
-              height: _kActionButtonSize,
-              decoration: BoxDecoration(
-                color: palette.todayActionFillColor,
-                borderRadius: BorderRadius.circular(_kActionButtonRadius),
-                border: Border.all(
-                  color: palette.todayActionBorderColor,
-                  width: 1,
-                ),
-              ),
-              child: Icon(
-                Icons.today_rounded,
-                color: palette.todayActionIconColor,
-                size: 22,
-              ),
-            ),
+        child: GlassButtonSurface(
+          onTap: onPressed,
+          enabled: true,
+          width: _kActionButtonSize,
+          height: _kActionButtonSize,
+          borderRadius: _kActionButtonRadius,
+          tintColor: palette.todayActionFillColor,
+          borderColor: palette.todayActionBorderColor,
+          child: Icon(
+            Icons.today_rounded,
+            color: palette.todayActionIconColor,
+            size: 22,
           ),
         ),
       ),
@@ -328,8 +309,8 @@ class _GlassActionBarPalette {
   final Color fieldTextColor;
   final Color fieldHintColor;
   final Color fieldCursorColor;
-  final Color fieldFillColor;
-  final Color fieldBorderColor;
+  final Color barTint;
+  final Color barBorder;
   final Color fieldFocusedBorderColor;
   final Color addActionFillColor;
   final Color addActionBorderColor;
@@ -342,8 +323,8 @@ class _GlassActionBarPalette {
     required this.fieldTextColor,
     required this.fieldHintColor,
     required this.fieldCursorColor,
-    required this.fieldFillColor,
-    required this.fieldBorderColor,
+    required this.barTint,
+    required this.barBorder,
     required this.fieldFocusedBorderColor,
     required this.addActionFillColor,
     required this.addActionBorderColor,
@@ -359,31 +340,25 @@ class _GlassActionBarPalette {
     return _GlassActionBarPalette(
       fieldTextColor: colorScheme.onSurface.withValues(alpha: 0.94),
       fieldHintColor: colorScheme.onSurface.withValues(
-        alpha: isDark ? 0.60 : 0.52,
+        alpha: isDark ? 0.72 : 0.68,
       ),
       fieldCursorColor: colorScheme.onSurface.withValues(alpha: 0.96),
-      fieldFillColor: Colors.white.withValues(
-        alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight - 0.08,
-      ),
-      fieldBorderColor: Colors.white.withValues(
-        alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight - 0.05,
-      ),
+      barTint: colorScheme.surface.withValues(alpha: isDark ? 0.18 : 0.30),
+      barBorder: colorScheme.onSurface.withValues(alpha: isDark ? 0.18 : 0.12),
       fieldFocusedBorderColor: colorScheme.primary.withValues(
         alpha: isDark ? 0.78 : 0.62,
       ),
       addActionFillColor: colorScheme.primary.withValues(
-        alpha: isDark ? 0.24 : 0.20,
+        alpha: isDark ? 0.38 : 0.28,
       ),
       addActionBorderColor: colorScheme.primary.withValues(
-        alpha: isDark ? 0.70 : 0.62,
+        alpha: isDark ? 0.46 : 0.36,
       ),
       addActionIconColor: colorScheme.onSurface.withValues(alpha: 0.96),
       todayActionFillColor: Colors.white.withValues(
-        alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight - 0.06,
+        alpha: isDark ? 0.04 : 0.08,
       ),
-      todayActionBorderColor: Colors.white.withValues(
-        alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight - 0.03,
-      ),
+      todayActionBorderColor: Colors.transparent,
       todayActionIconColor: colorScheme.onSurface.withValues(alpha: 0.92),
     );
   }

@@ -4,7 +4,8 @@ import 'package:dienstplan/presentation/widgets/screens/settings/settings_sectio
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card_skeleton.dart';
 
 class ScheduleSectionSkeleton extends StatelessWidget {
-  const ScheduleSectionSkeleton({super.key});
+  const ScheduleSectionSkeleton({super.key, this.partner = false});
+  final bool partner;
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +15,12 @@ class ScheduleSectionSkeleton extends StatelessWidget {
       cards: [
         NavigationCardSkeleton(
           icon: Icons.calendar_today_outlined,
-          title: l10n.myDutySchedule,
+          title: partner ? l10n.partnerDutySchedule : l10n.myDutySchedule,
           showSubtitleSkeleton: true,
         ),
         NavigationCardSkeleton(
           icon: Icons.favorite_outlined,
-          title: l10n.myDutyGroup,
+          title: partner ? l10n.partnerDutyGroup : l10n.myDutyGroup,
           showSubtitleSkeleton: true,
         ),
       ],

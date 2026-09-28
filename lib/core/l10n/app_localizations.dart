@@ -1213,6 +1213,48 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Sieh dir die Hinweise zum Update noch einmal an'**
   String get settingsWhatsNewShowAgainSubtitle;
+
+  /// No description provided for @settingsAppearance.
+  ///
+  /// In de, this message translates to:
+  /// **'Darstellung'**
+  String get settingsAppearance;
+
+  /// No description provided for @settingsAppAndPrivacy.
+  ///
+  /// In de, this message translates to:
+  /// **'App & Datenschutz'**
+  String get settingsAppAndPrivacy;
+
+  /// No description provided for @settingsScheduleSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstplan, Dienstgruppe, Farbe & Export'**
+  String get settingsScheduleSummary;
+
+  /// No description provided for @settingsPartnerSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Dienstplan, Dienstgruppe & Farbe'**
+  String get settingsPartnerSummary;
+
+  /// No description provided for @settingsAppearanceSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Hell, dunkel oder automatisch'**
+  String get settingsAppearanceSummary;
+
+  /// No description provided for @settingsHolidaysSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Bundesland, Anzeige & Farbe'**
+  String get settingsHolidaysSummary;
+
+  /// No description provided for @settingsAppSummary.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuigkeiten, Datenschutz & Hilfe'**
+  String get settingsAppSummary;
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -163,6 +164,8 @@ class _MyAppState extends ConsumerState<MyApp> {
   }) {
     return MaterialApp.router(
       title: 'Dienstplan',
+      builder: (context, child) =>
+          AppGlassTheme(child: child ?? const SizedBox.shrink()),
       theme: theme,
       darkTheme: darkTheme,
       themeMode: mode,

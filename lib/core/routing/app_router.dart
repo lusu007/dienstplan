@@ -1,7 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/widgets.dart' show Key;
 import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
 import 'package:dienstplan/presentation/screens/calendar_screen.dart';
 import 'package:dienstplan/presentation/screens/settings_screen.dart';
+import 'package:dienstplan/presentation/screens/settings_category_screen.dart';
 import 'package:dienstplan/presentation/screens/about_screen.dart';
 import 'package:dienstplan/presentation/screens/privacy_policy_screen.dart';
 import 'package:dienstplan/presentation/screens/disclaimer_screen.dart';
@@ -18,7 +20,21 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => <AutoRoute>[
     AutoRoute(page: AppInitializerRoute.page, path: '/', initial: true),
     AutoRoute(page: CalendarRoute.page, path: '/calendar'),
-    AutoRoute(page: SettingsRoute.page, path: '/settings'),
+    // Avoid full-page glass compositing during Settings route transitions.
+    CustomRoute(
+      page: SettingsRoute.page,
+      path: '/settings',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+      duration: Duration.zero,
+      reverseDuration: Duration.zero,
+    ),
+    CustomRoute(
+      page: SettingsCategoryRoute.page,
+      path: '/settings/:category',
+      transitionsBuilder: TransitionsBuilders.noTransition,
+      duration: Duration.zero,
+      reverseDuration: Duration.zero,
+    ),
     AutoRoute(page: AboutRoute.page, path: '/about'),
     AutoRoute(page: PrivacyPolicyRoute.page, path: '/privacy'),
     AutoRoute(page: DisclaimerRoute.page, path: '/disclaimer'),

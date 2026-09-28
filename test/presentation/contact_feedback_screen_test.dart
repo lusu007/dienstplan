@@ -28,7 +28,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(GlassScreenScaffold), findsOneWidget);
-    expect(find.byType(ScrollFadeMask), findsOneWidget);
+    expect(find.byType(ScrollFadeMask), findsNothing);
     expect(find.text('Feedback'), findsOneWidget);
     final SingleChildScrollView scrollView = tester.widget(
       find.byType(SingleChildScrollView),

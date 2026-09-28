@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section_header.dart';
 
 class SettingsSection extends StatelessWidget {
@@ -19,7 +20,7 @@ class SettingsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SettingsSectionHeader(title: title),
-        ...cards,
+        GlassCardGroup(children: cards),
         if (padding != null) SizedBox(height: padding!.top),
       ],
     );
