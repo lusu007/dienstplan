@@ -32,7 +32,7 @@ Use for list cards, setting tiles, and selection surfaces. Cards use non-refract
 
 For passive surfaces with this app-defined outline, `AppGlassSurface` disables the library specular rim (`lightIntensity: 0`). This avoids the extra rim changing contrast during Android scroll stretch while keeping the app outline and stretch behavior.
 
-Use `GlassCardGroup` (also in `glass_card.dart`) for related settings rows: one outer surface, dividers, and plain inner row content. Set `modalTrigger: true` on `GlassCard` or `NavigationCard` when it opens a modal; this suppresses the background ink splash/highlight while retaining the tap handler.
+Use `GlassCardGroup` (also in `glass_card.dart`) for related settings rows: one outer surface and dividers. Normal rows remain transparent; active rows and custom tints/borders use lightweight per-row decoration without another glass layer. Disabled custom emphasis uses the existing disabled alpha multiplier; navigation rows retain their own disabled text/icon styling. Set `modalTrigger: true` on `GlassCard` or `NavigationCard` when it opens a modal; this suppresses the background ink splash/highlight while retaining the tap handler.
 
 Use when:
 

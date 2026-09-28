@@ -6,8 +6,8 @@ import 'package:dienstplan/core/constants/glass_tokens.dart';
 /// sub-screens.
 ///
 /// Provides a translucent tinted background with a subtle white border. When
-/// [isActive] is true the card is rendered with a primary tint overlay and a
-/// soft glow so it stands out as the selected option.
+/// [isActive] is true the card uses a primary tint and border. Grouped rows
+/// preserve state decoration without adding another glass surface.
 class GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
@@ -86,7 +86,26 @@ class GlassCard extends StatelessWidget {
         context.dependOnInheritedWidgetOfExactType<_GlassCardGroupScope>() !=
         null;
     final Widget card = grouped
-        ? Padding(padding: padding ?? EdgeInsets.zero, child: child)
+        ? DecoratedBox(
+            // The group already supplies the base tint and outer outline.
+            // Only paint row-specific emphasis; never add another glass layer.
+            decoration: BoxDecoration(
+              color: isActive
+                  ? activeBackground
+                  : tintColor?.withValues(
+                      alpha: (tintAlpha ?? 0.0) * enabledMul,
+                    ),
+              border: isActive || borderColor != null
+                  ? Border.all(
+                      color: isActive ? activeBorder : roleBorder,
+                      width: isActive
+                          ? glassCardActiveBorderWidth
+                          : borderWidth,
+                    )
+                  : null,
+            ),
+            child: Padding(padding: padding ?? EdgeInsets.zero, child: child),
+          )
         : AppGlassSurface(
             refractive: false,
             padding: padding,
