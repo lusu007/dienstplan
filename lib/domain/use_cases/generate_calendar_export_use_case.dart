@@ -135,8 +135,7 @@ class GenerateCalendarExportUseCase {
           );
           return Result.createFailure<CalendarExportPayload>(
             const ValidationFailure(
-              technicalMessage:
-                  'Calendar export failed (reason=partner_schedule_unavailable)',
+              technicalMessage: 'Calendar export failed (reason=partner_schedule_unavailable)',
               userMessageKey: 'calendarExportPartnerUnavailable',
             ),
           );

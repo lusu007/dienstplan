@@ -61,16 +61,14 @@ class AboutScreen extends StatelessWidget {
                       children: [
                         Text(
                           AppInfo.appLegalese,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(color: subtle),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: subtle),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           snapshot.data!,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(color: subtle),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: subtle),
                         ),
                       ],
                     );
@@ -95,17 +93,15 @@ class AboutScreen extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           l10n.aboutDescription,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: subtle),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: subtle),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
         Text(
           l10n.aboutDisclaimer,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: subtle),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: subtle),
           textAlign: TextAlign.center,
         ),
       ],

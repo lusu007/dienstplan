@@ -21,6 +21,7 @@ import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/domain/failures/result.dart';
+
 import 'dart:async';
 
 part 'setup_notifier.g.dart';

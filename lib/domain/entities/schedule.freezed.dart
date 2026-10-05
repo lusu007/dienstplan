@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'schedule.dart';
@@ -9,6 +9,7 @@ part of 'schedule.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -38,65 +39,75 @@ mixin _$Schedule {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as Schedule;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Schedule &&
-            (identical(other.date, date) || other.date == date) &&
-            (identical(other.service, service) || other.service == service) &&
-            (identical(other.dutyGroupId, dutyGroupId) ||
-                other.dutyGroupId == dutyGroupId) &&
-            (identical(other.dutyTypeId, dutyTypeId) ||
-                other.dutyTypeId == dutyTypeId) &&
-            (identical(other.dutyGroupName, dutyGroupName) ||
-                other.dutyGroupName == dutyGroupName) &&
-            (identical(other.configName, configName) ||
-                other.configName == configName) &&
-            (identical(other.isAllDay, isAllDay) ||
-                other.isAllDay == isAllDay) &&
-            (identical(other.isUserDefined, isUserDefined) ||
-                other.isUserDefined == isUserDefined) &&
-            (identical(other.personalEntryId, personalEntryId) ||
-                other.personalEntryId == personalEntryId) &&
-            (identical(other.personalEntryKind, personalEntryKind) ||
-                other.personalEntryKind == personalEntryKind) &&
+            (identical(other.date, _this.date) || other.date == _this.date) &&
+            (identical(other.service, _this.service) ||
+                other.service == _this.service) &&
+            (identical(other.dutyGroupId, _this.dutyGroupId) ||
+                other.dutyGroupId == _this.dutyGroupId) &&
+            (identical(other.dutyTypeId, _this.dutyTypeId) ||
+                other.dutyTypeId == _this.dutyTypeId) &&
+            (identical(other.dutyGroupName, _this.dutyGroupName) ||
+                other.dutyGroupName == _this.dutyGroupName) &&
+            (identical(other.configName, _this.configName) ||
+                other.configName == _this.configName) &&
+            (identical(other.isAllDay, _this.isAllDay) ||
+                other.isAllDay == _this.isAllDay) &&
+            (identical(other.isUserDefined, _this.isUserDefined) ||
+                other.isUserDefined == _this.isUserDefined) &&
+            (identical(other.personalEntryId, _this.personalEntryId) ||
+                other.personalEntryId == _this.personalEntryId) &&
+            (identical(other.personalEntryKind, _this.personalEntryKind) ||
+                other.personalEntryKind == _this.personalEntryKind) &&
             (identical(
                   other.startMinutesFromMidnight,
-                  startMinutesFromMidnight,
+                  _this.startMinutesFromMidnight,
                 ) ||
-                other.startMinutesFromMidnight == startMinutesFromMidnight) &&
-            (identical(other.endMinutesFromMidnight, endMinutesFromMidnight) ||
-                other.endMinutesFromMidnight == endMinutesFromMidnight) &&
-            (identical(other.personalNotes, personalNotes) ||
-                other.personalNotes == personalNotes) &&
-            (identical(other.personalCreatedAtMs, personalCreatedAtMs) ||
-                other.personalCreatedAtMs == personalCreatedAtMs) &&
-            (identical(other.personalUpdatedAtMs, personalUpdatedAtMs) ||
-                other.personalUpdatedAtMs == personalUpdatedAtMs));
+                other.startMinutesFromMidnight ==
+                    _this.startMinutesFromMidnight) &&
+            (identical(
+                  other.endMinutesFromMidnight,
+                  _this.endMinutesFromMidnight,
+                ) ||
+                other.endMinutesFromMidnight == _this.endMinutesFromMidnight) &&
+            (identical(other.personalNotes, _this.personalNotes) ||
+                other.personalNotes == _this.personalNotes) &&
+            (identical(other.personalCreatedAtMs, _this.personalCreatedAtMs) ||
+                other.personalCreatedAtMs == _this.personalCreatedAtMs) &&
+            (identical(other.personalUpdatedAtMs, _this.personalUpdatedAtMs) ||
+                other.personalUpdatedAtMs == _this.personalUpdatedAtMs));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    date,
-    service,
-    dutyGroupId,
-    dutyTypeId,
-    dutyGroupName,
-    configName,
-    isAllDay,
-    isUserDefined,
-    personalEntryId,
-    personalEntryKind,
-    startMinutesFromMidnight,
-    endMinutesFromMidnight,
-    personalNotes,
-    personalCreatedAtMs,
-    personalUpdatedAtMs,
-  );
+  int get hashCode {
+    final _this = this as Schedule;
+    return Object.hash(
+      runtimeType,
+      _this.date,
+      _this.service,
+      _this.dutyGroupId,
+      _this.dutyTypeId,
+      _this.dutyGroupName,
+      _this.configName,
+      _this.isAllDay,
+      _this.isUserDefined,
+      _this.personalEntryId,
+      _this.personalEntryKind,
+      _this.startMinutesFromMidnight,
+      _this.endMinutesFromMidnight,
+      _this.personalNotes,
+      _this.personalCreatedAtMs,
+      _this.personalUpdatedAtMs,
+    );
+  }
 
   @override
   String toString() {
-    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay, isUserDefined: $isUserDefined, personalEntryId: $personalEntryId, personalEntryKind: $personalEntryKind, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, personalNotes: $personalNotes, personalCreatedAtMs: $personalCreatedAtMs, personalUpdatedAtMs: $personalUpdatedAtMs)';
+    final _this = this as Schedule;
+    return 'Schedule(date: ${_this.date}, service: ${_this.service}, dutyGroupId: ${_this.dutyGroupId}, dutyTypeId: ${_this.dutyTypeId}, dutyGroupName: ${_this.dutyGroupName}, configName: ${_this.configName}, isAllDay: ${_this.isAllDay}, isUserDefined: ${_this.isUserDefined}, personalEntryId: ${_this.personalEntryId}, personalEntryKind: ${_this.personalEntryKind}, startMinutesFromMidnight: ${_this.startMinutesFromMidnight}, endMinutesFromMidnight: ${_this.endMinutesFromMidnight}, personalNotes: ${_this.personalNotes}, personalCreatedAtMs: ${_this.personalCreatedAtMs}, personalUpdatedAtMs: ${_this.personalUpdatedAtMs})';
   }
 }
 
@@ -153,7 +164,7 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? personalUpdatedAtMs = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      Schedule(
         date: null == date
             ? _self.date
             : date // ignore: cast_nullable_to_non_nullable
@@ -576,24 +587,26 @@ class _Schedule extends Schedule {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    date,
-    service,
-    dutyGroupId,
-    dutyTypeId,
-    dutyGroupName,
-    configName,
-    isAllDay,
-    isUserDefined,
-    personalEntryId,
-    personalEntryKind,
-    startMinutesFromMidnight,
-    endMinutesFromMidnight,
-    personalNotes,
-    personalCreatedAtMs,
-    personalUpdatedAtMs,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      date,
+      service,
+      dutyGroupId,
+      dutyTypeId,
+      dutyGroupName,
+      configName,
+      isAllDay,
+      isUserDefined,
+      personalEntryId,
+      personalEntryKind,
+      startMinutesFromMidnight,
+      endMinutesFromMidnight,
+      personalNotes,
+      personalCreatedAtMs,
+      personalUpdatedAtMs,
+    );
+  }
 
   @override
   String toString() {

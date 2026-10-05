@@ -4,95 +4,93 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CalendarDayScheduleLookup', () {
-    test(
-      'returns day-specific duty and personal schedules without callers scanning all schedules',
-      () {
-        final DateTime targetDay = DateTime(2026, 5, 4);
-        final CalendarDayScheduleLookup lookup =
-            CalendarDayScheduleLookup(<Schedule>[
-              Schedule(
-                date: targetDay,
-                service: 'Frueh',
-                dutyGroupId: 'a',
-                dutyTypeId: 'F',
-                dutyGroupName: 'A',
-                configName: 'main',
-              ),
-              Schedule(
-                date: targetDay,
-                service: 'Spaet',
-                dutyGroupId: 'b',
-                dutyTypeId: 'S',
-                dutyGroupName: 'B',
-                configName: 'main',
-              ),
-              Schedule(
-                date: targetDay,
-                service: 'Partner',
-                dutyGroupId: 'p',
-                dutyTypeId: 'P',
-                dutyGroupName: 'P',
-                configName: 'partner',
-              ),
-              Schedule(
-                date: targetDay,
-                service: 'Later appointment',
-                dutyGroupId: 'personal',
-                dutyTypeId: 'personal',
-                dutyGroupName: 'Personal',
-                configName: 'personal',
-                isUserDefined: true,
-                personalEntryId: 'later',
-                startMinutesFromMidnight: 720,
-              ),
-              Schedule(
-                date: targetDay,
-                service: 'Earlier appointment',
-                dutyGroupId: 'personal',
-                dutyTypeId: 'personal',
-                dutyGroupName: 'Personal',
-                configName: 'personal',
-                isUserDefined: true,
-                personalEntryId: 'earlier',
-                startMinutesFromMidnight: 480,
-              ),
-              Schedule(
-                date: DateTime(2026, 5, 5),
-                service: 'Wrong day',
-                dutyGroupId: 'a',
-                dutyTypeId: 'N',
-                dutyGroupName: 'A',
-                configName: 'main',
-              ),
-            ]);
+    test('returns day-specific duty and personal schedules without callers scanning all schedules', () {
+      final DateTime targetDay = DateTime(2026, 5, 4);
+      final CalendarDayScheduleLookup lookup = CalendarDayScheduleLookup(
+        <Schedule>[
+          Schedule(
+            date: targetDay,
+            service: 'Frueh',
+            dutyGroupId: 'a',
+            dutyTypeId: 'F',
+            dutyGroupName: 'A',
+            configName: 'main',
+          ),
+          Schedule(
+            date: targetDay,
+            service: 'Spaet',
+            dutyGroupId: 'b',
+            dutyTypeId: 'S',
+            dutyGroupName: 'B',
+            configName: 'main',
+          ),
+          Schedule(
+            date: targetDay,
+            service: 'Partner',
+            dutyGroupId: 'p',
+            dutyTypeId: 'P',
+            dutyGroupName: 'P',
+            configName: 'partner',
+          ),
+          Schedule(
+            date: targetDay,
+            service: 'Later appointment',
+            dutyGroupId: 'personal',
+            dutyTypeId: 'personal',
+            dutyGroupName: 'Personal',
+            configName: 'personal',
+            isUserDefined: true,
+            personalEntryId: 'later',
+            startMinutesFromMidnight: 720,
+          ),
+          Schedule(
+            date: targetDay,
+            service: 'Earlier appointment',
+            dutyGroupId: 'personal',
+            dutyTypeId: 'personal',
+            dutyGroupName: 'Personal',
+            configName: 'personal',
+            isUserDefined: true,
+            personalEntryId: 'earlier',
+            startMinutesFromMidnight: 480,
+          ),
+          Schedule(
+            date: DateTime(2026, 5, 5),
+            service: 'Wrong day',
+            dutyGroupId: 'a',
+            dutyTypeId: 'N',
+            dutyGroupName: 'A',
+            configName: 'main',
+          ),
+        ],
+      );
 
-        expect(
-          lookup
-              .firstOfficialSchedule(
-                day: targetDay,
-                configName: 'main',
-                dutyGroupName: 'B',
-              )
-              ?.dutyTypeId,
-          'S',
-        );
-        expect(
-          lookup
-              .firstOfficialSchedule(
-                day: targetDay,
-                configName: 'partner',
-                dutyGroupName: 'P',
-              )
-              ?.dutyTypeId,
-          'P',
-        );
-        expect(
-          lookup.personalSchedulesForDay(targetDay).map((s) => s.service),
-          <String>['Earlier appointment', 'Later appointment'],
-        );
-        expect(lookup.signatureForMonth(DateTime(2026, 5, 1)), isNonZero);
-      },
-    );
+      expect(
+        lookup
+            .firstOfficialSchedule(
+              day: targetDay,
+              configName: 'main',
+              dutyGroupName: 'B',
+            )
+            ?.dutyTypeId,
+        'S',
+      );
+      expect(
+        lookup
+            .firstOfficialSchedule(
+              day: targetDay,
+              configName: 'partner',
+              dutyGroupName: 'P',
+            )
+            ?.dutyTypeId,
+        'P',
+      );
+      expect(
+        lookup.personalSchedulesForDay(targetDay).map((s) => s.service),
+        <String>['Earlier appointment', 'Later appointment'],
+      );
+      expect(lookup.signatureForMonth(DateTime(2026, 5, 1)), isNonZero);
+    });
 
     test(
       'signatureForMonth changes when a user-defined entry time changes',

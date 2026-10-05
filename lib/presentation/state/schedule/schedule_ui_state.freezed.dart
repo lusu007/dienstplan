@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'schedule_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'schedule_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -22,13 +23,12 @@ mixin _$ScheduleUiState {
   String? get preferredDutyGroup;
   List<String> get dutyGroups;
   List<DutyScheduleConfig> get configs;
-  DutyScheduleConfig? get activeConfig; // Partner group extended state
+  DutyScheduleConfig? get activeConfig;
   String? get partnerConfigName;
   String? get partnerDutyGroup;
-  int? get partnerAccentColorValue; // My accent color state
-  int? get myAccentColorValue; // Holiday accent color state
-  int?
-  get holidayAccentColorValue; // Optimized schedule index for efficient range queries
+  int? get partnerAccentColorValue;
+  int? get myAccentColorValue;
+  int? get holidayAccentColorValue;
   ScheduleIndex get scheduleIndex;
 
   /// Create a copy of ScheduleUiState
@@ -43,72 +43,86 @@ mixin _$ScheduleUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as ScheduleUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ScheduleUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.selectedDay, selectedDay) ||
-                other.selectedDay == selectedDay) &&
-            (identical(other.focusedDay, focusedDay) ||
-                other.focusedDay == focusedDay) &&
-            const DeepCollectionEquality().equals(other.schedules, schedules) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
-            (identical(other.preferredDutyGroup, preferredDutyGroup) ||
-                other.preferredDutyGroup == preferredDutyGroup) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            (identical(other.selectedDay, _this.selectedDay) ||
+                other.selectedDay == _this.selectedDay) &&
+            (identical(other.focusedDay, _this.focusedDay) ||
+                other.focusedDay == _this.focusedDay) &&
+            const DeepCollectionEquality().equals(
+              other.schedules,
+              _this.schedules,
+            ) &&
+            (identical(other.activeConfigName, _this.activeConfigName) ||
+                other.activeConfigName == _this.activeConfigName) &&
+            (identical(other.preferredDutyGroup, _this.preferredDutyGroup) ||
+                other.preferredDutyGroup == _this.preferredDutyGroup) &&
             const DeepCollectionEquality().equals(
               other.dutyGroups,
-              dutyGroups,
+              _this.dutyGroups,
             ) &&
-            const DeepCollectionEquality().equals(other.configs, configs) &&
-            (identical(other.activeConfig, activeConfig) ||
-                other.activeConfig == activeConfig) &&
-            (identical(other.partnerConfigName, partnerConfigName) ||
-                other.partnerConfigName == partnerConfigName) &&
-            (identical(other.partnerDutyGroup, partnerDutyGroup) ||
-                other.partnerDutyGroup == partnerDutyGroup) &&
+            const DeepCollectionEquality().equals(
+              other.configs,
+              _this.configs,
+            ) &&
+            (identical(other.activeConfig, _this.activeConfig) ||
+                other.activeConfig == _this.activeConfig) &&
+            (identical(other.partnerConfigName, _this.partnerConfigName) ||
+                other.partnerConfigName == _this.partnerConfigName) &&
+            (identical(other.partnerDutyGroup, _this.partnerDutyGroup) ||
+                other.partnerDutyGroup == _this.partnerDutyGroup) &&
             (identical(
                   other.partnerAccentColorValue,
-                  partnerAccentColorValue,
+                  _this.partnerAccentColorValue,
                 ) ||
-                other.partnerAccentColorValue == partnerAccentColorValue) &&
-            (identical(other.myAccentColorValue, myAccentColorValue) ||
-                other.myAccentColorValue == myAccentColorValue) &&
+                other.partnerAccentColorValue ==
+                    _this.partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, _this.myAccentColorValue) ||
+                other.myAccentColorValue == _this.myAccentColorValue) &&
             (identical(
                   other.holidayAccentColorValue,
-                  holidayAccentColorValue,
+                  _this.holidayAccentColorValue,
                 ) ||
-                other.holidayAccentColorValue == holidayAccentColorValue) &&
-            (identical(other.scheduleIndex, scheduleIndex) ||
-                other.scheduleIndex == scheduleIndex));
+                other.holidayAccentColorValue ==
+                    _this.holidayAccentColorValue) &&
+            (identical(other.scheduleIndex, _this.scheduleIndex) ||
+                other.scheduleIndex == _this.scheduleIndex));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    selectedDay,
-    focusedDay,
-    const DeepCollectionEquality().hash(schedules),
-    activeConfigName,
-    preferredDutyGroup,
-    const DeepCollectionEquality().hash(dutyGroups),
-    const DeepCollectionEquality().hash(configs),
-    activeConfig,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-    holidayAccentColorValue,
-    scheduleIndex,
-  );
+  int get hashCode {
+    final _this = this as ScheduleUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.error,
+      _this.selectedDay,
+      _this.focusedDay,
+      const DeepCollectionEquality().hash(_this.schedules),
+      _this.activeConfigName,
+      _this.preferredDutyGroup,
+      const DeepCollectionEquality().hash(_this.dutyGroups),
+      const DeepCollectionEquality().hash(_this.configs),
+      _this.activeConfig,
+      _this.partnerConfigName,
+      _this.partnerDutyGroup,
+      _this.partnerAccentColorValue,
+      _this.myAccentColorValue,
+      _this.holidayAccentColorValue,
+      _this.scheduleIndex,
+    );
+  }
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
+    final _this = this as ScheduleUiState;
+    return 'ScheduleUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, selectedDay: ${_this.selectedDay}, focusedDay: ${_this.focusedDay}, schedules: ${_this.schedules}, activeConfigName: ${_this.activeConfigName}, preferredDutyGroup: ${_this.preferredDutyGroup}, dutyGroups: ${_this.dutyGroups}, configs: ${_this.configs}, activeConfig: ${_this.activeConfig}, partnerConfigName: ${_this.partnerConfigName}, partnerDutyGroup: ${_this.partnerDutyGroup}, partnerAccentColorValue: ${_this.partnerAccentColorValue}, myAccentColorValue: ${_this.myAccentColorValue}, holidayAccentColorValue: ${_this.holidayAccentColorValue}, scheduleIndex: ${_this.scheduleIndex})';
   }
 }
 
@@ -172,7 +186,7 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
     Object? scheduleIndex = null,
   }) {
     return _then(
-      _self.copyWith(
+      ScheduleUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -526,11 +540,11 @@ class _ScheduleUiState extends ScheduleUiState {
     this.error,
     this.selectedDay,
     this.focusedDay,
-    final List<Schedule> schedules = const <Schedule>[],
+    List<Schedule> schedules = const <Schedule>[],
     this.activeConfigName,
     this.preferredDutyGroup,
-    final List<String> dutyGroups = const <String>[],
-    final List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
+    List<String> dutyGroups = const <String>[],
+    List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
     this.activeConfig,
     this.partnerConfigName,
     this.partnerDutyGroup,
@@ -584,20 +598,16 @@ class _ScheduleUiState extends ScheduleUiState {
 
   @override
   final DutyScheduleConfig? activeConfig;
-  // Partner group extended state
   @override
   final String? partnerConfigName;
   @override
   final String? partnerDutyGroup;
   @override
   final int? partnerAccentColorValue;
-  // My accent color state
   @override
   final int? myAccentColorValue;
-  // Holiday accent color state
   @override
   final int? holidayAccentColorValue;
-  // Optimized schedule index for efficient range queries
   @override
   @JsonKey()
   final ScheduleIndex scheduleIndex;
@@ -623,7 +633,7 @@ class _ScheduleUiState extends ScheduleUiState {
             (identical(other.focusedDay, focusedDay) ||
                 other.focusedDay == focusedDay) &&
             const DeepCollectionEquality().equals(
-              other._schedules,
+              other.schedules,
               _schedules,
             ) &&
             (identical(other.activeConfigName, activeConfigName) ||
@@ -631,10 +641,10 @@ class _ScheduleUiState extends ScheduleUiState {
             (identical(other.preferredDutyGroup, preferredDutyGroup) ||
                 other.preferredDutyGroup == preferredDutyGroup) &&
             const DeepCollectionEquality().equals(
-              other._dutyGroups,
+              other.dutyGroups,
               _dutyGroups,
             ) &&
-            const DeepCollectionEquality().equals(other._configs, _configs) &&
+            const DeepCollectionEquality().equals(other.configs, _configs) &&
             (identical(other.activeConfig, activeConfig) ||
                 other.activeConfig == activeConfig) &&
             (identical(other.partnerConfigName, partnerConfigName) ||
@@ -658,25 +668,27 @@ class _ScheduleUiState extends ScheduleUiState {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    selectedDay,
-    focusedDay,
-    const DeepCollectionEquality().hash(_schedules),
-    activeConfigName,
-    preferredDutyGroup,
-    const DeepCollectionEquality().hash(_dutyGroups),
-    const DeepCollectionEquality().hash(_configs),
-    activeConfig,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-    holidayAccentColorValue,
-    scheduleIndex,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      selectedDay,
+      focusedDay,
+      const DeepCollectionEquality().hash(_schedules),
+      activeConfigName,
+      preferredDutyGroup,
+      const DeepCollectionEquality().hash(_dutyGroups),
+      const DeepCollectionEquality().hash(_configs),
+      activeConfig,
+      partnerConfigName,
+      partnerDutyGroup,
+      partnerAccentColorValue,
+      myAccentColorValue,
+      holidayAccentColorValue,
+      scheduleIndex,
+    );
+  }
 
   @override
   String toString() {

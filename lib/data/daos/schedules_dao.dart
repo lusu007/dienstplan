@@ -156,8 +156,7 @@ class SchedulesDao {
       final ScheduleKeyParts parts = ScheduleKeyHelper.parseScheduleId(id);
       await db.delete(
         'schedules',
-        where:
-            'date_ymd = ? AND config_name = ? AND duty_group_id = ? AND duty_type_id = ? AND service = ?',
+        where: 'date_ymd = ? AND config_name = ? AND duty_group_id = ? AND duty_type_id = ? AND service = ?',
         whereArgs: <Object?>[
           parts.dateYmd,
           parts.configName,

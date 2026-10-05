@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'rhythm.dart';
@@ -9,6 +9,7 @@ part of 'rhythm.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -25,24 +26,32 @@ mixin _$Rhythm {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as Rhythm;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Rhythm &&
-            (identical(other.lengthWeeks, lengthWeeks) ||
-                other.lengthWeeks == lengthWeeks) &&
-            const DeepCollectionEquality().equals(other.pattern, pattern));
+            (identical(other.lengthWeeks, _this.lengthWeeks) ||
+                other.lengthWeeks == _this.lengthWeeks) &&
+            const DeepCollectionEquality().equals(
+              other.pattern,
+              _this.pattern,
+            ));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    lengthWeeks,
-    const DeepCollectionEquality().hash(pattern),
-  );
+  int get hashCode {
+    final _this = this as Rhythm;
+    return Object.hash(
+      runtimeType,
+      _this.lengthWeeks,
+      const DeepCollectionEquality().hash(_this.pattern),
+    );
+  }
 
   @override
   String toString() {
-    return 'Rhythm(lengthWeeks: $lengthWeeks, pattern: $pattern)';
+    final _this = this as Rhythm;
+    return 'Rhythm(lengthWeeks: ${_this.lengthWeeks}, pattern: ${_this.pattern})';
   }
 }
 
@@ -67,7 +76,7 @@ class _$RhythmCopyWithImpl<$Res> implements $RhythmCopyWith<$Res> {
   @override
   $Res call({Object? lengthWeeks = null, Object? pattern = null}) {
     return _then(
-      _self.copyWith(
+      Rhythm(
         lengthWeeks: null == lengthWeeks
             ? _self.lengthWeeks
             : lengthWeeks // ignore: cast_nullable_to_non_nullable
@@ -243,7 +252,7 @@ extension RhythmPatterns on Rhythm {
 class _Rhythm extends Rhythm {
   const _Rhythm({
     required this.lengthWeeks,
-    required final List<List<String>> pattern,
+    required List<List<String>> pattern,
   }) : _pattern = pattern,
        super._();
 
@@ -272,15 +281,17 @@ class _Rhythm extends Rhythm {
             other is _Rhythm &&
             (identical(other.lengthWeeks, lengthWeeks) ||
                 other.lengthWeeks == lengthWeeks) &&
-            const DeepCollectionEquality().equals(other._pattern, _pattern));
+            const DeepCollectionEquality().equals(other.pattern, _pattern));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    lengthWeeks,
-    const DeepCollectionEquality().hash(_pattern),
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      lengthWeeks,
+      const DeepCollectionEquality().hash(_pattern),
+    );
+  }
 
   @override
   String toString() {

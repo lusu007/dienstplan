@@ -97,9 +97,8 @@ class DutyGroupStepComponent extends ConsumerWidget {
           Text(
             l10n.dutyGroupSelectionEmptyMessage,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: colorScheme.onSurfaceVariant),
           ),
         ],
       ),

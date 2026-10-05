@@ -1,4 +1,5 @@
 import 'dart:isolate';
+
 import 'package:dienstplan/core/utils/calendar_date_math.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/domain/entities/duty_schedule_config.dart';

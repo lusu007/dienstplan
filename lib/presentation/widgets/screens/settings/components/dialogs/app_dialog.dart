@@ -29,9 +29,8 @@ class AppDialog {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(
               l10n.close,
-              style: AppTypography.action(
-                Theme.of(context),
-              ).copyWith(color: accent),
+              style: AppTypography.action(Theme.of(context))
+                  .copyWith(color: accent),
             ),
           ),
         ),

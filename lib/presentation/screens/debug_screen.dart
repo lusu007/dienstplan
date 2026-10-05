@@ -19,9 +19,11 @@ import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
@@ -839,9 +841,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
         ),
         subtitle: Text(
           '${_formatFileSize(fileInfo.size)} • ${_formatDate(fileInfo.lastModified)}',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         trailing: const Icon(Icons.visibility),
         onTap: () => _viewScheduleFile(file),
@@ -857,9 +858,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
         ),
         subtitle: Text(
           'Error loading file info',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
         trailing: const Icon(Icons.visibility),
         onTap: () => _viewScheduleFile(file),
@@ -877,9 +877,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       showGeneralDialog<void>(
         context: context,
         barrierDismissible: true,
-        barrierLabel: MaterialLocalizations.of(
-          context,
-        ).modalBarrierDismissLabel,
+        barrierLabel: MaterialLocalizations.of(context)
+            .modalBarrierDismissLabel,
         barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
         transitionDuration: const Duration(milliseconds: 220),
         pageBuilder: (BuildContext dialogContext, _, _) {
@@ -916,9 +915,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                                 ),
                               ),
                               AppGlassIconButton(
-                                tooltip: MaterialLocalizations.of(
-                                  dialogContext,
-                                ).closeButtonTooltip,
+                                tooltip: MaterialLocalizations.of(dialogContext)
+                                    .closeButtonTooltip,
                                 onPressed: () =>
                                     Navigator.of(dialogContext).pop(),
                                 icon: Icons.close,
@@ -986,9 +984,8 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       AppLogger.e('DebugScreen: Error viewing schedule file', e);
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(AppSnackBar(content: Text('Error loading file: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(AppSnackBar(content: Text('Error loading file: $e')));
     }
   }
 

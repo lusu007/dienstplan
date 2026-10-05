@@ -354,9 +354,8 @@ class DutyScheduleList extends ConsumerWidget {
             Text(
               l10n.noServicesForDay,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -514,9 +513,9 @@ class DutyScheduleList extends ConsumerWidget {
                                           ?.copyWith(
                                             fontSize: m.titleSize,
                                             fontWeight: FontWeight.bold,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
                                           ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -533,9 +532,9 @@ class DutyScheduleList extends ConsumerWidget {
                                                 fontSize: m.notesSize > 0
                                                     ? m.notesSize
                                                     : null,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onSurfaceVariant,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
                                               ),
                                           maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
@@ -559,9 +558,9 @@ class DutyScheduleList extends ConsumerWidget {
                                           ?.copyWith(
                                             fontSize: m.secondarySize,
                                             fontWeight: FontWeight.w400,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurfaceVariant,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
@@ -576,9 +575,9 @@ class DutyScheduleList extends ConsumerWidget {
                                       ?.copyWith(
                                         fontSize: m.secondarySize,
                                         fontWeight: FontWeight.w400,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurfaceVariant,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
                                       ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -649,9 +648,9 @@ class DutyScheduleList extends ConsumerWidget {
                                               ?.copyWith(
                                                 fontSize: m.titleSize,
                                                 fontWeight: FontWeight.bold,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onSurface,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface,
                                               ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -697,9 +696,9 @@ class DutyScheduleList extends ConsumerWidget {
                                               ?.copyWith(
                                                 fontSize: m.secondarySize,
                                                 fontWeight: FontWeight.w400,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onSurfaceVariant,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
                                               ),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -716,9 +715,9 @@ class DutyScheduleList extends ConsumerWidget {
                                           ?.copyWith(
                                             fontSize: m.secondarySize,
                                             fontWeight: FontWeight.w400,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurfaceVariant,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
                                       overflow: TextOverflow.ellipsis,
                                     ),

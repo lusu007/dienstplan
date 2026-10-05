@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:dienstplan/core/utils/logger.dart';
 
 /// Manages a queue of schedule loading operations to prevent overlapping requests

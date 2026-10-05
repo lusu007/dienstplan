@@ -41,9 +41,9 @@ liquid.LiquidGlassSettings appGlassSettings(
   Color? tint,
   double? blur,
 }) {
-  final overrides = liquid.GlassThemeData.of(
-    context,
-  ).variantFor(context).settings;
+  final overrides = liquid.GlassThemeData.of(context)
+      .variantFor(context)
+      .settings;
   final base =
       overrides?.applyTo(const liquid.LiquidGlassSettings()) ??
       const liquid.LiquidGlassSettings();

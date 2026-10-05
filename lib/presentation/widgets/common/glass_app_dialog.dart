@@ -104,9 +104,8 @@ class GlassAppDialog extends StatelessWidget {
                       )
                     else
                       DefaultTextStyle.merge(
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: colorScheme.onSurfaceVariant),
                         child: content,
                       ),
                     if (actions != null && actions!.isNotEmpty) ...[

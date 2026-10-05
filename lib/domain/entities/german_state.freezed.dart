@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'german_state.dart';
@@ -9,6 +9,7 @@ part of 'german_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -27,22 +28,34 @@ mixin _$GermanState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as GermanState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is GermanState &&
-            (identical(other.code, code) || other.code == code) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.fullName, fullName) ||
-                other.fullName == fullName) &&
-            (identical(other.apiId, apiId) || other.apiId == apiId));
+            (identical(other.code, _this.code) || other.code == _this.code) &&
+            (identical(other.name, _this.name) || other.name == _this.name) &&
+            (identical(other.fullName, _this.fullName) ||
+                other.fullName == _this.fullName) &&
+            (identical(other.apiId, _this.apiId) ||
+                other.apiId == _this.apiId));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, code, name, fullName, apiId);
+  int get hashCode {
+    final _this = this as GermanState;
+    return Object.hash(
+      runtimeType,
+      _this.code,
+      _this.name,
+      _this.fullName,
+      _this.apiId,
+    );
+  }
 
   @override
   String toString() {
-    return 'GermanState(code: $code, name: $name, fullName: $fullName, apiId: $apiId)';
+    final _this = this as GermanState;
+    return 'GermanState(code: ${_this.code}, name: ${_this.name}, fullName: ${_this.fullName}, apiId: ${_this.apiId})';
   }
 }
 
@@ -74,7 +87,7 @@ class _$GermanStateCopyWithImpl<$Res> implements $GermanStateCopyWith<$Res> {
     Object? apiId = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      GermanState(
         code: null == code
             ? _self.code
             : code // ignore: cast_nullable_to_non_nullable
@@ -296,7 +309,9 @@ class _GermanState extends GermanState {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, code, name, fullName, apiId);
+  int get hashCode {
+    return Object.hash(runtimeType, code, name, fullName, apiId);
+  }
 
   @override
   String toString() {

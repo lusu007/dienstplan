@@ -84,9 +84,8 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
       return Center(
         child: Text(
           l10n.noDutyGroup,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge
+              ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         ),
       );
     }

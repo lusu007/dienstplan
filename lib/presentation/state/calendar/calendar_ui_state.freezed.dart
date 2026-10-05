@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'calendar_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'calendar_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -30,25 +31,36 @@ mixin _$CalendarUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as CalendarUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is CalendarUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.selectedDay, selectedDay) ||
-                other.selectedDay == selectedDay) &&
-            (identical(other.focusedDay, focusedDay) ||
-                other.focusedDay == focusedDay));
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            (identical(other.selectedDay, _this.selectedDay) ||
+                other.selectedDay == _this.selectedDay) &&
+            (identical(other.focusedDay, _this.focusedDay) ||
+                other.focusedDay == _this.focusedDay));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, isLoading, error, selectedDay, focusedDay);
+  int get hashCode {
+    final _this = this as CalendarUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.error,
+      _this.selectedDay,
+      _this.focusedDay,
+    );
+  }
 
   @override
   String toString() {
-    return 'CalendarUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay)';
+    final _this = this as CalendarUiState;
+    return 'CalendarUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, selectedDay: ${_this.selectedDay}, focusedDay: ${_this.focusedDay})';
   }
 }
 
@@ -86,7 +98,7 @@ class _$CalendarUiStateCopyWithImpl<$Res>
     Object? focusedDay = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      CalendarUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -340,8 +352,9 @@ class _CalendarUiState extends CalendarUiState {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, isLoading, error, selectedDay, focusedDay);
+  int get hashCode {
+    return Object.hash(runtimeType, isLoading, error, selectedDay, focusedDay);
+  }
 
   @override
   String toString() {

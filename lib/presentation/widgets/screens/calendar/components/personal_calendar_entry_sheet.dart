@@ -1,6 +1,7 @@
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:dienstplan/presentation/widgets/common/app_feedback_style.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -165,9 +166,8 @@ class _PersonalCalendarEntrySheetState
               liveRegion: true,
               child: Text(
                 error,
-                style: AppFeedbackStyle.text(
-                  colorScheme,
-                ).copyWith(color: colorScheme.error),
+                style: AppFeedbackStyle.text(colorScheme)
+                    .copyWith(color: colorScheme.error),
               ),
             ),
       filled: true,
@@ -346,9 +346,8 @@ class _PersonalCalendarEntrySheetState
         .syncScheduleDataFromProvider();
     if (mounted) {
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(AppSnackBar(content: Text(l10n.personalEntrySaved)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(AppSnackBar(content: Text(l10n.personalEntrySaved)));
     }
   }
 
@@ -406,9 +405,8 @@ class _PersonalCalendarEntrySheetState
         .syncScheduleDataFromProvider();
     if (mounted) {
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(AppSnackBar(content: Text(l10n.personalEntryDeleted)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(AppSnackBar(content: Text(l10n.personalEntryDeleted)));
     }
   }
 
@@ -512,9 +510,8 @@ class _PersonalCalendarEntrySheetState
                 ),
                 const SizedBox(height: glassSpacingLg),
                 Theme(
-                  data: Theme.of(
-                    context,
-                  ).copyWith(colorScheme: kindChipColorScheme),
+                  data: Theme.of(context)
+                      .copyWith(colorScheme: kindChipColorScheme),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -559,9 +556,8 @@ class _PersonalCalendarEntrySheetState
                   contentPadding: EdgeInsets.zero,
                   title: Text(
                     l10n.personalEntryAllDayLabel,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(color: colorScheme.onSurface),
                   ),
                   value: _draft.isAllDay,
                   onChanged: (bool v) {
@@ -827,9 +823,8 @@ class _InlineDateTimeSection extends StatelessWidget {
   }
 
   String _formatDate(BuildContext context, DateTime value) {
-    return DateFormat.yMMMd(
-      Localizations.localeOf(context).toString(),
-    ).format(DateTime(value.year, value.month, value.day));
+    return DateFormat.yMMMd(Localizations.localeOf(context).toString())
+        .format(DateTime(value.year, value.month, value.day));
   }
 
   String _formatTime(BuildContext context, TimeOfDay value) {

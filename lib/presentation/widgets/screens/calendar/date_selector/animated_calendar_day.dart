@@ -163,9 +163,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
   /// match at selected/today boundaries (per-cell plates would differ and
   /// stack visibly).
   Color _holidayIndicatorOpaqueColor(ThemeData theme, int colorValue) {
-    final Color foreground = Color(
-      colorValue,
-    ).withValues(alpha: _holidayIndicatorAlpha);
+    final Color foreground = Color(colorValue)
+        .withValues(alpha: _holidayIndicatorAlpha);
     return Color.alphaBlend(foreground, theme.colorScheme.surface);
   }
 
@@ -309,9 +308,8 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   /// Thin bar in compact mode; colors match personal title chips.
   BoxDecoration _personalEntryStripeDecoration(ThemeData theme) {
-    return _personalEntryDecoration(
-      theme,
-    ).copyWith(borderRadius: BorderRadius.circular(2));
+    return _personalEntryDecoration(theme)
+        .copyWith(borderRadius: BorderRadius.circular(2));
   }
 
   /// Compact duty row; fill matches duty badge. Selected omits border so the

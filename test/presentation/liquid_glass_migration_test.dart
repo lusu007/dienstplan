@@ -34,9 +34,8 @@ void main() {
               home: Builder(
                 builder: (context) {
                   actual = liquid.GlassTheme.brightnessOf(context);
-                  quality = liquid.GlassThemeData.of(
-                    context,
-                  ).qualityFor(context);
+                  quality = liquid.GlassThemeData.of(context)
+                      .qualityFor(context);
                   return const Scaffold(body: Text('Theme'));
                 },
               ),
@@ -58,9 +57,8 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(
-            context,
-          ).copyWith(disableAnimations: true, highContrast: true),
+          data: MediaQuery.of(context)
+              .copyWith(disableAnimations: true, highContrast: true),
           child: AppGlassTheme(child: child!),
         ),
         home: Builder(

@@ -53,17 +53,15 @@ class ToggleCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTypography.menuTitle(
-                      theme,
-                    ).copyWith(color: effectiveTitleColor),
+                    style: AppTypography.menuTitle(theme)
+                        .copyWith(color: effectiveTitleColor),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       subtitle!,
-                      style: AppTypography.secondary(
-                        theme,
-                      ).copyWith(color: effectiveSubtitleColor),
+                      style: AppTypography.secondary(theme)
+                          .copyWith(color: effectiveSubtitleColor),
                     ),
                   ],
                 ],

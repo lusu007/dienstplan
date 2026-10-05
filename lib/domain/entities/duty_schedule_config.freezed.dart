@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'duty_schedule_config.dart';
@@ -9,6 +9,7 @@ part of 'duty_schedule_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -32,37 +33,49 @@ mixin _$DutyScheduleConfig {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as DutyScheduleConfig;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is DutyScheduleConfig &&
-            (identical(other.version, version) || other.version == version) &&
-            (identical(other.meta, meta) || other.meta == meta) &&
-            const DeepCollectionEquality().equals(other.dutyTypes, dutyTypes) &&
+            (identical(other.version, _this.version) ||
+                other.version == _this.version) &&
+            (identical(other.meta, _this.meta) || other.meta == _this.meta) &&
+            const DeepCollectionEquality().equals(
+              other.dutyTypes,
+              _this.dutyTypes,
+            ) &&
             const DeepCollectionEquality().equals(
               other.dutyTypeOrder,
-              dutyTypeOrder,
+              _this.dutyTypeOrder,
             ) &&
-            const DeepCollectionEquality().equals(other.rhythms, rhythms) &&
+            const DeepCollectionEquality().equals(
+              other.rhythms,
+              _this.rhythms,
+            ) &&
             const DeepCollectionEquality().equals(
               other.dutyGroups,
-              dutyGroups,
+              _this.dutyGroups,
             ));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    version,
-    meta,
-    const DeepCollectionEquality().hash(dutyTypes),
-    const DeepCollectionEquality().hash(dutyTypeOrder),
-    const DeepCollectionEquality().hash(rhythms),
-    const DeepCollectionEquality().hash(dutyGroups),
-  );
+  int get hashCode {
+    final _this = this as DutyScheduleConfig;
+    return Object.hash(
+      runtimeType,
+      _this.version,
+      _this.meta,
+      const DeepCollectionEquality().hash(_this.dutyTypes),
+      const DeepCollectionEquality().hash(_this.dutyTypeOrder),
+      const DeepCollectionEquality().hash(_this.rhythms),
+      const DeepCollectionEquality().hash(_this.dutyGroups),
+    );
+  }
 
   @override
   String toString() {
-    return 'DutyScheduleConfig(version: $version, meta: $meta, dutyTypes: $dutyTypes, dutyTypeOrder: $dutyTypeOrder, rhythms: $rhythms, dutyGroups: $dutyGroups)';
+    final _this = this as DutyScheduleConfig;
+    return 'DutyScheduleConfig(version: ${_this.version}, meta: ${_this.meta}, dutyTypes: ${_this.dutyTypes}, dutyTypeOrder: ${_this.dutyTypeOrder}, rhythms: ${_this.rhythms}, dutyGroups: ${_this.dutyGroups})';
   }
 }
 
@@ -106,7 +119,7 @@ class _$DutyScheduleConfigCopyWithImpl<$Res>
     Object? dutyGroups = null,
   }) {
     return _then(
-      _self.copyWith(
+      DutyScheduleConfig(
         version: null == version
             ? _self.version
             : version // ignore: cast_nullable_to_non_nullable
@@ -354,10 +367,10 @@ class _DutyScheduleConfig extends DutyScheduleConfig {
   const _DutyScheduleConfig({
     required this.version,
     required this.meta,
-    required final Map<String, DutyType> dutyTypes,
-    required final List<String> dutyTypeOrder,
-    required final Map<String, Rhythm> rhythms,
-    required final List<DutyGroup> dutyGroups,
+    required Map<String, DutyType> dutyTypes,
+    required List<String> dutyTypeOrder,
+    required Map<String, Rhythm> rhythms,
+    required List<DutyGroup> dutyGroups,
   }) : _dutyTypes = dutyTypes,
        _dutyTypeOrder = dutyTypeOrder,
        _rhythms = rhythms,
@@ -416,30 +429,32 @@ class _DutyScheduleConfig extends DutyScheduleConfig {
             (identical(other.version, version) || other.version == version) &&
             (identical(other.meta, meta) || other.meta == meta) &&
             const DeepCollectionEquality().equals(
-              other._dutyTypes,
+              other.dutyTypes,
               _dutyTypes,
             ) &&
             const DeepCollectionEquality().equals(
-              other._dutyTypeOrder,
+              other.dutyTypeOrder,
               _dutyTypeOrder,
             ) &&
-            const DeepCollectionEquality().equals(other._rhythms, _rhythms) &&
+            const DeepCollectionEquality().equals(other.rhythms, _rhythms) &&
             const DeepCollectionEquality().equals(
-              other._dutyGroups,
+              other.dutyGroups,
               _dutyGroups,
             ));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    version,
-    meta,
-    const DeepCollectionEquality().hash(_dutyTypes),
-    const DeepCollectionEquality().hash(_dutyTypeOrder),
-    const DeepCollectionEquality().hash(_rhythms),
-    const DeepCollectionEquality().hash(_dutyGroups),
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      version,
+      meta,
+      const DeepCollectionEquality().hash(_dutyTypes),
+      const DeepCollectionEquality().hash(_dutyTypeOrder),
+      const DeepCollectionEquality().hash(_rhythms),
+      const DeepCollectionEquality().hash(_dutyGroups),
+    );
+  }
 
   @override
   String toString() {

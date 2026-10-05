@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'settings_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'settings_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -18,11 +19,11 @@ mixin _$SettingsUiState {
   String? get language;
   String? get activeConfigName;
   String? get myDutyGroup;
-  ThemePreference? get themePreference; // Partner duty group UI values
+  ThemePreference? get themePreference;
   String? get partnerConfigName;
   String? get partnerDutyGroup;
-  int? get partnerAccentColorValue; // My accent color UI value
-  int? get myAccentColorValue; // Holiday accent color UI value
+  int? get partnerAccentColorValue;
+  int? get myAccentColorValue;
   int? get holidayAccentColorValue;
   bool? get showOtherDutyGroupsInCompactList;
 
@@ -38,64 +39,72 @@ mixin _$SettingsUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as SettingsUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is SettingsUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.language, language) ||
-                other.language == language) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
-            (identical(other.myDutyGroup, myDutyGroup) ||
-                other.myDutyGroup == myDutyGroup) &&
-            (identical(other.themePreference, themePreference) ||
-                other.themePreference == themePreference) &&
-            (identical(other.partnerConfigName, partnerConfigName) ||
-                other.partnerConfigName == partnerConfigName) &&
-            (identical(other.partnerDutyGroup, partnerDutyGroup) ||
-                other.partnerDutyGroup == partnerDutyGroup) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            (identical(other.language, _this.language) ||
+                other.language == _this.language) &&
+            (identical(other.activeConfigName, _this.activeConfigName) ||
+                other.activeConfigName == _this.activeConfigName) &&
+            (identical(other.myDutyGroup, _this.myDutyGroup) ||
+                other.myDutyGroup == _this.myDutyGroup) &&
+            (identical(other.themePreference, _this.themePreference) ||
+                other.themePreference == _this.themePreference) &&
+            (identical(other.partnerConfigName, _this.partnerConfigName) ||
+                other.partnerConfigName == _this.partnerConfigName) &&
+            (identical(other.partnerDutyGroup, _this.partnerDutyGroup) ||
+                other.partnerDutyGroup == _this.partnerDutyGroup) &&
             (identical(
                   other.partnerAccentColorValue,
-                  partnerAccentColorValue,
+                  _this.partnerAccentColorValue,
                 ) ||
-                other.partnerAccentColorValue == partnerAccentColorValue) &&
-            (identical(other.myAccentColorValue, myAccentColorValue) ||
-                other.myAccentColorValue == myAccentColorValue) &&
+                other.partnerAccentColorValue ==
+                    _this.partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, _this.myAccentColorValue) ||
+                other.myAccentColorValue == _this.myAccentColorValue) &&
             (identical(
                   other.holidayAccentColorValue,
-                  holidayAccentColorValue,
+                  _this.holidayAccentColorValue,
                 ) ||
-                other.holidayAccentColorValue == holidayAccentColorValue) &&
+                other.holidayAccentColorValue ==
+                    _this.holidayAccentColorValue) &&
             (identical(
                   other.showOtherDutyGroupsInCompactList,
-                  showOtherDutyGroupsInCompactList,
+                  _this.showOtherDutyGroupsInCompactList,
                 ) ||
                 other.showOtherDutyGroupsInCompactList ==
-                    showOtherDutyGroupsInCompactList));
+                    _this.showOtherDutyGroupsInCompactList));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    language,
-    activeConfigName,
-    myDutyGroup,
-    themePreference,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-    holidayAccentColorValue,
-    showOtherDutyGroupsInCompactList,
-  );
+  int get hashCode {
+    final _this = this as SettingsUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.error,
+      _this.language,
+      _this.activeConfigName,
+      _this.myDutyGroup,
+      _this.themePreference,
+      _this.partnerConfigName,
+      _this.partnerDutyGroup,
+      _this.partnerAccentColorValue,
+      _this.myAccentColorValue,
+      _this.holidayAccentColorValue,
+      _this.showOtherDutyGroupsInCompactList,
+    );
+  }
 
   @override
   String toString() {
-    return 'SettingsUiState(isLoading: $isLoading, error: $error, language: $language, activeConfigName: $activeConfigName, myDutyGroup: $myDutyGroup, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList)';
+    final _this = this as SettingsUiState;
+    return 'SettingsUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, language: ${_this.language}, activeConfigName: ${_this.activeConfigName}, myDutyGroup: ${_this.myDutyGroup}, themePreference: ${_this.themePreference}, partnerConfigName: ${_this.partnerConfigName}, partnerDutyGroup: ${_this.partnerDutyGroup}, partnerAccentColorValue: ${_this.partnerAccentColorValue}, myAccentColorValue: ${_this.myAccentColorValue}, holidayAccentColorValue: ${_this.holidayAccentColorValue}, showOtherDutyGroupsInCompactList: ${_this.showOtherDutyGroupsInCompactList})';
   }
 }
 
@@ -149,7 +158,7 @@ class _$SettingsUiStateCopyWithImpl<$Res>
     Object? showOtherDutyGroupsInCompactList = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      SettingsUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -472,17 +481,14 @@ class _SettingsUiState extends SettingsUiState {
   final String? myDutyGroup;
   @override
   final ThemePreference? themePreference;
-  // Partner duty group UI values
   @override
   final String? partnerConfigName;
   @override
   final String? partnerDutyGroup;
   @override
   final int? partnerAccentColorValue;
-  // My accent color UI value
   @override
   final int? myAccentColorValue;
-  // Holiday accent color UI value
   @override
   final int? holidayAccentColorValue;
   @override
@@ -537,21 +543,23 @@ class _SettingsUiState extends SettingsUiState {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    language,
-    activeConfigName,
-    myDutyGroup,
-    themePreference,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-    holidayAccentColorValue,
-    showOtherDutyGroupsInCompactList,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      language,
+      activeConfigName,
+      myDutyGroup,
+      themePreference,
+      partnerConfigName,
+      partnerDutyGroup,
+      partnerAccentColorValue,
+      myAccentColorValue,
+      holidayAccentColorValue,
+      showOtherDutyGroupsInCompactList,
+    );
+  }
 
   @override
   String toString() {

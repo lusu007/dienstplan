@@ -314,9 +314,8 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
             Text(
               l10n.setupFailedTitle,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             const SizedBox(height: glassSpacingLg),
             ActionButton(

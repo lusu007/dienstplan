@@ -175,9 +175,8 @@ class GlassCardGroup extends StatelessWidget {
                 height: 1,
                 indent: 16,
                 endIndent: 16,
-                color: Theme.of(
-                  context,
-                ).colorScheme.outlineVariant.withValues(alpha: 0.35),
+                color: Theme.of(context).colorScheme.outlineVariant
+                    .withValues(alpha: 0.35),
               ),
             children[i],
           ],

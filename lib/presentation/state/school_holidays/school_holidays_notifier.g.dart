@@ -42,7 +42,7 @@ abstract class _$SchoolHolidaysNotifier
   FutureOr<SchoolHolidaysUiState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref
             as $Ref<AsyncValue<SchoolHolidaysUiState>, SchoolHolidaysUiState>;
@@ -57,6 +57,6 @@ abstract class _$SchoolHolidaysNotifier
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

@@ -56,9 +56,8 @@ void main() {
         final messageWidget = tester.widget<Text>(find.text(message));
         expect(messageWidget.maxLines, isNull);
         expect(messageWidget.overflow, isNull);
-        final style = DefaultTextStyle.of(
-          tester.element(find.text(message)),
-        ).style;
+        final style = DefaultTextStyle.of(tester.element(find.text(message)))
+            .style;
         final shield = tester
             .widgetList<ColoredBox>(find.byType(ColoredBox))
             .firstWhere((box) => box.color.a > .9 && box.color.a < 1);

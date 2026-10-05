@@ -11,9 +11,8 @@ class DisclaimerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
-    final TextStyle? bodyStyle = Theme.of(
-      context,
-    ).textTheme.bodyMedium?.copyWith(height: 1.5);
+    final TextStyle? bodyStyle = Theme.of(context).textTheme.bodyMedium
+        ?.copyWith(height: 1.5);
     return GlassScreenScaffold(
       title: l10n.disclaimer,
       child: SingleChildScrollView(

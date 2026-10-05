@@ -16,12 +16,10 @@ class SchoolHolidayRepositoryImpl implements SchoolHolidayRepository {
   static const _cacheValidityDuration = Duration(days: 7);
 
   SchoolHolidayRepositoryImpl({
-    required SchoolHolidayRemoteDataSource remoteDataSource,
-    required SchoolHolidayLocalDataSource localDataSource,
+    required this._remoteDataSource,
+    required this._localDataSource,
     SchoolHolidayMapper? mapper,
-  }) : _remoteDataSource = remoteDataSource,
-       _localDataSource = localDataSource,
-       _mapper = mapper ?? const SchoolHolidayMapper();
+  }) : _mapper = mapper ?? const SchoolHolidayMapper();
 
   @override
   Future<Result<List<domain.SchoolHoliday>>> getSchoolHolidays({

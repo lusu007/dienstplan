@@ -83,9 +83,8 @@ class ResetBottomsheet {
                           deletePersonalEntriesResult.failure,
                           l10n,
                         );
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(AppSnackBar(content: Text(message)));
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(AppSnackBar(content: Text(message)));
                       }
                       return;
                     }

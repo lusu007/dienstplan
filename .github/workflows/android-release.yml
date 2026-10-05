@@ -16,7 +16,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
 
       - name: ☕ Setup Java
@@ -28,12 +28,12 @@ jobs:
       - name: 📱 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.4'
+          flutter-version: '3.47.6'
           channel: 'stable'
           cache: true
           
       - name: 📦 Install dependencies
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
 
       - name: 📋 Get version from pubspec
         id: version

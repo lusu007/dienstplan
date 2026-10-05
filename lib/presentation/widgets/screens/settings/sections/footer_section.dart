@@ -20,9 +20,8 @@ class _SettingsFooterState extends State<SettingsFooter> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextStyle? footerStyle = Theme.of(
-      context,
-    ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant);
+    final TextStyle? footerStyle = Theme.of(context).textTheme.bodySmall
+        ?.copyWith(color: colorScheme.onSurfaceVariant);
     return GestureDetector(
       onTap: _handleFooterTap,
       behavior: HitTestBehavior.opaque,
