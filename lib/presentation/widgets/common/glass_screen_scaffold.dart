@@ -1,5 +1,7 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:flutter/services.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -65,10 +67,10 @@ class _GlassScreenHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final TextStyle? baseStyle = Theme.of(context).textTheme.titleLarge;
-    return SizedBox(
-      height: GlassScreenScaffold.kHeaderHeight,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: GlassScreenScaffold.kHeaderHeight,
+      ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           glassSpacingMd,
@@ -80,17 +82,12 @@ class _GlassScreenHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const _GlassBackButton(),
-            const SizedBox(width: glassSpacingMd),
+            const SizedBox(width: glassSpacingXs),
             Expanded(
               child: Text(
                 title,
-                style: (baseStyle ?? const TextStyle()).copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.2,
-                  height: 1.0,
-                ),
-                overflow: TextOverflow.ellipsis,
+                style: AppTypography.pageTitle(Theme.of(context)),
+                softWrap: true,
               ),
             ),
             if (actions != null) ...[
@@ -112,22 +109,14 @@ class _GlassBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final AppLocalizations l10n = AppLocalizations.of(context);
-    return Semantics(
-      button: true,
-      label: l10n.back,
-      child: GlassButtonSurface(
-        onTap: () => _handleBack(context),
-        enabled: true,
-        width: 40,
-        height: 40,
-        borderRadius: glassSurfaceRadiusMd + 2,
-        tintOpacity: isDark ? glassTintAlphaDark : glassTintAlphaLight,
-        borderOpacity: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
-        child: Icon(Icons.arrow_back_rounded, color: foreground, size: 22),
-      ),
+    return AppGlassIconButton(
+      icon: Icons.arrow_back_rounded,
+      tooltip: AppLocalizations.of(context).back,
+      onPressed: () => _handleBack(context),
+      size: 40,
+      iconSize: 22,
+      shape: liquid.GlassIconButtonShape.roundedSquare,
+      borderRadius: glassSurfaceRadiusMd + 2,
     );
   }
 

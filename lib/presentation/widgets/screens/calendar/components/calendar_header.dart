@@ -6,17 +6,16 @@ import 'package:dienstplan/core/routing/app_router.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/utils/app_info.dart';
-import 'package:dienstplan/presentation/state/calendar/calendar_partner_visibility_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_month_title.dart';
-import 'package:dienstplan/presentation/widgets/screens/settings/settings_category.dart';
 
 /// Custom header used in place of the default [AppBar].
 ///
 /// Stacks two rows vertically:
-/// 1. App title on the left; partner visibility and Settings on the right.
-/// 2. The tappable month/year chip, centered, directly below row 1.
+/// 1. App title on the left; Settings on the right.
+/// 2. The month/year chip and today action, centered below row 1.
 class CalendarHeader extends ConsumerWidget {
   static const double kTitleRowHeight = 48.0;
 
@@ -26,15 +25,6 @@ class CalendarHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final scheduleState = ref.watch(
-      scheduleCoordinatorProvider.select((s) => s.value),
-    );
-    final String? partnerDutyGroup = scheduleState?.partnerDutyGroup;
-    final String? partnerConfigName = scheduleState?.partnerConfigName;
-    final bool partnerConfigured =
-        (partnerConfigName?.isNotEmpty ?? false) &&
-        (partnerDutyGroup?.isNotEmpty ?? false);
-    final bool partnerVisible = ref.watch(calendarPartnerVisibilityProvider);
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final double shadowAlpha = isDark
@@ -63,9 +53,9 @@ class CalendarHeader extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 glassSpacingLg,
-                CalendarConfig.kCalendarTitleRowVerticalPadding,
+                0,
                 glassSpacingMd,
-                CalendarConfig.kCalendarTitleRowVerticalPadding,
+                0,
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -83,24 +73,9 @@ class CalendarHeader extends ConsumerWidget {
                             ),
                   ),
                   const Spacer(),
-                  _GlassPartnerToggleButton(
-                    partnerConfigured: partnerConfigured,
-                    partnerVisible: partnerVisible,
-                    tooltip: l10n.partnerDutyGroup,
-                    onToggleVisibility: () {
-                      ref
-                          .read(calendarPartnerVisibilityProvider.notifier)
-                          .toggle();
-                    },
-                    onConfigure: () => context.router.push(
-                      SettingsCategoryRoute(
-                        category: SettingsCategory.partner.name,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: glassSpacingSm),
-                  _GlassSettingsButton(
+                  _GlassHeaderActionButton(
                     tooltip: l10n.settings,
+                    icon: Icons.settings_rounded,
                     onPressed: () => context.router.push(const SettingsRoute()),
                   ),
                 ],
@@ -108,69 +83,53 @@ class CalendarHeader extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: CalendarConfig.kCalendarHeaderSectionSpacing),
-          const Center(child: CalendarMonthTitle()),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: glassSpacingLg),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Flexible(child: CalendarMonthTitle()),
+                const SizedBox(width: glassSpacingSm),
+                Tooltip(
+                  message: l10n.today,
+                  child: GlassPickerIconButton(
+                    icon: Icons.today_rounded,
+                    size: glassPickerTriggerHeight(context),
+                    borderRadius: glassSurfaceRadiusPill,
+                    onPressed: () {
+                      ref
+                          .read(scheduleCoordinatorProvider.notifier)
+                          .goToToday();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _GlassPartnerToggleButton extends StatelessWidget {
-  final bool partnerConfigured;
-  final bool partnerVisible;
+class _GlassHeaderActionButton extends StatelessWidget {
   final String tooltip;
-  final VoidCallback onToggleVisibility;
-  final VoidCallback onConfigure;
-
-  const _GlassPartnerToggleButton({
-    required this.partnerConfigured,
-    required this.partnerVisible,
-    required this.tooltip,
-    required this.onToggleVisibility,
-    required this.onConfigure,
-  });
-
-  bool get _isVisuallyActive => partnerConfigured && partnerVisible;
-
-  @override
-  Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final Color foreground = colorScheme.onSurface;
-    final Color iconColor = !partnerConfigured || _isVisuallyActive
-        ? foreground
-        : foreground.withValues(alpha: 0.55);
-    return GlassIconToggleChip(
-      tooltip: tooltip,
-      isSelected: _isVisuallyActive,
-      isEnabled: true,
-      selectedIcon: Icons.group_rounded,
-      unselectedIcon: Icons.group_rounded,
-      selectedIconColor: colorScheme.onPrimary,
-      unselectedIconColor: iconColor,
-      onTap: () {
-        if (!partnerConfigured) {
-          onConfigure();
-          return;
-        }
-        onToggleVisibility();
-      },
-    );
-  }
-}
-
-class _GlassSettingsButton extends StatelessWidget {
-  final String tooltip;
+  final IconData icon;
   final VoidCallback onPressed;
 
-  const _GlassSettingsButton({required this.tooltip, required this.onPressed});
+  const _GlassHeaderActionButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GlassIconToggleChip(
       tooltip: tooltip,
       isSelected: false,
-      selectedIcon: Icons.settings_rounded,
-      unselectedIcon: Icons.settings_rounded,
+      selectedIcon: icon,
+      unselectedIcon: icon,
       unselectedIconColor: Theme.of(context).colorScheme.onSurface,
       onTap: onPressed,
     );

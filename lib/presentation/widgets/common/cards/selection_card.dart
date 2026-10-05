@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 
@@ -56,7 +57,11 @@ class SelectionCard extends StatelessWidget {
           children: [
             Icon(
               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: isSelected ? accent : scheme.onSurfaceVariant,
+              color: isSelected
+                  ? (theme.brightness == Brightness.light
+                        ? scheme.onSurface
+                        : accent)
+                  : scheme.onSurfaceVariant,
               size: 26,
             ),
             const SizedBox(width: 14),
@@ -129,7 +134,11 @@ class SelectionCard extends StatelessWidget {
             const SizedBox(width: 12),
             Icon(
               isSelected ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: isSelected ? accent : scheme.onSurfaceVariant,
+              color: isSelected
+                  ? (theme.brightness == Brightness.light
+                        ? scheme.onSurface
+                        : accent)
+                  : scheme.onSurfaceVariant,
               size: 26,
             ),
           ],
@@ -140,15 +149,11 @@ class SelectionCard extends StatelessWidget {
 
   Widget _buildTitle(ThemeData theme, ColorScheme scheme) {
     if (title is Widget) {
-      return title as Widget;
+      return DefaultTextStyle.merge(
+        style: AppTypography.menuTitle(theme),
+        child: title as Widget,
+      );
     }
-    return Text(
-      title as String,
-      style: theme.textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w700,
-        fontSize: 17,
-        color: scheme.onSurface,
-      ),
-    );
+    return Text(title as String, style: AppTypography.menuTitle(theme));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -78,7 +79,7 @@ class DutyScheduleBottomsheet {
                   );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.errorSettingActiveConfig)),
+                      AppSnackBar(content: Text(l10n.errorSettingActiveConfig)),
                     );
                   }
                 }
@@ -98,7 +99,9 @@ class DutyScheduleBottomsheet {
                   );
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.errorClearingActiveConfig)),
+                      AppSnackBar(
+                        content: Text(l10n.errorClearingActiveConfig),
+                      ),
                     );
                   }
                 }

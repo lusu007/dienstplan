@@ -16,6 +16,44 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() {
+  testWidgets(
+    'attached screenshot stays readable and removable with large text',
+    (tester) async {
+      tester.view.physicalSize = const Size(320, 1100);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      var submissions = 0;
+      await tester.pumpWidget(
+        _TestApp(
+          child: MediaQuery(
+            data: const MediaQueryData(textScaler: TextScaler.linear(1.3)),
+            child: ContactFeedbackScreen(
+              initialScreenshot: SentryAttachment.fromScreenshotData(
+                Uint8List.fromList(_transparentPng),
+              ),
+              onSubmitFeedback: (_, _) async {
+                submissions++;
+                return SentryId.newId();
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester.getSize(find.text('Screenshot angehängt')).width,
+        greaterThan(150),
+      );
+      await tester.ensureVisible(find.text('Screenshot entfernen'));
+      await tester.tap(find.text('Screenshot entfernen'));
+      await tester.pumpAndSettle();
+      expect(find.text('Screenshot angehängt'), findsNothing);
+      expect(find.text('Screenshot anhängen'), findsOneWidget);
+      expect(submissions, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('feedback screen uses glass design primitives', (tester) async {
     await tester.pumpWidget(
       _TestApp(

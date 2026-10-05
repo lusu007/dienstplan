@@ -820,5 +820,9 @@
   "settingsPartnerSummary": "Dienstplan, Dienstgruppe & Farbe",
   "settingsAppearanceSummary": "Hell, dunkel oder automatisch",
   "settingsHolidaysSummary": "Bundesland, Anzeige & Farbe",
-  "settingsAppSummary": "Neuigkeiten, Datenschutz & Hilfe"
+  "settingsAppSummary": "Neuigkeiten, Datenschutz & Hilfe",
+  "selectFederalStateFirst": "Zuerst Bundesland auswählen",
+  "@selectFederalStateFirst": {
+    "description": "Explains disabled holiday actions when no federal state is selected"
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/presentation/extensions/accent_color_extensions.dart';
@@ -263,7 +264,7 @@ class ScheduleSection extends StatelessWidget {
   ) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(l10n.selectMyDutyScheduleFirst)));
+    ).showSnackBar(AppSnackBar(content: Text(l10n.selectMyDutyScheduleFirst)));
   }
 
   void _showPartnerDutyScheduleRequiredMessage(
@@ -271,7 +272,7 @@ class ScheduleSection extends StatelessWidget {
     AppLocalizations l10n,
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.selectPartnerDutyScheduleFirst)),
+      AppSnackBar(content: Text(l10n.selectPartnerDutyScheduleFirst)),
     );
   }
 }

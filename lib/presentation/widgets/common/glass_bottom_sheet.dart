@@ -1,3 +1,5 @@
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
@@ -116,23 +118,23 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final availableHeight =
+        screenHeight - AppSheetStyle.margin(context).vertical;
+    final maxContentHeight = isDark
+        ? screenHeight * .92
+        : (screenHeight * .92).clamp(0.0, availableHeight);
     final bool expensiveEffectsEnabled =
         !widget.deferExpensiveEffects || _isSettled;
 
     if (widget.shrinkToContent) {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(
-          glassSpacingSm,
-          0,
-          glassSpacingSm,
-          glassSpacingSm,
-        ),
+        padding: AppSheetStyle.margin(context),
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: screenHeight * 0.92),
+          constraints: BoxConstraints(maxHeight: maxContentHeight),
           child: GlassDialogSurface(
             backdropBlurSigma: widget.backdropBlurSigma,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
+            borderRadius: BorderRadius.all(
+              Radius.circular(AppSheetStyle.radius(isDark)),
             ),
             child: Material(
               color: Colors.transparent,
@@ -140,7 +142,7 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (widget.showHandleBar) _buildDragHandleBar(isDark: isDark),
+                  if (widget.showHandleBar) const AppSheetHandle(),
                   if (widget.title != null && widget.title!.isNotEmpty)
                     _buildTitle(context: context, colorScheme: colorScheme),
                   if (widget.children.isNotEmpty)
@@ -162,7 +164,7 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: glassSpacingMd),
+                  SizedBox(height: isDark ? glassSpacingMd : glassSpacingXl),
                 ],
               ),
             ),
@@ -171,26 +173,23 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
       );
     }
     final double heightFactor = widget.heightPercentage ?? 0.8;
-    final double height = screenHeight * heightFactor;
+    final double height = isDark
+        ? screenHeight * heightFactor
+        : (screenHeight * heightFactor).clamp(0.0, availableHeight);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        glassSpacingSm,
-        0,
-        glassSpacingSm,
-        glassSpacingSm,
-      ),
+      padding: AppSheetStyle.margin(context),
       child: SizedBox(
         height: height,
         child: GlassDialogSurface(
           backdropBlurSigma: widget.backdropBlurSigma,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(glassSurfaceRadiusLg + glassSpacingSm / 2),
+          borderRadius: BorderRadius.all(
+            Radius.circular(AppSheetStyle.radius(isDark)),
           ),
           child: Material(
             color: Colors.transparent,
             child: Column(
               children: [
-                if (widget.showHandleBar) _buildDragHandleBar(isDark: isDark),
+                if (widget.showHandleBar) const AppSheetHandle(),
                 if (widget.title != null && widget.title!.isNotEmpty)
                   _buildTitle(context: context, colorScheme: colorScheme),
                 if (widget.children.isNotEmpty)
@@ -212,29 +211,9 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
                             children: widget.children,
                           ),
                   ),
-                const SizedBox(height: glassSpacingMd),
+                SizedBox(height: isDark ? glassSpacingMd : glassSpacingXl),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDragHandleBar({required bool isDark}) {
-    return Padding(
-      padding: const EdgeInsets.only(top: glassDragHandleTopGap),
-      child: Center(
-        child: Container(
-          width: glassDragHandleWidth,
-          height: glassDragHandleHeight,
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(
-              alpha: isDark
-                  ? glassDragHandleAlphaDark
-                  : glassDragHandleAlphaLight,
-            ),
-            borderRadius: BorderRadius.circular(glassSpacingXs / 2),
           ),
         ),
       ),
@@ -257,10 +236,7 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
         child: Text(
           widget.title!,
           textAlign: TextAlign.start,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: colorScheme.onSurface,
-          ),
+          style: AppTypography.sheetTitle(Theme.of(context)),
         ),
       ),
     );

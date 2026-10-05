@@ -124,10 +124,25 @@ Color calendarDayBadgeSelectedBorderColor(
 /// Foreground color for the duty abbreviation rendered inside the colored
 /// badge. The badge background can be any user-chosen accent, so we pick a
 /// readable foreground by relative luminance.
-Color calendarDayBadgeForegroundColor(Color badgeBackground) {
-  return badgeBackground.computeLuminance() < 0.55
-      ? Colors.white
-      : Colors.black87;
+Color calendarDayBadgeForegroundColor(
+  Color badgeBackground, {
+  Brightness brightness = Brightness.light,
+  Color? backdropColor,
+}) {
+  // Preserve the established dark appearance, including its translucent ink.
+  if (brightness == Brightness.dark) {
+    return badgeBackground.computeLuminance() < 0.55
+        ? Colors.white
+        : Colors.black87;
+  }
+  final background = Color.alphaBlend(
+    badgeBackground,
+    backdropColor ?? Colors.white,
+  );
+  final luminance = background.computeLuminance();
+  final whiteContrast = 1.05 / (luminance + 0.05);
+  final blackContrast = (luminance + 0.05) / 0.05;
+  return whiteContrast >= blackContrast ? Colors.white : Colors.black;
 }
 
 /// Fill for the badge of an "outside-of-month" day. Uses scheme-driven

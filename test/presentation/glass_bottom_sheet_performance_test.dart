@@ -9,6 +9,34 @@ import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 void main() {
   testWidgets(
+    'light modal shields content while dark modal keeps its surface',
+    (tester) async {
+      for (final brightness in Brightness.values) {
+        final theme = ThemeData(brightness: brightness);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: theme,
+            home: const Scaffold(
+              body: GlassDialogSurface(child: Text('Content')),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final shields = find.descendant(
+          of: find.byType(GlassDialogSurface),
+          matching: find.byWidgetPredicate(
+            (w) => w is ColoredBox && w.color.a >= .85 && w.color.a < 1,
+          ),
+        );
+        expect(
+          shields,
+          brightness == Brightness.light ? findsOneWidget : findsNothing,
+        );
+        expect(find.byType(liquid.GlassContainer), findsOneWidget);
+      }
+    },
+  );
+  testWidgets(
     'bottom sheet has one library surface and non-refractive controls',
     (WidgetTester tester) async {
       await tester.pumpWidget(

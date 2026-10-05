@@ -94,12 +94,21 @@ class GlassAppDialog extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: glassSpacingMd + 2),
-                    DefaultTextStyle.merge(
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                    if (colorScheme.brightness == Brightness.light)
+                      Flexible(
+                        child: DefaultTextStyle.merge(
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
+                          child: content,
+                        ),
+                      )
+                    else
+                      DefaultTextStyle.merge(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        child: content,
                       ),
-                      child: content,
-                    ),
                     if (actions != null && actions!.isNotEmpty) ...[
                       const SizedBox(height: glassSpacingLg + glassSpacingXs),
                       ...actions!.map(

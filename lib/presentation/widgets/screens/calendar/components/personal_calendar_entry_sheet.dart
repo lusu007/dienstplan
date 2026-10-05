@@ -1,3 +1,6 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
+import 'package:dienstplan/presentation/widgets/common/app_feedback_style.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -12,12 +15,14 @@ import 'package:dienstplan/core/errors/failure_presenter.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
+import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/services/personal_entry_schedule_mapper.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
@@ -61,6 +66,10 @@ class _PersonalCalendarEntrySheetState
   late PersonalCalendarEntry _draft;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  final GlobalKey _titleFieldKey = GlobalKey();
+  final GlobalKey _feedbackKey = GlobalKey();
+  String? _titleError;
+  String? _operationError;
   late final FixedExtentScrollController _hourWheelController;
   late final FixedExtentScrollController _minuteWheelController;
   _TimeField _activeTimeField = _TimeField.start;
@@ -130,21 +139,37 @@ class _PersonalCalendarEntrySheetState
   InputDecoration _glassFieldDecoration(
     BuildContext context, {
     required String hintText,
+    String? error,
   }) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color fill = Colors.white.withValues(
-      alpha: isDark ? glassTintAlphaDark : glassTintAlphaLight,
-    );
-    final Color border = Colors.white.withValues(
-      alpha: isDark ? glassBorderAlphaDark : glassBorderAlphaLight,
-    );
+    final Color fill = (isDark ? Colors.white : colorScheme.onSurface)
+        .withValues(
+          alpha: isDark ? glassTintAlphaDark : glassModalFillAlphaLight,
+        );
+    final Color border = (isDark ? Colors.white : colorScheme.onSurface)
+        .withValues(
+          alpha: isDark
+              ? glassBorderAlphaDark
+              : glassModalFieldBorderAlphaLight,
+        );
     final OutlineInputBorder outline = OutlineInputBorder(
       borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
       borderSide: BorderSide(color: border),
     );
     return InputDecoration(
       hintText: hintText,
+      error: error == null
+          ? null
+          : Semantics(
+              liveRegion: true,
+              child: Text(
+                error,
+                style: AppFeedbackStyle.text(
+                  colorScheme,
+                ).copyWith(color: colorScheme.error),
+              ),
+            ),
       filled: true,
       fillColor: fill,
       border: outline,
@@ -286,6 +311,10 @@ class _PersonalCalendarEntrySheetState
   }
 
   Future<void> _save() async {
+    setState(() {
+      _titleError = null;
+      _operationError = null;
+    });
     final AppLocalizations l10n = AppLocalizations.of(context);
     final int nowMs = DateTime.now().millisecondsSinceEpoch;
     final PersonalCalendarEntry normalizedDraft = _draft.isAllDay
@@ -306,10 +335,7 @@ class _PersonalCalendarEntrySheetState
       return;
     }
     if (result.isFailure) {
-      final String message = _failurePresenter.present(result.failure, l10n);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      _showFailure(result.failure);
       return;
     }
     await ref
@@ -322,7 +348,7 @@ class _PersonalCalendarEntrySheetState
       Navigator.of(context).pop();
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.personalEntrySaved)));
+      ).showSnackBar(AppSnackBar(content: Text(l10n.personalEntrySaved)));
     }
   }
 
@@ -332,7 +358,6 @@ class _PersonalCalendarEntrySheetState
     if (widget.existingSchedule == null) {
       return;
     }
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool? confirmed = await GlassAppDialog.show<bool>(
       context: context,
       title: l10n.deletePersonalEntryConfirmationTitle,
@@ -340,18 +365,18 @@ class _PersonalCalendarEntrySheetState
       actions: <Widget>[
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colorScheme.error,
-              foregroundColor: colorScheme.onError,
-            ),
+          child: AppGlassButton(
+            role: AppGlassButtonRole.destructive,
+
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.delete),
           ),
         ),
         SizedBox(
           width: double.infinity,
-          child: TextButton(
+          child: AppGlassButton(
+            role: AppGlassButtonRole.quiet,
+
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.cancel),
           ),
@@ -361,6 +386,7 @@ class _PersonalCalendarEntrySheetState
     if (!mounted || confirmed != true) {
       return;
     }
+    setState(() => _operationError = null);
     final deleteUseCase = await ref.read(
       deletePersonalCalendarEntryUseCaseProvider.future,
     );
@@ -369,10 +395,7 @@ class _PersonalCalendarEntrySheetState
       return;
     }
     if (result.isFailure) {
-      final String message = _failurePresenter.present(result.failure, l10n);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      _showFailure(result.failure);
       return;
     }
     await ref
@@ -385,8 +408,35 @@ class _PersonalCalendarEntrySheetState
       Navigator.of(context).pop();
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.personalEntryDeleted)));
+      ).showSnackBar(AppSnackBar(content: Text(l10n.personalEntryDeleted)));
     }
+  }
+
+  void _showFailure(Failure failure) {
+    final message = _failurePresenter.present(
+      failure,
+      AppLocalizations.of(context),
+    );
+    final titleMissing =
+        failure.userMessageKey == 'personalEntryValidationTitle';
+    setState(() {
+      _titleError = titleMissing ? message : null;
+      _operationError = titleMissing ? null : message;
+    });
+    // Save can be below the visible title field; reveal the actionable error
+    // after the added message has participated in layout.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final target =
+          (titleMissing ? _titleFieldKey : _feedbackKey).currentContext;
+      if (target != null) {
+        Scrollable.ensureVisible(
+          target,
+          alignment: titleMissing ? .1 : 1,
+          duration: const Duration(milliseconds: 200),
+        );
+      }
+    });
   }
 
   @override
@@ -443,13 +493,20 @@ class _PersonalCalendarEntrySheetState
                 ),
                 const SizedBox(height: glassSpacingXs),
                 Semantics(
+                  key: _titleFieldKey,
                   textField: true,
                   label: l10n.personalEntryTitleLabel,
                   child: TextField(
                     controller: _titleController,
+                    onChanged: (value) {
+                      if (_titleError != null && value.trim().isNotEmpty) {
+                        setState(() => _titleError = null);
+                      }
+                    },
                     decoration: _glassFieldDecoration(
                       context,
                       hintText: l10n.personalEntryTitleLabel,
+                      error: _titleError,
                     ),
                   ),
                 ),
@@ -584,8 +641,36 @@ class _PersonalCalendarEntrySheetState
                   ),
                 ),
                 const SizedBox(height: glassSpacingLg),
-                GlassButtonSurface(
-                  onTap: _save,
+                if (_operationError != null) ...[
+                  Semantics(
+                    key: _feedbackKey,
+                    liveRegion: true,
+                    child: GlassCard(
+                      padding: const EdgeInsets.all(glassSpacingMd),
+                      tintColor: colorScheme.error,
+                      tintAlpha: .08,
+                      borderColor: colorScheme.error,
+                      borderAlpha: .5,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.error_outline, color: colorScheme.error),
+                          const SizedBox(width: glassSpacingSm),
+                          Expanded(
+                            child: Text(
+                              _operationError!,
+                              style: AppFeedbackStyle.text(colorScheme),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: glassSpacingMd),
+                ],
+                AppGlassButton(
+                  role: AppGlassButtonRole.primary,
+                  onPressed: _save,
                   enabled: true,
                   borderRadius: glassSurfaceRadiusSm,
                   height: _kSaveButtonHeight,
@@ -673,37 +758,31 @@ class _GlassIconActionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color background = Colors.white.withValues(
-      alpha: isDark
-          ? kGlassChipUnselectedTintAlphaDark
-          : kGlassChipUnselectedTintAlphaLight,
+    final scheme = Theme.of(context).colorScheme;
+    final Color background = (isDark ? Colors.white : scheme.onSurface)
+        .withValues(
+          alpha: isDark
+              ? kGlassChipUnselectedTintAlphaDark
+              : glassModalFillAlphaLight,
+        );
+    final Color borderColor = (isDark ? Colors.white : scheme.onSurface)
+        .withValues(
+          alpha: isDark
+              ? kGlassChipUnselectedBorderAlphaDark
+              : glassModalBorderAlphaLight,
+        );
+    return AppGlassIconButton(
+      icon: icon,
+      tooltip: tooltip,
+      onPressed: onTap,
+      size: kGlassIconChipSize,
+      iconSize: kGlassIconChipIconSize,
+      foregroundColor: iconColor,
+      tintColor: background,
+      borderColor: borderColor,
+      shape: liquid.GlassIconButtonShape.roundedSquare,
+      borderRadius: kGlassIconChipRadius,
     );
-    final Color borderColor = Colors.white.withValues(
-      alpha: isDark
-          ? kGlassChipUnselectedBorderAlphaDark
-          : kGlassChipUnselectedBorderAlphaLight,
-    );
-    final Widget chip = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(kGlassIconChipRadius),
-        child: Container(
-          width: kGlassIconChipSize,
-          height: kGlassIconChipSize,
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(kGlassIconChipRadius),
-            border: Border.all(
-              color: borderColor,
-              width: kGlassChipBorderWidth,
-            ),
-          ),
-          child: Icon(icon, size: kGlassIconChipIconSize, color: iconColor),
-        ),
-      ),
-    );
-    return Tooltip(message: tooltip, child: chip);
   }
 }
 
@@ -789,17 +868,20 @@ class _InlineDateTimeSection extends StatelessWidget {
           isExpanded: isDatePickerExpanded,
           onTap: onToggleDatePicker,
         ),
-        const SizedBox(height: glassSpacingMd),
-        GlassFormSectionEyebrow(text: timeLabel, enabled: isTimeEnabled),
-        const SizedBox(height: glassSpacingXs),
-        GlassInlineExpandTile(
-          icon: Icons.schedule_rounded,
-          label:
-              '${_formatTime(context, startTime)} - ${_formatTime(context, endTime)}',
-          isExpanded: isTimePickerExpanded && isTimeEnabled,
-          enabled: isTimeEnabled,
-          onTap: onToggleTimePicker,
-        ),
+        if (isTimeEnabled ||
+            Theme.of(context).brightness == Brightness.dark) ...<Widget>[
+          const SizedBox(height: glassSpacingMd),
+          GlassFormSectionEyebrow(text: timeLabel, enabled: isTimeEnabled),
+          const SizedBox(height: glassSpacingXs),
+          GlassInlineExpandTile(
+            icon: Icons.schedule_rounded,
+            label:
+                '${_formatTime(context, startTime)} - ${_formatTime(context, endTime)}',
+            isExpanded: isTimePickerExpanded && isTimeEnabled,
+            enabled: isTimeEnabled,
+            onTap: onToggleTimePicker,
+          ),
+        ],
         if (isDatePickerExpanded) ...<Widget>[
           const SizedBox(height: glassSpacingSm),
           CalendarDatePicker(

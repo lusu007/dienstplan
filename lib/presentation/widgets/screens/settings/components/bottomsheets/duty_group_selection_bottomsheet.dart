@@ -37,6 +37,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
       context: context,
       title: title,
       heightPercentage: heightPercentage,
+      shrinkToContent: Theme.of(context).brightness == Brightness.light,
       children: [
         _buildDutyGroupList(
           context,
@@ -55,6 +56,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
     return GenericBottomsheet(
       title: title,
       heightPercentage: heightPercentage,
+      shrinkToContent: Theme.of(context).brightness == Brightness.light,
       children: [
         _buildDutyGroupList(
           context,
@@ -90,7 +92,10 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
     }
 
     final Color primary = Theme.of(context).colorScheme.primary;
+    final compact = Theme.of(context).brightness == Brightness.light;
     return ListView.builder(
+      shrinkWrap: compact,
+      physics: compact ? const NeverScrollableScrollPhysics() : null,
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
       itemCount: dutyGroups.length + (showNoGroupOption ? 1 : 0),
       itemBuilder: (context, index) {
@@ -115,7 +120,7 @@ class DutyGroupSelectionBottomsheet extends StatelessWidget {
           isSelected: isAlreadySelected,
           onTap: () {
             Navigator.of(context).pop();
-            onDutyGroupSelected(isAlreadySelected ? null : group);
+            if (!isAlreadySelected) onDutyGroupSelected(group);
           },
           mainColor: primary,
           useDialogStyle: true,

@@ -1,5 +1,6 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 
 /// Primary/secondary action button used at the bottom of the setup flow.
 ///
@@ -24,97 +25,21 @@ class ActionButton extends StatelessWidget {
     this.isPrimary = true,
     this.mainColor,
     this.height = 56,
-    this.fontSize = 18,
+    this.fontSize = AppTypography.actionSize,
   });
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final Color accent = mainColor ?? colorScheme.primary;
-    final String effectiveLoadingText = loadingText ?? text;
-    final bool tapEnabled = onPressed != null && !isLoading;
-    final bool visuallyDimmed = onPressed == null && !isLoading;
-    final double frameOpacity = visuallyDimmed ? 0.4 : 1.0;
-
-    if (isPrimary) {
-      // Frosted fill reads much lighter than solid primary; onPrimary is often
-      // white and disappears on light glass. onSurface matches the surface
-      // tone behind the blur and stays readable in both themes.
-      final Color labelColor = colorScheme.onSurface;
-      final Widget body = GlassButtonSurface(
-        fullWidth: true,
-        height: height,
-        borderRadius: 16,
-        enabled: tapEnabled,
-        onTap: onPressed,
-        tintOpacity: Theme.of(context).brightness == Brightness.dark
-            ? 0.34
-            : 0.30,
-        borderOpacity: Theme.of(context).brightness == Brightness.dark
-            ? 0.30
-            : 0.42,
-        child: DefaultTextStyle.merge(
-          style: TextStyle(
-            color: labelColor,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w700,
-          ),
-          child: _buildButtonContent(
-            effectiveLoadingText,
-            indicatorColor: labelColor,
-          ),
-        ),
-      );
-      return Opacity(opacity: frameOpacity, child: body);
-    }
-
-    final Color foreground = colorScheme.onSurface;
-    final Widget body = GlassButtonSurface(
-      onTap: onPressed,
-      enabled: tapEnabled,
-      borderRadius: 16,
-      height: height,
+    return AppGlassButton(
+      onPressed: onPressed,
+      isLoading: isLoading,
+      role: isPrimary
+          ? AppGlassButtonRole.primary
+          : AppGlassButtonRole.secondary,
       fullWidth: true,
-      opacity: frameOpacity,
-      child: Center(
-        child: DefaultTextStyle.merge(
-          style: TextStyle(
-            color: foreground,
-            fontSize: fontSize,
-            fontWeight: FontWeight.w600,
-          ),
-          child: _buildButtonContent(
-            effectiveLoadingText,
-            indicatorColor: accent,
-          ),
-        ),
-      ),
+      height: height,
+      fontSize: fontSize,
+      child: Text(isLoading ? (loadingText ?? text) : text),
     );
-    return body;
-  }
-
-  Widget _buildButtonContent(
-    String buttonText, {
-    required Color indicatorColor,
-  }) {
-    if (isLoading) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: indicatorColor,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Flexible(child: Text(buttonText, overflow: TextOverflow.ellipsis)),
-        ],
-      );
-    }
-    return Text(buttonText);
   }
 }

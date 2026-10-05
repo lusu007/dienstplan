@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_feedback_style.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -222,35 +223,21 @@ ThemeData appTheme(Ref ref) {
         disabledForegroundColor: lightScheme.onSurface.withValues(alpha: 0.38),
       ),
     ),
-    snackBarTheme: SnackBarThemeData(
-      backgroundColor: Colors.white.withValues(alpha: 0.38),
-      contentTextStyle: TextStyle(color: lightScheme.onSurface),
-      actionTextColor: lightScheme.primary,
-      behavior: SnackBarBehavior.floating,
-      elevation: 0,
-      insetPadding: const EdgeInsets.fromLTRB(
-        glassSpacingMd,
-        0,
-        glassSpacingMd,
-        glassSpacingMd,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.62)),
-      ),
-    ),
+    snackBarTheme: AppFeedbackStyle.snackBar(lightScheme),
+    tooltipTheme: AppFeedbackStyle.tooltip(lightScheme),
     dialogTheme: DialogThemeData(
       backgroundColor: lightScheme.surface,
       surfaceTintColor: lightScheme.surfaceTint,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
-    bottomSheetTheme: const BottomSheetThemeData(
+    bottomSheetTheme: BottomSheetThemeData(
+      modalBarrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       modalElevation: 0,
       shadowColor: Colors.transparent,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
     ),
@@ -291,23 +278,8 @@ ThemeData appDarkTheme(Ref ref) {
         disabledForegroundColor: darkScheme.onSurface.withValues(alpha: 0.38),
       ),
     ),
-    snackBarTheme: SnackBarThemeData(
-      backgroundColor: Colors.white.withValues(alpha: 0.38),
-      contentTextStyle: TextStyle(color: darkScheme.onSurface),
-      actionTextColor: darkScheme.primary,
-      behavior: SnackBarBehavior.floating,
-      elevation: 0,
-      insetPadding: const EdgeInsets.fromLTRB(
-        glassSpacingMd,
-        0,
-        glassSpacingMd,
-        glassSpacingMd,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.28)),
-      ),
-    ),
+    snackBarTheme: AppFeedbackStyle.snackBar(darkScheme),
+    tooltipTheme: AppFeedbackStyle.tooltip(darkScheme),
     dialogTheme: DialogThemeData(
       backgroundColor: darkScheme.surface,
       surfaceTintColor: darkScheme.surfaceTint,

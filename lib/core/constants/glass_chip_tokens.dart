@@ -28,3 +28,7 @@ const double kGlassChipUnselectedBorderAlphaLight = 0.34;
 const double kGlassChipUnselectedBorderAlphaDark = 0.22;
 
 const double kGlassChipDisabledContentAlpha = 0.35;
+
+// Filter selection is a full-surface tint, independent of icon-toggle chips.
+const double kGlassFilterUnselectedTintAlphaLight = 0.06;
+const double kGlassFilterUnselectedTintAlphaDark = 0.08;

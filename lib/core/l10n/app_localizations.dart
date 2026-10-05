@@ -1255,6 +1255,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Neuigkeiten, Datenschutz & Hilfe'**
   String get settingsAppSummary;
+
+  /// Explains disabled holiday actions when no federal state is selected
+  ///
+  /// In de, this message translates to:
+  /// **'Zuerst Bundesland auswählen'**
+  String get selectFederalStateFirst;
 }
 
 class _AppLocalizationsDelegate

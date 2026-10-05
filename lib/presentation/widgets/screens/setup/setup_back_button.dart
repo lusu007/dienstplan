@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 /// Glass-styled back button used inside the setup flow.
 ///
@@ -23,21 +25,14 @@ class SetupBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final bool enabled = onPressed != null;
-    final double opacity = enabled ? 1.0 : 0.45;
-    return GlassButtonSurface(
-      onTap: onPressed,
-      enabled: enabled,
+    return AppGlassIconButton(
+      icon: Icons.arrow_back_rounded,
+      onPressed: onPressed,
+      tooltip: AppLocalizations.of(context).back,
+      size: size,
+      iconSize: 24,
+      shape: liquid.GlassIconButtonShape.roundedSquare,
       borderRadius: 16,
-      height: size,
-      width: size,
-      opacity: opacity,
-      child: Icon(
-        Icons.arrow_back_rounded,
-        size: 24,
-        color: foreground.withValues(alpha: opacity),
-      ),
     );
   }
 }

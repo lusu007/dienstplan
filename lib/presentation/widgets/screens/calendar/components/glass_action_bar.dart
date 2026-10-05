@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -13,7 +13,6 @@ import 'package:dienstplan/presentation/widgets/screens/calendar/components/pers
 /// Hosts the main actions of the calendar screen:
 /// 1. Quick-add appointment title field (submit opens the personal entry sheet)
 /// 2. Add button (opens the personal entry sheet for the selected day)
-/// 3. Jump to today
 class GlassActionBar extends ConsumerStatefulWidget {
   const GlassActionBar({super.key});
 
@@ -134,14 +133,6 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
                   _showPersonalEntrySheet();
                 },
               ),
-              const SizedBox(width: glassSpacingSm),
-              _TodayAction(
-                palette: palette,
-                tooltip: l10n.today,
-                onPressed: () {
-                  ref.read(scheduleCoordinatorProvider.notifier).goToToday();
-                },
-              ),
             ],
           ),
         ),
@@ -241,69 +232,21 @@ class _AddPersonalEntryAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Semantics(
-        button: true,
-        label: tooltip,
-        child: GlassButtonSurface(
-          onTap: onPressed,
-          enabled: true,
-          width: _kActionButtonSize,
-          height: _kActionButtonSize,
-          borderRadius: _kActionButtonRadius,
-          tintColor: palette.addActionFillColor,
-          borderColor: palette.addActionBorderColor,
-          child: Icon(
-            Icons.add_rounded,
-            color: palette.addActionIconColor,
-            size: 24,
-          ),
-        ),
-      ),
+    return AppGlassIconButton(
+      icon: Icons.add_rounded,
+      tooltip: tooltip,
+      onPressed: onPressed,
+      size: _kActionButtonSize,
+      iconSize: 24,
+      tintColor: palette.addActionFillColor,
+      borderColor: palette.addActionBorderColor,
+      foregroundColor: palette.addActionIconColor,
     );
   }
 }
 
 const double _kActionButtonSize = 48;
 const double _kActionButtonRadius = _kActionButtonSize / 2;
-
-class _TodayAction extends StatelessWidget {
-  final _GlassActionBarPalette palette;
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  const _TodayAction({
-    required this.palette,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: Semantics(
-        button: true,
-        label: tooltip,
-        child: GlassButtonSurface(
-          onTap: onPressed,
-          enabled: true,
-          width: _kActionButtonSize,
-          height: _kActionButtonSize,
-          borderRadius: _kActionButtonRadius,
-          tintColor: palette.todayActionFillColor,
-          borderColor: palette.todayActionBorderColor,
-          child: Icon(
-            Icons.today_rounded,
-            color: palette.todayActionIconColor,
-            size: 22,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _GlassActionBarPalette {
   final Color fieldTextColor;
@@ -315,9 +258,6 @@ class _GlassActionBarPalette {
   final Color addActionFillColor;
   final Color addActionBorderColor;
   final Color addActionIconColor;
-  final Color todayActionFillColor;
-  final Color todayActionBorderColor;
-  final Color todayActionIconColor;
 
   const _GlassActionBarPalette({
     required this.fieldTextColor,
@@ -329,9 +269,6 @@ class _GlassActionBarPalette {
     required this.addActionFillColor,
     required this.addActionBorderColor,
     required this.addActionIconColor,
-    required this.todayActionFillColor,
-    required this.todayActionBorderColor,
-    required this.todayActionIconColor,
   });
 
   factory _GlassActionBarPalette.fromTheme(ThemeData themeData) {
@@ -355,11 +292,6 @@ class _GlassActionBarPalette {
         alpha: isDark ? 0.46 : 0.36,
       ),
       addActionIconColor: colorScheme.onSurface.withValues(alpha: 0.96),
-      todayActionFillColor: Colors.white.withValues(
-        alpha: isDark ? 0.04 : 0.08,
-      ),
-      todayActionBorderColor: Colors.transparent,
-      todayActionIconColor: colorScheme.onSurface.withValues(alpha: 0.92),
     );
   }
 }

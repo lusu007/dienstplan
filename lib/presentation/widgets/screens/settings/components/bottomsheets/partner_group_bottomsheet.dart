@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -18,7 +19,7 @@ class PartnerGroupBottomsheet {
     if (state?.partnerConfigName == null || state!.partnerConfigName!.isEmpty) {
       final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        AppSnackBar(
           content: Text(l10n.selectPartnerDutyScheduleFirst),
           duration: const Duration(seconds: 3),
         ),
@@ -72,6 +73,8 @@ class PartnerGroupBottomsheet {
             title: l10n.partnerDutyGroup,
             dutyGroups: groupsForSelected,
             selectedDutyGroup: state?.partnerDutyGroup,
+            showNoGroupOption: true,
+            noGroupTitle: l10n.noDutyGroup,
             heightPercentage: heightPercentage,
             onDutyGroupSelected: (group) async {
               await notifier.setPartnerDutyGroup(group);

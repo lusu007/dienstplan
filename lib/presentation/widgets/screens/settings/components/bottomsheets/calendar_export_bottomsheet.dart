@@ -1,3 +1,5 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
@@ -214,7 +216,11 @@ class _CalendarExportBottomsheetState
             left: 16,
             right: 16,
             top: 8,
-            bottom: bottomInset + 16,
+            bottom:
+                (Theme.of(context).brightness == Brightness.dark
+                    ? bottomInset
+                    : 0) +
+                16,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -277,7 +283,7 @@ class _CalendarExportBottomsheetState
 
     if (_startDate.isAfter(_endDate)) {
       messenger.showSnackBar(
-        SnackBar(content: Text(l10n.exportCalendarInvalidRange)),
+        AppSnackBar(content: Text(l10n.exportCalendarInvalidRange)),
       );
       return null;
     }
@@ -311,7 +317,7 @@ class _CalendarExportBottomsheetState
       if (exportResult.isFailure) {
         if (!mounted) return null;
         messenger.showSnackBar(
-          SnackBar(
+          AppSnackBar(
             content: Text(_resolveFailureMessage(exportResult.failure, l10n)),
           ),
         );
@@ -326,7 +332,7 @@ class _CalendarExportBottomsheetState
       if (writeResult.isFailure) {
         if (!mounted) return null;
         messenger.showSnackBar(
-          SnackBar(content: Text(l10n.exportCalendarError)),
+          AppSnackBar(content: Text(l10n.exportCalendarError)),
         );
         return null;
       }
@@ -341,7 +347,9 @@ class _CalendarExportBottomsheetState
         stackTrace,
       );
       if (!mounted) return null;
-      messenger.showSnackBar(SnackBar(content: Text(l10n.exportCalendarError)));
+      messenger.showSnackBar(
+        AppSnackBar(content: Text(l10n.exportCalendarError)),
+      );
       return null;
     }
   }
@@ -362,12 +370,12 @@ class _CalendarExportBottomsheetState
       if (!mounted) return;
       if (result.isFailure) {
         messenger.showSnackBar(
-          SnackBar(content: Text(l10n.exportCalendarError)),
+          AppSnackBar(content: Text(l10n.exportCalendarError)),
         );
         return;
       }
       messenger.showSnackBar(
-        SnackBar(content: Text(l10n.exportCalendarShareSuccess)),
+        AppSnackBar(content: Text(l10n.exportCalendarShareSuccess)),
       );
     } finally {
       if (mounted) setState(() => _isActionBusy = false);
@@ -390,12 +398,14 @@ class _CalendarExportBottomsheetState
       if (!mounted) return;
       if (result.isFailure) {
         messenger.showSnackBar(
-          SnackBar(content: Text(_resolveFailureMessage(result.failure, l10n))),
+          AppSnackBar(
+            content: Text(_resolveFailureMessage(result.failure, l10n)),
+          ),
         );
         return;
       }
       messenger.showSnackBar(
-        SnackBar(content: Text(l10n.exportCalendarSaveSuccess)),
+        AppSnackBar(content: Text(l10n.exportCalendarSaveSuccess)),
       );
     } finally {
       if (mounted) setState(() => _isActionBusy = false);
@@ -417,12 +427,14 @@ class _CalendarExportBottomsheetState
       if (!mounted) return;
       if (result.isFailure) {
         messenger.showSnackBar(
-          SnackBar(content: Text(_resolveFailureMessage(result.failure, l10n))),
+          AppSnackBar(
+            content: Text(_resolveFailureMessage(result.failure, l10n)),
+          ),
         );
         return;
       }
       messenger.showSnackBar(
-        SnackBar(content: Text(l10n.exportCalendarOpenSuccess)),
+        AppSnackBar(content: Text(l10n.exportCalendarOpenSuccess)),
       );
     } finally {
       if (mounted) setState(() => _isActionBusy = false);
@@ -621,8 +633,11 @@ class _ToggleCard extends StatelessWidget {
                 onChanged(nextValue);
               }
             : null,
-        title: Text(title),
-        subtitle: Text(subtitle),
+        title: Text(title, style: AppTypography.menuTitle(Theme.of(context))),
+        subtitle: Text(
+          subtitle,
+          style: AppTypography.secondary(Theme.of(context)),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
     );

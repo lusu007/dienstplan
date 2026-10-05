@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 
 /// Glass-morphism card surface used across the settings screen and its
 /// sub-screens.
@@ -46,15 +47,19 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final bool lightModal = AppModalSurfaceScope.isLight(context);
     final double enabledMul = enabled ? 1.0 : glassCardDisabledMultiplier;
 
-    final Color baseBackground = Colors.white.withValues(
-      alpha:
-          (isDark
-              ? glassTintAlphaDark * glassCardBaseTintAlphaDarkMultiplier
-              : glassTintAlphaLight) *
-          enabledMul,
-    );
+    final Color baseBackground =
+        (lightModal ? colorScheme.onSurface : Colors.white).withValues(
+          alpha:
+              (lightModal
+                  ? glassModalFillAlphaLight
+                  : isDark
+                  ? glassTintAlphaDark * glassCardBaseTintAlphaDarkMultiplier
+                  : glassTintAlphaLight) *
+              enabledMul,
+        );
     final Color activeBackground = colorScheme.primary.withValues(
       alpha:
           (isDark
@@ -68,13 +73,17 @@ class GlassCard extends StatelessWidget {
             baseBackground,
           )
         : baseBackground;
-    final Color baseBorder = Colors.white.withValues(
-      alpha:
-          (isDark
-              ? glassBorderAlphaDark * glassCardBaseBorderAlphaDarkMultiplier
-              : glassBorderAlphaLight) *
-          enabledMul,
-    );
+    final Color baseBorder = (lightModal ? colorScheme.onSurface : Colors.white)
+        .withValues(
+          alpha:
+              (lightModal
+                  ? glassModalBorderAlphaLight
+                  : isDark
+                  ? glassBorderAlphaDark *
+                        glassCardBaseBorderAlphaDarkMultiplier
+                  : glassBorderAlphaLight) *
+              enabledMul,
+        );
     final Color activeBorder = colorScheme.primary.withValues(
       alpha: glassCardActiveBorderAlpha * enabledMul,
     );

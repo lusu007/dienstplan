@@ -7,6 +7,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets(
+    'light whats new keeps confirmation reachable at narrow width and large text',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(320, 680);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(),
+          locale: const Locale('de'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: const TextScaler.linear(1.3)),
+            child: child!,
+          ),
+          home: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showWhatsNewDialog(context),
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Alles klar').hitTestable(), findsOneWidget);
+      await tester.drag(
+        find.byType(SingleChildScrollView),
+        const Offset(0, -1000),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Alles klar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Das ist neu für dich'), findsNothing);
+    },
+  );
   testWidgets('whats new dialog action has stronger dark mode contrast', (
     WidgetTester tester,
   ) async {

@@ -608,7 +608,13 @@ class _AnimatedCalendarDayState extends State<AnimatedCalendarDay> {
 
   TextStyle _getBadgeTextStyle(ThemeData theme, Color accentColor) {
     final TextStyle? base = theme.textTheme.labelSmall;
-    final Color foreground = calendarDayBadgeForegroundColor(accentColor);
+    final Color foreground = calendarDayBadgeForegroundColor(
+      theme.brightness == Brightness.dark
+          ? accentColor
+          : _getBadgeDecoration(theme, accentColor).color!,
+      brightness: theme.brightness,
+      backdropColor: theme.colorScheme.surface,
+    );
     return (base ?? const TextStyle()).copyWith(
       fontSize: 10,
       fontWeight: FontWeight.bold,
