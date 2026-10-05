@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
 
 /// Title + description block shown at the top of each setup step.
@@ -17,13 +18,7 @@ class StepHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          title,
-          style: text.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: colorScheme.onSurface,
-          ),
-        ),
+        Text(title, style: AppTypography.sheetTitle(Theme.of(context))),
         const SizedBox(height: 8),
         Text(
           description,

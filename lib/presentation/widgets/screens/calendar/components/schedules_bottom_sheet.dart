@@ -375,9 +375,9 @@ class _TodayPill extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          // Translucent primary fill: onPrimary stays in the blue family in dark
-          // mode and clashes with the pill; onSurface stays neutral and readable.
-          color: isDark ? colorScheme.onSurface : colorScheme.onPrimary,
+          // The translucent accent is pale in Light; use a readable neutral
+          // foreground rather than the opaque primary color's white label.
+          color: colorScheme.onSurface,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.4,
         ),

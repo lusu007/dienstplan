@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +53,10 @@ class SchoolHolidaysSection extends ConsumerWidget {
       ),
       data: (state) {
         final isEnabled = state.isEnabled;
+        final needsStateHint =
+            isEnabled &&
+            state.selectedStateCode == null &&
+            Theme.of(context).brightness == Brightness.light;
         final selectedState = state.selectedStateCode != null
             ? GermanState.findByCode(state.selectedStateCode!)
             : null;
@@ -101,8 +106,9 @@ class SchoolHolidaysSection extends ConsumerWidget {
                 icon: Icons.error_outline,
                 title: l10n.error,
                 subtitle: state.getResolvedError(l10n) ?? l10n.errorLoading,
-                trailing: IconButton(
-                  icon: const Icon(Icons.close),
+                trailing: AppGlassIconButton(
+                  tooltip: l10n.close,
+                  icon: Icons.close,
                   onPressed: () {
                     ref.read(schoolHolidaysProvider.notifier).clearError();
                   },
@@ -113,7 +119,9 @@ class SchoolHolidaysSection extends ConsumerWidget {
               modalTrigger: true,
               icon: Icons.color_lens_outlined,
               title: l10n.holidayAccentColor,
-              subtitle: _getHolidayAccentColorName(settingsState, l10n),
+              subtitle: needsStateHint
+                  ? l10n.selectFederalStateFirst
+                  : _getHolidayAccentColorName(settingsState, l10n),
               trailing: _buildHolidayAccentColorChip(
                 context,
                 settingsState?.holidayAccentColorValue,
@@ -129,7 +137,9 @@ class SchoolHolidaysSection extends ConsumerWidget {
             NavigationCard(
               icon: Icons.refresh_outlined,
               title: l10n.refreshHolidayData,
-              subtitle: state.lastRefreshTime != null
+              subtitle: needsStateHint
+                  ? l10n.selectFederalStateFirst
+                  : state.lastRefreshTime != null
                   ? l10n.lastUpdated(
                       _formatLastUpdate(state.lastRefreshTime!, l10n),
                     )

@@ -47,11 +47,11 @@ class VacationDayItem extends StatelessWidget {
     final double iconBox = compact ? 24.0 : 28.0;
     final double iconSize = compact ? 16.0 : 18.0;
     final double gap = compact ? 10.0 : 12.0;
-    final double titleSize = compact ? 13.0 : 14.0;
-    final double descSize = compact ? 10.0 : 11.0;
+    final double titleSize = compact ? 15.0 : 18.0;
+    final double descSize = compact ? 12.0 : 14.0;
     final double chipHPad = compact ? 4.0 : 6.0;
     final double chipVPad = compact ? 2.0 : 3.0;
-    final double chipFont = compact ? 8.0 : 9.0;
+    const double chipFont = 11.0;
     final double glassContentHeight = (rowHeight - padding.vertical).clamp(
       0.0,
       double.infinity,
@@ -63,8 +63,8 @@ class VacationDayItem extends StatelessWidget {
         borderRadius: compact ? 14 : 16,
         padding: padding,
         onTap: onTap,
-        child: SizedBox(
-          height: glassContentHeight,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: glassContentHeight),
           child: Row(
             children: [
               Container(
@@ -85,6 +85,7 @@ class VacationDayItem extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -95,7 +96,7 @@ class VacationDayItem extends StatelessWidget {
                         color: theme.colorScheme.onSurface,
                       ),
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                      maxLines: 2,
                     ),
                     if (holiday.description != null &&
                         holiday.description!.isNotEmpty)
@@ -106,7 +107,7 @@ class VacationDayItem extends StatelessWidget {
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                        maxLines: 2,
                       ),
                   ],
                 ),
@@ -143,7 +144,7 @@ class VacationDayItem extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            height: rowHeight,
+            constraints: BoxConstraints(minHeight: rowHeight),
             padding: padding,
             decoration: _buildContainerDecoration(
               theme: theme,
@@ -170,6 +171,7 @@ class VacationDayItem extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -180,7 +182,7 @@ class VacationDayItem extends StatelessWidget {
                           color: theme.colorScheme.onSurface,
                         ),
                         overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
+                        maxLines: 2,
                       ),
                       if (holiday.description != null &&
                           holiday.description!.isNotEmpty)
@@ -191,7 +193,7 @@ class VacationDayItem extends StatelessWidget {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                          maxLines: 2,
                         ),
                     ],
                   ),

@@ -27,7 +27,8 @@ Avoid:
 - Open `SettingsCategoryRoute` with the matching `SettingsCategory.name`. Build the relevant sections on the category page rather than loading every feature on the overview.
 - Keep copyright, version, and open-source footer on the overview, bottom-aligned with `SliverFillRemaining` when space permits.
 - Settings routes currently use zero-duration transitions to avoid full-page glass compositing cost. This rule does not apply to bottom sheets.
-- The calendar partner button opens the partner category when no partner is configured; otherwise it toggles partner visibility. Back returns to the invoking page.
+- Configure the partner schedule through the partner settings category. Configured partner duties remain visible in the calendar.
+- Keep the today action beside the month/year picker; the bottom calendar bar contains quick entry and add actions.
 
 ## Modal Patterns
 
@@ -127,3 +128,18 @@ Month grid cells are **not** wrapped in `GlassContainer` (no `BackdropFilter` pe
 - Measure cold first opening and repeated opening separately in a profile build on a physical device.
 - Check both UI and raster frame times; do not assume opening lag is data loading.
 - Compare equivalent interactions and retain animation and text visibility checks. Lower sheet blur and suppressed trigger ink reduce some rendering work, but do not guarantee a smooth first opening.
+
+
+## Light Mode readability and button changes
+
+Picker, filter and color selections use semantic dark foregrounds plus visible selection markers in Light Mode. Calendar badges choose the higher-contrast black/white foreground after alpha composition with the actual background; neutral outside-month badges use their rendered fill. The existing Dark Mode badge algorithm and accent input remain unchanged.
+
+Modal content uses the 0.90 Light surface fill from `glassDialogContentAlphaLight`; Dark surfaces, quality and opening behavior stay unchanged. Theme selection follows the current theme without replacing the modal route.
+
+Use `AppGlassButton` roles and `AppGlassIconButton` for actions. Minimum touch targets are 48 dp, while compact visible icons may remain 36/40 dp. In the compact Dark calendar header, adaptive vertical padding compensates for the larger targets so the date and duty list keep their previous positions, including larger text.
+
+Active Light Mode navigation rows without a custom trailing show an opening indicator. Missing federal-state prerequisites explain disabled holiday controls. All-day entries hide the unused time row only in Light Mode. Data and navigation behavior remain shared across themes.
+
+Light picker selection markers move above year labels when the row would overflow; labels keep their configured text size. Light picker triggers may scale down a long numerical year range inside the existing fixed-height pill, keeping the complete range visible. The normal month/Today pair retains equal adaptive heights.
+
+On narrow Light feedback forms or larger text, an attached screenshot uses a separate remove-action row below its preview/status. Scrollable Light app dialogs constrain their body so the confirmation action remains visible. These responsive changes preserve the existing Dark layouts.

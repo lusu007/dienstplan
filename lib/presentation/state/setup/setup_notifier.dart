@@ -17,6 +17,7 @@ import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/config/config_notifier.dart';
+import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/domain/failures/result.dart';
@@ -373,9 +374,13 @@ class SetupNotifier extends _$SetupNotifier {
       ref.invalidate(scheduleDataProvider);
       ref.invalidate(getSettingsUseCaseProvider);
 
-      await ref
-          .read(settingsProvider.notifier)
-          .setThemePreference(current.selectedTheme);
+      // Setup saved the complete selection outside these UI notifiers.
+      // Reload it instead of retaining their pre-setup plan/group values while
+      // updating only the theme.
+      ref.invalidate(settingsProvider);
+      await ref.read(settingsProvider.future);
+      ref.invalidate(partnerProvider);
+      await ref.read(partnerProvider.future);
       ref.invalidate(scheduleCoordinatorProvider);
       ref.invalidate(configProvider);
       // Explicitly refresh the config provider to ensure duty groups are loaded

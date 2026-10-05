@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
@@ -28,6 +29,17 @@ class NavigationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
+    final Widget? effectiveTrailing =
+        trailing ??
+        (theme.brightness == Brightness.light && enabled && onTap != null
+            ? Icon(
+                modalTrigger
+                    ? Icons.expand_more_rounded
+                    : Icons.chevron_right_rounded,
+                color: scheme.onSurfaceVariant,
+                size: 22,
+              )
+            : null);
 
     final Color effectiveTitleColor = enabled
         ? scheme.onSurface
@@ -55,28 +67,27 @@ class NavigationCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 17,
-                      color: effectiveTitleColor,
-                    ),
+                    style: AppTypography.menuTitle(
+                      theme,
+                    ).copyWith(color: effectiveTitleColor),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       subtitle!,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 14,
-                        color: effectiveSubtitleColor,
-                      ),
+                      style: AppTypography.secondary(
+                        theme,
+                      ).copyWith(color: effectiveSubtitleColor),
                     ),
                   ],
                 ],
               ),
             ),
-            if (trailing != null) ...[
+            if (effectiveTrailing != null) ...[
               const SizedBox(width: 12),
-              !enabled ? Opacity(opacity: 0.5, child: trailing!) : trailing!,
+              !enabled
+                  ? Opacity(opacity: 0.5, child: effectiveTrailing)
+                  : effectiveTrailing,
             ],
           ],
         ),

@@ -6,29 +6,25 @@ import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/services/whats_new_service.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 
 /// Opens the localized what's-new dialog (same UI as after an app update).
 Future<void> showWhatsNewDialog(BuildContext context) async {
   final AppLocalizations l10n = AppLocalizations.of(context);
   final ColorScheme colorScheme = Theme.of(context).colorScheme;
-  final bool isDark = Theme.of(context).brightness == Brightness.dark;
   await GlassAppDialog.show<void>(
     context: context,
     barrierDismissible: true,
     title: l10n.whatsNewTitle,
     content: SingleChildScrollView(child: Text(l10n.whatsNewBody)),
     actions: <Widget>[
-      GlassButtonSurface(
-        onTap: () => Navigator.of(context).pop(),
+      AppGlassButton(
+        role: AppGlassButtonRole.primary,
+        onPressed: () => Navigator.of(context).pop(),
         enabled: true,
         borderRadius: glassSurfaceRadiusSm,
         height: 48,
         fullWidth: true,
-        tintOpacity: isDark
-            ? glassTintAlphaActiveDark
-            : glassTintAlphaActiveLight,
-        borderOpacity: glassBorderAlphaActive,
         child: Center(
           child: Text(
             l10n.whatsNewGotIt,

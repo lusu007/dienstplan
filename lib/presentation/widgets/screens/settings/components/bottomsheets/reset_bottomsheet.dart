@@ -1,6 +1,7 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:auto_route/auto_route.dart';
@@ -60,19 +61,9 @@ class ResetBottomsheet {
               const SizedBox(height: glassSpacingXl),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.destructiveIconBadgeTint,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: glassSpacingMd,
-                      vertical: glassSpacingMd,
-                    ),
-                    textStyle: Theme.of(context).textTheme.labelLarge,
-                  ),
+                child: AppGlassButton(
+                  role: AppGlassButtonRole.destructive,
+
                   onPressed: () async {
                     final container = ProviderScope.containerOf(
                       context,
@@ -94,7 +85,7 @@ class ResetBottomsheet {
                         );
                         ScaffoldMessenger.of(
                           context,
-                        ).showSnackBar(SnackBar(content: Text(message)));
+                        ).showSnackBar(AppSnackBar(content: Text(message)));
                       }
                       return;
                     }
@@ -117,13 +108,21 @@ class ResetBottomsheet {
                     if (context.mounted) {
                       Navigator.of(context, rootNavigator: true).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(l10n.resetDataSuccess)),
+                        AppSnackBar(content: Text(l10n.resetDataSuccess)),
                       );
                       context.router.replaceAll([const SetupRoute()]);
                     }
                   },
                   child: Text(l10n.reset),
                 ),
+              ),
+              const SizedBox(height: glassSpacingSm),
+              AppGlassButton(
+                role: AppGlassButtonRole.quiet,
+                fullWidth: true,
+                onPressed: () =>
+                    Navigator.of(context, rootNavigator: true).pop(),
+                child: Text(l10n.cancel),
               ),
             ],
           ),

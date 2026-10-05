@@ -1,3 +1,6 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -107,7 +110,9 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                     const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
-                      child: OutlinedButton(
+                      child: AppGlassButton(
+                        role: AppGlassButtonRole.secondary,
+
                         onPressed: () {
                           showWhatsNewDialog(context);
                         },
@@ -162,20 +167,15 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                     const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
-                      child: OutlinedButton.icon(
+                      child: AppGlassButton.icon(
+                        role: AppGlassButtonRole.secondary,
+
                         key: const ValueKey('debug_send_sentry_test'),
                         onPressed: _isSendingSentryTest
                             ? null
                             : _sendSentryTestEvent,
-                        icon: _isSendingSentryTest
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(Icons.bug_report_outlined),
+                        isLoading: _isSendingSentryTest,
+                        icon: const Icon(Icons.bug_report_outlined),
                         label: Text(
                           _isSendingSentryTest
                               ? 'Sending Sentry test...'
@@ -215,6 +215,54 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
   }
 
   Widget _buildInfoRow(String label, dynamic value) {
+    if (Theme.of(context).brightness == Brightness.light) {
+      final theme = Theme.of(context);
+      final labelWidget = Text(
+        label,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w500,
+          color: theme.colorScheme.onSurface,
+        ),
+      );
+      final valueWidget = value is Widget
+          ? value
+          : Text(
+              value.toString(),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontFamily: 'monospace',
+              ),
+            );
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth < 320 ||
+                MediaQuery.textScalerOf(context).scale(14) > 18) {
+              return SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    labelWidget,
+                    const SizedBox(height: 4),
+                    valueWidget,
+                  ],
+                ),
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(width: 120, child: labelWidget),
+                const SizedBox(width: 12),
+                Expanded(child: valueWidget),
+              ],
+            );
+          },
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -271,7 +319,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
             return;
           }
           messenger.showSnackBar(
-            const SnackBar(content: Text('Sentry is disabled')),
+            AppSnackBar(content: const Text('Sentry is disabled')),
           );
           return;
         }
@@ -284,7 +332,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
       if (sentryId == const SentryId.empty()) {
         messenger.showSnackBar(
-          const SnackBar(content: Text('Sentry test event was not sent')),
+          AppSnackBar(content: const Text('Sentry test event was not sent')),
         );
         unawaited(
           AppLogger.e(
@@ -295,7 +343,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
       }
 
       messenger.showSnackBar(
-        SnackBar(content: Text('Sentry test event sent ($sentryId)')),
+        AppSnackBar(content: Text('Sentry test event sent ($sentryId)')),
       );
       unawaited(
         AppLogger.i(
@@ -314,7 +362,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
         return;
       }
       messenger.showSnackBar(
-        const SnackBar(content: Text('Sentry test event failed')),
+        AppSnackBar(content: const Text('Sentry test event failed')),
       );
     } finally {
       if (mounted) {
@@ -867,10 +915,13 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                                       ),
                                 ),
                               ),
-                              IconButton(
+                              AppGlassIconButton(
+                                tooltip: MaterialLocalizations.of(
+                                  dialogContext,
+                                ).closeButtonTooltip,
                                 onPressed: () =>
                                     Navigator.of(dialogContext).pop(),
-                                icon: const Icon(Icons.close),
+                                icon: Icons.close,
                               ),
                             ],
                           ),
@@ -904,13 +955,17 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              TextButton.icon(
+                              AppGlassButton.icon(
+                                role: AppGlassButtonRole.quiet,
+
                                 onPressed: () => _copyToClipboard(content),
                                 icon: const Icon(Icons.copy),
                                 label: const Text('Copy'),
                               ),
                               const SizedBox(width: glassSpacingSm),
-                              ElevatedButton(
+                              AppGlassButton(
+                                role: AppGlassButtonRole.primary,
+
                                 onPressed: () =>
                                     Navigator.of(dialogContext).pop(),
                                 child: const Text('Close'),
@@ -933,7 +988,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
 
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Error loading file: $e')));
+      ).showSnackBar(AppSnackBar(content: Text('Error loading file: $e')));
     }
   }
 
@@ -952,7 +1007,7 @@ class _DebugScreenState extends ConsumerState<DebugScreen> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Content copied to clipboard')),
+      AppSnackBar(content: const Text('Content copied to clipboard')),
     );
   }
 }

@@ -22,6 +22,15 @@ const double glassSurfaceBlurBottomSheet = 4;
 const double glassTintAlphaLight = 0.28;
 const double glassTintAlphaDark = 0.08;
 const double glassBorderAlphaLight = 0.45;
+// Neutral outline for ordinary Light navigation and secondary controls.
+const double glassControlBorderAlphaLight = 0.14;
+// Neutral tonal separation inside pale Light modals. Functional field edges
+// are stronger than decorative card outlines.
+const double glassModalFillAlphaLight = 0.05;
+const double glassModalBorderAlphaLight = 0.22;
+const double glassModalFieldBorderAlphaLight = 0.50;
+const double glassModalHandleAlphaLight = 0.50;
+const double glassModalDividerAlphaLight = 0.16;
 const double glassBorderAlphaDark = 0.18;
 const double glassBarrierAlpha = 0.35;
 
@@ -50,6 +59,9 @@ const double glassSpacingMd = 12;
 const double glassSpacingLg = 16;
 const double glassSpacingXl = 24;
 const double glassSpacingXxl = 32;
+
+// Readable content shield above the library material in light modals only.
+const double glassDialogContentAlphaLight = 0.90;
 
 // Dialog surface tints / borders (used by GlassDialogSurface)
 const double glassDialogTintAlphaLight = 0.38;

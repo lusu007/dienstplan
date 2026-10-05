@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -61,7 +62,9 @@ class SettingsScheduleBlock extends ConsumerWidget {
                 ),
                 const SizedBox(height: glassSpacingLg),
                 Center(
-                  child: TextButton.icon(
+                  child: AppGlassButton.icon(
+                    role: AppGlassButtonRole.quiet,
+
                     onPressed: () =>
                         ref.invalidate(scheduleCoordinatorProvider),
                     icon: const Icon(Icons.refresh_rounded),

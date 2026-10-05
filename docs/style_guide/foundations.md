@@ -58,7 +58,7 @@ Passive `GlassCard` surfaces use vibrancy rather than a separate backdrop blur p
 - `glassTintAlphaDark`
 - `glassBorderAlphaLight`
 - `glassBorderAlphaDark`
-- `glassBarrierAlpha`
+- `glassBarrierAlpha`: 0.35 for all Light bottom sheets (including implicit Material routes and the live theme picker); preserve existing Dark route values.
 
 ### Shadow
 
@@ -85,6 +85,11 @@ Passive `GlassCard` surfaces use vibrancy rather than a separate backdrop blur p
 ## Typography Rules
 
 - Use theme text styles as base (`titleMedium`, `bodyLarge`, `bodyMedium`, `bodySmall`).
+- Use `AppTypography` for shared menu, secondary, page-title and sheet-title roles in both Light and Dark.
+- Page titles: 22/700; sheet/step titles: 24/700; menu/selection titles: 17/700; supporting card text: 14; form/instruction text: 16; helper text: 12.
+- Standard action labels: 16/700 (`AppTypography.actionSize`); compact segmented export actions retain 14/600. Do not add per-screen large-button font overrides without a clear role.
+- Compound selection Widget titles inherit the shared menu-title style; explicit authority captions remain secondary.
+- Headings and holiday rows grow with system fonts; do not impose fixed text heights or shrink text to fit.
 - Keep glass headings visually consistent (weight/size/letter spacing).
 - Do not introduce per-screen ad-hoc typography unless unavoidable.
 

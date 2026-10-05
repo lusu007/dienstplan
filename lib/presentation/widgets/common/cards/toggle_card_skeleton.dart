@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
@@ -42,11 +43,9 @@ class ToggleCardSkeleton extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 17,
-                      color: scheme.onSurface,
-                    ),
+                    style: AppTypography.menuTitle(
+                      theme,
+                    ).copyWith(color: scheme.onSurface),
                   ),
                   if (showSubtitleSkeleton) ...[
                     const SizedBox(height: 6),
@@ -55,10 +54,9 @@ class ToggleCardSkeleton extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       subtitle!,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontSize: 14,
-                        color: scheme.onSurfaceVariant,
-                      ),
+                      style: AppTypography.secondary(
+                        theme,
+                      ).copyWith(color: scheme.onSurfaceVariant),
                     ),
                   ],
                 ],

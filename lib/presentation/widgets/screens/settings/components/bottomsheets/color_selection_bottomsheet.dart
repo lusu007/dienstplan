@@ -32,6 +32,7 @@ class ColorSelectionBottomsheet extends StatelessWidget {
       context: context,
       title: title,
       heightPercentage: heightPercentage,
+      shrinkToContent: Theme.of(context).brightness == Brightness.light,
       children: [
         _buildColorGrid(context, colors, selectedColorValue, onColorSelected),
       ],
@@ -43,6 +44,7 @@ class ColorSelectionBottomsheet extends StatelessWidget {
     return GenericBottomsheet(
       title: title,
       heightPercentage: heightPercentage,
+      shrinkToContent: Theme.of(context).brightness == Brightness.light,
       children: [
         _buildColorGrid(context, colors, selectedColorValue, onColorSelected),
       ],
@@ -57,22 +59,35 @@ class ColorSelectionBottomsheet extends StatelessWidget {
   ) {
     final l10n = AppLocalizations.of(context);
 
-    return GridContent(
-      crossAxisCount: 3,
-      crossAxisSpacing: 6,
-      mainAxisSpacing: 6,
-      childAspectRatio: 1.0,
-      children: colors.map((color) {
-        return ColorSelectionCard(
-          color: color.toColor(),
-          colorName: _getLocalizedColorNameStatic(color, l10n),
-          isSelected: selectedColorValue == color.argb,
-          onTap: () {
-            Navigator.of(context).pop();
-            onColorSelected(color.argb);
-          },
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = (constraints.maxWidth - 32 - 12) / 3;
+        final minHeight =
+            52 + MediaQuery.textScalerOf(context).scale(14) * 2.86;
+        final height = width > minHeight ? width : minHeight;
+        return GridContent(
+          shrinkToContent: isLight,
+          crossAxisCount: 3,
+          crossAxisSpacing: 6,
+          mainAxisSpacing: 6,
+          childAspectRatio:
+              isLight || MediaQuery.textScalerOf(context).scale(14) > 14
+              ? width / height
+              : 1.0,
+          children: colors.map((color) {
+            return ColorSelectionCard(
+              color: color.toColor(),
+              colorName: _getLocalizedColorNameStatic(color, l10n),
+              isSelected: selectedColorValue == color.argb,
+              onTap: () {
+                Navigator.of(context).pop();
+                onColorSelected(color.argb);
+              },
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 

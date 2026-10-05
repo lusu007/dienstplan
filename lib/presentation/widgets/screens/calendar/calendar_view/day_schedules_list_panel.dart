@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -91,8 +93,54 @@ class _CompactDayHeader extends ConsumerWidget {
             s.value?.showOtherDutyGroupsInCompactList ?? false,
       ),
     );
+    double verticalPadding = 8;
+    if (colorScheme.brightness == Brightness.dark) {
+      // Keep the previous header height while the buttons gain 48dp targets.
+      final textTheme = Theme.of(context).textTheme;
+      double textHeight(String text, TextStyle? style) {
+        final painter = TextPainter(
+          text: TextSpan(text: text, style: style),
+          textDirection: Directionality.of(context),
+          textScaler: MediaQuery.textScalerOf(context),
+          maxLines: 1,
+        )..layout();
+        final height = painter.height;
+        painter.dispose();
+        return height;
+      }
+
+      final dayHeight = textHeight(
+        '${day.day}',
+        textTheme.headlineMedium?.copyWith(
+          fontWeight: FontWeight.w800,
+          height: 1,
+        ),
+      );
+      final labelsHeight =
+          textHeight(
+            weekday,
+            textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.2,
+              height: 1,
+            ),
+          ) +
+          textHeight(
+            monthYear,
+            textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              height: 1,
+            ),
+          );
+      final previousRowHeight = math.max(
+        36.0,
+        math.max(dayHeight, labelsHeight),
+      );
+      verticalPadding -=
+          (math.max(48.0, previousRowHeight) - previousRowHeight) / 2;
+    }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+      padding: EdgeInsets.fromLTRB(20, verticalPadding, 20, verticalPadding),
       child: Row(
         children: <Widget>[
           Text(

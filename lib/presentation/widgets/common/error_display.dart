@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/errors/failure_presenter.dart';
@@ -61,7 +62,9 @@ class ErrorDisplay extends ConsumerWidget {
             Text(message, textAlign: textAlign, style: textStyle),
             if (onRetry != null) ...[
               const SizedBox(height: 24),
-              ElevatedButton(
+              AppGlassButton(
+                role: AppGlassButtonRole.primary,
+
                 onPressed: onRetry,
                 child: Text(retryButtonText ?? l10n.tryAgain),
               ),

@@ -1,3 +1,4 @@
+import 'package:dienstplan/core/constants/calendar_day_surface_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
@@ -43,13 +44,25 @@ class ColorSelectionCard extends StatelessWidget {
                   ),
                 ],
               ),
+              child:
+                  isSelected && Theme.of(context).brightness == Brightness.light
+                  ? Icon(
+                      Icons.check_rounded,
+                      color: calendarDayBadgeForegroundColor(color),
+                      size: 22,
+                    )
+                  : null,
             ),
             const SizedBox(height: glassSpacingXs),
             Text(
               colorName,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? scheme.primary : scheme.onSurface,
+                color:
+                    isSelected &&
+                        Theme.of(context).brightness == Brightness.dark
+                    ? scheme.primary
+                    : scheme.onSurface,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

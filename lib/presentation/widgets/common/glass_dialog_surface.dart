@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 
 /// Shared modal material, rendered by liquid_glass_widgets.
 class GlassDialogSurface extends StatelessWidget {
@@ -30,7 +31,16 @@ class GlassDialogSurface extends StatelessWidget {
         tint: scheme.surface.withValues(
           alpha: isDark ? glassDialogTintAlphaDark : glassDialogTintAlphaLight,
         ),
-        child: child,
+        child: AppModalSurfaceScope(
+          child: isDark
+              ? child
+              : ColoredBox(
+                  color: scheme.surface.withValues(
+                    alpha: glassDialogContentAlphaLight,
+                  ),
+                  child: child,
+                ),
+        ),
       ),
     );
   }
@@ -53,9 +63,11 @@ class SoftGradientDivider extends StatelessWidget {
           end: Alignment.centerRight,
           colors: [
             Colors.transparent,
-            Colors.white.withValues(
-              alpha: isDark ? glassDividerAlphaDark : glassDividerAlphaLight,
-            ),
+            isDark
+                ? Colors.white.withValues(alpha: glassDividerAlphaDark)
+                : Theme.of(context).colorScheme.onSurface.withValues(
+                    alpha: glassModalDividerAlphaLight,
+                  ),
             Colors.transparent,
           ],
         ),

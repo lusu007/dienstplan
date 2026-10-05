@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -283,19 +284,12 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
   }
 
   Widget _buildHeader() {
-    final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final TextStyle? titleStyle = Theme.of(context).textTheme.titleLarge;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           AppInfo.appName,
-          style: (titleStyle ?? const TextStyle()).copyWith(
-            color: foreground,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.2,
-            height: 1.0,
-          ),
+          style: AppTypography.pageTitle(Theme.of(context)),
         ),
       ],
     );

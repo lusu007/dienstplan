@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
@@ -211,12 +212,14 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
       animation: _animationController,
       builder: (context, child) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(
-            glassSpacingMd,
-            0,
-            glassSpacingMd,
-            glassSpacingMd,
-          ),
+          padding: Theme.of(context).brightness == Brightness.dark
+              ? const EdgeInsets.fromLTRB(
+                  glassSpacingMd,
+                  0,
+                  glassSpacingMd,
+                  glassSpacingMd,
+                )
+              : AppSheetStyle.margin(context),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final double layoutWidth = constraints.maxWidth;
@@ -322,23 +325,10 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     );
   }
 
-  Widget _buildDragHandle() {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      margin: const EdgeInsets.only(
-        top: glassDragHandleTopGap,
-        bottom: glassSpacingMd + 2,
-      ),
-      width: glassDragHandleWidth,
-      height: glassDragHandleHeight,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(
-          alpha: isDark ? glassDragHandleAlphaDark : glassDragHandleAlphaLight,
-        ),
-        borderRadius: BorderRadius.circular(glassSpacingXs / 2),
-      ),
-    );
-  }
+  Widget _buildDragHandle() => const Padding(
+    padding: EdgeInsets.only(bottom: glassSpacingMd + 2),
+    child: AppSheetHandle(),
+  );
 
   Widget _buildMonthHeader(StateSetter setModalState) {
     final String yearText = _displayedYear.toString();

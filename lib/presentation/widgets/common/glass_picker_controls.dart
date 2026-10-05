@@ -1,7 +1,31 @@
+import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_picker_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
+
+/// Keeps adjacent picker controls aligned, including with larger system text.
+double glassPickerTriggerHeight(BuildContext context) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: 'Mg',
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+        fontSize: kGlassPickerTriggerLabelFontSize,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.1,
+      ),
+    ),
+    textDirection: Directionality.of(context),
+    textScaler: MediaQuery.textScalerOf(context),
+  )..layout();
+  final height = painter.height + 2 * kGlassPickerTriggerPaddingVertical;
+  painter.dispose();
+  return height < 48 ? 48 : height;
+}
 
 class GlassPickerPillTrigger extends StatelessWidget {
   final String label;
@@ -22,14 +46,14 @@ class GlassPickerPillTrigger extends StatelessWidget {
     return GlassButtonSurface(
       onTap: onTap,
       enabled: true,
-      height: null,
+      height: glassPickerTriggerHeight(context),
       borderRadius: kGlassPickerTriggerRadius,
       tintOpacity: isDark
           ? kGlassPickerSurfaceAlphaDark
           : kGlassPickerSurfaceAlphaLight,
       borderOpacity: isDark
           ? kGlassPickerSurfaceBorderAlphaDark
-          : kGlassPickerSurfaceBorderAlphaLight,
+          : glassControlBorderAlphaLight,
       padding: const EdgeInsets.fromLTRB(
         kGlassPickerTriggerPaddingHorizontal,
         kGlassPickerTriggerPaddingVertical,
@@ -39,15 +63,31 @@ class GlassPickerPillTrigger extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontSize: kGlassPickerTriggerLabelFontSize,
-              fontWeight: FontWeight.w700,
-              color: foreground,
-              letterSpacing: 0.1,
+          if (!isDark)
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: kGlassPickerTriggerLabelFontSize,
+                    fontWeight: FontWeight.w700,
+                    color: foreground,
+                    letterSpacing: 0.1,
+                  ),
+                ),
+              ),
+            )
+          else
+            Text(
+              label,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: kGlassPickerTriggerLabelFontSize,
+                fontWeight: FontWeight.w700,
+                color: foreground,
+                letterSpacing: 0.1,
+              ),
             ),
-          ),
           const SizedBox(width: 6),
           Icon(icon, color: foreground, size: kGlassPickerTriggerIconSize),
         ],
@@ -59,35 +99,33 @@ class GlassPickerPillTrigger extends StatelessWidget {
 class GlassPickerIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
+  final double size;
+  final double borderRadius;
 
   const GlassPickerIconButton({
     super.key,
     required this.icon,
     required this.onPressed,
+    this.size = kGlassPickerIconButtonSize,
+    this.borderRadius = kGlassPickerIconButtonRadius,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color foreground = Theme.of(context).colorScheme.onSurface;
-    final bool isEnabled = onPressed != null;
-    return GlassButtonSurface(
-      onTap: onPressed,
-      enabled: isEnabled,
-      width: kGlassPickerIconButtonSize,
-      height: kGlassPickerIconButtonSize,
-      borderRadius: kGlassPickerIconButtonRadius,
-      tintOpacity: isDark
-          ? kGlassPickerSurfaceAlphaDark
-          : kGlassPickerSurfaceAlphaLight,
-      borderOpacity: isDark
-          ? kGlassPickerSurfaceBorderAlphaDark
-          : kGlassPickerSurfaceBorderAlphaLight,
-      child: Icon(
-        icon,
-        color: foreground.withValues(alpha: isEnabled ? 1.0 : 0.35),
-        size: kGlassPickerIconSize,
-      ),
+    return AppGlassIconButton(
+      icon: icon,
+      onPressed: onPressed,
+      size: size,
+      iconSize: kGlassPickerIconSize,
+      shape: borderRadius >= size / 2
+          ? liquid.GlassIconButtonShape.circle
+          : liquid.GlassIconButtonShape.roundedSquare,
+      borderRadius: borderRadius,
+      tooltip: icon == Icons.chevron_left_rounded
+          ? MaterialLocalizations.of(context).backButtonTooltip
+          : icon == Icons.chevron_right_rounded
+          ? AppLocalizations.of(context).continueButton
+          : AppLocalizations.of(context).today,
     );
   }
 }
@@ -125,7 +163,7 @@ class GlassPickerTile extends StatelessWidget {
     } else if (isFocused) {
       background = primary.withValues(alpha: isDark ? 0.45 : 0.38);
       borderColor = Colors.white.withValues(alpha: isDark ? 0.28 : 0.55);
-      textColor = isDark ? colorScheme.onSurface : colorScheme.onPrimary;
+      textColor = colorScheme.onSurface;
       fontWeight = FontWeight.w700;
     } else if (isCurrent) {
       background = primary.withValues(alpha: isDark ? 0.2 : 0.16);
@@ -133,8 +171,13 @@ class GlassPickerTile extends StatelessWidget {
       textColor = colorScheme.onSurface;
       fontWeight = FontWeight.w700;
     } else {
-      background = Colors.white.withValues(alpha: isDark ? 0.06 : 0.2);
-      borderColor = Colors.white.withValues(alpha: isDark ? 0.14 : 0.35);
+      final lightModal = AppModalSurfaceScope.isLight(context);
+      background = lightModal
+          ? colorScheme.onSurface.withValues(alpha: glassModalFillAlphaLight)
+          : Colors.white.withValues(alpha: isDark ? 0.06 : 0.2);
+      borderColor = lightModal
+          ? colorScheme.onSurface.withValues(alpha: glassModalBorderAlphaLight)
+          : Colors.white.withValues(alpha: isDark ? 0.14 : 0.35);
       textColor = colorScheme.onSurface;
       fontWeight = FontWeight.w600;
     }
@@ -148,14 +191,44 @@ class GlassPickerTile extends StatelessWidget {
           tint: background,
           borderRadius: kGlassPickerTileRadius,
           borderColor: borderColor,
-          child: Center(
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final style = Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: fontWeight,
                 color: textColor,
-              ),
-            ),
+              );
+              final labelWidget = Text(label, style: style);
+              if (isDark || !isFocused) {
+                return Center(child: labelWidget);
+              }
+              final painter = TextPainter(
+                text: TextSpan(text: label, style: style),
+                textDirection: Directionality.of(context),
+                textScaler: MediaQuery.textScalerOf(context),
+              )..layout();
+              final needsVerticalMarker =
+                  painter.width + 18 > constraints.maxWidth;
+              painter.dispose();
+              return Center(
+                child: needsVerticalMarker
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.check_rounded, size: 10, color: textColor),
+                          const SizedBox(height: 2),
+                          labelWidget,
+                        ],
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.check_rounded, size: 14, color: textColor),
+                          const SizedBox(width: 4),
+                          labelWidget,
+                        ],
+                      ),
+              );
+            },
           ),
         ),
       ),

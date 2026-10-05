@@ -1,3 +1,5 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'dart:async';
 
 import 'package:dienstplan/core/config/contact_feedback_copy.dart';
@@ -5,7 +7,7 @@ import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/routing/root_navigator.dart';
 import 'package:dienstplan/core/telemetry/sentry_telemetry.dart';
 import 'package:dienstplan/core/utils/logger.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
 import 'package:flutter/material.dart';
@@ -184,32 +186,55 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
     final TextStyle? bodySmall = Theme.of(context).textTheme.bodySmall;
 
     if (_screenshot != null) {
-      return Row(
-        children: [
-          FutureBuilder<Uint8List>(
-            future: Future<Uint8List>.value(_screenshotBytes),
-            builder: (context, snapshot) {
-              final Widget preview = snapshot.hasData
-                  ? Image.memory(snapshot.data!, fit: BoxFit.cover)
-                  : Icon(Icons.image_outlined, color: colorScheme.onSurface);
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
-                child: SizedBox.square(dimension: 48, child: preview),
-              );
-            },
-          ),
-          const SizedBox(width: glassSpacingMd),
-          Expanded(
-            child: Text(
-              ContactFeedbackCopy.screenshotAttached,
-              style: bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-            ),
-          ),
-          TextButton(
-            onPressed: _isSubmitting ? null : () => _setScreenshot(null),
-            child: const Text(ContactFeedbackCopy.removeScreenshotButton),
-          ),
-        ],
+      final preview = FutureBuilder<Uint8List>(
+        future: Future<Uint8List>.value(_screenshotBytes),
+        builder: (context, snapshot) {
+          final Widget preview = snapshot.hasData
+              ? Image.memory(snapshot.data!, fit: BoxFit.cover)
+              : Icon(Icons.image_outlined, color: colorScheme.onSurface);
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(glassSurfaceRadiusSm),
+            child: SizedBox.square(dimension: 48, child: preview),
+          );
+        },
+      );
+      final label = Text(
+        ContactFeedbackCopy.screenshotAttached,
+        style: bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+      );
+      final removeButton = AppGlassButton(
+        role: AppGlassButtonRole.quiet,
+        onPressed: _isSubmitting ? null : () => _setScreenshot(null),
+        child: const Text(ContactFeedbackCopy.removeScreenshotButton),
+      );
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final stackAction =
+              Theme.of(context).brightness == Brightness.light &&
+              (constraints.maxWidth < 340 ||
+                  MediaQuery.textScalerOf(context).scale(16) > 18);
+          final summary = Row(
+            children: [
+              preview,
+              const SizedBox(width: glassSpacingMd),
+              Expanded(child: label),
+              if (!stackAction) removeButton,
+            ],
+          );
+          return stackAction
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    summary,
+                    const SizedBox(height: glassSpacingSm),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: removeButton,
+                    ),
+                  ],
+                )
+              : summary;
+        },
       );
     }
 
@@ -221,17 +246,15 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
           style: bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: glassSpacingSm),
-        OutlinedButton.icon(
+        AppGlassButton.icon(
+          role: AppGlassButtonRole.secondary,
+
           key: const ValueKey('contact_feedback_capture_screenshot'),
           onPressed: _isCapturingScreenshot || _isSubmitting
               ? null
               : _captureScreenshot,
-          icon: _isCapturingScreenshot
-              ? const SizedBox.square(
-                  dimension: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.screenshot_outlined),
+          isLoading: _isCapturingScreenshot,
+          icon: const Icon(Icons.screenshot_outlined),
           label: const Text(ContactFeedbackCopy.captureScreenshotButton),
         ),
       ],
@@ -258,8 +281,8 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
       }
       if (screenshot == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(ContactFeedbackCopy.screenshotUnavailable),
+          AppSnackBar(
+            content: const Text(ContactFeedbackCopy.screenshotUnavailable),
           ),
         );
         return;
@@ -276,8 +299,8 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(ContactFeedbackCopy.screenshotUnavailable),
+        AppSnackBar(
+          content: const Text(ContactFeedbackCopy.screenshotUnavailable),
         ),
       );
     } finally {
@@ -316,8 +339,8 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(ContactFeedbackCopy.screenshotUnavailable),
+        AppSnackBar(
+          content: const Text(ContactFeedbackCopy.screenshotUnavailable),
         ),
       );
     } finally {
@@ -375,7 +398,7 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
           return;
         }
         messenger.showSnackBar(
-          const SnackBar(content: Text(ContactFeedbackCopy.submitError)),
+          AppSnackBar(content: const Text(ContactFeedbackCopy.submitError)),
         );
         return;
       }
@@ -401,7 +424,7 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
         Navigator.of(context).pop();
       }
       messenger.showSnackBar(
-        const SnackBar(content: Text(ContactFeedbackCopy.successMessage)),
+        AppSnackBar(content: const Text(ContactFeedbackCopy.successMessage)),
       );
     } catch (e, stackTrace) {
       AppLogger.e(
@@ -423,7 +446,7 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
         return;
       }
       messenger.showSnackBar(
-        const SnackBar(content: Text(ContactFeedbackCopy.submitError)),
+        AppSnackBar(content: const Text(ContactFeedbackCopy.submitError)),
       );
     } finally {
       if (mounted) {
@@ -460,8 +483,8 @@ class ContactFeedbackScreenshotCoordinator {
         '(screen=contact_feedback, reason=overlay_unavailable)',
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(ContactFeedbackCopy.screenshotUnavailable),
+        AppSnackBar(
+          content: const Text(ContactFeedbackCopy.screenshotUnavailable),
         ),
       );
       return;
@@ -547,9 +570,10 @@ class _ContactFeedbackScreenshotOverlayButton extends StatelessWidget {
       child: SafeArea(
         child: Material(
           color: Colors.transparent,
-          child: GlassButtonSurface(
+          child: AppGlassButton(
+            role: AppGlassButtonRole.primary,
             key: const ValueKey('contact_feedback_take_app_screenshot'),
-            onTap: () => onPressed(),
+            onPressed: () => onPressed(),
             enabled: true,
             borderRadius: glassSurfaceRadiusMd,
             height: 56,

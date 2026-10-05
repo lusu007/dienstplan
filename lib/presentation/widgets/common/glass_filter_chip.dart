@@ -1,8 +1,9 @@
+import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_chip_tokens.dart';
-import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 class GlassFilterChip extends StatelessWidget {
@@ -29,14 +30,19 @@ class GlassFilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final double tintOpacity = isSelected
-        ? (isDark ? glassTintAlphaActiveDark : glassTintAlphaActiveLight)
-        : (isDark ? glassTintAlphaDark : glassTintAlphaLight);
-    final Color textColor = _resolveFilterChipTextColor(
-      colorScheme: colorScheme,
-      isDark: isDark,
-      isSelected: isSelected,
+    final Color selectedTint = colorScheme.primary.withValues(
+      alpha: isDark
+          ? glassCardActiveTintAlphaDark
+          : glassCardActiveTintAlphaLight,
     );
+    final Color tint = isSelected
+        ? selectedTint
+        : colorScheme.primary.withValues(
+            alpha: isDark
+                ? kGlassFilterUnselectedTintAlphaDark
+                : kGlassFilterUnselectedTintAlphaLight,
+          );
+    final Color textColor = colorScheme.onSurface;
     final TextStyle? labelBaseStyle = Theme.of(context).textTheme.labelLarge;
     final TextStyle labelStyle = (labelBaseStyle ?? const TextStyle()).copyWith(
       color: textColor,
@@ -46,26 +52,42 @@ class GlassFilterChip extends StatelessWidget {
     );
     final Widget chip = Semantics(
       selected: isSelected,
-      child: liquid.GlassChip(
-        label: label,
-        onTap: onTap,
-        selected: isSelected,
-        selectedColor: colorScheme.primary.withValues(alpha: tintOpacity),
-        icon: showCheckmark && isSelected
-            ? Icon(Icons.check_rounded, size: 14, color: textColor)
-            : null,
-        labelStyle: labelStyle,
-        settings: appGlassSettings(
-          context,
-          tint: colorScheme.primary.withValues(alpha: tintOpacity),
+      child: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: ShapeDecoration(
+          shape: StadiumBorder(
+            side: BorderSide(
+              color: isSelected
+                  ? (isDark ? colorScheme.onSurface : colorScheme.primary)
+                        .withValues(alpha: isDark ? 0.65 : 0.85)
+                  : Colors.transparent,
+              width: isSelected ? glassCardActiveBorderWidth : 0,
+            ),
+          ),
         ),
-        useOwnLayer: true,
-        stretch: 0,
-        interactionScale: 1,
-        anchorStretch: false,
-        padding: const EdgeInsets.symmetric(
-          horizontal: kGlassFilterChipHorizontalPadding,
-          vertical: kGlassFilterChipVerticalPadding,
+        child: liquid.GlassChip(
+          label: label,
+          onTap: onTap,
+          selected: isSelected,
+          // The library's selected overlay only covers its padded content,
+          // leaving an inset edge at our minimum height. Tint the glass itself.
+          selectedColor: Colors.transparent,
+          icon: showCheckmark && isSelected
+              ? Icon(Icons.check_rounded, size: 14, color: textColor)
+              : null,
+          labelStyle: labelStyle,
+          settings: appGlassSettings(
+            context,
+            tint: tint,
+          ).copyWith(bodyMode: liquid.GlassBodyMode.adaptive),
+          useOwnLayer: true,
+          stretch: 0,
+          interactionScale: 1,
+          anchorStretch: false,
+          padding: const EdgeInsets.symmetric(
+            horizontal: kGlassFilterChipHorizontalPadding,
+            vertical: kGlassFilterChipVerticalPadding,
+          ),
         ),
       ),
     );
@@ -111,22 +133,27 @@ class GlassIconToggleChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final bool lightModal = AppModalSurfaceScope.isLight(context);
     final Color background = isSelected
         ? colorScheme.primary.withValues(
             alpha: isDark
                 ? kGlassChipSelectedTintAlphaDark
                 : kGlassChipSelectedTintAlphaLight,
           )
-        : Colors.white.withValues(
+        : (lightModal ? colorScheme.onSurface : Colors.white).withValues(
             alpha: isDark
                 ? kGlassChipUnselectedTintAlphaDark
+                : lightModal
+                ? glassModalFillAlphaLight
                 : kGlassChipUnselectedTintAlphaLight,
           );
     final Color borderColor = isSelected
         ? colorScheme.primary.withValues(alpha: kGlassChipSelectedBorderAlpha)
-        : Colors.white.withValues(
+        : (lightModal ? colorScheme.onSurface : Colors.white).withValues(
             alpha: isDark
                 ? kGlassChipUnselectedBorderAlphaDark
+                : lightModal
+                ? glassModalBorderAlphaLight
                 : kGlassChipUnselectedBorderAlphaLight,
           );
     final Color selectedPreferredColor =
@@ -134,54 +161,31 @@ class GlassIconToggleChip extends StatelessWidget {
         colorScheme.onPrimary.withValues(
           alpha: kGlassChipSelectedContentFallbackAlpha,
         );
-    final Color defaultSelectedIconColor = _resolveReadableForeground(
-      background: background,
-      preferred: selectedPreferredColor,
-    );
+    final Color defaultSelectedIconColor = isDark
+        ? _resolveReadableForeground(
+            background: background,
+            preferred: selectedPreferredColor,
+          )
+        : (selectedIconColor ?? colorScheme.onSurface);
     final Color defaultUnselectedIconColor = colorScheme.onSurfaceVariant
         .withValues(alpha: isEnabled ? 1.0 : kGlassChipDisabledContentAlpha);
     final Color iconColor = isSelected
         ? defaultSelectedIconColor
         : (unselectedIconColor ?? defaultUnselectedIconColor);
-    final Widget chip = Semantics(
-      selected: isSelected,
-      child: GlassButtonSurface(
-        onTap: onTap,
-        enabled: isEnabled,
-        width: kGlassIconChipSize,
-        height: kGlassIconChipSize,
-        borderRadius: kGlassIconChipRadius,
-        tintColor: background,
-        borderColor: borderColor,
-        child: Icon(
-          isSelected ? selectedIcon : unselectedIcon,
-          size: kGlassIconChipIconSize,
-          color: iconColor,
-        ),
-      ),
+    return AppGlassIconButton(
+      icon: isSelected ? selectedIcon : unselectedIcon,
+      onPressed: isEnabled ? onTap : null,
+      tooltip: tooltip ?? '',
+      isSelected: isSelected,
+      size: kGlassIconChipSize,
+      iconSize: kGlassIconChipIconSize,
+      shape: liquid.GlassIconButtonShape.roundedSquare,
+      borderRadius: kGlassIconChipRadius,
+      tintColor: background,
+      borderColor: borderColor,
+      foregroundColor: iconColor,
     );
-    if (tooltip == null || tooltip!.isEmpty) {
-      return chip;
-    }
-    return Tooltip(message: tooltip!, child: chip);
   }
-}
-
-Color _resolveFilterChipTextColor({
-  required ColorScheme colorScheme,
-  required bool isDark,
-  required bool isSelected,
-}) {
-  if (!isSelected) {
-    return colorScheme.onSurface;
-  }
-  if (!isDark) {
-    return colorScheme.primary;
-  }
-  return _resolveReadableForeground(
-    background: colorScheme.primary,
-    preferred: colorScheme.onSurface,
-  );
 }
 
 Color _resolveReadableForeground({

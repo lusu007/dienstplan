@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -171,7 +172,9 @@ class ConfigSelectionStepComponent extends StatelessWidget {
           ),
           if (state.selectedPoliceAuthorities.isNotEmpty) ...[
             const SizedBox(height: glassSpacingLg),
-            TextButton(
+            AppGlassButton(
+              role: AppGlassButtonRole.quiet,
+
               onPressed: onClearAllFilters,
               child: Text(l10n.clearAll),
             ),

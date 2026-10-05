@@ -113,6 +113,7 @@ class GridContent extends StatelessWidget {
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final double childAspectRatio;
+  final bool shrinkToContent;
 
   const GridContent({
     super.key,
@@ -121,11 +122,14 @@ class GridContent extends StatelessWidget {
     this.crossAxisSpacing = 8,
     this.mainAxisSpacing = 8,
     this.childAspectRatio = 1.0,
+    this.shrinkToContent = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      shrinkWrap: shrinkToContent,
+      physics: shrinkToContent ? const NeverScrollableScrollPhysics() : null,
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,

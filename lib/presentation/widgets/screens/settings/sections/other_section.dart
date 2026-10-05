@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,7 +57,7 @@ class OtherSection extends ConsumerWidget {
     } catch (e, stackTrace) {
       AppLogger.e('OtherSection: Error sharing app', e, stackTrace);
       if (!context.mounted) return;
-      messenger.showSnackBar(SnackBar(content: Text(l10n.shareAppError)));
+      messenger.showSnackBar(AppSnackBar(content: Text(l10n.shareAppError)));
     }
   }
 

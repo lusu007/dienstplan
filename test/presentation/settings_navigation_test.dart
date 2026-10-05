@@ -32,6 +32,69 @@ Widget host(Widget child) => MaterialApp(
 );
 
 void main() {
+  testWidgets('navigation hints are light-only and preserve custom trailing', (
+    tester,
+  ) async {
+    for (final brightness in Brightness.values) {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(brightness: brightness),
+          home: Scaffold(
+            body: Column(
+              children: [
+                NavigationCard(icon: Icons.person, title: 'Open', onTap: () {}),
+                NavigationCard(
+                  icon: Icons.person,
+                  title: 'Custom',
+                  onTap: () {},
+                  trailing: const Icon(Icons.palette),
+                ),
+                const NavigationCard(
+                  icon: Icons.person,
+                  title: 'Disabled',
+                  enabled: false,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byIcon(Icons.chevron_right_rounded),
+        brightness == Brightness.light ? findsOneWidget : findsNothing,
+      );
+      expect(find.byIcon(Icons.palette), findsOneWidget);
+    }
+  });
+  testWidgets(
+    'missing federal state explains light-only disabled holiday actions',
+    (tester) async {
+      for (final brightness in Brightness.values) {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              schoolHolidaysProvider.overrideWith(_EnabledHolidays.new),
+              settingsProvider.overrideWith(_Settings.new),
+            ],
+            child: MaterialApp(
+              theme: ThemeData(brightness: brightness),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: const Scaffold(
+                body: SingleChildScrollView(child: SchoolHolidaysSection()),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.text('Zuerst Bundesland auswählen'),
+          brightness == Brightness.light ? findsNWidgets(2) : findsNothing,
+        );
+      }
+    },
+  );
   testWidgets('settings overview does not load feature providers', (
     tester,
   ) async {
@@ -176,4 +239,10 @@ class _Holidays extends SchoolHolidaysNotifier {
 class _Partner extends PartnerNotifier {
   @override
   Future<PartnerUiState> build() async => PartnerUiState.initial();
+}
+
+class _EnabledHolidays extends SchoolHolidaysNotifier {
+  @override
+  Future<SchoolHolidaysUiState> build() async =>
+      SchoolHolidaysUiState.initial().copyWith(isEnabled: true);
 }

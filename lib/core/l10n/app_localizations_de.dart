@@ -664,4 +664,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsAppSummary => 'Neuigkeiten, Datenschutz & Hilfe';
+
+  @override
+  String get selectFederalStateFirst => 'Zuerst Bundesland auswählen';
 }

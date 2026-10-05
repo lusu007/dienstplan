@@ -14,8 +14,6 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
   final List<DutyScheduleConfig> configs;
   final String? selectedConfigName;
   final Future<void> Function(DutyScheduleConfig?) onConfigSelected;
-  final bool showNoConfigOption;
-  final String? noConfigTitle;
   final double? heightPercentage;
 
   const ConfigSelectionBottomsheet({
@@ -24,8 +22,6 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
     required this.configs,
     required this.selectedConfigName,
     required this.onConfigSelected,
-    this.showNoConfigOption = false,
-    this.noConfigTitle,
     this.heightPercentage,
   });
 
@@ -35,8 +31,6 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
     required List<DutyScheduleConfig> configs,
     required String? selectedConfigName,
     required Future<void> Function(DutyScheduleConfig?) onConfigSelected,
-    bool showNoConfigOption = false,
-    String? noConfigTitle,
     double? heightPercentage,
   }) {
     return showModalBottomSheet<void>(
@@ -50,8 +44,6 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
         configs: configs,
         selectedConfigName: selectedConfigName,
         onConfigSelected: onConfigSelected,
-        showNoConfigOption: showNoConfigOption,
-        noConfigTitle: noConfigTitle,
         heightPercentage: heightPercentage,
       ),
     );
@@ -159,23 +151,8 @@ class _ConfigSelectionBottomsheetState
             : ScrollFadeMask(
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                  itemCount:
-                      _filteredConfigs.length +
-                      (widget.showNoConfigOption ? 1 : 0),
+                  itemCount: _filteredConfigs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    if (widget.showNoConfigOption &&
-                        index == _filteredConfigs.length) {
-                      return SelectionCard(
-                        title: widget.noConfigTitle ?? l10n.noDutySchedule,
-                        isSelected: (widget.selectedConfigName ?? '').isEmpty,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          widget.onConfigSelected(null);
-                        },
-                        useDialogStyle: true,
-                      );
-                    }
-
                     final DutyScheduleConfig config = _filteredConfigs[index];
                     final bool isAlreadySelected =
                         widget.selectedConfigName == config.name;

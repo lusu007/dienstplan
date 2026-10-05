@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/utils/logger.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -27,7 +28,7 @@ class NotificationService {
       final messenger = scaffoldMessengerKey.currentState;
       if (messenger != null) {
         messenger.showSnackBar(
-          SnackBar(
+          AppSnackBar(
             content: Text(
               message,
               style: textColor != null ? TextStyle(color: textColor) : null,
@@ -78,7 +79,7 @@ class NotificationService {
     for (final pending in _pendingNotifications) {
       try {
         messenger.showSnackBar(
-          SnackBar(
+          AppSnackBar(
             content: Text(
               pending.message,
               style: pending.textColor != null
