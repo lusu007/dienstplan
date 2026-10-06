@@ -11,6 +11,7 @@ import 'package:dienstplan/core/utils/settings_utils.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/core/utils/logger.dart';
+
 import 'dart:async';
 
 part 'settings_notifier.g.dart';

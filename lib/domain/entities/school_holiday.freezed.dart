@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'school_holiday.dart';
@@ -9,6 +9,7 @@ part of 'school_holiday.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -34,39 +35,45 @@ mixin _$SchoolHoliday {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as SchoolHoliday;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is SchoolHoliday &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.startDate, startDate) ||
-                other.startDate == startDate) &&
-            (identical(other.endDate, endDate) || other.endDate == endDate) &&
-            (identical(other.stateCode, stateCode) ||
-                other.stateCode == stateCode) &&
-            (identical(other.stateName, stateName) ||
-                other.stateName == stateName) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.id, _this.id) || other.id == _this.id) &&
+            (identical(other.name, _this.name) || other.name == _this.name) &&
+            (identical(other.startDate, _this.startDate) ||
+                other.startDate == _this.startDate) &&
+            (identical(other.endDate, _this.endDate) ||
+                other.endDate == _this.endDate) &&
+            (identical(other.stateCode, _this.stateCode) ||
+                other.stateCode == _this.stateCode) &&
+            (identical(other.stateName, _this.stateName) ||
+                other.stateName == _this.stateName) &&
+            (identical(other.description, _this.description) ||
+                other.description == _this.description) &&
+            (identical(other.type, _this.type) || other.type == _this.type));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    name,
-    startDate,
-    endDate,
-    stateCode,
-    stateName,
-    description,
-    type,
-  );
+  int get hashCode {
+    final _this = this as SchoolHoliday;
+    return Object.hash(
+      runtimeType,
+      _this.id,
+      _this.name,
+      _this.startDate,
+      _this.endDate,
+      _this.stateCode,
+      _this.stateName,
+      _this.description,
+      _this.type,
+    );
+  }
 
   @override
   String toString() {
-    return 'SchoolHoliday(id: $id, name: $name, startDate: $startDate, endDate: $endDate, stateCode: $stateCode, stateName: $stateName, description: $description, type: $type)';
+    final _this = this as SchoolHoliday;
+    return 'SchoolHoliday(id: ${_this.id}, name: ${_this.name}, startDate: ${_this.startDate}, endDate: ${_this.endDate}, stateCode: ${_this.stateCode}, stateName: ${_this.stateName}, description: ${_this.description}, type: ${_this.type})';
   }
 }
 
@@ -112,7 +119,7 @@ class _$SchoolHolidayCopyWithImpl<$Res>
     Object? type = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      SchoolHoliday(
         id: null == id
             ? _self.id
             : id // ignore: cast_nullable_to_non_nullable
@@ -423,17 +430,19 @@ class _SchoolHoliday extends SchoolHoliday {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    name,
-    startDate,
-    endDate,
-    stateCode,
-    stateName,
-    description,
-    type,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      id,
+      name,
+      startDate,
+      endDate,
+      stateCode,
+      stateName,
+      description,
+      type,
+    );
+  }
 
   @override
   String toString() {

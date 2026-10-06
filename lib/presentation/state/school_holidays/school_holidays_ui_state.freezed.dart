@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'school_holidays_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'school_holidays_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -34,46 +35,52 @@ mixin _$SchoolHolidaysUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as SchoolHolidaysUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is SchoolHolidaysUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.isRefreshing, isRefreshing) ||
-                other.isRefreshing == isRefreshing) &&
-            (identical(other.isEnabled, isEnabled) ||
-                other.isEnabled == isEnabled) &&
-            (identical(other.selectedStateCode, selectedStateCode) ||
-                other.selectedStateCode == selectedStateCode) &&
-            (identical(other.error, error) || other.error == error) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.isRefreshing, _this.isRefreshing) ||
+                other.isRefreshing == _this.isRefreshing) &&
+            (identical(other.isEnabled, _this.isEnabled) ||
+                other.isEnabled == _this.isEnabled) &&
+            (identical(other.selectedStateCode, _this.selectedStateCode) ||
+                other.selectedStateCode == _this.selectedStateCode) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
             const DeepCollectionEquality().equals(
               other.holidaysByDate,
-              holidaysByDate,
+              _this.holidaysByDate,
             ) &&
             const DeepCollectionEquality().equals(
               other.allHolidays,
-              allHolidays,
+              _this.allHolidays,
             ) &&
-            (identical(other.lastRefreshTime, lastRefreshTime) ||
-                other.lastRefreshTime == lastRefreshTime));
+            (identical(other.lastRefreshTime, _this.lastRefreshTime) ||
+                other.lastRefreshTime == _this.lastRefreshTime));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    isRefreshing,
-    isEnabled,
-    selectedStateCode,
-    error,
-    const DeepCollectionEquality().hash(holidaysByDate),
-    const DeepCollectionEquality().hash(allHolidays),
-    lastRefreshTime,
-  );
+  int get hashCode {
+    final _this = this as SchoolHolidaysUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.isRefreshing,
+      _this.isEnabled,
+      _this.selectedStateCode,
+      _this.error,
+      const DeepCollectionEquality().hash(_this.holidaysByDate),
+      const DeepCollectionEquality().hash(_this.allHolidays),
+      _this.lastRefreshTime,
+    );
+  }
 
   @override
   String toString() {
-    return 'SchoolHolidaysUiState(isLoading: $isLoading, isRefreshing: $isRefreshing, isEnabled: $isEnabled, selectedStateCode: $selectedStateCode, error: $error, holidaysByDate: $holidaysByDate, allHolidays: $allHolidays, lastRefreshTime: $lastRefreshTime)';
+    final _this = this as SchoolHolidaysUiState;
+    return 'SchoolHolidaysUiState(isLoading: ${_this.isLoading}, isRefreshing: ${_this.isRefreshing}, isEnabled: ${_this.isEnabled}, selectedStateCode: ${_this.selectedStateCode}, error: ${_this.error}, holidaysByDate: ${_this.holidaysByDate}, allHolidays: ${_this.allHolidays}, lastRefreshTime: ${_this.lastRefreshTime})';
   }
 }
 
@@ -119,7 +126,7 @@ class _$SchoolHolidaysUiStateCopyWithImpl<$Res>
     Object? lastRefreshTime = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      SchoolHolidaysUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -380,8 +387,8 @@ class _SchoolHolidaysUiState extends SchoolHolidaysUiState {
     required this.isEnabled,
     this.selectedStateCode,
     this.error,
-    final Map<DateTime, List<SchoolHoliday>> holidaysByDate = const {},
-    final List<SchoolHoliday> allHolidays = const [],
+    Map<DateTime, List<SchoolHoliday>> holidaysByDate = const {},
+    List<SchoolHoliday> allHolidays = const [],
     this.lastRefreshTime,
   }) : _holidaysByDate = holidaysByDate,
        _allHolidays = allHolidays,
@@ -444,11 +451,11 @@ class _SchoolHolidaysUiState extends SchoolHolidaysUiState {
                 other.selectedStateCode == selectedStateCode) &&
             (identical(other.error, error) || other.error == error) &&
             const DeepCollectionEquality().equals(
-              other._holidaysByDate,
+              other.holidaysByDate,
               _holidaysByDate,
             ) &&
             const DeepCollectionEquality().equals(
-              other._allHolidays,
+              other.allHolidays,
               _allHolidays,
             ) &&
             (identical(other.lastRefreshTime, lastRefreshTime) ||
@@ -456,17 +463,19 @@ class _SchoolHolidaysUiState extends SchoolHolidaysUiState {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    isRefreshing,
-    isEnabled,
-    selectedStateCode,
-    error,
-    const DeepCollectionEquality().hash(_holidaysByDate),
-    const DeepCollectionEquality().hash(_allHolidays),
-    lastRefreshTime,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      isRefreshing,
+      isEnabled,
+      selectedStateCode,
+      error,
+      const DeepCollectionEquality().hash(_holidaysByDate),
+      const DeepCollectionEquality().hash(_allHolidays),
+      lastRefreshTime,
+    );
+  }
 
   @override
   String toString() {

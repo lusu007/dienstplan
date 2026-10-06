@@ -20,9 +20,8 @@ class ThemeModeBottomsheet {
     await Navigator.of(context).push<void>(
       _ThemeSheetRoute(
         barrierDismissible: true,
-        barrierLabel: MaterialLocalizations.of(
-          context,
-        ).modalBarrierDismissLabel,
+        barrierLabel: MaterialLocalizations.of(context)
+            .modalBarrierDismissLabel,
         transitionDuration: const Duration(milliseconds: 350),
         transitionBuilder: (context, animation, secondaryAnimation, child) =>
             SlideTransition(
@@ -77,9 +76,8 @@ class ThemeModeBottomsheet {
                           children: [
                             if (!isDark)
                               Semantics(
-                                label: MaterialLocalizations.of(
-                                  context,
-                                ).modalBarrierDismissLabel,
+                                label: MaterialLocalizations.of(context)
+                                    .modalBarrierDismissLabel,
                                 button: true,
                                 onTap: () => Navigator.maybePop(context),
                                 child: Center(

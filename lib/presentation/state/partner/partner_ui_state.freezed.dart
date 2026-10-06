@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'partner_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'partner_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -32,39 +33,46 @@ mixin _$PartnerUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as PartnerUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is PartnerUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.partnerConfigName, partnerConfigName) ||
-                other.partnerConfigName == partnerConfigName) &&
-            (identical(other.partnerDutyGroup, partnerDutyGroup) ||
-                other.partnerDutyGroup == partnerDutyGroup) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            (identical(other.partnerConfigName, _this.partnerConfigName) ||
+                other.partnerConfigName == _this.partnerConfigName) &&
+            (identical(other.partnerDutyGroup, _this.partnerDutyGroup) ||
+                other.partnerDutyGroup == _this.partnerDutyGroup) &&
             (identical(
                   other.partnerAccentColorValue,
-                  partnerAccentColorValue,
+                  _this.partnerAccentColorValue,
                 ) ||
-                other.partnerAccentColorValue == partnerAccentColorValue) &&
-            (identical(other.myAccentColorValue, myAccentColorValue) ||
-                other.myAccentColorValue == myAccentColorValue));
+                other.partnerAccentColorValue ==
+                    _this.partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, _this.myAccentColorValue) ||
+                other.myAccentColorValue == _this.myAccentColorValue));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-  );
+  int get hashCode {
+    final _this = this as PartnerUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.error,
+      _this.partnerConfigName,
+      _this.partnerDutyGroup,
+      _this.partnerAccentColorValue,
+      _this.myAccentColorValue,
+    );
+  }
 
   @override
   String toString() {
-    return 'PartnerUiState(isLoading: $isLoading, error: $error, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue)';
+    final _this = this as PartnerUiState;
+    return 'PartnerUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, partnerConfigName: ${_this.partnerConfigName}, partnerDutyGroup: ${_this.partnerDutyGroup}, partnerAccentColorValue: ${_this.partnerAccentColorValue}, myAccentColorValue: ${_this.myAccentColorValue})';
   }
 }
 
@@ -106,7 +114,7 @@ class _$PartnerUiStateCopyWithImpl<$Res>
     Object? myAccentColorValue = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      PartnerUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -393,15 +401,17 @@ class _PartnerUiState extends PartnerUiState {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      partnerConfigName,
+      partnerDutyGroup,
+      partnerAccentColorValue,
+      myAccentColorValue,
+    );
+  }
 
   @override
   String toString() {

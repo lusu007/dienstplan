@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'config_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'config_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -32,37 +33,46 @@ mixin _$ConfigUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as ConfigUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ConfigUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            (identical(other.activeConfigName, _this.activeConfigName) ||
+                other.activeConfigName == _this.activeConfigName) &&
             const DeepCollectionEquality().equals(
               other.dutyGroups,
-              dutyGroups,
+              _this.dutyGroups,
             ) &&
-            const DeepCollectionEquality().equals(other.configs, configs) &&
-            (identical(other.activeConfig, activeConfig) ||
-                other.activeConfig == activeConfig));
+            const DeepCollectionEquality().equals(
+              other.configs,
+              _this.configs,
+            ) &&
+            (identical(other.activeConfig, _this.activeConfig) ||
+                other.activeConfig == _this.activeConfig));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    activeConfigName,
-    const DeepCollectionEquality().hash(dutyGroups),
-    const DeepCollectionEquality().hash(configs),
-    activeConfig,
-  );
+  int get hashCode {
+    final _this = this as ConfigUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.error,
+      _this.activeConfigName,
+      const DeepCollectionEquality().hash(_this.dutyGroups),
+      const DeepCollectionEquality().hash(_this.configs),
+      _this.activeConfig,
+    );
+  }
 
   @override
   String toString() {
-    return 'ConfigUiState(isLoading: $isLoading, error: $error, activeConfigName: $activeConfigName, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig)';
+    final _this = this as ConfigUiState;
+    return 'ConfigUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, activeConfigName: ${_this.activeConfigName}, dutyGroups: ${_this.dutyGroups}, configs: ${_this.configs}, activeConfig: ${_this.activeConfig})';
   }
 }
 
@@ -106,7 +116,7 @@ class _$ConfigUiStateCopyWithImpl<$Res>
     Object? activeConfig = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      ConfigUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -359,8 +369,8 @@ class _ConfigUiState extends ConfigUiState {
     required this.isLoading,
     this.error,
     this.activeConfigName,
-    final List<String> dutyGroups = const <String>[],
-    final List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
+    List<String> dutyGroups = const <String>[],
+    List<DutyScheduleConfig> configs = const <DutyScheduleConfig>[],
     this.activeConfig,
   }) : _dutyGroups = dutyGroups,
        _configs = configs,
@@ -412,24 +422,26 @@ class _ConfigUiState extends ConfigUiState {
             (identical(other.activeConfigName, activeConfigName) ||
                 other.activeConfigName == activeConfigName) &&
             const DeepCollectionEquality().equals(
-              other._dutyGroups,
+              other.dutyGroups,
               _dutyGroups,
             ) &&
-            const DeepCollectionEquality().equals(other._configs, _configs) &&
+            const DeepCollectionEquality().equals(other.configs, _configs) &&
             (identical(other.activeConfig, activeConfig) ||
                 other.activeConfig == activeConfig));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    activeConfigName,
-    const DeepCollectionEquality().hash(_dutyGroups),
-    const DeepCollectionEquality().hash(_configs),
-    activeConfig,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      activeConfigName,
+      const DeepCollectionEquality().hash(_dutyGroups),
+      const DeepCollectionEquality().hash(_configs),
+      activeConfig,
+    );
+  }
 
   @override
   String toString() {

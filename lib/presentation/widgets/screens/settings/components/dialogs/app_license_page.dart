@@ -106,9 +106,8 @@ class _AppLicensePageState extends State<AppLicensePage> {
                     child: Text(
                       l10n.licensesLoadError,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge
+                          ?.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   ),
                 );
@@ -123,9 +122,8 @@ class _AppLicensePageState extends State<AppLicensePage> {
                     padding: const EdgeInsets.all(glassSpacingXl - 4),
                     child: Text(
                       l10n.licensesEmptyState,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge
+                          ?.copyWith(color: colorScheme.onSurfaceVariant),
                     ),
                   ),
                 );
@@ -157,9 +155,8 @@ class _AppLicensePageState extends State<AppLicensePage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
                       child: Theme(
-                        data: Theme.of(
-                          context,
-                        ).copyWith(dividerColor: Colors.transparent),
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
                         child: ExpansionTile(
                           shape: const Border(),
                           collapsedShape: const Border(),
@@ -238,16 +235,14 @@ class _LicenseAppHeader extends StatelessWidget {
                 if (appVersion != null && appVersion!.isNotEmpty)
                   Text(
                     appVersion!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                 if (appLegalese != null && appLegalese!.isNotEmpty)
                   Text(
                     appLegalese!,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
               ],
             ),

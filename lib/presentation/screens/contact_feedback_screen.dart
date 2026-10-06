@@ -1,5 +1,6 @@
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
+
 import 'dart:async';
 
 import 'package:dienstplan/core/config/contact_feedback_copy.dart';
@@ -14,11 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-typedef SubmitContactFeedback =
-    Future<SentryId> Function(SentryFeedback feedback, Hint? hint);
+typedef SubmitContactFeedback = Future<SentryId> Function(
+  SentryFeedback feedback,
+  Hint? hint,
+);
 typedef CaptureContactFeedbackScreenshot = Future<SentryAttachment?> Function();
-typedef StartContactFeedbackScreenshotSelection =
-    Future<void> Function(ContactFeedbackDraft draft);
+typedef StartContactFeedbackScreenshotSelection = Future<void> Function(
+  ContactFeedbackDraft draft,
+);
 
 class ContactFeedbackDraft {
   final String name;
@@ -646,9 +650,8 @@ class _FeedbackTextField extends StatelessWidget {
       textInputAction: textInputAction,
       validator: validator,
       inputFormatters: inputFormatters,
-      style: Theme.of(
-        context,
-      ).textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
+      style: Theme.of(context).textTheme.bodyLarge
+          ?.copyWith(color: colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,

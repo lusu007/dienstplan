@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'duty_type.dart';
@@ -9,6 +9,7 @@ part of 'duty_type.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -27,22 +28,34 @@ mixin _$DutyType {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as DutyType;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is DutyType &&
-            (identical(other.label, label) || other.label == label) &&
-            (identical(other.isAllDay, isAllDay) ||
-                other.isAllDay == isAllDay) &&
-            (identical(other.icon, icon) || other.icon == icon) &&
-            (identical(other.abbr, abbr) || other.abbr == abbr));
+            (identical(other.label, _this.label) ||
+                other.label == _this.label) &&
+            (identical(other.isAllDay, _this.isAllDay) ||
+                other.isAllDay == _this.isAllDay) &&
+            (identical(other.icon, _this.icon) || other.icon == _this.icon) &&
+            (identical(other.abbr, _this.abbr) || other.abbr == _this.abbr));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, label, isAllDay, icon, abbr);
+  int get hashCode {
+    final _this = this as DutyType;
+    return Object.hash(
+      runtimeType,
+      _this.label,
+      _this.isAllDay,
+      _this.icon,
+      _this.abbr,
+    );
+  }
 
   @override
   String toString() {
-    return 'DutyType(label: $label, isAllDay: $isAllDay, icon: $icon, abbr: $abbr)';
+    final _this = this as DutyType;
+    return 'DutyType(label: ${_this.label}, isAllDay: ${_this.isAllDay}, icon: ${_this.icon}, abbr: ${_this.abbr})';
   }
 }
 
@@ -72,7 +85,7 @@ class _$DutyTypeCopyWithImpl<$Res> implements $DutyTypeCopyWith<$Res> {
     Object? abbr = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      DutyType(
         label: null == label
             ? _self.label
             : label // ignore: cast_nullable_to_non_nullable
@@ -295,7 +308,9 @@ class _DutyType extends DutyType {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, label, isAllDay, icon, abbr);
+  int get hashCode {
+    return Object.hash(runtimeType, label, isAllDay, icon, abbr);
+  }
 
   @override
   String toString() {

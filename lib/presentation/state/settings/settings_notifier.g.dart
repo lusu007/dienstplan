@@ -39,7 +39,7 @@ abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsUiState> {
   FutureOr<SettingsUiState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<SettingsUiState>, SettingsUiState>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsUiState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

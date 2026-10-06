@@ -33,13 +33,13 @@ final class SetupNotifierProvider
   SetupNotifier create() => SetupNotifier();
 }
 
-String _$setupNotifierHash() => r'9ba4c417c2acd22a2f529c84351669aabf1bf7ff';
+String _$setupNotifierHash() => r'74b63b60f5067f57de261bc510c2b2fae99a902c';
 
 abstract class _$SetupNotifier extends $AsyncNotifier<SetupUiState> {
   FutureOr<SetupUiState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<SetupUiState>, SetupUiState>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$SetupNotifier extends $AsyncNotifier<SetupUiState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

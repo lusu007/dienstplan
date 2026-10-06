@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'settings.dart';
@@ -9,6 +9,7 @@ part of 'settings.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -16,11 +17,11 @@ mixin _$Settings {
   String? get language;
   String? get myDutyGroup;
   String? get activeConfigName;
-  ThemePreference? get themePreference; // Partner duty group feature
+  ThemePreference? get themePreference;
   String? get partnerConfigName;
   String? get partnerDutyGroup;
-  int? get partnerAccentColorValue; // My accent color feature
-  int? get myAccentColorValue; // School holidays feature
+  int? get partnerAccentColorValue;
+  int? get myAccentColorValue;
   String? get schoolHolidayStateCode;
   bool? get showSchoolHolidays;
   bool? get showOtherDutyGroupsInCompactList;
@@ -36,71 +37,82 @@ mixin _$Settings {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as Settings;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Settings &&
-            (identical(other.language, language) ||
-                other.language == language) &&
-            (identical(other.myDutyGroup, myDutyGroup) ||
-                other.myDutyGroup == myDutyGroup) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
-            (identical(other.themePreference, themePreference) ||
-                other.themePreference == themePreference) &&
-            (identical(other.partnerConfigName, partnerConfigName) ||
-                other.partnerConfigName == partnerConfigName) &&
-            (identical(other.partnerDutyGroup, partnerDutyGroup) ||
-                other.partnerDutyGroup == partnerDutyGroup) &&
+            (identical(other.language, _this.language) ||
+                other.language == _this.language) &&
+            (identical(other.myDutyGroup, _this.myDutyGroup) ||
+                other.myDutyGroup == _this.myDutyGroup) &&
+            (identical(other.activeConfigName, _this.activeConfigName) ||
+                other.activeConfigName == _this.activeConfigName) &&
+            (identical(other.themePreference, _this.themePreference) ||
+                other.themePreference == _this.themePreference) &&
+            (identical(other.partnerConfigName, _this.partnerConfigName) ||
+                other.partnerConfigName == _this.partnerConfigName) &&
+            (identical(other.partnerDutyGroup, _this.partnerDutyGroup) ||
+                other.partnerDutyGroup == _this.partnerDutyGroup) &&
             (identical(
                   other.partnerAccentColorValue,
-                  partnerAccentColorValue,
+                  _this.partnerAccentColorValue,
                 ) ||
-                other.partnerAccentColorValue == partnerAccentColorValue) &&
-            (identical(other.myAccentColorValue, myAccentColorValue) ||
-                other.myAccentColorValue == myAccentColorValue) &&
-            (identical(other.schoolHolidayStateCode, schoolHolidayStateCode) ||
-                other.schoolHolidayStateCode == schoolHolidayStateCode) &&
-            (identical(other.showSchoolHolidays, showSchoolHolidays) ||
-                other.showSchoolHolidays == showSchoolHolidays) &&
+                other.partnerAccentColorValue ==
+                    _this.partnerAccentColorValue) &&
+            (identical(other.myAccentColorValue, _this.myAccentColorValue) ||
+                other.myAccentColorValue == _this.myAccentColorValue) &&
+            (identical(
+                  other.schoolHolidayStateCode,
+                  _this.schoolHolidayStateCode,
+                ) ||
+                other.schoolHolidayStateCode == _this.schoolHolidayStateCode) &&
+            (identical(other.showSchoolHolidays, _this.showSchoolHolidays) ||
+                other.showSchoolHolidays == _this.showSchoolHolidays) &&
             (identical(
                   other.showOtherDutyGroupsInCompactList,
-                  showOtherDutyGroupsInCompactList,
+                  _this.showOtherDutyGroupsInCompactList,
                 ) ||
                 other.showOtherDutyGroupsInCompactList ==
-                    showOtherDutyGroupsInCompactList) &&
+                    _this.showOtherDutyGroupsInCompactList) &&
             (identical(
                   other.lastSchoolHolidayRefresh,
-                  lastSchoolHolidayRefresh,
+                  _this.lastSchoolHolidayRefresh,
                 ) ||
-                other.lastSchoolHolidayRefresh == lastSchoolHolidayRefresh) &&
+                other.lastSchoolHolidayRefresh ==
+                    _this.lastSchoolHolidayRefresh) &&
             (identical(
                   other.holidayAccentColorValue,
-                  holidayAccentColorValue,
+                  _this.holidayAccentColorValue,
                 ) ||
-                other.holidayAccentColorValue == holidayAccentColorValue));
+                other.holidayAccentColorValue ==
+                    _this.holidayAccentColorValue));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    language,
-    myDutyGroup,
-    activeConfigName,
-    themePreference,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-    schoolHolidayStateCode,
-    showSchoolHolidays,
-    showOtherDutyGroupsInCompactList,
-    lastSchoolHolidayRefresh,
-    holidayAccentColorValue,
-  );
+  int get hashCode {
+    final _this = this as Settings;
+    return Object.hash(
+      runtimeType,
+      _this.language,
+      _this.myDutyGroup,
+      _this.activeConfigName,
+      _this.themePreference,
+      _this.partnerConfigName,
+      _this.partnerDutyGroup,
+      _this.partnerAccentColorValue,
+      _this.myAccentColorValue,
+      _this.schoolHolidayStateCode,
+      _this.showSchoolHolidays,
+      _this.showOtherDutyGroupsInCompactList,
+      _this.lastSchoolHolidayRefresh,
+      _this.holidayAccentColorValue,
+    );
+  }
 
   @override
   String toString() {
-    return 'Settings(language: $language, myDutyGroup: $myDutyGroup, activeConfigName: $activeConfigName, themePreference: $themePreference, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, schoolHolidayStateCode: $schoolHolidayStateCode, showSchoolHolidays: $showSchoolHolidays, showOtherDutyGroupsInCompactList: $showOtherDutyGroupsInCompactList, lastSchoolHolidayRefresh: $lastSchoolHolidayRefresh, holidayAccentColorValue: $holidayAccentColorValue)';
+    final _this = this as Settings;
+    return 'Settings(language: ${_this.language}, myDutyGroup: ${_this.myDutyGroup}, activeConfigName: ${_this.activeConfigName}, themePreference: ${_this.themePreference}, partnerConfigName: ${_this.partnerConfigName}, partnerDutyGroup: ${_this.partnerDutyGroup}, partnerAccentColorValue: ${_this.partnerAccentColorValue}, myAccentColorValue: ${_this.myAccentColorValue}, schoolHolidayStateCode: ${_this.schoolHolidayStateCode}, showSchoolHolidays: ${_this.showSchoolHolidays}, showOtherDutyGroupsInCompactList: ${_this.showOtherDutyGroupsInCompactList}, lastSchoolHolidayRefresh: ${_this.lastSchoolHolidayRefresh}, holidayAccentColorValue: ${_this.holidayAccentColorValue})';
   }
 }
 
@@ -153,7 +165,7 @@ class _$SettingsCopyWithImpl<$Res> implements $SettingsCopyWith<$Res> {
     Object? holidayAccentColorValue = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      Settings(
         language: freezed == language
             ? _self.language
             : language // ignore: cast_nullable_to_non_nullable
@@ -483,17 +495,14 @@ class _Settings extends Settings {
   final String? activeConfigName;
   @override
   final ThemePreference? themePreference;
-  // Partner duty group feature
   @override
   final String? partnerConfigName;
   @override
   final String? partnerDutyGroup;
   @override
   final int? partnerAccentColorValue;
-  // My accent color feature
   @override
   final int? myAccentColorValue;
-  // School holidays feature
   @override
   final String? schoolHolidayStateCode;
   @override
@@ -560,22 +569,24 @@ class _Settings extends Settings {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    language,
-    myDutyGroup,
-    activeConfigName,
-    themePreference,
-    partnerConfigName,
-    partnerDutyGroup,
-    partnerAccentColorValue,
-    myAccentColorValue,
-    schoolHolidayStateCode,
-    showSchoolHolidays,
-    showOtherDutyGroupsInCompactList,
-    lastSchoolHolidayRefresh,
-    holidayAccentColorValue,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      language,
+      myDutyGroup,
+      activeConfigName,
+      themePreference,
+      partnerConfigName,
+      partnerDutyGroup,
+      partnerAccentColorValue,
+      myAccentColorValue,
+      schoolHolidayStateCode,
+      showSchoolHolidays,
+      showOtherDutyGroupsInCompactList,
+      lastSchoolHolidayRefresh,
+      holidayAccentColorValue,
+    );
+  }
 
   @override
   String toString() {

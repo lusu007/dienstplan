@@ -65,9 +65,8 @@ class SoftGradientDivider extends StatelessWidget {
             Colors.transparent,
             isDark
                 ? Colors.white.withValues(alpha: glassDividerAlphaDark)
-                : Theme.of(context).colorScheme.onSurface.withValues(
-                    alpha: glassModalDividerAlphaLight,
-                  ),
+                : Theme.of(context).colorScheme.onSurface
+                      .withValues(alpha: glassModalDividerAlphaLight),
             Colors.transparent,
           ],
         ),

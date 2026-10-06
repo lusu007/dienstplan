@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'personal_calendar_entry.dart';
@@ -9,6 +9,7 @@ part of 'personal_calendar_entry.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -37,50 +38,61 @@ mixin _$PersonalCalendarEntry {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as PersonalCalendarEntry;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is PersonalCalendarEntry &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.kind, kind) || other.kind == kind) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.notes, notes) || other.notes == notes) &&
-            (identical(other.date, date) || other.date == date) &&
-            (identical(other.isAllDay, isAllDay) ||
-                other.isAllDay == isAllDay) &&
+            (identical(other.id, _this.id) || other.id == _this.id) &&
+            (identical(other.kind, _this.kind) || other.kind == _this.kind) &&
+            (identical(other.title, _this.title) ||
+                other.title == _this.title) &&
+            (identical(other.notes, _this.notes) ||
+                other.notes == _this.notes) &&
+            (identical(other.date, _this.date) || other.date == _this.date) &&
+            (identical(other.isAllDay, _this.isAllDay) ||
+                other.isAllDay == _this.isAllDay) &&
             (identical(
                   other.startMinutesFromMidnight,
-                  startMinutesFromMidnight,
+                  _this.startMinutesFromMidnight,
                 ) ||
-                other.startMinutesFromMidnight == startMinutesFromMidnight) &&
-            (identical(other.endMinutesFromMidnight, endMinutesFromMidnight) ||
-                other.endMinutesFromMidnight == endMinutesFromMidnight) &&
-            (identical(other.dutyGroupName, dutyGroupName) ||
-                other.dutyGroupName == dutyGroupName) &&
-            (identical(other.createdAtMs, createdAtMs) ||
-                other.createdAtMs == createdAtMs) &&
-            (identical(other.updatedAtMs, updatedAtMs) ||
-                other.updatedAtMs == updatedAtMs));
+                other.startMinutesFromMidnight ==
+                    _this.startMinutesFromMidnight) &&
+            (identical(
+                  other.endMinutesFromMidnight,
+                  _this.endMinutesFromMidnight,
+                ) ||
+                other.endMinutesFromMidnight == _this.endMinutesFromMidnight) &&
+            (identical(other.dutyGroupName, _this.dutyGroupName) ||
+                other.dutyGroupName == _this.dutyGroupName) &&
+            (identical(other.createdAtMs, _this.createdAtMs) ||
+                other.createdAtMs == _this.createdAtMs) &&
+            (identical(other.updatedAtMs, _this.updatedAtMs) ||
+                other.updatedAtMs == _this.updatedAtMs));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    kind,
-    title,
-    notes,
-    date,
-    isAllDay,
-    startMinutesFromMidnight,
-    endMinutesFromMidnight,
-    dutyGroupName,
-    createdAtMs,
-    updatedAtMs,
-  );
+  int get hashCode {
+    final _this = this as PersonalCalendarEntry;
+    return Object.hash(
+      runtimeType,
+      _this.id,
+      _this.kind,
+      _this.title,
+      _this.notes,
+      _this.date,
+      _this.isAllDay,
+      _this.startMinutesFromMidnight,
+      _this.endMinutesFromMidnight,
+      _this.dutyGroupName,
+      _this.createdAtMs,
+      _this.updatedAtMs,
+    );
+  }
 
   @override
   String toString() {
-    return 'PersonalCalendarEntry(id: $id, kind: $kind, title: $title, notes: $notes, date: $date, isAllDay: $isAllDay, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, dutyGroupName: $dutyGroupName, createdAtMs: $createdAtMs, updatedAtMs: $updatedAtMs)';
+    final _this = this as PersonalCalendarEntry;
+    return 'PersonalCalendarEntry(id: ${_this.id}, kind: ${_this.kind}, title: ${_this.title}, notes: ${_this.notes}, date: ${_this.date}, isAllDay: ${_this.isAllDay}, startMinutesFromMidnight: ${_this.startMinutesFromMidnight}, endMinutesFromMidnight: ${_this.endMinutesFromMidnight}, dutyGroupName: ${_this.dutyGroupName}, createdAtMs: ${_this.createdAtMs}, updatedAtMs: ${_this.updatedAtMs})';
   }
 }
 
@@ -132,7 +144,7 @@ class _$PersonalCalendarEntryCopyWithImpl<$Res>
     Object? updatedAtMs = null,
   }) {
     return _then(
-      _self.copyWith(
+      PersonalCalendarEntry(
         id: null == id
             ? _self.id
             : id // ignore: cast_nullable_to_non_nullable
@@ -493,20 +505,22 @@ class _PersonalCalendarEntry implements PersonalCalendarEntry {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    kind,
-    title,
-    notes,
-    date,
-    isAllDay,
-    startMinutesFromMidnight,
-    endMinutesFromMidnight,
-    dutyGroupName,
-    createdAtMs,
-    updatedAtMs,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      id,
+      kind,
+      title,
+      notes,
+      date,
+      isAllDay,
+      startMinutesFromMidnight,
+      endMinutesFromMidnight,
+      dutyGroupName,
+      createdAtMs,
+      updatedAtMs,
+    );
+  }
 
   @override
   String toString() {

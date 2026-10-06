@@ -35,14 +35,14 @@ final class ScheduleCoordinatorNotifierProvider
 }
 
 String _$scheduleCoordinatorNotifierHash() =>
-    r'b58628d24accb6619489bd6ddbabb375abc3856a';
+    r'9f0adef0b8e717ccd555844fbdc7fbe9e94c379e';
 
 abstract class _$ScheduleCoordinatorNotifier
     extends $AsyncNotifier<ScheduleUiState> {
   FutureOr<ScheduleUiState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<ScheduleUiState>, ScheduleUiState>;
     final element =
         ref.element
@@ -52,6 +52,6 @@ abstract class _$ScheduleCoordinatorNotifier
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'schedule_data_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'schedule_data_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -32,38 +33,48 @@ mixin _$ScheduleDataUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as ScheduleDataUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ScheduleDataUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.error, error) || other.error == error) &&
-            const DeepCollectionEquality().equals(other.schedules, schedules) &&
-            (identical(other.activeConfigName, activeConfigName) ||
-                other.activeConfigName == activeConfigName) &&
-            (identical(other.preferredDutyGroup, preferredDutyGroup) ||
-                other.preferredDutyGroup == preferredDutyGroup) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            const DeepCollectionEquality().equals(
+              other.schedules,
+              _this.schedules,
+            ) &&
+            (identical(other.activeConfigName, _this.activeConfigName) ||
+                other.activeConfigName == _this.activeConfigName) &&
+            (identical(other.preferredDutyGroup, _this.preferredDutyGroup) ||
+                other.preferredDutyGroup == _this.preferredDutyGroup) &&
             (identical(
                   other.holidayAccentColorValue,
-                  holidayAccentColorValue,
+                  _this.holidayAccentColorValue,
                 ) ||
-                other.holidayAccentColorValue == holidayAccentColorValue));
+                other.holidayAccentColorValue ==
+                    _this.holidayAccentColorValue));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    const DeepCollectionEquality().hash(schedules),
-    activeConfigName,
-    preferredDutyGroup,
-    holidayAccentColorValue,
-  );
+  int get hashCode {
+    final _this = this as ScheduleDataUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.error,
+      const DeepCollectionEquality().hash(_this.schedules),
+      _this.activeConfigName,
+      _this.preferredDutyGroup,
+      _this.holidayAccentColorValue,
+    );
+  }
 
   @override
   String toString() {
-    return 'ScheduleDataUiState(isLoading: $isLoading, error: $error, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, holidayAccentColorValue: $holidayAccentColorValue)';
+    final _this = this as ScheduleDataUiState;
+    return 'ScheduleDataUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, schedules: ${_this.schedules}, activeConfigName: ${_this.activeConfigName}, preferredDutyGroup: ${_this.preferredDutyGroup}, holidayAccentColorValue: ${_this.holidayAccentColorValue})';
   }
 }
 
@@ -105,7 +116,7 @@ class _$ScheduleDataUiStateCopyWithImpl<$Res>
     Object? holidayAccentColorValue = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      ScheduleDataUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -343,7 +354,7 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
   const _ScheduleDataUiState({
     required this.isLoading,
     this.error,
-    final List<Schedule> schedules = const <Schedule>[],
+    List<Schedule> schedules = const <Schedule>[],
     this.activeConfigName,
     this.preferredDutyGroup,
     this.holidayAccentColorValue,
@@ -390,7 +401,7 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
                 other.isLoading == isLoading) &&
             (identical(other.error, error) || other.error == error) &&
             const DeepCollectionEquality().equals(
-              other._schedules,
+              other.schedules,
               _schedules,
             ) &&
             (identical(other.activeConfigName, activeConfigName) ||
@@ -405,15 +416,17 @@ class _ScheduleDataUiState extends ScheduleDataUiState {
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    error,
-    const DeepCollectionEquality().hash(_schedules),
-    activeConfigName,
-    preferredDutyGroup,
-    holidayAccentColorValue,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      error,
+      const DeepCollectionEquality().hash(_schedules),
+      activeConfigName,
+      preferredDutyGroup,
+      holidayAccentColorValue,
+    );
+  }
 
   @override
   String toString() {

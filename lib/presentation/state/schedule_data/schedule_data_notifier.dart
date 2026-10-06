@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_ui_state.dart';
 import 'package:dienstplan/domain/use_cases/get_schedules_use_case.dart';
@@ -109,18 +110,19 @@ class ScheduleDataNotifier extends _$ScheduleDataNotifier {
 
         if (schedulesResult.isSuccess) {
           schedules = schedulesResult.value;
-          final List<Result<List<Schedule>>> ensureResults =
-              await Future.wait(<Future<Result<List<Schedule>>>>[
-                for (
-                  int i = -kMonthsPrefetchRadius;
-                  i <= kMonthsPrefetchRadius;
-                  i++
-                )
-                  _ensureMonthSchedulesUseCase!.execute(
-                    configName: activeConfigName,
-                    monthStart: DateTime(now.year, now.month + i, 1),
-                  ),
-              ]);
+          final List<Result<List<Schedule>>> ensureResults = await Future.wait(
+            <Future<Result<List<Schedule>>>>[
+              for (
+                int i = -kMonthsPrefetchRadius;
+                i <= kMonthsPrefetchRadius;
+                i++
+              )
+                _ensureMonthSchedulesUseCase!.execute(
+                  configName: activeConfigName,
+                  monthStart: DateTime(now.year, now.month + i, 1),
+                ),
+            ],
+          );
           final int ensureCount = ensureResults.length;
           for (int idx = 0; idx < ensureCount; idx++) {
             final Result<List<Schedule>> ensured = ensureResults[idx];

@@ -260,9 +260,8 @@ class _CalendarExportBottomsheetState
   }
 
   String _formatDate(BuildContext context, DateTime value) {
-    return DateFormat.yMMMd(
-      Localizations.localeOf(context).toString(),
-    ).format(DateTime(value.year, value.month, value.day));
+    return DateFormat.yMMMd(Localizations.localeOf(context).toString())
+        .format(DateTime(value.year, value.month, value.day));
   }
 
   void _invalidatePreparedCache() {

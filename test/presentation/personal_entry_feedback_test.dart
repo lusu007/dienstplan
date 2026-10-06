@@ -135,39 +135,40 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('save failure stays in editor and preserves draft (dark: $dark)', (
-      tester,
-    ) async {
-      await _openEditor(tester, dark: dark, editing: true);
-      await tester.ensureVisible(find.text('Speichern'));
-      await tester.tap(find.text('Speichern'));
-      await tester.pumpAndSettle();
-      final sheet = find.byType(PersonalCalendarEntrySheet);
-      expect(
-        find.descendant(
-          of: sheet,
-          matching: find.text(
-            'Beim Speichern ist ein Fehler aufgetreten. Bitte versuch es noch einmal.',
-          ),
-        ),
-        findsOneWidget,
-      );
-      expect(find.byType(AppSnackBar), findsNothing);
-      expect(
-        find
-            .text(
+    testWidgets(
+      'save failure stays in editor and preserves draft (dark: $dark)',
+      (tester) async {
+        await _openEditor(tester, dark: dark, editing: true);
+        await tester.ensureVisible(find.text('Speichern'));
+        await tester.tap(find.text('Speichern'));
+        await tester.pumpAndSettle();
+        final sheet = find.byType(PersonalCalendarEntrySheet);
+        expect(
+          find.descendant(
+            of: sheet,
+            matching: find.text(
               'Beim Speichern ist ein Fehler aufgetreten. Bitte versuch es noch einmal.',
-            )
-            .hitTestable(),
-        findsOneWidget,
-      );
-      final fields = tester
-          .widgetList<TextField>(find.byType(TextField))
-          .toList();
-      expect(fields[0].controller!.text, 'Arzttermin');
-      expect(fields[1].controller!.text, 'Unterlagen mitnehmen');
-      expect(tester.takeException(), isNull);
-    });
+            ),
+          ),
+          findsOneWidget,
+        );
+        expect(find.byType(AppSnackBar), findsNothing);
+        expect(
+          find
+              .text(
+                'Beim Speichern ist ein Fehler aufgetreten. Bitte versuch es noch einmal.',
+              )
+              .hitTestable(),
+          findsOneWidget,
+        );
+        final fields = tester
+            .widgetList<TextField>(find.byType(TextField))
+            .toList();
+        expect(fields[0].controller!.text, 'Arzttermin');
+        expect(fields[1].controller!.text, 'Unterlagen mitnehmen');
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets(
       'delete failure returns to editor with visible error (dark: $dark)',

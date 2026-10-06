@@ -39,7 +39,7 @@ abstract class _$PartnerNotifier extends $AsyncNotifier<PartnerUiState> {
   FutureOr<PartnerUiState> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<PartnerUiState>, PartnerUiState>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$PartnerNotifier extends $AsyncNotifier<PartnerUiState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

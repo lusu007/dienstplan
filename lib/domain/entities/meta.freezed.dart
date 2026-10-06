@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'meta.dart';
@@ -9,6 +9,7 @@ part of 'meta.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -30,37 +31,42 @@ mixin _$Meta {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as Meta;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is Meta &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.startDate, startDate) ||
-                other.startDate == startDate) &&
-            (identical(other.startWeekDay, startWeekDay) ||
-                other.startWeekDay == startWeekDay) &&
-            const DeepCollectionEquality().equals(other.days, days) &&
-            (identical(other.icon, icon) || other.icon == icon) &&
-            (identical(other.policeAuthority, policeAuthority) ||
-                other.policeAuthority == policeAuthority));
+            (identical(other.name, _this.name) || other.name == _this.name) &&
+            (identical(other.description, _this.description) ||
+                other.description == _this.description) &&
+            (identical(other.startDate, _this.startDate) ||
+                other.startDate == _this.startDate) &&
+            (identical(other.startWeekDay, _this.startWeekDay) ||
+                other.startWeekDay == _this.startWeekDay) &&
+            const DeepCollectionEquality().equals(other.days, _this.days) &&
+            (identical(other.icon, _this.icon) || other.icon == _this.icon) &&
+            (identical(other.policeAuthority, _this.policeAuthority) ||
+                other.policeAuthority == _this.policeAuthority));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    name,
-    description,
-    startDate,
-    startWeekDay,
-    const DeepCollectionEquality().hash(days),
-    icon,
-    policeAuthority,
-  );
+  int get hashCode {
+    final _this = this as Meta;
+    return Object.hash(
+      runtimeType,
+      _this.name,
+      _this.description,
+      _this.startDate,
+      _this.startWeekDay,
+      const DeepCollectionEquality().hash(_this.days),
+      _this.icon,
+      _this.policeAuthority,
+    );
+  }
 
   @override
   String toString() {
-    return 'Meta(name: $name, description: $description, startDate: $startDate, startWeekDay: $startWeekDay, days: $days, icon: $icon, policeAuthority: $policeAuthority)';
+    final _this = this as Meta;
+    return 'Meta(name: ${_this.name}, description: ${_this.description}, startDate: ${_this.startDate}, startWeekDay: ${_this.startWeekDay}, days: ${_this.days}, icon: ${_this.icon}, policeAuthority: ${_this.policeAuthority})';
   }
 }
 
@@ -101,7 +107,7 @@ class _$MetaCopyWithImpl<$Res> implements $MetaCopyWith<$Res> {
     Object? policeAuthority = freezed,
   }) {
     return _then(
-      _self.copyWith(
+      Meta(
         name: null == name
             ? _self.name
             : name // ignore: cast_nullable_to_non_nullable
@@ -349,7 +355,7 @@ class _Meta extends Meta {
     required this.description,
     required this.startDate,
     required this.startWeekDay,
-    required final List<String> days,
+    required List<String> days,
     this.icon,
     this.policeAuthority,
   }) : _days = days,
@@ -396,23 +402,25 @@ class _Meta extends Meta {
                 other.startDate == startDate) &&
             (identical(other.startWeekDay, startWeekDay) ||
                 other.startWeekDay == startWeekDay) &&
-            const DeepCollectionEquality().equals(other._days, _days) &&
+            const DeepCollectionEquality().equals(other.days, _days) &&
             (identical(other.icon, icon) || other.icon == icon) &&
             (identical(other.policeAuthority, policeAuthority) ||
                 other.policeAuthority == policeAuthority));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    name,
-    description,
-    startDate,
-    startWeekDay,
-    const DeepCollectionEquality().hash(_days),
-    icon,
-    policeAuthority,
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      name,
+      description,
+      startDate,
+      startWeekDay,
+      const DeepCollectionEquality().hash(_days),
+      icon,
+      policeAuthority,
+    );
+  }
 
   @override
   String toString() {

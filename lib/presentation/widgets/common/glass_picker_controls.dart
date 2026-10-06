@@ -193,10 +193,8 @@ class GlassPickerTile extends StatelessWidget {
           borderColor: borderColor,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final style = Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: fontWeight,
-                color: textColor,
-              );
+              final style = Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: fontWeight, color: textColor);
               final labelWidget = Text(label, style: style);
               if (isDark || !isFocused) {
                 return Center(child: labelWidget);

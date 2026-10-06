@@ -28,7 +28,7 @@ Release APK example: `flutter build apk --release`. Prebuilt APKs: [GitHub Relea
 
 ## Development
 
-- **SDK:** Dart `>=3.10.0 <4.0.0` (see [pubspec.yaml](pubspec.yaml)); Flutter stable recommended.
+- **SDK:** Flutter stable `3.47.6` / Dart `3.13.5`; minimum Dart `>=3.13.0 <4.0.0` (see [pubspec.yaml](pubspec.yaml)).
 - **Codegen:** `dart run build_runner build --delete-conflicting-outputs` after changing Freezed / Riverpod / routes.
 - **Structure:** `lib/core` (DI, init, cache), `lib/domain`, `lib/data`, `lib/presentation`. Providers live in `lib/core/di/riverpod_providers.dart` (generated `.g.dart` alongside).
 - **Details:** workflow, standards, and deeper architecture notes are in [CONTRIBUTING.md](CONTRIBUTING.md).

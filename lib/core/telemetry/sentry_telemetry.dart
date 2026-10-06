@@ -6,8 +6,10 @@ import 'package:dienstplan/data/services/sentry_service.dart';
 
 typedef SentryBreadcrumbSink = Future<void> Function(Breadcrumb breadcrumb);
 
-typedef SentryTransactionStarter =
-    ISentrySpan Function(String name, String operation);
+typedef SentryTransactionStarter = ISentrySpan Function(
+  String name,
+  String operation,
+);
 
 class SentryTelemetry {
   static const int _maxStringValueLength = 160;

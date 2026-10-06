@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'setup_ui_state.dart';
@@ -9,6 +9,7 @@ part of 'setup_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 T _$identity<T>(T value) => value;
 
 /// @nodoc
@@ -41,71 +42,87 @@ mixin _$SetupUiState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as SetupUiState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is SetupUiState &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.isGeneratingSchedules, isGeneratingSchedules) ||
-                other.isGeneratingSchedules == isGeneratingSchedules) &&
-            (identical(other.isSetupCompleted, isSetupCompleted) ||
-                other.isSetupCompleted == isSetupCompleted) &&
-            (identical(other.error, error) || other.error == error) &&
-            (identical(other.errorStackTrace, errorStackTrace) ||
-                other.errorStackTrace == errorStackTrace) &&
-            (identical(other.currentStep, currentStep) ||
-                other.currentStep == currentStep) &&
-            (identical(other.selectedTheme, selectedTheme) ||
-                other.selectedTheme == selectedTheme) &&
-            (identical(other.selectedConfig, selectedConfig) ||
-                other.selectedConfig == selectedConfig) &&
-            (identical(other.selectedDutyGroup, selectedDutyGroup) ||
-                other.selectedDutyGroup == selectedDutyGroup) &&
-            (identical(other.selectedPartnerConfig, selectedPartnerConfig) ||
-                other.selectedPartnerConfig == selectedPartnerConfig) &&
+            (identical(other.isLoading, _this.isLoading) ||
+                other.isLoading == _this.isLoading) &&
+            (identical(
+                  other.isGeneratingSchedules,
+                  _this.isGeneratingSchedules,
+                ) ||
+                other.isGeneratingSchedules == _this.isGeneratingSchedules) &&
+            (identical(other.isSetupCompleted, _this.isSetupCompleted) ||
+                other.isSetupCompleted == _this.isSetupCompleted) &&
+            (identical(other.error, _this.error) ||
+                other.error == _this.error) &&
+            (identical(other.errorStackTrace, _this.errorStackTrace) ||
+                other.errorStackTrace == _this.errorStackTrace) &&
+            (identical(other.currentStep, _this.currentStep) ||
+                other.currentStep == _this.currentStep) &&
+            (identical(other.selectedTheme, _this.selectedTheme) ||
+                other.selectedTheme == _this.selectedTheme) &&
+            (identical(other.selectedConfig, _this.selectedConfig) ||
+                other.selectedConfig == _this.selectedConfig) &&
+            (identical(other.selectedDutyGroup, _this.selectedDutyGroup) ||
+                other.selectedDutyGroup == _this.selectedDutyGroup) &&
+            (identical(
+                  other.selectedPartnerConfig,
+                  _this.selectedPartnerConfig,
+                ) ||
+                other.selectedPartnerConfig == _this.selectedPartnerConfig) &&
             (identical(
                   other.selectedPartnerDutyGroup,
-                  selectedPartnerDutyGroup,
+                  _this.selectedPartnerDutyGroup,
                 ) ||
-                other.selectedPartnerDutyGroup == selectedPartnerDutyGroup) &&
-            const DeepCollectionEquality().equals(other.configs, configs) &&
+                other.selectedPartnerDutyGroup ==
+                    _this.selectedPartnerDutyGroup) &&
+            const DeepCollectionEquality().equals(
+              other.configs,
+              _this.configs,
+            ) &&
             const DeepCollectionEquality().equals(
               other.selectedPoliceAuthorities,
-              selectedPoliceAuthorities,
+              _this.selectedPoliceAuthorities,
             ) &&
             const DeepCollectionEquality().equals(
               other.filteredConfigs,
-              filteredConfigs,
+              _this.filteredConfigs,
             ) &&
             const DeepCollectionEquality().equals(
               other.availablePoliceAuthorities,
-              availablePoliceAuthorities,
+              _this.availablePoliceAuthorities,
             ));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    isGeneratingSchedules,
-    isSetupCompleted,
-    error,
-    errorStackTrace,
-    currentStep,
-    selectedTheme,
-    selectedConfig,
-    selectedDutyGroup,
-    selectedPartnerConfig,
-    selectedPartnerDutyGroup,
-    const DeepCollectionEquality().hash(configs),
-    const DeepCollectionEquality().hash(selectedPoliceAuthorities),
-    const DeepCollectionEquality().hash(filteredConfigs),
-    const DeepCollectionEquality().hash(availablePoliceAuthorities),
-  );
+  int get hashCode {
+    final _this = this as SetupUiState;
+    return Object.hash(
+      runtimeType,
+      _this.isLoading,
+      _this.isGeneratingSchedules,
+      _this.isSetupCompleted,
+      _this.error,
+      _this.errorStackTrace,
+      _this.currentStep,
+      _this.selectedTheme,
+      _this.selectedConfig,
+      _this.selectedDutyGroup,
+      _this.selectedPartnerConfig,
+      _this.selectedPartnerDutyGroup,
+      const DeepCollectionEquality().hash(_this.configs),
+      const DeepCollectionEquality().hash(_this.selectedPoliceAuthorities),
+      const DeepCollectionEquality().hash(_this.filteredConfigs),
+      const DeepCollectionEquality().hash(_this.availablePoliceAuthorities),
+    );
+  }
 
   @override
   String toString() {
-    return 'SetupUiState(isLoading: $isLoading, isGeneratingSchedules: $isGeneratingSchedules, isSetupCompleted: $isSetupCompleted, error: $error, errorStackTrace: $errorStackTrace, currentStep: $currentStep, selectedTheme: $selectedTheme, selectedConfig: $selectedConfig, selectedDutyGroup: $selectedDutyGroup, selectedPartnerConfig: $selectedPartnerConfig, selectedPartnerDutyGroup: $selectedPartnerDutyGroup, configs: $configs, selectedPoliceAuthorities: $selectedPoliceAuthorities, filteredConfigs: $filteredConfigs, availablePoliceAuthorities: $availablePoliceAuthorities)';
+    final _this = this as SetupUiState;
+    return 'SetupUiState(isLoading: ${_this.isLoading}, isGeneratingSchedules: ${_this.isGeneratingSchedules}, isSetupCompleted: ${_this.isSetupCompleted}, error: ${_this.error}, errorStackTrace: ${_this.errorStackTrace}, currentStep: ${_this.currentStep}, selectedTheme: ${_this.selectedTheme}, selectedConfig: ${_this.selectedConfig}, selectedDutyGroup: ${_this.selectedDutyGroup}, selectedPartnerConfig: ${_this.selectedPartnerConfig}, selectedPartnerDutyGroup: ${_this.selectedPartnerDutyGroup}, configs: ${_this.configs}, selectedPoliceAuthorities: ${_this.selectedPoliceAuthorities}, filteredConfigs: ${_this.filteredConfigs}, availablePoliceAuthorities: ${_this.availablePoliceAuthorities})';
   }
 }
 
@@ -167,7 +184,7 @@ class _$SetupUiStateCopyWithImpl<$Res> implements $SetupUiStateCopyWith<$Res> {
     Object? availablePoliceAuthorities = null,
   }) {
     return _then(
-      _self.copyWith(
+      SetupUiState(
         isLoading: null == isLoading
             ? _self.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
@@ -534,10 +551,10 @@ class _SetupUiState extends SetupUiState {
     this.selectedDutyGroup,
     this.selectedPartnerConfig,
     this.selectedPartnerDutyGroup,
-    required final List<DutyScheduleConfig> configs,
-    required final Set<String> selectedPoliceAuthorities,
-    required final List<DutyScheduleConfig> filteredConfigs,
-    required final Set<String> availablePoliceAuthorities,
+    required List<DutyScheduleConfig> configs,
+    required Set<String> selectedPoliceAuthorities,
+    required List<DutyScheduleConfig> filteredConfigs,
+    required Set<String> availablePoliceAuthorities,
   }) : _configs = configs,
        _selectedPoliceAuthorities = selectedPoliceAuthorities,
        _filteredConfigs = filteredConfigs,
@@ -637,40 +654,42 @@ class _SetupUiState extends SetupUiState {
                   selectedPartnerDutyGroup,
                 ) ||
                 other.selectedPartnerDutyGroup == selectedPartnerDutyGroup) &&
-            const DeepCollectionEquality().equals(other._configs, _configs) &&
+            const DeepCollectionEquality().equals(other.configs, _configs) &&
             const DeepCollectionEquality().equals(
-              other._selectedPoliceAuthorities,
+              other.selectedPoliceAuthorities,
               _selectedPoliceAuthorities,
             ) &&
             const DeepCollectionEquality().equals(
-              other._filteredConfigs,
+              other.filteredConfigs,
               _filteredConfigs,
             ) &&
             const DeepCollectionEquality().equals(
-              other._availablePoliceAuthorities,
+              other.availablePoliceAuthorities,
               _availablePoliceAuthorities,
             ));
   }
 
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    isLoading,
-    isGeneratingSchedules,
-    isSetupCompleted,
-    error,
-    errorStackTrace,
-    currentStep,
-    selectedTheme,
-    selectedConfig,
-    selectedDutyGroup,
-    selectedPartnerConfig,
-    selectedPartnerDutyGroup,
-    const DeepCollectionEquality().hash(_configs),
-    const DeepCollectionEquality().hash(_selectedPoliceAuthorities),
-    const DeepCollectionEquality().hash(_filteredConfigs),
-    const DeepCollectionEquality().hash(_availablePoliceAuthorities),
-  );
+  int get hashCode {
+    return Object.hash(
+      runtimeType,
+      isLoading,
+      isGeneratingSchedules,
+      isSetupCompleted,
+      error,
+      errorStackTrace,
+      currentStep,
+      selectedTheme,
+      selectedConfig,
+      selectedDutyGroup,
+      selectedPartnerConfig,
+      selectedPartnerDutyGroup,
+      const DeepCollectionEquality().hash(_configs),
+      const DeepCollectionEquality().hash(_selectedPoliceAuthorities),
+      const DeepCollectionEquality().hash(_filteredConfigs),
+      const DeepCollectionEquality().hash(_availablePoliceAuthorities),
+    );
+  }
 
   @override
   String toString() {

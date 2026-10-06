@@ -129,83 +129,80 @@ class _FakePersonalCalendarRepository implements PersonalCalendarRepository {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  test(
-    'refreshPersonalCalendarEntries includes focused and selected later-year range',
-    () async {
-      final _FakeScheduleRepository scheduleRepository =
-          _FakeScheduleRepository();
-      final _FakeConfigRepository configRepository = _FakeConfigRepository();
-      final _FakeSettingsRepository settingsRepository =
-          _FakeSettingsRepository();
-      final _FakePersonalCalendarRepository personalRepository =
-          _FakePersonalCalendarRepository();
-      final GenerateSchedulesUseCase generateSchedulesUseCase =
-          GenerateSchedulesUseCase(scheduleRepository, configRepository);
-      final EnsureMonthSchedulesUseCase ensureMonthSchedulesUseCase =
-          EnsureMonthSchedulesUseCase(
-            scheduleRepository,
-            configRepository,
-            generateSchedulesUseCase,
-          );
-      final ProviderContainer container = ProviderContainer(
-        overrides: [
-          getSchedulesUseCaseProvider.overrideWith(
-            (Ref ref) async => GetSchedulesUseCase(scheduleRepository),
-          ),
-          generateSchedulesUseCaseProvider.overrideWith(
-            (Ref ref) async => generateSchedulesUseCase,
-          ),
-          ensureMonthSchedulesUseCaseProvider.overrideWith(
-            (Ref ref) async => ensureMonthSchedulesUseCase,
-          ),
-          getSettingsUseCaseProvider.overrideWith(
-            (Ref ref) async => GetSettingsUseCase(settingsRepository),
-          ),
-          getConfigsUseCaseProvider.overrideWith(
-            (Ref ref) async => GetConfigsUseCase(configRepository),
-          ),
-          listPersonalCalendarEntriesUseCaseProvider.overrideWith(
-            (Ref ref) async =>
-                ListPersonalCalendarEntriesUseCase(personalRepository),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-      await container.read(calendarProvider.future);
-      await container
-          .read(calendarProvider.notifier)
-          .setFocusedDay(DateTime(2032, 7, 1));
-      await container
-          .read(calendarProvider.notifier)
-          .setSelectedDay(DateTime(2032, 8, 15));
-      await container.read(scheduleDataProvider.future);
-      await container
-          .read(scheduleDataProvider.notifier)
-          .refreshPersonalCalendarEntries();
-      final DateTime startDate = personalRepository.lastStartDate!;
-      final DateTime endDate = personalRepository.lastEndDate!;
-      expect(
-        startDate.isBefore(DateTime(2032, 7, 1)) ||
-            startDate.isAtSameMomentAs(DateTime(2032, 7, 1)),
-        isTrue,
-      );
-      expect(
-        endDate.isAfter(DateTime(2032, 8, 15)) ||
-            endDate.isAtSameMomentAs(DateTime(2032, 8, 15)),
-        isTrue,
-      );
-      final List<Schedule> schedules = container
-          .read(scheduleDataProvider)
-          .value!
-          .schedules;
-      expect(
-        schedules.any((Schedule schedule) => schedule.isUserDefined),
-        isTrue,
-      );
-      expect(
-        schedules.any((Schedule schedule) => schedule.date.year == 2032),
-        isTrue,
-      );
-    },
-  );
+  test('refreshPersonalCalendarEntries includes focused and selected later-year range', () async {
+    final _FakeScheduleRepository scheduleRepository =
+        _FakeScheduleRepository();
+    final _FakeConfigRepository configRepository = _FakeConfigRepository();
+    final _FakeSettingsRepository settingsRepository =
+        _FakeSettingsRepository();
+    final _FakePersonalCalendarRepository personalRepository =
+        _FakePersonalCalendarRepository();
+    final GenerateSchedulesUseCase generateSchedulesUseCase =
+        GenerateSchedulesUseCase(scheduleRepository, configRepository);
+    final EnsureMonthSchedulesUseCase ensureMonthSchedulesUseCase =
+        EnsureMonthSchedulesUseCase(
+          scheduleRepository,
+          configRepository,
+          generateSchedulesUseCase,
+        );
+    final ProviderContainer container = ProviderContainer(
+      overrides: [
+        getSchedulesUseCaseProvider.overrideWith(
+          (Ref ref) async => GetSchedulesUseCase(scheduleRepository),
+        ),
+        generateSchedulesUseCaseProvider.overrideWith(
+          (Ref ref) async => generateSchedulesUseCase,
+        ),
+        ensureMonthSchedulesUseCaseProvider.overrideWith(
+          (Ref ref) async => ensureMonthSchedulesUseCase,
+        ),
+        getSettingsUseCaseProvider.overrideWith(
+          (Ref ref) async => GetSettingsUseCase(settingsRepository),
+        ),
+        getConfigsUseCaseProvider.overrideWith(
+          (Ref ref) async => GetConfigsUseCase(configRepository),
+        ),
+        listPersonalCalendarEntriesUseCaseProvider.overrideWith(
+          (Ref ref) async =>
+              ListPersonalCalendarEntriesUseCase(personalRepository),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(calendarProvider.future);
+    await container
+        .read(calendarProvider.notifier)
+        .setFocusedDay(DateTime(2032, 7, 1));
+    await container
+        .read(calendarProvider.notifier)
+        .setSelectedDay(DateTime(2032, 8, 15));
+    await container.read(scheduleDataProvider.future);
+    await container
+        .read(scheduleDataProvider.notifier)
+        .refreshPersonalCalendarEntries();
+    final DateTime startDate = personalRepository.lastStartDate!;
+    final DateTime endDate = personalRepository.lastEndDate!;
+    expect(
+      startDate.isBefore(DateTime(2032, 7, 1)) ||
+          startDate.isAtSameMomentAs(DateTime(2032, 7, 1)),
+      isTrue,
+    );
+    expect(
+      endDate.isAfter(DateTime(2032, 8, 15)) ||
+          endDate.isAtSameMomentAs(DateTime(2032, 8, 15)),
+      isTrue,
+    );
+    final List<Schedule> schedules = container
+        .read(scheduleDataProvider)
+        .value!
+        .schedules;
+    expect(
+      schedules.any((Schedule schedule) => schedule.isUserDefined),
+      isTrue,
+    );
+    expect(
+      schedules.any((Schedule schedule) => schedule.date.year == 2032),
+      isTrue,
+    );
+  });
 }
