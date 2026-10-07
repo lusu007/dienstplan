@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class AuditSetup extends SetupNotifier {
     currentStep: auditStep,
     selectedConfig: auditConfig,
     selectedPartnerConfig: auditConfig,
-    selectedDutyGroup: "Gruppe 1",
+    selectedDutyGroup: 'Gruppe 1',
     configs: [auditConfig],
     filteredConfigs: [auditConfig],
   );
@@ -72,6 +72,10 @@ void main() {
     for (final scale in [1.0, 1.5, 2.0]) {
       for (final size in [const Size(320, 640), const Size(740, 360)]) {
         for (final screen in [
+          'feedback',
+          'settings',
+          'disclaimer',
+          'privacy',
           'setup1',
           'setup2',
           'setup3',
@@ -142,12 +146,25 @@ void main() {
                 ),
               ),
             );
-            if (screen == 'privacy')
+            if (screen == 'privacy') {
               await tester.runAsync(() async {
                 await Future<void>.delayed(const Duration(milliseconds: 100));
               });
+            }
             await tester.pumpAndSettle();
             expect(tester.takeException(), isNull);
+            if (screen.startsWith('setup')) {
+              final action = find.byType(ActionButton).last;
+              await tester.ensureVisible(action);
+              await tester.pumpAndSettle();
+              expect(action.hitTestable(), findsOneWidget);
+            }
+            if (screen == 'feedback') {
+              await tester.ensureVisible(find.text('Screenshot entfernen'));
+              await tester.tap(find.text('Screenshot entfernen'));
+              await tester.pumpAndSettle();
+              expect(find.text('Screenshot angehängt'), findsNothing);
+            }
           });
         }
       }

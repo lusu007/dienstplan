@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/confirm_discard_changes.dart';
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 
@@ -65,6 +66,7 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
   SentryAttachment? _screenshot;
   FutureOr<Uint8List>? _screenshotBytes;
   bool _isSubmitting = false;
+  bool _confirmingClose = false;
   bool _isCapturingScreenshot = false;
 
   @override
@@ -85,71 +87,96 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
     super.dispose();
   }
 
+  bool get _isDirty =>
+      _nameController.text.isNotEmpty ||
+      _emailController.text.isNotEmpty ||
+      _messageController.text.isNotEmpty ||
+      _screenshot != null;
+
+  Future<void> _requestClose() async {
+    if (_isSubmitting || _isCapturingScreenshot || _confirmingClose) return;
+    _confirmingClose = true;
+    FocusManager.instance.primaryFocus?.unfocus();
+    final discard = !_isDirty || await confirmDiscardChanges(context);
+    _confirmingClose = false;
+    if (mounted && discard) Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GlassScreenScaffold(
-      title: ContactFeedbackCopy.title,
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            glassSpacingLg,
-            glassSpacingXl - 4,
-            glassSpacingLg,
-            glassSpacingXxl,
-          ),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildIntro(context),
-                    const SizedBox(height: glassSpacingXl),
-                    _FeedbackTextField(
-                      key: const ValueKey('contact_feedback_name_textfield'),
-                      controller: _nameController,
-                      label: ContactFeedbackCopy.nameLabel,
-                      hintText: ContactFeedbackCopy.namePlaceholder,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(height: glassSpacingLg),
-                    _FeedbackTextField(
-                      key: const ValueKey('contact_feedback_email_textfield'),
-                      controller: _emailController,
-                      label: ContactFeedbackCopy.emailLabel,
-                      hintText: ContactFeedbackCopy.emailPlaceholder,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(height: glassSpacingLg),
-                    _FeedbackTextField(
-                      key: const ValueKey('contact_feedback_message_textfield'),
-                      controller: _messageController,
-                      label:
-                          '${ContactFeedbackCopy.messageLabel}'
-                          '${ContactFeedbackCopy.requiredLabel}',
-                      hintText: ContactFeedbackCopy.messagePlaceholder,
-                      minLines: 5,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      validator: _validateRequired,
-                      inputFormatters: [LengthLimitingTextInputFormatter(4096)],
-                    ),
-                    const SizedBox(height: glassSpacingLg),
-                    _buildScreenshotAction(context),
-                    const SizedBox(height: glassSpacingXl),
-                    ActionButton(
-                      key: const ValueKey('contact_feedback_submit'),
-                      text: ContactFeedbackCopy.submitButton,
-                      loadingText: ContactFeedbackCopy.submitButton,
-                      isLoading: _isSubmitting,
-                      fontSize: 16,
-                      onPressed: _isSubmitting ? null : _submit,
-                    ),
-                  ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) _requestClose();
+      },
+      child: GlassScreenScaffold(
+        title: ContactFeedbackCopy.title,
+        child: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              glassSpacingLg,
+              glassSpacingXl - 4,
+              glassSpacingLg,
+              glassSpacingXxl,
+            ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildIntro(context),
+                      const SizedBox(height: glassSpacingXl),
+                      _FeedbackTextField(
+                        key: const ValueKey('contact_feedback_name_textfield'),
+                        controller: _nameController,
+                        label: ContactFeedbackCopy.nameLabel,
+                        hintText: ContactFeedbackCopy.namePlaceholder,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: glassSpacingLg),
+                      _FeedbackTextField(
+                        key: const ValueKey('contact_feedback_email_textfield'),
+                        controller: _emailController,
+                        label: ContactFeedbackCopy.emailLabel,
+                        hintText: ContactFeedbackCopy.emailPlaceholder,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: glassSpacingLg),
+                      _FeedbackTextField(
+                        key: const ValueKey(
+                          'contact_feedback_message_textfield',
+                        ),
+                        controller: _messageController,
+                        label:
+                            '${ContactFeedbackCopy.messageLabel}'
+                            '${ContactFeedbackCopy.requiredLabel}',
+                        hintText: ContactFeedbackCopy.messagePlaceholder,
+                        minLines: 5,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        validator: _validateRequired,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(4096),
+                        ],
+                      ),
+                      const SizedBox(height: glassSpacingLg),
+                      _buildScreenshotAction(context),
+                      const SizedBox(height: glassSpacingXl),
+                      ActionButton(
+                        key: const ValueKey('contact_feedback_submit'),
+                        text: ContactFeedbackCopy.submitButton,
+                        loadingText: ContactFeedbackCopy.submitButton,
+                        isLoading: _isSubmitting,
+                        fontSize: 16,
+                        onPressed: _isSubmitting ? null : _submit,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -214,9 +241,8 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
       return LayoutBuilder(
         builder: (context, constraints) {
           final stackAction =
-              Theme.of(context).brightness == Brightness.light &&
-              (constraints.maxWidth < 340 ||
-                  MediaQuery.textScalerOf(context).scale(16) > 18);
+              constraints.maxWidth < 340 ||
+              MediaQuery.textScalerOf(context).scale(16) > 18;
           final summary = Row(
             children: [
               preview,
@@ -330,6 +356,8 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
         await ContactFeedbackScreenshotCoordinator.start(
           context: context,
           draft: draft,
+          initialScreenshot: _screenshot,
+          captureScreenshot: widget.captureScreenshot,
         );
       }
     } catch (e, stackTrace) {
@@ -355,6 +383,7 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
   }
 
   Future<void> _submit() async {
+    if (_isSubmitting) return;
     final FormState? form = _formKey.currentState;
     if (form == null || !form.validate()) {
       return;
@@ -469,142 +498,144 @@ class _ContactFeedbackScreenState extends State<ContactFeedbackScreen> {
 
 class ContactFeedbackScreenshotCoordinator {
   const ContactFeedbackScreenshotCoordinator._();
-
   static OverlayEntry? _overlayEntry;
 
   static Future<void> start({
     required BuildContext context,
     required ContactFeedbackDraft draft,
+    SentryAttachment? initialScreenshot,
+    CaptureContactFeedbackScreenshot? captureScreenshot,
   }) async {
-    final NavigatorState navigator =
-        rootNavigatorKey.currentState ?? Navigator.of(context);
-    final OverlayState? overlay =
-        navigator.overlay ?? Overlay.maybeOf(context, rootOverlay: true);
-
-    if (overlay == null) {
-      AppLogger.e(
-        'Failed to start contact feedback screenshot selection '
-        '(screen=contact_feedback, reason=overlay_unavailable)',
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        AppSnackBar(
-          content: const Text(ContactFeedbackCopy.screenshotUnavailable),
-        ),
-      );
-      return;
-    }
-
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
-    }
-
-    _overlayEntry?.remove();
-    _overlayEntry = OverlayEntry(
-      builder: (context) {
-        return _ContactFeedbackScreenshotOverlayButton(
-          onPressed: () async {
-            await _captureAndRestoreFeedback(navigator, draft);
-          },
-        );
-      },
-    );
-    overlay.insert(_overlayEntry!);
-    AppLogger.i(
-      'Started contact feedback screenshot selection '
-      '(screen=contact_feedback)',
-    );
-  }
-
-  static Future<void> _captureAndRestoreFeedback(
-    NavigatorState navigator,
-    ContactFeedbackDraft draft,
-  ) async {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-
-    SentryAttachment? screenshot;
-    try {
-      await WidgetsBinding.instance.endOfFrame;
-      screenshot = await SentryFlutter.captureScreenshot();
-      if (screenshot == null) {
-        AppLogger.e(
-          'Failed to capture contact feedback screenshot '
-          '(screen=contact_feedback, reason=screenshot_unavailable)',
-        );
-      } else {
-        AppLogger.i(
-          'Captured contact feedback screenshot successfully '
-          '(screen=contact_feedback)',
-        );
+    final navigator = rootNavigatorKey.currentState ?? Navigator.of(context);
+    final overlay = navigator.overlay;
+    if (overlay == null || _overlayEntry != null) return;
+    if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+    LocalHistoryEntry? history;
+    var finished = false;
+    late final OverlayEntry entry;
+    Future<void> finish({required bool capture}) async {
+      if (finished) return;
+      finished = true;
+      history?.remove();
+      entry.remove();
+      entry.dispose();
+      _overlayEntry = null;
+      var screenshot = initialScreenshot;
+      var failed = false;
+      if (capture) {
+        try {
+          await WidgetsBinding.instance.endOfFrame;
+          final next =
+              await (captureScreenshot ?? SentryFlutter.captureScreenshot)();
+          if (next == null) {
+            failed = true;
+          } else {
+            screenshot = next;
+          }
+        } catch (error, stack) {
+          AppLogger.e('Screenshot capture failed', error, stack);
+          failed = true;
+        }
       }
-    } catch (e, stackTrace) {
-      AppLogger.e(
-        'Failed to capture contact feedback screenshot '
-        '(screen=contact_feedback, errorType=${e.runtimeType})',
-        e,
-        stackTrace,
+      if (!navigator.mounted) return;
+      unawaited(
+        navigator.push<void>(
+          MaterialPageRoute<void>(
+            fullscreenDialog: true,
+            builder: (_) => ContactFeedbackScreen(
+              initialDraft: draft,
+              initialScreenshot: screenshot,
+            ),
+          ),
+        ),
       );
+      if (failed) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (navigator.mounted) {
+            ScaffoldMessenger.of(navigator.context).showSnackBar(
+              AppSnackBar(
+                content: const Text(ContactFeedbackCopy.screenshotUnavailable),
+              ),
+            );
+          }
+        });
+      }
     }
 
-    await navigator.push<void>(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (context) => ContactFeedbackScreen(
-          initialDraft: draft,
-          initialScreenshot: screenshot,
-        ),
+    entry = OverlayEntry(
+      builder: (_) => _ContactFeedbackScreenshotOverlayButton(
+        onCapture: () => finish(capture: true),
+        onCancel: () => finish(capture: false),
       ),
     );
+    _overlayEntry = entry;
+    overlay.insert(entry);
+    // Back exits selection instead of leaving an overlay on another screen.
+    navigator.popUntil((route) {
+      if (route is ModalRoute) {
+        history = LocalHistoryEntry(
+          onRemove: () {
+            if (!finished) scheduleMicrotask(() => unawaited(finish(capture: false)));
+          },
+        );
+        route.addLocalHistoryEntry(history!);
+      }
+      return true;
+    });
   }
 }
 
 class _ContactFeedbackScreenshotOverlayButton extends StatelessWidget {
-  final Future<void> Function() onPressed;
-
-  const _ContactFeedbackScreenshotOverlayButton({required this.onPressed});
+  const _ContactFeedbackScreenshotOverlayButton({
+    required this.onCapture,
+    required this.onCancel,
+  });
+  final VoidCallback onCapture;
+  final VoidCallback onCancel;
 
   @override
-  Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return PositionedDirectional(
-      end: glassSpacingLg,
-      bottom: glassSpacingXl,
-      child: SafeArea(
-        child: Material(
-          color: Colors.transparent,
-          child: AppGlassButton(
-            role: AppGlassButtonRole.primary,
-            key: const ValueKey('contact_feedback_take_app_screenshot'),
-            onPressed: () => onPressed(),
-            enabled: true,
-            borderRadius: glassSurfaceRadiusMd,
-            height: 56,
-            padding: const EdgeInsets.symmetric(horizontal: glassSpacingLg),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.screenshot_outlined,
-                  size: 20,
-                  color: colorScheme.onSurface,
-                ),
-                const SizedBox(width: glassSpacingSm),
-                Text(
-                  ContactFeedbackCopy.captureScreenshotButton,
-                  style: textTheme.titleMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w700,
+  Widget build(BuildContext context) => Positioned(
+    left: glassSpacingLg,
+    right: glassSpacingLg,
+    bottom: glassSpacingLg,
+    child: SafeArea(
+      child: Material(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(glassSurfaceRadiusMd),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(ContactFeedbackCopy.screenshotSelectionHint),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.end,
+                children: [
+                  AppGlassButton(
+                    key: const ValueKey(
+                      'contact_feedback_cancel_app_screenshot',
+                    ),
+                    role: AppGlassButtonRole.quiet,
+                    onPressed: onCancel,
+                    child: const Text(ContactFeedbackCopy.cancelButton),
                   ),
-                ),
-              ],
-            ),
+                  AppGlassButton(
+                    key: const ValueKey('contact_feedback_take_app_screenshot'),
+                    role: AppGlassButtonRole.primary,
+                    onPressed: onCapture,
+                    child: const Text(ContactFeedbackCopy.takeScreenshotButton),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _FeedbackTextField extends StatelessWidget {

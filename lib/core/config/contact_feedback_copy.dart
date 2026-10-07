@@ -1,13 +1,17 @@
 class ContactFeedbackCopy {
   const ContactFeedbackCopy._();
 
+  static const String takeScreenshotButton = 'Aufnehmen';
+  static const String screenshotSelectionHint =
+      'Öffne die betroffene Ansicht und tippe auf Aufnehmen.';
   static const String title = 'Feedback';
   static const String introTitle = 'Sag uns, was nicht rund läuft';
   static const String introBody =
       'Beschreibe kurz, was passiert ist oder was dir fehlt. '
       'Wenn du möchtest, kannst du eine E-Mail-Adresse für Rückfragen angeben.';
   static const String screenshotHint =
-      'Ein Screenshot hilft uns, Anzeigeprobleme schneller nachzuvollziehen.';
+      'Ein Screenshot hilft uns, Anzeigeprobleme schneller nachzuvollziehen. '
+      'Prüfe vor dem Absenden, ob persönliche Informationen sichtbar sind.';
   static const String messageLabel = 'Nachricht';
   static const String messagePlaceholder =
       'Was möchtest du uns mitteilen? Was ist passiert?';

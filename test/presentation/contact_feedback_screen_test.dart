@@ -16,6 +16,103 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() {
+  for (final action in ['cancel', 'back', 'failed capture']) {
+    testWidgets(
+      'screenshot selection $action restores draft and previous attachment',
+      (tester) async {
+        late BuildContext feedbackContext;
+        final previous = SentryAttachment.fromScreenshotData(
+          Uint8List.fromList(_transparentPng),
+        );
+        await tester.pumpWidget(
+          _TestApp(
+            child: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (ctx) {
+                        feedbackContext = ctx;
+                        return const ContactFeedbackScreen();
+                      },
+                    ),
+                  ),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+        await ContactFeedbackScreenshotCoordinator.start(
+          context: feedbackContext,
+          draft: const ContactFeedbackDraft(message: 'Mein Entwurf'),
+          initialScreenshot: previous,
+          captureScreenshot: () async => null,
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('contact_feedback_take_app_screenshot')),
+          findsOneWidget,
+        );
+        if (action == 'back') {
+          await Navigator.of(tester.element(find.text('Open'))).maybePop();
+        } else {
+          await tester.tap(
+            find.byKey(
+              ValueKey(
+                action == 'cancel'
+                    ? 'contact_feedback_cancel_app_screenshot'
+                    : 'contact_feedback_take_app_screenshot',
+              ),
+            ),
+          );
+        }
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('contact_feedback_take_app_screenshot')),
+          findsNothing,
+        );
+        expect(find.text('Mein Entwurf'), findsOneWidget);
+        expect(find.text('Screenshot angehängt'), findsOneWidget);
+        await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+        await tester.pumpAndSettle();
+        expect(find.text('Änderungen verwerfen?'), findsOneWidget);
+      },
+    );
+  }
+
+  testWidgets('dirty feedback back asks before losing message', (tester) async {
+    await tester.pumpWidget(
+      _TestApp(
+        child: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const ContactFeedbackScreen(),
+                ),
+              ),
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).last, 'Mein Entwurf');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+    await tester.pumpAndSettle();
+    expect(find.text('Änderungen verwerfen?'), findsOneWidget);
+    await tester.tap(find.text('Weiter bearbeiten'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mein Entwurf'), findsOneWidget);
+  });
+
   testWidgets(
     'attached screenshot stays readable and removable with large text',
     (tester) async {

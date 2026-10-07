@@ -122,7 +122,7 @@ class _GlassBackButton extends StatelessWidget {
 
   void _handleBack(BuildContext context) {
     if (Navigator.canPop(context)) {
-      Navigator.pop(context);
+      Navigator.maybePop(context);
     }
   }
 }
