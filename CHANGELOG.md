@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.18.0](https://github.com/lusu007/dienstplan/compare/v0.17.4...v0.18.0) (2026-10-07)
+
+
+### Features
+
+* **calendar:** simplify personal duties and fix update dialog ([#436](https://github.com/lusu007/dienstplan/issues/436)) ([4f0efb6](https://github.com/lusu007/dienstplan/commit/4f0efb6be071b2f68b010eeb8ab0dde9ea3e4b02))
+* standardize liquid glass UI and reorganize settings ([#431](https://github.com/lusu007/dienstplan/issues/431)) ([e96540c](https://github.com/lusu007/dienstplan/commit/e96540c4c7f5b18df29c6c07a11ae7aa04a8b027))
+
+
+### Bug Fixes
+
+* **schedule:** retain sub-notifiers during async operations ([#437](https://github.com/lusu007/dienstplan/issues/437)) ([8aed03a](https://github.com/lusu007/dienstplan/commit/8aed03accbb1a18d9efd1b64b3a357616a0ea14a))
+* **ui:** improve glass consistency and light-mode usability ([#434](https://github.com/lusu007/dienstplan/issues/434)) ([5e1f862](https://github.com/lusu007/dienstplan/commit/5e1f86207c45bfed4bd5ff7cfc7046ae91ebb555))
+* **ui:** resolve calendar, duty form and feedback usability issues ([#438](https://github.com/lusu007/dienstplan/issues/438)) ([30ec143](https://github.com/lusu007/dienstplan/commit/30ec14328b8686bbc6e9ed4a073cf7b17d783d7d))
+
 ## [0.17.4](https://github.com/lusu007/dienstplan/compare/v0.17.3...v0.17.4) (2026-07-12)
 
 
