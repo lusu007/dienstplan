@@ -104,4 +104,65 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+  for (final initialMode in [ThemeMode.light, ThemeMode.dark]) {
+    testWidgets('confirmation follows theme changes from $initialMode', (
+      tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.reset);
+      final mode = ValueNotifier(initialMode);
+      addTearDown(mode.dispose);
+      final light = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF005B8C),
+          brightness: Brightness.light,
+        ),
+      );
+      final dark = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF005B8C),
+          brightness: Brightness.dark,
+        ),
+      );
+      await tester.pumpWidget(
+        ValueListenableBuilder<ThemeMode>(
+          valueListenable: mode,
+          builder: (context, value, child) => MaterialApp(
+            theme: light,
+            darkTheme: dark,
+            themeMode: value,
+            locale: const Locale('de'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => showWhatsNewDialog(context),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      mode.value = initialMode == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light;
+      await tester.pumpAndSettle();
+      final label = tester.widget<RichText>(
+        find.descendant(
+          of: find.byType(AppGlassButton),
+          matching: find.byType(RichText),
+        ),
+      );
+      final activeTheme = mode.value == ThemeMode.dark ? dark : light;
+      expect(label.text.style!.color, activeTheme.colorScheme.onSurface);
+      await tester.tap(find.text('Alles klar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Das ist neu für dich'), findsNothing);
+    });
+  }
 }
