@@ -114,6 +114,8 @@ class _Data extends ScheduleDataNotifier {
 class _Schedules implements GetSchedulesUseCase {
   static final requests = <(DateTime, DateTime)>[];
   static String? failingConfig;
+  static Completer<void>? loading;
+  static Completer<void>? requestStarted;
   @override
   Future<Result<List<Schedule>>> executeForDateRange({
     required DateTime startDate,
@@ -121,6 +123,10 @@ class _Schedules implements GetSchedulesUseCase {
     String? configName,
   }) async {
     requests.add((startDate, endDate));
+    if (requestStarted != null && !requestStarted!.isCompleted) {
+      requestStarted!.complete();
+    }
+    await loading?.future;
     if (configName == failingConfig) throw StateError('offline');
     return Result.success(<Schedule>[
       if (configName == 'Plan A')
@@ -162,6 +168,8 @@ void main() {
     SettingsCache.clearCache();
     _Schedules.requests.clear();
     _Schedules.failingConfig = null;
+    _Schedules.loading = null;
+    _Schedules.requestStarted = null;
     _Data.builds = 0;
     _Data.failNext = false;
     store = _SettingsStore();
@@ -189,6 +197,27 @@ void main() {
     });
     // The UI subscribes only to the coordinator, not to its sub-notifiers.
     container.listen(scheduleCoordinatorProvider, (_, _) {});
+  });
+
+  test('range retry exposes loading until requested duties return', () async {
+    configsReady.complete(GetConfigsUseCase(configs));
+    await container.read(scheduleCoordinatorProvider.future);
+    _Schedules.loading = Completer<void>();
+    _Schedules.requestStarted = Completer<void>();
+    final retry = container
+        .read(scheduleCoordinatorProvider.notifier)
+        .retryFailedLoad();
+    await _Schedules.requestStarted!.future;
+    expect(
+      container.read(scheduleCoordinatorProvider).value!.isLoading,
+      isTrue,
+    );
+    _Schedules.loading!.complete();
+    await retry;
+    expect(
+      container.read(scheduleCoordinatorProvider).value!.isLoading,
+      isFalse,
+    );
   });
 
   test('retry requests the retained distant focus', () async {

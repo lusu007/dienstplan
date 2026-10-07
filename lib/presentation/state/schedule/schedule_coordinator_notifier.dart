@@ -34,6 +34,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   final Map<String, String> _rangeErrors = {};
   int _ownRangeRequest = 0;
   int _partnerRangeRequest = 0;
+  bool _ownRangeLoading = false;
+  bool _partnerRangeLoading = false;
   GetSchedulesUseCase? _getSchedulesUseCase;
   EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
   DateRangePolicy? _dateRangePolicy;
@@ -91,7 +93,9 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           calendarState.isLoading ||
           configState.isLoading ||
           partnerState.isLoading ||
-          scheduleDataState.isLoading,
+          scheduleDataState.isLoading ||
+          _ownRangeLoading ||
+          _partnerRangeLoading,
       error:
           calendarState.error ??
           configState.error ??
@@ -771,6 +775,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       final String? partnerConfig = current.partnerConfigName;
       if (partnerConfig == null || partnerConfig.isEmpty) return;
       loadingConfig = partnerConfig;
+      _partnerRangeLoading = true;
+      _updateRangeLoading();
       final DateTime focused = current.focusedDay ?? DateTime.now();
       final DateRange focusedRange = _resolveDateRangePolicy()
           .computeFocusedRange(focused);
@@ -851,6 +857,11 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       if (request == _partnerRangeRequest) {
         _recordRangeError(loadingConfig, partner: true);
       }
+    } finally {
+      if (request == _partnerRangeRequest) {
+        _partnerRangeLoading = false;
+        _updateRangeLoading();
+      }
     }
   }
 
@@ -868,6 +879,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       final String? activeName = current.activeConfigName;
       if (activeName == null || activeName.isEmpty) return;
       loadingConfig = activeName;
+      _ownRangeLoading = true;
+      _updateRangeLoading();
 
       final DateTime focused = current.focusedDay ?? DateTime.now();
       final DateRange focusedRange = _resolveDateRangePolicy()
@@ -954,7 +967,26 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       if (request == _ownRangeRequest) {
         _recordRangeError(loadingConfig, partner: false);
       }
+    } finally {
+      if (request == _ownRangeRequest) {
+        _ownRangeLoading = false;
+        _updateRangeLoading();
+      }
     }
+  }
+
+  void _updateRangeLoading() {
+    if (!ref.mounted) return;
+    final current = state.value;
+    if (current == null) return;
+    final loading =
+        _ownRangeLoading ||
+        _partnerRangeLoading ||
+        (ref.read(calendarProvider).value?.isLoading ?? false) ||
+        (ref.read(configProvider).value?.isLoading ?? false) ||
+        (ref.read(partnerProvider).value?.isLoading ?? false) ||
+        (ref.read(scheduleDataProvider).value?.isLoading ?? false);
+    state = AsyncData(current.copyWith(isLoading: loading));
   }
 
   void _recordRangeError(String? config, {required bool partner}) {
