@@ -88,10 +88,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(
-          find.text('Zuerst Bundesland auswählen'),
-          findsNWidgets(2),
-        );
+        expect(find.text('Zuerst Bundesland auswählen'), findsNWidgets(2));
       }
     },
   );
