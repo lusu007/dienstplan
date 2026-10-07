@@ -19,7 +19,7 @@ Future<void> showWhatsNewDialog(BuildContext context) async {
     content: SingleChildScrollView(child: Text(l10n.whatsNewBody)),
     actions: <Widget>[
       AppGlassButton(
-        role: AppGlassButtonRole.primary,
+        role: AppGlassButtonRole.secondary,
         onPressed: () => Navigator.of(context).pop(),
         enabled: true,
         borderRadius: glassSurfaceRadiusSm,

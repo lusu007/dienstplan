@@ -1,6 +1,5 @@
-import 'package:dienstplan/core/constants/glass_tokens.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
 import 'package:flutter/material.dart';
@@ -46,59 +45,63 @@ void main() {
       expect(find.text('Das ist neu für dich'), findsNothing);
     },
   );
-  testWidgets('whats new dialog action has stronger dark mode contrast', (
-    WidgetTester tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(1200, 1600);
-    addTearDown(tester.view.reset);
-
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: ThemeData.dark(),
-        locale: const Locale('de'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Builder(
-          builder: (BuildContext context) {
-            return TextButton(
-              onPressed: () {
-                showWhatsNewDialog(context);
-              },
-              child: const Text('Open'),
-            );
-          },
-        ),
-      ),
-    );
-
-    await tester.tap(find.text('Open'));
-    await tester.pumpAndSettle();
-
-    final Finder actionSurface = find.descendant(
-      of: find.byType(GlassButtonSurface),
-      matching: find.byType(liquid.GlassButton),
-    );
-    final liquid.GlassButton button = tester.widget<liquid.GlassButton>(
-      actionSurface,
-    );
-
-    expect(button.settings!.glassColor.a, greaterThan(glassTintAlphaDark));
-    final outlines = tester
-        .widgetList<DecoratedBox>(
-          find.descendant(
-            of: find.byType(GlassButtonSurface),
-            matching: find.byType(DecoratedBox),
+  for (final brightness in Brightness.values) {
+    testWidgets('whats new confirmation is readable in $brightness', (
+      tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1200, 1600);
+      addTearDown(tester.view.reset);
+      final scheme = ColorScheme.fromSeed(
+        seedColor: const Color(0xFF005B8C),
+        brightness: brightness,
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(colorScheme: scheme),
+          locale: const Locale('de'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) => TextButton(
+                onPressed: () => showWhatsNewDialog(context),
+                child: const Text('Open'),
+              ),
+            ),
           ),
-        )
-        .where(
-          (box) =>
-              box.position == DecorationPosition.foreground &&
-              box.decoration is ShapeDecoration,
-        );
-    expect(outlines, hasLength(1));
-    final outline =
-        (outlines.single.decoration as ShapeDecoration).shape as OutlinedBorder;
-    expect(outline.side.color.a, greaterThan(glassBorderAlphaDark));
-  });
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      final action = find.byType(AppGlassButton);
+      final material = tester.widget<liquid.AdaptiveGlass>(
+        find.descendant(
+          of: action,
+          matching: find.byType(liquid.AdaptiveGlass),
+        ),
+      );
+      final text = tester.widget<RichText>(
+        find.descendant(of: action, matching: find.byType(RichText)),
+      );
+      final foreground = text.text.style!.color!;
+      // Use the effective material after the library applies button styling,
+      // rather than the lower opacity requested by our wrapper.
+      final background = Color.alphaBlend(
+        material.settings.glassColor,
+        scheme.surface,
+      );
+      final a = foreground.computeLuminance();
+      final b = background.computeLuminance();
+      expect(
+        ((a > b ? a : b) + .05) / ((a > b ? b : a) + .05),
+        greaterThanOrEqualTo(4.5),
+      );
+      expect(find.text('Alles klar').hitTestable(), findsOneWidget);
+      await tester.tap(find.text('Alles klar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Das ist neu für dich'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
