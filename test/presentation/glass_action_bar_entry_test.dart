@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/repositories/personal_calendar_repository.dart';
 import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
@@ -106,50 +107,60 @@ void main() {
       isEmpty,
     );
   });
-  testWidgets(
-    'barrier dismiss confirms dirty entry and preserves quick title',
-    (tester) async {
-      tester.view.physicalSize = const Size(600, 1100);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      await tester.pumpWidget(
-        app(
-          const Align(
-            alignment: Alignment.bottomCenter,
-            child: GlassActionBar(),
+  for (final dismissal in ['barrier', 'handle']) {
+    testWidgets(
+      '$dismissal dismiss confirms dirty entry and preserves quick title',
+      (tester) async {
+        tester.view.physicalSize = const Size(600, 1100);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(
+          app(
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child: GlassActionBar(),
+            ),
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), 'Fortbildung');
-      await tester.tap(find.byIcon(Icons.add_rounded));
-      await tester.pumpAndSettle();
-      final title = find
-          .descendant(
-            of: find.byType(PersonalCalendarEntrySheet),
-            matching: find.byType(TextField),
-          )
-          .first;
-      await tester.enterText(title, 'Verändert');
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pumpAndSettle();
-      await tester.tapAt(const Offset(10, 10));
-      await tester.pumpAndSettle();
-      expect(find.text('Änderungen verwerfen?'), findsOneWidget);
-      await tester.tap(find.text('Weiter bearbeiten'));
-      await tester.pumpAndSettle();
-      expect(tester.widget<TextField>(title).controller!.text, 'Verändert');
-      await tester.tap(find.byIcon(Icons.close_rounded));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Verwerfen'));
-      await tester.pumpAndSettle();
-      expect(find.byType(PersonalCalendarEntrySheet), findsNothing);
-      expect(
-        tester.widget<TextField>(find.byType(TextField)).controller!.text,
-        'Fortbildung',
-      );
-    },
-  );
+        );
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField), 'Fortbildung');
+        await tester.tap(find.byIcon(Icons.add_rounded));
+        await tester.pumpAndSettle();
+        final title = find
+            .descendant(
+              of: find.byType(PersonalCalendarEntrySheet),
+              matching: find.byType(TextField),
+            )
+            .first;
+        await tester.enterText(title, 'Verändert');
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pumpAndSettle();
+        if (dismissal == 'barrier') {
+          await tester.tapAt(const Offset(10, 10));
+        } else {
+          await tester.fling(
+            find.byType(AppSheetHandle),
+            const Offset(0, 250),
+            1000,
+          );
+        }
+        await tester.pumpAndSettle();
+        expect(find.text('Änderungen verwerfen?'), findsOneWidget);
+        await tester.tap(find.text('Weiter bearbeiten'));
+        await tester.pumpAndSettle();
+        expect(tester.widget<TextField>(title).controller!.text, 'Verändert');
+        await tester.tap(find.byIcon(Icons.close_rounded));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Verwerfen'));
+        await tester.pumpAndSettle();
+        expect(find.byType(PersonalCalendarEntrySheet), findsNothing);
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).controller!.text,
+          'Fortbildung',
+        );
+      },
+    );
+  }
 
   for (final usePlus in [true, false]) {
     testWidgets(

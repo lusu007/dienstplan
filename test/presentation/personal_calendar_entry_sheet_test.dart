@@ -39,8 +39,12 @@ void main() {
           .onSelectedItemChanged!(22);
       await tester.pumpAndSettle();
       expect(find.textContaining('Folgetag'), findsOneWidget);
+      await tester.tap(find.text('31. Dez. 2026'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Dezember 2026'), findsOneWidget);
       await tester.tap(find.textContaining('Folgetag'));
       await tester.pumpAndSettle();
+      expect(find.textContaining('Januar 2027'), findsOneWidget);
       tester
           .widget<CalendarDatePicker>(find.byType(CalendarDatePicker))
           .onDateChanged(DateTime(2027, 1, 3));

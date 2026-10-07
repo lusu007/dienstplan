@@ -512,6 +512,7 @@ class ContactFeedbackScreenshotCoordinator {
     if (Navigator.of(context).canPop()) Navigator.of(context).pop();
     LocalHistoryEntry? history;
     var finished = false;
+    var hostRemoved = false;
     late final OverlayEntry entry;
     Future<void> finish({required bool capture}) async {
       if (finished) return;
@@ -537,7 +538,7 @@ class ContactFeedbackScreenshotCoordinator {
           failed = true;
         }
       }
-      if (!navigator.mounted) return;
+      if (!navigator.mounted || hostRemoved) return;
       unawaited(
         navigator.push<void>(
           MaterialPageRoute<void>(
@@ -573,9 +574,23 @@ class ContactFeedbackScreenshotCoordinator {
     // Back exits selection instead of leaving an overlay on another screen.
     navigator.popUntil((route) {
       if (route is ModalRoute) {
+        unawaited(
+          route.completed.then((_) {
+            hostRemoved = true;
+            if (finished) return;
+            finished = true;
+            // The host is already disposed; removing its local history would
+            // attempt to rebuild a disposed route overlay.
+            entry.remove();
+            entry.dispose();
+            _overlayEntry = null;
+          }),
+        );
         history = LocalHistoryEntry(
           onRemove: () {
-            if (!finished) scheduleMicrotask(() => unawaited(finish(capture: false)));
+            if (!finished) {
+              scheduleMicrotask(() => unawaited(finish(capture: false)));
+            }
           },
         );
         route.addLocalHistoryEntry(history!);

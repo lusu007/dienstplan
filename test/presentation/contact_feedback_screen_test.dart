@@ -83,6 +83,52 @@ void main() {
     );
   }
 
+  testWidgets(
+    'removing screenshot host cleans overlay without reopening draft',
+    (tester) async {
+      final navigatorKey = GlobalKey<NavigatorState>();
+      late BuildContext feedbackContext;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            home: const Scaffold(body: Text('Root')),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+          ),
+        ),
+      );
+      final host = MaterialPageRoute<void>(
+        builder: (_) => const Scaffold(body: Text('Host')),
+      );
+      navigatorKey.currentState!.push(host);
+      await tester.pumpAndSettle();
+      navigatorKey.currentState!.push(
+        MaterialPageRoute<void>(
+          builder: (context) {
+            feedbackContext = context;
+            return const ContactFeedbackScreen();
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+      await ContactFeedbackScreenshotCoordinator.start(
+        context: feedbackContext,
+        draft: const ContactFeedbackDraft(message: 'Removed draft'),
+      );
+      await tester.pumpAndSettle();
+      navigatorKey.currentState!.removeRoute(host);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('contact_feedback_take_app_screenshot')),
+        findsNothing,
+      );
+      expect(find.text('Removed draft'), findsNothing);
+      expect(find.text('Root'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('dirty feedback back asks before losing message', (tester) async {
     await tester.pumpWidget(
       _TestApp(

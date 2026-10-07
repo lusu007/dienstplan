@@ -521,6 +521,7 @@ class _PersonalCalendarEntrySheetState
       child: AbsorbPointer(
         absorbing: _busy,
         child: GlassBottomSheet(
+          onHandleClose: _requestClose,
           shrinkToContent: true,
           children: <Widget>[
             _PersonalEntrySheetHeader(
@@ -957,6 +958,7 @@ class _InlineDateTimeSection extends StatelessWidget {
         if (isDatePickerExpanded) ...<Widget>[
           const SizedBox(height: glassSpacingSm),
           CalendarDatePicker(
+            key: ValueKey(editingEndDate),
             initialDate: DateTime(
               (editingEndDate ? draft.endDate ?? draft.date : draft.date).year,
               (editingEndDate ? draft.endDate ?? draft.date : draft.date).month,
