@@ -38,6 +38,14 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
   @override
   Future<ScheduleUiState> build() async {
+    // Own the sub-notifiers for the coordinator's lifetime. Reading their
+    // futures alone releases them after initialization; later commands would
+    // then rebuild/dispose them during asynchronous settings operations.
+    // Listen without rebuilding: commands synchronize the combined state.
+    ref.listen(calendarProvider, (_, _) {});
+    ref.listen(configProvider, (_, _) {});
+    ref.listen(partnerProvider, (_, _) {});
+
     // Sync deps before any await so user-driven calls (e.g. setFocusedDay) never
     // see null _dateRangePolicy while build() is suspended.
     _dateRangePolicy ??= ref.read(dateRangePolicyProvider);
