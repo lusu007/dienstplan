@@ -48,8 +48,8 @@ class CalendarHeader extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: kTitleRowHeight,
+          ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: kTitleRowHeight),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 glassSpacingLg,
@@ -60,19 +60,21 @@ class CalendarHeader extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    AppInfo.appName,
-                    style:
-                        (Theme.of(context).textTheme.titleLarge ??
-                                const TextStyle())
-                            .copyWith(
-                              color: foreground,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.2,
-                              height: 1.0,
-                            ),
+                  Expanded(
+                    child: Text(
+                      AppInfo.appName,
+                      style:
+                          (Theme.of(context).textTheme.titleLarge ??
+                                  const TextStyle())
+                              .copyWith(
+                                color: foreground,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.2,
+                                height: 1.0,
+                              ),
+                    ),
                   ),
-                  const Spacer(),
+                  const SizedBox(width: 8),
                   _GlassHeaderActionButton(
                     tooltip: l10n.settings,
                     icon: Icons.settings_rounded,

@@ -46,7 +46,7 @@ class GlassPickerPillTrigger extends StatelessWidget {
     return GlassButtonSurface(
       onTap: onTap,
       enabled: true,
-      height: glassPickerTriggerHeight(context),
+      height: null,
       borderRadius: kGlassPickerTriggerRadius,
       tintOpacity: isDark
           ? kGlassPickerSurfaceAlphaDark
@@ -60,37 +60,26 @@ class GlassPickerPillTrigger extends StatelessWidget {
         kGlassPickerTriggerTrailingPadding,
         kGlassPickerTriggerPaddingVertical,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (!isDark)
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 24),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: kGlassPickerTriggerLabelFontSize,
-                    fontWeight: FontWeight.w700,
-                    color: foreground,
-                    letterSpacing: 0.1,
-                  ),
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize: kGlassPickerTriggerLabelFontSize,
+                  fontWeight: FontWeight.w700,
+                  color: foreground,
+                  letterSpacing: 0.1,
                 ),
               ),
-            )
-          else
-            Text(
-              label,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: kGlassPickerTriggerLabelFontSize,
-                fontWeight: FontWeight.w700,
-                color: foreground,
-                letterSpacing: 0.1,
-              ),
             ),
-          const SizedBox(width: 6),
-          Icon(icon, color: foreground, size: kGlassPickerTriggerIconSize),
-        ],
+            const SizedBox(width: 6),
+            Icon(icon, color: foreground, size: kGlassPickerTriggerIconSize),
+          ],
+        ),
       ),
     );
   }
