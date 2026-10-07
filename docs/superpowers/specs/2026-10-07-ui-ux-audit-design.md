@@ -1,6 +1,6 @@
 # UI-/UX-Audit: Zielbild und Entscheidungen
 
-Stand: 7. Oktober 2026. Auftrag: alle bestätigten Auditbefunde planen; noch keine Implementierung.
+Stand: 7. Oktober 2026. Freigegebenes Zielbild. Das Hauptpaket ist umgesetzt; [Abnahme und Grenzen](../validation/2026-10-07-ui-ux-audit-validation.md) dokumentieren die Prüfung.
 
 ## Umfang und Reihenfolge
 
