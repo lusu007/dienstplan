@@ -26,7 +26,6 @@ import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dar
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_form_expand_tile.dart';
 import 'package:intl/intl.dart';
 
@@ -41,7 +40,7 @@ const int _kMaxSelectableMinutes = 23 * 60 + (60 - _kMinuteStep);
 const int _kDefaultStartMinutes = 16 * 60;
 const int _kDefaultEndMinutes = 17 * 60;
 
-/// Bottom sheet to create or edit a personal calendar entry (appointment / own duty).
+/// Bottom sheet to create or edit a personal duty.
 class PersonalCalendarEntrySheet extends ConsumerStatefulWidget {
   final DateTime day;
   final Schedule? existingSchedule;
@@ -97,7 +96,7 @@ class _PersonalCalendarEntrySheetState
           : '';
       _draft = PersonalCalendarEntry(
         id: _newId(),
-        kind: PersonalCalendarEntryKind.appointment,
+        kind: PersonalCalendarEntryKind.personalDuty,
         title: title,
         notes: null,
         date: d,
@@ -368,7 +367,7 @@ class _PersonalCalendarEntrySheetState
             role: AppGlassButtonRole.destructive,
 
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.delete),
+            child: Text(l10n.personalEntryDelete),
           ),
         ),
         SizedBox(
@@ -441,10 +440,6 @@ class _PersonalCalendarEntrySheetState
   Widget build(BuildContext context) {
     final AppLocalizations l10n = AppLocalizations.of(context);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final ColorScheme kindChipColorScheme = isDark
-        ? colorScheme
-        : colorScheme.copyWith(onSurface: colorScheme.onSurfaceVariant);
     final String sheetTitle = widget.existingSchedule != null
         ? l10n.personalEntrySheetTitleEdit
         : l10n.personalEntrySheetTitleNew;
@@ -471,7 +466,7 @@ class _PersonalCalendarEntrySheetState
         children: <Widget>[
           _PersonalEntrySheetHeader(
             title: sheetTitle,
-            deleteTooltip: l10n.delete,
+            deleteTooltip: l10n.personalEntryDelete,
             onDelete: isEditing ? _delete : null,
           ),
           Padding(
@@ -509,48 +504,6 @@ class _PersonalCalendarEntrySheetState
                   ),
                 ),
                 const SizedBox(height: glassSpacingLg),
-                Theme(
-                  data: Theme.of(context)
-                      .copyWith(colorScheme: kindChipColorScheme),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: GlassFilterChip(
-                          label: l10n.personalEntryKindAppointment,
-                          isSelected:
-                              _draft.kind ==
-                              PersonalCalendarEntryKind.appointment,
-                          expandWidth: true,
-                          onTap: () {
-                            setState(() {
-                              _draft = _draft.copyWith(
-                                kind: PersonalCalendarEntryKind.appointment,
-                              );
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: glassSpacingSm),
-                      Expanded(
-                        child: GlassFilterChip(
-                          label: l10n.personalEntryKindDuty,
-                          isSelected:
-                              _draft.kind ==
-                              PersonalCalendarEntryKind.personalDuty,
-                          expandWidth: true,
-                          onTap: () {
-                            setState(() {
-                              _draft = _draft.copyWith(
-                                kind: PersonalCalendarEntryKind.personalDuty,
-                              );
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: glassSpacingMd),
                 SwitchListTile(
                   tileColor: Colors.transparent,
                   contentPadding: EdgeInsets.zero,

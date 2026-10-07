@@ -430,12 +430,12 @@ Future<GetSettingsUseCase> getSettingsUseCase(Ref ref) async {
 
 @riverpod
 Future<SaveSettingsUseCase> saveSettingsUseCase(Ref ref) async {
-  final SettingsRepository repo = await ref.watch(
-    settingsRepositoryProvider.future,
-  );
-  final GetSettingsUseCase getSettings = await ref.watch(
-    getSettingsUseCaseProvider.future,
-  );
+  // Register both dependencies before yielding: callers may only read this
+  // auto-disposed provider's future while storage is still initializing.
+  final repositoryFuture = ref.watch(settingsRepositoryProvider.future);
+  final getSettingsFuture = ref.watch(getSettingsUseCaseProvider.future);
+  final SettingsRepository repo = await repositoryFuture;
+  final GetSettingsUseCase getSettings = await getSettingsFuture;
   return SaveSettingsUseCase(repo, getSettings);
 }
 

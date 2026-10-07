@@ -11,7 +11,6 @@ import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 /// Opens the localized what's-new dialog (same UI as after an app update).
 Future<void> showWhatsNewDialog(BuildContext context) async {
   final AppLocalizations l10n = AppLocalizations.of(context);
-  final ColorScheme colorScheme = Theme.of(context).colorScheme;
   await GlassAppDialog.show<void>(
     context: context,
     barrierDismissible: true,
@@ -19,20 +18,16 @@ Future<void> showWhatsNewDialog(BuildContext context) async {
     content: SingleChildScrollView(child: Text(l10n.whatsNewBody)),
     actions: <Widget>[
       AppGlassButton(
-        role: AppGlassButtonRole.primary,
+        role: AppGlassButtonRole.secondary,
         onPressed: () => Navigator.of(context).pop(),
         enabled: true,
         borderRadius: glassSurfaceRadiusSm,
         height: 48,
         fullWidth: true,
         child: Center(
-          child: Text(
-            l10n.whatsNewGotIt,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: colorScheme.onSurface,
-            ),
-          ),
+          // Let the button resolve its label style from the current dialog
+          // theme, including a theme loaded after the dialog was opened.
+          child: Text(l10n.whatsNewGotIt),
         ),
       ),
     ],

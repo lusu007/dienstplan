@@ -676,49 +676,45 @@
   "@movableHoliday": {
     "description": "Label for movable holidays"
   },
-  "addPersonalEntryTooltip": "Eigenen Termin oder Dienst eintragen",
+  "addPersonalEntryTooltip": "Neuer Dienst",
   "@addPersonalEntryTooltip": {
     "description": "Tooltip for adding a personal calendar entry"
   },
-  "personalEntryQuickTitleHint": "Termin am {date} hinzuf.",
+  "personalEntryQuickTitleHint": "Dienst am {date} hinzuf.",
   "@personalEntryQuickTitleHint": {
-    "description": "Hint for quick-add appointment field; {date} is a short calendar date",
+    "description": "Hint for quick-add personal duty field; {date} is a short calendar date",
     "placeholders": {
       "date": {
         "type": "String"
       }
     }
   },
-  "personalEntryQuickTitleSemanticLabel": "Termin am {date} hinzufügen. Titel tippen, dann Fertig.",
+  "personalEntryQuickTitleSemanticLabel": "Dienst am {date} hinzufügen. Titel tippen, dann Fertig.",
   "@personalEntryQuickTitleSemanticLabel": {
-    "description": "Accessibility label for quick-add appointment field",
+    "description": "Accessibility label for quick-add personal duty field",
     "placeholders": {
       "date": {
         "type": "String"
       }
     }
   },
-  "personalEntrySheetTitleNew": "Neuer Termin",
+  "personalEntrySheetTitleNew": "Neuer Dienst",
   "@personalEntrySheetTitleNew": {
     "description": "Title for new personal calendar entry sheet"
   },
-  "personalEntrySheetTitleEdit": "Eintrag bearbeiten",
+  "personalEntrySheetTitleEdit": "Dienst bearbeiten",
   "@personalEntrySheetTitleEdit": {
     "description": "Title for editing a personal calendar entry"
   },
-  "personalEntryKindAppointment": "Termin",
-  "@personalEntryKindAppointment": {
-    "description": "Label for appointment kind"
-  },
-  "personalEntryKindDuty": "Eigener Dienst",
-  "@personalEntryKindDuty": {
-    "description": "Label for personal duty kind"
+  "personalEntryDelete": "Dienst löschen",
+  "@personalEntryDelete": {
+    "description": "Action and tooltip for deleting a personal duty"
   },
   "personalEntryDateLabel": "Datum",
   "@personalEntryDateLabel": {
     "description": "Label for personal entry date picker"
   },
-  "personalEntryTitleLabel": "Titel",
+  "personalEntryTitleLabel": "Dienstbezeichnung",
   "@personalEntryTitleLabel": {
     "description": "Label for personal entry title field"
   },
@@ -734,15 +730,15 @@
   "@personalEntryStartTime": {
     "description": "Label for start time"
   },
-  "personalEntrySaved": "Eintrag gespeichert",
+  "personalEntrySaved": "Dienst gespeichert",
   "@personalEntrySaved": {
     "description": "Snackbar after saving personal entry"
   },
-  "personalEntryDeleted": "Eintrag gelöscht",
+  "personalEntryDeleted": "Dienst gelöscht",
   "@personalEntryDeleted": {
     "description": "Snackbar after deleting personal entry"
   },
-  "personalEntryValidationTitle": "Bitte gib einen Titel ein.",
+  "personalEntryValidationTitle": "Bitte gib eine Dienstbezeichnung ein.",
   "@personalEntryValidationTitle": {
     "description": "Validation: empty title"
   },
@@ -774,11 +770,11 @@
   "@setupFailedTitle": {
     "description": "Title for the setup-load failure screen"
   },
-  "deletePersonalEntryConfirmationTitle": "Eintrag löschen?",
+  "deletePersonalEntryConfirmationTitle": "Dienst löschen?",
   "@deletePersonalEntryConfirmationTitle": {
     "description": "Title for the confirmation dialog before deleting a personal calendar entry"
   },
-  "deletePersonalEntryConfirmationMessage": "Der Eintrag wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+  "deletePersonalEntryConfirmationMessage": "Der Dienst wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
   "@deletePersonalEntryConfirmationMessage": {
     "description": "Body for the personal entry delete confirmation dialog"
   },
@@ -798,7 +794,7 @@
   "@whatsNewTitle": {
     "description": "Title for the post-update what's new dialog"
   },
-  "whatsNewBody": "Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.",
+  "whatsNewBody": "Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.",
   "@whatsNewBody": {
     "description": "Release highlights for the what's new dialog; update each release"
   },
