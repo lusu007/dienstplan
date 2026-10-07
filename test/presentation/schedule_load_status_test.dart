@@ -1,3 +1,4 @@
+import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,9 +37,12 @@ class _Holidays extends SchoolHolidaysNotifier {
       SchoolHolidaysUiState.initial();
 }
 
-Widget app(Widget child) => ProviderScope(
+Widget app(
+  Widget child, {
+  ScheduleCoordinatorNotifier Function()? coordinator,
+}) => ProviderScope(
   overrides: [
-    scheduleCoordinatorProvider.overrideWith(_Broken.new),
+    scheduleCoordinatorProvider.overrideWith(coordinator ?? _Broken.new),
     settingsProvider.overrideWith(_Settings.new),
     partnerProvider.overrideWith(_Partner.new),
     schoolHolidaysProvider.overrideWith(_Holidays.new),
@@ -55,7 +59,63 @@ Widget app(Widget child) => ProviderScope(
     home: Scaffold(body: child),
   ),
 );
+
+class _Switching extends ScheduleCoordinatorNotifier {
+  @override
+  Future<ScheduleUiState> build() async => ScheduleUiState.initial().copyWith(
+    isLoading: true,
+    activeConfigName: 'Plan B',
+    selectedDay: DateTime(2026, 10, 7),
+    schedules: [
+      Schedule(
+        date: DateTime(2026, 10, 7),
+        service: 'Alter Dienst',
+        dutyGroupId: '1',
+        dutyTypeId: 'F',
+        dutyGroupName: '1',
+        configName: 'Plan A',
+      ),
+    ],
+  );
+}
+
 void main() {
+  testWidgets('partner failure is labeled and keeps own loaded duties', (
+    tester,
+  ) async {
+    final snapshot = AsyncData(
+      ScheduleUiState.initial().copyWith(partnerError: 'Unavailable'),
+    );
+    await tester.pumpWidget(
+      app(
+        Builder(
+          builder: (context) => ScheduleLoadStatus(
+            isLoading: false,
+            errorMessage: scheduleLoadErrorMessage(context, snapshot),
+            hasVisibleSchedules: true,
+            onRetry: () {},
+            child: const Text('Eigener Frühdienst'),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Partner Dienstplan'), findsOneWidget);
+    expect(find.text('Eigener Frühdienst'), findsOneWidget);
+  });
+
+  testWidgets('plan_switch_does_not_treat_old_plan_rows_as_loaded', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      app(const DaySchedulesListPanel(), coordinator: _Switching.new),
+    );
+    await tester.pump(const Duration(milliseconds: 100));
+    final ctx = tester.element(find.byType(DaySchedulesListPanel));
+    expect(find.text(AppLocalizations.of(ctx).noServicesForDay), findsNothing);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
   testWidgets('async_error_shows_retry_instead_of_empty_day', (tester) async {
     await tester.pumpWidget(app(const DaySchedulesListPanel()));
     await tester.pumpAndSettle();

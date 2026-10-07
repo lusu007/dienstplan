@@ -1,4 +1,3 @@
-import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
 
 import 'dart:math' as math;
@@ -116,11 +115,20 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                               isLoading:
                                   schedule.isLoading ||
                                   (schedule.value?.isLoading ?? false),
-                              errorMessage: schedule.hasError
-                                  ? AppLocalizations.of(context).errorLoading
-                                  : schedule.value?.error,
+                              errorMessage: scheduleLoadErrorMessage(
+                                context,
+                                schedule,
+                              ),
                               hasVisibleSchedules:
-                                  schedule.value?.schedules.isNotEmpty ?? false,
+                                  schedule.value?.schedules.any(
+                                    (s) =>
+                                        s.isUserDefined ||
+                                        s.configName ==
+                                            schedule.value?.activeConfigName ||
+                                        s.configName ==
+                                            schedule.value?.partnerConfigName,
+                                  ) ??
+                                  false,
                               onRetry: () => ref
                                   .read(scheduleCoordinatorProvider.notifier)
                                   .retryFailedLoad(),

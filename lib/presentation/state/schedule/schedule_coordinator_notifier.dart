@@ -90,10 +90,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           partnerState.isLoading ||
           scheduleDataState.isLoading,
       error:
-          calendarState.error ??
-          configState.error ??
-          partnerState.error ??
-          scheduleDataState.error,
+          calendarState.error ?? configState.error ?? scheduleDataState.error,
+      partnerError: partnerState.error,
       selectedDay: calendarState.selectedDay,
       focusedDay: calendarState.focusedDay,
       schedules: scheduleDataState.schedules,
@@ -333,14 +331,17 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       ref.invalidate(scheduleDataProvider);
     }
     final calendar = ref.read(calendarProvider);
-    if (calendar.hasError || calendar.value?.error != null)
+    if (calendar.hasError || calendar.value?.error != null) {
       ref.invalidate(calendarProvider);
+    }
     final config = ref.read(configProvider);
-    if (config.hasError || config.value?.error != null)
+    if (config.hasError || config.value?.error != null) {
       ref.invalidate(configProvider);
+    }
     final partner = ref.read(partnerProvider);
-    if (partner.hasError || partner.value?.error != null)
+    if (partner.hasError || partner.value?.error != null) {
       ref.invalidate(partnerProvider);
+    }
     ref.invalidateSelf();
   }
 
@@ -505,7 +506,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       partnerAccentColorValue: partnerState.partnerAccentColorValue,
       myAccentColorValue: partnerState.myAccentColorValue,
       isLoading: partnerState.isLoading || currentState.isLoading,
-      error: partnerState.error ?? currentState.error,
+      partnerError: partnerState.error,
     );
 
     state = AsyncData(updatedState);

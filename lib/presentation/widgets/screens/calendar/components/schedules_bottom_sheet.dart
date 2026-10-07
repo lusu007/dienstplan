@@ -120,14 +120,14 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
     final List<Schedule> schedulesForDay = filterSchedulesForSingleDay(
       state?.schedules,
       currentDay,
+      activeConfigName: state?.activeConfigName,
+      partnerConfigName: state?.partnerConfigName,
     );
     final bool hasSchedulesForDay = schedulesForDay.isNotEmpty;
     final bool isLoadingSelectedDay =
         (asyncState.isLoading || (state?.isLoading ?? false)) &&
         !hasSchedulesForDay;
-    final String? loadError = asyncState.hasError
-        ? AppLocalizations.of(context).errorLoading
-        : state?.error;
+    final String? loadError = scheduleLoadErrorMessage(context, asyncState);
     _ensureSelectedDay.scheduleIfEmpty(
       ref: ref,
       context: context,

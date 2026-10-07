@@ -87,20 +87,28 @@ class _Configs implements ConfigRepository {
 // Data loading is independent here; keep the coordinator and its auto-dispose
 // calendar, config and partner notifiers real, as in the calendar/settings UI.
 class _Data extends ScheduleDataNotifier {
+  static bool failNext = false;
+  static int builds = 0;
   @override
-  Future<ScheduleDataUiState> build() async =>
-      ScheduleDataUiState.initial().copyWith(
-        schedules: [
-          Schedule(
-            date: DateTime.now(),
-            service: 'Frühdienst',
-            dutyGroupId: '1',
-            dutyTypeId: 'F',
-            dutyGroupName: '1',
-            configName: 'Plan A',
-          ),
-        ],
-      );
+  Future<ScheduleDataUiState> build() async {
+    builds++;
+    if (failNext) {
+      failNext = false;
+      return ScheduleDataUiState.initial().copyWith(error: 'Unavailable');
+    }
+    return ScheduleDataUiState.initial().copyWith(
+      schedules: [
+        Schedule(
+          date: DateTime.now(),
+          service: 'Frühdienst',
+          dutyGroupId: '1',
+          dutyTypeId: 'F',
+          dutyGroupName: '1',
+          configName: 'Plan A',
+        ),
+      ],
+    );
+  }
 }
 
 class _Schedules implements GetSchedulesUseCase {
@@ -124,6 +132,8 @@ void main() {
 
   setUp(() {
     SettingsCache.clearCache();
+    _Data.builds = 0;
+    _Data.failNext = false;
     store = _SettingsStore();
     configs = _Configs();
     configsReady = Completer<GetConfigsUseCase>();
@@ -149,6 +159,20 @@ void main() {
     });
     // The UI subscribes only to the coordinator, not to its sub-notifiers.
     container.listen(scheduleCoordinatorProvider, (_, _) {});
+  });
+
+  test('retry rebuilds failed source and recovers duties', () async {
+    _Data.failNext = true;
+    configsReady.complete(GetConfigsUseCase(configs));
+    final failed = await container.read(scheduleCoordinatorProvider.future);
+    expect(failed.error, isNotNull);
+    await container
+        .read(scheduleCoordinatorProvider.notifier)
+        .retryFailedLoad();
+    final recovered = await container.read(scheduleCoordinatorProvider.future);
+    expect(recovered.error, isNull);
+    expect(recovered.schedules.single.service, 'Frühdienst');
+    expect(_Data.builds, 2);
   });
 
   test(

@@ -35,14 +35,17 @@ class _DaySchedulesListPanelState extends ConsumerState<DaySchedulesListPanel> {
     final asyncState = ref.watch(scheduleCoordinatorProvider);
     final state = asyncState.value;
     final DateTime day = state?.selectedDay ?? DateTime.now();
-    final forDay = filterSchedulesForSingleDay(state?.schedules, day);
+    final forDay = filterSchedulesForSingleDay(
+      state?.schedules,
+      day,
+      activeConfigName: state?.activeConfigName,
+      partnerConfigName: state?.partnerConfigName,
+    );
     final bool hasForDay = forDay.isNotEmpty;
     final bool isLoadingSelectedDay =
         (asyncState.isLoading || (state?.isLoading ?? false)) && !hasForDay;
 
-    final String? loadError = asyncState.hasError
-        ? AppLocalizations.of(context).errorLoading
-        : state?.error;
+    final String? loadError = scheduleLoadErrorMessage(context, asyncState);
     _ensureSelectedDay.scheduleIfEmpty(
       ref: ref,
       context: context,

@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$ScheduleUiState {
   bool get isLoading;
   String? get error;
+  String? get partnerError;
   DateTime? get selectedDay;
   DateTime? get focusedDay;
   List<Schedule> get schedules;
@@ -51,6 +52,8 @@ mixin _$ScheduleUiState {
                 other.isLoading == _this.isLoading) &&
             (identical(other.error, _this.error) ||
                 other.error == _this.error) &&
+            (identical(other.partnerError, _this.partnerError) ||
+                other.partnerError == _this.partnerError) &&
             (identical(other.selectedDay, _this.selectedDay) ||
                 other.selectedDay == _this.selectedDay) &&
             (identical(other.focusedDay, _this.focusedDay) ||
@@ -102,6 +105,7 @@ mixin _$ScheduleUiState {
       runtimeType,
       _this.isLoading,
       _this.error,
+      _this.partnerError,
       _this.selectedDay,
       _this.focusedDay,
       const DeepCollectionEquality().hash(_this.schedules),
@@ -122,7 +126,7 @@ mixin _$ScheduleUiState {
   @override
   String toString() {
     final _this = this as ScheduleUiState;
-    return 'ScheduleUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, selectedDay: ${_this.selectedDay}, focusedDay: ${_this.focusedDay}, schedules: ${_this.schedules}, activeConfigName: ${_this.activeConfigName}, preferredDutyGroup: ${_this.preferredDutyGroup}, dutyGroups: ${_this.dutyGroups}, configs: ${_this.configs}, activeConfig: ${_this.activeConfig}, partnerConfigName: ${_this.partnerConfigName}, partnerDutyGroup: ${_this.partnerDutyGroup}, partnerAccentColorValue: ${_this.partnerAccentColorValue}, myAccentColorValue: ${_this.myAccentColorValue}, holidayAccentColorValue: ${_this.holidayAccentColorValue}, scheduleIndex: ${_this.scheduleIndex})';
+    return 'ScheduleUiState(isLoading: ${_this.isLoading}, error: ${_this.error}, partnerError: ${_this.partnerError}, selectedDay: ${_this.selectedDay}, focusedDay: ${_this.focusedDay}, schedules: ${_this.schedules}, activeConfigName: ${_this.activeConfigName}, preferredDutyGroup: ${_this.preferredDutyGroup}, dutyGroups: ${_this.dutyGroups}, configs: ${_this.configs}, activeConfig: ${_this.activeConfig}, partnerConfigName: ${_this.partnerConfigName}, partnerDutyGroup: ${_this.partnerDutyGroup}, partnerAccentColorValue: ${_this.partnerAccentColorValue}, myAccentColorValue: ${_this.myAccentColorValue}, holidayAccentColorValue: ${_this.holidayAccentColorValue}, scheduleIndex: ${_this.scheduleIndex})';
   }
 }
 
@@ -136,6 +140,7 @@ abstract mixin class $ScheduleUiStateCopyWith<$Res> {
   $Res call({
     bool isLoading,
     String? error,
+    String? partnerError,
     DateTime? selectedDay,
     DateTime? focusedDay,
     List<Schedule> schedules,
@@ -170,6 +175,7 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = null,
     Object? error = freezed,
+    Object? partnerError = freezed,
     Object? selectedDay = freezed,
     Object? focusedDay = freezed,
     Object? schedules = null,
@@ -194,6 +200,10 @@ class _$ScheduleUiStateCopyWithImpl<$Res>
         error: freezed == error
             ? _self.error
             : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerError: freezed == partnerError
+            ? _self.partnerError
+            : partnerError // ignore: cast_nullable_to_non_nullable
                   as String?,
         selectedDay: freezed == selectedDay
             ? _self.selectedDay
@@ -366,6 +376,7 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
     TResult Function(
       bool isLoading,
       String? error,
+      String? partnerError,
       DateTime? selectedDay,
       DateTime? focusedDay,
       List<Schedule> schedules,
@@ -390,6 +401,7 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
         return $default(
           _that.isLoading,
           _that.error,
+          _that.partnerError,
           _that.selectedDay,
           _that.focusedDay,
           _that.schedules,
@@ -428,6 +440,7 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
     TResult Function(
       bool isLoading,
       String? error,
+      String? partnerError,
       DateTime? selectedDay,
       DateTime? focusedDay,
       List<Schedule> schedules,
@@ -451,6 +464,7 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
         return $default(
           _that.isLoading,
           _that.error,
+          _that.partnerError,
           _that.selectedDay,
           _that.focusedDay,
           _that.schedules,
@@ -488,6 +502,7 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
     TResult? Function(
       bool isLoading,
       String? error,
+      String? partnerError,
       DateTime? selectedDay,
       DateTime? focusedDay,
       List<Schedule> schedules,
@@ -511,6 +526,7 @@ extension ScheduleUiStatePatterns on ScheduleUiState {
         return $default(
           _that.isLoading,
           _that.error,
+          _that.partnerError,
           _that.selectedDay,
           _that.focusedDay,
           _that.schedules,
@@ -538,6 +554,7 @@ class _ScheduleUiState extends ScheduleUiState {
   const _ScheduleUiState({
     required this.isLoading,
     this.error,
+    this.partnerError,
     this.selectedDay,
     this.focusedDay,
     List<Schedule> schedules = const <Schedule>[],
@@ -561,6 +578,8 @@ class _ScheduleUiState extends ScheduleUiState {
   final bool isLoading;
   @override
   final String? error;
+  @override
+  final String? partnerError;
   @override
   final DateTime? selectedDay;
   @override
@@ -628,6 +647,8 @@ class _ScheduleUiState extends ScheduleUiState {
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.error, error) || other.error == error) &&
+            (identical(other.partnerError, partnerError) ||
+                other.partnerError == partnerError) &&
             (identical(other.selectedDay, selectedDay) ||
                 other.selectedDay == selectedDay) &&
             (identical(other.focusedDay, focusedDay) ||
@@ -673,6 +694,7 @@ class _ScheduleUiState extends ScheduleUiState {
       runtimeType,
       isLoading,
       error,
+      partnerError,
       selectedDay,
       focusedDay,
       const DeepCollectionEquality().hash(_schedules),
@@ -692,7 +714,7 @@ class _ScheduleUiState extends ScheduleUiState {
 
   @override
   String toString() {
-    return 'ScheduleUiState(isLoading: $isLoading, error: $error, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
+    return 'ScheduleUiState(isLoading: $isLoading, error: $error, partnerError: $partnerError, selectedDay: $selectedDay, focusedDay: $focusedDay, schedules: $schedules, activeConfigName: $activeConfigName, preferredDutyGroup: $preferredDutyGroup, dutyGroups: $dutyGroups, configs: $configs, activeConfig: $activeConfig, partnerConfigName: $partnerConfigName, partnerDutyGroup: $partnerDutyGroup, partnerAccentColorValue: $partnerAccentColorValue, myAccentColorValue: $myAccentColorValue, holidayAccentColorValue: $holidayAccentColorValue, scheduleIndex: $scheduleIndex)';
   }
 }
 
@@ -708,6 +730,7 @@ abstract mixin class _$ScheduleUiStateCopyWith<$Res>
   $Res call({
     bool isLoading,
     String? error,
+    String? partnerError,
     DateTime? selectedDay,
     DateTime? focusedDay,
     List<Schedule> schedules,
@@ -743,6 +766,7 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = null,
     Object? error = freezed,
+    Object? partnerError = freezed,
     Object? selectedDay = freezed,
     Object? focusedDay = freezed,
     Object? schedules = null,
@@ -767,6 +791,10 @@ class __$ScheduleUiStateCopyWithImpl<$Res>
         error: freezed == error
             ? _self.error
             : error // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        partnerError: freezed == partnerError
+            ? _self.partnerError
+            : partnerError // ignore: cast_nullable_to_non_nullable
                   as String?,
         selectedDay: freezed == selectedDay
             ? _self.selectedDay

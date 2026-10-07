@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:flutter/material.dart';
@@ -51,4 +53,18 @@ class ScheduleLoadStatus extends StatelessWidget {
       ],
     );
   }
+}
+
+String? scheduleLoadErrorMessage(
+  BuildContext context,
+  AsyncValue<ScheduleUiState> snapshot,
+) {
+  final l10n = AppLocalizations.of(context);
+  if (snapshot.hasError || snapshot.value?.error != null) {
+    return l10n.errorLoading;
+  }
+  if (snapshot.value?.partnerError != null) {
+    return '${l10n.partnerDutySchedule}: ${l10n.errorLoading}';
+  }
+  return null;
 }
