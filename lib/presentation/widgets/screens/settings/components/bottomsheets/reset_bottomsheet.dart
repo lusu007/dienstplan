@@ -14,6 +14,7 @@ import 'package:dienstplan/presentation/state/config/config_notifier.dart';
 import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
+import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifier.dart';
 import 'package:dienstplan/core/errors/failure_presenter.dart';
@@ -55,6 +56,7 @@ class _ResetConfirmationState extends ConsumerState<_ResetConfirmation> {
     });
     final l10n = AppLocalizations.of(context);
     final container = ProviderScope.containerOf(context, listen: false);
+    ProviderSubscription<AsyncValue<SettingsUiState>>? settingsSubscription;
     try {
       // Capture provider futures before the asynchronous operation begins.
       final repositoryFuture = container.read(
@@ -77,6 +79,7 @@ class _ResetConfirmationState extends ConsumerState<_ResetConfirmation> {
         }
         return;
       }
+      settingsSubscription = container.listen(settingsProvider, (_, _) {});
       await container.read(settingsProvider.future);
       final settings = container.read(settingsProvider.notifier);
       await configService.resetSetup();
@@ -102,6 +105,7 @@ class _ResetConfirmationState extends ConsumerState<_ResetConfirmation> {
     } catch (_) {
       if (mounted) setState(() => _error = l10n.resetDataError);
     } finally {
+      settingsSubscription?.close();
       if (mounted) setState(() => _busy = false);
     }
   }
