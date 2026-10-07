@@ -170,6 +170,7 @@ class DatabaseService {
         is_all_day INTEGER NOT NULL DEFAULT 1,
         start_minutes INTEGER,
         end_minutes INTEGER,
+        end_date_ymd TEXT,
         duty_group_name TEXT NOT NULL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
@@ -332,6 +333,12 @@ class DatabaseService {
       }
       if (oldVersion < 19) {
         await _migrateToVersion19(txn);
+      }
+
+      if (oldVersion < 20) {
+        await txn.execute(
+          'ALTER TABLE personal_calendar_entries ADD COLUMN end_date_ymd TEXT',
+        );
       }
 
       // Create any missing indexes after all migrations are complete

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
@@ -16,11 +18,16 @@ import 'package:intl/date_symbol_data_local.dart';
 
 // The real use cases perform validation; only persistence is replaced.
 class _UnavailableRepository implements PersonalCalendarRepository {
+  Completer<void>? saving;
+  int saves = 0;
   @override
-  Future<Result<void>> upsert(PersonalCalendarEntry entry) async =>
-      Result.createFailure(
-        const StorageFailure(technicalMessage: 'Unavailable'),
-      );
+  Future<Result<void>> upsert(PersonalCalendarEntry entry) async {
+    saves++;
+    await saving?.future;
+    return Result.createFailure(
+      const StorageFailure(technicalMessage: 'Unavailable'),
+    );
+  }
 
   @override
   Future<Result<void>> deleteById(String id) async => Result.createFailure(
@@ -41,12 +48,13 @@ Future<void> _openEditor(
   WidgetTester tester, {
   required bool dark,
   bool editing = false,
+  _UnavailableRepository? repository,
 }) async {
   tester.view.physicalSize = const Size(600, 700);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   await initializeDateFormatting('de');
-  final repo = _UnavailableRepository();
+  final repo = repository ?? _UnavailableRepository();
   final container = ProviderContainer.test(
     overrides: [
       savePersonalCalendarEntryUseCaseProvider.overrideWith(
@@ -102,6 +110,23 @@ Future<void> _openEditor(
 }
 
 void main() {
+  testWidgets('double save executes once and failure keeps draft', (
+    tester,
+  ) async {
+    final repo = _UnavailableRepository()..saving = Completer<void>();
+    await _openEditor(tester, dark: false, editing: true, repository: repo);
+    await tester.ensureVisible(find.text('Speichern'));
+    await tester.tap(find.text('Speichern'));
+    await tester.pump();
+    await tester.tap(find.text('Speichern'), warnIfMissed: false);
+    await tester.pump();
+    expect(repo.saves, 1);
+    repo.saving!.complete();
+    await tester.pumpAndSettle();
+    expect(find.byType(PersonalCalendarEntrySheet), findsOneWidget);
+    expect(find.text('Arzttermin'), findsOneWidget);
+  });
+
   for (final dark in [false, true]) {
     testWidgets('missing title stays visible in open editor (dark: $dark)', (
       tester,

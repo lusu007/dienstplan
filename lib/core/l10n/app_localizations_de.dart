@@ -57,6 +57,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Möchtest du wirklich die App zurücksetzen? Dies kann nicht rückgängig gemacht werden.';
 
   @override
+  String get resetDataError =>
+      'Zurücksetzen ist fehlgeschlagen. Bitte versuche es erneut.';
+
+  @override
   String get resetDataSuccess =>
       'Zurücksetzen hat geklappt. Du kannst die App neu einrichten.';
 
@@ -666,4 +670,29 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get selectFederalStateFirst => 'Zuerst Bundesland auswählen';
+
+  @override
+  String get personalEntryEndTime => 'Ende';
+
+  @override
+  String get personalDutyTimes => 'Uhrzeit: Beginn – Ende';
+
+  @override
+  String get personalDutyNextDay => 'Folgetag';
+
+  @override
+  String get personalDutyAutomaticEndDate => 'Endtag automatisch bestimmen';
+
+  @override
+  String get discardChangesTitle => 'Änderungen verwerfen?';
+
+  @override
+  String get discardChangesMessage =>
+      'Deine ungespeicherten Änderungen gehen dabei verloren.';
+
+  @override
+  String get keepEditing => 'Weiter bearbeiten';
+
+  @override
+  String get discardChanges => 'Verwerfen';
 }

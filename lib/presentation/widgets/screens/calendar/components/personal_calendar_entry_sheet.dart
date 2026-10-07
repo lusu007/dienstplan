@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/confirm_discard_changes.dart';
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:dienstplan/presentation/widgets/common/app_feedback_style.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
@@ -40,6 +41,8 @@ const int _kMaxSelectableMinutes = 23 * 60 + (60 - _kMinuteStep);
 const int _kDefaultStartMinutes = 16 * 60;
 const int _kDefaultEndMinutes = 17 * 60;
 
+enum PersonalEntrySheetResult { saved, deleted, discarded }
+
 /// Bottom sheet to create or edit a personal duty.
 class PersonalCalendarEntrySheet extends ConsumerStatefulWidget {
   final DateTime day;
@@ -64,6 +67,9 @@ class _PersonalCalendarEntrySheetState
     extends ConsumerState<PersonalCalendarEntrySheet> {
   static const FailurePresenter _failurePresenter = FailurePresenter();
   late PersonalCalendarEntry _draft;
+  late PersonalCalendarEntry _initialDraft;
+  bool _busy = false;
+  bool _confirmingClose = false;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
   final GlobalKey _titleFieldKey = GlobalKey();
@@ -74,6 +80,8 @@ class _PersonalCalendarEntrySheetState
   late final FixedExtentScrollController _minuteWheelController;
   _TimeField _activeTimeField = _TimeField.start;
   bool _isDatePickerExpanded = false;
+  bool _editingEndDate = false;
+  bool _manualEndDate = false;
   bool _isTimePickerExpanded = false;
 
   @override
@@ -108,11 +116,13 @@ class _PersonalCalendarEntrySheetState
         updatedAtMs: nowMs,
       );
     }
+    _manualEndDate = widget.existingSchedule != null && _draft.endDate != null;
     _titleController.text = _draft.title;
     _notesController.text = _draft.notes ?? '';
     if (!_draft.isAllDay) {
       _draft = _ensureTimeRange(_draft);
     }
+    _initialDraft = _draft;
     final int initialMinutes = _selectedMinutesForActiveField();
     _hourWheelController = FixedExtentScrollController(
       initialItem: initialMinutes ~/ 60,
@@ -187,10 +197,11 @@ class _PersonalCalendarEntrySheetState
     final int end = _normalizeMinutesToStep(
       entry.endMinutesFromMidnight ?? _kDefaultEndMinutes,
     );
-    final int safeEnd = end <= start ? start + 60 : end;
+
     return entry.copyWith(
       startMinutesFromMidnight: start,
-      endMinutesFromMidnight: _normalizeMinutesToStep(safeEnd),
+      endMinutesFromMidnight: end,
+      endDate: entry.endDate ?? entry.date,
     );
   }
 
@@ -252,34 +263,39 @@ class _PersonalCalendarEntrySheetState
     final int nextHour = hour ?? (baseMinutes ~/ 60);
     final int nextMinute = minute ?? _normalizeMinutesToStep(baseMinutes % 60);
     final int nextTotal = _normalizeMinutesToStep(nextHour * 60 + nextMinute);
-    final int startMinutes =
-        _draft.startMinutesFromMidnight ?? _kDefaultStartMinutes;
-    final int endMinutes = _draft.endMinutesFromMidnight ?? _kDefaultEndMinutes;
-    final bool isStartAfterOrAtEnd =
-        _activeTimeField == _TimeField.start && nextTotal >= endMinutes;
-    final bool isEndBeforeOrAtStart =
-        _activeTimeField == _TimeField.end && nextTotal <= startMinutes;
-    if (isStartAfterOrAtEnd || isEndBeforeOrAtStart) {
-      _syncTimeWheelControllers();
-      return false;
-    }
     setState(() {
       if (_activeTimeField == _TimeField.start) {
         _draft = _draft.copyWith(startMinutesFromMidnight: nextTotal);
       } else {
         _draft = _draft.copyWith(endMinutesFromMidnight: nextTotal);
       }
+      _updateAutomaticEndDate();
     });
     return true;
+  }
+
+  void _updateAutomaticEndDate() {
+    if (_manualEndDate || _draft.isAllDay) return;
+    final start = _draft.startMinutesFromMidnight ?? _kDefaultStartMinutes;
+    final end = _draft.endMinutesFromMidnight ?? _kDefaultEndMinutes;
+    _draft = _draft.copyWith(
+      endDate: DateTime.utc(
+        _draft.date.year,
+        _draft.date.month,
+        _draft.date.day + (end < start ? 1 : 0),
+      ),
+    );
   }
 
   void _triggerSelectionHapticFeedback() {
     HapticFeedback.selectionClick();
   }
 
-  void _toggleDatePicker() {
+  void _toggleDatePicker({bool end = false}) {
     setState(() {
-      final bool nextExpanded = !_isDatePickerExpanded;
+      final bool nextExpanded =
+          !_isDatePickerExpanded || _editingEndDate != end;
+      _editingEndDate = end;
       _isDatePickerExpanded = nextExpanded;
       if (nextExpanded) {
         _isTimePickerExpanded = false;
@@ -309,48 +325,77 @@ class _PersonalCalendarEntrySheetState
     });
   }
 
+  bool get _isDirty =>
+      _draft != _initialDraft ||
+      _titleController.text != _initialDraft.title ||
+      _notesController.text != (_initialDraft.notes ?? '');
+
+  Future<void> _requestClose() async {
+    if (_busy || _confirmingClose) return;
+    _confirmingClose = true;
+    FocusManager.instance.primaryFocus?.unfocus();
+    final discard = !_isDirty || await confirmDiscardChanges(context);
+    _confirmingClose = false;
+    if (mounted && discard) {
+      Navigator.of(context).pop(PersonalEntrySheetResult.discarded);
+    }
+  }
+
   Future<void> _save() async {
-    setState(() {
-      _titleError = null;
-      _operationError = null;
-    });
-    final AppLocalizations l10n = AppLocalizations.of(context);
-    final int nowMs = DateTime.now().millisecondsSinceEpoch;
-    final PersonalCalendarEntry normalizedDraft = _draft.isAllDay
-        ? _draft
-        : _ensureTimeRange(_draft);
-    final PersonalCalendarEntry toSave = normalizedDraft.copyWith(
-      title: _titleController.text,
-      notes: _notesController.text.trim().isEmpty
-          ? null
-          : _notesController.text.trim(),
-      updatedAtMs: nowMs,
-    );
-    final saveUseCase = await ref.read(
-      savePersonalCalendarEntryUseCaseProvider.future,
-    );
-    final result = await saveUseCase.execute(toSave);
-    if (!mounted) {
-      return;
-    }
-    if (result.isFailure) {
-      _showFailure(result.failure);
-      return;
-    }
-    await ref
-        .read(scheduleDataProvider.notifier)
-        .refreshPersonalCalendarEntries();
-    await ref
-        .read(scheduleCoordinatorProvider.notifier)
-        .syncScheduleDataFromProvider();
-    if (mounted) {
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(AppSnackBar(content: Text(l10n.personalEntrySaved)));
+    if (_busy) return;
+    setState(() => _busy = true);
+    try {
+      setState(() {
+        _titleError = null;
+        _operationError = null;
+      });
+      final AppLocalizations l10n = AppLocalizations.of(context);
+      final int nowMs = DateTime.now().millisecondsSinceEpoch;
+      final PersonalCalendarEntry normalizedDraft = _draft.isAllDay
+          ? _draft
+          : _ensureTimeRange(_draft);
+      final PersonalCalendarEntry toSave = normalizedDraft.copyWith(
+        title: _titleController.text,
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
+        updatedAtMs: nowMs,
+      );
+      final saveUseCase = await ref.read(
+        savePersonalCalendarEntryUseCaseProvider.future,
+      );
+      final result = await saveUseCase.execute(toSave);
+      if (!mounted) {
+        return;
+      }
+      if (result.isFailure) {
+        _showFailure(result.failure);
+        return;
+      }
+      await ref
+          .read(scheduleDataProvider.notifier)
+          .refreshPersonalCalendarEntries();
+      await ref
+          .read(scheduleCoordinatorProvider.notifier)
+          .syncScheduleDataFromProvider();
+      if (mounted) {
+        Navigator.of(context).pop(PersonalEntrySheetResult.saved);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(AppSnackBar(content: Text(l10n.personalEntrySaved)));
+      }
+    } catch (error) {
+      if (mounted) {
+        _showFailure(
+          UnknownFailure(technicalMessage: error.toString(), cause: error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _delete() async {
+    if (_busy) return;
     final String id = _draft.id;
     final AppLocalizations l10n = AppLocalizations.of(context);
     if (widget.existingSchedule == null) {
@@ -384,28 +429,40 @@ class _PersonalCalendarEntrySheetState
     if (!mounted || confirmed != true) {
       return;
     }
-    setState(() => _operationError = null);
-    final deleteUseCase = await ref.read(
-      deletePersonalCalendarEntryUseCaseProvider.future,
-    );
-    final result = await deleteUseCase.execute(id);
-    if (!mounted) {
-      return;
-    }
-    if (result.isFailure) {
-      _showFailure(result.failure);
-      return;
-    }
-    await ref
-        .read(scheduleDataProvider.notifier)
-        .refreshPersonalCalendarEntries();
-    await ref
-        .read(scheduleCoordinatorProvider.notifier)
-        .syncScheduleDataFromProvider();
-    if (mounted) {
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(AppSnackBar(content: Text(l10n.personalEntryDeleted)));
+    setState(() => _busy = true);
+    try {
+      setState(() => _operationError = null);
+      final deleteUseCase = await ref.read(
+        deletePersonalCalendarEntryUseCaseProvider.future,
+      );
+      final result = await deleteUseCase.execute(id);
+      if (!mounted) {
+        return;
+      }
+      if (result.isFailure) {
+        _showFailure(result.failure);
+        return;
+      }
+      await ref
+          .read(scheduleDataProvider.notifier)
+          .refreshPersonalCalendarEntries();
+      await ref
+          .read(scheduleCoordinatorProvider.notifier)
+          .syncScheduleDataFromProvider();
+      if (mounted) {
+        Navigator.of(context).pop(PersonalEntrySheetResult.deleted);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(AppSnackBar(content: Text(l10n.personalEntryDeleted)));
+      }
+    } catch (error) {
+      if (mounted) {
+        _showFailure(
+          UnknownFailure(technicalMessage: error.toString(), cause: error),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -459,183 +516,207 @@ class _PersonalCalendarEntrySheetState
           focusScope.unfocus();
           return;
         }
-        Navigator.of(context).pop();
+        _requestClose();
       },
-      child: GlassBottomSheet(
-        shrinkToContent: true,
-        children: <Widget>[
-          _PersonalEntrySheetHeader(
-            title: sheetTitle,
-            deleteTooltip: l10n.personalEntryDelete,
-            onDelete: isEditing ? _delete : null,
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              glassSpacingLg,
-              glassSpacingMd,
-              glassSpacingLg,
-              glassSpacingLg + keyboardBottom,
+      child: AbsorbPointer(
+        absorbing: _busy,
+        child: GlassBottomSheet(
+          shrinkToContent: true,
+          children: <Widget>[
+            _PersonalEntrySheetHeader(
+              title: sheetTitle,
+              deleteTooltip: l10n.personalEntryDelete,
+              onDelete: isEditing && !_busy ? _delete : null,
+              onClose: _requestClose,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GlassFormSectionEyebrow(
-                  text: l10n.personalEntryTitleLabel,
-                  enabled: true,
-                ),
-                const SizedBox(height: glassSpacingXs),
-                Semantics(
-                  key: _titleFieldKey,
-                  textField: true,
-                  label: l10n.personalEntryTitleLabel,
-                  child: TextField(
-                    controller: _titleController,
-                    onChanged: (value) {
-                      if (_titleError != null && value.trim().isNotEmpty) {
-                        setState(() => _titleError = null);
-                      }
-                    },
-                    decoration: _glassFieldDecoration(
-                      context,
-                      hintText: l10n.personalEntryTitleLabel,
-                      error: _titleError,
-                    ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                glassSpacingLg,
+                glassSpacingMd,
+                glassSpacingLg,
+                glassSpacingLg + keyboardBottom,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GlassFormSectionEyebrow(
+                    text: l10n.personalEntryTitleLabel,
+                    enabled: true,
                   ),
-                ),
-                const SizedBox(height: glassSpacingLg),
-                SwitchListTile(
-                  tileColor: Colors.transparent,
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    l10n.personalEntryAllDayLabel,
-                    style: Theme.of(context).textTheme.titleMedium
-                        ?.copyWith(color: colorScheme.onSurface),
-                  ),
-                  value: _draft.isAllDay,
-                  onChanged: (bool v) {
-                    _triggerSelectionHapticFeedback();
-                    setState(() {
-                      if (v) {
-                        _draft = _draft.copyWith(
-                          isAllDay: true,
-                          startMinutesFromMidnight: null,
-                          endMinutesFromMidnight: null,
-                        );
-                        return;
-                      }
-                      _draft = _ensureTimeRange(
-                        _draft.copyWith(
-                          isAllDay: false,
-                          startMinutesFromMidnight:
-                              _draft.startMinutesFromMidnight,
-                          endMinutesFromMidnight: _draft.endMinutesFromMidnight,
-                        ),
-                      );
-                    });
-                  },
-                ),
-                const SizedBox(height: glassSpacingXs),
-                _InlineDateTimeSection(
-                  draft: _draft,
-                  activeTimeField: _activeTimeField,
-                  isDatePickerExpanded: _isDatePickerExpanded,
-                  isTimePickerExpanded: _isTimePickerExpanded,
-                  hourWheelController: _hourWheelController,
-                  minuteWheelController: _minuteWheelController,
-                  dateLabel: l10n.personalEntryDateLabel,
-                  timeLabel: l10n.personalEntryStartTime,
-                  onToggleDatePicker: _toggleDatePicker,
-                  onToggleTimePicker: _toggleTimePicker,
-                  onDateChanged: (DateTime value) {
-                    setState(() {
-                      _draft = _draft.copyWith(
-                        date: DateTime.utc(value.year, value.month, value.day),
-                      );
-                    });
-                  },
-                  onSelectStartTime: () =>
-                      _setActiveTimeField(_TimeField.start),
-                  onSelectEndTime: () => _setActiveTimeField(_TimeField.end),
-                  onHourChanged: (int hour) {
-                    final bool isApplied = _applyWheelTime(hour: hour);
-                    if (isApplied) {
-                      _triggerSelectionHapticFeedback();
-                    }
-                  },
-                  onMinuteChanged: (int minuteIndex) {
-                    final int minute = _wheelIndexToMinute(minuteIndex);
-                    final bool isApplied = _applyWheelTime(minute: minute);
-                    if (isApplied) {
-                      _triggerSelectionHapticFeedback();
-                    }
-                  },
-                ),
-                const SizedBox(height: glassSpacingMd),
-                GlassFormSectionEyebrow(
-                  text: l10n.personalEntryNotesLabel,
-                  enabled: true,
-                ),
-                const SizedBox(height: glassSpacingXs),
-                Semantics(
-                  textField: true,
-                  label: l10n.personalEntryNotesLabel,
-                  child: TextField(
-                    controller: _notesController,
-                    decoration: _glassFieldDecoration(
-                      context,
-                      hintText: l10n.personalEntryNotesLabel,
-                    ),
-                    maxLines: 2,
-                  ),
-                ),
-                const SizedBox(height: glassSpacingLg),
-                if (_operationError != null) ...[
+                  const SizedBox(height: glassSpacingXs),
                   Semantics(
-                    key: _feedbackKey,
-                    liveRegion: true,
-                    child: GlassCard(
-                      padding: const EdgeInsets.all(glassSpacingMd),
-                      tintColor: colorScheme.error,
-                      tintAlpha: .08,
-                      borderColor: colorScheme.error,
-                      borderAlpha: .5,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.error_outline, color: colorScheme.error),
-                          const SizedBox(width: glassSpacingSm),
-                          Expanded(
-                            child: Text(
-                              _operationError!,
-                              style: AppFeedbackStyle.text(colorScheme),
-                            ),
-                          ),
-                        ],
+                    key: _titleFieldKey,
+                    textField: true,
+                    label: l10n.personalEntryTitleLabel,
+                    child: TextField(
+                      controller: _titleController,
+                      onChanged: (value) {
+                        if (_titleError != null && value.trim().isNotEmpty) {
+                          setState(() => _titleError = null);
+                        }
+                      },
+                      decoration: _glassFieldDecoration(
+                        context,
+                        hintText: l10n.personalEntryTitleLabel,
+                        error: _titleError,
                       ),
                     ),
                   ),
+                  const SizedBox(height: glassSpacingLg),
+                  SwitchListTile(
+                    tileColor: Colors.transparent,
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      l10n.personalEntryAllDayLabel,
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(color: colorScheme.onSurface),
+                    ),
+                    value: _draft.isAllDay,
+                    onChanged: (bool v) {
+                      _triggerSelectionHapticFeedback();
+                      setState(() {
+                        if (v) {
+                          _draft = _draft.copyWith(
+                            isAllDay: true,
+                            startMinutesFromMidnight: null,
+                            endMinutesFromMidnight: null,
+                          );
+                          return;
+                        }
+                        _draft = _ensureTimeRange(
+                          _draft.copyWith(
+                            isAllDay: false,
+                            startMinutesFromMidnight:
+                                _draft.startMinutesFromMidnight,
+                            endMinutesFromMidnight:
+                                _draft.endMinutesFromMidnight,
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                  const SizedBox(height: glassSpacingXs),
+                  _InlineDateTimeSection(
+                    draft: _draft,
+                    activeTimeField: _activeTimeField,
+                    isDatePickerExpanded: _isDatePickerExpanded,
+                    isTimePickerExpanded: _isTimePickerExpanded,
+                    hourWheelController: _hourWheelController,
+                    minuteWheelController: _minuteWheelController,
+                    dateLabel: _draft.isAllDay
+                        ? l10n.personalEntryDateLabel
+                        : l10n.personalEntryStartTime,
+                    editingEndDate: _editingEndDate,
+                    manualEndDate: _manualEndDate,
+                    onToggleEndDatePicker: () => _toggleDatePicker(end: true),
+                    onAutomaticEndDate: () => setState(() {
+                      _manualEndDate = false;
+                      _updateAutomaticEndDate();
+                    }),
+                    timeLabel: l10n.personalDutyTimes,
+                    onToggleDatePicker: () => _toggleDatePicker(),
+                    onToggleTimePicker: _toggleTimePicker,
+                    onDateChanged: (DateTime value) {
+                      setState(() {
+                        final date = DateTime.utc(
+                          value.year,
+                          value.month,
+                          value.day,
+                        );
+                        if (_editingEndDate) {
+                          _manualEndDate = true;
+                          _draft = _draft.copyWith(endDate: date);
+                        } else {
+                          _draft = _draft.copyWith(date: date);
+                          _updateAutomaticEndDate();
+                        }
+                      });
+                    },
+                    onSelectStartTime: () =>
+                        _setActiveTimeField(_TimeField.start),
+                    onSelectEndTime: () => _setActiveTimeField(_TimeField.end),
+                    onHourChanged: (int hour) {
+                      final bool isApplied = _applyWheelTime(hour: hour);
+                      if (isApplied) {
+                        _triggerSelectionHapticFeedback();
+                      }
+                    },
+                    onMinuteChanged: (int minuteIndex) {
+                      final int minute = _wheelIndexToMinute(minuteIndex);
+                      final bool isApplied = _applyWheelTime(minute: minute);
+                      if (isApplied) {
+                        _triggerSelectionHapticFeedback();
+                      }
+                    },
+                  ),
                   const SizedBox(height: glassSpacingMd),
-                ],
-                AppGlassButton(
-                  role: AppGlassButtonRole.primary,
-                  onPressed: _save,
-                  enabled: true,
-                  borderRadius: glassSurfaceRadiusSm,
-                  height: _kSaveButtonHeight,
-                  fullWidth: true,
-                  child: Text(
-                    l10n.save,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: colorScheme.onSurface,
+                  GlassFormSectionEyebrow(
+                    text: l10n.personalEntryNotesLabel,
+                    enabled: true,
+                  ),
+                  const SizedBox(height: glassSpacingXs),
+                  Semantics(
+                    textField: true,
+                    label: l10n.personalEntryNotesLabel,
+                    child: TextField(
+                      controller: _notesController,
+                      decoration: _glassFieldDecoration(
+                        context,
+                        hintText: l10n.personalEntryNotesLabel,
+                      ),
+                      maxLines: 2,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: glassSpacingLg),
+                  if (_operationError != null) ...[
+                    Semantics(
+                      key: _feedbackKey,
+                      liveRegion: true,
+                      child: GlassCard(
+                        padding: const EdgeInsets.all(glassSpacingMd),
+                        tintColor: colorScheme.error,
+                        tintAlpha: .08,
+                        borderColor: colorScheme.error,
+                        borderAlpha: .5,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.error_outline, color: colorScheme.error),
+                            const SizedBox(width: glassSpacingSm),
+                            Expanded(
+                              child: Text(
+                                _operationError!,
+                                style: AppFeedbackStyle.text(colorScheme),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: glassSpacingMd),
+                  ],
+                  AppGlassButton(
+                    role: AppGlassButtonRole.primary,
+                    onPressed: _save,
+                    enabled: !_busy,
+                    isLoading: _busy,
+                    borderRadius: glassSurfaceRadiusSm,
+                    height: _kSaveButtonHeight,
+                    fullWidth: true,
+                    child: Text(
+                      l10n.save,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -647,45 +728,58 @@ class _PersonalEntrySheetHeader extends StatelessWidget {
   final String title;
   final String deleteTooltip;
   final VoidCallback? onDelete;
+  final VoidCallback onClose;
 
   const _PersonalEntrySheetHeader({
     required this.title,
     required this.deleteTooltip,
     required this.onDelete,
+    required this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        glassSpacingLg,
-        glassSpacingLg,
-        glassSpacingLg,
-        glassSpacingSm,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface,
+    return GestureDetector(
+      onVerticalDragEnd: (details) {
+        if ((details.primaryVelocity ?? 0) > 200) onClose();
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          glassSpacingLg,
+          glassSpacingLg,
+          glassSpacingLg,
+          glassSpacingSm,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
+                ),
               ),
             ),
-          ),
-          if (onDelete != null) ...<Widget>[
-            const SizedBox(width: glassSpacingSm),
             _GlassIconActionChip(
-              icon: Icons.delete_outline_rounded,
-              tooltip: deleteTooltip,
-              iconColor: colorScheme.error,
-              onTap: onDelete!,
+              icon: Icons.close_rounded,
+              tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+              iconColor: colorScheme.onSurface,
+              onTap: onClose,
             ),
+            if (onDelete != null) ...<Widget>[
+              const SizedBox(width: glassSpacingSm),
+              _GlassIconActionChip(
+                icon: Icons.delete_outline_rounded,
+                tooltip: deleteTooltip,
+                iconColor: colorScheme.error,
+                onTap: onDelete!,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -742,6 +836,10 @@ class _InlineDateTimeSection extends StatelessWidget {
   final bool isTimePickerExpanded;
   final FixedExtentScrollController hourWheelController;
   final FixedExtentScrollController minuteWheelController;
+  final bool editingEndDate;
+  final bool manualEndDate;
+  final VoidCallback onToggleEndDatePicker;
+  final VoidCallback onAutomaticEndDate;
   final String dateLabel;
   final String timeLabel;
   final VoidCallback onToggleDatePicker;
@@ -759,6 +857,10 @@ class _InlineDateTimeSection extends StatelessWidget {
     required this.isTimePickerExpanded,
     required this.hourWheelController,
     required this.minuteWheelController,
+    required this.editingEndDate,
+    required this.manualEndDate,
+    required this.onToggleEndDatePicker,
+    required this.onAutomaticEndDate,
     required this.dateLabel,
     required this.timeLabel,
     required this.onToggleDatePicker,
@@ -813,9 +915,31 @@ class _InlineDateTimeSection extends StatelessWidget {
         GlassInlineExpandTile(
           icon: Icons.calendar_today_rounded,
           label: _formatDate(context, draft.date),
-          isExpanded: isDatePickerExpanded,
+          isExpanded: isDatePickerExpanded && !editingEndDate,
           onTap: onToggleDatePicker,
         ),
+        if (isTimeEnabled) ...[
+          const SizedBox(height: glassSpacingMd),
+          GlassFormSectionEyebrow(
+            text: AppLocalizations.of(context).personalEntryEndTime,
+            enabled: true,
+          ),
+          const SizedBox(height: glassSpacingXs),
+          GlassInlineExpandTile(
+            icon: Icons.event_rounded,
+            label:
+                '${_formatDate(context, draft.endDate ?? draft.date)}${DateUtils.isSameDay(draft.endDate ?? draft.date, DateTime(draft.date.year, draft.date.month, draft.date.day + 1)) ? ' · ${AppLocalizations.of(context).personalDutyNextDay}' : ''}',
+            isExpanded: isDatePickerExpanded && editingEndDate,
+            onTap: onToggleEndDatePicker,
+          ),
+          if (manualEndDate)
+            TextButton(
+              onPressed: onAutomaticEndDate,
+              child: Text(
+                AppLocalizations.of(context).personalDutyAutomaticEndDate,
+              ),
+            ),
+        ],
         if (isTimeEnabled ||
             Theme.of(context).brightness == Brightness.dark) ...<Widget>[
           const SizedBox(height: glassSpacingMd),
@@ -834,9 +958,9 @@ class _InlineDateTimeSection extends StatelessWidget {
           const SizedBox(height: glassSpacingSm),
           CalendarDatePicker(
             initialDate: DateTime(
-              draft.date.year,
-              draft.date.month,
-              draft.date.day,
+              (editingEndDate ? draft.endDate ?? draft.date : draft.date).year,
+              (editingEndDate ? draft.endDate ?? draft.date : draft.date).month,
+              (editingEndDate ? draft.endDate ?? draft.date : draft.date).day,
             ),
             firstDate: firstDate,
             lastDate: lastDate,
@@ -1005,7 +1129,7 @@ class _WheelColumn extends StatelessWidget {
   }
 }
 
-void showPersonalCalendarEntrySheet({
+Future<PersonalEntrySheetResult?> showPersonalCalendarEntrySheet({
   required BuildContext context,
   required WidgetRef ref,
   required DateTime day,
@@ -1016,17 +1140,48 @@ void showPersonalCalendarEntrySheet({
       ref.read(settingsProvider).value?.myDutyGroup?.trim().isNotEmpty == true
       ? ref.read(settingsProvider).value!.myDutyGroup!.trim()
       : kPersonalFallbackDutyGroupName;
-  showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
-    clipBehavior: Clip.antiAlias,
-    builder: (BuildContext ctx) => PersonalCalendarEntrySheet(
-      day: day,
-      existingSchedule: existingSchedule,
-      dutyGroupNameForNew: dutyGroup,
-      initialTitle: initialTitle,
+  final key = GlobalKey<_PersonalCalendarEntrySheetState>();
+  return Navigator.of(context).push(
+    _PersonalEntrySheetRoute(
+      requestClose: () => key.currentState?._requestClose(),
+      capturedThemes: InheritedTheme.capture(
+        from: context,
+        to: Navigator.of(context).context,
+      ),
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      modalBarrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
+      clipBehavior: Clip.antiAlias,
+      builder: (BuildContext ctx) => PersonalCalendarEntrySheet(
+        key: key,
+        day: day,
+        existingSchedule: existingSchedule,
+        dutyGroupNameForNew: dutyGroup,
+        initialTitle: initialTitle,
+      ),
     ),
+  );
+}
+
+class _PersonalEntrySheetRoute
+    extends ModalBottomSheetRoute<PersonalEntrySheetResult> {
+  _PersonalEntrySheetRoute({
+    required this.requestClose,
+    required super.builder,
+    required super.isScrollControlled,
+    super.capturedThemes,
+    super.backgroundColor,
+    super.modalBarrierColor,
+    super.clipBehavior,
+    super.barrierLabel,
+  }) : super(enableDrag: false, isDismissible: false);
+  final VoidCallback requestClose;
+  @override
+  Widget buildModalBarrier() => ModalBarrier(
+    color: modalBarrierColor,
+    dismissible: true,
+    onDismiss: requestClose,
+    semanticsLabel: barrierLabel,
   );
 }

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -815,7 +816,11 @@ class DutyScheduleList extends ConsumerWidget {
     }
     final TimeOfDay startT = TimeOfDay(hour: start ~/ 60, minute: start % 60);
     final TimeOfDay endT = TimeOfDay(hour: end ~/ 60, minute: end % 60);
-    return '${startT.format(context)} – ${endT.format(context)}';
+    final endDay = schedule.endDate ?? schedule.date;
+    final suffix = DateUtils.isSameDay(endDay, schedule.date)
+        ? ''
+        : ' · ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(endDay)}';
+    return '${startT.format(context)} – ${endT.format(context)}$suffix';
   }
 
   String? _personalNotesLine(Schedule schedule) {
