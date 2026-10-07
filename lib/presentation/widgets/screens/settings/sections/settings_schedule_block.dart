@@ -66,7 +66,7 @@ class SettingsScheduleBlock extends ConsumerWidget {
                     role: AppGlassButtonRole.quiet,
 
                     onPressed: () =>
-                        ref.invalidate(scheduleCoordinatorProvider),
+                        ref.read(scheduleCoordinatorProvider.notifier).retryFailedLoad(),
                     icon: const Icon(Icons.refresh_rounded),
                     label: Text(l10n.tryAgain),
                   ),
