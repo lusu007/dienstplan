@@ -1233,7 +1233,7 @@ final class SaveSettingsUseCaseProvider
 }
 
 String _$saveSettingsUseCaseHash() =>
-    r'85dad0abe2b3425265dd712fb1834cbd957fce83';
+    r'bcf74f7c51e1b40f5f117fab7e1c51e1cca75d3f';
 
 @ProviderFor(resetSettingsUseCase)
 final resetSettingsUseCaseProvider = ResetSettingsUseCaseProvider._();
