@@ -1025,44 +1025,38 @@ abstract class AppLocalizations {
   /// Tooltip for adding a personal calendar entry
   ///
   /// In de, this message translates to:
-  /// **'Eigenen Termin oder Dienst eintragen'**
+  /// **'Neuer Dienst'**
   String get addPersonalEntryTooltip;
 
-  /// Hint for quick-add appointment field; {date} is a short calendar date
+  /// Hint for quick-add personal duty field; {date} is a short calendar date
   ///
   /// In de, this message translates to:
-  /// **'Termin am {date} hinzuf.'**
+  /// **'Dienst am {date} hinzuf.'**
   String personalEntryQuickTitleHint(String date);
 
-  /// Accessibility label for quick-add appointment field
+  /// Accessibility label for quick-add personal duty field
   ///
   /// In de, this message translates to:
-  /// **'Termin am {date} hinzufügen. Titel tippen, dann Fertig.'**
+  /// **'Dienst am {date} hinzufügen. Titel tippen, dann Fertig.'**
   String personalEntryQuickTitleSemanticLabel(String date);
 
   /// Title for new personal calendar entry sheet
   ///
   /// In de, this message translates to:
-  /// **'Neuer Termin'**
+  /// **'Neuer Dienst'**
   String get personalEntrySheetTitleNew;
 
   /// Title for editing a personal calendar entry
   ///
   /// In de, this message translates to:
-  /// **'Eintrag bearbeiten'**
+  /// **'Dienst bearbeiten'**
   String get personalEntrySheetTitleEdit;
 
-  /// Label for appointment kind
+  /// Action and tooltip for deleting a personal duty
   ///
   /// In de, this message translates to:
-  /// **'Termin'**
-  String get personalEntryKindAppointment;
-
-  /// Label for personal duty kind
-  ///
-  /// In de, this message translates to:
-  /// **'Eigener Dienst'**
-  String get personalEntryKindDuty;
+  /// **'Dienst löschen'**
+  String get personalEntryDelete;
 
   /// Label for personal entry date picker
   ///
@@ -1073,7 +1067,7 @@ abstract class AppLocalizations {
   /// Label for personal entry title field
   ///
   /// In de, this message translates to:
-  /// **'Titel'**
+  /// **'Dienstbezeichnung'**
   String get personalEntryTitleLabel;
 
   /// Label for optional notes
@@ -1097,19 +1091,19 @@ abstract class AppLocalizations {
   /// Snackbar after saving personal entry
   ///
   /// In de, this message translates to:
-  /// **'Eintrag gespeichert'**
+  /// **'Dienst gespeichert'**
   String get personalEntrySaved;
 
   /// Snackbar after deleting personal entry
   ///
   /// In de, this message translates to:
-  /// **'Eintrag gelöscht'**
+  /// **'Dienst gelöscht'**
   String get personalEntryDeleted;
 
   /// Validation: empty title
   ///
   /// In de, this message translates to:
-  /// **'Bitte gib einen Titel ein.'**
+  /// **'Bitte gib eine Dienstbezeichnung ein.'**
   String get personalEntryValidationTitle;
 
   /// Validation: missing times for timed entry
@@ -1157,13 +1151,13 @@ abstract class AppLocalizations {
   /// Title for the confirmation dialog before deleting a personal calendar entry
   ///
   /// In de, this message translates to:
-  /// **'Eintrag löschen?'**
+  /// **'Dienst löschen?'**
   String get deletePersonalEntryConfirmationTitle;
 
   /// Body for the personal entry delete confirmation dialog
   ///
   /// In de, this message translates to:
-  /// **'Der Eintrag wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.'**
+  /// **'Der Dienst wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.'**
   String get deletePersonalEntryConfirmationMessage;
 
   /// Empty state title in the setup config selection step when filters return no results
@@ -1193,7 +1187,7 @@ abstract class AppLocalizations {
   /// Release highlights for the what's new dialog; update each release
   ///
   /// In de, this message translates to:
-  /// **'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.'**
+  /// **'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.'**
   String get whatsNewBody;
 
   /// Primary button to dismiss the what's new dialog

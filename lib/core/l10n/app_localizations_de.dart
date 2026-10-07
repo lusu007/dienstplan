@@ -535,35 +535,32 @@ class AppLocalizationsDe extends AppLocalizations {
   String get movableHoliday => 'Beweglich';
 
   @override
-  String get addPersonalEntryTooltip => 'Eigenen Termin oder Dienst eintragen';
+  String get addPersonalEntryTooltip => 'Neuer Dienst';
 
   @override
   String personalEntryQuickTitleHint(String date) {
-    return 'Termin am $date hinzuf.';
+    return 'Dienst am $date hinzuf.';
   }
 
   @override
   String personalEntryQuickTitleSemanticLabel(String date) {
-    return 'Termin am $date hinzufügen. Titel tippen, dann Fertig.';
+    return 'Dienst am $date hinzufügen. Titel tippen, dann Fertig.';
   }
 
   @override
-  String get personalEntrySheetTitleNew => 'Neuer Termin';
+  String get personalEntrySheetTitleNew => 'Neuer Dienst';
 
   @override
-  String get personalEntrySheetTitleEdit => 'Eintrag bearbeiten';
+  String get personalEntrySheetTitleEdit => 'Dienst bearbeiten';
 
   @override
-  String get personalEntryKindAppointment => 'Termin';
-
-  @override
-  String get personalEntryKindDuty => 'Eigener Dienst';
+  String get personalEntryDelete => 'Dienst löschen';
 
   @override
   String get personalEntryDateLabel => 'Datum';
 
   @override
-  String get personalEntryTitleLabel => 'Titel';
+  String get personalEntryTitleLabel => 'Dienstbezeichnung';
 
   @override
   String get personalEntryNotesLabel => 'Notizen';
@@ -575,13 +572,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get personalEntryStartTime => 'Beginn';
 
   @override
-  String get personalEntrySaved => 'Eintrag gespeichert';
+  String get personalEntrySaved => 'Dienst gespeichert';
 
   @override
-  String get personalEntryDeleted => 'Eintrag gelöscht';
+  String get personalEntryDeleted => 'Dienst gelöscht';
 
   @override
-  String get personalEntryValidationTitle => 'Bitte gib einen Titel ein.';
+  String get personalEntryValidationTitle =>
+      'Bitte gib eine Dienstbezeichnung ein.';
 
   @override
   String get personalEntryValidationTimes => 'Bitte wähle Start- und Endzeit.';
@@ -610,11 +608,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die Einrichtung lässt sich gerade nicht laden';
 
   @override
-  String get deletePersonalEntryConfirmationTitle => 'Eintrag löschen?';
+  String get deletePersonalEntryConfirmationTitle => 'Dienst löschen?';
 
   @override
   String get deletePersonalEntryConfirmationMessage =>
-      'Der Eintrag wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.';
+      'Der Dienst wird aus deinem Kalender entfernt. Diese Aktion kann nicht rückgängig gemacht werden.';
 
   @override
   String get configSelectionEmptyTitle => 'Keine Dienstpläne passen zum Filter';
@@ -632,7 +630,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get whatsNewBody =>
-      'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Termine und Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.';
+      'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.';
 
   @override
   String get whatsNewGotIt => 'Alles klar';

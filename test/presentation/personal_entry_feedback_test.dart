@@ -115,22 +115,25 @@ void main() {
       expect(
         find.descendant(
           of: sheet,
-          matching: find.text('Bitte gib einen Titel ein.'),
+          matching: find.text('Bitte gib eine Dienstbezeichnung ein.'),
         ),
         findsOneWidget,
       );
       expect(find.byType(AppSnackBar), findsNothing);
       expect(
-        find.text('Bitte gib einen Titel ein.').hitTestable(),
+        find.text('Bitte gib eine Dienstbezeichnung ein.').hitTestable(),
         findsOneWidget,
       );
       final field = find.byType(TextField).first;
       await tester.enterText(field, '  ');
       await tester.pumpAndSettle();
-      expect(find.text('Bitte gib einen Titel ein.'), findsOneWidget);
+      expect(
+        find.text('Bitte gib eine Dienstbezeichnung ein.'),
+        findsOneWidget,
+      );
       await tester.enterText(field, 'Arzttermin');
       await tester.pumpAndSettle();
-      expect(find.text('Bitte gib einen Titel ein.'), findsNothing);
+      expect(find.text('Bitte gib eine Dienstbezeichnung ein.'), findsNothing);
       expect(tester.widget<TextField>(field).controller!.text, 'Arzttermin');
       expect(tester.takeException(), isNull);
     });
@@ -174,9 +177,9 @@ void main() {
       'delete failure returns to editor with visible error (dark: $dark)',
       (tester) async {
         await _openEditor(tester, dark: dark, editing: true);
-        await tester.tap(find.byTooltip('Löschen'));
+        await tester.tap(find.byTooltip('Dienst löschen'));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Löschen'));
+        await tester.tap(find.text('Dienst löschen'));
         await tester.pumpAndSettle();
         expect(
           find.descendant(
