@@ -1,6 +1,6 @@
 # UI-/UX-Audit: Abnahme des Hauptpakets
 
-Stand: 7. Oktober 2026. Geprüfter Code: `fe21993`, Basis `main` bei `8aed03a`. Android-Dev-Build **0.17.4 (4011)** auf Samsung Galaxy S22 Ultra installiert. Keine Abhängigkeitsupdates.
+Stand: 7. Oktober 2026. Geprüfter Code: `fe21993`, Basis `main` bei `8aed03a`. Android-Dev-Build **0.17.4 (4011)** auf Samsung Galaxy S22 Ultra installiert. Keine Abhängigkeitsupdates. Lieferung: [PR #438](https://github.com/lusu007/dienstplan/pull/438).
 
 ## Automatisierte Prüfung
 

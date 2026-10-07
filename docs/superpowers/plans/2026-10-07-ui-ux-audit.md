@@ -182,7 +182,7 @@ Tests prüfen sichtbares Verhalten oder externe Aufrufe, keine privaten Implemen
 - [x] „Das ist neu für dich“-Dialog in Light/Dark, Einstellungen und Formularnavigation am Gerät kontrollieren; Screenshots dokumentieren. Bestehende Tests für Einstellungen und rechtliche Ansichten mitlaufen lassen. Exportversand und TalkBack bleiben außerhalb der Geräte-Abnahme.
 - [x] Testdaten ausschließlich anhand ihrer neu erzeugten IDs entfernen; Theme-/Ansichtspräferenzen auf Ausgangswerte zurückstellen. Kein Feedback versenden und keinen echten Reset ausführen.
 - [x] Spec-Abdeckung prüfen: Audit 1–6, 8 und Zusatz A–C sind Hauptpaket-Abnahmekriterien; Punkt 7 bleibt ausdrücklich nachrangig. Wenn 9 noch aussteht, entsprechend dokumentieren, statt „alles behoben“ zu behaupten.
-- [ ] Nach tatsächlicher Implementierung reviewbare PR(s) im Conventional-Commit-Format erstellen/aktualisieren, ohne Codex-Erwähnung. Beschreibung: Problem, neues sichtbares Verhalten, Checks und relevante Grenzen. PR(s) am Chat anhängen.
+- [x] Nach tatsächlicher Implementierung reviewbare PR(s) im Conventional-Commit-Format erstellen/aktualisieren, ohne Codex-Erwähnung. Beschreibung: Problem, neues sichtbares Verhalten, Checks und relevante Grenzen. PR(s) am Chat anhängen.
 
 ## Selbstprüfung des Plans
 
@@ -192,3 +192,5 @@ Tests prüfen sichtbares Verhalten oder externe Aufrufe, keine privaten Implemen
 - [x] Alle fünf Review-Focus-Bedingungen sind konkreten Regressionen zugeordnet.
 - [x] Planung verändert keine App-, Geräte- oder Nutzerdaten.
 - [x] Endtag-Empfehlung nach Nutzerdiskussion festgelegt: freie Datumswahl mit automatischer Vorbelegung und persistiertem Enddatum; Aufgabe 3 enthält eine Speicherstrategie.
+
+Hauptpaket geliefert in [PR #438](https://github.com/lusu007/dienstplan/pull/438). Aufgabe 9 bleibt als eigenständiges Folgepaket offen.
