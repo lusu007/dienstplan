@@ -61,19 +61,17 @@ class PartnerConfigStepComponent extends StatelessWidget {
         ],
 
         // Scrollable content section
-        Expanded(
-          child: ScrollFadeMask(
-            child: _buildScrollableContent(
-              context: context,
-              isLoading: state.isLoading,
-              loadingError: loadingError,
-              loadingErrorStackTrace: loadingErrorStackTrace,
-              onRetry: onRetry,
-              filteredConfigs: state.filteredConfigs,
-              selectedPartnerConfig: state.selectedPartnerConfig,
-              onPartnerConfigChanged: onPartnerConfigChanged,
-              scrollController: scrollController,
-            ),
+        ScrollFadeMask(
+          child: _buildScrollableContent(
+            context: context,
+            isLoading: state.isLoading,
+            loadingError: loadingError,
+            loadingErrorStackTrace: loadingErrorStackTrace,
+            onRetry: onRetry,
+            filteredConfigs: state.filteredConfigs,
+            selectedPartnerConfig: state.selectedPartnerConfig,
+            onPartnerConfigChanged: onPartnerConfigChanged,
+            scrollController: scrollController,
           ),
         ),
       ],
@@ -93,6 +91,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
   }) {
     if (isLoading) {
       return SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: scrollController,
         padding: const EdgeInsets.only(top: 12, bottom: 32),
         child: Column(
@@ -103,6 +102,7 @@ class PartnerConfigStepComponent extends StatelessWidget {
 
     if (loadingError != null) {
       return SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: scrollController,
         padding: const EdgeInsets.only(top: 12, bottom: 32),
         child: ErrorDisplay(
@@ -118,6 +118,8 @@ class PartnerConfigStepComponent extends StatelessWidget {
     }
 
     return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       controller: scrollController,
       padding: const EdgeInsets.only(top: 12, bottom: 32),
       itemCount: filteredConfigs.length,

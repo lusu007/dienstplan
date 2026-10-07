@@ -60,6 +60,7 @@
   "@resetDataConfirmation": {
     "description": "Confirmation message for reset app action"
   },
+  "resetDataError": "Zurücksetzen ist fehlgeschlagen. Bitte versuche es erneut.",
   "resetDataSuccess": "Zurücksetzen hat geklappt. Du kannst die App neu einrichten.",
   "@resetDataSuccess": {
     "description": "Success message after reset app action"
@@ -820,5 +821,13 @@
   "selectFederalStateFirst": "Zuerst Bundesland auswählen",
   "@selectFederalStateFirst": {
     "description": "Explains disabled holiday actions when no federal state is selected"
-  }
+  },
+  "personalEntryEndTime": "Ende",
+  "personalDutyTimes": "Uhrzeit: Beginn – Ende",
+  "personalDutyNextDay": "Folgetag",
+  "personalDutyAutomaticEndDate": "Endtag automatisch bestimmen",
+  "discardChangesTitle": "Änderungen verwerfen?",
+  "discardChangesMessage": "Deine ungespeicherten Änderungen gehen dabei verloren.",
+  "keepEditing": "Weiter bearbeiten",
+  "discardChanges": "Verwerfen"
 }

@@ -16,11 +16,14 @@ void main() {
         isAllDay: false,
         startMinutesFromMidnight: 9 * 60 + 30,
         endMinutesFromMidnight: 10 * 60 + 15,
+        endDate: DateTime.utc(2026, 4, 12),
         dutyGroupName: 'Alpha',
         createdAtMs: 100,
         updatedAtMs: 200,
       );
       final Schedule s = PersonalEntryScheduleMapper.toSchedule(entry);
+      expect(s.endDate, DateTime.utc(2026, 4, 12));
+      expect(PersonalEntryScheduleMapper.entryFromSchedule(s), entry);
       expect(s.configName, kPersonalScheduleConfigName);
       expect(s.isUserDefined, isTrue);
       expect(s.personalEntryId, 'id-1');

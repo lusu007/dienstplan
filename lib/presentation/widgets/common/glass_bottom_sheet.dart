@@ -19,6 +19,7 @@ class GlassBottomSheet extends StatefulWidget {
   final List<Widget> children;
   final double? heightPercentage;
   final bool showHandleBar;
+  final VoidCallback? onHandleClose;
 
   /// When true, the sheet only uses as much height as the content needs (capped
   /// to ~92% of the screen) and scrolls if necessary. When false, uses
@@ -33,6 +34,7 @@ class GlassBottomSheet extends StatefulWidget {
     required this.children,
     this.heightPercentage,
     this.showHandleBar = true,
+    this.onHandleClose,
     this.shrinkToContent = false,
     this.backdropBlurSigma = glassSurfaceBlurBottomSheet,
     this.deferExpensiveEffects = true,
@@ -113,6 +115,20 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
     });
   }
 
+  Widget _buildHandle() {
+    if (widget.onHandleClose == null) return const AppSheetHandle();
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onHandleClose,
+      onVerticalDragEnd: (details) {
+        if ((details.primaryVelocity ?? 0) > 200) {
+          widget.onHandleClose!();
+        }
+      },
+      child: const AppSheetHandle(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -142,7 +158,7 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (widget.showHandleBar) const AppSheetHandle(),
+                  if (widget.showHandleBar) _buildHandle(),
                   if (widget.title != null && widget.title!.isNotEmpty)
                     _buildTitle(context: context, colorScheme: colorScheme),
                   if (widget.children.isNotEmpty)
@@ -189,7 +205,7 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
             color: Colors.transparent,
             child: Column(
               children: [
-                if (widget.showHandleBar) const AppSheetHandle(),
+                if (widget.showHandleBar) _buildHandle(),
                 if (widget.title != null && widget.title!.isNotEmpty)
                   _buildTitle(context: context, colorScheme: colorScheme),
                 if (widget.children.isNotEmpty)

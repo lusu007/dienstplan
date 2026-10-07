@@ -1,3 +1,5 @@
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -30,19 +32,27 @@ class _DaySchedulesListPanelState extends ConsumerState<DaySchedulesListPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(scheduleCoordinatorProvider.select((s) => s.value));
+    final asyncState = ref.watch(scheduleCoordinatorProvider);
+    final state = asyncState.value;
     final DateTime day = state?.selectedDay ?? DateTime.now();
-    final forDay = filterSchedulesForSingleDay(state?.schedules, day);
+    final forDay = filterSchedulesForSingleDay(
+      state?.schedules,
+      day,
+      activeConfigName: state?.activeConfigName,
+      partnerConfigName: state?.partnerConfigName,
+    );
     final bool hasForDay = forDay.isNotEmpty;
-    final bool isLoadingSelectedDay = (state?.isLoading ?? false) && !hasForDay;
+    final bool isLoadingSelectedDay =
+        (asyncState.isLoading || (state?.isLoading ?? false)) && !hasForDay;
 
+    final String? loadError = scheduleLoadErrorMessage(context, asyncState);
     _ensureSelectedDay.scheduleIfEmpty(
       ref: ref,
       context: context,
       day: day,
       hasSchedulesForDay: hasForDay,
       isLoadingSelectedDay: isLoadingSelectedDay,
-      activeConfigName: state?.activeConfigName,
+      activeConfigName: loadError == null ? state?.activeConfigName : null,
     );
 
     return Column(
@@ -51,17 +61,25 @@ class _DaySchedulesListPanelState extends ConsumerState<DaySchedulesListPanel> {
         Expanded(
           child: RepaintBoundary(
             child: ScrollFadeMask(
-              child: DutyScheduleList(
-                schedules: forDay,
-                activeConfigName: state?.activeConfigName,
-                dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
-                dutyTypes: state?.activeConfig?.dutyTypes,
-                shouldAnimate: false,
-                isLoading: isLoadingSelectedDay,
-                selectedDay: day,
-                visualStyle: DutyListVisualStyle.glassCompact,
-                topPadding: glassSpacingXl,
-                bottomPadding: glassSpacingLg,
+              child: ScheduleLoadStatus(
+                isLoading: asyncState.isLoading || (state?.isLoading ?? false),
+                errorMessage: loadError,
+                hasVisibleSchedules: hasForDay,
+                onRetry: () => ref
+                    .read(scheduleCoordinatorProvider.notifier)
+                    .retryFailedLoad(),
+                child: DutyScheduleList(
+                  schedules: forDay,
+                  activeConfigName: state?.activeConfigName,
+                  dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
+                  dutyTypes: state?.activeConfig?.dutyTypes,
+                  shouldAnimate: false,
+                  isLoading: isLoadingSelectedDay,
+                  selectedDay: day,
+                  visualStyle: DutyListVisualStyle.glassCompact,
+                  topPadding: glassSpacingXl,
+                  bottomPadding: glassSpacingLg,
+                ),
               ),
             ),
           ),

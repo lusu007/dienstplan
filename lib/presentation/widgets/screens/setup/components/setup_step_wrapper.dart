@@ -18,6 +18,7 @@ class SetupStepWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScrollFadeMask(
       child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: scrollController,
         padding: const EdgeInsets.only(top: 8),
         child: Column(

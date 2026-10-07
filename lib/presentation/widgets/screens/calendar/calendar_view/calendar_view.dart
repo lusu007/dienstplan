@@ -1,3 +1,5 @@
+import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -34,6 +36,7 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
   @override
   Widget build(BuildContext context) {
     ref.watch(calendarProvider);
+    final schedule = ref.watch(scheduleCoordinatorProvider);
     final bool isSplitLayout = ref.watch(calendarSplitLayoutProvider);
     ref.listen(scheduleCoordinatorProvider, (previous, next) {
       final DateTime? previousFocused = previous?.value?.focusedDay;
@@ -108,13 +111,35 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
                           )
                         else
                           Expanded(
-                            child: CalendarSplitPointerListener(
-                              isSplitLayout: false,
-                              onSwipeUpInFull: _enterSplitLayout,
-                              child: CalendarTable(
-                                onPageChanged: (_) {},
-                                onDaySelected: _handleDaySelected,
-                                useCompactDutyStripes: false,
+                            child: ScheduleLoadStatus(
+                              isLoading:
+                                  schedule.isLoading ||
+                                  (schedule.value?.isLoading ?? false),
+                              errorMessage: scheduleLoadErrorMessage(
+                                context,
+                                schedule,
+                              ),
+                              hasVisibleSchedules:
+                                  schedule.value?.schedules.any(
+                                    (s) =>
+                                        s.isUserDefined ||
+                                        s.configName ==
+                                            schedule.value?.activeConfigName ||
+                                        s.configName ==
+                                            schedule.value?.partnerConfigName,
+                                  ) ??
+                                  false,
+                              onRetry: () => ref
+                                  .read(scheduleCoordinatorProvider.notifier)
+                                  .retryFailedLoad(),
+                              child: CalendarSplitPointerListener(
+                                isSplitLayout: false,
+                                onSwipeUpInFull: _enterSplitLayout,
+                                child: CalendarTable(
+                                  onPageChanged: (_) {},
+                                  onDaySelected: _handleDaySelected,
+                                  useCompactDutyStripes: false,
+                                ),
                               ),
                             ),
                           ),

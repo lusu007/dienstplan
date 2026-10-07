@@ -85,3 +85,7 @@ sentry.properties
 
 # Codex
 .codex
+
+# Local agent planning and verification artifacts
+.superpowers/
+docs/superpowers/

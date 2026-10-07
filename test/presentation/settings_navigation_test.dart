@@ -68,7 +68,7 @@ void main() {
     }
   });
   testWidgets(
-    'missing federal state explains light-only disabled holiday actions',
+    'missing federal state explains disabled holiday actions in both themes',
     (tester) async {
       for (final brightness in Brightness.values) {
         await tester.pumpWidget(
@@ -88,10 +88,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(
-          find.text('Zuerst Bundesland auswählen'),
-          brightness == Brightness.light ? findsNWidgets(2) : findsNothing,
-        );
+        expect(find.text('Zuerst Bundesland auswählen'), findsNWidgets(2));
       }
     },
   );

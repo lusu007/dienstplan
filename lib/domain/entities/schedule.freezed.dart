@@ -26,6 +26,7 @@ mixin _$Schedule {
   PersonalCalendarEntryKind? get personalEntryKind;
   int? get startMinutesFromMidnight;
   int? get endMinutesFromMidnight;
+  DateTime? get endDate;
   String? get personalNotes;
   int? get personalCreatedAtMs;
   int? get personalUpdatedAtMs;
@@ -73,6 +74,8 @@ mixin _$Schedule {
                   _this.endMinutesFromMidnight,
                 ) ||
                 other.endMinutesFromMidnight == _this.endMinutesFromMidnight) &&
+            (identical(other.endDate, _this.endDate) ||
+                other.endDate == _this.endDate) &&
             (identical(other.personalNotes, _this.personalNotes) ||
                 other.personalNotes == _this.personalNotes) &&
             (identical(other.personalCreatedAtMs, _this.personalCreatedAtMs) ||
@@ -98,6 +101,7 @@ mixin _$Schedule {
       _this.personalEntryKind,
       _this.startMinutesFromMidnight,
       _this.endMinutesFromMidnight,
+      _this.endDate,
       _this.personalNotes,
       _this.personalCreatedAtMs,
       _this.personalUpdatedAtMs,
@@ -107,7 +111,7 @@ mixin _$Schedule {
   @override
   String toString() {
     final _this = this as Schedule;
-    return 'Schedule(date: ${_this.date}, service: ${_this.service}, dutyGroupId: ${_this.dutyGroupId}, dutyTypeId: ${_this.dutyTypeId}, dutyGroupName: ${_this.dutyGroupName}, configName: ${_this.configName}, isAllDay: ${_this.isAllDay}, isUserDefined: ${_this.isUserDefined}, personalEntryId: ${_this.personalEntryId}, personalEntryKind: ${_this.personalEntryKind}, startMinutesFromMidnight: ${_this.startMinutesFromMidnight}, endMinutesFromMidnight: ${_this.endMinutesFromMidnight}, personalNotes: ${_this.personalNotes}, personalCreatedAtMs: ${_this.personalCreatedAtMs}, personalUpdatedAtMs: ${_this.personalUpdatedAtMs})';
+    return 'Schedule(date: ${_this.date}, service: ${_this.service}, dutyGroupId: ${_this.dutyGroupId}, dutyTypeId: ${_this.dutyTypeId}, dutyGroupName: ${_this.dutyGroupName}, configName: ${_this.configName}, isAllDay: ${_this.isAllDay}, isUserDefined: ${_this.isUserDefined}, personalEntryId: ${_this.personalEntryId}, personalEntryKind: ${_this.personalEntryKind}, startMinutesFromMidnight: ${_this.startMinutesFromMidnight}, endMinutesFromMidnight: ${_this.endMinutesFromMidnight}, endDate: ${_this.endDate}, personalNotes: ${_this.personalNotes}, personalCreatedAtMs: ${_this.personalCreatedAtMs}, personalUpdatedAtMs: ${_this.personalUpdatedAtMs})';
   }
 }
 
@@ -129,6 +133,7 @@ abstract mixin class $ScheduleCopyWith<$Res> {
     PersonalCalendarEntryKind? personalEntryKind,
     int? startMinutesFromMidnight,
     int? endMinutesFromMidnight,
+    DateTime? endDate,
     String? personalNotes,
     int? personalCreatedAtMs,
     int? personalUpdatedAtMs,
@@ -159,6 +164,7 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
     Object? personalEntryKind = freezed,
     Object? startMinutesFromMidnight = freezed,
     Object? endMinutesFromMidnight = freezed,
+    Object? endDate = freezed,
     Object? personalNotes = freezed,
     Object? personalCreatedAtMs = freezed,
     Object? personalUpdatedAtMs = freezed,
@@ -213,6 +219,10 @@ class _$ScheduleCopyWithImpl<$Res> implements $ScheduleCopyWith<$Res> {
             ? _self.endMinutesFromMidnight
             : endMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
                   as int?,
+        endDate: freezed == endDate
+            ? _self.endDate
+            : endDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         personalNotes: freezed == personalNotes
             ? _self.personalNotes
             : personalNotes // ignore: cast_nullable_to_non_nullable
@@ -336,6 +346,7 @@ extension SchedulePatterns on Schedule {
       PersonalCalendarEntryKind? personalEntryKind,
       int? startMinutesFromMidnight,
       int? endMinutesFromMidnight,
+      DateTime? endDate,
       String? personalNotes,
       int? personalCreatedAtMs,
       int? personalUpdatedAtMs,
@@ -359,6 +370,7 @@ extension SchedulePatterns on Schedule {
           _that.personalEntryKind,
           _that.startMinutesFromMidnight,
           _that.endMinutesFromMidnight,
+          _that.endDate,
           _that.personalNotes,
           _that.personalCreatedAtMs,
           _that.personalUpdatedAtMs,
@@ -396,6 +408,7 @@ extension SchedulePatterns on Schedule {
       PersonalCalendarEntryKind? personalEntryKind,
       int? startMinutesFromMidnight,
       int? endMinutesFromMidnight,
+      DateTime? endDate,
       String? personalNotes,
       int? personalCreatedAtMs,
       int? personalUpdatedAtMs,
@@ -418,6 +431,7 @@ extension SchedulePatterns on Schedule {
           _that.personalEntryKind,
           _that.startMinutesFromMidnight,
           _that.endMinutesFromMidnight,
+          _that.endDate,
           _that.personalNotes,
           _that.personalCreatedAtMs,
           _that.personalUpdatedAtMs,
@@ -454,6 +468,7 @@ extension SchedulePatterns on Schedule {
       PersonalCalendarEntryKind? personalEntryKind,
       int? startMinutesFromMidnight,
       int? endMinutesFromMidnight,
+      DateTime? endDate,
       String? personalNotes,
       int? personalCreatedAtMs,
       int? personalUpdatedAtMs,
@@ -476,6 +491,7 @@ extension SchedulePatterns on Schedule {
           _that.personalEntryKind,
           _that.startMinutesFromMidnight,
           _that.endMinutesFromMidnight,
+          _that.endDate,
           _that.personalNotes,
           _that.personalCreatedAtMs,
           _that.personalUpdatedAtMs,
@@ -502,6 +518,7 @@ class _Schedule extends Schedule {
     this.personalEntryKind,
     this.startMinutesFromMidnight,
     this.endMinutesFromMidnight,
+    this.endDate,
     this.personalNotes,
     this.personalCreatedAtMs,
     this.personalUpdatedAtMs,
@@ -533,6 +550,8 @@ class _Schedule extends Schedule {
   final int? startMinutesFromMidnight;
   @override
   final int? endMinutesFromMidnight;
+  @override
+  final DateTime? endDate;
   @override
   final String? personalNotes;
   @override
@@ -578,6 +597,7 @@ class _Schedule extends Schedule {
                 other.startMinutesFromMidnight == startMinutesFromMidnight) &&
             (identical(other.endMinutesFromMidnight, endMinutesFromMidnight) ||
                 other.endMinutesFromMidnight == endMinutesFromMidnight) &&
+            (identical(other.endDate, endDate) || other.endDate == endDate) &&
             (identical(other.personalNotes, personalNotes) ||
                 other.personalNotes == personalNotes) &&
             (identical(other.personalCreatedAtMs, personalCreatedAtMs) ||
@@ -602,6 +622,7 @@ class _Schedule extends Schedule {
       personalEntryKind,
       startMinutesFromMidnight,
       endMinutesFromMidnight,
+      endDate,
       personalNotes,
       personalCreatedAtMs,
       personalUpdatedAtMs,
@@ -610,7 +631,7 @@ class _Schedule extends Schedule {
 
   @override
   String toString() {
-    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay, isUserDefined: $isUserDefined, personalEntryId: $personalEntryId, personalEntryKind: $personalEntryKind, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, personalNotes: $personalNotes, personalCreatedAtMs: $personalCreatedAtMs, personalUpdatedAtMs: $personalUpdatedAtMs)';
+    return 'Schedule(date: $date, service: $service, dutyGroupId: $dutyGroupId, dutyTypeId: $dutyTypeId, dutyGroupName: $dutyGroupName, configName: $configName, isAllDay: $isAllDay, isUserDefined: $isUserDefined, personalEntryId: $personalEntryId, personalEntryKind: $personalEntryKind, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, endDate: $endDate, personalNotes: $personalNotes, personalCreatedAtMs: $personalCreatedAtMs, personalUpdatedAtMs: $personalUpdatedAtMs)';
   }
 }
 
@@ -634,6 +655,7 @@ abstract mixin class _$ScheduleCopyWith<$Res>
     PersonalCalendarEntryKind? personalEntryKind,
     int? startMinutesFromMidnight,
     int? endMinutesFromMidnight,
+    DateTime? endDate,
     String? personalNotes,
     int? personalCreatedAtMs,
     int? personalUpdatedAtMs,
@@ -664,6 +686,7 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
     Object? personalEntryKind = freezed,
     Object? startMinutesFromMidnight = freezed,
     Object? endMinutesFromMidnight = freezed,
+    Object? endDate = freezed,
     Object? personalNotes = freezed,
     Object? personalCreatedAtMs = freezed,
     Object? personalUpdatedAtMs = freezed,
@@ -718,6 +741,10 @@ class __$ScheduleCopyWithImpl<$Res> implements _$ScheduleCopyWith<$Res> {
             ? _self.endMinutesFromMidnight
             : endMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
                   as int?,
+        endDate: freezed == endDate
+            ? _self.endDate
+            : endDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         personalNotes: freezed == personalNotes
             ? _self.personalNotes
             : personalNotes // ignore: cast_nullable_to_non_nullable

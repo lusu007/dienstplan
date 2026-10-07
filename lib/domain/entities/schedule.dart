@@ -18,6 +18,7 @@ abstract class Schedule with _$Schedule {
     PersonalCalendarEntryKind? personalEntryKind,
     int? startMinutesFromMidnight,
     int? endMinutesFromMidnight,
+    DateTime? endDate,
     String? personalNotes,
     int? personalCreatedAtMs,
     int? personalUpdatedAtMs,

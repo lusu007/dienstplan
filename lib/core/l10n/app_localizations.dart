@@ -184,6 +184,12 @@ abstract class AppLocalizations {
   /// **'Möchtest du wirklich die App zurücksetzen? Dies kann nicht rückgängig gemacht werden.'**
   String get resetDataConfirmation;
 
+  /// No description provided for @resetDataError.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurücksetzen ist fehlgeschlagen. Bitte versuche es erneut.'**
+  String get resetDataError;
+
   /// Success message after reset app action
   ///
   /// In de, this message translates to:
@@ -1255,6 +1261,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Zuerst Bundesland auswählen'**
   String get selectFederalStateFirst;
+
+  /// No description provided for @personalEntryEndTime.
+  ///
+  /// In de, this message translates to:
+  /// **'Ende'**
+  String get personalEntryEndTime;
+
+  /// No description provided for @personalDutyTimes.
+  ///
+  /// In de, this message translates to:
+  /// **'Uhrzeit: Beginn – Ende'**
+  String get personalDutyTimes;
+
+  /// No description provided for @personalDutyNextDay.
+  ///
+  /// In de, this message translates to:
+  /// **'Folgetag'**
+  String get personalDutyNextDay;
+
+  /// No description provided for @personalDutyAutomaticEndDate.
+  ///
+  /// In de, this message translates to:
+  /// **'Endtag automatisch bestimmen'**
+  String get personalDutyAutomaticEndDate;
+
+  /// No description provided for @discardChangesTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Änderungen verwerfen?'**
+  String get discardChangesTitle;
+
+  /// No description provided for @discardChangesMessage.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine ungespeicherten Änderungen gehen dabei verloren.'**
+  String get discardChangesMessage;
+
+  /// No description provided for @keepEditing.
+  ///
+  /// In de, this message translates to:
+  /// **'Weiter bearbeiten'**
+  String get keepEditing;
+
+  /// No description provided for @discardChanges.
+  ///
+  /// In de, this message translates to:
+  /// **'Verwerfen'**
+  String get discardChanges;
 }
 
 class _AppLocalizationsDelegate

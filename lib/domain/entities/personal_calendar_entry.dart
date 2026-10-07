@@ -37,6 +37,7 @@ abstract class PersonalCalendarEntry with _$PersonalCalendarEntry {
     required bool isAllDay,
     int? startMinutesFromMidnight,
     int? endMinutesFromMidnight,
+    DateTime? endDate,
     required String dutyGroupName,
     required int createdAtMs,
     required int updatedAtMs,

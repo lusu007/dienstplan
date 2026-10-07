@@ -87,28 +87,70 @@ class _Configs implements ConfigRepository {
 // Data loading is independent here; keep the coordinator and its auto-dispose
 // calendar, config and partner notifiers real, as in the calendar/settings UI.
 class _Data extends ScheduleDataNotifier {
+  static bool failNext = false;
+  static int builds = 0;
   @override
-  Future<ScheduleDataUiState> build() async =>
-      ScheduleDataUiState.initial().copyWith(
-        schedules: [
-          Schedule(
-            date: DateTime.now(),
-            service: 'Frühdienst',
-            dutyGroupId: '1',
-            dutyTypeId: 'F',
-            dutyGroupName: '1',
-            configName: 'Plan A',
-          ),
-        ],
-      );
+  Future<ScheduleDataUiState> build() async {
+    builds++;
+    if (failNext) {
+      failNext = false;
+      return ScheduleDataUiState.initial().copyWith(error: 'Unavailable');
+    }
+    return ScheduleDataUiState.initial().copyWith(
+      schedules: [
+        Schedule(
+          date: DateTime.now(),
+          service: 'Frühdienst',
+          dutyGroupId: '1',
+          dutyTypeId: 'F',
+          dutyGroupName: '1',
+          configName: 'Plan A',
+        ),
+      ],
+    );
+  }
 }
 
 class _Schedules implements GetSchedulesUseCase {
+  static final requests = <(DateTime, DateTime)>[];
+  static String? failingConfig;
+  static Completer<void>? loading;
+  static Completer<void>? requestStarted;
+  @override
+  Future<Result<List<Schedule>>> executeForDateRange({
+    required DateTime startDate,
+    required DateTime endDate,
+    String? configName,
+  }) async {
+    requests.add((startDate, endDate));
+    if (requestStarted != null && !requestStarted!.isCompleted) {
+      requestStarted!.complete();
+    }
+    await loading?.future;
+    if (configName == failingConfig) throw StateError('offline');
+    return Result.success(<Schedule>[
+      if (configName == 'Plan A')
+        Schedule(
+          date: DateTime.now(),
+          service: 'Frühdienst',
+          dutyGroupId: '1',
+          dutyTypeId: 'F',
+          dutyGroupName: '1',
+          configName: 'Plan A',
+        ),
+    ]);
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _Ensure implements EnsureMonthSchedulesUseCase {
+  @override
+  Future<Result<List<Schedule>>> execute({
+    required String configName,
+    required DateTime monthStart,
+  }) async => Result.success(<Schedule>[]);
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
@@ -124,6 +166,12 @@ void main() {
 
   setUp(() {
     SettingsCache.clearCache();
+    _Schedules.requests.clear();
+    _Schedules.failingConfig = null;
+    _Schedules.loading = null;
+    _Schedules.requestStarted = null;
+    _Data.builds = 0;
+    _Data.failNext = false;
     store = _SettingsStore();
     configs = _Configs();
     configsReady = Completer<GetConfigsUseCase>();
@@ -149,6 +197,89 @@ void main() {
     });
     // The UI subscribes only to the coordinator, not to its sub-notifiers.
     container.listen(scheduleCoordinatorProvider, (_, _) {});
+  });
+
+  test('range retry exposes loading until requested duties return', () async {
+    configsReady.complete(GetConfigsUseCase(configs));
+    await container.read(scheduleCoordinatorProvider.future);
+    _Schedules.loading = Completer<void>();
+    _Schedules.requestStarted = Completer<void>();
+    final retry = container
+        .read(scheduleCoordinatorProvider.notifier)
+        .retryFailedLoad();
+    await _Schedules.requestStarted!.future;
+    expect(
+      container.read(scheduleCoordinatorProvider).value!.isLoading,
+      isTrue,
+    );
+    _Schedules.loading!.complete();
+    await retry;
+    expect(
+      container.read(scheduleCoordinatorProvider).value!.isLoading,
+      isFalse,
+    );
+  });
+
+  test('retry requests the retained distant focus', () async {
+    configsReady.complete(GetConfigsUseCase(configs));
+    await container.read(scheduleCoordinatorProvider.future);
+    await container
+        .read(calendarProvider.notifier)
+        .setFocusedDay(DateTime(2032, 7));
+    _Schedules.requests.clear();
+    await container
+        .read(scheduleCoordinatorProvider.notifier)
+        .retryFailedLoad();
+    expect(_Schedules.requests.any((range) => range.$2.year == 2032), isTrue);
+  });
+
+  test(
+    'partner repository error retains own duties and clears on retry',
+    () async {
+      store.value = store.value.copyWith(
+        partnerConfigName: 'Plan B',
+        partnerDutyGroup: '1',
+      );
+      _Schedules.failingConfig = 'Plan B';
+      configsReady.complete(GetConfigsUseCase(configs));
+      await container.read(scheduleCoordinatorProvider.future);
+      await container.pump();
+      expect(
+        container.read(scheduleCoordinatorProvider).value!.partnerError,
+        isNotNull,
+      );
+      expect(
+        container
+            .read(scheduleCoordinatorProvider)
+            .value!
+            .schedules
+            .single
+            .configName,
+        'Plan A',
+      );
+      _Schedules.failingConfig = null;
+      await container
+          .read(scheduleCoordinatorProvider.notifier)
+          .retryFailedLoad();
+      expect(
+        container.read(scheduleCoordinatorProvider).value!.partnerError,
+        isNull,
+      );
+    },
+  );
+
+  test('retry rebuilds failed source and recovers duties', () async {
+    _Data.failNext = true;
+    configsReady.complete(GetConfigsUseCase(configs));
+    final failed = await container.read(scheduleCoordinatorProvider.future);
+    expect(failed.error, isNotNull);
+    await container
+        .read(scheduleCoordinatorProvider.notifier)
+        .retryFailedLoad();
+    final recovered = await container.read(scheduleCoordinatorProvider.future);
+    expect(recovered.error, isNull);
+    expect(recovered.schedules.single.service, 'Frühdienst');
+    expect(_Data.builds, 2);
   });
 
   test(

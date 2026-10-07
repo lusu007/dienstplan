@@ -259,26 +259,28 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
         glassSpacingXl - 4,
         glassSpacingXl - 4,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeader(),
-          const SizedBox(height: glassSpacingMd),
-          StepIndicator(
-            currentStep: state.currentStep,
-            totalSteps: state.selectedPartnerConfig != null ? 5 : 4,
-            activeColor: scheme.primary,
-            inactiveColor: scheme.outlineVariant.withValues(alpha: 0.7),
-            halfSteps: state.selectedPartnerConfig != null ? [3, 4] : null,
-          ),
-          const SizedBox(height: glassSpacingXl - 4),
-          Expanded(child: _buildCurrentStepContent(state)),
-          const SizedBox(height: glassSpacingLg),
-          _buildStepButtons(state),
-          SizedBox(
-            height: MediaQuery.of(context).padding.bottom + glassSpacingXs,
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeader(),
+            const SizedBox(height: glassSpacingMd),
+            StepIndicator(
+              currentStep: state.currentStep,
+              totalSteps: state.selectedPartnerConfig != null ? 5 : 4,
+              activeColor: scheme.primary,
+              inactiveColor: scheme.outlineVariant.withValues(alpha: 0.7),
+              halfSteps: state.selectedPartnerConfig != null ? [3, 4] : null,
+            ),
+            const SizedBox(height: glassSpacingXl - 4),
+            _buildCurrentStepContent(state),
+            const SizedBox(height: glassSpacingLg),
+            _buildStepButtons(state),
+            SizedBox(
+              height: MediaQuery.of(context).padding.bottom + glassSpacingXs,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -287,9 +289,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          AppInfo.appName,
-          style: AppTypography.pageTitle(Theme.of(context)),
+        Expanded(
+          child: Text(
+            AppInfo.appName,
+            style: AppTypography.pageTitle(Theme.of(context)),
+          ),
         ),
       ],
     );

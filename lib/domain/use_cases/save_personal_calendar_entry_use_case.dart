@@ -59,7 +59,22 @@ class SavePersonalCalendarEntryUseCase {
         ),
       );
     }
-    if (end <= start) {
+    final endDay = entry.endDate ?? entry.date;
+    final startAt = DateTime.utc(
+      entry.date.year,
+      entry.date.month,
+      entry.date.day,
+      start ~/ 60,
+      start % 60,
+    );
+    final endAt = DateTime.utc(
+      endDay.year,
+      endDay.month,
+      endDay.day,
+      end ~/ 60,
+      end % 60,
+    );
+    if (!endAt.isAfter(startAt)) {
       return Result.createFailure<void>(
         const ValidationFailure(
           technicalMessage: 'Personal entry end must be after start',

@@ -51,18 +51,26 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
     super.dispose();
   }
 
-  void _showPersonalEntrySheet({String? initialTitle}) {
+  bool _openingEntry = false;
+
+  Future<void> _showPersonalEntrySheet({String? initialTitle}) async {
+    if (_openingEntry) return;
+    _openingEntry = true;
     final BuildContext ctx = context;
     final DateTime day =
         ref.read(scheduleCoordinatorProvider).value?.selectedDay ??
         DateTime.now();
-    showPersonalCalendarEntrySheet(
+    final result = await showPersonalCalendarEntrySheet(
       context: ctx,
       ref: ref,
       day: day,
       existingSchedule: null,
-      initialTitle: initialTitle,
+      initialTitle: initialTitle ?? _quickTitleController.text.trim(),
     );
+    _openingEntry = false;
+    if (mounted && result == PersonalEntrySheetResult.saved) {
+      _quickTitleController.clear();
+    }
   }
 
   void _onQuickFieldTap() {
@@ -76,7 +84,6 @@ class _GlassActionBarState extends ConsumerState<GlassActionBar> {
       return;
     }
     _showPersonalEntrySheet(initialTitle: trimmed);
-    _quickTitleController.clear();
     _quickTitleFocusNode.unfocus();
   }
 

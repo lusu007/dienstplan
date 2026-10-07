@@ -31,6 +31,11 @@ part 'schedule_coordinator_notifier.g.dart';
 
 @Riverpod(keepAlive: true)
 class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
+  final Map<String, String> _rangeErrors = {};
+  int _ownRangeRequest = 0;
+  int _partnerRangeRequest = 0;
+  bool _ownRangeLoading = false;
+  bool _partnerRangeLoading = false;
   GetSchedulesUseCase? _getSchedulesUseCase;
   EnsureMonthSchedulesUseCase? _ensureMonthSchedulesUseCase;
   DateRangePolicy? _dateRangePolicy;
@@ -88,12 +93,16 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
           calendarState.isLoading ||
           configState.isLoading ||
           partnerState.isLoading ||
-          scheduleDataState.isLoading,
+          scheduleDataState.isLoading ||
+          _ownRangeLoading ||
+          _partnerRangeLoading,
       error:
           calendarState.error ??
           configState.error ??
-          partnerState.error ??
-          scheduleDataState.error,
+          scheduleDataState.error ??
+          _rangeErrors[configState.activeConfigName],
+      partnerError:
+          partnerState.error ?? _rangeErrors[partnerState.partnerConfigName],
       selectedDay: calendarState.selectedDay,
       focusedDay: calendarState.focusedDay,
       schedules: scheduleDataState.schedules,
@@ -325,7 +334,32 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   }
 
   // Utility methods
+  /// Rebuild failed sources, including their cached error state, before retrying.
+  Future<void> retryFailedLoad() async {
+    final data = ref.read(scheduleDataProvider);
+    if (data.hasError || data.value?.error != null) {
+      ref.read(scheduleDataProvider.notifier).invalidateCache();
+      ref.invalidate(scheduleDataProvider);
+    }
+    final calendar = ref.read(calendarProvider);
+    if (calendar.hasError || calendar.value?.error != null) {
+      ref.invalidate(calendarProvider);
+    }
+    final config = ref.read(configProvider);
+    if (config.hasError || config.value?.error != null) {
+      ref.invalidate(configProvider);
+    }
+    final partner = ref.read(partnerProvider);
+    if (partner.hasError || partner.value?.error != null) {
+      ref.invalidate(partnerProvider);
+    }
+    await _refreshState();
+    await _ensureOwnDataForFocusedRange();
+    await _ensurePartnerDataForFocusedRange();
+  }
+
   Future<void> clearError() async {
+    _rangeErrors.clear();
     await ref.read(calendarProvider.notifier).clearError();
     await ref.read(configProvider.notifier).clearError();
     await ref.read(partnerProvider.notifier).clearError();
@@ -486,7 +520,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       partnerAccentColorValue: partnerState.partnerAccentColorValue,
       myAccentColorValue: partnerState.myAccentColorValue,
       isLoading: partnerState.isLoading || currentState.isLoading,
-      error: partnerState.error ?? currentState.error,
+      partnerError:
+          partnerState.error ?? _rangeErrors[partnerState.partnerConfigName],
     );
 
     state = AsyncData(updatedState);
@@ -728,6 +763,8 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
   }
 
   Future<void> _ensurePartnerDataForFocusedRange() async {
+    final request = ++_partnerRangeRequest;
+    String? loadingConfig;
     try {
       final ScheduleUiState current;
       if (state.value != null) {
@@ -737,6 +774,9 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
       }
       final String? partnerConfig = current.partnerConfigName;
       if (partnerConfig == null || partnerConfig.isEmpty) return;
+      loadingConfig = partnerConfig;
+      _partnerRangeLoading = true;
+      _updateRangeLoading();
       final DateTime focused = current.focusedDay ?? DateTime.now();
       final DateRange focusedRange = _resolveDateRangePolicy()
           .computeFocusedRange(focused);
@@ -752,7 +792,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         endDate: combinedRange.end,
         configName: partnerConfig,
       );
-      if (result.isFailure) return;
+      if (result.isFailure) throw result.failure;
       final List<Schedule> allPartner = <Schedule>[...result.value];
       // Only ensure months outside current in-memory coverage
       final DateRange? coverage = _getConfigCoverageRange(
@@ -781,9 +821,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
               configName: partnerConfig,
               monthStart: monthStart,
             );
-            if (result.isFailure) {
-              return;
-            }
+            if (result.isFailure) throw result.failure;
             final List<Schedule> ensured = result.value;
             if (ensured.isNotEmpty) {
               allPartner.addAll(ensured);
@@ -803,17 +841,33 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
             range: combinedRange,
             replaceConfigName: partnerConfig,
           );
+      if (!ref.mounted ||
+          request != _partnerRangeRequest ||
+          state.value?.partnerConfigName != partnerConfig) {
+        return;
+      }
+      _rangeErrors.remove(loadingConfig);
       state = AsyncData(
         (state.value ?? current)
-            .copyWith(schedules: merged)
+            .copyWith(schedules: merged, partnerError: null)
             .updateScheduleIndex(),
       );
     } catch (e, stack) {
       AppLogger.e('Error in _ensurePartnerDataForFocusedRange', e, stack);
+      if (request == _partnerRangeRequest) {
+        _recordRangeError(loadingConfig, partner: true);
+      }
+    } finally {
+      if (request == _partnerRangeRequest) {
+        _partnerRangeLoading = false;
+        _updateRangeLoading();
+      }
     }
   }
 
   Future<void> _ensureOwnDataForFocusedRange() async {
+    final request = ++_ownRangeRequest;
+    String? loadingConfig;
     try {
       final ScheduleUiState current;
       if (state.value != null) {
@@ -824,6 +878,9 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
 
       final String? activeName = current.activeConfigName;
       if (activeName == null || activeName.isEmpty) return;
+      loadingConfig = activeName;
+      _ownRangeLoading = true;
+      _updateRangeLoading();
 
       final DateTime focused = current.focusedDay ?? DateTime.now();
       final DateRange focusedRange = _resolveDateRangePolicy()
@@ -842,7 +899,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
         endDate: combinedRange.end,
         configName: activeName,
       );
-      if (ownResult.isFailure) return;
+      if (ownResult.isFailure) throw ownResult.failure;
 
       // Ensure own months around the focused period so data exists for chips,
       // but only for months outside current in-memory coverage
@@ -873,9 +930,7 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
               configName: activeName,
               monthStart: monthStart,
             );
-            if (result.isFailure) {
-              return;
-            }
+            if (result.isFailure) throw result.failure;
             final List<Schedule> ensured = result.value;
             if (ensured.isNotEmpty) {
               allOwn.addAll(ensured);
@@ -896,13 +951,53 @@ class ScheduleCoordinatorNotifier extends _$ScheduleCoordinatorNotifier {
             range: combinedRange,
             replaceConfigName: activeName,
           );
+      if (!ref.mounted ||
+          request != _ownRangeRequest ||
+          state.value?.activeConfigName != activeName) {
+        return;
+      }
+      _rangeErrors.remove(loadingConfig);
       state = AsyncData(
         (state.value ?? current)
-            .copyWith(schedules: merged)
+            .copyWith(schedules: merged, error: null)
             .updateScheduleIndex(),
       );
     } catch (e, stack) {
       AppLogger.e('Error in _ensureOwnDataForFocusedRange', e, stack);
+      if (request == _ownRangeRequest) {
+        _recordRangeError(loadingConfig, partner: false);
+      }
+    } finally {
+      if (request == _ownRangeRequest) {
+        _ownRangeLoading = false;
+        _updateRangeLoading();
+      }
+    }
+  }
+
+  void _updateRangeLoading() {
+    if (!ref.mounted) return;
+    final current = state.value;
+    if (current == null) return;
+    final loading =
+        _ownRangeLoading ||
+        _partnerRangeLoading ||
+        (ref.read(calendarProvider).value?.isLoading ?? false) ||
+        (ref.read(configProvider).value?.isLoading ?? false) ||
+        (ref.read(partnerProvider).value?.isLoading ?? false) ||
+        (ref.read(scheduleDataProvider).value?.isLoading ?? false);
+    state = AsyncData(current.copyWith(isLoading: loading));
+  }
+
+  void _recordRangeError(String? config, {required bool partner}) {
+    if (!ref.mounted || config == null) return;
+    _rangeErrors[config] = 'Schedule range unavailable';
+    final current = state.value;
+    if (current == null) return;
+    if (partner && current.partnerConfigName == config) {
+      state = AsyncData(current.copyWith(partnerError: _rangeErrors[config]));
+    } else if (!partner && current.activeConfigName == config) {
+      state = AsyncData(current.copyWith(error: _rangeErrors[config]));
     }
   }
 

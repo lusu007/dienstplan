@@ -10,6 +10,7 @@ abstract class ScheduleUiState with _$ScheduleUiState {
   const factory ScheduleUiState({
     required bool isLoading,
     String? error,
+    String? partnerError,
     DateTime? selectedDay,
     DateTime? focusedDay,
     @Default(<Schedule>[]) List<Schedule> schedules,

@@ -8,8 +8,10 @@ import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_noti
 /// logic. Matches the schedules sheet behaviour.
 List<Schedule> filterSchedulesForSingleDay(
   List<Schedule>? allSchedules,
-  DateTime day,
-) {
+  DateTime day, {
+  String? activeConfigName,
+  String? partnerConfigName,
+}) {
   if (allSchedules == null) {
     return const <Schedule>[];
   }
@@ -21,7 +23,12 @@ List<Schedule> filterSchedulesForSingleDay(
           s.date.month,
           s.date.day,
         );
-        return scheduleDate.isAtSameMomentAs(target);
+        final matchesPlan =
+            activeConfigName == null ||
+            s.isUserDefined ||
+            s.configName == activeConfigName ||
+            s.configName == partnerConfigName;
+        return matchesPlan && scheduleDate.isAtSameMomentAs(target);
       })
       .toList(growable: false);
 }

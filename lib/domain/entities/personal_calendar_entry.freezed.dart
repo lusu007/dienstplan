@@ -22,6 +22,7 @@ mixin _$PersonalCalendarEntry {
   bool get isAllDay;
   int? get startMinutesFromMidnight;
   int? get endMinutesFromMidnight;
+  DateTime? get endDate;
   String get dutyGroupName;
   int get createdAtMs;
   int get updatedAtMs;
@@ -62,6 +63,8 @@ mixin _$PersonalCalendarEntry {
                   _this.endMinutesFromMidnight,
                 ) ||
                 other.endMinutesFromMidnight == _this.endMinutesFromMidnight) &&
+            (identical(other.endDate, _this.endDate) ||
+                other.endDate == _this.endDate) &&
             (identical(other.dutyGroupName, _this.dutyGroupName) ||
                 other.dutyGroupName == _this.dutyGroupName) &&
             (identical(other.createdAtMs, _this.createdAtMs) ||
@@ -83,6 +86,7 @@ mixin _$PersonalCalendarEntry {
       _this.isAllDay,
       _this.startMinutesFromMidnight,
       _this.endMinutesFromMidnight,
+      _this.endDate,
       _this.dutyGroupName,
       _this.createdAtMs,
       _this.updatedAtMs,
@@ -92,7 +96,7 @@ mixin _$PersonalCalendarEntry {
   @override
   String toString() {
     final _this = this as PersonalCalendarEntry;
-    return 'PersonalCalendarEntry(id: ${_this.id}, kind: ${_this.kind}, title: ${_this.title}, notes: ${_this.notes}, date: ${_this.date}, isAllDay: ${_this.isAllDay}, startMinutesFromMidnight: ${_this.startMinutesFromMidnight}, endMinutesFromMidnight: ${_this.endMinutesFromMidnight}, dutyGroupName: ${_this.dutyGroupName}, createdAtMs: ${_this.createdAtMs}, updatedAtMs: ${_this.updatedAtMs})';
+    return 'PersonalCalendarEntry(id: ${_this.id}, kind: ${_this.kind}, title: ${_this.title}, notes: ${_this.notes}, date: ${_this.date}, isAllDay: ${_this.isAllDay}, startMinutesFromMidnight: ${_this.startMinutesFromMidnight}, endMinutesFromMidnight: ${_this.endMinutesFromMidnight}, endDate: ${_this.endDate}, dutyGroupName: ${_this.dutyGroupName}, createdAtMs: ${_this.createdAtMs}, updatedAtMs: ${_this.updatedAtMs})';
   }
 }
 
@@ -112,6 +116,7 @@ abstract mixin class $PersonalCalendarEntryCopyWith<$Res> {
     bool isAllDay,
     int? startMinutesFromMidnight,
     int? endMinutesFromMidnight,
+    DateTime? endDate,
     String dutyGroupName,
     int createdAtMs,
     int updatedAtMs,
@@ -139,6 +144,7 @@ class _$PersonalCalendarEntryCopyWithImpl<$Res>
     Object? isAllDay = null,
     Object? startMinutesFromMidnight = freezed,
     Object? endMinutesFromMidnight = freezed,
+    Object? endDate = freezed,
     Object? dutyGroupName = null,
     Object? createdAtMs = null,
     Object? updatedAtMs = null,
@@ -177,6 +183,10 @@ class _$PersonalCalendarEntryCopyWithImpl<$Res>
             ? _self.endMinutesFromMidnight
             : endMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
                   as int?,
+        endDate: freezed == endDate
+            ? _self.endDate
+            : endDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         dutyGroupName: null == dutyGroupName
             ? _self.dutyGroupName
             : dutyGroupName // ignore: cast_nullable_to_non_nullable
@@ -296,6 +306,7 @@ extension PersonalCalendarEntryPatterns on PersonalCalendarEntry {
       bool isAllDay,
       int? startMinutesFromMidnight,
       int? endMinutesFromMidnight,
+      DateTime? endDate,
       String dutyGroupName,
       int createdAtMs,
       int updatedAtMs,
@@ -315,6 +326,7 @@ extension PersonalCalendarEntryPatterns on PersonalCalendarEntry {
           _that.isAllDay,
           _that.startMinutesFromMidnight,
           _that.endMinutesFromMidnight,
+          _that.endDate,
           _that.dutyGroupName,
           _that.createdAtMs,
           _that.updatedAtMs,
@@ -348,6 +360,7 @@ extension PersonalCalendarEntryPatterns on PersonalCalendarEntry {
       bool isAllDay,
       int? startMinutesFromMidnight,
       int? endMinutesFromMidnight,
+      DateTime? endDate,
       String dutyGroupName,
       int createdAtMs,
       int updatedAtMs,
@@ -366,6 +379,7 @@ extension PersonalCalendarEntryPatterns on PersonalCalendarEntry {
           _that.isAllDay,
           _that.startMinutesFromMidnight,
           _that.endMinutesFromMidnight,
+          _that.endDate,
           _that.dutyGroupName,
           _that.createdAtMs,
           _that.updatedAtMs,
@@ -398,6 +412,7 @@ extension PersonalCalendarEntryPatterns on PersonalCalendarEntry {
       bool isAllDay,
       int? startMinutesFromMidnight,
       int? endMinutesFromMidnight,
+      DateTime? endDate,
       String dutyGroupName,
       int createdAtMs,
       int updatedAtMs,
@@ -416,6 +431,7 @@ extension PersonalCalendarEntryPatterns on PersonalCalendarEntry {
           _that.isAllDay,
           _that.startMinutesFromMidnight,
           _that.endMinutesFromMidnight,
+          _that.endDate,
           _that.dutyGroupName,
           _that.createdAtMs,
           _that.updatedAtMs,
@@ -438,6 +454,7 @@ class _PersonalCalendarEntry implements PersonalCalendarEntry {
     required this.isAllDay,
     this.startMinutesFromMidnight,
     this.endMinutesFromMidnight,
+    this.endDate,
     required this.dutyGroupName,
     required this.createdAtMs,
     required this.updatedAtMs,
@@ -459,6 +476,8 @@ class _PersonalCalendarEntry implements PersonalCalendarEntry {
   final int? startMinutesFromMidnight;
   @override
   final int? endMinutesFromMidnight;
+  @override
+  final DateTime? endDate;
   @override
   final String dutyGroupName;
   @override
@@ -496,6 +515,7 @@ class _PersonalCalendarEntry implements PersonalCalendarEntry {
                 other.startMinutesFromMidnight == startMinutesFromMidnight) &&
             (identical(other.endMinutesFromMidnight, endMinutesFromMidnight) ||
                 other.endMinutesFromMidnight == endMinutesFromMidnight) &&
+            (identical(other.endDate, endDate) || other.endDate == endDate) &&
             (identical(other.dutyGroupName, dutyGroupName) ||
                 other.dutyGroupName == dutyGroupName) &&
             (identical(other.createdAtMs, createdAtMs) ||
@@ -516,6 +536,7 @@ class _PersonalCalendarEntry implements PersonalCalendarEntry {
       isAllDay,
       startMinutesFromMidnight,
       endMinutesFromMidnight,
+      endDate,
       dutyGroupName,
       createdAtMs,
       updatedAtMs,
@@ -524,7 +545,7 @@ class _PersonalCalendarEntry implements PersonalCalendarEntry {
 
   @override
   String toString() {
-    return 'PersonalCalendarEntry(id: $id, kind: $kind, title: $title, notes: $notes, date: $date, isAllDay: $isAllDay, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, dutyGroupName: $dutyGroupName, createdAtMs: $createdAtMs, updatedAtMs: $updatedAtMs)';
+    return 'PersonalCalendarEntry(id: $id, kind: $kind, title: $title, notes: $notes, date: $date, isAllDay: $isAllDay, startMinutesFromMidnight: $startMinutesFromMidnight, endMinutesFromMidnight: $endMinutesFromMidnight, endDate: $endDate, dutyGroupName: $dutyGroupName, createdAtMs: $createdAtMs, updatedAtMs: $updatedAtMs)';
   }
 }
 
@@ -546,6 +567,7 @@ abstract mixin class _$PersonalCalendarEntryCopyWith<$Res>
     bool isAllDay,
     int? startMinutesFromMidnight,
     int? endMinutesFromMidnight,
+    DateTime? endDate,
     String dutyGroupName,
     int createdAtMs,
     int updatedAtMs,
@@ -573,6 +595,7 @@ class __$PersonalCalendarEntryCopyWithImpl<$Res>
     Object? isAllDay = null,
     Object? startMinutesFromMidnight = freezed,
     Object? endMinutesFromMidnight = freezed,
+    Object? endDate = freezed,
     Object? dutyGroupName = null,
     Object? createdAtMs = null,
     Object? updatedAtMs = null,
@@ -611,6 +634,10 @@ class __$PersonalCalendarEntryCopyWithImpl<$Res>
             ? _self.endMinutesFromMidnight
             : endMinutesFromMidnight // ignore: cast_nullable_to_non_nullable
                   as int?,
+        endDate: freezed == endDate
+            ? _self.endDate
+            : endDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         dutyGroupName: null == dutyGroupName
             ? _self.dutyGroupName
             : dutyGroupName // ignore: cast_nullable_to_non_nullable

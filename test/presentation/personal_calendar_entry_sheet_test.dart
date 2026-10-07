@@ -6,6 +6,61 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  testWidgets(
+    'overnight wheel selection proposes next day and manual date stays',
+    (tester) async {
+      tester.view.physicalSize = const Size(600, 1100);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await initializeDateFormatting('de');
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            locale: const Locale('de'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: PersonalCalendarEntrySheet(
+                day: DateTime(2026, 12, 31),
+                existingSchedule: null,
+                dutyGroupNameForNew: 'Privat',
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(Switch));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('16:00 - 17:00'));
+      await tester.pumpAndSettle();
+      tester
+          .widget<ListWheelScrollView>(find.byType(ListWheelScrollView).first)
+          .onSelectedItemChanged!(22);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Folgetag'), findsOneWidget);
+      await tester.tap(find.text('31. Dez. 2026'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Dezember 2026'), findsOneWidget);
+      await tester.tap(find.textContaining('Folgetag'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Januar 2027'), findsOneWidget);
+      tester
+          .widget<CalendarDatePicker>(find.byType(CalendarDatePicker))
+          .onDateChanged(DateTime(2027, 1, 3));
+      await tester.pumpAndSettle();
+      expect(find.text('3. Jan. 2027'), findsOneWidget);
+      await tester.tap(find.text('22:00 - 17:00'));
+      await tester.pumpAndSettle();
+      tester
+          .widget<ListWheelScrollView>(find.byType(ListWheelScrollView).first)
+          .onSelectedItemChanged!(8);
+      await tester.pumpAndSettle();
+      expect(find.text('3. Jan. 2027'), findsOneWidget);
+      expect(find.text('Endtag automatisch bestimmen'), findsOneWidget);
+    },
+  );
+
   for (final brightness in Brightness.values) {
     testWidgets(
       'all-day entry display in $brightness preserves time toggle behavior',

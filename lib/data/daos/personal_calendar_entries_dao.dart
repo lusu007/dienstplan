@@ -47,6 +47,9 @@ class PersonalCalendarEntriesDao {
         'is_all_day': entry.isAllDay ? 1 : 0,
         'start_minutes': entry.startMinutesFromMidnight,
         'end_minutes': entry.endMinutesFromMidnight,
+        'end_date_ymd': entry.endDate == null
+            ? null
+            : ScheduleKeyHelper.formatDateYmd(entry.endDate!),
         'duty_group_name': entry.dutyGroupName,
         'created_at': entry.createdAtMs,
         'updated_at': entry.updatedAtMs,
@@ -110,6 +113,9 @@ class PersonalCalendarEntriesDao {
       isAllDay: (m['is_all_day'] as int? ?? 1) == 1,
       startMinutesFromMidnight: m['start_minutes'] as int?,
       endMinutesFromMidnight: m['end_minutes'] as int?,
+      endDate: m['end_date_ymd'] == null
+          ? null
+          : DateTime.parse('${m['end_date_ymd']}T00:00:00Z'),
       dutyGroupName: m['duty_group_name']! as String,
       createdAtMs: m['created_at']! as int,
       updatedAtMs: m['updated_at']! as int,
