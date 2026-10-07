@@ -53,10 +53,7 @@ class SchoolHolidaysSection extends ConsumerWidget {
       ),
       data: (state) {
         final isEnabled = state.isEnabled;
-        final needsStateHint =
-            isEnabled &&
-            state.selectedStateCode == null &&
-            Theme.of(context).brightness == Brightness.light;
+        final needsStateHint = isEnabled && state.selectedStateCode == null;
         final selectedState = state.selectedStateCode != null
             ? GermanState.findByCode(state.selectedStateCode!)
             : null;

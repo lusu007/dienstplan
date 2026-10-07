@@ -1,4 +1,4 @@
-**Stand: 19.07.2025**
+**Stand: 07.10.2026**
 
 Vielen Dank für die Nutzung unserer App **Dienstplan** (nachfolgend „App“). Der Schutz Ihrer personenbezogenen Daten ist uns ein wichtiges Anliegen. Im Folgenden informieren wir Sie über die Art, den Umfang und Zweck der Verarbeitung personenbezogener Daten im Zusammenhang mit der Nutzung dieser App.
 
@@ -11,13 +11,14 @@ E-Mail: [hi@scelus.io](mailto:hi@scelus.io)
 
 ## 2. Art der verarbeiteten Daten
 
-Die App verarbeitet **keine personenbezogenen Daten**, die direkt an uns übermittelt werden. Sämtliche Dienstplandaten werden **lokal auf dem Gerät gespeichert**. Es erfolgt keine zentrale Speicherung oder Synchronisation.
+Dienstpläne und persönliche Dienste werden **lokal auf dem Gerät gespeichert**. Diese Einträge werden nicht als Dienstplan mit einem zentralen Konto synchronisiert.
 
-Optional können folgende technische Daten verarbeitet werden:
+Wenn Sie **Feedback** absenden, werden die eingegebene Nachricht sowie freiwillig angegebene Name- und E-Mail-Daten über **Sentry User Feedback** an uns übermittelt. Ein angehängter Screenshot wird ebenfalls übertragen und kann persönliche Informationen aus der sichtbaren App-Ansicht enthalten. Sie können den Screenshot vor dem Absenden prüfen und entfernen. Die Aufnahme eines Screenshots allein sendet noch kein Feedback.
 
-- Gerätekennungen (z. B. Firebase Cloud Messaging Token)
+Bei aktivierten **Analysen & Fehlerberichten** können folgende technische Daten verarbeitet werden:
+
 - App-Version, Betriebssystem-Version
-- Absturzberichte (z. B. über Crashlytics oder Sentry)
+- Absturzberichte über Sentry
 - Fehler- und Diagnosedaten (inkl. ggf. IP-Adresse, Gerätetyp, Zeitpunkt des Fehlers)
 
 ## 3. Zweck der Verarbeitung
@@ -42,9 +43,9 @@ Die App kann folgende Berechtigungen anfordern:
 
 Diese Berechtigungen werden ausschließlich zur Erfüllung der App-Funktionen verwendet.
 
-## 6. Keine Weitergabe an Dritte
+## 6. Verarbeitung durch Drittanbieter
 
-Es erfolgt **keine Weitergabe personenbezogener Daten an Dritte**. Die App ist vollständig **offlinefähig**, sofern keine Cloud-Dienste aktiviert sind.
+Für Analysen, Fehlerberichte und freiwillig abgesendetes Feedback nutzt die App Sentry. Dabei werden die jeweiligen Daten durch diesen Drittanbieter verarbeitet. Bereits geladene Dienstpläne und persönliche Dienste können offline verwendet werden. Abruf neuer Dienstpläne und Versand von Feedback benötigen eine Netzwerkverbindung.
 
 ## 7. Hosting und Dienste Dritter
 
@@ -54,7 +55,9 @@ Die App verwendet Drittanbieterdienste zur Stabilitätsanalyse und Verbesserung 
 
 Bei der Nutzung von Sentry können technische Informationen (z. B. IP-Adresse, Geräteinformationen, Zeitpunkt des Fehlers) an Server in den USA übermittelt werden. Wir haben mit Sentry einen Auftragsverarbeitungsvertrag (Data Processing Agreement, DPA) abgeschlossen und achten auf geeignete Garantien gemäß Art. 44 ff. DSGVO (z. B. EU-Standardvertragsklauseln).
 
-Wenn du in den Einstellungen **Kontakt** nutzt und die Funktion **Analysen & Fehlerberichte** eingeschaltet ist, kannst du über **Sentry User Feedback** freiwillig eine Nachricht, optional Name und E-Mail sowie einen Screenshot an uns senden. Diese Angaben werden ebenfalls über Sentry verarbeitet. Ist die Analysefunktion deaktiviert, zeigen wir dir einen Hinweis, dass Feedback aktuell nicht übertragen werden kann.
+Die Funktion **Kontakt** öffnet das Feedbackformular, wenn **Analysen & Fehlerberichte** eingeschaltet ist. Ist die Funktion deaktiviert, zeigt die App zunächst einen Hinweis und bietet an, sie einzuschalten. Die Übermittlung des Formulars erfolgt erst über **Absenden**.
+
+**Analysen & Fehlerberichte** können in den Einstellungen deaktiviert werden. Die zusätzliche **Bildschirmwiedergabe** ist separat einstellbar und standardmäßig ausgeschaltet.
 
 ## 8. Ihre Rechte
 
