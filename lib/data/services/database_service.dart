@@ -336,9 +336,14 @@ class DatabaseService {
       }
 
       if (oldVersion < 20) {
-        await txn.execute(
-          'ALTER TABLE personal_calendar_entries ADD COLUMN end_date_ymd TEXT',
+        final columns = await txn.rawQuery(
+          'PRAGMA table_info(personal_calendar_entries)',
         );
+        if (!columns.any((column) => column['name'] == 'end_date_ymd')) {
+          await txn.execute(
+            'ALTER TABLE personal_calendar_entries ADD COLUMN end_date_ymd TEXT',
+          );
+        }
       }
 
       // Create any missing indexes after all migrations are complete

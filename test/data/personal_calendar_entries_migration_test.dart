@@ -94,6 +94,36 @@ void main() {
         );
     await temp.delete(recursive: true);
   });
+  test(
+    'upgrade tolerates v19 database with existing end date column',
+    () async {
+      final dao = PersonalCalendarEntriesDao(service);
+      final night = PersonalCalendarEntry(
+        id: 'existing-night',
+        kind: PersonalCalendarEntryKind.personalDuty,
+        title: 'Bestehender Nachtdienst',
+        date: DateTime.utc(2026, 10, 7),
+        endDate: DateTime.utc(2026, 10, 8),
+        isAllDay: false,
+        startMinutesFromMidnight: 1320,
+        endMinutesFromMidnight: 360,
+        dutyGroupName: 'Privat',
+        createdAtMs: 1,
+        updatedAtMs: 2,
+      );
+      await dao.upsert(night);
+      await service.close();
+      await sql('PRAGMA user_version = 19');
+      final entries = await dao.loadBetween(
+        startDate: night.date,
+        endDate: night.date,
+      );
+      expect(entries.single, night);
+      expect((await sql('PRAGMA user_version'))['rows'], [
+        [20],
+      ]);
+    },
+  );
   test('fresh database and v19 upgrade retain old entries and round-trip end dates', () async {
     final dao = PersonalCalendarEntriesDao(service);
     final old = PersonalCalendarEntry(
