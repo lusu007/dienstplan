@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.18.1](https://github.com/lusu007/dienstplan/compare/v0.18.0...v0.18.1) (2026-10-09)
+
+
+### Bug Fixes
+
+* **ui:** refresh what's new release highlights ([#443](https://github.com/lusu007/dienstplan/issues/443)) ([c20dd65](https://github.com/lusu007/dienstplan/commit/c20dd6587b1cb4603d859b99d2e8064bf263c747))
+* **ui:** smooth glass bottom sheet transitions ([#441](https://github.com/lusu007/dienstplan/issues/441)) ([a5110cd](https://github.com/lusu007/dienstplan/commit/a5110cd23138d28f433974bc8bb0b32c4f176b89))
+
 ## [0.18.0](https://github.com/lusu007/dienstplan/compare/v0.17.4...v0.18.0) (2026-10-07)
 
 
