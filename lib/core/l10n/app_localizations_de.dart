@@ -634,7 +634,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get whatsNewBody =>
-      'Hier die wichtigsten Änderungen für dich:\n\n• Klares, modernes Glass-Design – die App wirkt aufgeräumter\n• Du kannst jetzt eigene Dienste im Kalender eintragen – wir bauen das weiter aus\n• Kalender und Tagesansicht sind feiner abgestimmt\n• Komplett neues Feedback-System über „Kontakt“ – du kannst uns Nachrichten schicken und optional einen Screenshot mit einreichen\n• Stabilere Bedienung und kleinere Korrekturen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.';
+      'Hier die wichtigsten Änderungen für dich:\n\n• Flüssigere Animationen beim Öffnen und Schließen der Auswahlfenster – zum Beispiel für Dienstplan, Dienstgruppe und Farben\n• Neu geordnete Einstellungen – Dienstplan, Partner, Darstellung und Feiertage sind leichter zu finden\n• Eigene Dienste mit Start- und Enddatum – auch über Mitternacht. Ungespeicherte Änderungen werden vor dem Verwerfen geschützt\n• Klarere Ladeanzeigen im Kalender und die Möglichkeit, fehlgeschlagene Ladevorgänge erneut zu starten\n• Verbesserter Kontakt: Deine Nachricht bleibt bei Fehlern erhalten, und du kannst die Screenshot-Auswahl abbrechen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.';
 
   @override
   String get whatsNewGotIt => 'Alles klar';
