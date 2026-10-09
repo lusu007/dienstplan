@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
 
 import 'dart:async';
@@ -25,7 +26,7 @@ class SchedulesBottomSheet extends ConsumerStatefulWidget {
   const SchedulesBottomSheet({super.key, required this.day});
 
   static Future<void> show(BuildContext context, DateTime day) {
-    return showModalBottomSheet<void>(
+    return showAppGlassBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

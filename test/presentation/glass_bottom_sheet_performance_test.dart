@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
@@ -8,6 +9,79 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 void main() {
+  testWidgets('nested list fade waits for the sheet to settle', (tester) async {
+    late BuildContext context;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (c) {
+            context = c;
+            return const Scaffold(body: Text('Page'));
+          },
+        ),
+      ),
+    );
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => const SizedBox(
+        height: 200,
+        child: ScrollFadeMask(
+          deferDuringSheetTransition: true,
+          child: Text('List'),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.byType(ShaderMask), findsNothing);
+    await tester.pumpAndSettle();
+    expect(find.byType(ShaderMask), findsOneWidget);
+    Navigator.of(context).pop();
+    await tester.pump();
+    expect(find.byType(ShaderMask), findsNothing);
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('filter chips reuse the sheet glass instead of adding filters', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: GlassDialogSurface(
+            child: GlassFilterChip(
+              label: 'Behörde',
+              isSelected: false,
+              onTap: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(
+      tester
+          .widget<liquid.GlassChip>(find.byType(liquid.GlassChip))
+          .useOwnLayer,
+      isFalse,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: GlassFilterChip(
+            label: 'Behörde',
+            isSelected: false,
+            onTap: () {},
+          ),
+        ),
+      ),
+    );
+    expect(
+      tester
+          .widget<liquid.GlassChip>(find.byType(liquid.GlassChip))
+          .useOwnLayer,
+      isTrue,
+    );
+  });
+
   testWidgets(
     'light modal shields content while dark modal keeps its surface',
     (tester) async {

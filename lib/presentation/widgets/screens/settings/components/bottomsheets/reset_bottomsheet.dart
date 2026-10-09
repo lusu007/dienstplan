@@ -1,3 +1,5 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
+
 import 'dart:async';
 
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
@@ -22,7 +24,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 
 class ResetBottomsheet {
   static void show(BuildContext context) {
-    showModalBottomSheet<void>(
+    showAppGlassBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       isDismissible: false,

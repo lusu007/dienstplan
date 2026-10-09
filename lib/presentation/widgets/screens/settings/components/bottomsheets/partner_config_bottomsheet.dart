@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -19,7 +20,7 @@ class PartnerConfigBottomsheet {
     );
     final AppLocalizations l10n = AppLocalizations.of(context);
 
-    await showModalBottomSheet<void>(
+    await showAppGlassBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

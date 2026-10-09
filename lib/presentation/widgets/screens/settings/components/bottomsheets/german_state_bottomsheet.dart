@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/domain/entities/german_state.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -7,7 +8,7 @@ class GermanStateBottomsheet {
   static Future<String?> show(BuildContext context, String? selectedStateCode) {
     final l10n = AppLocalizations.of(context);
 
-    return showModalBottomSheet<String>(
+    return showAppGlassBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

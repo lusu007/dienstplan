@@ -28,6 +28,11 @@ class GlassFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool nested =
+        context
+            .dependOnInheritedWidgetOfExactType<liquid.InheritedLiquidGlass>()
+            ?.avoidsRefraction ??
+        false;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color selectedTint = colorScheme.primary.withValues(
@@ -80,7 +85,8 @@ class GlassFilterChip extends StatelessWidget {
             context,
             tint: tint,
           ).copyWith(bodyMode: liquid.GlassBodyMode.adaptive),
-          useOwnLayer: true,
+          // The enclosing modal already supplies the blur and refraction.
+          useOwnLayer: !nested,
           stretch: 0,
           interactionScale: 1,
           anchorStretch: false,

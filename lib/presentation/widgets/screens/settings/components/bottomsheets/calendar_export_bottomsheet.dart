@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';
@@ -31,7 +32,7 @@ class CalendarExportBottomsheet extends ConsumerStatefulWidget {
     BuildContext context, {
     double heightPercentage = _defaultHeightPercentage,
   }) {
-    return showModalBottomSheet<void>(
+    return showAppGlassBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
