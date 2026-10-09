@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:dienstplan/core/constants/accent_color_palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,7 @@ import 'package:dienstplan/presentation/widgets/screens/settings/components/bott
 
 class PartnerColorBottomsheet {
   static void show(BuildContext context, {double? heightPercentage}) {
-    showModalBottomSheet(
+    showAppGlassBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

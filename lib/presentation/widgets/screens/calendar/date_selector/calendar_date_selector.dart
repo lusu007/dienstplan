@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,11 +30,7 @@ class CalendarDateSelector extends ConsumerStatefulWidget {
       _CalendarDateSelectorState();
 }
 
-class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
-    with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector> {
   PageController? _monthPageController;
   PageController? _yearPageController;
   bool _isYearView = false;
@@ -51,21 +48,6 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: kAnimDefault,
-      vsync: this,
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeOutCubic,
-          ),
-        );
-
     _selectedYear = widget.currentDate.year;
     _selectedMonth = widget.currentDate.month;
     _displayedYear = _selectedYear;
@@ -91,7 +73,6 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
 
   @override
   void dispose() {
-    _animationController.dispose();
     _monthPageController?.dispose();
     _yearPageController?.dispose();
     super.dispose();
@@ -152,8 +133,7 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
     _yearPageController = PageController(initialPage: yearPageIndex);
     _pageControllerKey++; // Force rebuild of PageView
 
-    _animationController.forward();
-    showModalBottomSheet<void>(
+    showAppGlassBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -165,7 +145,6 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
         },
       ),
     ).then((_) {
-      _animationController.reverse();
       // Reset page controllers when modal is closed
       _monthPageController?.dispose();
       _yearPageController?.dispose();
@@ -208,120 +187,98 @@ class _CalendarDateSelectorState extends ConsumerState<CalendarDateSelector>
         _syncMonthPageToSelectedYear();
       });
     }
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return Padding(
-          padding: Theme.of(context).brightness == Brightness.dark
-              ? const EdgeInsets.fromLTRB(
-                  glassSpacingMd,
-                  0,
-                  glassSpacingMd,
-                  glassSpacingMd,
-                )
-              : AppSheetStyle.margin(context),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final double layoutWidth = constraints.maxWidth;
-              final double gridHeight = _pickerGridHeightForLayoutWidth(
-                layoutWidth,
-              );
-              return FadeTransition(
-                opacity: _fadeAnimation,
-                child: SlideTransition(
-                  position: _slideAnimation,
-                  child: GlassDialogSurface(
-                    backdropBlurSigma: glassSurfaceBlurBottomSheet,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(glassSurfaceRadiusXl),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _buildDragHandle(),
-                          _isYearView
-                              ? _buildYearHeader(setModalState)
-                              : _buildMonthHeader(setModalState),
-                          SizedBox(
-                            height: gridHeight,
-                            child: _isYearView
-                                ? (_yearPageController != null
-                                      ? PageView.builder(
-                                          key: ValueKey(
-                                            'year_$_pageControllerKey',
-                                          ),
-                                          controller: _yearPageController!,
-                                          physics:
-                                              const ClampingScrollPhysics(),
-                                          onPageChanged: (pageIndex) {
-                                            setState(() {
-                                              _yearBlockStart =
-                                                  calendarYearBlockStartForYear(
-                                                    minYear: _minYear,
-                                                    maxYear: _maxYear,
-                                                    year:
-                                                        _minYear +
-                                                        (pageIndex * 12),
-                                                  );
-                                            });
-                                            setModalState(() {});
-                                          },
-                                          itemCount: calendarYearGridPageCount(
+    return Padding(
+      padding: Theme.of(context).brightness == Brightness.dark
+          ? const EdgeInsets.fromLTRB(
+              glassSpacingMd,
+              0,
+              glassSpacingMd,
+              glassSpacingMd,
+            )
+          : AppSheetStyle.margin(context),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final double layoutWidth = constraints.maxWidth;
+          final double gridHeight = _pickerGridHeightForLayoutWidth(
+            layoutWidth,
+          );
+          return GlassDialogSurface(
+            backdropBlurSigma: glassSurfaceBlurBottomSheet,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(glassSurfaceRadiusXl),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildDragHandle(),
+                  _isYearView
+                      ? _buildYearHeader(setModalState)
+                      : _buildMonthHeader(setModalState),
+                  SizedBox(
+                    height: gridHeight,
+                    child: _isYearView
+                        ? (_yearPageController != null
+                              ? PageView.builder(
+                                  key: ValueKey('year_$_pageControllerKey'),
+                                  controller: _yearPageController!,
+                                  physics: const ClampingScrollPhysics(),
+                                  onPageChanged: (pageIndex) {
+                                    setState(() {
+                                      _yearBlockStart =
+                                          calendarYearBlockStartForYear(
                                             minYear: _minYear,
                                             maxYear: _maxYear,
-                                          ),
-                                          itemBuilder: (context, index) {
-                                            return _buildYearGrid(
-                                              setModalState,
-                                            );
-                                          },
-                                        )
-                                      : const Center(
-                                          child: CircularProgressIndicator(),
-                                        ))
-                                : (_monthPageController != null
-                                      ? PageView.builder(
-                                          key: ValueKey(
-                                            'month_$_pageControllerKey',
-                                          ),
-                                          controller: _monthPageController!,
-                                          physics:
-                                              const ClampingScrollPhysics(),
-                                          onPageChanged: (pageIndex) {
-                                            final newYear =
-                                                _minYear + pageIndex;
-                                            setState(() {
-                                              _displayedYear = newYear;
-                                              _selectedYear = newYear;
-                                            });
-                                            setModalState(() {});
-                                          },
-                                          itemCount: _maxYear - _minYear + 1,
-                                          itemBuilder: (context, index) {
-                                            final int year = _minYear + index;
-                                            return _buildMonthGrid(
-                                              key: ValueKey(year),
-                                              displayedYear: year,
-                                            );
-                                          },
-                                        )
-                                      : const Center(
-                                          child: CircularProgressIndicator(),
-                                        )),
-                          ),
-                          const SizedBox(height: glassSpacingMd),
-                        ],
-                      ),
-                    ),
+                                            year: _minYear + (pageIndex * 12),
+                                          );
+                                    });
+                                    setModalState(() {});
+                                  },
+                                  itemCount: calendarYearGridPageCount(
+                                    minYear: _minYear,
+                                    maxYear: _maxYear,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return _buildYearGrid(setModalState);
+                                  },
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(),
+                                ))
+                        : (_monthPageController != null
+                              ? PageView.builder(
+                                  key: ValueKey('month_$_pageControllerKey'),
+                                  controller: _monthPageController!,
+                                  physics: const ClampingScrollPhysics(),
+                                  onPageChanged: (pageIndex) {
+                                    final newYear = _minYear + pageIndex;
+                                    setState(() {
+                                      _displayedYear = newYear;
+                                      _selectedYear = newYear;
+                                    });
+                                    setModalState(() {});
+                                  },
+                                  itemCount: _maxYear - _minYear + 1,
+                                  itemBuilder: (context, index) {
+                                    final int year = _minYear + index;
+                                    return _buildMonthGrid(
+                                      key: ValueKey(year),
+                                      displayedYear: year,
+                                    );
+                                  },
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator(),
+                                )),
                   ),
-                ),
-              );
-            },
-          ),
-        );
-      },
+                  const SizedBox(height: glassSpacingMd),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

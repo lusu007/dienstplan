@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
@@ -25,21 +26,27 @@ class GlassDialogSurface extends StatelessWidget {
     final radius = borderRadius.resolve(Directionality.of(context));
     return ClipRRect(
       borderRadius: radius,
-      child: AppGlassSurface(
-        borderRadius: radius.topLeft.x,
-        blur: backdropBlurSigma ?? glassSurfaceBlurDialog,
-        tint: scheme.surface.withValues(
-          alpha: isDark ? glassDialogTintAlphaDark : glassDialogTintAlphaLight,
-        ),
-        child: AppModalSurfaceScope(
-          child: isDark
-              ? child
-              : ColoredBox(
-                  color: scheme.surface.withValues(
-                    alpha: glassDialogContentAlphaLight,
+      child: AppGlassSheetBackdrop(
+        child: AppGlassSurface(
+          borderRadius: radius.topLeft.x,
+          blur: AppGlassSheetBackdrop.isAvailable(context)
+              ? 0
+              : backdropBlurSigma ?? glassSurfaceBlurDialog,
+          tint: scheme.surface.withValues(
+            alpha: isDark
+                ? glassDialogTintAlphaDark
+                : glassDialogTintAlphaLight,
+          ),
+          child: AppModalSurfaceScope(
+            child: isDark
+                ? child
+                : ColoredBox(
+                    color: scheme.surface.withValues(
+                      alpha: glassDialogContentAlphaLight,
+                    ),
+                    child: child,
                   ),
-                  child: child,
-                ),
+          ),
         ),
       ),
     );

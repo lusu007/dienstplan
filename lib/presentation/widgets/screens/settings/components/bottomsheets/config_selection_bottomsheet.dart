@@ -1,3 +1,4 @@
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -33,7 +34,7 @@ class ConfigSelectionBottomsheet extends ConsumerStatefulWidget {
     required Future<void> Function(DutyScheduleConfig?) onConfigSelected,
     double? heightPercentage,
   }) {
-    return showModalBottomSheet<void>(
+    return showAppGlassBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -149,6 +150,7 @@ class _ConfigSelectionBottomsheetState
                 ),
               )
             : ScrollFadeMask(
+                deferDuringSheetTransition: true,
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
                   itemCount: _filteredConfigs.length,
