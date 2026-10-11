@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,10 +64,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen>
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-      child: const Scaffold(
-        extendBody: true,
-        resizeToAvoidBottomInset: false,
-        body: CalendarView(),
+      child: const AppGlassSheetScene(
+        child: Scaffold(
+          extendBody: true,
+          resizeToAvoidBottomInset: false,
+          body: CalendarView(),
+        ),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart'
+    show GlassSheetScope, GlassSheetSession;
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
 
 import 'dart:async';
@@ -8,11 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
-import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
-import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
@@ -54,129 +53,263 @@ class SchedulesBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
-  DateTime? _currentDay;
-  bool _isDayUpdateInFlight = false;
-  int _pendingDayDelta = 0;
-  final EnsureSelectedDayPostFrame _ensureSelectedDay =
-      EnsureSelectedDayPostFrame();
+  // Enough room before the initial day without constructing offscreen pages.
+  static const _initialPage = 365000;
+  late final PageController _pageController;
+  int _settledPage = _initialPage;
+  int? _buttonTarget;
+  final _paging = ValueNotifier(false);
+  DateTime? _pendingSelection;
+  bool _updatingSelection = false;
+  GlassSheetSession? _backdropSession;
+  Timer? _backdropTimer;
+  bool _needsBackdropRefresh = false;
 
-  DateTime get _resolvedCurrentDay => _currentDay ?? widget.day;
+  DateTime _dayForPage(int page) {
+    final day = widget.day;
+    return day.isUtc
+        ? DateTime.utc(day.year, day.month, day.day + page - _initialPage)
+        : DateTime(day.year, day.month, day.day + page - _initialPage);
+  }
 
   @override
   void initState() {
     super.initState();
-    _currentDay = widget.day;
+    _pageController = PageController(initialPage: _initialPage);
   }
 
-  Future<void> _queueDayDeltaUpdate(int dayDelta) async {
-    _pendingDayDelta += dayDelta;
-    await _flushPendingDayDeltaUpdates();
+  @override
+  void dispose() {
+    _backdropTimer?.cancel();
+    _paging.dispose();
+    _pageController.dispose();
+    super.dispose();
   }
 
-  Future<void> _flushPendingDayDeltaUpdates() async {
-    if (_isDayUpdateInFlight) {
+  void _navigate(int delta) {
+    final target = (_buttonTarget ?? _pageController.page!.round()) + delta;
+    if (target < 0) return;
+    _buttonTarget = target;
+    if (MediaQuery.disableAnimationsOf(context) ||
+        MediaQuery.accessibleNavigationOf(context)) {
+      _pageController.jumpToPage(target);
+      _commitPage(target);
+    } else {
+      unawaited(
+        _pageController.animateToPage(
+          target,
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+        ),
+      );
+    }
+  }
+
+  void _commitPage(int page) {
+    _buttonTarget = null;
+    if (_settledPage == page) return;
+    setState(() => _settledPage = page);
+    _pendingSelection = _dayForPage(page);
+    unawaited(_flushSelection());
+  }
+
+  Future<void> _flushSelection() async {
+    if (_updatingSelection) return;
+    _updatingSelection = true;
+    final notifier = ref.read(scheduleCoordinatorProvider.notifier);
+    try {
+      // Complete the latest committed selection even if the sheet closes while
+      // an earlier month is loading. No widget state is touched after await.
+      while (_pendingSelection != null) {
+        final day = _pendingSelection!;
+        _pendingSelection = null;
+        await notifier.selectFocusedDay(selectedDay: day, focusedDay: day);
+      }
+    } finally {
+      _updatingSelection = false;
+    }
+  }
+
+  void _scheduleBackdropRefresh() {
+    _backdropTimer?.cancel();
+    if (_paging.value || !_needsBackdropRefresh || _backdropSession == null) {
       return;
     }
-    _isDayUpdateInFlight = true;
-    while (mounted && _pendingDayDelta != 0) {
-      final int step = _pendingDayDelta.isNegative ? -1 : 1;
-      _pendingDayDelta -= step;
-      await _updateCurrentDayByDelta(step);
-    }
-    _isDayUpdateInFlight = false;
-  }
-
-  Future<void> _updateCurrentDayByDelta(int dayDelta) async {
-    final DateTime currentDay = _resolvedCurrentDay;
-    final DateTime nextDay = currentDay.isUtc
-        ? DateTime.utc(
-            currentDay.year,
-            currentDay.month,
-            currentDay.day + dayDelta,
-          )
-        : DateTime(
-            currentDay.year,
-            currentDay.month,
-            currentDay.day + dayDelta,
-          );
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _currentDay = nextDay;
+    // Coalesce quick reversals and keep image readback out of the gesture.
+    _backdropTimer = Timer(const Duration(milliseconds: 180), () {
+      if (!mounted) return;
+      _needsBackdropRefresh = false;
+      unawaited(_backdropSession!.refresh());
     });
-    final ScheduleCoordinatorNotifier notifier = ref.read(
-      scheduleCoordinatorProvider.notifier,
-    );
-    await notifier.setSelectedDay(nextDay);
-    await notifier.setFocusedDay(nextDay);
   }
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context);
-    final asyncState = ref.watch(scheduleCoordinatorProvider);
-    final ScheduleUiState? state = asyncState.value;
-    final DateTime currentDay = _resolvedCurrentDay;
-    final List<Schedule> schedulesForDay = filterSchedulesForSingleDay(
-      state?.schedules,
-      currentDay,
-      activeConfigName: state?.activeConfigName,
-      partnerConfigName: state?.partnerConfigName,
+    _backdropSession = GlassSheetScope.maybeOf(context);
+    ref.listen(
+      scheduleCoordinatorProvider.select(
+        (state) => (state.value?.selectedDay, state.value?.focusedDay),
+      ),
+      (_, _) {
+        _needsBackdropRefresh = true;
+        _scheduleBackdropRefresh();
+      },
     );
-    final bool hasSchedulesForDay = schedulesForDay.isNotEmpty;
-    final bool isLoadingSelectedDay =
-        (asyncState.isLoading || (state?.isLoading ?? false)) &&
-        !hasSchedulesForDay;
-    final String? loadError = scheduleLoadErrorMessage(context, asyncState);
-    _ensureSelectedDay.scheduleIfEmpty(
-      ref: ref,
-      context: context,
-      day: currentDay,
-      hasSchedulesForDay: hasSchedulesForDay,
-      isLoadingSelectedDay: isLoadingSelectedDay,
-      activeConfigName: loadError == null ? state?.activeConfigName : null,
-    );
+    final day = _dayForPage(_settledPage);
     return GlassBottomSheet(
       showHandleBar: true,
       heightPercentage: 0.72,
-      children: <Widget>[
-        RepaintBoundary(
-          child: _SheetHeader(day: currentDay, l10n: l10n),
-        ),
-        Expanded(
-          child: RepaintBoundary(
-            child: _HorizontalDaySwipeListener(
-              onSwipeLeft: () {
-                unawaited(_queueDayDeltaUpdate(1));
-              },
-              onSwipeRight: () {
-                unawaited(_queueDayDeltaUpdate(-1));
-              },
-              child: ScrollFadeMask(
-                deferDuringSheetTransition: true,
-                child: ScheduleLoadStatus(
-                  isLoading:
-                      asyncState.isLoading || (state?.isLoading ?? false),
-                  errorMessage: loadError,
-                  hasVisibleSchedules: hasSchedulesForDay,
-                  onRetry: () => ref
-                      .read(scheduleCoordinatorProvider.notifier)
-                      .retryFailedLoad(),
-                  child: DutyScheduleList(
-                    schedules: schedulesForDay,
-                    activeConfigName: state?.activeConfigName,
-                    dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
-                    dutyTypes: state?.activeConfig?.dutyTypes,
-                    shouldAnimate: false,
-                    isLoading: isLoadingSelectedDay,
-                    selectedDay: currentDay,
-                    visualStyle: DutyListVisualStyle.glassCompact,
-                    topPadding: glassSpacingXl,
-                    bottomPadding: glassSpacingLg,
+      fadeScrollEdges: false,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final compactHeader =
+                constraints.maxWidth < 340 ||
+                MediaQuery.textScalerOf(context).scale(14) > 20;
+            return Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: compactHeader ? 56 : 0),
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      // Ignore the vertical list's notifications. Only settled
+                      // horizontal pages update selection or trigger loading.
+                      if (notification.depth == 0) {
+                        if (notification is ScrollStartNotification) {
+                          _paging.value = true;
+                          _backdropTimer?.cancel();
+                        } else if (notification is ScrollEndNotification) {
+                          _paging.value = false;
+                          _commitPage(_pageController.page!.round());
+                          _scheduleBackdropRefresh();
+                        }
+                      }
+                      return false;
+                    },
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemBuilder: (context, page) {
+                        final pageDay = _dayForPage(page);
+                        return RepaintBoundary(
+                          child: _DayPage(
+                            key: ValueKey(pageDay),
+                            day: pageDay,
+                            isSelected: page == _settledPage,
+                            compactHeader: compactHeader,
+                            paging: _paging,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
+                Positioned(
+                  top: compactHeader ? null : 4,
+                  bottom: compactHeader ? 0 : null,
+                  left: 4,
+                  right: 4,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: _paging,
+                    builder: (context, paging, _) => _SheetControls(
+                      day: day,
+                      paging: paging,
+                      onPrevious: () => _navigate(-1),
+                      onNext: () => _navigate(1),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _DayPage extends ConsumerStatefulWidget {
+  const _DayPage({
+    super.key,
+    required this.day,
+    required this.isSelected,
+    required this.compactHeader,
+    required this.paging,
+  });
+  final DateTime day;
+  final bool isSelected;
+  final bool compactHeader;
+  final ValueNotifier<bool> paging;
+
+  @override
+  ConsumerState<_DayPage> createState() => _DayPageState();
+}
+
+class _DayPageState extends ConsumerState<_DayPage> {
+  final _ensureSelectedDay = EnsureSelectedDayPostFrame();
+  // Keep the list mounted when its fade is toggled; switching a mask must not
+  // recreate cards or reset a user's vertical scroll position.
+  final _listKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    final asyncState = ref.watch(scheduleCoordinatorProvider);
+    final state = asyncState.value;
+    final schedules = filterSchedulesForSingleDay(
+      state?.schedules,
+      widget.day,
+      activeConfigName: state?.activeConfigName,
+      partnerConfigName: state?.partnerConfigName,
+    );
+    final isLoading =
+        (asyncState.isLoading || (state?.isLoading ?? false)) &&
+        schedules.isEmpty;
+    final error = scheduleLoadErrorMessage(context, asyncState);
+    if (widget.isSelected) {
+      _ensureSelectedDay.scheduleIfEmpty(
+        ref: ref,
+        context: context,
+        day: widget.day,
+        hasSchedulesForDay: schedules.isNotEmpty,
+        isLoadingSelectedDay: isLoading,
+        activeConfigName: error == null ? state?.activeConfigName : null,
+      );
+    }
+    return Column(
+      children: [
+        _SheetHeader(
+          day: widget.day,
+          l10n: AppLocalizations.of(context),
+          compact: widget.compactHeader,
+        ),
+        Expanded(
+          child: ValueListenableBuilder<bool>(
+            valueListenable: widget.paging,
+            child: ScheduleLoadStatus(
+              key: _listKey,
+              isLoading: asyncState.isLoading || (state?.isLoading ?? false),
+              errorMessage: error,
+              hasVisibleSchedules: schedules.isNotEmpty,
+              onRetry: () => ref
+                  .read(scheduleCoordinatorProvider.notifier)
+                  .retryFailedLoad(),
+              child: DutyScheduleList(
+                key: PageStorageKey(widget.day),
+                schedules: schedules,
+                activeConfigName: state?.activeConfigName,
+                dutyTypeOrder: state?.activeConfig?.dutyTypeOrder,
+                dutyTypes: state?.activeConfig?.dutyTypes,
+                shouldAnimate: false,
+                isLoading: isLoading,
+                selectedDay: widget.day,
+                visualStyle: DutyListVisualStyle.glassCompact,
+                topPadding: glassSpacingXl,
+                bottomPadding: glassSpacingLg,
               ),
+            ),
+            builder: (context, paging, child) => ScrollFadeMask(
+              enabled: !paging,
+              deferDuringSheetTransition: true,
+              child: child!,
             ),
           ),
         ),
@@ -185,77 +318,84 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
   }
 }
 
-class _HorizontalDaySwipeListener extends StatefulWidget {
-  final VoidCallback onSwipeLeft;
-  final VoidCallback onSwipeRight;
-  final Widget child;
-
-  const _HorizontalDaySwipeListener({
-    required this.onSwipeLeft,
-    required this.onSwipeRight,
-    required this.child,
+class _SheetControls extends ConsumerWidget {
+  const _SheetControls({
+    required this.day,
+    required this.onPrevious,
+    required this.onNext,
+    required this.paging,
   });
-
-  @override
-  State<_HorizontalDaySwipeListener> createState() =>
-      _HorizontalDaySwipeListenerState();
-}
-
-class _HorizontalDaySwipeListenerState
-    extends State<_HorizontalDaySwipeListener> {
-  static const double _distanceThreshold = 56.0;
-  double _dx = 0;
-  double _dy = 0;
-
-  void _reset() {
-    _dx = 0;
-    _dy = 0;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Listener(
-      behavior: HitTestBehavior.translucent,
-      onPointerDown: (_) {
-        _reset();
-      },
-      onPointerMove: (PointerMoveEvent event) {
-        _dx += event.delta.dx;
-        _dy += event.delta.dy;
-      },
-      onPointerUp: (_) {
-        _onPointerEnd();
-      },
-      onPointerCancel: (_) {
-        _onPointerEnd();
-      },
-      child: widget.child,
-    );
-  }
-
-  void _onPointerEnd() {
-    final bool isHorizontalDominant = _dx.abs() >= _dy.abs() * 1.15;
-    if (!isHorizontalDominant) {
-      _reset();
-      return;
-    }
-    if (_dx <= -_distanceThreshold) {
-      widget.onSwipeLeft();
-    } else if (_dx >= _distanceThreshold) {
-      widget.onSwipeRight();
-    }
-    _reset();
-  }
-}
-
-class _SheetHeader extends ConsumerWidget {
   final DateTime day;
-  final AppLocalizations l10n;
-
-  const _SheetHeader({required this.day, required this.l10n});
+  final bool paging;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final showOtherDutyGroups = ref.watch(
+      settingsProvider.select(
+        (state) => state.value?.showOtherDutyGroupsInCompactList ?? false,
+      ),
+    );
+    return Row(
+      children: [
+        IconButton(
+          tooltip: l10n.previousDayTooltip,
+          onPressed: onPrevious,
+          icon: const Icon(Icons.chevron_left_rounded),
+        ),
+        const Spacer(),
+        IconButton(
+          tooltip: l10n.nextDayTooltip,
+          onPressed: onNext,
+          icon: const Icon(Icons.chevron_right_rounded),
+        ),
+        GlassIconToggleChip(
+          isEnabled: !paging,
+          tooltip: l10n.addPersonalEntryTooltip,
+          isSelected: false,
+          selectedIcon: Icons.add_rounded,
+          unselectedIcon: Icons.add_rounded,
+          onTap: () => showPersonalCalendarEntrySheet(
+            context: context,
+            ref: ref,
+            day: day,
+            existingSchedule: null,
+          ),
+        ),
+        const SizedBox(width: glassSpacingSm),
+        GlassIconToggleChip(
+          isEnabled: !paging,
+          tooltip: showOtherDutyGroups
+              ? l10n.compactListHideOtherDutyGroupsTooltip
+              : l10n.compactListShowOtherDutyGroupsTooltip,
+          isSelected: showOtherDutyGroups,
+          selectedIcon: Icons.visibility_rounded,
+          unselectedIcon: Icons.visibility_off_rounded,
+          onTap: () => ref
+              .read(settingsProvider.notifier)
+              .setShowOtherDutyGroupsInCompactList(!showOtherDutyGroups),
+        ),
+        const SizedBox(width: glassSpacingMd),
+      ],
+    );
+  }
+}
+
+class _SheetHeader extends StatelessWidget {
+  final DateTime day;
+  final AppLocalizations l10n;
+  final bool compact;
+
+  const _SheetHeader({
+    required this.day,
+    required this.l10n,
+    required this.compact,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final String localeName = Localizations.localeOf(context).toString();
     final String weekday = DateFormat(
       'EEEE',
@@ -264,17 +404,11 @@ class _SheetHeader extends ConsumerWidget {
     final String monthYear = DateFormat('MMMM yyyy', localeName).format(day);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final bool isToday = _isSameDay(day, DateTime.now());
-    final bool showOtherDutyGroups = ref.watch(
-      settingsProvider.select(
-        (AsyncValue<SettingsUiState> s) =>
-            s.value?.showOtherDutyGroupsInCompactList ?? false,
-      ),
-    );
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        glassSpacingXl - 4,
+      padding: EdgeInsets.fromLTRB(
+        glassSpacingXl - 4 + (compact ? 0 : 40),
         glassSpacingMd,
-        glassSpacingXl - 4,
+        glassSpacingXl - 4 + (compact ? 0 : 120),
         glassSpacingMd,
       ),
       child: Row(
@@ -294,6 +428,7 @@ class _SheetHeader extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                if (isToday) _TodayPill(label: l10n.today),
                 Text(
                   weekday,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -316,39 +451,6 @@ class _SheetHeader extends ConsumerWidget {
                 ),
               ],
             ),
-          ),
-          if (isToday) ...<Widget>[
-            const SizedBox(width: glassSpacingSm),
-            _TodayPill(label: l10n.today),
-          ],
-          const SizedBox(width: glassSpacingSm),
-          GlassIconToggleChip(
-            tooltip: l10n.addPersonalEntryTooltip,
-            isSelected: false,
-            selectedIcon: Icons.add_rounded,
-            unselectedIcon: Icons.add_rounded,
-            onTap: () {
-              showPersonalCalendarEntrySheet(
-                context: context,
-                ref: ref,
-                day: day,
-                existingSchedule: null,
-              );
-            },
-          ),
-          const SizedBox(width: glassSpacingSm),
-          GlassIconToggleChip(
-            tooltip: showOtherDutyGroups
-                ? l10n.compactListHideOtherDutyGroupsTooltip
-                : l10n.compactListShowOtherDutyGroupsTooltip,
-            isSelected: showOtherDutyGroups,
-            selectedIcon: Icons.visibility_rounded,
-            unselectedIcon: Icons.visibility_off_rounded,
-            onTap: () {
-              ref
-                  .read(settingsProvider.notifier)
-                  .setShowOtherDutyGroupsInCompactList(!showOtherDutyGroups);
-            },
           ),
         ],
       ),

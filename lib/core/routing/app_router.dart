@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dienstplan/presentation/widgets/common/settings_page_transition.dart';
 import 'package:flutter/widgets.dart' show Key;
 import 'package:dienstplan/presentation/screens/app_initializer_widget.dart';
 import 'package:dienstplan/presentation/screens/calendar_screen.dart';
@@ -20,25 +21,28 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => <AutoRoute>[
     AutoRoute(page: AppInitializerRoute.page, path: '/', initial: true),
     AutoRoute(page: CalendarRoute.page, path: '/calendar'),
-    // Avoid full-page glass compositing during Settings route transitions.
-    CustomRoute(
-      page: SettingsRoute.page,
-      path: '/settings',
-      transitionsBuilder: TransitionsBuilders.noTransition,
-      duration: Duration.zero,
-      reverseDuration: Duration.zero,
-    ),
-    CustomRoute(
-      page: SettingsCategoryRoute.page,
-      path: '/settings/:category',
-      transitionsBuilder: TransitionsBuilders.noTransition,
-      duration: Duration.zero,
-      reverseDuration: Duration.zero,
-    ),
-    AutoRoute(page: AboutRoute.page, path: '/about'),
-    AutoRoute(page: PrivacyPolicyRoute.page, path: '/privacy'),
-    AutoRoute(page: DisclaimerRoute.page, path: '/disclaimer'),
-    AutoRoute(page: DebugRoute.page, path: '/debug'),
+    // All destinations in the settings hierarchy share the same opaque
+    // backdrop and directed foreground motion.
+    _settingsRoute(SettingsRoute.page, '/settings'),
+    _settingsRoute(SettingsCategoryRoute.page, '/settings/:category'),
+    _settingsRoute(AboutRoute.page, '/about'),
+    _settingsRoute(PrivacyPolicyRoute.page, '/privacy'),
+    _settingsRoute(DisclaimerRoute.page, '/disclaimer'),
+    _settingsRoute(DebugRoute.page, '/debug'),
     AutoRoute(page: SetupRoute.page, path: '/setup'),
   ];
+
+  CustomRoute _settingsRoute(PageInfo page, String path) => CustomRoute(
+    page: page,
+    path: path,
+    transitionsBuilder: SettingsPageTransition.buildTransition,
+    // Make the page opaque immediately; its foreground enters over 270 ms.
+    duration: Duration.zero,
+    reverseDuration: path == '/settings'
+        ? Duration.zero
+        : const Duration(milliseconds: 270),
+    enablePredictiveBackGesture: true,
+    predictiveBackPageTransitionsBuilder:
+        SettingsPageTransition.buildTransition,
+  );
 }

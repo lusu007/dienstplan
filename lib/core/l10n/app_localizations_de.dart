@@ -10,6 +10,12 @@ class AppLocalizationsDe extends AppLocalizations {
   AppLocalizationsDe([String locale = 'de']) : super(locale);
 
   @override
+  String get previousDayTooltip => 'Vorheriger Tag';
+
+  @override
+  String get nextDayTooltip => 'Nächster Tag';
+
+  @override
   String get settings => 'Einstellungen';
 
   @override
