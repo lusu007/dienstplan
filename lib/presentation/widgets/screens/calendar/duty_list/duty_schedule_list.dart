@@ -341,24 +341,26 @@ class DutyScheduleList extends ConsumerWidget {
     }
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.event_busy_rounded,
-              size: 36,
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.55),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              l10n.noServicesForDay,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium
-                  ?.copyWith(color: colorScheme.onSurfaceVariant),
-            ),
-          ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.event_busy_rounded,
+                size: 36,
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.55),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l10n.noServicesForDay,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: colorScheme.onSurfaceVariant),
+              ),
+            ],
+          ),
         ),
       ),
     );

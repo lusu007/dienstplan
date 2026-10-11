@@ -94,6 +94,18 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('de')];
 
+  /// No description provided for @previousDayTooltip.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorheriger Tag'**
+  String get previousDayTooltip;
+
+  /// No description provided for @nextDayTooltip.
+  ///
+  /// In de, this message translates to:
+  /// **'Nächster Tag'**
+  String get nextDayTooltip;
+
   /// Title for the settings screen
   ///
   /// In de, this message translates to:

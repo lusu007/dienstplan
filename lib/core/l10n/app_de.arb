@@ -1,4 +1,6 @@
 {
+  "previousDayTooltip": "Vorheriger Tag",
+  "nextDayTooltip": "Nächster Tag",
   "@@locale": "de",
   "settings": "Einstellungen",
   "@settings": {

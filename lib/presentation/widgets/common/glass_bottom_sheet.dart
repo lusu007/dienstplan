@@ -28,6 +28,9 @@ class GlassBottomSheet extends StatefulWidget {
   final double backdropBlurSigma;
   final bool deferExpensiveEffects;
 
+  /// Disable when the child manages its own scroll edges, such as a pager.
+  final bool fadeScrollEdges;
+
   const GlassBottomSheet({
     super.key,
     this.title,
@@ -38,6 +41,7 @@ class GlassBottomSheet extends StatefulWidget {
     this.shrinkToContent = false,
     this.backdropBlurSigma = glassSurfaceBlurBottomSheet,
     this.deferExpensiveEffects = true,
+    this.fadeScrollEdges = true,
   });
 
   @override
@@ -169,7 +173,8 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
                         // content beneath it.
                         topFadeFraction: _kSheetTopFadeFraction,
                         bottomFadeFraction: _kSheetBottomFadeFraction,
-                        enabled: expensiveEffectsEnabled,
+                        enabled:
+                            expensiveEffectsEnabled && widget.fadeScrollEdges,
                         child: SingleChildScrollView(
                           child: widget.children.length == 1
                               ? widget.children.first
@@ -219,7 +224,9 @@ class _GlassBottomSheetState extends State<GlassBottomSheet> {
                         ? ScrollFadeMask(
                             topFadeFraction: _kSheetTopFadeFraction,
                             bottomFadeFraction: _kSheetBottomFadeFraction,
-                            enabled: expensiveEffectsEnabled,
+                            enabled:
+                                expensiveEffectsEnabled &&
+                                widget.fadeScrollEdges,
                             child: widget.children.first,
                           )
                         : Column(
