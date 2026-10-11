@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.19.1](https://github.com/lusu007/dienstplan/compare/v0.19.0...v0.19.1) (2026-10-11)
+
+
+### Bug Fixes
+
+* **ios:** declare purpose strings for linked photo APIs ([#449](https://github.com/lusu007/dienstplan/issues/449)) ([6ae81a9](https://github.com/lusu007/dienstplan/commit/6ae81a993001fab0cda051881307d4829bff3ba8))
+* reduce whats-new dialog dismissal compositing ([#448](https://github.com/lusu007/dienstplan/issues/448)) ([1170cd0](https://github.com/lusu007/dienstplan/commit/1170cd0f4184f0c88762724f89f892322b70ab07))
+
 ## [0.19.0](https://github.com/lusu007/dienstplan/compare/v0.18.1...v0.19.0) (2026-10-11)
 
 
