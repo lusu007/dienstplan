@@ -154,6 +154,7 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
                 unawaited(_queueDayDeltaUpdate(-1));
               },
               child: ScrollFadeMask(
+                deferDuringSheetTransition: true,
                 child: ScheduleLoadStatus(
                   isLoading:
                       asyncState.isLoading || (state?.isLoading ?? false),
