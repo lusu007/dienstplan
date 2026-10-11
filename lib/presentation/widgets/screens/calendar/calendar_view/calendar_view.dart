@@ -63,7 +63,6 @@ class _CalendarViewState extends ConsumerState<CalendarView> {
               context: context,
               removeBottom: true,
               child: SafeArea(
-                bottom: false,
                 child: Padding(
                   padding: const EdgeInsets.only(
                     bottom: kGlassBarReservedHeight,

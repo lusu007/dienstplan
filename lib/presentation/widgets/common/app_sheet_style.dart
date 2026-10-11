@@ -19,13 +19,10 @@ abstract final class AppSheetStyle {
   static double radius(bool isDark) =>
       isDark ? glassSurfaceRadiusLg + glassSpacingSm / 2 : glassSurfaceRadiusXl;
   static EdgeInsets margin(BuildContext context) => EdgeInsets.fromLTRB(
-    glassSpacingSm,
+    glassSpacingSm + MediaQuery.paddingOf(context).left,
     0,
-    glassSpacingSm,
-    glassSpacingSm +
-        (Theme.of(context).brightness == Brightness.light
-            ? MediaQuery.paddingOf(context).bottom
-            : 0),
+    glassSpacingSm + MediaQuery.paddingOf(context).right,
+    glassSpacingSm + MediaQuery.paddingOf(context).bottom,
   );
 }
 

@@ -43,7 +43,6 @@ class GlassScreenScaffold extends StatelessWidget {
         extendBody: true,
         body: CalendarBackdrop(
           child: SafeArea(
-            bottom: false,
             child: Column(
               children: [
                 _GlassScreenHeader(title: title, actions: actions),
