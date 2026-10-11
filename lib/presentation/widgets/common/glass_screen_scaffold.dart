@@ -1,5 +1,6 @@
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/settings_page_transition.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:flutter/services.dart';
@@ -42,14 +43,19 @@ class GlassScreenScaffold extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         body: CalendarBackdrop(
-          child: SafeArea(
-            child: Column(
-              children: [
-                _GlassScreenHeader(title: title, actions: actions),
-                Expanded(
-                  child: fadeScrollEdges ? ScrollFadeMask(child: child) : child,
-                ),
-              ],
+          child: SettingsPageMotionScope.wrap(
+            context,
+            SafeArea(
+              child: Column(
+                children: [
+                  _GlassScreenHeader(title: title, actions: actions),
+                  Expanded(
+                    child: fadeScrollEdges
+                        ? ScrollFadeMask(child: child)
+                        : child,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -83,10 +89,13 @@ class _GlassScreenHeader extends StatelessWidget {
             const _GlassBackButton(),
             const SizedBox(width: glassSpacingXs),
             Expanded(
-              child: Text(
-                title,
-                style: AppTypography.pageTitle(Theme.of(context)),
-                softWrap: true,
+              child: SettingsPageMotionScope.fadeTitle(
+                context,
+                Text(
+                  title,
+                  style: AppTypography.pageTitle(Theme.of(context)),
+                  softWrap: true,
+                ),
               ),
             ),
             if (actions != null) ...[
