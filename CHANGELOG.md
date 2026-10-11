@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.19.0](https://github.com/lusu007/dienstplan/compare/v0.18.1...v0.19.0) (2026-10-11)
+
+
+### Features
+
+* **ui:** animate day paging and settings navigation ([#447](https://github.com/lusu007/dienstplan/issues/447)) ([a62687e](https://github.com/lusu007/dienstplan/commit/a62687e7700b1cb162d9a753c4287733a8ab76d4))
+
+
+### Bug Fixes
+
+* **ui:** respect Android system navigation insets ([#444](https://github.com/lusu007/dienstplan/issues/444)) ([f238f0d](https://github.com/lusu007/dienstplan/commit/f238f0d5d7b94da39004e53b2934b6a16b561076))
+
+
+### Performance Improvements
+
+* defer services list fade during sheet transitions ([#446](https://github.com/lusu007/dienstplan/issues/446)) ([ebb162d](https://github.com/lusu007/dienstplan/commit/ebb162deade9566564ee66284a9876e83b377cd3))
+
 ## [0.18.1](https://github.com/lusu007/dienstplan/compare/v0.18.0...v0.18.1) (2026-10-09)
 
 
