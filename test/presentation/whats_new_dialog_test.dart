@@ -3,9 +3,63 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  for (final dismissal in ['confirmation', 'barrier', 'back']) {
+    testWidgets(
+      'whats new closes promptly via $dismissal without opacity layers',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1200, 1600);
+        addTearDown(tester.view.reset);
+        await tester.pumpWidget(
+          MaterialApp(
+            locale: const Locale('de'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => showWhatsNewDialog(context),
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+        switch (dismissal) {
+          case 'confirmation':
+            await tester.tap(find.text('Alles klar'));
+          case 'barrier':
+            await tester.tapAt(const Offset(5, 5));
+          case 'back':
+            await tester.binding.handlePopRoute();
+        }
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 80));
+        // Compositing the whole live glass subtree at fractional opacity forces
+        // an intermediate layer during every closing frame.
+        RenderObject? ancestor = tester.renderObject(
+          find.text('Das ist neu für dich'),
+        );
+        while (ancestor != null) {
+          if (ancestor is RenderAnimatedOpacity) {
+            expect(ancestor.opacity.value, anyOf(0.0, 1.0));
+          }
+          ancestor = ancestor.parent;
+        }
+        await tester.pump(const Duration(milliseconds: 120));
+        await tester.pump();
+        expect(find.text('Das ist neu für dich'), findsNothing);
+        expect(find.text('Open').hitTestable(), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'light whats new keeps confirmation reachable at narrow width and large text',
     (tester) async {

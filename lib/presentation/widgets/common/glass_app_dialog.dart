@@ -4,7 +4,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart
 
 /// Glass-morphism replacement for [AlertDialog].
 ///
-/// Uses [GlassDialogSurface] as the modal body, fades + slides in from below
+/// Uses [GlassDialogSurface] as the modal body and slides in from below
 /// while delegating the glass material to the shared package adapter.
 class GlassAppDialog extends StatelessWidget {
   final String title;
@@ -30,25 +30,16 @@ class GlassAppDialog extends StatelessWidget {
       barrierDismissible: barrierDismissible,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black.withValues(alpha: glassBarrierAlpha),
-      transitionDuration: const Duration(milliseconds: 260),
+      transitionDuration: const Duration(milliseconds: 180),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        final Animation<double> curved = CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutCubic,
-          reverseCurve: Curves.easeInCubic,
-        );
-        return FadeTransition(
-          opacity: curved,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 0.04),
-              end: Offset.zero,
-            ).animate(curved),
-            child: ScaleTransition(
-              scale: Tween<double>(begin: 0.97, end: 1.0).animate(curved),
-              child: child,
-            ),
-          ),
+        // Fading the live glass/backdrop needs an intermediate texture on
+        // every frame. Translate it only and keep the glass scale stable.
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.04),
+            end: Offset.zero,
+          ).animate(animation.drive(CurveTween(curve: Curves.easeInOutCubic))),
+          child: child,
         );
       },
       pageBuilder: (context, animation, secondaryAnimation) {
