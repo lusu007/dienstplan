@@ -22,6 +22,11 @@
 		<string>????</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
+		<!-- file_saver also links photo APIs; calendar exports use Files only. -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Die Bibliothek für den Kalenderexport enthält Funktionen zum Zugriff auf Fotoalben. Dienstplan nutzt diese Funktionen nicht und liest keine Fotos oder Videos.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Die Bibliothek für den Kalenderexport enthält Funktionen zum Speichern von Bildern und Videos in der Fotomediathek. Dienstplan nutzt diese Funktionen nicht; Kalenderdateien werden in der Dateien-App gespeichert.</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
