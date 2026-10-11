@@ -2,9 +2,86 @@ import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart'
+    show GlassSheetSession, GlassSheetScope;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('refreshes prepared background while sheet stays open', (
+    tester,
+  ) async {
+    late BuildContext context;
+    final selectedDay = ValueNotifier(15);
+    late GlassSheetSession session;
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (_, child) => AppGlassSheetHost(child: child!),
+        home: AppGlassSheetScene(
+          child: Scaffold(
+            body: Builder(
+              builder: (c) {
+                context = c;
+                return ValueListenableBuilder<int>(
+                  valueListenable: selectedDay,
+                  builder: (_, day, _) => Text('Selected $day'),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      await tester.runAsync(() => AppGlassSheetHost.prepare(context)),
+      isTrue,
+    );
+    showAppGlassBottomSheet<void>(
+      context: context,
+      builder: (_) => Builder(
+        builder: (c) {
+          session = GlassSheetScope.maybeOf(c)!;
+          return GlassDialogSurface(
+            backdropBlurSigma: 4,
+            child: SizedBox(
+              height: 200,
+              child: TextButton(
+                onPressed: () => selectedDay.value = 16,
+                child: const Text('Next day'),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 70));
+    expect(find.byType(RawImage), findsWidgets);
+    await tester.pumpAndSettle();
+    final previousImage = session.snapshot!.original;
+    expect(find.byType(RawImage), findsWidgets);
+    expect(
+      tester.widget<AppGlassSurface>(find.byType(AppGlassSurface)).blur,
+      0,
+    );
+    await tester.tap(find.text('Next day'));
+    await tester.runAsync(() async {
+      final refreshed = session.refresh();
+      await tester.pump();
+      await refreshed;
+    });
+    await tester.pumpAndSettle();
+    expect(session.snapshot!.original, isNot(same(previousImage)));
+    expect(find.text('Selected 16', skipOffstage: false), findsOneWidget);
+    expect(find.text('Next day'), findsOneWidget);
+    Navigator.of(context).pop();
+    await tester.pump(const Duration(milliseconds: 70));
+    expect(find.byType(RawImage), findsWidgets);
+    await tester.pumpAndSettle();
+    expect(find.text('Selected 16'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+    selectedDay.dispose();
+  });
+
   testWidgets('uses the settled backdrop even after 150ms press feedback', (
     tester,
   ) async {

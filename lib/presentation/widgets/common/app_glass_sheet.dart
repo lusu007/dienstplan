@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 export 'glass_sheet_backdrop.dart'
-    show AppGlassSheetHost, AppGlassSheetBackdrop;
+    show AppGlassSheetHost, AppGlassSheetBackdrop, AppGlassSheetScene;
 
 /// Uses prepared glass throughout the native slide transition. When no valid
 /// snapshot is available, opens immediately with the normal live material.
@@ -22,6 +22,7 @@ Future<T?> showAppGlassBottomSheet<T>({
 }) async {
   final navigator = Navigator.of(context);
   final session = AppGlassSheetHost.begin(context);
+  session?.captureScene = AppGlassSheetScene.captureFor(context);
   final route = _GlassBottomSheetRoute<T>(
     session: session,
     capturedThemes: InheritedTheme.capture(
@@ -98,7 +99,7 @@ class _GlassBottomSheetRoute<T> extends ModalBottomSheetRoute<T> {
   }
 
   void _snapshotChanged() {
-    _frozen?.opaque = session?.hasSnapshot ?? false;
+    _frozen?.opaque = session?.hasSnapshot == true && !session!.isRefreshing;
     _frozen?.markNeedsBuild();
   }
 

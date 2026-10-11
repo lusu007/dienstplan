@@ -1,4 +1,6 @@
 import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart'
+    show GlassSheetScope, GlassSheetSession;
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedule_load_status.dart';
 
 import 'dart:async';
@@ -59,6 +61,9 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
   final _paging = ValueNotifier(false);
   DateTime? _pendingSelection;
   bool _updatingSelection = false;
+  GlassSheetSession? _backdropSession;
+  Timer? _backdropTimer;
+  bool _needsBackdropRefresh = false;
 
   DateTime _dayForPage(int page) {
     final day = widget.day;
@@ -75,6 +80,7 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
 
   @override
   void dispose() {
+    _backdropTimer?.cancel();
     _paging.dispose();
     _pageController.dispose();
     super.dispose();
@@ -124,8 +130,31 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
     }
   }
 
+  void _scheduleBackdropRefresh() {
+    _backdropTimer?.cancel();
+    if (_paging.value || !_needsBackdropRefresh || _backdropSession == null) {
+      return;
+    }
+    // Coalesce quick reversals and keep image readback out of the gesture.
+    _backdropTimer = Timer(const Duration(milliseconds: 180), () {
+      if (!mounted) return;
+      _needsBackdropRefresh = false;
+      unawaited(_backdropSession!.refresh());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _backdropSession = GlassSheetScope.maybeOf(context);
+    ref.listen(
+      scheduleCoordinatorProvider.select(
+        (state) => (state.value?.selectedDay, state.value?.focusedDay),
+      ),
+      (_, _) {
+        _needsBackdropRefresh = true;
+        _scheduleBackdropRefresh();
+      },
+    );
     final day = _dayForPage(_settledPage);
     return GlassBottomSheet(
       showHandleBar: true,
@@ -148,9 +177,11 @@ class _SchedulesBottomSheetState extends ConsumerState<SchedulesBottomSheet> {
                       if (notification.depth == 0) {
                         if (notification is ScrollStartNotification) {
                           _paging.value = true;
+                          _backdropTimer?.cancel();
                         } else if (notification is ScrollEndNotification) {
                           _paging.value = false;
                           _commitPage(_pageController.page!.round());
+                          _scheduleBackdropRefresh();
                         }
                       }
                       return false;

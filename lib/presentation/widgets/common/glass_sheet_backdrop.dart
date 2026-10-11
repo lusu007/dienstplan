@@ -225,6 +225,35 @@ class _HostScope extends InheritedWidget {
   bool updateShouldNotify(_HostScope oldWidget) => state != oldWidget.state;
 }
 
+/// A page boundary that can be recaptured without including its modal sheet.
+class AppGlassSheetScene extends StatefulWidget {
+  const AppGlassSheetScene({super.key, required this.child});
+  final Widget child;
+  static Future<GlassSheetSnapshot?> Function(double)? captureFor(
+    BuildContext context,
+  ) {
+    final scene = context.findAncestorStateOfType<_AppGlassSheetSceneState>();
+    return scene?._capture;
+  }
+
+  @override
+  State<AppGlassSheetScene> createState() => _AppGlassSheetSceneState();
+}
+
+class _AppGlassSheetSceneState extends State<AppGlassSheetScene> {
+  final _key = GlobalKey();
+  Future<GlassSheetSnapshot?> _capture(double ratio) async {
+    if (!mounted) return null;
+    final boundary = _key.currentContext?.findRenderObject();
+    if (boundary is! RenderRepaintBoundary || !boundary.hasSize) return null;
+    return GlassSheetSnapshot.capture(boundary, ratio);
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      RepaintBoundary(key: _key, child: widget.child);
+}
+
 class GlassSheetSnapshot {
   GlassSheetSnapshot(this.original, this.blurred, this.origin, this.ratio);
   final ui.Image original;
@@ -274,8 +303,43 @@ class GlassSheetSnapshot {
 
 class GlassSheetSession extends ChangeNotifier {
   GlassSheetSession(this.snapshot, this.onFinished);
-  final GlassSheetSnapshot? snapshot;
+  GlassSheetSnapshot? snapshot;
   final VoidCallback onFinished;
+  Future<GlassSheetSnapshot?> Function(double)? captureScene;
+  bool isRefreshing = false;
+  bool _refreshPending = false;
+
+  Future<void> refresh() async {
+    if (!hasSnapshot || captureScene == null) return;
+    _refreshPending = true;
+    if (isRefreshing) return;
+    isRefreshing = true;
+    notifyListeners();
+    try {
+      while (_refreshPending && hasSnapshot) {
+        _refreshPending = false;
+        // Make the covered page paint once, keeping the old image visible.
+        await WidgetsBinding.instance.endOfFrame;
+        if (!hasSnapshot) break;
+        final next = await captureScene!(snapshot!.ratio);
+        if (next == null) break;
+        if (!hasSnapshot) {
+          next.dispose();
+          break;
+        }
+        final old = snapshot;
+        snapshot = next;
+        notifyListeners();
+        WidgetsBinding.instance.addPostFrameCallback((_) => old?.dispose());
+      }
+    } catch (_) {
+      // Retain the last valid backdrop if the page cannot be captured.
+    } finally {
+      isRefreshing = false;
+      if (!isFinished) notifyListeners();
+    }
+  }
+
   bool _valid = true;
   bool isFinished = false;
   bool get hasSnapshot => _valid && snapshot != null && !isFinished;

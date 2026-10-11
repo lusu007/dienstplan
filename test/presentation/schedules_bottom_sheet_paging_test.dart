@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart'
+    show GlassSheetScope;
+
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -94,6 +98,7 @@ Future<_Schedules> _open(
   DateTime? initialDay,
   bool reducedMotion = false,
   int extraRows = 0,
+  bool preparedBackground = false,
 }) async {
   final schedules = _Schedules(extraRows: extraRows);
   late BuildContext context;
@@ -111,27 +116,132 @@ Future<_Schedules> _open(
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context)
               .copyWith(disableAnimations: reducedMotion),
-          child: child!,
+          child: preparedBackground ? AppGlassSheetHost(child: child!) : child!,
         ),
         home: Consumer(
           builder: (c, ref, _) {
-            context = c;
-            ref.watch(scheduleCoordinatorProvider);
+            if (!preparedBackground) context = c;
+            final selection = ref
+                .watch(scheduleCoordinatorProvider)
+                .value
+                ?.selectedDay;
             ref.watch(settingsProvider);
             ref.watch(schoolHolidaysProvider);
-            return const Scaffold(body: Text('Calendar'));
+            final scaffold = Scaffold(
+              body: Text(
+                preparedBackground
+                    ? 'Calendar selected ${selection?.day}'
+                    : 'Calendar',
+              ),
+            );
+            return preparedBackground
+                ? AppGlassSheetScene(
+                    child: Builder(
+                      builder: (c) {
+                        context = c;
+                        return scaffold;
+                      },
+                    ),
+                  )
+                : scaffold;
           },
         ),
       ),
     ),
   );
   await tester.pumpAndSettle();
+  if (preparedBackground) {
+    expect(
+      await tester.runAsync(() => AppGlassSheetHost.prepare(context)),
+      isTrue,
+    );
+  }
   SchedulesBottomSheet.show(context, initialDay ?? day);
   await tester.pumpAndSettle();
   return schedules;
 }
 
 void main() {
+  testWidgets('quick reversals refresh only the latest settled backdrop', (
+    tester,
+  ) async {
+    await _open(tester, preparedBackground: true);
+    final session = GlassSheetScope.maybeOf(
+      tester.element(find.byType(SchedulesBottomSheet)),
+    )!;
+    final capture = session.captureScene!;
+    var captures = 0;
+    session.captureScene = (ratio) {
+      captures++;
+      return capture(ratio);
+    };
+    await tester.runAsync(() async {
+      await tester.tap(find.byTooltip('Nächster Tag'));
+      await tester.pumpAndSettle();
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(captures, 0);
+      await tester.tap(find.byTooltip('Vorheriger Tag'));
+      await tester.pumpAndSettle();
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await tester.pump();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await tester.pumpAndSettle();
+    });
+    expect(captures, 1);
+    expect(
+      find.text('Calendar selected 15', skipOffstage: false),
+      findsOneWidget,
+    );
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets(
+    'calendar selection stays visible behind the open prepared sheet',
+    (tester) async {
+      await _open(tester, preparedBackground: true);
+      expect(
+        find.text('Calendar selected 15', skipOffstage: false),
+        findsOneWidget,
+      );
+      expect(find.byType(RawImage), findsWidgets);
+      final original = tester
+          .widget<RawImage>(find.byType(RawImage).first)
+          .image;
+      await tester.runAsync(() async {
+        await tester.drag(find.text('Dienst 0'), const Offset(-600, 0));
+        await tester.pumpAndSettle();
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+        await tester.pump();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await tester.pumpAndSettle();
+      });
+      expect(
+        tester.widget<RawImage>(find.byType(RawImage).first).image,
+        isNot(same(original)),
+      );
+      expect(
+        find.text('Calendar selected 16', skipOffstage: false),
+        findsOneWidget,
+      );
+      expect(find.text('Dienst 1'), findsOneWidget);
+      expect(find.byType(SchedulesBottomSheet), findsOneWidget);
+      await tester.runAsync(() async {
+        await tester.tap(find.byTooltip('Vorheriger Tag'));
+        await tester.pumpAndSettle();
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+        await tester.pump();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+        await tester.pumpAndSettle();
+      });
+      expect(
+        find.text('Calendar selected 15', skipOffstage: false),
+        findsOneWidget,
+      );
+      expect(find.byType(SchedulesBottomSheet), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
   testWidgets(
     'day content follows finger while glass and actions remain fixed',
     (tester) async {
