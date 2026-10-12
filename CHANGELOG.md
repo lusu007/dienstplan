@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.19.2](https://github.com/lusu007/dienstplan/compare/v0.19.1...v0.19.2) (2026-10-12)
+
+
+### Bug Fixes
+
+* **config:** capture dependencies before async initialization ([#452](https://github.com/lusu007/dienstplan/issues/452)) ([2586b26](https://github.com/lusu007/dienstplan/commit/2586b266bb3be4196a51779efa2f030bc5a99bfa))
+* **database:** preserve settings across legacy schema upgrades ([#451](https://github.com/lusu007/dienstplan/issues/451)) ([650542a](https://github.com/lusu007/dienstplan/commit/650542ade137f0699c9c718be7aeb6c6851404e2))
+* **settings:** ignore holiday selection after widget disposal ([#454](https://github.com/lusu007/dienstplan/issues/454)) ([252ac0f](https://github.com/lusu007/dienstplan/commit/252ac0fe709984ac04e6c4034e1fe8359f6c7cae))
+
 ## [0.19.1](https://github.com/lusu007/dienstplan/compare/v0.19.0...v0.19.1) (2026-10-11)
 
 
