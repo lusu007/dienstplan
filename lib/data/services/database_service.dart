@@ -859,20 +859,45 @@ class DatabaseService {
         )
       ''');
 
-      await db.execute('''
-        INSERT INTO settings_new (
-          id, language, selected_duty_group, my_duty_group, active_config_name,
-          theme_mode, partner_config_name, partner_duty_group, partner_accent_color,
-          my_accent_color, show_school_holidays, school_holiday_state_code,
-          show_other_duty_groups_in_compact_list, last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
-        )
-        SELECT
-          id, language, selected_duty_group, my_duty_group, active_config_name,
-          theme_mode, partner_config_name, partner_duty_group, partner_accent_color,
-          my_accent_color, show_school_holidays, school_holiday_state_code,
-          NULL, last_school_holiday_refresh, holiday_accent_color, created_at, updated_at
-        FROM settings
-      ''');
+      final existingColumns = (await db.rawQuery('PRAGMA table_info(settings)'))
+          .map((column) => column['name'] as String)
+          .toSet();
+      const columns = [
+        'id',
+        'language',
+        'selected_duty_group',
+        'my_duty_group',
+        'active_config_name',
+        'theme_mode',
+        'partner_config_name',
+        'partner_duty_group',
+        'partner_accent_color',
+        'my_accent_color',
+        'show_school_holidays',
+        'school_holiday_state_code',
+        'show_other_duty_groups_in_compact_list',
+        'last_school_holiday_refresh',
+        'holiday_accent_color',
+        'created_at',
+        'updated_at',
+      ];
+      // Older upgrades could advance user_version despite an optional-column
+      // migration failing. Preserve every available value and leave missing
+      // optional settings unset; required row identity/timestamps must exist.
+      const requiredColumns = {'id', 'created_at', 'updated_at'};
+      final projection = columns
+          .map((column) {
+            if (existingColumns.contains(column) ||
+                requiredColumns.contains(column)) {
+              return column;
+            }
+            return 'NULL AS $column';
+          })
+          .join(', ');
+      await db.execute("""
+        INSERT INTO settings_new (${columns.join(', ')})
+        SELECT $projection FROM settings
+      """);
 
       await db.execute('DROP TABLE settings');
       await db.execute('ALTER TABLE settings_new RENAME TO settings');
