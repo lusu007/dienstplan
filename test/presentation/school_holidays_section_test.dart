@@ -33,6 +33,11 @@ class _Holidays extends SchoolHolidaysNotifier {
   @override
   Future<SchoolHolidaysUiState> build() async =>
       SchoolHolidaysUiState.initial().copyWith(isEnabled: true);
+
+  @override
+  Future<void> setSelectedState(String? code) async {
+    state = AsyncData(state.requireValue.copyWith(selectedStateCode: code));
+  }
 }
 
 Widget app(Widget child, bool dark) => ProviderScope(
@@ -56,6 +61,59 @@ Widget app(Widget child, bool dark) => ProviderScope(
   ),
 );
 void main() {
+  for (final removeSection in [false, true]) {
+    testWidgets('state selection handles removed section=$removeSection', (
+      tester,
+    ) async {
+      final showSection = ValueNotifier(true);
+      addTearDown(showSection.dispose);
+      final container = ProviderContainer.test(
+        overrides: [
+          settingsProvider.overrideWith(_Settings.new),
+          partnerProvider.overrideWith(_Partner.new),
+          schoolHolidaysProvider.overrideWith(_Holidays.new),
+        ],
+      );
+      container.listen(schoolHolidaysProvider, (_, _) {});
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            locale: const Locale('de'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: ValueListenableBuilder<bool>(
+                valueListenable: showSection,
+                builder: (context, visible, child) => visible
+                    ? const SingleChildScrollView(
+                        child: SchoolHolidaysSection(),
+                      )
+                    : const SizedBox(),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Bundesland'));
+      await tester.pumpAndSettle();
+      expect(find.text('Bayern'), findsOneWidget);
+      if (removeSection) {
+        showSection.value = false;
+        await tester.pump();
+        expect(find.byType(SchoolHolidaysSection), findsNothing);
+      }
+      await tester.tap(find.text('Bayern'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(
+        container.read(schoolHolidaysProvider).requireValue.selectedStateCode,
+        removeSection ? null : 'BY',
+      );
+    });
+  }
+
   for (final dark in [false, true]) {
     testWidgets(
       'missing state explains disabled holiday actions in dark=$dark',

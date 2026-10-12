@@ -89,6 +89,7 @@ class SchoolHolidaysSection extends ConsumerWidget {
                         state.selectedStateCode,
                       );
 
+                      if (!context.mounted) return;
                       if (selected != null) {
                         await ref
                             .read(schoolHolidaysProvider.notifier)
