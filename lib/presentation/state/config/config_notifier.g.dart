@@ -33,7 +33,7 @@ final class ConfigNotifierProvider
   ConfigNotifier create() => ConfigNotifier();
 }
 
-String _$configNotifierHash() => r'607d2fc08f3b273c2b0e9fc8120cf15af3c473fa';
+String _$configNotifierHash() => r'ccf725677100f51c72e79bb7a381a59749794395';
 
 abstract class _$ConfigNotifier extends $AsyncNotifier<ConfigUiState> {
   FutureOr<ConfigUiState> build();

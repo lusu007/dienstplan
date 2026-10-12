@@ -23,13 +23,26 @@ class ConfigNotifier extends _$ConfigNotifier {
 
   @override
   Future<ConfigUiState> build() async {
-    _getConfigsUseCase ??= await ref.read(getConfigsUseCaseProvider.future);
-    _setActiveConfigUseCase ??= await ref.read(
-      setActiveConfigUseCaseProvider.future,
-    );
-    _getSettingsUseCase ??= await ref.read(getSettingsUseCaseProvider.future);
-    _saveSettingsUseCase ??= await ref.read(saveSettingsUseCaseProvider.future);
+    // Capture dependencies before yielding: a future-only reader can let this
+    // auto-disposed provider unmount while dependency initialization is pending.
+    final configsFuture = _getConfigsUseCase == null
+        ? ref.read(getConfigsUseCaseProvider.future)
+        : Future.value(_getConfigsUseCase!);
+    final activeConfigFuture = _setActiveConfigUseCase == null
+        ? ref.read(setActiveConfigUseCaseProvider.future)
+        : Future.value(_setActiveConfigUseCase!);
+    final settingsFuture = _getSettingsUseCase == null
+        ? ref.read(getSettingsUseCaseProvider.future)
+        : Future.value(_getSettingsUseCase!);
+    final saveSettingsFuture = _saveSettingsUseCase == null
+        ? ref.read(saveSettingsUseCaseProvider.future)
+        : Future.value(_saveSettingsUseCase!);
     _configQueryService ??= ref.read(configQueryServiceProvider);
+
+    _getConfigsUseCase ??= await configsFuture;
+    _setActiveConfigUseCase ??= await activeConfigFuture;
+    _getSettingsUseCase ??= await settingsFuture;
+    _saveSettingsUseCase ??= await saveSettingsFuture;
     return await _initialize();
   }
 
