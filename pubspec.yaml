@@ -56,7 +56,7 @@ dependencies:
   # HTTP Client
   dio: ^5.11.1
   json_annotation: ^4.12.0
-  dart_flutter_version: ^1.0.56
+  dart_flutter_version: ^1.0.57
   file_saver: ^0.7.0
   open_file: ^4.0.0
   flutter_markdown_plus: ^1.0.12
