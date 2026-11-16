@@ -229,10 +229,10 @@ packages:
     dependency: "direct main"
     description:
       name: dart_flutter_version
-      sha256: fa49067430f4fe12ec8afb61a3ef4ef03bcd4e2294e96fe4c1e9756be9006fa6
+      sha256: "185578967ed17f34526f608f5c65aa917c636a066660be68c780fc0a98cb2160"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.56"
+    version: "1.0.60"
   dart_style:
     dependency: transitive
     description:
@@ -1222,10 +1222,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "2a122cbe059f8b610d3a5415f42e255b6c17b1f21eee1d960f31080237fb4f11"
+      sha256: "0a10344e901e5b2e63819567951cb6a06673ed6b84f40462188ff5a0c41f371f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.12"
+    version: "0.7.14"
   timezone:
     dependency: transitive
     description:
