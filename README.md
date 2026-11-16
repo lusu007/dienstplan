@@ -10,7 +10,12 @@ Your duties, partner schedule, and holidays at a glance. Dienstplan is a German-
 
 ## Download
 
-[Google Play](https://play.google.com/store/apps/details?id=io.scelus.dienstplan) · [App Store](https://apps.apple.com/app/dienstplan/id6748340130) · [Android APKs](https://github.com/lusu007/dienstplan/releases) · [Changelog](CHANGELOG.md)
+<p>
+  <a href="https://apps.apple.com/app/dienstplan/id6748340130"><img src="static/badges/app-store.svg" alt="Download on the App Store" height="40" align="middle"></a>
+  <a href="https://play.google.com/store/apps/details?id=io.scelus.dienstplan"><img src="static/badges/google-play.png" alt="Get it on Google Play" height="60" align="middle"></a>
+</p>
+
+[Download Android APKs](https://github.com/lusu007/dienstplan/releases) · [Changelog](CHANGELOG.md)
 
 ## Features
 
