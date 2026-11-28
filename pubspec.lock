@@ -229,10 +229,10 @@ packages:
     dependency: "direct main"
     description:
       name: dart_flutter_version
-      sha256: fa49067430f4fe12ec8afb61a3ef4ef03bcd4e2294e96fe4c1e9756be9006fa6
+      sha256: "31e750b6583eaf8aee432d1559878750fca98d49adadcfc98da65be746735279"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.56"
+    version: "1.0.61"
   dart_style:
     dependency: transitive
     description:
