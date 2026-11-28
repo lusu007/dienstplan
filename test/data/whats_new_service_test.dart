@@ -40,7 +40,52 @@ void main() {
     });
   });
 
+  group('upgrade boundaries', () {
+    test('does not reopen for a build-only update', () {
+      expect(
+        shouldShowWhatsNew(acknowledged: '0.19.0+17', current: '0.19.0+18'),
+        false,
+      );
+    });
+    test('does not reopen after a downgrade', () {
+      expect(
+        shouldShowWhatsNew(acknowledged: '0.19.2+17', current: '0.18.0+18'),
+        false,
+      );
+    });
+    test('invalid legacy preference establishes a baseline', () {
+      expect(
+        shouldShowWhatsNew(acknowledged: 'broken', current: '0.19.2+18'),
+        false,
+      );
+    });
+  });
+
   group('WhatsNewService', () {
+    test(
+      'acknowledgement never moves backwards on downgrade or rebuild',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          kPrefsKeyWhatsNewAcknowledgedVersion: '0.19.2+10',
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final service = WhatsNewService(prefs);
+        await service.writeAcknowledgedVersion('0.18.0+20');
+        await service.writeAcknowledgedVersion('0.19.2+30');
+        await service.writeAcknowledgedVersion('broken');
+        expect(await service.readAcknowledgedVersion(), '0.19.2+10');
+        await service.writeAcknowledgedVersion('0.20.0+40');
+        expect(await service.readAcknowledgedVersion(), '0.20.0+40');
+      },
+    );
+    test('corrupted old acknowledgement can be replaced safely', () async {
+      SharedPreferences.setMockInitialValues({
+        kPrefsKeyWhatsNewAcknowledgedVersion: 'broken',
+      });
+      final service = WhatsNewService(await SharedPreferences.getInstance());
+      await service.writeAcknowledgedVersion('0.20.0+40');
+      expect(await service.readAcknowledgedVersion(), '0.20.0+40');
+    });
     test('read returns null then write persists', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       final SharedPreferences prefs = await SharedPreferences.getInstance();
