@@ -28,20 +28,17 @@ class SentryConfig {
     SentryService sentryService,
   ) {
     double tracesSampleRate = 0.0;
-    double profilesSampleRate = 0.0;
     double replaySessionSampleRate = 0.0;
     double replayOnErrorSampleRate = 0.0;
     if (sentryService.isEnabled) {
       if (kReleaseMode) {
         tracesSampleRate = 0.1;
-        profilesSampleRate = 0.0;
         if (sentryService.isReplayEnabled) {
           replaySessionSampleRate = 0.1;
           replayOnErrorSampleRate = 1.0;
         }
       } else {
         tracesSampleRate = 1.0;
-        profilesSampleRate = 1.0;
         if (sentryService.isReplayEnabled) {
           replaySessionSampleRate = 1.0;
           replayOnErrorSampleRate = 1.0;
@@ -49,11 +46,8 @@ class SentryConfig {
       }
     }
     options.tracesSampleRate = tracesSampleRate;
-    // ignore: experimental_member_use
-    options.profilesSampleRate = profilesSampleRate;
     options.replay.sessionSampleRate = replaySessionSampleRate;
     options.replay.onErrorSampleRate = replayOnErrorSampleRate;
-    options.enableLogs = sentryService.isEnabled;
     options.enableAutoSessionTracking = sentryService.isEnabled;
   }
 
@@ -70,6 +64,8 @@ class SentryConfig {
         '${packageInfo.packageName}@${packageInfo.version}+${packageInfo.buildNumber}';
     options.dist = packageInfo.buildNumber;
     options.sendDefaultPii = false;
+    // Keep custom transactions and their upload-consent filter active in SDK 10.
+    options.traceLifecycle = SentryTraceLifecycle.static;
     options.attachScreenshot = true;
     options.beforeCaptureScreenshot = (_, _, _) => false;
     options.enableUserInteractionTracing = false;
@@ -94,7 +90,7 @@ class SentryConfig {
       return event;
     };
     options.beforeBreadcrumb = SentryTelemetry.beforeBreadcrumb;
-    options.beforeSendLog = (SentryLog log) {
+    options.beforeSendLog = (SentryLog log, Hint hint) {
       return SentryTelemetry.beforeSendLog(log);
     };
   }
