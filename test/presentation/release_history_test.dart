@@ -1,5 +1,9 @@
 import '../support/app_test_builder.dart';
 
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
+
+import 'package:dienstplan/core/di/riverpod_providers.dart';
+
 import 'package:dienstplan/core/constants/prefs_keys.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
@@ -22,6 +26,7 @@ class _Partner extends PartnerNotifier {
 Widget host(
   Widget child, {
   Brightness brightness = Brightness.light,
+  ThemeData? theme,
   double scale = 1,
   EdgeInsets padding = EdgeInsets.zero,
 }) => ProviderScope(
@@ -34,7 +39,7 @@ Widget host(
         child: child!,
       ),
     ),
-    theme: ThemeData(brightness: brightness),
+    theme: theme ?? ThemeData(brightness: brightness),
     locale: const Locale('de'),
     localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
@@ -64,14 +69,14 @@ void main() {
       await tester.tap(find.text('Was ist neu für dich?'));
       await tester.pumpAndSettle();
       expect(find.text('Alle Änderungen'), findsOneWidget);
-      expect(find.text('Version 0.20.0'), findsOneWidget);
+      expect(find.text('VERSION 0.20.0'), findsOneWidget);
       expect(find.text('iOS 15 erforderlich'), findsOneWidget);
       await tester.scrollUntilVisible(
-        find.text('Version 0.0.2'),
+        find.text('VERSION 0.0.2'),
         800,
         maxScrolls: 100,
       );
-      expect(find.text('Version 0.0.2').hitTestable(), findsOneWidget);
+      expect(find.text('VERSION 0.0.2').hitTestable(), findsOneWidget);
       expect(
         prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion),
         '0.17.0+12',
@@ -83,6 +88,26 @@ void main() {
     },
   );
 
+  testWidgets(
+    '0.4 maintenance history displays one version range with concise distinct rows',
+    (tester) async {
+      await tester.pumpWidget(
+        host(const ReleaseHistoryScreen(currentVersion: '0.4.41')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('VERSIONEN 0.4.0–0.4.41'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(GlassCardGroup).first,
+          matching: find.text('Wartungsupdate'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('iOS-Version vorbereitet'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('history excludes catalogue releases newer than installed app', (
     tester,
   ) async {
@@ -90,8 +115,8 @@ void main() {
       host(const ReleaseHistoryScreen(currentVersion: '0.19.0+12')),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Version 0.19.0'), findsOneWidget);
-    expect(find.text('Version 0.20.0'), findsNothing);
+    expect(find.text('VERSION 0.19.0'), findsOneWidget);
+    expect(find.text('VERSION 0.20.0'), findsNothing);
     expect(find.text('Alle Änderungen im Blick'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -134,6 +159,62 @@ void main() {
   );
 
   for (final brightness in Brightness.values) {
+    testWidgets(
+      'summary and history text stay readable in the actual $brightness app palette',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(1000, 1800);
+        addTearDown(tester.view.reset);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        final theme = container.read(
+          brightness == Brightness.dark
+              ? appDarkThemeProvider
+              : appThemeProvider,
+        );
+        void readable(String text) {
+          final rich = tester.widget<RichText>(
+            find.descendant(
+              of: find.text(text),
+              matching: find.byType(RichText),
+            ),
+          );
+          final color = rich.text.style!.color!;
+          final a = color.computeLuminance();
+          final b = theme.colorScheme.surface.computeLuminance();
+          expect(
+            ((a > b ? a : b) + .05) / ((a > b ? b : a) + .05),
+            greaterThanOrEqualTo(4.5),
+            reason: text,
+          );
+        }
+
+        await tester.pumpWidget(
+          host(
+            Builder(
+              builder: (context) => TextButton(
+                onPressed: () => showWhatsNewDialog(context),
+                child: const Text('Open'),
+              ),
+            ),
+            theme: theme,
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+        readable('Alle Änderungen im Blick');
+        readable('Ruhige Monatsanzeige');
+        readable('Alle Änderungen');
+        await tester.tap(find.text('Alle Änderungen'));
+        await tester.pumpAndSettle();
+        readable('Alle Änderungen im Blick');
+        readable('Ruhige Monatsanzeige');
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  for (final brightness in Brightness.values) {
     for (final size in [const Size(320, 680), const Size(844, 390)]) {
       testWidgets(
         'summary and history remain usable in $brightness at $size with large text',
@@ -161,9 +242,9 @@ void main() {
           await tester.tap(find.text('Alle Änderungen'));
           await tester.pumpAndSettle();
           expect(find.byTooltip('Zurück').hitTestable(), findsOneWidget);
-          await tester.scrollUntilVisible(find.text('Version 0.19.0'), 400);
+          await tester.scrollUntilVisible(find.text('VERSION 0.19.0'), 400);
           await tester.pumpAndSettle();
-          expect(find.text('Version 0.19.0').hitTestable(), findsOneWidget);
+          expect(find.text('VERSION 0.19.0').hitTestable(), findsOneWidget);
           expect(tester.takeException(), isNull);
           await tester.tap(find.byTooltip('Zurück'));
           await tester.pumpAndSettle();

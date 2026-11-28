@@ -1,7 +1,11 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/releases/app_release_notes.dart';
-import 'package:dienstplan/domain/models/release_notes.dart';
+import 'package:dienstplan/domain/models/release_history_group.dart';
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
+import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
+import 'package:dienstplan/presentation/widgets/common/release_change_row.dart';
+import 'package:dienstplan/presentation/widgets/screens/settings/settings_section_header.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -29,68 +33,70 @@ class ReleaseHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final history = releaseHistory(
+    final history = groupReleaseHistory(
       current: currentVersion,
       releases: appReleaseNotes,
     );
     final theme = Theme.of(context);
     return GlassScreenScaffold(
       title: l10n.releaseHistoryTitle,
-      child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(
-          glassSpacingXl,
-          glassSpacingMd,
-          glassSpacingXl,
-          glassSpacingXxl,
-        ),
-        itemCount: history.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: glassSpacingXl),
-              child: Text(
-                history.isEmpty ? l10n.whatsNewEmpty : l10n.releaseHistoryIntro,
-              ),
-            );
-          }
-          final release = history[index - 1];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: glassSpacingXl),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainer.withValues(alpha: .9),
-                borderRadius: BorderRadius.circular(glassSurfaceRadiusLg),
-                border: Border.all(color: theme.colorScheme.outlineVariant),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(glassSpacingLg),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 680),
+          child: ListView.builder(
+            padding: const EdgeInsets.fromLTRB(
+              glassSpacingXl - 4,
+              glassSpacingMd,
+              glassSpacingXl - 4,
+              glassSpacingXxl,
+            ),
+            itemCount: history.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: glassSpacingMd),
+                  child: Text(
+                    history.isEmpty
+                        ? l10n.whatsNewEmpty
+                        : l10n.releaseHistoryIntro,
+                    style: AppTypography.secondary(theme),
+                  ),
+                );
+              }
+              final group = history[index - 1];
+              final label = group.isRange
+                  ? l10n.releaseVersionRange(
+                      group.oldestVersion,
+                      group.latestVersion,
+                    )
+                  : l10n.releaseVersion(group.latestVersion);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: glassSpacingMd),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Semantics(
                       header: true,
-                      child: Text(
-                        l10n.releaseVersion(release.version),
-                        style: theme.textTheme.titleLarge,
-                      ),
+                      child: SettingsSectionHeader(title: label),
                     ),
-                    for (final change in release.changes) ...[
-                      const SizedBox(height: glassSpacingLg),
-                      Text(
-                        change.title,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: glassSpacingXs),
-                      Text(change.description),
-                    ],
+                    GlassCardGroup(
+                      children: [
+                        for (final change in group.changes)
+                          GlassCard(
+                            child: Padding(
+                              padding: const EdgeInsets.all(glassSpacingLg),
+                              child: ReleaseChangeRow(change: change),
+                            ),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }

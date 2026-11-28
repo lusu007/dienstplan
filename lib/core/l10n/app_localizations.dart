@@ -1206,7 +1206,7 @@ abstract class AppLocalizations {
   /// No description provided for @whatsNewIntro.
   ///
   /// In de, this message translates to:
-  /// **'Die wichtigsten Änderungen seit deinem letzten Update:'**
+  /// **'Für dich neu seit dem letzten Update.'**
   String get whatsNewIntro;
 
   /// No description provided for @whatsNewEmpty.
@@ -1224,8 +1224,26 @@ abstract class AppLocalizations {
   /// No description provided for @releaseHistoryIntro.
   ///
   /// In de, this message translates to:
-  /// **'Neuerungen und Fehlerbehebungen nach Version – auch aus früheren Updates.'**
+  /// **'Neuerungen und Fehlerbehebungen – neueste zuerst.'**
   String get releaseHistoryIntro;
+
+  /// No description provided for @releaseNotesNew.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu'**
+  String get releaseNotesNew;
+
+  /// No description provided for @releaseNotesImproved.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbessert'**
+  String get releaseNotesImproved;
+
+  /// No description provided for @releaseVersionRange.
+  ///
+  /// In de, this message translates to:
+  /// **'Versionen {oldest}–{latest}'**
+  String releaseVersionRange(String oldest, String latest);
 
   /// No description provided for @releaseVersion.
   ///

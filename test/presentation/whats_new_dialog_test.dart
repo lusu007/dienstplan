@@ -146,7 +146,7 @@ void main() {
       );
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
-      final action = find.byType(AppGlassButton);
+      final action = find.widgetWithText(AppGlassButton, 'Alles klar');
       final material = tester.widget<liquid.AdaptiveGlass>(
         find.descendant(
           of: action,
@@ -227,7 +227,7 @@ void main() {
       await tester.pumpAndSettle();
       final label = tester.widget<RichText>(
         find.descendant(
-          of: find.byType(AppGlassButton),
+          of: find.widgetWithText(AppGlassButton, 'Alles klar'),
           matching: find.byType(RichText),
         ),
       );

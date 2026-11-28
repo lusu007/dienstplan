@@ -67,6 +67,8 @@ void main() {
     (tester) async {
       final prefs = await mountHost(tester, previous: '0.17.0+12');
       expect(find.text('Eigene Dienste über Mitternacht'), findsOneWidget);
+      expect(find.text('Neu'), findsOneWidget);
+      expect(find.text('Verbessert'), findsOneWidget);
       expect(find.text('Flüssiger Tageswechsel'), findsOneWidget);
       expect(
         prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion),
@@ -159,7 +161,7 @@ void main() {
       final prefs = await mountHost(tester, previous: '0.19.2+1');
       await tester.tap(find.text('Alle Änderungen'));
       await tester.pumpAndSettle();
-      expect(find.text('Version 0.20.0'), findsOneWidget);
+      expect(find.text('VERSION 0.20.0'), findsOneWidget);
       expect(find.text('iOS 15 erforderlich'), findsOneWidget);
       expect(prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion), '0.19.2+1');
       await tester.binding.handlePopRoute();

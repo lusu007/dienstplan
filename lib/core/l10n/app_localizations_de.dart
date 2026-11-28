@@ -641,8 +641,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get whatsNewTitle => 'Das ist neu für dich';
 
   @override
-  String get whatsNewIntro =>
-      'Die wichtigsten Änderungen seit deinem letzten Update:';
+  String get whatsNewIntro => 'Für dich neu seit dem letzten Update.';
 
   @override
   String get whatsNewEmpty =>
@@ -653,7 +652,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get releaseHistoryIntro =>
-      'Neuerungen und Fehlerbehebungen nach Version – auch aus früheren Updates.';
+      'Neuerungen und Fehlerbehebungen – neueste zuerst.';
+
+  @override
+  String get releaseNotesNew => 'Neu';
+
+  @override
+  String get releaseNotesImproved => 'Verbessert';
+
+  @override
+  String releaseVersionRange(String oldest, String latest) {
+    return 'Versionen $oldest–$latest';
+  }
 
   @override
   String releaseVersion(String version) {

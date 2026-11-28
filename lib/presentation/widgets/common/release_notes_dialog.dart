@@ -1,5 +1,7 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
+import 'package:dienstplan/presentation/widgets/common/release_change_row.dart';
 import 'package:dienstplan/data/releases/app_release_notes.dart';
 import 'package:dienstplan/domain/models/release_notes.dart';
 import 'package:dienstplan/presentation/screens/release_history_screen.dart';
@@ -27,29 +29,12 @@ Future<void> showWhatsNewDialog(
     context: context,
     adaptToCompactHeight: true,
     title: l10n.whatsNewTitle,
-    content: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(highlights.isEmpty ? l10n.whatsNewEmpty : l10n.whatsNewIntro),
-          for (final change in highlights) ...[
-            const SizedBox(height: glassSpacingLg),
-            Semantics(
-              header: true,
-              child: Text(
-                change.title,
-                style: Theme.of(context).textTheme.titleSmall
-                    ?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ),
-            const SizedBox(height: glassSpacingXs),
-            Text(change.description),
-          ],
-        ],
-      ),
-    ),
+    content: _ReleaseSummaryContent(highlights: highlights),
     actions: [
-      TextButton(
+      AppGlassButton(
+        role: AppGlassButtonRole.quiet,
+        fullWidth: true,
+        height: 48,
         onPressed: () => showReleaseHistory(context, currentVersion: installed),
         child: Text(l10n.releaseHistoryTitle),
       ),
@@ -62,4 +47,53 @@ Future<void> showWhatsNewDialog(
       ),
     ],
   );
+}
+
+class _ReleaseSummaryContent extends StatelessWidget {
+  const _ReleaseSummaryContent({required this.highlights});
+
+  final List<ReleaseChange> highlights;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            highlights.isEmpty ? l10n.whatsNewEmpty : l10n.whatsNewIntro,
+            style: AppTypography.secondary(theme),
+          ),
+          for (final importance in [
+            ReleaseImportance.feature,
+            ReleaseImportance.fix,
+          ])
+            if (highlights.any(
+              (change) => change.importance == importance,
+            )) ...[
+              const SizedBox(height: glassSpacingXl),
+              Semantics(
+                header: true,
+                child: Text(
+                  importance == ReleaseImportance.feature
+                      ? l10n.releaseNotesNew
+                      : l10n.releaseNotesImproved,
+                  style: AppTypography.menuTitle(theme),
+                ),
+              ),
+              const SizedBox(height: glassSpacingMd),
+              for (final change in highlights.where(
+                (change) => change.importance == importance,
+              ))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: glassSpacingLg),
+                  child: ReleaseChangeRow(change: change),
+                ),
+            ],
+        ],
+      ),
+    );
+  }
 }

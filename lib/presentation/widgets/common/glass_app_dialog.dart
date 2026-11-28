@@ -81,7 +81,8 @@ class GlassAppDialog extends StatelessWidget {
                         header: true,
                         child: Text(
                           title,
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(color: colorScheme.onSurface),
                         ),
                       ),
                       const SizedBox(height: glassSpacingMd),

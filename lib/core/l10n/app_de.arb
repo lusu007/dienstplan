@@ -797,10 +797,14 @@
   "@whatsNewTitle": {
     "description": "Title for the post-update what's new dialog"
   },
-  "whatsNewIntro": "Die wichtigsten Änderungen seit deinem letzten Update:",
+  "whatsNewIntro": "Für dich neu seit dem letzten Update.",
   "whatsNewEmpty": "Für diese Version gibt es keine neuen Highlights. Alle bisherigen Änderungen findest du in der Versionshistorie.",
   "releaseHistoryTitle": "Alle Änderungen",
-  "releaseHistoryIntro": "Neuerungen und Fehlerbehebungen nach Version – auch aus früheren Updates.",
+  "releaseHistoryIntro": "Neuerungen und Fehlerbehebungen – neueste zuerst.",
+  "releaseNotesNew": "Neu",
+  "releaseNotesImproved": "Verbessert",
+  "releaseVersionRange": "Versionen {oldest}–{latest}",
+  "@releaseVersionRange": {"placeholders": {"oldest": {"type": "String"}, "latest": {"type": "String"}}},
   "releaseVersion": "Version {version}",
   "@releaseVersion": {"placeholders": {"version": {"type": "String"}}},
   "whatsNewGotIt": "Alles klar",
