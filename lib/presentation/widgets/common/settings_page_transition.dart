@@ -133,6 +133,19 @@ class SettingsPageMotionScope extends InheritedWidget {
   final Animation<double> animation;
   final Animation<double> secondaryAnimation;
 
+  static double _navigationProgress(
+    Animation<double> animation,
+    bool interactive,
+  ) {
+    if (interactive) return animation.value;
+    // A reverse route runs from 1 to 0. easeOut would keep the outgoing
+    // foreground nearly stationary for most of the return transition.
+    final curve = animation.status == AnimationStatus.reverse
+        ? Curves.easeInCubic
+        : Curves.easeOutCubic;
+    return curve.transform(animation.value);
+  }
+
   static Widget wrap(BuildContext context, Widget child) {
     final motion = context
         .dependOnInheritedWidgetOfExactType<SettingsPageMotionScope>();
@@ -150,12 +163,11 @@ class SettingsPageMotionScope extends InheritedWidget {
       builder: (context, child) {
         final interactive =
             Navigator.maybeOf(context)?.userGestureInProgress ?? false;
-        final forward = interactive
-            ? motion.animation.value
-            : Curves.easeOutCubic.transform(motion.animation.value);
-        final backward = interactive
-            ? motion.secondaryAnimation.value
-            : Curves.easeOutCubic.transform(motion.secondaryAnimation.value);
+        final forward = _navigationProgress(motion.animation, interactive);
+        final backward = _navigationProgress(
+          motion.secondaryAnimation,
+          interactive,
+        );
         final direction = Directionality.of(context) == TextDirection.rtl
             ? -1.0
             : 1.0;
@@ -182,9 +194,10 @@ class SettingsPageMotionScope extends InheritedWidget {
       child: child,
       builder: (context, child) => FadeTransition(
         opacity: AlwaysStoppedAnimation(
-          Navigator.maybeOf(context)?.userGestureInProgress ?? false
-              ? motion.animation.value
-              : Curves.easeOutCubic.transform(motion.animation.value),
+          _navigationProgress(
+            motion.animation,
+            Navigator.maybeOf(context)?.userGestureInProgress ?? false,
+          ),
         ),
         child: child,
       ),
@@ -200,6 +213,16 @@ class SettingsPageMotionScope extends InheritedWidget {
 class _SettingsProgress extends CompoundAnimation<double> {
   _SettingsProgress(Animation<double> route, Animation<double> entrance)
     : super(first: route, next: entrance);
+  @override
+  AnimationStatus get status {
+    // A stopped entrance can retain forward status; the route owns Back.
+    if (first.status == AnimationStatus.reverse ||
+        first.status == AnimationStatus.dismissed) {
+      return first.status;
+    }
+    return super.status;
+  }
+
   @override
   double get value => first.value * next.value;
 }

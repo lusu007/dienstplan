@@ -193,6 +193,54 @@ void main() {
     }
   });
 
+  testWidgets(
+    'returning from app privacy makes the overview usable within 200ms',
+    (tester) async {
+      PackageInfo.setMockInitialValues(
+        appName: 'Dienstplan',
+        packageName: 'test',
+        version: '0.20.0',
+        buildNumber: '4016',
+        buildSignature: '',
+      );
+      final router = AppRouter();
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            partnerProvider.overrideWith(_Partner.new),
+            sentryStateProvider.overrideWith(
+              (ref) async =>
+                  const SentryState(isEnabled: false, isReplayEnabled: false),
+            ),
+          ],
+          child: MaterialApp.router(
+            builder: appTestBuilder(),
+            locale: const Locale('de'),
+            localizationsDelegates: appLocalizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router.config(
+              deepLinkBuilder: (_) => const DeepLink([SettingsRoute()]),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('settings_app')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AppSection), findsOneWidget);
+      await tester.tap(find.byTooltip('Zurück'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(
+        find.byKey(const ValueKey('settings_app')).hitTestable(),
+        findsOneWidget,
+      );
+      expect(find.byType(AppSection), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('a settings group shares its surface and keeps row actions', (
     tester,
   ) async {

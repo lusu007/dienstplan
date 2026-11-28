@@ -126,6 +126,59 @@ void main() {
     },
   );
 
+  testWidgets('normal back motion visibly responds in its first 40ms', (
+    tester,
+  ) async {
+    final primary = AnimationController(
+      vsync: tester,
+      value: 1,
+      duration: const Duration(milliseconds: 270),
+    );
+    final secondary = AnimationController(vsync: tester);
+    addTearDown(() {
+      primary.dispose();
+      secondary.dispose();
+    });
+    try {
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: appTestBuilder(),
+          home: SettingsPageTransition(
+            animation: primary,
+            secondaryAnimation: secondary,
+            child: Builder(
+              builder: (context) => SettingsPageMotionScope.wrap(
+                context,
+                Scaffold(
+                  body: SettingsPageMotionScope.fadeTitle(
+                    context,
+                    const Text('Category'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 270));
+      primary.reverse();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 40));
+      final slide = tester.widget<SlideTransition>(
+        find.byType(SlideTransition).last,
+      );
+      final fade = tester.widget<FadeTransition>(
+        find.byType(FadeTransition).last,
+      );
+      expect(slide.position.value.dx, greaterThan(.02));
+      expect(fade.opacity.value, lessThan(.8));
+    } finally {
+      primary.stop();
+      secondary.stop();
+      await tester.pumpWidget(const SizedBox());
+    }
+  });
+
   testWidgets(
     'settings retain form state and stable glass quality during push/pop',
     (tester) async {

@@ -40,7 +40,8 @@ class AppRouter extends RootStackRouter {
     duration: Duration.zero,
     reverseDuration: path == '/settings'
         ? Duration.zero
-        : const Duration(milliseconds: 270),
+        // Reveal the previous opaque settings page promptly on normal Back.
+        : const Duration(milliseconds: 160),
     enablePredictiveBackGesture: true,
     predictiveBackPageTransitionsBuilder:
         SettingsPageTransition.buildTransition,
