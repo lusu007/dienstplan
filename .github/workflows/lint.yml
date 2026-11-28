@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: lint-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: 🧹 Lint project
@@ -57,6 +61,36 @@ jobs:
 
       - name: ✨ Verify formatting
         run: dart format --output=none --set-exit-if-changed .
+
+  android-build:
+    name: Build and test Android with Java 25
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.6'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Build Android debug app
+        run: flutter build apk --debug --flavor dev --no-pub
+
+      - name: Run Android unit tests
+        working-directory: android
+        run: ./gradlew test
 
   ios-build:
     name: Build unsigned iOS app
