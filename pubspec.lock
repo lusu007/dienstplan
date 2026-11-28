@@ -399,10 +399,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_riverpod
-      sha256: "2b7f9d2a3c730ac1a98221b420cef966b990fca7ab546ede324642ca57a533e3"
+      sha256: "2ae1a93a868ae5f2d5358f521a4bfae0da7a3bfe77a60515ab5c28953b50557f"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.3"
+    version: "3.5.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -545,10 +545,18 @@ packages:
     dependency: transitive
     description:
       name: jni
-      sha256: d2c361082d554d4593c3012e26f6b188f902acd291330f13d6427641a92b3da1
+      sha256: "19764f78f6b9e0d40f6395b04649d1046eb57f5ccf05afce50cc63e5a82777b0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.2"
+    version: "1.2.1"
+  jni_util:
+    dependency: transitive
+    description:
+      name: jni_util
+      sha256: "1ba86da04a5f2bf18fde2edb235587e70c5b0fc5bd4ba955f46b00942c3fc35f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   json_annotation:
     dependency: "direct main"
     description:
@@ -561,10 +569,10 @@ packages:
     dependency: "direct dev"
     description:
       name: json_serializable
-      sha256: e45aefa0324f08c683caafbb94b72837aa6193c61822799c916e45f4a263113d
+      sha256: cc7822761b40be9237bcaae62b755ffe5453ceff96a0001f1f5f2439251c66f1
       url: "https://pub.dev"
     source: hosted
-    version: "6.14.1"
+    version: "6.15.2"
   leak_tracker:
     dependency: transitive
     description:
@@ -685,14 +693,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  mockito:
-    dependency: transitive
-    description:
-      name: mockito
-      sha256: "6c1970612452260366064d4df80fdb3eece1ec5e52610ae34a0e51f2f3d8e64f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.8.1"
   objective_c:
     dependency: transitive
     description:
@@ -929,58 +929,58 @@ packages:
     dependency: transitive
     description:
       name: riverpod
-      sha256: "484dfc873ea4c4f4240e5635444fa066f87b07862b7279ebd004a2b71fba4b7a"
+      sha256: "24cbce92e87088cae0dd06caac3876c0b3abfd084901e7a93a3254d6daf4937d"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.3"
+    version: "3.5.0"
   riverpod_analyzer_utils:
     dependency: transitive
     description:
       name: riverpod_analyzer_utils
-      sha256: bb13cb3985815840cc103eda1027158358c5fdc00f308fc6f76574d0594107af
+      sha256: a9ac757dd927b8b52ee4d3c5f8b7ecba523e140a8df916a88d5d54fef5bff72f
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-dev.12"
+    version: "1.0.0"
   riverpod_annotation:
     dependency: "direct main"
     description:
       name: riverpod_annotation
-      sha256: "322e56ad198928ef26ba240f85421bfff2493bd65665c887b1299e6386b6206d"
+      sha256: "61baad25ae2164778032a4dd1fabf97372eb314bcd81fd2645ed9ec7fadb0208"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.7"
+    version: "4.0.8"
   riverpod_generator:
     dependency: "direct dev"
     description:
       name: riverpod_generator
-      sha256: c94dcb8b60ff4805d2bb8cacca969c48237bcb563e2ab0b5afb50204470c7636
+      sha256: "3d5dc44c50452633ee700d8c31d680d80306dd19733c653b4117b9fc3e1d7399"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.9"
+    version: "4.0.10"
   sentry:
     dependency: transitive
     description:
       name: sentry
-      sha256: "40a247686af64e497df29ab0de1303a20ca55a2e3c7c7e39b989fac47dcadf84"
+      sha256: "2e81b9ec260e4ef7174feb0a599f69e74f3f38d713058df9576a86856afa84bf"
       url: "https://pub.dev"
     source: hosted
-    version: "9.30.1"
+    version: "10.6.0"
   sentry_dart_plugin:
     dependency: "direct dev"
     description:
       name: sentry_dart_plugin
-      sha256: da9c1d0b3c87a251bfc36301f16af090a88c2d59128fe9a6f908f5ac20340c97
+      sha256: cc1adb7588488b397ba89ef72ba50eaa5852e44602094319128e95a9296e2a2e
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "3.6.0"
   sentry_flutter:
     dependency: "direct main"
     description:
       name: sentry_flutter
-      sha256: bdd8897b38ce31185c42ed910628059c4eccbc0b0641213e8d1c63e2fda3f5a3
+      sha256: "6bc012fec2357471cb4a8370e32cf4ffb4d63684c6df66c2df09cee314cf4ce4"
       url: "https://pub.dev"
     source: hosted
-    version: "9.30.1"
+    version: "10.6.0"
   share_plus:
     dependency: "direct main"
     description:
@@ -1110,42 +1110,42 @@ packages:
     dependency: "direct main"
     description:
       name: sqflite
-      sha256: "54ad23e2a79c846b596b6c56cdd9c867ea58c288258402316b602f78df0cbfe0"
+      sha256: ed2ff27268e051bde8f0848d6ab86e0f6c01566484d3d358a46ff5e842b36216
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.6"
   sqflite_android:
     dependency: transitive
     description:
       name: sqflite_android
-      sha256: "805b27c6fa10d8883253795e644818fbd5c87ce665459db84fbe71326cbb5421"
+      sha256: e75917dbfe721e6938fc4ff18d3e61549f17cf88a4eba189e2b270290d0c9be3
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.6"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
-      sha256: "077e38e82c099534146a2fb31b608c2a3a4489a0f21d9af6b2f5c87b566a1ea0"
+      sha256: "35a65713b6695fbc5f3596921c8af1dfe767942c96b6c5c80a739b16a10d47eb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.13"
+    version: "2.5.17"
   sqflite_darwin:
     dependency: transitive
     description:
       name: sqflite_darwin
-      sha256: dbdda396f975f74d611ffd3e6fb280ee3ee4cd2319b89278533f427e0140cf0b
+      sha256: "6ef57df819b502e306d0b58ba6cb614952d294b825c003feba3c47764c20a825"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.6"
   sqflite_platform_interface:
     dependency: transitive
     description:
       name: sqflite_platform_interface
-      sha256: c9177b2f3150ed0647b90a94307c28452fe0a5401863044216aed83addd6c7c5
+      sha256: "7bfeb7f9e09761147e8e3a4ff3f1d8979fe46a736f03f3805f572599ade69308"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.4"
   stack_trace:
     dependency: transitive
     description:

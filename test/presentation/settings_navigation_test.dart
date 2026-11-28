@@ -116,10 +116,10 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(NavigationCard), findsNWidgets(5));
     expect(find.byType(Switch), findsNothing);
-    expect(container.exists(scheduleCoordinatorProvider), isFalse);
-    expect(container.exists(settingsProvider), isFalse);
-    expect(container.exists(schoolHolidaysProvider), isFalse);
-    expect(container.exists(sentryStateProvider), isFalse);
+    expect(container.read(scheduleCoordinatorProvider.exists), isFalse);
+    expect(container.read(settingsProvider.exists), isFalse);
+    expect(container.read(schoolHolidaysProvider.exists), isFalse);
+    expect(container.read(sentryStateProvider.exists), isFalse);
   });
 
   testWidgets('category routes isolate contents and return to the overview', (
