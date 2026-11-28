@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.20.0](https://github.com/lusu007/dienstplan/compare/v0.19.2...v0.20.0) (2026-11-28)
+
+
+### Features
+
+* **ui:** add versioned update highlights and release history ([#486](https://github.com/lusu007/dienstplan/issues/486)) ([6095b76](https://github.com/lusu007/dienstplan/commit/6095b76e39ad216f58e7e8400fc5b7eda4ab4d1b))
+
+
+### Bug Fixes
+
+* **ui:** prevent calendar month title flicker on sheet dismissal ([#482](https://github.com/lusu007/dienstplan/issues/482)) ([e5d8243](https://github.com/lusu007/dienstplan/commit/e5d8243533143ee5410d06b172f3c5fd8741c893))
+
 ## [0.19.2](https://github.com/lusu007/dienstplan/compare/v0.19.1...v0.19.2) (2026-10-12)
 
 
