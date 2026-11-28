@@ -1,3 +1,6 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';
 import 'package:dienstplan/presentation/state/partner/partner_ui_state.dart';
 import 'package:auto_route/auto_route.dart';
@@ -21,12 +24,13 @@ import 'package:dienstplan/presentation/screens/settings_screen.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 Widget host(Widget child) => MaterialApp(
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  builder: appTestBuilder(),
+  localizationsDelegates: appLocalizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(body: child),
 );
@@ -38,6 +42,7 @@ void main() {
     for (final brightness in Brightness.values) {
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: ThemeData(brightness: brightness),
           home: Scaffold(
             body: Column(
@@ -78,8 +83,9 @@ void main() {
               settingsProvider.overrideWith(_Settings.new),
             ],
             child: MaterialApp(
+              builder: appTestBuilder(),
               theme: ThemeData(brightness: brightness),
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: appLocalizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               home: const Scaffold(
                 body: SingleChildScrollView(child: SchoolHolidaysSection()),
@@ -139,7 +145,8 @@ void main() {
           ),
         ],
         child: MaterialApp.router(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          builder: appTestBuilder(),
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           routerConfig: router.config(
             deepLinkBuilder: (_) => const DeepLink([SettingsRoute()]),

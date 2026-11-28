@@ -1,6 +1,8 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
@@ -11,6 +13,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: ThemeData(brightness: brightness),
           home: Scaffold(
             body: GlassFilterChip(
@@ -44,6 +47,7 @@ void main() {
       ).copyWith(primary: AppColors.primary);
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: ThemeData(colorScheme: scheme),
           home: Scaffold(
             body: Column(
@@ -97,6 +101,7 @@ void main() {
     );
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         theme: ThemeData(colorScheme: scheme),
         home: Scaffold(
           body: GlassFilterChip(
@@ -127,6 +132,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         theme: ThemeData(colorScheme: colorScheme, useMaterial3: true),
         home: Scaffold(
           body: Center(

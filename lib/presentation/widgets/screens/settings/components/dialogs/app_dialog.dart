@@ -1,6 +1,6 @@
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
 

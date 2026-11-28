@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 
 /// Scroll container for a single setup step with a soft top/bottom fade so

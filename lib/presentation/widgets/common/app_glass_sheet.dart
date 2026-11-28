@@ -3,7 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 export 'glass_sheet_backdrop.dart'
     show AppGlassSheetHost, AppGlassSheetBackdrop, AppGlassSheetScene;

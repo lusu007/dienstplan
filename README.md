@@ -38,9 +38,9 @@ Your duties, partner schedule, and holidays at a glance. Dienstplan is a German-
 
 ## Run from source
 
-Use Flutter **3.47.6**, the version pinned in the project's CI workflows. It bundles Dart **3.13.5**; `pubspec.yaml` declares a Dart constraint of `>=3.13.0 <4.0.0`. This documents the project's toolchain; see the [official SDK archive](https://docs.flutter.dev/install/archive) for newer Flutter releases.
+Use Flutter **3.50.1**, the version pinned in the project's CI workflows. It bundles Dart **3.14.0**; `pubspec.yaml` declares a Dart constraint of `>=3.14.0 <4.0.0`. This documents the project's toolchain; see the [official SDK archive](https://docs.flutter.dev/install/archive) for newer Flutter releases.
 
-For Android, install the Android SDK and JDK 25 (used in CI and by the Gradle toolchain), then connect a device or start an emulator. Check your setup with `flutter doctor`.
+For Android, install Android SDK platform **37** and JDK **25 LTS** (used in CI and by the Gradle toolchain), then connect a device or start an emulator. Check your setup with `flutter doctor`.
 
 ```bash
 git clone https://github.com/lusu007/dienstplan.git
@@ -49,7 +49,7 @@ flutter pub get
 flutter run
 ```
 
-On Android, `flutter run` uses the default `dev` flavor. iOS development requires macOS and Xcode; the repository includes `Dienstplan-Dev` and `Dienstplan-Prod` schemes. See the [iOS configuration guide](docs/ios_xcode_configuration.md) for setup.
+On Android, `flutter run` uses the default `dev` flavor. iOS builds target **iOS 15 or newer** and use Swift Package Manager. iOS development requires macOS and Xcode; the repository includes `Dienstplan-Dev` and `Dienstplan-Prod` schemes. See the [iOS configuration guide](docs/ios_xcode_configuration.md) for setup.
 
 Production APKs require release signing. The [Android release workflow](.github/workflows/android-release.yml) shows the required keystore and signing setup. Once configured:
 

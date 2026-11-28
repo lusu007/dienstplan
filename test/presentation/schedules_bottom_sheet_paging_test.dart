@@ -1,3 +1,7 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
+
 import 'dart:async';
 
 import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
@@ -15,7 +19,7 @@ import 'package:dienstplan/presentation/state/school_holidays/school_holidays_ui
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedules_bottom_sheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -111,12 +115,16 @@ Future<_Schedules> _open(
       ],
       child: MaterialApp(
         locale: const Locale('de'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(disableAnimations: reducedMotion),
-          child: preparedBackground ? AppGlassSheetHost(child: child!) : child!,
+        builder: appTestBuilder(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(disableAnimations: reducedMotion),
+            child: preparedBackground
+                ? AppGlassSheetHost(child: child!)
+                : child!,
+          ),
         ),
         home: Consumer(
           builder: (c, ref, _) {

@@ -2,7 +2,7 @@ import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 enum AppGlassButtonRole { primary, secondary, quiet, destructive }

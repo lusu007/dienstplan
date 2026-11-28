@@ -1,7 +1,7 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_feedback_style.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Library-backed glass, with ScaffoldMessenger's queue, route handoff and
 /// dismissal behavior. Unlike GlassToast, messages can wrap without truncation.

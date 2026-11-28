@@ -13,7 +13,7 @@ import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_form_expand_tile.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/generic_bottomsheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

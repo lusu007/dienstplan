@@ -1,5 +1,7 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/core/constants/calendar_day_surface_tokens.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -40,6 +42,7 @@ void main() {
       final theme = ThemeData(brightness: brightness);
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: theme,
           home: Scaffold(
             body: Center(

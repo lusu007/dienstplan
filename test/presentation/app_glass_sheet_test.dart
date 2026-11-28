@@ -1,12 +1,14 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart'
     show GlassSheetSession, GlassSheetScope;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
-import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,24 +19,24 @@ void main() {
     late BuildContext context;
     await tester.pumpWidget(
       ProviderScope(
-        child: AppGlassTheme(
-          child: MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
+        child: MaterialApp(
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          builder: appTestBuilder(
             builder: (_, child) => AppGlassSheetHost(child: child!),
-            home: Scaffold(
-              body: Builder(
-                builder: (c) {
-                  context = c;
-                  return Center(
-                    child: CalendarDateSelector(
-                      currentDate: DateTime(2026, 11, 15),
-                      locale: const Locale('de'),
-                      onDateSelected: (_) {},
-                    ),
-                  );
-                },
-              ),
+          ),
+          home: Scaffold(
+            body: Builder(
+              builder: (c) {
+                context = c;
+                return Center(
+                  child: CalendarDateSelector(
+                    currentDate: DateTime(2026, 11, 15),
+                    locale: const Locale('de'),
+                    onDateSelected: (_) {},
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -78,7 +80,9 @@ void main() {
     late GlassSheetSession session;
     await tester.pumpWidget(
       MaterialApp(
-        builder: (_, child) => AppGlassSheetHost(child: child!),
+        builder: appTestBuilder(
+          builder: (_, child) => AppGlassSheetHost(child: child!),
+        ),
         home: AppGlassSheetScene(
           child: Scaffold(
             body: Builder(
@@ -152,7 +156,9 @@ void main() {
     ModalRoute<dynamic>? route;
     await tester.pumpWidget(
       MaterialApp(
-        builder: (_, child) => AppGlassSheetHost(child: child!),
+        builder: appTestBuilder(
+          builder: (_, child) => AppGlassSheetHost(child: child!),
+        ),
         home: Scaffold(
           body: Builder(
             builder: (c) {
@@ -210,7 +216,9 @@ void main() {
       late BuildContext context;
       await tester.pumpWidget(
         MaterialApp(
-          builder: (_, child) => AppGlassSheetHost(child: child!),
+          builder: appTestBuilder(
+            builder: (_, child) => AppGlassSheetHost(child: child!),
+          ),
           home: Scaffold(
             body: Builder(
               builder: (c) {
@@ -249,7 +257,9 @@ void main() {
       late BuildContext context;
       await tester.pumpWidget(
         MaterialApp(
-          builder: (_, child) => AppGlassSheetHost(child: child!),
+          builder: appTestBuilder(
+            builder: (_, child) => AppGlassSheetHost(child: child!),
+          ),
           home: Scaffold(
             body: Builder(
               builder: (c) {
@@ -291,7 +301,9 @@ void main() {
       late BuildContext context;
       await tester.pumpWidget(
         MaterialApp(
-          builder: (_, child) => AppGlassSheetHost(child: child!),
+          builder: appTestBuilder(
+            builder: (_, child) => AppGlassSheetHost(child: child!),
+          ),
           home: Scaffold(
             body: Builder(
               builder: (c) {
@@ -353,7 +365,9 @@ void main() {
     late BuildContext context;
     await tester.pumpWidget(
       MaterialApp(
-        builder: (_, child) => AppGlassSheetHost(child: child!),
+        builder: appTestBuilder(
+          builder: (_, child) => AppGlassSheetHost(child: child!),
+        ),
         home: Builder(
           builder: (c) {
             context = c;

@@ -1,7 +1,7 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
 import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 /// A compact library icon surface inside a complete, accessible touch target.

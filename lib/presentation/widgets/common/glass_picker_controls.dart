@@ -2,7 +2,7 @@ import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/core/constants/glass_picker_tokens.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';

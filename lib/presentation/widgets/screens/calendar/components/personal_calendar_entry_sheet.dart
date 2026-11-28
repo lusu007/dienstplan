@@ -5,7 +5,7 @@ import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';

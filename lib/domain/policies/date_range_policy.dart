@@ -1,6 +1,6 @@
 import 'package:dienstplan/domain/value_objects/date_range.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 abstract class DateRangePolicy {
   DateRange computeInitialRange(DateTime anchor);

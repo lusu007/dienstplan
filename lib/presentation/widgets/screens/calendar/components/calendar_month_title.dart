@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';

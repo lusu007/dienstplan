@@ -24,7 +24,7 @@ import 'package:dienstplan/domain/use_cases/save_settings_use_case.dart';
 import 'package:dienstplan/core/constants/schedule_constants.dart';
 import 'package:dienstplan/core/cache/settings_cache.dart';
 import 'package:dienstplan/core/utils/settings_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/shared/utils/schedule_isolate.dart';
 
 part 'schedule_coordinator_notifier.g.dart';

@@ -1,7 +1,9 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/core/di/riverpod_providers.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -29,6 +31,7 @@ void main() {
             'Zurücksetzen hat geklappt. Du kannst die App neu einrichten.';
         await tester.pumpWidget(
           MaterialApp(
+            builder: appTestBuilder(),
             theme: theme,
             scaffoldMessengerKey: messenger,
             home: const MediaQuery(

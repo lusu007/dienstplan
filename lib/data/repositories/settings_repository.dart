@@ -7,7 +7,7 @@ import 'package:dienstplan/core/errors/exception_mapper.dart';
 import 'package:dienstplan/domain/failures/failure.dart';
 import 'package:dienstplan/domain/repositories/settings_repository.dart'
     as domain_repo;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SettingsRepositoryImpl implements domain_repo.SettingsRepository {
   final SettingsDao _settingsDao;

@@ -1,5 +1,7 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -8,6 +10,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         theme: ThemeData.light(),
         home: Scaffold(
           body: MediaQuery(
@@ -28,6 +31,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: ThemeData.light().copyWith(
             textTheme: ThemeData.light().textTheme.copyWith(
               // Ahem glyphs are wider than Roboto: this matches a scaled four-digit
@@ -63,6 +67,7 @@ void main() {
       final theme = ThemeData.light();
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: theme,
           home: Scaffold(
             body: SizedBox(
@@ -98,6 +103,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         theme: ThemeData.dark(),
         home: Scaffold(
           body: Column(

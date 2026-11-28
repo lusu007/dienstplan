@@ -1,5 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+// flutter_markdown_plus still accepts SDK ThemeData at its styling boundary.
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as legacy;
 import 'package:flutter/services.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -30,7 +33,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   static MarkdownStyleSheet _markdownStyle(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final TextTheme textTheme = theme.textTheme;
-    return MarkdownStyleSheet.fromTheme(theme).copyWith(
+    return MarkdownStyleSheet.fromTheme(legacy.Theme.of(context)).copyWith(
       h1: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
       h2: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
       p: textTheme.bodyMedium?.copyWith(height: 1.5),

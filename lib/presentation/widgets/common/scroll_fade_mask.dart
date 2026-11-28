@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Applies a vertical fade at the top and/or bottom edge of its child.
 ///

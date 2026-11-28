@@ -1,8 +1,10 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
-import 'package:flutter/material.dart';
+import 'package:dienstplan/presentation/widgets/common/app_ui_compatibility.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 /// The one app-level entry point for package theming and accessibility.
+/// Place inside MaterialApp.builder, below its theme and localization scopes.
 class AppGlassTheme extends StatelessWidget {
   const AppGlassTheme({super.key, required this.child});
 
@@ -10,28 +12,30 @@ class AppGlassTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return liquid.LiquidGlassWidgets.wrap(
-      brightnessResolver: Theme.maybeBrightnessOf,
-      theme: const liquid.GlassThemeData(
-        // Keep unadapted library controls still. Button adapters opt into
-        // anchored flex with their outline inside the animated content.
-        interaction: liquid.GlassInteractionSettings(stretch: 0),
-        light: liquid.GlassThemeVariant(
-          quality: liquid.GlassQuality.standard,
-          settings: liquid.GlassThemeSettings(
-            blur: glassSurfaceBlurDefault,
-            thickness: 30,
+    return AppUiCompatibility(
+      child: liquid.LiquidGlassWidgets.wrap(
+        brightnessResolver: Theme.maybeBrightnessOf,
+        theme: const liquid.GlassThemeData(
+          // Keep unadapted library controls still. Button adapters opt into
+          // anchored flex with their outline inside the animated content.
+          interaction: liquid.GlassInteractionSettings(stretch: 0),
+          light: liquid.GlassThemeVariant(
+            quality: liquid.GlassQuality.standard,
+            settings: liquid.GlassThemeSettings(
+              blur: glassSurfaceBlurDefault,
+              thickness: 30,
+            ),
+          ),
+          dark: liquid.GlassThemeVariant(
+            quality: liquid.GlassQuality.standard,
+            settings: liquid.GlassThemeSettings(
+              blur: glassSurfaceBlurDefault,
+              thickness: 30,
+            ),
           ),
         ),
-        dark: liquid.GlassThemeVariant(
-          quality: liquid.GlassQuality.standard,
-          settings: liquid.GlassThemeSettings(
-            blur: glassSurfaceBlurDefault,
-            thickness: 30,
-          ),
-        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

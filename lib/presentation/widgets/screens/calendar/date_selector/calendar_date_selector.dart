@@ -1,6 +1,6 @@
 import 'package:dienstplan/presentation/widgets/common/app_glass_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/animation_constants.dart';
 import 'package:dienstplan/core/constants/calendar_config.dart';

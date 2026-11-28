@@ -1,8 +1,10 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/core/constants/app_colors.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
@@ -14,6 +16,7 @@ void main() {
         final scheme = ThemeData.light().colorScheme.copyWith(primary: accent);
         await tester.pumpWidget(
           MaterialApp(
+            builder: appTestBuilder(),
             theme: ThemeData(colorScheme: scheme),
             home: Scaffold(
               body: Column(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A wrapper widget that provides consistent safe area handling across the app.
 /// This ensures that content doesn't hide behind system UI elements like the

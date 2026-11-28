@@ -1,5 +1,5 @@
 import 'package:dienstplan/core/constants/glass_tokens.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Transient feedback must remain readable above any underlying content.
 abstract final class AppFeedbackStyle {

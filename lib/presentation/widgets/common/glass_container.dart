@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/presentation/state/partner/partner_notifier.dart';

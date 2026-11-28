@@ -1,3 +1,6 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -7,7 +10,7 @@ import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedules_bottom_sheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -55,7 +58,8 @@ void main() {
           schoolHolidaysProvider.overrideWith(_Holidays.new),
         ],
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          builder: appTestBuilder(),
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Consumer(
             builder: (c, ref, _) {

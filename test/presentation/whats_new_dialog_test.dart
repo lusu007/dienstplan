@@ -1,8 +1,11 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,8 +19,9 @@ void main() {
         addTearDown(tester.view.reset);
         await tester.pumpWidget(
           MaterialApp(
+            builder: appTestBuilder(),
             locale: const Locale('de'),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: Builder(
@@ -70,12 +74,14 @@ void main() {
         MaterialApp(
           theme: ThemeData.light(),
           locale: const Locale('de'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaler: const TextScaler.linear(1.3)),
-            child: child!,
+          builder: appTestBuilder(
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1.3)),
+              child: child!,
+            ),
           ),
           home: Builder(
             builder: (context) => TextButton(
@@ -112,9 +118,10 @@ void main() {
       );
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           theme: ThemeData(colorScheme: scheme),
           locale: const Locale('de'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Builder(
@@ -183,11 +190,12 @@ void main() {
         ValueListenableBuilder<ThemeMode>(
           valueListenable: mode,
           builder: (context, value, child) => MaterialApp(
+            builder: appTestBuilder(),
             theme: light,
             darkTheme: dark,
             themeMode: value,
             locale: const Locale('de'),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: Builder(

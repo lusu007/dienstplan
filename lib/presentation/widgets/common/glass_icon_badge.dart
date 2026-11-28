@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 
 /// Filled, primary-tinted icon badge used inside glass settings cards.

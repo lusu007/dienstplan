@@ -19,8 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.19.2
 
 environment:
-  sdk: '>=3.13.0 <4.0.0'
-  flutter: '>=3.47.0'
+  sdk: '>=3.14.0 <4.0.0'
+  flutter: '>=3.50.1'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -61,6 +61,8 @@ dependencies:
   open_file: ^4.0.0
   flutter_markdown_plus: ^1.0.12
   liquid_glass_widgets: 1.16.1
+  material_ui: ^1.11.1
+  cupertino_ui: ^1.1.7
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,5 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
@@ -5,7 +7,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_container.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
@@ -30,7 +32,9 @@ void main() {
           await tester.pumpWidget(
             MaterialApp(
               theme: ThemeData(brightness: brightness),
-              builder: (context, child) => AppGlassTheme(child: child!),
+              builder: appTestBuilder(
+                builder: (context, child) => AppGlassTheme(child: child!),
+              ),
               home: Builder(
                 builder: (context) {
                   actual = liquid.GlassTheme.brightnessOf(context);
@@ -56,10 +60,12 @@ void main() {
     liquid.GlassQuality? quality;
     await tester.pumpWidget(
       MaterialApp(
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(disableAnimations: true, highContrast: true),
-          child: AppGlassTheme(child: child!),
+        builder: appTestBuilder(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(disableAnimations: true, highContrast: true),
+            child: AppGlassTheme(child: child!),
+          ),
         ),
         home: Builder(
           builder: (context) {
@@ -82,6 +88,7 @@ void main() {
     var taps = 0;
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Scaffold(
           body: Center(
             child: SizedBox(
@@ -125,8 +132,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
+      MaterialApp(
+        builder: appTestBuilder(),
+        home: const Scaffold(
           body: Center(
             child: GlassContainer(
               child: Padding(
@@ -147,8 +155,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
+      MaterialApp(
+        builder: appTestBuilder(),
+        home: const Scaffold(
           body: Center(
             child: GlassDialogSurface(
               child: GlassContainer(child: Text('Auswahl')),
@@ -167,6 +176,7 @@ void main() {
   ) async {
     var taps = 0;
     Widget button(bool enabled) => MaterialApp(
+      builder: appTestBuilder(),
       home: Scaffold(
         body: Center(
           child: GlassButtonSurface(
@@ -217,6 +227,7 @@ void main() {
     var taps = 0;
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Scaffold(
           body: Center(
             child: ActionButton(
@@ -248,6 +259,7 @@ void main() {
     bool? result;
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Scaffold(
           body: Builder(
             builder: (context) {
