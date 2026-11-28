@@ -65,7 +65,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  sentry_dart_plugin: ^3.4.0
+  sentry_dart_plugin: ^3.6.0
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.8
   build_runner: ^2.16.1
