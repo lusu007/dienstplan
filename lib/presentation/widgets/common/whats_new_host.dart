@@ -1,40 +1,15 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/widgets.dart';
+import 'package:dienstplan/data/releases/app_release_notes.dart';
+import 'package:dienstplan/domain/models/release_notes.dart';
+import 'package:dienstplan/presentation/widgets/common/release_notes_dialog.dart';
+export 'package:dienstplan/presentation/widgets/common/release_notes_dialog.dart'
+    show showWhatsNewDialog;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
-import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/data/services/whats_new_service.dart';
-import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
-import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 
-/// Opens the localized what's-new dialog (same UI as after an app update).
-Future<void> showWhatsNewDialog(BuildContext context) async {
-  final AppLocalizations l10n = AppLocalizations.of(context);
-  await GlassAppDialog.show<void>(
-    context: context,
-    barrierDismissible: true,
-    title: l10n.whatsNewTitle,
-    content: SingleChildScrollView(child: Text(l10n.whatsNewBody)),
-    actions: <Widget>[
-      AppGlassButton(
-        role: AppGlassButtonRole.secondary,
-        onPressed: () => Navigator.of(context).pop(),
-        enabled: true,
-        borderRadius: glassSurfaceRadiusSm,
-        height: 48,
-        fullWidth: true,
-        child: Center(
-          // Let the button resolve its label style from the current dialog
-          // theme, including a theme loaded after the dialog was opened.
-          child: Text(l10n.whatsNewGotIt),
-        ),
-      ),
-    ],
-  );
-}
-
-/// Shows the post-update „what's new“ dialog once when the app version changed.
+/// Presents meaningful changes from all missed releases, once after an upgrade.
 class WhatsNewHost extends ConsumerStatefulWidget {
   const WhatsNewHost({super.key, required this.child});
 
@@ -61,22 +36,29 @@ class _WhatsNewHostState extends ConsumerState<WhatsNewHost> {
     }
     _startedCheck = true;
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (!mounted) return;
     final String current = packageFullVersion(packageInfo);
     final WhatsNewService service = await ref.read(
       whatsNewServiceProvider.future,
     );
     final String? acknowledged = await service.readAcknowledgedVersion();
-    if (acknowledged == null) {
-      await service.writeAcknowledgedVersion(current);
-      return;
-    }
+    final unseen = unseenReleaseNotes(
+      acknowledged: acknowledged,
+      current: current,
+      releases: appReleaseNotes,
+    );
     if (!shouldShowWhatsNew(acknowledged: acknowledged, current: current)) {
+      await service.writeAcknowledgedVersion(current);
       return;
     }
     if (!mounted) {
       return;
     }
-    await showWhatsNewDialog(context);
+    await showWhatsNewDialog(
+      context,
+      releases: unseen,
+      currentVersion: packageInfo.version,
+    );
     if (!mounted) {
       return;
     }

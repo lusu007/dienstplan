@@ -103,6 +103,9 @@ class AppGlassIconButton extends StatelessWidget {
         semanticLabel: tooltip,
         settings: appGlassSettings(context, tint: tint),
         useOwnLayer: true,
+        // GlassGlow uses control-size multiples; the icon wrapper still
+        // defaults to the old 20px value, which produces a huge blurred halo.
+        glowRadius: 1.6,
         interactionScale: 1,
         anchorStretch: true,
         anchorStretchSettings: appGlassAnchorStretch,

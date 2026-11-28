@@ -1203,11 +1203,53 @@ abstract class AppLocalizations {
   /// **'Das ist neu für dich'**
   String get whatsNewTitle;
 
-  /// Release highlights for the what's new dialog; update each release
+  /// No description provided for @whatsNewIntro.
   ///
   /// In de, this message translates to:
-  /// **'Hier die wichtigsten Änderungen für dich:\n\n• Flüssigere Animationen beim Öffnen und Schließen der Auswahlfenster – zum Beispiel für Dienstplan, Dienstgruppe und Farben\n• Neu geordnete Einstellungen – Dienstplan, Partner, Darstellung und Feiertage sind leichter zu finden\n• Eigene Dienste mit Start- und Enddatum – auch über Mitternacht. Ungespeicherte Änderungen werden vor dem Verwerfen geschützt\n• Klarere Ladeanzeigen im Kalender und die Möglichkeit, fehlgeschlagene Ladevorgänge erneut zu starten\n• Verbesserter Kontakt: Deine Nachricht bleibt bei Fehlern erhalten, und du kannst die Screenshot-Auswahl abbrechen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.'**
-  String get whatsNewBody;
+  /// **'Für dich neu seit dem letzten Update.'**
+  String get whatsNewIntro;
+
+  /// No description provided for @whatsNewEmpty.
+  ///
+  /// In de, this message translates to:
+  /// **'Für diese Version gibt es keine neuen Highlights. Alle bisherigen Änderungen findest du in der Versionshistorie.'**
+  String get whatsNewEmpty;
+
+  /// No description provided for @releaseHistoryTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle Änderungen'**
+  String get releaseHistoryTitle;
+
+  /// No description provided for @releaseHistoryIntro.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuerungen und Fehlerbehebungen – neueste zuerst.'**
+  String get releaseHistoryIntro;
+
+  /// No description provided for @releaseNotesNew.
+  ///
+  /// In de, this message translates to:
+  /// **'Neu'**
+  String get releaseNotesNew;
+
+  /// No description provided for @releaseNotesImproved.
+  ///
+  /// In de, this message translates to:
+  /// **'Verbessert'**
+  String get releaseNotesImproved;
+
+  /// No description provided for @releaseVersionRange.
+  ///
+  /// In de, this message translates to:
+  /// **'Versionen {oldest}–{latest}'**
+  String releaseVersionRange(String oldest, String latest);
+
+  /// No description provided for @releaseVersion.
+  ///
+  /// In de, this message translates to:
+  /// **'Version {version}'**
+  String releaseVersion(String version);
 
   /// Primary button to dismiss the what's new dialog
   ///
@@ -1224,7 +1266,7 @@ abstract class AppLocalizations {
   /// Subtitle for the settings what's new entry
   ///
   /// In de, this message translates to:
-  /// **'Sieh dir die Hinweise zum Update noch einmal an'**
+  /// **'Neuerungen und Fehlerbehebungen aller Versionen'**
   String get settingsWhatsNewShowAgainSubtitle;
 
   /// No description provided for @settingsAppearance.

@@ -126,6 +126,140 @@ void main() {
     },
   );
 
+  testWidgets('normal back motion visibly responds in its first 40ms', (
+    tester,
+  ) async {
+    final primary = AnimationController(
+      vsync: tester,
+      value: 1,
+      duration: const Duration(milliseconds: 270),
+    );
+    final secondary = AnimationController(vsync: tester);
+    addTearDown(() {
+      primary.dispose();
+      secondary.dispose();
+    });
+    try {
+      await tester.pumpWidget(
+        MaterialApp(
+          builder: appTestBuilder(),
+          home: SettingsPageTransition(
+            animation: primary,
+            secondaryAnimation: secondary,
+            child: Builder(
+              builder: (context) => SettingsPageMotionScope.wrap(
+                context,
+                Scaffold(
+                  body: SettingsPageMotionScope.fadeTitle(
+                    context,
+                    const Text('Category'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      primary.reverse();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 40));
+      final slide = tester.widget<SlideTransition>(
+        find.byType(SlideTransition).last,
+      );
+      final fade = tester.widget<FadeTransition>(
+        find.byType(FadeTransition).last,
+      );
+      expect(slide.position.value.dx, greaterThan(.02));
+      expect(fade.opacity.value, lessThan(.8));
+    } finally {
+      primary.stop();
+      secondary.stop();
+      await tester.pumpWidget(const SizedBox());
+    }
+  });
+
+  testWidgets(
+    'Back during entrance preserves the currently visible position and opacity',
+    (tester) async {
+      final primary = AnimationController(
+        vsync: tester,
+        value: 1,
+        duration: const Duration(milliseconds: 160),
+      );
+      final secondary = AnimationController(vsync: tester);
+      addTearDown(() {
+        primary.dispose();
+        secondary.dispose();
+      });
+      try {
+        await tester.pumpWidget(
+          MaterialApp(
+            builder: appTestBuilder(),
+            home: SettingsPageTransition(
+              animation: primary,
+              secondaryAnimation: secondary,
+              child: Builder(
+                builder: (context) => SettingsPageMotionScope.wrap(
+                  context,
+                  Scaffold(
+                    body: SettingsPageMotionScope.fadeTitle(
+                      context,
+                      const Text('Category'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 135));
+        final beforePosition = tester
+            .widget<SlideTransition>(find.byType(SlideTransition).last)
+            .position
+            .value
+            .dx;
+        final beforeOpacity = tester
+            .widget<FadeTransition>(find.byType(FadeTransition).last)
+            .opacity
+            .value;
+        expect(beforePosition, greaterThan(0));
+        expect(beforeOpacity, inExclusiveRange(0, 1));
+        primary.reverse();
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 1));
+        expect(
+          tester
+              .widget<SlideTransition>(find.byType(SlideTransition).last)
+              .position
+              .value
+              .dx,
+          closeTo(beforePosition, .005),
+        );
+        expect(
+          tester
+              .widget<FadeTransition>(find.byType(FadeTransition).last)
+              .opacity
+              .value,
+          closeTo(beforeOpacity, .04),
+        );
+        await tester.pump(const Duration(milliseconds: 40));
+        expect(
+          tester
+              .widget<SlideTransition>(find.byType(SlideTransition).last)
+              .position
+              .value
+              .dx,
+          greaterThan(beforePosition),
+        );
+      } finally {
+        primary.stop();
+        secondary.stop();
+        await tester.pumpWidget(const SizedBox());
+      }
+    },
+  );
+
   testWidgets(
     'settings retain form state and stable glass quality during push/pop',
     (tester) async {

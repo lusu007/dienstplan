@@ -641,8 +641,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String get whatsNewTitle => 'Das ist neu für dich';
 
   @override
-  String get whatsNewBody =>
-      'Hier die wichtigsten Änderungen für dich:\n\n• Flüssigere Animationen beim Öffnen und Schließen der Auswahlfenster – zum Beispiel für Dienstplan, Dienstgruppe und Farben\n• Neu geordnete Einstellungen – Dienstplan, Partner, Darstellung und Feiertage sind leichter zu finden\n• Eigene Dienste mit Start- und Enddatum – auch über Mitternacht. Ungespeicherte Änderungen werden vor dem Verwerfen geschützt\n• Klarere Ladeanzeigen im Kalender und die Möglichkeit, fehlgeschlagene Ladevorgänge erneut zu starten\n• Verbesserter Kontakt: Deine Nachricht bleibt bei Fehlern erhalten, und du kannst die Screenshot-Auswahl abbrechen\n\nViel Erfolg im Dienst – und komm heile nach Hause. Bei Fragen oder Feedback erreichst du uns unter „Kontakt“ in der App.';
+  String get whatsNewIntro => 'Für dich neu seit dem letzten Update.';
+
+  @override
+  String get whatsNewEmpty =>
+      'Für diese Version gibt es keine neuen Highlights. Alle bisherigen Änderungen findest du in der Versionshistorie.';
+
+  @override
+  String get releaseHistoryTitle => 'Alle Änderungen';
+
+  @override
+  String get releaseHistoryIntro =>
+      'Neuerungen und Fehlerbehebungen – neueste zuerst.';
+
+  @override
+  String get releaseNotesNew => 'Neu';
+
+  @override
+  String get releaseNotesImproved => 'Verbessert';
+
+  @override
+  String releaseVersionRange(String oldest, String latest) {
+    return 'Versionen $oldest–$latest';
+  }
+
+  @override
+  String releaseVersion(String version) {
+    return 'Version $version';
+  }
 
   @override
   String get whatsNewGotIt => 'Alles klar';
@@ -652,7 +678,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsWhatsNewShowAgainSubtitle =>
-      'Sieh dir die Hinweise zum Update noch einmal an';
+      'Neuerungen und Fehlerbehebungen aller Versionen';
 
   @override
   String get settingsAppearance => 'Darstellung';
