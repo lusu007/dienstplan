@@ -5,8 +5,71 @@ import 'package:flutter/material.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_sheet_backdrop.dart'
     show GlassSheetSession, GlassSheetScope;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:dienstplan/core/l10n/app_localizations.dart';
+import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
+import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/calendar_date_selector.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
+  testWidgets('settles the month trigger behind the last frozen frame', (
+    tester,
+  ) async {
+    late BuildContext context;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: AppGlassTheme(
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            builder: (_, child) => AppGlassSheetHost(child: child!),
+            home: Scaffold(
+              body: Builder(
+                builder: (c) {
+                  context = c;
+                  return Center(
+                    child: CalendarDateSelector(
+                      currentDate: DateTime(2026, 11, 15),
+                      locale: const Locale('de'),
+                      onDateSelected: (_) {},
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      await tester.runAsync(() => AppGlassSheetHost.prepare(context)),
+      isTrue,
+    );
+    final trigger = find.text('November 2026', skipOffstage: false);
+    final settledBounds = tester.getRect(trigger);
+    final press = await tester.startGesture(tester.getCenter(trigger));
+    await tester.pump(const Duration(milliseconds: 150));
+    await press.up();
+    await tester.pumpAndSettle();
+    expect(find.byType(RawImage), findsWidgets);
+    expect(TickerMode.valuesOf(tester.element(trigger)).enabled, isFalse);
+
+    Navigator.of(context).pop();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    // The frozen scene still covers the page while its press animations and
+    // backdrop filters resume, so their first live frame is never exposed.
+    expect(find.byType(RawImage), findsWidgets);
+    expect(TickerMode.valuesOf(tester.element(trigger)).enabled, isTrue);
+    await tester.pump();
+    await tester.pump();
+    expect(find.byType(RawImage), findsNothing);
+    expect(tester.getRect(trigger), settledBounds);
+    await tester.pumpAndSettle();
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('refreshes prepared background while sheet stays open', (
     tester,
   ) async {
