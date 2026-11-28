@@ -1,3 +1,6 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/presentation/widgets/common/app_sheet_style.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/domain/repositories/personal_calendar_repository.dart';
@@ -8,9 +11,8 @@ import 'package:dienstplan/presentation/state/schedule_data/schedule_data_notifi
 import 'package:dienstplan/presentation/state/schedule_data/schedule_data_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/glass_action_bar.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/state/schedule/schedule_coordinator_notifier.dart';
@@ -57,13 +59,9 @@ Widget app(Widget child) => ProviderScope(
     schoolHolidaysProvider.overrideWith(_Holidays.new),
   ],
   child: MaterialApp(
+    builder: appTestBuilder(),
     locale: const Locale('de'),
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
+    localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),
   ),

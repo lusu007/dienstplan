@@ -1,6 +1,8 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/common/settings_page_transition.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -11,6 +13,7 @@ void main() {
     final secondary = AnimationController(vsync: tester);
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: SettingsPageTransition(
           animation: primary,
           secondaryAnimation: secondary,
@@ -71,6 +74,7 @@ void main() {
       final secondary = AnimationController(vsync: tester);
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           home: SettingsPageTransition(
             animation: primary,
             secondaryAnimation: secondary,
@@ -129,16 +133,18 @@ void main() {
       final secondary = AnimationController(vsync: tester);
       await tester.pumpWidget(
         MaterialApp(
-          builder: (_, child) => liquid.GlassTheme(
-            data: const liquid.GlassThemeData(
-              light: liquid.GlassThemeVariant(
-                quality: liquid.GlassQuality.standard,
+          builder: appTestBuilder(
+            builder: (_, child) => liquid.GlassTheme(
+              data: const liquid.GlassThemeData(
+                light: liquid.GlassThemeVariant(
+                  quality: liquid.GlassQuality.standard,
+                ),
+                dark: liquid.GlassThemeVariant(
+                  quality: liquid.GlassQuality.standard,
+                ),
               ),
-              dark: liquid.GlassThemeVariant(
-                quality: liquid.GlassQuality.standard,
-              ),
+              child: child!,
             ),
-            child: child!,
           ),
           home: SettingsPageTransition(
             animation: primary,
@@ -209,9 +215,11 @@ void main() {
       final secondary = AnimationController(vsync: tester);
       await tester.pumpWidget(
         MaterialApp(
-          builder: (_, child) => MediaQuery(
-            data: const MediaQueryData(disableAnimations: true),
-            child: child!,
+          builder: appTestBuilder(
+            builder: (_, child) => MediaQuery(
+              data: const MediaQueryData(disableAnimations: true),
+              child: child!,
+            ),
           ),
           home: SettingsPageTransition(
             animation: primary,

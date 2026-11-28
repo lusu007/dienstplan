@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Root [NavigatorState] for AutoRoute and Sentry (e.g. [SentryFeedbackWidget]).
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();

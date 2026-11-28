@@ -1,3 +1,6 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/settings.dart';
@@ -5,7 +8,7 @@ import 'package:dienstplan/presentation/state/settings/settings_notifier.dart';
 import 'package:dienstplan/presentation/state/settings/settings_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/theme_mode_bottomsheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
@@ -56,9 +59,11 @@ void main() {
                   : pref == ThemePreference.system
                   ? ThemeMode.system
                   : ThemeMode.light,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: appLocalizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
-              builder: (context, child) => AppGlassTheme(child: child!),
+              builder: appTestBuilder(
+                builder: (context, child) => AppGlassTheme(child: child!),
+              ),
               home: Scaffold(
                 body: Consumer(
                   builder: (context, ref, _) => TextButton(

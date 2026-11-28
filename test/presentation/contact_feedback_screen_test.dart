@@ -1,3 +1,7 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
+
 import 'dart:typed_data';
 
 import 'package:dienstplan/core/constants/glass_tokens.dart';
@@ -9,8 +13,7 @@ import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -91,9 +94,10 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
+            builder: appTestBuilder(),
             navigatorKey: navigatorKey,
             home: const Scaffold(body: Text('Root')),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
           ),
         ),
@@ -417,12 +421,8 @@ class _TestApp extends StatelessWidget {
     return ProviderScope(
       overrides: [partnerProvider.overrideWith(() => _TestPartnerNotifier())],
       child: MaterialApp(
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+        builder: appTestBuilder(),
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: child,
       ),

@@ -1,9 +1,11 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/common/scroll_fade_mask.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_bottom_sheet.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_dialog_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_picker_controls.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/core/constants/glass_tokens.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
@@ -13,6 +15,7 @@ void main() {
     late BuildContext context;
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Builder(
           builder: (c) {
             context = c;
@@ -46,6 +49,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Scaffold(
           body: GlassDialogSurface(
             child: GlassFilterChip(
@@ -65,6 +69,7 @@ void main() {
     );
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Scaffold(
           body: GlassFilterChip(
             label: 'Behörde',
@@ -89,6 +94,7 @@ void main() {
         final theme = ThemeData(brightness: brightness);
         await tester.pumpWidget(
           MaterialApp(
+            builder: appTestBuilder(),
             theme: theme,
             home: const Scaffold(
               body: GlassDialogSurface(child: Text('Content')),
@@ -115,6 +121,7 @@ void main() {
     (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           home: Scaffold(
             body: GlassBottomSheet(
               shrinkToContent: true,
@@ -149,6 +156,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Builder(
           builder: (BuildContext context) {
             return TextButton(
@@ -215,6 +223,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Builder(
           builder: (BuildContext context) {
             return TextButton(

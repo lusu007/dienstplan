@@ -1,8 +1,11 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_button_surface.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/components/police_authority_filter_chips.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -14,8 +17,9 @@ void main() {
         for (final selected in [false, true]) {
           await tester.pumpWidget(
             MaterialApp(
+              builder: appTestBuilder(),
               theme: ThemeData(brightness: brightness),
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: appLocalizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               home: Scaffold(
                 body: PoliceAuthorityFilterChips(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:dienstplan/core/constants/calendar_day_surface_tokens.dart';
 import 'package:dienstplan/core/constants/ui_constants.dart';

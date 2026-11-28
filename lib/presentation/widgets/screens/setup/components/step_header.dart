@@ -1,5 +1,5 @@
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Title + description block shown at the top of each setup step.
 ///

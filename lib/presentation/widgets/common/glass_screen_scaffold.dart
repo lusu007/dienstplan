@@ -1,5 +1,5 @@
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/common/settings_page_transition.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;

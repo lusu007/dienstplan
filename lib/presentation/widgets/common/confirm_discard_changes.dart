@@ -1,7 +1,7 @@
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_app_dialog.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future<bool> confirmDiscardChanges(BuildContext context) async {
   final l10n = AppLocalizations.of(context);

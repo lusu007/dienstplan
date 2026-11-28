@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/selection_card.dart';
 
 class DutyGroupCard extends StatelessWidget {

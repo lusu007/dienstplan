@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/domain/entities/duty_type.dart';
 import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
 import 'package:dienstplan/domain/entities/schedule.dart';

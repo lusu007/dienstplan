@@ -1,5 +1,5 @@
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 
 /// Primary/secondary action button used at the bottom of the setup flow.

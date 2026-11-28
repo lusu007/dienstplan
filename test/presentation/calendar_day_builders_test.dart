@@ -1,8 +1,10 @@
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/screens/calendar/builders/calendar_day_builders.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_rendering_data.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/memoized_calendar_day.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/date_selector/animated_calendar_day.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -32,6 +34,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Material(
           child: Builder(
             builder: (BuildContext context) {
@@ -60,6 +63,7 @@ void main() {
     (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          builder: appTestBuilder(),
           home: Material(
             child: AnimatedCalendarDay(
               day: DateTime(2026, 8, 1),
@@ -82,6 +86,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         home: Material(
           child: AnimatedCalendarDay(
             day: DateTime(2026, 8, 1),

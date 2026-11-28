@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Detects a dominant vertical pan on the calendar. In full month mode, a
 /// clear upward motion asks for [onSwipeUpInFull]. In split mode, a downward

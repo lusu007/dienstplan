@@ -1,5 +1,5 @@
 import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
 /// Package-backed surface shared by the app's existing glass adapters.

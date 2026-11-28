@@ -1,3 +1,6 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/core/di/riverpod_providers.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/domain/entities/personal_calendar_entry.dart';
@@ -7,7 +10,7 @@ import 'package:dienstplan/domain/repositories/personal_calendar_repository.dart
 import 'package:dienstplan/domain/use_cases/save_personal_calendar_entry_use_case.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_filter_chip.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/personal_calendar_entry_sheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -45,8 +48,9 @@ void main() {
           ),
         ],
         child: MaterialApp(
+          builder: appTestBuilder(),
           locale: const Locale('de'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: PersonalCalendarEntrySheet(

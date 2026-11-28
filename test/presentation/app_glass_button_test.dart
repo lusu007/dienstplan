@@ -1,8 +1,9 @@
-import 'package:dienstplan/presentation/widgets/common/app_glass_theme.dart';
+import '../support/app_test_builder.dart';
+
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_surface.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as liquid;
 
@@ -11,6 +12,7 @@ Widget host(
   Brightness brightness = Brightness.light,
   double scale = 1,
 }) => MaterialApp(
+  builder: appTestBuilder(),
   theme: ThemeData(brightness: brightness),
   home: Scaffold(
     body: MediaQuery(
@@ -39,15 +41,13 @@ void main() {
       'held icon flexes subtly with its outline while dragging in $brightness',
       (tester) async {
         await tester.pumpWidget(
-          AppGlassTheme(
-            child: host(
-              AppGlassIconButton(
-                icon: Icons.calendar_today,
-                tooltip: 'Heute',
-                onPressed: () {},
-              ),
-              brightness: brightness,
+          host(
+            AppGlassIconButton(
+              icon: Icons.calendar_today,
+              tooltip: 'Heute',
+              onPressed: () {},
             ),
+            brightness: brightness,
           ),
         );
         await tester.pumpAndSettle();
@@ -91,13 +91,8 @@ void main() {
     (tester) async {
       var taps = 0;
       await tester.pumpWidget(
-        AppGlassTheme(
-          child: host(
-            AppGlassButton(
-              onPressed: () => taps++,
-              child: const Text('Aktion'),
-            ),
-          ),
+        host(
+          AppGlassButton(onPressed: () => taps++, child: const Text('Aktion')),
         ),
       );
       await tester.pumpAndSettle();
@@ -201,6 +196,7 @@ void main() {
     final theme = ThemeData.light();
     await tester.pumpWidget(
       MaterialApp(
+        builder: appTestBuilder(),
         theme: theme,
         home: Scaffold(
           body: AppGlassButton(

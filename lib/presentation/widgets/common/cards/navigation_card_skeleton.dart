@@ -1,5 +1,5 @@
 import 'package:dienstplan/presentation/widgets/common/app_typography.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_card.dart';
 import 'package:dienstplan/presentation/widgets/common/glass_icon_badge.dart';
 

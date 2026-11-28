@@ -12,7 +12,7 @@ import 'package:dienstplan/core/utils/logger.dart';
 
 import 'package:dienstplan/presentation/widgets/common/glass_screen_scaffold.dart';
 import 'package:dienstplan/presentation/widgets/screens/setup/action_button.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 

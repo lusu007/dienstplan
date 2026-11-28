@@ -1,3 +1,6 @@
+import '../support/app_test_builder.dart';
+
+import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_notifier.dart';
 import 'package:dienstplan/presentation/state/school_holidays/school_holidays_ui_state.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -8,7 +11,7 @@ import 'package:dienstplan/presentation/state/schedule/schedule_ui_state.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_icon_button.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/calendar_view/day_schedules_list_panel.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/schedules_bottom_sheet.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -46,9 +49,10 @@ void main() {
           scheduleCoordinatorProvider.overrideWith(_Schedule.new),
         ],
         child: MaterialApp(
+          builder: appTestBuilder(),
           theme: theme,
           locale: const Locale('de'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(body: SchedulesBottomSheet(day: DateTime.now())),
         ),
@@ -92,8 +96,9 @@ void main() {
               scheduleCoordinatorProvider.overrideWith(_Schedule.new),
             ],
             child: MaterialApp(
+              builder: appTestBuilder(),
               theme: theme,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: appLocalizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               home: Scaffold(
                 body: MediaQuery(

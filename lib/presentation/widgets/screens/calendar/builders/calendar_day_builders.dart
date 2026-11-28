@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:table_calendar/table_calendar.dart' as tc;
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/calendar_day_rendering_data.dart';
 import 'package:dienstplan/presentation/widgets/screens/calendar/components/memoized_calendar_day.dart';

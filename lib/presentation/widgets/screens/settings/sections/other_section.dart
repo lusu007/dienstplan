@@ -1,5 +1,5 @@
 import 'package:dienstplan/presentation/widgets/common/app_snack_bar.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dienstplan/core/config/contact_feedback_copy.dart';
