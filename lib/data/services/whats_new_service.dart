@@ -33,7 +33,8 @@ class WhatsNewService {
   final SharedPreferences _prefs;
 
   Future<String?> readAcknowledgedVersion() {
-    return Future.value(_prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion));
+    final value = _prefs.get(kPrefsKeyWhatsNewAcknowledgedVersion);
+    return Future.value(value is String ? value : null);
   }
 
   Future<void> writeAcknowledgedVersion(String fullVersion) async {

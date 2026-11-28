@@ -23,13 +23,14 @@ Widget host(
   Widget child, {
   Brightness brightness = Brightness.light,
   double scale = 1,
+  EdgeInsets padding = EdgeInsets.zero,
 }) => ProviderScope(
   overrides: [partnerProvider.overrideWith(_Partner.new)],
   child: MaterialApp(
     builder: appTestBuilder(
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context)
-            .copyWith(textScaler: TextScaler.linear(scale)),
+            .copyWith(textScaler: TextScaler.linear(scale), padding: padding),
         child: child!,
       ),
     ),
@@ -94,6 +95,43 @@ void main() {
     expect(find.text('Alle Änderungen im Blick'), findsNothing);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'compact landscape with system insets and double text keeps highlights and actions reachable',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(640, 320);
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        host(
+          Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showWhatsNewDialog(context),
+              child: const Text('Open'),
+            ),
+          ),
+          brightness: Brightness.dark,
+          scale: 2,
+          padding: const EdgeInsets.symmetric(vertical: 24),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Alles klar').hitTestable(), findsOneWidget);
+      expect(find.text('Alle Änderungen').hitTestable(), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Ruhige Monatsanzeige'),
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Ruhige Monatsanzeige').hitTestable(), findsOneWidget);
+      await tester.tap(find.text('Alles klar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Open').hitTestable(), findsOneWidget);
+    },
+  );
 
   for (final brightness in Brightness.values) {
     for (final size in [const Size(320, 680), const Size(844, 390)]) {

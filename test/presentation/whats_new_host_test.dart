@@ -22,7 +22,7 @@ class _Partner extends PartnerNotifier {
 
 Future<SharedPreferences> mountHost(
   WidgetTester tester, {
-  String? previous,
+  Object? previous,
   String current = '0.20.0',
   String build = '4014',
 }) async {
@@ -126,6 +126,27 @@ void main() {
     tester,
   ) async {
     final prefs = await mountHost(tester, previous: 'broken');
+    expect(find.text('Das ist neu für dich'), findsNothing);
+    expect(
+      prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion),
+      '0.20.0+4014',
+    );
+  });
+  testWidgets('non-string preference is repaired without throwing', (
+    tester,
+  ) async {
+    final prefs = await mountHost(tester, previous: true);
+    expect(find.text('Das ist neu für dich'), findsNothing);
+    expect(
+      prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion),
+      '0.20.0+4014',
+    );
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('malformed build suffix cannot suppress future updates', (
+    tester,
+  ) async {
+    final prefs = await mountHost(tester, previous: '99.0.0+?');
     expect(find.text('Das ist neu für dich'), findsNothing);
     expect(
       prefs.getString(kPrefsKeyWhatsNewAcknowledgedVersion),

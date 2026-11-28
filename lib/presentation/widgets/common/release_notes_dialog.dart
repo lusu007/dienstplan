@@ -25,6 +25,7 @@ Future<void> showWhatsNewDialog(
   );
   await GlassAppDialog.show<void>(
     context: context,
+    adaptToCompactHeight: true,
     title: l10n.whatsNewTitle,
     content: SingleChildScrollView(
       child: Column(

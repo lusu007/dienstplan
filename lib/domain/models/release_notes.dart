@@ -25,7 +25,13 @@ class AppReleaseNotes {
 Version? parseReleaseVersion(String? value) {
   if (value == null) return null;
   try {
-    return Version.parse(value.split('+').first.trim());
+    final parsed = Version.parse(value.trim());
+    return Version(
+      parsed.major,
+      parsed.minor,
+      parsed.patch,
+      pre: parsed.preRelease.isEmpty ? null : parsed.preRelease.join('.'),
+    );
   } on FormatException {
     return null;
   }
