@@ -22,6 +22,37 @@ Widget host(
   ),
 );
 void main() {
+  testWidgets('held icon keeps its glow within two control widths', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        AppGlassIconButton(
+          icon: Icons.arrow_back_rounded,
+          onPressed: () {},
+          tooltip: 'Zurück',
+          size: 40,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final button = find.byType(liquid.GlassIconButton);
+    final press = await tester.startGesture(tester.getCenter(button));
+    try {
+      await tester.pump(const Duration(milliseconds: 80));
+      final glow = tester.widget<liquid.GlassGlow>(
+        find.descendant(of: button, matching: find.byType(liquid.GlassGlow)),
+      );
+      // GlassGlow multiplies its radius by the control's short side. A legacy
+      // pixel radius of 20 becomes an 800dp blurred halo on a 40dp Back button.
+      final controlSize = tester.getSize(button).shortestSide;
+      expect(glow.glowRadius * controlSize, lessThanOrEqualTo(controlSize * 2));
+    } finally {
+      await press.up();
+      await tester.pumpAndSettle();
+    }
+  });
+
   testWidgets('disabled quiet action does not acquire a glass surface', (
     tester,
   ) async {
