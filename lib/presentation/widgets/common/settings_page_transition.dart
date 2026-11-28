@@ -52,14 +52,28 @@ class _SettingsPageTransitionState extends State<SettingsPageTransition>
     vsync: this,
     duration: const Duration(milliseconds: 270),
   );
-  late Animation<double> _progress = _SettingsProgress(
-    widget.animation,
-    _entrance,
-  );
+  late Animation<double> _progress;
+  late CurvedAnimation _foregroundMotion;
+  late CurvedAnimation _coveredMotion;
+
+  void _configureMotion() {
+    _progress = _SettingsProgress(widget.animation, _entrance);
+    _foregroundMotion = CurvedAnimation(
+      parent: _progress,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    _coveredMotion = CurvedAnimation(
+      parent: widget.secondaryAnimation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+    _configureMotion();
     _entrance.forward();
     widget.animation.addStatusListener(_routeStatusChanged);
     widget.secondaryAnimation.addListener(_covered);
@@ -92,11 +106,16 @@ class _SettingsPageTransitionState extends State<SettingsPageTransition>
   @override
   void didUpdateWidget(SettingsPageTransition oldWidget) {
     super.didUpdateWidget(oldWidget);
-    oldWidget.animation.removeStatusListener(_routeStatusChanged);
-    oldWidget.secondaryAnimation.removeListener(_covered);
-    widget.animation.addStatusListener(_routeStatusChanged);
-    widget.secondaryAnimation.addListener(_covered);
-    _progress = _SettingsProgress(widget.animation, _entrance);
+    if (oldWidget.animation != widget.animation ||
+        oldWidget.secondaryAnimation != widget.secondaryAnimation) {
+      oldWidget.animation.removeStatusListener(_routeStatusChanged);
+      oldWidget.secondaryAnimation.removeListener(_covered);
+      _foregroundMotion.dispose();
+      _coveredMotion.dispose();
+      widget.animation.addStatusListener(_routeStatusChanged);
+      widget.secondaryAnimation.addListener(_covered);
+      _configureMotion();
+    }
     _covered();
   }
 
@@ -104,6 +123,8 @@ class _SettingsPageTransitionState extends State<SettingsPageTransition>
   void dispose() {
     widget.animation.removeStatusListener(_routeStatusChanged);
     widget.secondaryAnimation.removeListener(_covered);
+    _foregroundMotion.dispose();
+    _coveredMotion.dispose();
     _entrance.dispose();
     super.dispose();
   }
@@ -115,6 +136,8 @@ class _SettingsPageTransitionState extends State<SettingsPageTransition>
       SettingsPageMotionScope(
         animation: _progress,
         secondaryAnimation: widget.secondaryAnimation,
+        motionAnimation: _foregroundMotion,
+        motionSecondaryAnimation: _coveredMotion,
         child: widget.child,
       ),
     );
@@ -128,23 +151,16 @@ class SettingsPageMotionScope extends InheritedWidget {
     super.key,
     required this.animation,
     required this.secondaryAnimation,
+    required this.motionAnimation,
+    required this.motionSecondaryAnimation,
     required super.child,
   });
   final Animation<double> animation;
   final Animation<double> secondaryAnimation;
 
-  static double _navigationProgress(
-    Animation<double> animation,
-    bool interactive,
-  ) {
-    if (interactive) return animation.value;
-    // A reverse route runs from 1 to 0. easeOut would keep the outgoing
-    // foreground nearly stationary for most of the return transition.
-    final curve = animation.status == AnimationStatus.reverse
-        ? Curves.easeInCubic
-        : Curves.easeOutCubic;
-    return curve.transform(animation.value);
-  }
+  // Keep the active curve through an interrupted entrance to avoid a jump.
+  final Animation<double> motionAnimation;
+  final Animation<double> motionSecondaryAnimation;
 
   static Widget wrap(BuildContext context, Widget child) {
     final motion = context
@@ -163,11 +179,12 @@ class SettingsPageMotionScope extends InheritedWidget {
       builder: (context, child) {
         final interactive =
             Navigator.maybeOf(context)?.userGestureInProgress ?? false;
-        final forward = _navigationProgress(motion.animation, interactive);
-        final backward = _navigationProgress(
-          motion.secondaryAnimation,
-          interactive,
-        );
+        final forward = interactive
+            ? motion.animation.value
+            : motion.motionAnimation.value;
+        final backward = interactive
+            ? motion.secondaryAnimation.value
+            : motion.motionSecondaryAnimation.value;
         final direction = Directionality.of(context) == TextDirection.rtl
             ? -1.0
             : 1.0;
@@ -194,10 +211,9 @@ class SettingsPageMotionScope extends InheritedWidget {
       child: child,
       builder: (context, child) => FadeTransition(
         opacity: AlwaysStoppedAnimation(
-          _navigationProgress(
-            motion.animation,
-            Navigator.maybeOf(context)?.userGestureInProgress ?? false,
-          ),
+          Navigator.maybeOf(context)?.userGestureInProgress ?? false
+              ? motion.animation.value
+              : motion.motionAnimation.value,
         ),
         child: child,
       ),
@@ -207,7 +223,9 @@ class SettingsPageMotionScope extends InheritedWidget {
   @override
   bool updateShouldNotify(SettingsPageMotionScope oldWidget) =>
       animation != oldWidget.animation ||
-      secondaryAnimation != oldWidget.secondaryAnimation;
+      secondaryAnimation != oldWidget.secondaryAnimation ||
+      motionAnimation != oldWidget.motionAnimation ||
+      motionSecondaryAnimation != oldWidget.motionSecondaryAnimation;
 }
 
 class _SettingsProgress extends CompoundAnimation<double> {
