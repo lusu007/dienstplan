@@ -76,11 +76,13 @@ class _GlassBottomSheetRoute<T> extends ModalBottomSheetRoute<T> {
   final GlassSheetSession? session;
   OverlayEntry? _frozen;
   _LastFrameAnimation? _lastFrame;
+  bool _restoringLiveScene = false;
 
   @override
   Animation<double> createAnimation() => _lastFrame = _LastFrameAnimation(
     super.createAnimation(),
     () => session?.hasSnapshot ?? false,
+    _prepareLiveRestore,
   );
 
   @override
@@ -99,8 +101,19 @@ class _GlassBottomSheetRoute<T> extends ModalBottomSheetRoute<T> {
   }
 
   void _snapshotChanged() {
-    _frozen?.opaque = session?.hasSnapshot == true && !session!.isRefreshing;
+    _frozen?.opaque =
+        !_restoringLiveScene &&
+        session?.hasSnapshot == true &&
+        !session!.isRefreshing;
     _frozen?.markNeedsBuild();
+  }
+
+  void _prepareLiveRestore() {
+    // Keep the snapshot visible while the covered page resumes painting and
+    // ticking. Otherwise paused press feedback is exposed on the first live
+    // frame, making the month trigger flash as its animation catches up.
+    _restoringLiveScene = true;
+    _frozen?.opaque = false;
   }
 
   @override
@@ -165,8 +178,9 @@ class _GlassBottomSheetRoute<T> extends ModalBottomSheetRoute<T> {
 /// Only the final status notification is held; values and the slide timing
 /// stay native, including drag dismissal.
 class _LastFrameAnimation extends ProxyAnimation {
-  _LastFrameAnimation(super.parent, this.shouldDefer);
+  _LastFrameAnimation(super.parent, this.shouldDefer, this.prepareLiveRestore);
   final bool Function() shouldDefer;
+  final VoidCallback prepareLiveRestore;
   bool _closing = false;
   bool _holding = false;
   bool _released = false;
@@ -192,6 +206,7 @@ class _LastFrameAnimation extends ProxyAnimation {
 
   Future<void> _releaseAfterPaint() async {
     if (kProfileMode) dev.Timeline.instantSync('GlassSheet.offscreen');
+    prepareLiveRestore();
     await WidgetsBinding.instance.endOfFrame;
     await WidgetsBinding.instance.endOfFrame;
     if (_detached) return;
