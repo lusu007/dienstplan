@@ -64,6 +64,7 @@ flutter build apk --flavor prod --release
 - **Architecture:** domain / data / presentation layers, with Riverpod for state management and dependency injection. Shared infrastructure lives in `lib/core`; providers live in `lib/core/di/riverpod_providers.dart` (generated `.g.dart` alongside).
 - **Schedules:** rotation definitions live in [assets/schedules/](assets/schedules/).
 - **UI:** shared glass components and conventions are documented in the [design and style guide](docs/style_guide/README.md).
+- **Release notes:** add German entries to [app_release_notes.dart](lib/data/releases/app_release_notes.dart) for each release; preserve published entries. Mark features and important fixes for the automatic summary, and maintenance for history only. The app combines missed releases, ignores build-only updates, and keeps full history available offline in **Was ist neu?**. Version comparison reuses `pub_semver`; presentation and persistence reuse the existing Glass UI and preferences.
 - **Checks:** `flutter analyze` and `flutter test`.
 - **Details:** workflow, standards, and deeper architecture notes are in [CONTRIBUTING.md](CONTRIBUTING.md).
 

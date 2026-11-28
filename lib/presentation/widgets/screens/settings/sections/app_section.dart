@@ -5,7 +5,7 @@ import 'package:dienstplan/core/l10n/app_localizations.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/settings_section.dart';
 import 'package:dienstplan/presentation/widgets/common/cards/navigation_card.dart';
 import 'package:dienstplan/presentation/widgets/screens/settings/components/bottomsheets/reset_bottomsheet.dart';
-import 'package:dienstplan/presentation/widgets/common/whats_new_host.dart';
+import 'package:dienstplan/presentation/screens/release_history_screen.dart';
 
 class AppSection extends ConsumerWidget {
   const AppSection({super.key});
@@ -20,7 +20,7 @@ class AppSection extends ConsumerWidget {
           icon: Icons.new_releases_outlined,
           title: l10n.settingsWhatsNewShowAgain,
           subtitle: l10n.settingsWhatsNewShowAgainSubtitle,
-          onTap: () => showWhatsNewDialog(context),
+          onTap: () => showReleaseHistory(context),
         ),
         NavigationCard(
           modalTrigger: true,

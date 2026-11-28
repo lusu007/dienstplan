@@ -1,5 +1,7 @@
 import '../support/app_test_builder.dart';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:dienstplan/core/l10n/app_localizations_delegates.dart';
 import 'package:dienstplan/presentation/widgets/common/app_glass_button.dart';
 import 'package:dienstplan/core/l10n/app_localizations.dart';
@@ -10,6 +12,15 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  setUp(
+    () => PackageInfo.setMockInitialValues(
+      appName: 'Dienstplan',
+      packageName: 'test',
+      version: '0.20.0',
+      buildNumber: '4014',
+      buildSignature: '',
+    ),
+  );
   for (final dismissal in ['confirmation', 'barrier', 'back']) {
     testWidgets(
       'whats new closes promptly via $dismissal without opacity layers',
