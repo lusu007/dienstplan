@@ -238,12 +238,18 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
       expect(find.text('Abbrechen'), findsOneWidget);
-      expect(container.exists(personalCalendarRepositoryProvider), isFalse);
+      expect(
+        container.read(personalCalendarRepositoryProvider.exists),
+        isFalse,
+      );
       await tester.tap(find.text('Abbrechen'));
       await tester.pumpAndSettle();
       expect(find.text('Abbrechen'), findsNothing);
-      expect(container.exists(personalCalendarRepositoryProvider), isFalse);
-      expect(container.exists(scheduleConfigServiceProvider), isFalse);
+      expect(
+        container.read(personalCalendarRepositoryProvider.exists),
+        isFalse,
+      );
+      expect(container.read(scheduleConfigServiceProvider.exists), isFalse);
       expect(tester.takeException(), isNull);
     },
   );
