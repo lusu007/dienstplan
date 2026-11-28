@@ -52,6 +52,7 @@ void main() {
   group('SentryTelemetry.beforeSendLog', () {
     test('drops logs when uploads are disabled', () {
       final log = SentryLog(
+        traceId: const SentryId.empty(),
         timestamp: DateTime.utc(2026, 4, 27),
         level: SentryLogLevel.info,
         body: 'Application started (screen=main)',
@@ -69,6 +70,7 @@ void main() {
 
     test('drops debug logs in release mode', () {
       final log = SentryLog(
+        traceId: const SentryId.empty(),
         timestamp: DateTime.utc(2026, 4, 27),
         level: SentryLogLevel.debug,
         body: 'Cache lookup completed (cacheHit=true)',
@@ -86,6 +88,7 @@ void main() {
 
     test('drops logs that likely contain raw payloads', () {
       final log = SentryLog(
+        traceId: const SentryId.empty(),
         timestamp: DateTime.utc(2026, 4, 27),
         level: SentryLogLevel.info,
         body: 'Remote response data received (responseData={raw})',
